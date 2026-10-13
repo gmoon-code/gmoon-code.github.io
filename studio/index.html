@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow, noarchive">
   <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://api.github.com; img-src 'self' data: blob: https:; frame-src 'self' about:; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
   <meta name="description" content="Owner-only GitHub editing studio for Ye Eun Moon's website.">
   <title>Website Studio | Ye Eun Moon</title>
   <link rel="stylesheet" href="studio.css">
@@ -175,6 +176,8 @@
                 <option value="#575757">Muted gray</option>
                 <option value="#ffffff">White</option>
               </select>
+              <label for="fontSizeValue">Text size (px)</label>
+              <input id="fontSizeValue" type="number" min="10" max="100" placeholder="Use page default">
               <label for="textAlign">Text alignment</label>
               <select id="textAlign"><option value="">Automatic</option><option value="left">Left</option><option value="center">Center</option><option value="right">Right</option></select>
               <label for="columnsCount">Columns inside this area</label>
@@ -190,6 +193,8 @@
                 <div><label for="maxWidthValue">Maximum width (px)</label><input id="maxWidthValue" type="number" min="1" max="5000" placeholder="None"></div>
                 <div><label for="marginTopValue">Space above (px)</label><input id="marginTopValue" type="number" min="0" max="500"></div>
                 <div><label for="marginBottomValue">Space below (px)</label><input id="marginBottomValue" type="number" min="0" max="500"></div>
+                <div><label for="paddingValue">Space inside (px)</label><input id="paddingValue" type="number" min="0" max="300"></div>
+                <div><label for="radiusValue">Corner radius (px)</label><input id="radiusValue" type="number" min="0" max="120"></div>
               </div>
               <details class="advanced-position">
                 <summary>Fine positioning (optional)</summary>

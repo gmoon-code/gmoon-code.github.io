@@ -539,3 +539,13 @@ h4{
 .list-row p{max-width:94ch}
 .project-intro-note{color:var(--moon-muted);font-size:14px;margin-top:14px!important}
 .section-ending{margin-top:16px}
+
+/* Reusable layouts created in the visual studio are also styled on the live site. */
+.studio-columns{display:grid;gap:18px;grid-template-columns:repeat(var(--studio-cols,2),minmax(0,1fr))}
+.studio-gallery{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.studio-gallery figure{margin:0}
+.studio-gallery img{display:block;width:100%;max-width:100%;height:auto;object-fit:cover}
+.studio-gallery figcaption{font-size:13px;color:var(--moon-muted);padding-top:6px}
+@media(max-width:700px){
+  .studio-columns,.studio-gallery{grid-template-columns:1fr!important}
+}

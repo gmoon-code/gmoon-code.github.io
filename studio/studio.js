@@ -419,6 +419,7 @@
     $("backgroundColor").value=el.style.backgroundColor?colorToHex(el.style.backgroundColor):"";
     $("textColor").value=el.style.color?colorToHex(el.style.color):"";
     $("textAlign").value=el.style.textAlign||"";
+    $("fontSizeValue").value=parseMeasure(el.style.fontSize).value;
     $("columnsCount").disabled=!["SECTION","DIV","ARTICLE"].includes(el.tagName);
     $("columnsCount").value=el.classList.contains("studio-columns")?
       (el.style.getPropertyValue("--studio-cols")||"2"):"";
@@ -428,6 +429,8 @@
     $("maxWidthValue").value=parseMeasure(el.style.maxWidth).value;
     $("marginTopValue").value=parseMeasure(el.style.marginTop).value;
     $("marginBottomValue").value=parseMeasure(el.style.marginBottom).value;
+    $("paddingValue").value=parseMeasure(el.style.padding).value;
+    $("radiusValue").value=parseMeasure(el.style.borderRadius).value;
     $("offsetX").value=parseFloat(el.style.getPropertyValue("--studio-offset-x"))||0;
     $("offsetY").value=parseFloat(el.style.getPropertyValue("--studio-offset-y"))||0;
     const parent=el.parentElement;
@@ -490,6 +493,7 @@
     bindSelect("backgroundColor",(el,val)=>el.style.backgroundColor=val);
     bindSelect("textColor",(el,val)=>el.style.color=val);
     bindSelect("textAlign",(el,val)=>el.style.textAlign=val);
+    bindValue("fontSizeValue","fontSize","px");
     bindSelect("columnsCount",(el,val)=>{
       if(!["SECTION","DIV","ARTICLE"].includes(el.tagName))return;
       if(!val){el.classList.remove("studio-columns");el.style.removeProperty("--studio-cols");el.style.display="";el.style.gridTemplateColumns=""}
@@ -507,6 +511,8 @@
     bindValue("maxWidthValue","maxWidth","px");
     bindValue("marginTopValue","marginTop","px");
     bindValue("marginBottomValue","marginBottom","px");
+    bindValue("paddingValue","padding","px");
+    bindValue("radiusValue","borderRadius","px");
     function setOffset(){
       if(!state.selected)return;
       const x=Number($("offsetX").value)||0,y=Number($("offsetY").value)||0;
@@ -522,7 +528,7 @@
       if(!state.selected)return;
       mutate(()=>{
         const s=state.selected.style;
-        for(const property of ["width","height","maxWidth","marginTop","marginBottom","transform"])s[property]="";
+        for(const property of ["width","height","maxWidth","marginTop","marginBottom","padding","borderRadius","transform"])s[property]="";
         s.removeProperty("--studio-offset-x");s.removeProperty("--studio-offset-y");
       });
     });
@@ -549,6 +555,8 @@
     mutate(()=>{
       clone=el.cloneNode(true);
       clone.removeAttribute("data-studio-selected");
+      clone.removeAttribute("id");
+      clone.querySelectorAll("[id]").forEach(child=>child.removeAttribute("id"));
       el.after(clone);
     });
     selectElement(clone,true);
@@ -660,7 +668,15 @@
         caption.style.color="#575757";caption.style.fontSize="13px";
         figure.appendChild(caption);
         const target=state.selected;
-        if(target?.tagName==="SECTION")target.appendChild(figure);
+        const gallery=target?.closest(".studio-gallery");
+        const emptyFigure=gallery&&target.closest("figure")?.querySelector("img")===null?
+          target.closest("figure"):null;
+        if(emptyFigure){
+          emptyFigure.insertBefore(img,emptyFigure.firstChild);
+          const addedCaption=emptyFigure.querySelector("figcaption");
+          if(addedCaption)addedCaption.textContent="Photo caption (optional)";
+        }else if(target?.tagName==="SECTION")target.appendChild(figure);
+        else if(gallery&&target.closest("figure"))target.closest("figure").after(figure);
         else if(target?.parentElement)target.after(figure);
         else doc.querySelector("main").appendChild(figure);
       }
@@ -679,6 +695,12 @@
     if(!state.connected||state.busy)return;
     syncCurrent();
     if(!hasChanges()){toast("No unpublished changes.");return}
+    for(const [path,draft] of state.drafts){
+      if(!draft.dirty)continue;
+      const doc=new DOMParser().parseFromString(draft.html,"text/html");
+      const invalid=[...doc.querySelectorAll("img")].some(img=>!img.hasAttribute("alt")||img.alt==="Describe this image");
+      if(invalid){toast("Please add a meaningful image description on "+nameFor(path)+" before publishing.",true);return}
+    }
     state.busy=true;updateStatus();
     try{
       for(const photo of changedReferences()){
