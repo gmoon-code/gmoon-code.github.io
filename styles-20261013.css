@@ -480,3 +480,5 @@ h4{
 .pungmul-gallery img{display:block;width:100%;height:210px;object-fit:cover}
 .pungmul-gallery figcaption{font-size:13px;color:var(--moon-muted);padding:7px 10px}
 @media(max-width:600px){.pungmul-gallery{grid-template-columns:1fr}.pungmul-gallery img{height:auto;max-height:260px}}
+
+.about-portrait{display:block;width:170px;height:169px;max-width:100%;object-fit:cover;border:1px solid var(--moon-rule);margin:0 0 15px}
