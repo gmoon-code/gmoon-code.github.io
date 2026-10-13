@@ -782,6 +782,10 @@
       }
       if(new Set(entries.map(e=>e.path)).size!==entries.length)
         throw Error("Two changes target the same file. Please review the pending changes.");
+      // Calculate new file identities before moving the live branch.
+      const newFileShas=new Map();
+      for(const [path,content] of finalized)newFileShas.set(path,await gitBlobSha(content));
+      const nextManifestSha=newManifest?await gitBlobSha(newManifest):null;
       $("saveStatus").textContent="Preparing all changes together…";
       const tree=await github(prefix+"/git/trees",{
         method:"POST",body:{base_tree:baseTree,tree:entries}
@@ -802,12 +806,12 @@
       // Git's blob hashes let us keep checking for edits made in other tabs.
       for(const [path,draft] of draftsToSave){
         const content=finalized.get(path);
-        draft.sha=await gitBlobSha(content);
+        draft.sha=newFileShas.get(path);
         draft.savedHtml=content;draft.html=content;
         draft.isNew=false;draft.dirty=false;
       }
       if(state.manifestDirty){
-        state.manifestSha=await gitBlobSha(newManifest);
+        state.manifestSha=nextManifestSha;
         state.manifestDirty=false;
       }
       state.deleted.clear();
