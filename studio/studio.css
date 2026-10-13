@@ -118,3 +118,8 @@ input[type=checkbox]{accent-color:#3e7380}
 @media(max-width:900px){.studio-columns-layout{grid-template-columns:180px minmax(280px,1fr)}.inspector{grid-column:1/-1;border-top:1px solid var(--line);border-left:0;max-height:35vh}.inspector-panel{max-width:720px}.inspector-empty{min-height:40px}.preview-outer{min-height:370px}}
 @media(max-width:600px){.workspace{min-height:100vh;height:auto}.studio-header{align-items:flex-start;flex-direction:column;padding:12px}.studio-columns-layout{display:flex;flex-direction:column}.left-sidebar{border-right:0;border-bottom:1px solid var(--line);max-height:230px}.canvas-area{min-height:520px}.preview-outer{min-height:320px;padding:10px}.inspector{max-height:none}.canvas-toolbar,.canvas-insert-toolbar{padding:10px}.studio-header .header-actions{justify-content:flex-start}.login-card{padding:22px}}
 @media(prefers-reduced-motion:reduce){#previewFrame{transition:none}}
+
+/* Section ordering in the left panel. */
+.section-item{cursor:grab}
+.section-item:active{cursor:grabbing}
+.section-item.is-drag-over{outline:2px dashed #567b71;background:#eaf3ed}

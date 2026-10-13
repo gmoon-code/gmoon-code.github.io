@@ -332,8 +332,9 @@
     });
     const draft=activeDraft();
     if(draft&&!draft.canonicalSet){
-      draft.savedHtml=cleanMarkup(doc);
-      draft.html=draft.savedHtml;
+      const normalized=cleanMarkup(doc);
+      if(!draft.dirty)draft.savedHtml=normalized;
+      draft.html=normalized;
       draft.canonicalSet=true;
     }
     state.selected=null;
@@ -369,6 +370,24 @@
     sections.forEach((section,i)=>{
       const title=section.querySelector("h1,h2,h3")?.textContent?.trim()||"Section "+(i+1);
       const button=document.createElement("button");button.type="button";button.className="section-item";
+      button.draggable=true;
+      button.addEventListener("dragstart",event=>{
+        event.dataTransfer.setData("text/plain",String(i));
+        event.dataTransfer.effectAllowed="move";
+      });
+      button.addEventListener("dragover",event=>{event.preventDefault();button.classList.add("is-drag-over")});
+      button.addEventListener("dragleave",()=>button.classList.remove("is-drag-over"));
+      button.addEventListener("drop",event=>{
+        event.preventDefault();button.classList.remove("is-drag-over");
+        const sourceIndex=Number(event.dataTransfer.getData("text/plain"));
+        const all=[...doc.querySelectorAll("main > section")];
+        if(!Number.isInteger(sourceIndex)||sourceIndex===i||!all[sourceIndex])return;
+        remember();
+        const node=all[sourceIndex];
+        if(sourceIndex<i)section.after(node);else section.before(node);
+        syncCurrent();selectElement(node);renderSections();
+        toast("Section moved. Check the preview, then publish when ready.");
+      });
       if(state.selected&&(section===state.selected||section.contains(state.selected)))button.classList.add("is-active");
       const n=document.createElement("span");n.textContent=String(i+1).padStart(2,"0");n.className="kind-label";
       const name=document.createElement("span");name.textContent=title;
@@ -806,21 +825,28 @@
         '<div class="reading"><p>Start writing here.</p></div></section>';
       const html="<!doctype html>\n"+doc.documentElement.outerHTML+"\n";
       state.drafts.set(path,{html,savedHtml:"",sha:null,isNew:true,dirty:true,undo:[],redo:[],canonicalSet:false});
-      state.manifest.pages.push({path,title,group:parent?nameFor(parent):"Other",accent,locked:false});
+      state.manifest.pages.push({path,title,group:parent?nameFor(parent):"Other",parent,accent,locked:false});
       state.manifestDirty=true;
       if(parent){
         const original=await ensureDraft(parent);
         const pdoc=new DOMParser().parseFromString(original.html,"text/html");
-        const section=pdoc.createElement("section");
-        section.className="section";
-        const header=pdoc.createElement("div");header.className="section-head";
-        header.innerHTML="<h2>More to explore</h2>";
-        section.appendChild(header);
-        const box=pdoc.createElement("div");box.className="reading";
+        let section=pdoc.querySelector('section[data-studio-links="true"]');
+        if(!section){
+          section=pdoc.createElement("section");
+          section.className="section";
+          section.dataset.studioLinks="true";
+          const header=pdoc.createElement("div");header.className="section-head";
+          header.innerHTML="<h2>More to explore</h2>";
+          section.appendChild(header);
+          const box=pdoc.createElement("div");box.className="reading";
+          section.appendChild(box);
+          pdoc.querySelector("main").appendChild(section);
+        }
+        const paragraph=pdoc.createElement("p");
         const link=pdoc.createElement("a");link.className="inline-link";
         link.href=path;link.textContent=title+" →";
-        box.appendChild(link);section.appendChild(box);
-        pdoc.querySelector("main").appendChild(section);
+        paragraph.appendChild(link);
+        section.querySelector(".reading").appendChild(paragraph);
         original.html="<!doctype html>\n"+pdoc.documentElement.outerHTML+"\n";
         original.dirty=true;
       }
@@ -866,6 +892,18 @@
     if(!draft.isNew&&draft.sha)state.deleted.set(path,draft.sha);
     state.manifest.pages=state.manifest.pages.filter(p=>p.path!==path);
     state.manifestDirty=true;state.drafts.delete(path);
+    if(page.parent){
+      const parent=await ensureDraft(page.parent);
+      const doc=new DOMParser().parseFromString(parent.html,"text/html");
+      const link=[...doc.querySelectorAll('section[data-studio-links="true"] a')].find(a=>a.getAttribute("href")===path);
+      if(link){
+        const section=link.closest("section");
+        link.closest("p")?.remove();
+        if(!section.querySelector("a"))section.remove();
+        parent.html="<!doctype html>\n"+doc.documentElement.outerHTML+"\n";
+        parent.dirty=true;
+      }
+    }
     $("pageSettingsDialog").close();state.currentPath=null;
     renderPages();setupParentChoices();
     await switchPage("index.html");

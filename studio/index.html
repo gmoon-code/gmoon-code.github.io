@@ -22,7 +22,7 @@
         <form id="loginForm" class="login-form">
           <label for="tokenInput">Your GitHub access token</label>
           <input id="tokenInput" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" required placeholder="Paste your fine-grained token">
-          <label class="check-row"><input id="rememberTab" type="checkbox"> Remember in this browser tab until I close it</label>
+          <label class="check-row"><input id="rememberTab" type="checkbox"> Remember in this browser tab until I close it (trusted devices only)</label>
           <button type="submit" class="primary-button" id="connectBtn">Open my studio</button>
           <p id="loginError" class="error-message" role="alert" hidden></p>
         </form>
@@ -69,7 +69,7 @@
             <h2>Sections</h2>
             <button id="newSectionBtn" class="small-button" type="button">+ Section</button>
           </div>
-          <p class="sidebar-hint">Move sections using the arrows in Edit.</p>
+          <p class="sidebar-hint">Drag sections to reorder them, or use the arrows in Edit.</p>
           <div id="sectionList" class="section-list"></div>
           <div class="sidebar-footer">
             <p>Your public website remains unchanged until you choose <strong>Publish changes</strong>.</p>
