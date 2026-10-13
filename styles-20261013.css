@@ -11,7 +11,7 @@
   - no shadows
   - no decorative gradients
   - restrained black/white controls
-  - Word highlight palette: Yellow -> Bright Green -> Blue -> Pink (magenta)
+  - A gentle highlighter-inspired sequence: yellow -> green -> blue -> magenta
 */
 
 :root{
@@ -22,21 +22,21 @@
   --moon-rule:#d8d8d8;
   --moon-rule-dark:#b7b7b7;
 
-  --section-yellow:#FFFF00;
-  --section-yellow-soft:#f5f5f5;
-  --section-yellow-line:var(--section-yellow);
+  --section-yellow:#F5E6A8;
+  --section-yellow-soft:#FCF9ED;
+  --section-yellow-line:#C6AD58;
 
-  --section-green:#00FF00;
-  --section-green-soft:#f5f5f5;
-  --section-green-line:var(--section-green);
+  --section-green:#CEE5C1;
+  --section-green-soft:#F4F9F0;
+  --section-green-line:#8FAE80;
 
-  --section-blue:#0000FF;
-  --section-blue-soft:#f5f5f5;
-  --section-blue-line:var(--section-blue);
+  --section-blue:#C8DDF1;
+  --section-blue-soft:#F3F8FC;
+  --section-blue-line:#82A6C7;
 
-  --section-magenta:#FF00FF;
-  --section-magenta-soft:#f5f5f5;
-  --section-magenta-line:var(--section-magenta);
+  --section-magenta:#EACBE3;
+  --section-magenta-soft:#FBF4F9;
+  --section-magenta-line:#B58BAE;
 
   --page-max:1120px;
   --reading:820px;
@@ -505,8 +505,7 @@ h4{
 /* Four-photo gallery at desktop size */
 @media(min-width:801px){.pungmul-gallery{grid-template-columns:repeat(4,minmax(0,1fr))}}
 
-/* Word's exact highlighter swatches are used as highlights, never pastel substitutes.
-   All cards in a homepage section inherit that section's one accent. */
+/* Harmonized muted highlighter accents; each homepage section has one color. */
 .home-color-block .paper-card{border-top-color:var(--home-line) !important}
 .home-inquiry{margin-top:28px}
 .home-inquiry h3{font-size:19px;margin:0 0 12px}
@@ -514,17 +513,11 @@ h4{
 .home-inquiry .question:last-child{border-bottom:1px solid var(--moon-rule)}
 .home-feature-card{max-width:100%}
 
-/* Keep type legible on Word's pure blue (#0000FF) highlight. */
-.theme-blue .section-head h2,
-.home-blue .section-head h2,
-.theme-blue .hero-card .label,
-.home-blue .hero-card .label,
-.theme-blue .callout strong,
-.home-blue .callout strong,
-.theme-blue .project-status,
-.home-blue .project-status,
-.theme-blue .interest-type,
-.home-blue .interest-type {color:#fff}
-.site-nav a[style*="--section-blue"]:not(.cv-link):is(:hover,[aria-current="page"]){color:#fff}
-.site-nav .cv-link[aria-current="page"]{background:var(--section-blue)!important;color:#fff;border-color:var(--section-blue);border-bottom:3px solid var(--section-blue-line)}
-.site-nav .cv-link[aria-current="page"]:hover{background:var(--section-blue)!important}
+/* Dark lettering stays readable on every soft highlighter accent. */
+.site-nav .cv-link[aria-current="page"]{
+  background:var(--section-blue-soft)!important;
+  color:var(--moon-ink);
+  border-color:var(--section-blue-line);
+  border-bottom:3px solid var(--section-blue-line);
+}
+.site-nav .cv-link[aria-current="page"]:hover{background:var(--section-blue-soft)!important}
