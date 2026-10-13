@@ -89,7 +89,7 @@ a:focus-visible{outline:2px solid #111;outline-offset:3px}
 }
 .site-nav a:hover,
 .site-nav a[aria-current="page"]{
-  background:linear-gradient(transparent 48%,var(--nav-highlight,var(--section-yellow)) 48%);
+  background:var(--nav-highlight,var(--section-yellow));
 }
 .cv-link{
   border:1px solid var(--moon-rule-dark);
@@ -163,10 +163,11 @@ h4{
 }
 .hero-card .label{
   display:inline;
-  padding:0 2px;
+  padding:1px 4px;
   font-size:13px;
+  line-height:1.25;
   font-weight:700;
-  background:linear-gradient(transparent 48%,var(--page-highlight,var(--section-yellow)) 48%);
+  background:var(--page-highlight,var(--section-yellow));
   -webkit-box-decoration-break:clone;
   box-decoration-break:clone;
 }
@@ -196,19 +197,19 @@ h4{
 }
 .section-head h2{
   display:inline;
-  padding:0 3px;
-  background:linear-gradient(transparent 48%,var(--page-highlight,var(--section-yellow)) 48%);
+  padding:1px 4px;
+  background:var(--page-highlight,var(--section-yellow));
   -webkit-box-decoration-break:clone;
   box-decoration-break:clone;
 }
 .section-head p{
-  max-width:760px;
+  max-width:none;
   margin:13px 0 0;
   color:#444;
 }
 .reading{
   width:100%;
-  max-width:var(--reading);
+  max-width:none;
 }
 .reading p{
   margin:0 0 16px;
@@ -234,12 +235,13 @@ h4{
   min-width:0;
   background:#fff;
   border:1px solid var(--moon-rule);
+  border-top:4px solid var(--page-line,var(--section-yellow-line));
   border-radius:var(--radius);
   padding:18px 19px;
   box-shadow:none;
 }
 .paper-card.accent{
-  border-top:4px solid var(--page-line,var(--section-yellow-line));
+  border-top-color:var(--page-line,var(--section-yellow-line));
 }
 .paper-card p{
   margin:8px 0 0;
@@ -279,7 +281,7 @@ h4{
 .list-row p{margin:0}
 
 .callout{
-  max-width:var(--reading);
+  max-width:none;
   padding:15px 16px;
   background:#fff;
   border:1px solid var(--moon-rule);
@@ -288,14 +290,14 @@ h4{
 }
 .callout strong{
   display:inline;
-  padding:0 2px;
-  background:linear-gradient(transparent 48%,var(--page-highlight,var(--section-yellow)) 48%);
+  padding:1px 4px;
+  background:var(--page-highlight,var(--section-yellow));
   -webkit-box-decoration-break:clone;
   box-decoration-break:clone;
 }
 .callout p{margin:8px 0 0;color:#333}
 
-.question-list{width:100%;max-width:930px}
+.question-list{width:100%;max-width:none}
 .question{
   padding:18px 0;
   border-top:1px solid var(--moon-rule);
