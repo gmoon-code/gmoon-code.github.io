@@ -1,0 +1,71 @@
+{
+  "version": 1,
+  "pages": [
+    {
+      "path": "index.html",
+      "title": "Home",
+      "group": "Main",
+      "locked": true
+    },
+    {
+      "path": "research.html",
+      "title": "Research",
+      "group": "Main",
+      "locked": true
+    },
+    {
+      "path": "projects.html",
+      "title": "Projects",
+      "group": "Main",
+      "locked": true
+    },
+    {
+      "path": "teaching.html",
+      "title": "Teaching",
+      "group": "Main",
+      "locked": true
+    },
+    {
+      "path": "interests.html",
+      "title": "Interests",
+      "group": "Main",
+      "locked": true
+    },
+    {
+      "path": "about.html",
+      "title": "About",
+      "group": "Main",
+      "locked": true
+    },
+    {
+      "path": "cv.html",
+      "title": "CV",
+      "group": "Main",
+      "locked": true
+    },
+    {
+      "path": "research-scoping.html",
+      "title": "Scoping review",
+      "group": "Research",
+      "locked": true
+    },
+    {
+      "path": "research-action.html",
+      "title": "Classroom action research",
+      "group": "Research",
+      "locked": true
+    },
+    {
+      "path": "story-method.html",
+      "title": "The Story Method",
+      "group": "Projects",
+      "locked": true
+    },
+    {
+      "path": "research-methods-studio.html",
+      "title": "Research Methods Studio",
+      "group": "Projects",
+      "locked": true
+    }
+  ]
+}

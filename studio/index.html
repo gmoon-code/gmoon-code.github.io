@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <meta name="referrer" content="no-referrer">
+  <meta name="description" content="Owner-only GitHub editing studio for Ye Eun Moon's website.">
+  <title>Website Studio | Ye Eun Moon</title>
+  <link rel="stylesheet" href="studio.css">
+  <script src="studio.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#studioMain">Skip to editing tools</a>
+  <main id="studioMain">
+    <section id="loginView" class="login-wrap">
+      <div class="login-card">
+        <div class="eyebrow">Ye Eun Moon · Website Studio</div>
+        <h1>A quiet place to edit your website</h1>
+        <p class="lead">Choose a page, select something in the preview, and make changes without working directly with HTML. Only your GitHub account can publish edits to this website.</p>
+        <form id="loginForm" class="login-form">
+          <label for="tokenInput">Your GitHub access token</label>
+          <input id="tokenInput" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" required placeholder="Paste your fine-grained token">
+          <label class="check-row"><input id="rememberTab" type="checkbox"> Remember in this browser tab until I close it</label>
+          <button type="submit" class="primary-button" id="connectBtn">Open my studio</button>
+          <p id="loginError" class="error-message" role="alert" hidden></p>
+        </form>
+        <details class="login-help">
+          <summary>How do I get a token? (one-time setup)</summary>
+          <ol>
+            <li>Open <a href="https://github.com/settings/personal-access-tokens/new" rel="noopener noreferrer" target="_blank">GitHub's fine-grained token page</a> and sign in to <strong>gmoon-code</strong>.</li>
+            <li>Choose <strong>Only select repositories</strong> and select <strong>gmoon-code.github.io</strong>.</li>
+            <li>Under Repository permissions, set <strong>Contents</strong> to <strong>Read and write</strong>. No other write permissions are needed.</li>
+            <li>Set an expiration, create the token, and paste it above. Keep the token private, like a password.</li>
+          </ol>
+        </details>
+        <p class="quiet-note">The token is sent only to GitHub's API to verify ownership and save your changes. It is never added to the website files. You can sign out at any time.</p>
+        <a class="small-link" href="../index.html">← Return to public website</a>
+      </div>
+    </section>
+
+    <div id="workspace" class="workspace" hidden>
+      <header class="studio-header">
+        <div class="studio-identity">
+          <a class="studio-brand" href="../index.html" target="_blank" rel="noopener noreferrer">Ye Eun Moon</a>
+          <span class="studio-divider" aria-hidden="true">/</span>
+          <strong>Website Studio</strong>
+        </div>
+        <div class="header-actions">
+          <span id="saveStatus" class="save-status" role="status">Ready</span>
+          <button id="undoBtn" type="button" class="plain-button" title="Undo a change (Ctrl+Z)">Undo</button>
+          <button id="redoBtn" type="button" class="plain-button" title="Redo a change (Ctrl+Shift+Z)">Redo</button>
+          <button id="helpBtn" type="button" class="plain-button">Help</button>
+          <button id="publishBtn" type="button" class="primary-button">Publish changes</button>
+          <button id="logoutBtn" type="button" class="plain-button" title="Forget GitHub token">Sign out</button>
+        </div>
+      </header>
+
+      <div class="studio-columns-layout">
+        <aside class="left-sidebar" aria-label="Pages and section order">
+          <div class="sidebar-heading-row">
+            <h2>Pages</h2>
+            <button id="newPageBtn" class="small-button" type="button">+ New page</button>
+          </div>
+          <p class="sidebar-hint">Select a page to see and edit it.</p>
+          <div id="pageList" class="page-list" role="list"></div>
+          <div class="sidebar-heading-row sections-heading">
+            <h2>Sections</h2>
+            <button id="newSectionBtn" class="small-button" type="button">+ Section</button>
+          </div>
+          <p class="sidebar-hint">Move sections using the arrows in Edit.</p>
+          <div id="sectionList" class="section-list"></div>
+          <div class="sidebar-footer">
+            <p>Your public website remains unchanged until you choose <strong>Publish changes</strong>.</p>
+            <a href="../index.html" target="_blank" rel="noopener noreferrer">Open public website ↗</a>
+          </div>
+        </aside>
+
+        <section class="canvas-area" aria-label="Visual website preview">
+          <div class="canvas-toolbar">
+            <div class="page-title-line">
+              <span id="currentPageLabel">Home</span>
+              <button id="pageSettingsBtn" type="button" class="small-button">Page settings</button>
+            </div>
+            <div class="device-group" role="group" aria-label="Preview screen size">
+              <button type="button" data-device="desktop" class="device-button is-active" aria-pressed="true">Desktop</button>
+              <button type="button" data-device="tablet" class="device-button" aria-pressed="false">Tablet</button>
+              <button type="button" data-device="phone" class="device-button" aria-pressed="false">Phone</button>
+            </div>
+          </div>
+          <div class="canvas-insert-toolbar">
+            <label for="insertType">Add to page</label>
+            <select id="insertType">
+              <option value="paragraph">Text paragraph</option>
+              <option value="heading">Heading</option>
+              <option value="image">Image</option>
+              <option value="section">Section</option>
+              <option value="card">Content card</option>
+              <option value="columns">Two-column row</option>
+              <option value="gallery">Photo gallery</option>
+              <option value="button">Link / button</option>
+              <option value="divider">Divider</option>
+              <option value="spacer">Space</option>
+            </select>
+            <button id="insertBtn" type="button" class="small-button accent-button">+ Add</button>
+            <span class="toolbar-help">Click an item below to edit it. Double-click text to edit on the page.</span>
+          </div>
+          <div class="preview-outer" id="previewOuter">
+            <div id="loadingPreview" class="loading-preview">Loading page…</div>
+            <iframe id="previewFrame" title="Editable preview of selected website page" sandbox="allow-same-origin"></iframe>
+          </div>
+          <p class="preview-note">Preview is a draft. Select an item to edit it in the right panel. Links will not open while editing.</p>
+        </section>
+
+        <aside class="inspector" aria-label="Selected item settings">
+          <div class="inspector-head">
+            <h2>Edit</h2>
+            <span id="selectedKind" class="kind-label">Nothing selected</span>
+          </div>
+          <div id="inspectorEmpty" class="inspector-empty">
+            <p><strong>Select anything in the preview</strong> to change its words, appearance, or size.</p>
+            <p>Choose a section on the left to move, duplicate, or remove it.</p>
+          </div>
+          <div id="inspectorContent" hidden>
+            <div class="inspector-tabs" role="tablist" aria-label="Editing controls">
+              <button type="button" data-tab="content" class="inspector-tab is-active" role="tab" aria-selected="true">Content</button>
+              <button type="button" data-tab="design" class="inspector-tab" role="tab" aria-selected="false">Design</button>
+              <button type="button" data-tab="position" class="inspector-tab" role="tab" aria-selected="false">Position</button>
+            </div>
+            <div id="contentTab" class="inspector-panel" role="tabpanel">
+              <div id="textEditBox">
+                <label for="elementText">Words</label>
+                <textarea id="elementText" rows="5" placeholder="Select a paragraph or heading"></textarea>
+                <p id="textEditHelp" class="micro-help">Changes appear in the preview as you type.</p>
+              </div>
+              <div id="linkEditBox" hidden>
+                <label for="linkDestination">Where this link goes</label>
+                <input id="linkDestination" type="text" placeholder="https://... or page.html">
+              </div>
+              <div id="imageEditBox" hidden>
+                <label for="imageAlt">Image description (for accessibility)</label>
+                <input id="imageAlt" type="text" placeholder="Describe what is in the photo">
+                <label for="imageFit">How the image fits</label>
+                <select id="imageFit"><option value="cover">Fill frame (crop if needed)</option><option value="contain">Show whole image</option></select>
+                <label for="imageFocus">Image focus</label>
+                <select id="imageFocus">
+                  <option value="center">Center</option><option value="top">Top</option><option value="bottom">Bottom</option>
+                  <option value="left">Left</option><option value="right">Right</option>
+                </select>
+                <button id="replaceImageBtn" type="button" class="small-button">Replace image</button>
+              </div>
+              <div class="element-actions">
+                <button id="moveUpBtn" type="button" class="small-button">↑ Move up</button>
+                <button id="moveDownBtn" type="button" class="small-button">↓ Move down</button>
+                <button id="duplicateBtn" type="button" class="small-button">Duplicate</button>
+                <button id="deleteBtn" type="button" class="small-button danger-button">Remove</button>
+              </div>
+            </div>
+            <div id="designTab" class="inspector-panel" role="tabpanel" hidden>
+              <label for="sectionAccent">Section highlight</label>
+              <select id="sectionAccent"><option value="default">Use page color</option><option value="yellow">Soft yellow</option><option value="green">Soft green</option><option value="blue">Soft blue</option><option value="magenta">Soft magenta</option></select>
+              <label for="backgroundColor">Background</label>
+              <select id="backgroundColor">
+                <option value="">No added background</option>
+                <option value="#ffffff">White</option>
+                <option value="#F5E6A8">Soft yellow</option>
+                <option value="#CEE5C1">Soft green</option>
+                <option value="#C8DDF1">Soft blue</option>
+                <option value="#EACBE3">Soft magenta</option>
+              </select>
+              <label for="textColor">Text color</label>
+              <select id="textColor">
+                <option value="">Use website default</option>
+                <option value="#111111">Black</option>
+                <option value="#575757">Muted gray</option>
+                <option value="#ffffff">White</option>
+              </select>
+              <label for="textAlign">Text alignment</label>
+              <select id="textAlign"><option value="">Automatic</option><option value="left">Left</option><option value="center">Center</option><option value="right">Right</option></select>
+              <label for="columnsCount">Columns inside this area</label>
+              <select id="columnsCount"><option value="">Keep current</option><option value="1">One</option><option value="2">Two</option><option value="3">Three</option><option value="4">Four</option></select>
+              <p class="micro-help">The same muted colors used on the public site.</p>
+            </div>
+            <div id="positionTab" class="inspector-panel" role="tabpanel" hidden>
+              <p class="micro-help">Move whole sections with the arrows under Content. These settings offer more precise control of an item.</p>
+              <div class="field-grid">
+                <div><label for="widthValue">Width</label><input id="widthValue" type="number" min="1" max="5000" placeholder="Auto"></div>
+                <div><label for="widthUnit">Unit</label><select id="widthUnit"><option value="px">Pixels</option><option value="%">Percent</option></select></div>
+                <div><label for="heightValue">Height</label><input id="heightValue" type="number" min="1" max="5000" placeholder="Auto"></div>
+                <div><label for="maxWidthValue">Maximum width (px)</label><input id="maxWidthValue" type="number" min="1" max="5000" placeholder="None"></div>
+                <div><label for="marginTopValue">Space above (px)</label><input id="marginTopValue" type="number" min="0" max="500"></div>
+                <div><label for="marginBottomValue">Space below (px)</label><input id="marginBottomValue" type="number" min="0" max="500"></div>
+              </div>
+              <details class="advanced-position">
+                <summary>Fine positioning (optional)</summary>
+                <p class="micro-help">Adjust the exact horizontal and vertical offset. Large offsets can look different on phones, so check the Phone preview afterward.</p>
+                <div class="field-grid">
+                  <div><label for="offsetX">Shift left/right (px)</label><input id="offsetX" type="number" min="-1000" max="1000" value="0"></div>
+                  <div><label for="offsetY">Shift up/down (px)</label><input id="offsetY" type="number" min="-1000" max="1000" value="0"></div>
+                </div>
+              </details>
+              <button id="resetLayoutBtn" type="button" class="small-button">Reset this item's sizing</button>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <dialog id="pageDialog" class="studio-dialog" aria-labelledby="pageDialogTitle">
+      <form id="pageForm" method="dialog">
+        <h2 id="pageDialogTitle">Create a page</h2>
+        <p id="pageDialogHelp" class="micro-help">Start with a clean page. You can add and rearrange sections afterward.</p>
+        <label for="pageName">Page name</label>
+        <input id="pageName" type="text" required maxlength="80" placeholder="For example, Resources">
+        <label for="pageSlug">Page address</label>
+        <div class="slug-row"><input id="pageSlug" type="text" required pattern="[a-z0-9]+(?:-[a-z0-9]+)*" placeholder="resources"><span>.html</span></div>
+        <label for="pageColor">Page highlight</label>
+        <select id="pageColor"><option value="yellow">Soft yellow</option><option value="green">Soft green</option><option value="blue">Soft blue</option><option value="magenta">Soft magenta</option></select>
+        <label for="pageParent">Link to this page from</label>
+        <select id="pageParent"><option value="">Nowhere yet (I will add a link myself)</option></select>
+        <p class="micro-help">A link can be added to an existing page so visitors can find the new one.</p>
+        <div class="dialog-actions">
+          <button type="button" id="cancelPageBtn" class="plain-button">Cancel</button>
+          <button type="submit" class="primary-button">Create page</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="pageSettingsDialog" class="studio-dialog" aria-labelledby="pageSettingsTitle">
+      <form id="pageSettingsForm" method="dialog">
+        <h2 id="pageSettingsTitle">Page settings</h2>
+        <label for="settingsTitle">Page title</label><input id="settingsTitle" type="text" maxlength="100" required>
+        <label for="settingsAccent">Page highlight</label>
+        <select id="settingsAccent"><option value="yellow">Soft yellow</option><option value="green">Soft green</option><option value="blue">Soft blue</option><option value="magenta">Soft magenta</option></select>
+        <p id="settingsPath" class="micro-help"></p>
+        <div class="dialog-actions">
+          <button id="deletePageBtn" type="button" class="plain-button danger-button">Delete this page</button>
+          <span class="grow"></span>
+          <button id="cancelSettingsBtn" type="button" class="plain-button">Cancel</button>
+          <button type="submit" class="primary-button">Apply changes</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="helpDialog" class="studio-dialog help-dialog" aria-labelledby="helpTitle">
+      <h2 id="helpTitle">Editing, without the guesswork</h2>
+      <ol class="help-list">
+        <li><strong>Choose a page</strong> on the left. New pages start with a simple title and section.</li>
+        <li><strong>Click an item in the preview</strong> to select it. Edit its words in Content or double-click text directly in the preview.</li>
+        <li><strong>Add something</strong> using the Add menu above the preview. Select a section first if you want to add a block inside it.</li>
+        <li><strong>Rearrange or remove</strong> using the actions in Content. Undo is available at the top.</li>
+        <li><strong>Change the look</strong> in Design. Width, height, spacing, and optional pixel offsets live in Position.</li>
+        <li><strong>Check phone and tablet previews</strong>, then choose Publish changes. Until then, the public website is untouched.</li>
+      </ol>
+      <p class="micro-help">For images, add an Image block or select an existing image and choose Replace image. Describe each image briefly for visitors who cannot see it.</p>
+      <button id="closeHelpBtn" type="button" class="primary-button">Got it</button>
+    </dialog>
+    <input id="imagePicker" type="file" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
+    <div id="toast" role="status" aria-live="polite" class="toast" hidden></div>
+  </main>
+</body>
+</html>
