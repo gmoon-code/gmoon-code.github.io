@@ -417,3 +417,47 @@ h4{
 @media(prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
 }
+
+
+/* Personal interests */
+.interest-shelf{
+  width:100%;
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  border-top:1px solid var(--moon-rule-dark);
+}
+.interest-item{
+  min-height:96px;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  justify-content:center;
+  gap:3px;
+  padding:16px 18px;
+  border-bottom:1px solid var(--moon-rule);
+}
+.interest-item:nth-child(odd){
+  border-right:1px solid var(--moon-rule);
+}
+.interest-item strong{
+  font-size:18px;
+  line-height:1.25;
+}
+.interest-item>span:last-child:not(.interest-type){
+  color:var(--moon-muted);
+  font-size:14px;
+}
+.interest-type{
+  display:inline-block;
+  margin-bottom:2px;
+  padding:1px 4px;
+  background:var(--page-highlight,var(--section-pink));
+  font-size:12px;
+  line-height:1.2;
+  font-weight:700;
+}
+
+@media(max-width:700px){
+  .interest-shelf{grid-template-columns:1fr}
+  .interest-item:nth-child(odd){border-right:0}
+}
