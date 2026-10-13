@@ -44,7 +44,7 @@
   }
   function updateStatus(){
     const el=$("saveStatus");
-    if(state.busy){el.textContent="Working…";el.className="save-status is-working";return}
+    if(state.busy){el.textContent="Working…";el.className="save-status is-working";$("publishBtn").disabled=true;return}
     const dirty=hasChanges();
     el.textContent=dirty?"Unpublished changes":"Everything published";
     el.className="save-status"+(dirty?" is-dirty":"");
