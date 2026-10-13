@@ -11,7 +11,7 @@
   - no shadows
   - no decorative gradients
   - restrained black/white controls
-  - Yellow -> Green -> Turquoise -> Pink highlighter organization
+  - Word highlight palette: Yellow -> Bright Green -> Blue -> Pink (magenta)
 */
 
 :root{
@@ -22,21 +22,21 @@
   --moon-rule:#d8d8d8;
   --moon-rule-dark:#b7b7b7;
 
-  --section-yellow:#fff4a3;
-  --section-yellow-soft:#fffbe1;
-  --section-yellow-line:#d8c85d;
+  --section-yellow:#FFFF00;
+  --section-yellow-soft:#f5f5f5;
+  --section-yellow-line:var(--section-yellow);
 
-  --section-green:#d7efc5;
-  --section-green-soft:#f1faea;
-  --section-green-line:#8fb96e;
+  --section-green:#00FF00;
+  --section-green-soft:#f5f5f5;
+  --section-green-line:var(--section-green);
 
-  --section-blue:#cfe3ff;
-  --section-blue-soft:#f0f6ff;
-  --section-blue-line:#79a7e3;
+  --section-blue:#0000FF;
+  --section-blue-soft:#f5f5f5;
+  --section-blue-line:var(--section-blue);
 
-  --section-magenta:#f3cce9;
-  --section-magenta-soft:#fff0fb;
-  --section-magenta-line:#c884ba;
+  --section-magenta:#FF00FF;
+  --section-magenta-soft:#f5f5f5;
+  --section-magenta-line:var(--section-magenta);
 
   --page-max:1120px;
   --reading:820px;
@@ -322,7 +322,7 @@ h4{
   border-radius:var(--radius);
 }
 .nav-card:hover{
-  background:var(--nav-soft,#fffbe1);
+  background:#f5f5f5;
   border-color:var(--nav-line,var(--section-yellow-line));
 }
 .nav-card .small{
@@ -491,11 +491,6 @@ h4{
 .home-magenta{--home-highlight:var(--section-magenta);--home-line:var(--section-magenta-line)}
 .page-hero.home-color-block{border-top:4px solid var(--home-line);padding-top:25px}
 .section.home-color-block{border-top:4px solid var(--home-line);padding-top:25px}
-.home-work .paper-card:first-child{--page-line:var(--section-green-line)}
-.home-work .paper-card:last-child{--page-line:var(--section-blue-line)}
-.home-questions .question{border-left:3px solid var(--section-blue-line);padding-left:18px}
-.home-explore .nav-card{border-top:4px solid var(--nav-line)}
-.home-explore .nav-card .small{display:inline-block;background:var(--nav-highlight);padding:1px 5px;color:#222}
 .site-nav .cv-link[aria-current="page"]{border-bottom:3px solid var(--section-blue-line)}
 .site-nav .cv-link:hover{border-color:var(--section-blue-line)}
 
@@ -509,3 +504,27 @@ h4{
 
 /* Four-photo gallery at desktop size */
 @media(min-width:801px){.pungmul-gallery{grid-template-columns:repeat(4,minmax(0,1fr))}}
+
+/* Word's exact highlighter swatches are used as highlights, never pastel substitutes.
+   All cards in a homepage section inherit that section's one accent. */
+.home-color-block .paper-card{border-top-color:var(--home-line) !important}
+.home-inquiry{margin-top:28px}
+.home-inquiry h3{font-size:19px;margin:0 0 12px}
+.home-inquiry .question{padding:12px 16px;border-left:4px solid var(--home-line);font-size:17px}
+.home-inquiry .question:last-child{border-bottom:1px solid var(--moon-rule)}
+.home-feature-card{max-width:100%}
+
+/* Keep type legible on Word's pure blue (#0000FF) highlight. */
+.theme-blue .section-head h2,
+.home-blue .section-head h2,
+.theme-blue .hero-card .label,
+.home-blue .hero-card .label,
+.theme-blue .callout strong,
+.home-blue .callout strong,
+.theme-blue .project-status,
+.home-blue .project-status,
+.theme-blue .interest-type,
+.home-blue .interest-type {color:#fff}
+.site-nav a[style*="--section-blue"]:not(.cv-link):is(:hover,[aria-current="page"]){color:#fff}
+.site-nav .cv-link[aria-current="page"]{background:var(--section-blue)!important;color:#fff;border-color:var(--section-blue);border-bottom:3px solid var(--section-blue-line)}
+.site-nav .cv-link[aria-current="page"]:hover{background:var(--section-blue)!important}
