@@ -521,3 +521,15 @@ h4{
   border-bottom:3px solid var(--section-blue-line);
 }
 .site-nav .cv-link[aria-current="page"]:hover{background:var(--section-blue-soft)!important}
+
+/* Keep long reading notes comfortable to read on small phones. */
+@media(max-width:460px){
+  .media-entry{display:block}
+  .media-entry::after{content:"";display:block;clear:both}
+  .media-entry .media-cover{float:left;width:90px;height:auto;margin:0 14px 8px 0}
+  .media-entry h3{margin-top:0}
+  .media-entry p{overflow-wrap:break-word}
+  .media-entry .media-logo{object-fit:contain}
+}
+/* Image dimensions remain proportional when the gallery rearranges. */
+.pungmul-gallery img{max-width:100%}
