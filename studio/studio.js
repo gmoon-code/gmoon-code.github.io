@@ -710,65 +710,115 @@
     const all=[...state.drafts.values()].map(x=>x.html).join("\n");
     return [...state.uploads.values()].filter(x=>all.includes(x.dataUrl)||all.includes(x.path));
   }
+  async function gitBlobSha(text){
+    const bytes=new TextEncoder().encode(text);
+    const header=new TextEncoder().encode("blob "+bytes.length+"\0");
+    const full=new Uint8Array(header.length+bytes.length);
+    full.set(header,0);full.set(bytes,header.length);
+    const digest=await crypto.subtle.digest("SHA-1",full);
+    return [...new Uint8Array(digest)].map(x=>x.toString(16).padStart(2,"0")).join("");
+  }
   async function publish(){
     if(!state.connected||state.busy)return;
     syncCurrent();
     if(!hasChanges()){toast("No unpublished changes.");return}
-    for(const [path,draft] of state.drafts){
-      if(!draft.dirty)continue;
+    const draftsToSave=[...state.drafts].filter(([path,draft])=>draft.dirty);
+    for(const [path,draft] of draftsToSave){
       const doc=new DOMParser().parseFromString(draft.html,"text/html");
       const invalid=[...doc.querySelectorAll("img")].some(img=>!img.hasAttribute("alt")||img.alt==="Describe this image");
       if(invalid){toast("Please add a meaningful image description on "+nameFor(path)+" before publishing.",true);return}
     }
     state.busy=true;updateStatus();
     try{
-      for(const photo of changedReferences()){
-        if(photo.uploaded)continue;
-        $("saveStatus").textContent="Uploading image…";
-        const response=await github(ghFilePath(photo.path),{
-          method:"PUT",body:{message:"Add photo using Website Studio",content:photo.base64}
+      // Confirm that none of the source pages changed elsewhere after they were opened.
+      const pathsToCheck=[
+        ...draftsToSave.map(([path,d])=>[path,d.sha]),
+        ...state.deleted
+      ];
+      if(state.manifestDirty)pathsToCheck.push(["studio/pages.json",state.manifestSha]);
+      for(const [path,expectedSha] of pathsToCheck){
+        let latest=null;
+        try{latest=await fetchFile(path)}
+        catch(error){if(!String(error.message).includes("(404)"))throw error}
+        if(expectedSha&&(!latest||latest.sha!==expectedSha))
+          throw Error("Someone else changed "+path+" after you opened it. Your draft is safe here; refresh the source before publishing.");
+        if(!expectedSha&&latest)throw Error(path+" already exists. Choose another page address.");
+      }
+      const prefix="/repos/"+OWNER+"/"+REPO;
+      $("saveStatus").textContent="Preparing a single website update…";
+      const reference=await github(prefix+"/git/ref/heads/main");
+      const oldHead=reference.object?.sha;
+      if(!oldHead)throw Error("GitHub did not return the current branch.");
+      const previousCommit=await github(prefix+"/git/commits/"+oldHead);
+      const baseTree=previousCommit.tree?.sha;
+      if(!baseTree)throw Error("GitHub did not return the website file tree.");
+
+      // Git blobs can be prepared without changing the live website.
+      const photos=changedReferences();
+      for(const photo of photos){
+        if(photo.blobSha)continue;
+        $("saveStatus").textContent="Preparing photo…";
+        const created=await github(prefix+"/git/blobs",{
+          method:"POST",body:{content:photo.base64,encoding:"base64"}
         });
-        photo.uploaded=!!response.content?.sha;
-        if(!photo.uploaded)throw Error("GitHub did not confirm the image upload.");
+        if(!created.sha)throw Error("GitHub did not confirm the photo upload.");
+        photo.blobSha=created.sha;
       }
-      for(const [path,draft] of state.drafts){
-        if(!draft.dirty)continue;
-        $("saveStatus").textContent="Publishing "+nameFor(path)+"…";
-        let html=draft.html;
-        for(const photo of state.uploads.values()){
-          if(photo.uploaded){
-            html=html.split(photo.dataUrl).join(photo.path);
-          }
+      const entries=[];
+      const finalized=new Map();
+      for(const [path,draft] of draftsToSave){
+        let content=draft.html;
+        for(const photo of photos)content=content.split(photo.dataUrl).join(photo.path);
+        content=content.replace(/\sdata-studio-asset="[^"]*"/g,"");
+        finalized.set(path,content);
+        entries.push({path,mode:"100644",type:"blob",content});
+      }
+      for(const photo of photos)entries.push({path:photo.path,mode:"100644",type:"blob",sha:photo.blobSha});
+      for(const [path] of state.deleted)entries.push({path,mode:"100644",type:"blob",sha:null});
+      let newManifest=null;
+      if(state.manifestDirty){
+        newManifest=JSON.stringify(state.manifest,null,2)+"\n";
+        entries.push({path:"studio/pages.json",mode:"100644",type:"blob",content:newManifest});
+      }
+      if(new Set(entries.map(e=>e.path)).size!==entries.length)
+        throw Error("Two changes target the same file. Please review the pending changes.");
+      $("saveStatus").textContent="Preparing all changes together…";
+      const tree=await github(prefix+"/git/trees",{
+        method:"POST",body:{base_tree:baseTree,tree:entries}
+      });
+      if(!tree.sha)throw Error("GitHub did not confirm the new file tree.");
+      const commit=await github(prefix+"/git/commits",{
+        method:"POST",body:{
+          message:"Publish website changes using Website Studio",
+          tree:tree.sha,parents:[oldHead]
         }
-        html=html.replace(/\sdata-studio-asset="[^"]*"/g,"");
-        const result=await writeFile(path,html,draft.sha,"Update "+nameFor(path)+" using Website Studio");
-        draft.sha=result.content?.sha||null;
-        draft.savedHtml=html;draft.html=html;draft.dirty=false;draft.isNew=false;
-      }
-      for(const [path,sha] of state.deleted){
-        $("saveStatus").textContent="Removing "+path+"…";
-        await removeFile(path,sha);
-        state.deleted.delete(path);
+      });
+      if(!commit.sha)throw Error("GitHub did not confirm the publish commit.");
+      $("saveStatus").textContent="Publishing website…";
+      await github(prefix+"/git/refs/heads/main",{
+        method:"PATCH",body:{sha:commit.sha,force:false}
+      });
+
+      // Git's blob hashes let us keep checking for edits made in other tabs.
+      for(const [path,draft] of draftsToSave){
+        const content=finalized.get(path);
+        draft.sha=await gitBlobSha(content);
+        draft.savedHtml=content;draft.html=content;
+        draft.isNew=false;draft.dirty=false;
       }
       if(state.manifestDirty){
-        $("saveStatus").textContent="Updating page list…";
-        const content=JSON.stringify(state.manifest,null,2)+"\n";
-        const response=await writeFile("studio/pages.json",content,state.manifestSha,"Update Website Studio page list");
-        state.manifestSha=response.content?.sha||null;
+        state.manifestSha=await gitBlobSha(newManifest);
         state.manifestDirty=false;
       }
-      const current=state.currentPath;
-      if(current&&state.drafts.has(current)){
-        const d=activeDraft();
-        if(d&&changedReferences().length){
-          d.canonicalSet=false;
-          $("previewFrame").srcdoc=withPreviewBase(d.html);
-        }
-      }
+      state.deleted.clear();
       state.uploads.clear();
-      toast("Published to GitHub. The public website may take a few minutes to refresh.");
+      if(photos.length&&activeDraft()){
+        activeDraft().canonicalSet=false;
+        $("previewFrame").srcdoc=withPreviewBase(activeDraft().html);
+      }
+      toast("All changes were published together. GitHub Pages may need a few minutes to refresh.");
     }catch(error){
-      toast("Publishing stopped: "+errorDescription(error),true);
+      toast("Your drafts are still here. Publishing stopped: "+errorDescription(error),true);
     }finally{
       state.busy=false;updateStatus();renderPages();
     }
