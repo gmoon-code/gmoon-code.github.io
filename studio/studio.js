@@ -982,6 +982,12 @@
     $("pageForm").addEventListener("submit",createPage);
     $("cancelPageBtn").addEventListener("click",()=>$("pageDialog").close());
     $("pageSettingsBtn").addEventListener("click",openPageSettings);
+    $("openLivePageBtn").addEventListener("click",()=>{
+      if(!state.currentPath)return;
+      const draft=activeDraft();
+      if(draft?.isNew){toast("This page will have a live address after you publish.");return}
+      window.open(ROOT+state.currentPath,"_blank","noopener,noreferrer");
+    });
     $("pageSettingsForm").addEventListener("submit",savePageSettings);
     $("cancelSettingsBtn").addEventListener("click",()=>$("pageSettingsDialog").close());
     $("deletePageBtn").addEventListener("click",()=>deletePage().catch(e=>toast(errorDescription(e),true)));
