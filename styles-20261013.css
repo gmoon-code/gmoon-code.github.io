@@ -533,3 +533,9 @@ h4{
 }
 /* Image dimensions remain proportional when the gallery rearranges. */
 .pungmul-gallery img{max-width:100%}
+
+/* Keep longer research and teaching paragraphs readable on wide screens. */
+.reading p{max-width:82ch}
+.list-row p{max-width:94ch}
+.project-intro-note{color:var(--moon-muted);font-size:14px;margin-top:14px!important}
+.section-ending{margin-top:16px}
