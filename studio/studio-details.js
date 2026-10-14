@@ -333,6 +333,13 @@
       refresh();
     });
     query("detailResetButton").addEventListener("click",resetAll);
+    query("pageAppearanceBtn").addEventListener("click",()=>{
+      const doc=docOf();
+      if(!state.selected&&doc?.querySelector("main > section"))selectElement(doc.querySelector("main > section"));
+      query("detailScope").value="page";
+      document.querySelector('[data-tab="details"]')?.click();
+      refresh();
+    });
     query("detailSelectPage").addEventListener("click",()=>{
       const doc=docOf();
       if(!state.selected&&doc?.querySelector("main > section")){
