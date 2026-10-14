@@ -68,3 +68,7 @@ Keep this source set accurate. New sources require verification of bibliographic
 ## Teaching redesign, 14 October 2026
 
 The public Teaching overview now directs to two full advanced science case studies. AP Biology is grounded in the research manuscript and recorded classroom assessment procedure; its four-meeting extension is clearly prospective. AP Chemistry is a new AP Unit 7 instructional design informed by the verified course framework and peer-reviewed scholarship, with illustrative pressure data and invented diagnostic examples. Neither example claims observed improvement from an unevaluated lesson sequence. The former Grade 6 life-science routine is no longer the main Teaching page, although the separate optional osmosis worksheet remains available. Future updates should privilege actual AP Chemistry classroom artifacts and feedback records if the author supplies verifiable records and disclosure permission.
+
+## Flagship Teaching revision, 14 October 2026
+
+The primary AP Biology curriculum case is now a developed proposal on haemoglobin variation, malaria, heterozygote advantage, and careful interpretation of human genetic variation at `teaching-ap-evolution.html`. The existing bentazon inquiry remains available as a documented assessment-research teaching case, without conflating research records and proposed lesson design. The Chemistry case is still prospective. New teaching proposals must remain explicitly unevaluated until authentic classroom artifacts justify stronger claims.
