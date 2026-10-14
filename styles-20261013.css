@@ -810,3 +810,11 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
   .research-count-row strong{font-size:12px}
   .research-example{padding:15px}
 }
+
+/* Data tables remain readable on narrow screens without compressing scientific terms. */
+.research-table-wrap{overflow-x:auto;max-width:100%;-webkit-overflow-scrolling:touch;margin-top:16px}
+.research-table-wrap .research-evidence-table{margin-top:0;min-width:650px}
+.research-table-wrap:focus-visible{outline:2px solid #426f50;outline-offset:3px}
+@media(max-width:700px){
+ .research-table-wrap .research-evidence-table{min-width:620px}
+}
