@@ -1379,3 +1379,20 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
 .teaching-table-hint{display:none}
 @media(max-width:790px){.teaching-table-hint{display:block;font-size:13px;color:var(--moon-muted);line-height:1.55;margin:-8px 0 17px}}
 @media print{.teaching-table-hint{display:none!important}}
+
+/* Keyboard access to horizontally scrollable scientific tables. */
+.teaching-sequence-table-wrap:focus-visible{
+  outline:3px solid #684265;
+  outline-offset:3px;
+}
+.teaching-sequence-table th,.teaching-sequence-table td{
+  overflow-wrap:break-word;
+}
+@media(max-width:630px){
+  .teaching-case-page .article-jumps a,.teaching-page .article-jumps a{
+    display:inline-flex;
+    align-items:center;
+    min-height:40px;
+    padding:5px 2px;
+  }
+}
