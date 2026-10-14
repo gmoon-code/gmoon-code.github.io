@@ -818,3 +818,16 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
 @media(max-width:700px){
  .research-table-wrap .research-evidence-table{min-width:620px}
 }
+
+/* The same quiet contact area on every page, without repeating page navigation. */
+.home-project-links{display:flex;flex-wrap:wrap;align-items:center;column-gap:22px;row-gap:8px;margin-top:18px}
+.home-project-links .inline-link{margin-top:0}
+.site-footer{border-top:1px solid var(--moon-rule);margin-top:clamp(38px,6vw,76px);background:#fbfbfa}
+.site-footer-inner{display:flex;justify-content:space-between;align-items:center;gap:14px 34px;padding:24px 0 27px}
+.site-footer p{font-size:14px;line-height:1.55;color:#424242;margin:0}
+.site-footer-links{display:flex;gap:18px;align-items:center;flex-wrap:wrap;white-space:nowrap;font-size:13px}
+.site-footer a{text-decoration:underline;text-decoration-color:#9da9a0;text-underline-offset:3px}
+.site-footer a:hover{text-decoration-color:#262626}
+.site-footer a:focus-visible{outline:2px solid #447658;outline-offset:3px}
+@media(max-width:660px){.site-footer-inner{align-items:flex-start;flex-direction:column}.site-footer-links{gap:20px}}
+@media print{.site-footer{display:none!important}}
