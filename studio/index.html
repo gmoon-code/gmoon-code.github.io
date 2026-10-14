@@ -116,10 +116,14 @@
             <div id="loadingPreview" class="loading-preview">Loading page…</div>
             <div id="quickActions" class="quick-actions" role="toolbar" aria-label="Selected item quick tools" hidden>
               <button type="button" data-quick="edit">Edit text</button>
-              <button type="button" data-quick="move">Move</button>
+              <button type="button" data-quick="bold" class="format-button" title="Bold selected words (Ctrl+B)"><strong>B</strong></button>
+              <button type="button" data-quick="italic" class="format-button" title="Italic selected words (Ctrl+I)"><em>I</em></button>
+              <button type="button" data-quick="link" class="format-button" title="Link selected words">Link</button>
+              <button type="button" data-quick="move">Move ↓</button>
               <button type="button" data-quick="duplicate">Duplicate</button>
               <button type="button" data-quick="style">Style</button>
             </div>
+            <button id="resizeHandle" type="button" title="Drag to resize the selected image. Use arrow keys to fine-tune." aria-label="Resize selected image" hidden>↘</button>
             <iframe id="previewFrame" title="Editable preview of selected website page" sandbox="allow-same-origin"></iframe>
           </div>
           <p class="preview-note">Your changes are kept as a draft in this browser. Click text twice to edit directly, or click once for options. Check phone size before publishing. <span id="draftRecoveryStatus" aria-live="polite"></span></p>
@@ -295,7 +299,7 @@
         <li><strong>Change the look</strong> in Design. Width, height, spacing, and optional pixel offsets live in Position.</li>
         <li><strong>Check phone and tablet previews</strong>, then choose Publish changes. All changes publish together; until then, the public website is untouched. For bold or italic text, double-click a paragraph and use the usual Ctrl+B or Ctrl+I shortcuts.</li>
       </ol>
-      <p class="micro-help">For images, add an Image block or select an existing image and choose Replace image. Describe each image briefly for visitors who cannot see it.</p>
+      <p class="micro-help">For images, choose My photos, then drag the ↘ resize handle or enter exact dimensions in Position. For formatted text, select the words while editing and use B, I, or Link in the quick toolbar. Describe each image briefly for visitors who cannot see it.</p>
       <button id="closeHelpBtn" type="button" class="primary-button">Got it</button>
     </dialog>
 

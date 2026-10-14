@@ -164,3 +164,13 @@ input[type=checkbox]{accent-color:#3e7380}
 .nav-editor-row .nav-arrows button{min-width:40px}
 .nav-editor-row .nav-fixed{font-size:11px;color:var(--muted);text-align:right}
 @media(max-width:540px){.nav-editor-row,.nav-editor-labels{grid-template-columns:minmax(0,1fr) 54px 80px;gap:7px}.nav-editor-row .nav-arrows button{min-width:32px;padding:6px}}
+
+/* Editing directly in the page */
+.quick-actions .format-button{border-left:1px solid var(--line);font-weight:700}
+.quick-actions button:focus-visible{outline:2px solid var(--focus)}
+#resizeHandle{
+  position:absolute;z-index:12;width:32px;height:32px;display:grid;place-items:center;
+  border:2px solid white;border-radius:6px;background:#305e68;color:white;
+  font-size:20px;line-height:1;box-shadow:0 2px 9px #0003;cursor:nwse-resize;touch-action:none
+}
+#resizeHandle:focus-visible{outline:3px solid #7faab7;outline-offset:2px}
