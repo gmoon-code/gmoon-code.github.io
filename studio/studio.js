@@ -409,7 +409,7 @@
       button.classList.toggle("is-active",active);
       button.setAttribute("aria-selected",active?"true":"false");
     }
-    for(const panel of ["content","design","position"])$(panel+"Tab").hidden=panel!==name;
+    for(const panel of ["content","design","position","details"])$(panel+"Tab").hidden=panel!==name;
     updateInspectorFields();
   }
   function computedTone(node){

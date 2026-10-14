@@ -174,3 +174,34 @@ input[type=checkbox]{accent-color:#3e7380}
   font-size:20px;line-height:1;box-shadow:0 2px 9px #0003;cursor:nwse-resize;touch-action:none
 }
 #resizeHandle:focus-visible{outline:3px solid #7faab7;outline-offset:2px}
+
+/* Precise controls are separated from common editing so they do not clutter the workspace. */
+.inspector-tabs{flex-wrap:wrap}
+.detail-panel{padding-bottom:22px}
+.detail-panel .detail-scope-bar{border:1px solid #cad8d2;border-radius:6px;padding:12px;background:#f6faf7;margin-bottom:14px}
+.detail-panel label{font-size:12px;display:block;font-weight:650;margin:10px 0 4px}
+.detail-panel select,.detail-panel input{min-width:0}
+.detail-group{border:1px solid var(--line);border-radius:6px;margin:9px 0;background:#fff}
+.detail-group>summary{cursor:pointer;font-weight:680;padding:13px;background:#f6f8f7;border-radius:6px}
+.detail-group[open]>summary{border-bottom:1px solid var(--line);border-radius:6px 6px 0 0}
+.detail-group-content{padding:11px 12px 15px}
+.detail-group .micro-help{margin:9px 0}
+.detail-color-line{display:grid;grid-template-columns:44px minmax(0,1fr) 54px;align-items:center;gap:6px}
+.detail-color-line input[type=color]{min-height:38px;padding:3px;width:44px;height:38px;cursor:pointer}
+.detail-color-line input[type=text]{width:100%;min-width:0;padding:6px;font-family:ui-monospace,monospace;font-size:12px}
+.detail-color-line .small-button{padding:6px 4px;font-size:11px}
+.detail-color-line:has(#detailWordsHighlight){grid-template-columns:44px 1fr 1fr}
+.detail-two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 9px}
+.detail-two>div{min-width:0}
+.detail-two input,.detail-two select{width:100%}
+.detail-subheading{display:block;font-size:12px;margin:9px 0}
+.detail-rule{border-top:1px solid var(--line);margin:16px 0}
+.detail-footer{display:flex;flex-wrap:wrap;gap:8px;padding-top:12px}
+.site-advanced-options{margin-top:13px;border-top:1px solid var(--line);padding-top:10px}
+.site-advanced-options summary{cursor:pointer;font-weight:650}
+.site-color-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0}
+.site-color-swatch{border:1px solid var(--line);padding:9px;border-radius:5px}
+.site-color-swatch>strong{display:block;margin-bottom:6px;font-size:12px}
+.site-color-swatch label{display:flex;align-items:center;justify-content:space-between;font-size:11px;margin:7px 0}
+.site-color-swatch input[type=color]{width:45px;min-height:27px;padding:2px}
+@media(max-width:540px){.site-color-grid{grid-template-columns:1fr}}

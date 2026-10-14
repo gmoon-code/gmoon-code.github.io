@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="studio.css">
   <script src="studio.js" defer></script>
   <script src="studio-plus.js" defer></script>
+  <script src="studio-details.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#studioMain">Skip to editing tools</a>
@@ -143,6 +144,7 @@
               <button type="button" data-tab="content" class="inspector-tab is-active" role="tab" aria-selected="true">Content</button>
               <button type="button" data-tab="design" class="inspector-tab" role="tab" aria-selected="false">Design</button>
               <button type="button" data-tab="position" class="inspector-tab" role="tab" aria-selected="false">Position</button>
+              <button type="button" data-tab="details" class="inspector-tab" role="tab" aria-selected="false">Fine details</button>
             </div>
             <div id="contentTab" class="inspector-panel" role="tabpanel">
               <div id="textEditBox">
@@ -245,6 +247,162 @@
               </details>
               <button id="resetLayoutBtn" type="button" class="small-button">Reset this item's sizing</button>
             </div>
+
+            <div id="detailsTab" class="inspector-panel detail-panel" role="tabpanel" hidden>
+              <p class="micro-help">Customize one detail at a time. Every setting can be reset to the original site style.</p>
+              <div class="detail-scope-bar">
+                <label for="detailScope">Edit which area?</label>
+                <select id="detailScope">
+                  <option value="element">Selected item</option>
+                  <option value="section">Whole section</option>
+                  <option value="page">Entire page</option>
+                </select>
+                <label for="detailDevice">Apply on</label>
+                <select id="detailDevice">
+                  <option value="all">All screen sizes</option>
+                  <option value="tablet">Tablet and smaller</option>
+                  <option value="phone">Phones only</option>
+                </select>
+                <p id="detailScopeHint" class="micro-help">Select a heading, card, photo, or section in the preview.</p>
+              </div>
+              <details class="detail-group" open>
+                <summary>Typography</summary>
+                <div class="detail-group-content">
+                  <label for="detailFont">Font family</label>
+                  <select id="detailFont"><option value="">Use site default</option>
+                    <option value="times">Times New Roman</option><option value="georgia">Georgia</option>
+                    <option value="cambria">Cambria</option><option value="garamond">Garamond</option>
+                    <option value="palatino">Palatino</option><option value="arial">Arial</option>
+                    <option value="verdana">Verdana</option><option value="trebuchet">Trebuchet MS</option>
+                    <option value="system">System sans serif</option><option value="mono">Monospace</option>
+                  </select>
+                  <div class="detail-two">
+                    <div><label for="detailFontSize">Font size (px)</label><input id="detailFontSize" type="number" min="8" max="160" placeholder="Default"></div>
+                    <div><label for="detailFontWeight">Thickness</label><select id="detailFontWeight"><option value="">Default</option><option value="300">Light</option><option value="400">Regular</option><option value="500">Medium</option><option value="600">Semibold</option><option value="700">Bold</option><option value="800">Heavy</option></select></div>
+                    <div><label for="detailLineHeight">Line height</label><input id="detailLineHeight" type="number" step="0.05" min="0.8" max="3" placeholder="Default"></div>
+                    <div><label for="detailLetterSpacing">Letter spacing (px)</label><input id="detailLetterSpacing" type="number" step="0.1" min="-3" max="15" placeholder="Default"></div>
+                  </div>
+                  <label for="detailCase">Capitalization</label>
+                  <select id="detailCase"><option value="">Default</option><option value="none">Normal</option><option value="uppercase">Uppercase</option><option value="lowercase">Lowercase</option><option value="capitalize">Title case</option></select>
+                  <label for="detailTextColor">Text color</label>
+                  <div class="detail-color-line">
+                    <input id="detailTextColor" type="color" value="#111111" aria-label="Choose text color">
+                    <input id="detailTextHex" type="text" inputmode="text" maxlength="7" placeholder="#111111" aria-label="Exact text color">
+                    <button type="button" class="small-button" data-detail-reset="color">Reset</button>
+                  </div>
+                </div>
+              </details>
+              <details class="detail-group" open>
+                <summary>Highlights and colors</summary>
+                <div class="detail-group-content">
+                  <p class="micro-help">For a whole section, change the color behind its heading and the thin accent lines separately. For a single heading, set its own highlight.</p>
+                  <label for="detailHighlightColor">Heading / item highlight</label>
+                  <div class="detail-color-line">
+                    <input id="detailHighlightColor" type="color" value="#F5E6A8" aria-label="Choose highlight">
+                    <input id="detailHighlightHex" type="text" inputmode="text" maxlength="7" placeholder="#F5E6A8" aria-label="Exact highlight color">
+                    <button type="button" class="small-button" data-detail-reset="highlight">Reset</button>
+                  </div>
+                  <label for="detailAccentLineColor">Accent line</label>
+                  <div class="detail-color-line">
+                    <input id="detailAccentLineColor" type="color" value="#C6AD58" aria-label="Choose accent line color">
+                    <input id="detailAccentLineHex" type="text" maxlength="7" placeholder="#C6AD58" aria-label="Exact accent line color">
+                    <button type="button" class="small-button" data-detail-reset="accent">Reset</button>
+                  </div>
+                  <label for="detailSoftColor">Soft tinted background</label>
+                  <div class="detail-color-line">
+                    <input id="detailSoftColor" type="color" value="#FCF9ED" aria-label="Choose soft background">
+                    <input id="detailSoftHex" type="text" maxlength="7" placeholder="#FCF9ED" aria-label="Exact soft background">
+                    <button type="button" class="small-button" data-detail-reset="soft">Reset</button>
+                  </div>
+                  <div class="detail-rule"></div>
+                  <strong class="detail-subheading">Highlight selected words</strong>
+                  <p class="micro-help">Double-click a paragraph to edit, select the words, then choose their highlight. You can remove the highlight without removing the words.</p>
+                  <div class="detail-color-line">
+                    <input id="detailWordsHighlight" type="color" value="#F5E6A8" aria-label="Color for selected words">
+                    <button type="button" id="detailHighlightWords" class="small-button">Highlight words</button>
+                    <button type="button" id="detailClearWords" class="small-button">Clear highlight</button>
+                  </div>
+                </div>
+              </details>
+              <details class="detail-group">
+                <summary>Background and borders</summary>
+                <div class="detail-group-content">
+                  <label for="detailBackgroundMode">Background type</label>
+                  <select id="detailBackgroundMode"><option value="none">Transparent / default</option><option value="solid">Single color</option><option value="gradient">Two-color gradient</option></select>
+                  <label for="detailBackgroundColor">Background color</label>
+                  <div class="detail-color-line">
+                    <input id="detailBackgroundColor" type="color" value="#ffffff">
+                    <input id="detailBackgroundHex" type="text" maxlength="7" placeholder="#ffffff" aria-label="Exact background color">
+                    <button type="button" class="small-button" data-detail-reset="background">Reset</button>
+                  </div>
+                  <div id="detailGradientControls" hidden>
+                    <label for="detailGradientEnd">Gradient second color</label>
+                    <input id="detailGradientEnd" type="color" value="#CEE5C1">
+                    <label for="detailGradientAngle">Gradient angle (degrees)</label>
+                    <input id="detailGradientAngle" type="number" min="0" max="360" value="90">
+                  </div>
+                  <div class="detail-rule"></div>
+                  <div class="detail-two">
+                    <div><label for="detailBorderSize">Border width (px)</label><input id="detailBorderSize" type="number" min="0" max="24" placeholder="Default"></div>
+                    <div><label for="detailBorderStyle">Border style</label><select id="detailBorderStyle"><option value="">Default</option><option value="solid">Solid</option><option value="dashed">Dashed</option><option value="dotted">Dotted</option><option value="none">None</option></select></div>
+                  </div>
+                  <label for="detailBorderColor">Border color</label>
+                  <div class="detail-color-line">
+                    <input id="detailBorderColor" type="color" value="#d8d8d8">
+                    <input id="detailBorderHex" type="text" maxlength="7" placeholder="#d8d8d8" aria-label="Exact border color">
+                    <button type="button" class="small-button" data-detail-reset="borderColor">Reset</button>
+                  </div>
+                  <div class="detail-two">
+                    <div><label for="detailRadius">Corner radius (px)</label><input id="detailRadius" type="number" min="0" max="120" placeholder="Default"></div>
+                    <div><label for="detailShadow">Shadow</label><select id="detailShadow"><option value="">Default</option><option value="none">None</option><option value="subtle">Soft</option><option value="medium">Medium</option><option value="large">Pronounced</option></select></div>
+                  </div>
+                </div>
+              </details>
+              <details class="detail-group">
+                <summary>Layout and precise spacing</summary>
+                <div class="detail-group-content">
+                  <label for="detailLayout">Layout</label>
+                  <select id="detailLayout"><option value="">Keep current</option><option value="block">Stacked</option><option value="flex">Flexible row</option><option value="grid">Grid</option><option value="none">Hidden</option></select>
+                  <div class="detail-two">
+                    <div><label for="detailGridCols">Grid columns</label><input id="detailGridCols" type="number" min="1" max="6" placeholder="Auto"></div>
+                    <div><label for="detailGap">Gap (px)</label><input id="detailGap" type="number" min="0" max="120" placeholder="Default"></div>
+                  </div>
+                  <label for="detailJustify">Horizontal placement</label>
+                  <select id="detailJustify"><option value="">Default</option><option value="start">Start</option><option value="center">Center</option><option value="end">End</option><option value="space-between">Spread apart</option></select>
+                  <label for="detailAlign">Vertical alignment</label>
+                  <select id="detailAlign"><option value="">Default</option><option value="start">Start</option><option value="center">Center</option><option value="end">End</option><option value="stretch">Stretch</option></select>
+                  <div class="detail-two">
+                    <div><label for="detailPaddingX">Inside left/right (px)</label><input id="detailPaddingX" type="number" min="0" max="240" placeholder="Default"></div>
+                    <div><label for="detailPaddingY">Inside top/bottom (px)</label><input id="detailPaddingY" type="number" min="0" max="240" placeholder="Default"></div>
+                    <div><label for="detailMarginX">Outside left/right (px)</label><input id="detailMarginX" type="number" min="0" max="240" placeholder="Default"></div>
+                    <div><label for="detailMarginY">Outside top/bottom (px)</label><input id="detailMarginY" type="number" min="0" max="240" placeholder="Default"></div>
+                  </div>
+                  <label for="detailMaxWidth">Maximum width (px)</label>
+                  <input id="detailMaxWidth" type="number" min="40" max="2400" placeholder="Default">
+                </div>
+              </details>
+              <details class="detail-group">
+                <summary>Accessibility and advanced</summary>
+                <div class="detail-group-content">
+                  <label for="detailOpacity">Opacity (percent)</label>
+                  <input id="detailOpacity" type="range" min="10" max="100" value="100">
+                  <output id="detailOpacityOutput">100%</output>
+                  <label for="detailOrder">Order within row</label>
+                  <input id="detailOrder" type="number" min="-20" max="20" placeholder="Normal order">
+                  <label for="detailZIndex">Layer order</label>
+                  <input id="detailZIndex" type="number" min="-10" max="100" placeholder="Normal">
+                  <label for="detailVisibility">Display on this screen</label>
+                  <select id="detailVisibility"><option value="">Show normally</option><option value="hidden">Hide this item</option></select>
+                  <p class="micro-help">If you hide content on phones, check that visitors can still find essential information elsewhere.</p>
+                </div>
+              </details>
+              <div class="detail-footer">
+                <button id="detailResetButton" type="button" class="small-button">Reset details in this area</button>
+                <button id="detailSelectPage" type="button" class="small-button">Edit page colors</button>
+              </div>
+              <p id="detailStatus" class="micro-help" role="status"></p>
+            </div>
+
           </div>
         </aside>
       </div>
@@ -372,6 +530,28 @@
         <option value="4">Subtle (current)</option>
         <option value="10">Gently rounded</option>
       </select>
+
+      <details class="site-advanced-options">
+        <summary>Customize every highlighter color</summary>
+        <p class="micro-help">These colors are used throughout the site, unless you customize a particular page or section.</p>
+        <div id="siteCustomColors" class="site-color-grid"></div>
+      </details>
+      <details class="site-advanced-options">
+        <summary>More site-wide typography and page settings</summary>
+        <label for="siteHeadingFont">Heading font</label>
+        <select id="siteHeadingFont">
+          <option value="same">Match body text</option><option value="times">Times New Roman</option>
+          <option value="georgia">Georgia</option><option value="cambria">Cambria</option>
+          <option value="garamond">Garamond</option><option value="palatino">Palatino</option>
+          <option value="arial">Arial</option><option value="system">System sans serif</option>
+        </select>
+        <div class="detail-two">
+          <div><label for="siteBodySize">Base text (px)</label><input id="siteBodySize" type="number" min="12" max="26" value="16"></div>
+          <div><label for="siteHeadingScale">Heading scale (%)</label><input id="siteHeadingScale" type="number" min="75" max="150" step="5" value="100"></div>
+          <div><label for="siteBodyLineHeight">Reading line spacing</label><input id="siteBodyLineHeight" type="number" min="1" max="2.5" step="0.05" value="1.55"></div>
+          <div><label for="sitePageBackground">Page background</label><input id="sitePageBackground" type="color" value="#ffffff"></div>
+        </div>
+      </details>
       <div class="dialog-actions"><button type="button" id="resetSiteLookBtn" class="plain-button">Reset to current look</button><button type="button" id="applySiteLookBtn" class="primary-button">Apply to draft</button></div>
     </dialog>
     <input id="imagePicker" type="file" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
