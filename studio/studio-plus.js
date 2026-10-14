@@ -20,6 +20,7 @@
     system:'system-ui,-apple-system,"Segoe UI",sans-serif'
   };
   let prefs={...SETTINGS_DEFAULT},filter="all",photoCache=null,saveTimer=null,dbPromise=null;
+  let navigation={version:1,items:[]},navDirty=false;
   let recoveryAvailable=true,wasLoaded=false,inlineTarget=null;
 
   const layouts=[
@@ -270,6 +271,144 @@
       if(value!=="natural")node.style.objectFit="cover";
     });
   }
+
+  function usablePages(){
+    return state.manifest?.pages.filter(p=>/^[a-z0-9][a-z0-9-]*\.html$/.test(p.path))||[];
+  }
+  function syncNavigation(){
+    const pages=usablePages(),available=new Set(pages.map(p=>p.path));
+    const original=JSON.stringify(navigation.items||[]);
+    navigation.items=(navigation.items||[]).filter(item=>available.has(item.path));
+    for(const page of pages){
+      if(!navigation.items.some(item=>item.path===page.path)){
+        navigation.items.push({path:page.path,label:page.title,visible:false});
+      }
+    }
+    const home=navigation.items.find(item=>item.path==="index.html");
+    if(home){
+      navigation.items=navigation.items.filter(item=>item!==home);
+      navigation.items.unshift(home);
+      home.visible=true;
+    }
+    if(original!==JSON.stringify(navigation.items))navDirty=true;
+  }
+  function persistNavDraft(){
+    const draft=state.drafts.get("studio/navigation.json");
+    if(!draft)return;
+    draft.html=JSON.stringify(navigation,null,2)+"\n";
+    draft.dirty=draft.html!==draft.savedHtml;
+    navDirty=draft.dirty;
+    updateStatus();onChanged();
+  }
+  function navIsCurrent(page,link){
+    if(page===link)return true;
+    if(link==="research.html"&&page.startsWith("research-"))return true;
+    if(link==="projects.html"&&["story-method.html","research-methods-studio.html"].includes(page))return true;
+    const current=state.manifest.pages.find(p=>p.path===page);
+    return current?.parent===link&&!navigation.items.some(i=>i.path===page&&i.visible);
+  }
+  function navigationMarkup(doc,currentPath){
+    const fragment=doc.createDocumentFragment();
+    const colors=["yellow","green","blue","magenta"];
+    const shown=navigation.items.filter(item=>item.visible);
+    shown.forEach((item,i)=>{
+      const a=doc.createElement("a");
+      a.setAttribute("href",item.path);
+      if(item.path==="cv.html")a.className="cv-link";
+      a.style.setProperty("--nav-highlight","var(--section-"+colors[i%colors.length]+")");
+      a.textContent=item.label||item.path;
+      if(navIsCurrent(currentPath,item.path))a.setAttribute("aria-current","page");
+      fragment.appendChild(a);
+    });
+    return fragment;
+  }
+  function updateNavPreview(){
+    // Navigation edits are applied to every public page together on Publish.
+    $("saveStatus").title="Menu changes will update all pages when published.";
+  }
+  function navEdited(){
+    persistNavDraft();
+    renderNavigation();
+    updateNavPreview();
+  }
+  function renderNavigation(){
+    const list=$("navigationItems");list.replaceChildren();
+    const items=navigation.items;
+    items.forEach((item,index)=>{
+      const row=document.createElement("div");row.className="nav-editor-row";
+      const name=document.createElement("div");
+      const path=document.createElement("span");
+      path.className="nav-path";path.textContent=item.path;
+      const label=document.createElement("input");label.className="nav-label-input";
+      label.type="text";label.maxLength=36;label.setAttribute("aria-label","Menu label for "+item.path);
+      label.value=item.label||"";
+      label.addEventListener("change",()=>{
+        const next=label.value.trim();
+        if(!next){label.value=item.label;return}
+        item.label=next;navEdited();
+      });
+      name.append(path,label);
+      const visible=document.createElement("label");visible.className="nav-visible";
+      const check=document.createElement("input");check.type="checkbox";check.checked=!!item.visible;
+      check.setAttribute("aria-label","Show "+item.label+" in top menu");
+      if(item.path==="index.html"){check.checked=true;check.disabled=true}
+      check.addEventListener("change",()=>{item.visible=check.checked;navEdited()});
+      visible.appendChild(check);
+      const ordering=document.createElement("div");ordering.className="nav-arrows";
+      if(item.path==="index.html"){
+        const fixed=document.createElement("span");fixed.className="nav-fixed";fixed.textContent="Always first";
+        ordering.appendChild(fixed);
+      }else{
+        for(const [labelSymbol,step,explanation] of [["↑",-1,"Move "+item.label+" up"],["↓",1,"Move "+item.label+" down"]]){
+          const button=document.createElement("button");
+          button.type="button";button.className="small-button";
+          button.textContent=labelSymbol;button.title=explanation;
+          button.setAttribute("aria-label",explanation);
+          const target=index+step;
+          button.disabled=target<1||target>=items.length;
+          button.addEventListener("click",()=>{
+            const swap=items[target];
+            items[target]=item;items[index]=swap;
+            navEdited();
+          });
+          ordering.appendChild(button);
+        }
+      }
+      row.append(name,visible,ordering);
+      list.appendChild(row);
+    });
+  }
+  async function openNavigation(){
+    syncNavigation();
+    const draft=await ensureDraft("studio/navigation.json");
+    if(draft.dirty)navDirty=true;
+    renderNavigation();
+    $("navigationDialog").showModal();
+  }
+  async function beforePublish(){
+    syncNavigation();
+    if(!navDirty&&!state.drafts.get("studio/navigation.json")?.dirty)return;
+    persistNavDraft();
+    const paths=[...new Set([...usablePages().map(p=>p.path),"404.html"])];
+    for(const path of paths){
+      if(state.deleted.has(path))continue;
+      let draft;
+      try{draft=await ensureDraft(path)}
+      catch(e){if(state.deleted.has(path))continue;throw e}
+      const doc=new DOMParser().parseFromString(draft.html,"text/html");
+      const nav=doc.querySelector("nav.site-nav");
+      if(!nav)continue;
+      const replacement=navigationMarkup(doc,path);
+      const before=nav.outerHTML;
+      nav.replaceChildren(replacement);
+      if(nav.outerHTML!==before){
+        draft.html="<!doctype html>\n"+doc.documentElement.outerHTML+"\n";
+        draft.dirty=draft.isNew||draft.html!==draft.savedHtml;
+      }
+    }
+    updateStatus();onChanged();
+  }
+
   function renderPalettePreview(type){
     const preview=$("sitePalettePreview");preview.replaceChildren();
     for(const name of ["yellow","green","blue","magenta"]){
@@ -410,6 +549,12 @@
       await ensureDraft("site-theme.css");
     }catch(e){prefs={...SETTINGS_DEFAULT}}
     try{
+      const navDraft=await ensureDraft("studio/navigation.json");
+      const contents=JSON.parse(navDraft.html);
+      if(Array.isArray(contents.items))navigation=contents;
+      syncNavigation();
+    }catch(e){navigation={version:1,items:[]};syncNavigation()}
+    try{
       const stored=await readRecord();
       if(!stored||stored.version!==STORAGE_VERSION||stored.owner!=="gmoon-code")return null;
       const when=new Date(stored.savedAt).toLocaleString();
@@ -430,6 +575,9 @@
       if(state.drafts.has("studio/site-settings.json")){
         try{prefs=JSON.parse(state.drafts.get("studio/site-settings.json").html)}catch(e){}
       }
+      if(state.drafts.has("studio/navigation.json")){
+        try{navigation=JSON.parse(state.drafts.get("studio/navigation.json").html);navDirty=state.drafts.get("studio/navigation.json").dirty}catch(e){}
+      }
       $("draftRecoveryStatus").textContent=" • Unfinished edits restored";
       const target=stored.currentPath;
       return state.manifest.pages.some(page=>page.path===target)?target:"index.html";
@@ -440,6 +588,7 @@
     }
   }
   function onPublished(){
+    navDirty=false;
     clearTimeout(saveTimer);saveTimer=setTimeout(saveRecovery,100);
   }
   function onSignOut(){
@@ -489,6 +638,8 @@
     $("stylePreset").addEventListener("change",()=>setLook("studio-look-",$("stylePreset").value));
     $("spacePreset").addEventListener("change",()=>setLook("studio-space-",$("spacePreset").value));
     $("imageShape").addEventListener("change",()=>updateImageFrame($("imageShape").value));
+    $("navigationBtn").addEventListener("click",()=>openNavigation().catch(e=>toast(e.message,true)));
+    $("closeNavigationBtn").addEventListener("click",()=>$("navigationDialog").close());
     $("siteLookBtn").addEventListener("click",openSiteLook);
     $("closeSiteLookBtn").addEventListener("click",()=>$("siteLookDialog").close());
     $("sitePalette").addEventListener("change",()=>renderPalettePreview($("sitePalette").value));
@@ -515,6 +666,6 @@
     $("helpDialog").querySelector(".help-list")?.insertAdjacentHTML("beforeend",
       "<li><strong>Browse layouts</strong> for ready-made sections. <strong>My photos</strong> reuses existing images, and <strong>Site style</strong> changes the look across pages. Draft recovery stays on this device.</li>");
   }
-  window.WebsiteStudioPlus={onChanged,onSelection,onPreviewReady,onPublished,onSignOut,restore,addTemplate,openLibrary,openMedia};
+  window.WebsiteStudioPlus={onChanged,onSelection,onPreviewReady,onPublished,onSignOut,restore,beforePublish,addTemplate,openLibrary,openMedia};
   install();
 })();
