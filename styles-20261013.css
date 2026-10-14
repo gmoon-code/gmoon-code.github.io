@@ -1102,3 +1102,58 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
   .research-interest{break-inside:avoid;grid-template-columns:minmax(0,1fr)}
   .research-reading-list li{break-inside:avoid}
 }
+
+
+/* Justice-oriented Research page: youth participation and curricular authority. */
+.justice-research .research-hub-hero{padding-bottom:39px}
+.justice-research .research-hub-hero .hero-copy{max-width:900px}
+.justice-research .research-hub-hero .research-hub-lead{max-width:825px}
+.justice-research .research-hub-jumps{margin:0 0 14px}
+.justice-research .research-hub-section{padding:38px 0}
+.justice-research .research-hub-section .section-head{margin-bottom:20px}
+.justice-research .research-hub-section .section-head>p{max-width:77ch}
+.justice-research .research-hub-prose{max-width:79ch}
+.justice-research .research-hub-prose p{font-size:17px;line-height:1.76;color:#313b32;margin-bottom:18px}
+.justice-research .research-hub-prose p:last-child{margin-bottom:0}
+.justice-research .research-justice-intro{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(245px,.75fr);gap:clamp(22px,4.5vw,54px);align-items:start}
+.justice-research .research-justice-note{background:var(--section-green-soft);padding:18px 21px;border-top:3px solid var(--section-green-line);min-width:0}
+.justice-research .research-justice-note .meta{font-size:13px;margin:0 0 13px}
+.justice-research .research-justice-note>p:nth-child(2){font-size:19px;line-height:1.55;color:#28372c;margin:0 0 16px}
+.justice-research .research-justice-note .research-hub-aside-note{font-size:14px;line-height:1.64;color:#4f5c51;margin:0}
+.justice-research .research-justice-dimensions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin:25px 0 0}
+.justice-research .research-justice-dimensions>div{padding:15px 4px 10px;border-top:2px solid var(--section-green-line)}
+.justice-research .research-justice-dimensions h3{font-size:17px;margin:0 0 9px;line-height:1.36}
+.justice-research .research-justice-dimensions p{font-size:15px;line-height:1.66;color:#3c463e;margin:0}
+.justice-research .research-origin-prose{max-width:82ch}
+.justice-research .research-justice-directions{border-top:1px solid var(--moon-rule)}
+.justice-research .research-justice-directions>article{display:grid;grid-template-columns:minmax(220px,.75fr) minmax(0,1.65fr);gap:clamp(22px,4vw,56px);padding:28px 0;border-bottom:1px solid var(--moon-rule)}
+.justice-research .research-direction-heading .meta{font-size:13px;margin:0 0 10px;line-height:1.5}
+.justice-research .research-direction-heading h3{font-size:clamp(20px,2.3vw,25px);line-height:1.33;margin:0}
+.justice-research .research-direction-body p{font-size:16px;line-height:1.77;max-width:77ch;color:#323b33;margin:0 0 16px}
+.justice-research .research-direction-body p:last-child{margin:0}
+.justice-research .research-hub-studies{margin-top:12px}
+.justice-research .research-hub-studies .research-study-preview{padding:23px 0 28px}
+.justice-research .research-hub-studies .research-study-preview h3{font-size:23px}
+.justice-research .research-justice-method-grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(245px,.8fr);gap:clamp(24px,4vw,58px);align-items:start}
+.justice-research .research-ethics-note{margin:0;border-top:3px solid var(--section-green-line);border-left:0;padding:19px 22px}
+.justice-research .research-ethics-note h3{font-size:18px;line-height:1.35;margin:0 0 13px}
+.justice-research .research-ethics-note p{font-size:15px;line-height:1.7;color:#3d4a3f;margin:0 0 13px}
+.justice-research .research-ethics-note p:last-child{margin-bottom:0}
+.justice-research .research-reading-list{margin-top:11px}
+.justice-research .section[id]{scroll-margin-top:88px}
+@media(max-width:900px){
+ .justice-research .research-justice-intro,
+ .justice-research .research-justice-method-grid{grid-template-columns:minmax(0,1fr)}
+ .justice-research .research-justice-note{max-width:70ch}
+}
+@media(max-width:720px){
+ .justice-research .research-justice-directions>article{grid-template-columns:1fr;gap:13px;padding:24px 0}
+ .justice-research .research-justice-dimensions{grid-template-columns:1fr;gap:5px}
+ .justice-research .research-justice-dimensions>div{padding:13px 0}
+ .justice-research .research-hub-section{padding:28px 0}
+ .justice-research .section[id]{scroll-margin-top:25px}
+}
+@media print{
+ .justice-research .research-justice-dimensions>div{break-inside:avoid}
+ .justice-research .research-justice-directions>article{grid-template-columns:1fr}
+}

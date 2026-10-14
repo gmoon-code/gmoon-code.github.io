@@ -2,6 +2,12 @@
 
 Updated 14 October 2026.
 
+## Central intellectual orientation
+
+Justice-oriented science education is the primary research commitment. Questions about youth participation, epistemic and curricular authority, the consequences of scientific classification, and genuinely collaborative work with teachers and communities organize the Research page. Multilingual expression, teacher assessment, the two existing manuscripts, and biology/chemistry disciplinary expertise explain the trajectory into that larger inquiry. Biological sex and human variation offer one significant possible setting. Environmental relationships, colonial histories of science, and community-defined concerns remain possible other contexts.
+
+The doctoral letter of intent was read as a source for the author's conceptual hierarchy and tone. The public website must develop independent substantive material and must never simply reproduce the application narrative. The published Krishnamoorthy, Duncan, and Tan (2026) case of youth negotiating concerns about a community survey is one grounded instance of the question. The site must not present the author as having already conducted collaborative curriculum co-design or a classroom interaction study.
+
 ## Purpose and editorial standard
 
 This is a scholarly and personal website for Ye Eun Moon as a practicing secondary science educator, researcher, and designer of learning resources. It must be useful independently of a doctoral application, a CV, or manuscript abstracts.
