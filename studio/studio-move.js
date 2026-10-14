@@ -8,6 +8,7 @@
   if(!api||!plus)return;
 
   const {state,$,docOf,remember,syncCurrent,selectElement,toast}=api;
+  const clamp=(value,min,max)=>Math.max(min,Math.min(max,value));
   const TEXT_BLOCKS=new Set(["P","H2","H3","H4","H5","H6","BLOCKQUOTE","HR","PRE"]);
   const UNIT_TAGS=new Set(["SECTION","ARTICLE","FIGURE","LI","DIV","ASIDE","P","H2","H3","H4","H5","H6","BLOCKQUOTE","HR","PRE","IMG","TABLE","UL","OL","A"]);
   const ZONES=".reading,.section-head,.hero-copy,.hero-card,.paper-card,.grid-2,.grid-3,.grid-4,.studio-columns,.studio-gallery,.studio-split,.media-shelf,.controls,article,aside,section";
