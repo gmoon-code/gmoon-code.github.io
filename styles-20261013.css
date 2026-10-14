@@ -532,3 +532,6 @@ img.studio-frame-landscape{aspect-ratio:16/9;object-fit:cover;height:auto}
 img.studio-frame-portrait{aspect-ratio:3/4;object-fit:cover;height:auto}
 img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
 @media(max-width:700px){.studio-split{grid-template-columns:1fr}.studio-space-airy{padding:24px}}
+
+/* New pages can be added to the menu without pushing links off-screen. */
+.site-nav{flex-wrap:wrap;row-gap:8px}

@@ -730,7 +730,18 @@
   async function publish(){
     if(!state.connected||state.busy)return;
     syncCurrent();
-    await window.WebsiteStudioPlus?.beforePublish?.();
+    if(window.WebsiteStudioPlus?.beforePublish){
+      state.busy=true;updateStatus();
+      try{
+        $("saveStatus").textContent="Preparing site menu…";
+        await window.WebsiteStudioPlus.beforePublish();
+      }catch(error){
+        toast("Could not prepare the website changes: "+errorDescription(error),true);
+        state.busy=false;updateStatus();
+        return;
+      }
+      state.busy=false;updateStatus();
+    }
     if(!hasChanges()){toast("No unpublished changes.");return}
     const draftsToSave=[...state.drafts].filter(([path,draft])=>draft.dirty);
     for(const [path,draft] of draftsToSave){

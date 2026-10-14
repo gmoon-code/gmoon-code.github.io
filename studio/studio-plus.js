@@ -588,6 +588,11 @@
     }
   }
   function onPublished(){
+    if(navDirty&&activeDraft()){
+      const draft=activeDraft();
+      draft.canonicalSet=false;
+      $("previewFrame").srcdoc=api.withPreviewBase(draft.html);
+    }
     navDirty=false;
     clearTimeout(saveTimer);saveTimer=setTimeout(saveRecovery,100);
   }
