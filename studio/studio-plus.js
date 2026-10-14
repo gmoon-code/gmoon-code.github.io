@@ -13,10 +13,14 @@
     earthy:{yellow:["#E8D9B4","#F9F5EA","#BEA977"],green:["#D1DEC5","#F5F8F0","#91AC87"],blue:["#C6D9DF","#F2F8F9","#92B3C0"],magenta:["#E5CCD7","#FAF4F7","#BC99AA"]},
     crisp:{yellow:["#F2E09A","#FCFAEE","#C3AC56"],green:["#C3DFAE","#F4F9F0","#89B17A"],blue:["#BDD8F0","#F3F7FC","#7EA6CE"],magenta:["#E6C2E0","#FCF4FA","#B687B1"]}
   };
-  const SETTINGS_DEFAULT={palette:"soft",font:"times",width:1120,corners:4};
+  const SETTINGS_DEFAULT={palette:"soft",font:"times",headingFont:"same",width:1120,corners:4,bodySize:16,headingScale:100,lineHeight:1.55,pageBackground:"#ffffff"};
   const FACE={
     times:'"Times New Roman",Times,serif',
     georgia:'Georgia,"Times New Roman",serif',
+    cambria:'Cambria,Georgia,serif',
+    garamond:'Garamond,Georgia,serif',
+    palatino:'"Palatino Linotype",Palatino,serif',
+    arial:'Arial,Helvetica,sans-serif',
     system:'system-ui,-apple-system,"Segoe UI",sans-serif'
   };
   let prefs={...SETTINGS_DEFAULT},filter="all",photoCache=null,saveTimer=null,dbPromise=null;
@@ -474,20 +478,63 @@
     updateStatus();onChanged();
   }
 
-  function renderPalettePreview(type){
+  function swatchColors(type,custom){
+    const base=COLORS[type]||COLORS.soft;
+    const valid=value=>typeof value==="string"&&/^#[0-9a-f]{6}$/i.test(value);
+    const result={};
+    for(const name of ["yellow","green","blue","magenta"]){
+      result[name]=[0,1,2].map(i=>custom?.[name]&&valid(custom[name][i])?custom[name][i]:base[name][i]);
+    }
+    return result;
+  }
+  function fillSiteColors(type,custom=null){
+    const container=$("siteCustomColors");
+    container.replaceChildren();
+    const palette=swatchColors(type,custom);
+    for(const name of ["yellow","green","blue","magenta"]){
+      const card=document.createElement("div");card.className="site-color-swatch";
+      const heading=document.createElement("strong");heading.textContent=name[0].toUpperCase()+name.slice(1);
+      card.appendChild(heading);
+      for(const [i,label] of ["Highlight","Soft background","Accent line"].entries()){
+        const row=document.createElement("label");
+        const text=document.createElement("span");text.textContent=label;
+        const input=document.createElement("input");
+        input.type="color";input.value=palette[name][i];
+        input.dataset.siteTone=name;input.dataset.siteRole=String(i);
+        input.setAttribute("aria-label",name+" "+label);
+        input.addEventListener("input",()=>renderPalettePreview());
+        row.append(text,input);card.appendChild(row);
+      }
+      container.appendChild(card);
+    }
+    renderPalettePreview();
+  }
+  function siteFormColors(){
+    const palette=swatchColors($("sitePalette").value);
+    const inputs=[...$("siteCustomColors").querySelectorAll("[data-site-tone]")];
+    for(const input of inputs)palette[input.dataset.siteTone][Number(input.dataset.siteRole)]=input.value;
+    return palette;
+  }
+  function renderPalettePreview(){
     const preview=$("sitePalettePreview");preview.replaceChildren();
+    const palette=siteFormColors();
     for(const name of ["yellow","green","blue","magenta"]){
       const swatch=document.createElement("span");
-      swatch.style.backgroundColor=COLORS[type][name][0];
+      swatch.style.backgroundColor=palette[name][0];
       swatch.title=name;
       preview.appendChild(swatch);
     }
   }
   function themeCSS(p){
-    const set=COLORS[p.palette]||COLORS.soft;
+    const set=swatchColors(p.palette,p.customColors);
     const family=FACE[p.font]||FACE.times;
+    const headingFamily=p.headingFont==="same"?family:(FACE[p.headingFont]||family);
     const width=[980,1120,1280].includes(Number(p.width))?Number(p.width):1120;
     const radius=[2,4,10].includes(Number(p.corners))?Number(p.corners):4;
+    const baseSize=Math.max(12,Math.min(26,Number(p.bodySize)||16));
+    const headingScale=Math.max(.75,Math.min(1.5,(Number(p.headingScale)||100)/100));
+    const lineHeight=Math.max(1,Math.min(2.5,Number(p.lineHeight)||1.55));
+    const background=/^#[0-9a-f]{6}$/i.test(p.pageBackground||"")?p.pageBackground:"#ffffff";
     let vars="";
     for(const color of ["yellow","green","blue","magenta"]){
       const vals=set[color];
@@ -495,9 +542,17 @@
       vars+="\n  --section-"+color+"-soft:"+vals[1]+";";
       vars+="\n  --section-"+color+"-line:"+vals[2]+";";
     }
+    const px=x=>(x*headingScale).toFixed(2).replace(/\.00$/,"");
     return "/* Site-wide choices managed by Website Studio. */\n:root{"+vars+
       "\n  --page-max:"+width+"px;\n  --radius:"+radius+"px;\n}\n"+
-      "body,button,input,textarea,select,h1,h2,h3,h4,h5,h6{font-family:"+family+"}\n";
+      "html,body{background-color:"+background+"}\n"+
+      "body,button,input,textarea,select{font-family:"+family+"}\n"+
+      "body{font-size:"+baseSize+"px;line-height:"+lineHeight+"}\n"+
+      "h1,h2,h3,h4,h5,h6{font-family:"+headingFamily+"}\n"+
+      "h1{font-size:clamp("+px(40)+"px,4.7vw,"+px(60)+"px)}\n"+
+      "h2{font-size:"+px(30)+"px}\n"+
+      "h3{font-size:"+px(21)+"px}\n"+
+      "h4{font-size:"+px(17)+"px}\n";
   }
   function applyThemeInPreview(){
     const doc=docOf();if(!doc?.head)return;
@@ -510,7 +565,12 @@
     $("siteFont").value=prefs.font;
     $("siteWidth").value=String(prefs.width);
     $("siteCorners").value=String(prefs.corners);
-    renderPalettePreview(prefs.palette);
+    $("siteHeadingFont").value=prefs.headingFont||"same";
+    $("siteBodySize").value=String(prefs.bodySize||16);
+    $("siteHeadingScale").value=String(prefs.headingScale||100);
+    $("siteBodyLineHeight").value=String(prefs.lineHeight||1.55);
+    $("sitePageBackground").value=prefs.pageBackground||"#ffffff";
+    fillSiteColors(prefs.palette,prefs.customColors);
     $("siteLookDialog").showModal();
   }
   async function applySiteLook(){
@@ -518,9 +578,19 @@
       palette:$("sitePalette").value,
       font:$("siteFont").value,
       width:Number($("siteWidth").value),
-      corners:Number($("siteCorners").value)
+      corners:Number($("siteCorners").value),
+      headingFont:$("siteHeadingFont").value,
+      bodySize:Number($("siteBodySize").value),
+      headingScale:Number($("siteHeadingScale").value),
+      lineHeight:Number($("siteBodyLineHeight").value),
+      pageBackground:$("sitePageBackground").value,
+      customColors:siteFormColors()
     };
-    if(!COLORS[next.palette]||!FACE[next.font]||![980,1120,1280].includes(next.width)||![2,4,10].includes(next.corners))return;
+    if(!COLORS[next.palette]||!FACE[next.font]||
+      (next.headingFont!=="same"&&!FACE[next.headingFont])||
+      ![980,1120,1280].includes(next.width)||![2,4,10].includes(next.corners)||
+      next.bodySize<12||next.bodySize>26||next.headingScale<75||next.headingScale>150||
+      next.lineHeight<1||next.lineHeight>2.5)return;
     prefs=next;
     const prefDraft=await ensureDraft("studio/site-settings.json");
     const themeDraft=await ensureDraft("site-theme.css");
@@ -722,11 +792,16 @@
     $("closeNavigationBtn").addEventListener("click",()=>$("navigationDialog").close());
     $("siteLookBtn").addEventListener("click",openSiteLook);
     $("closeSiteLookBtn").addEventListener("click",()=>$("siteLookDialog").close());
-    $("sitePalette").addEventListener("change",()=>renderPalettePreview($("sitePalette").value));
+    $("sitePalette").addEventListener("change",()=>fillSiteColors($("sitePalette").value));
     $("resetSiteLookBtn").addEventListener("click",()=>{
       $("sitePalette").value=SETTINGS_DEFAULT.palette;$("siteFont").value=SETTINGS_DEFAULT.font;
       $("siteWidth").value=String(SETTINGS_DEFAULT.width);$("siteCorners").value=String(SETTINGS_DEFAULT.corners);
-      renderPalettePreview(SETTINGS_DEFAULT.palette);
+      $("siteHeadingFont").value=SETTINGS_DEFAULT.headingFont;
+      $("siteBodySize").value=String(SETTINGS_DEFAULT.bodySize);
+      $("siteHeadingScale").value=String(SETTINGS_DEFAULT.headingScale);
+      $("siteBodyLineHeight").value=String(SETTINGS_DEFAULT.lineHeight);
+      $("sitePageBackground").value=SETTINGS_DEFAULT.pageBackground;
+      fillSiteColors(SETTINGS_DEFAULT.palette);
     });
     $("applySiteLookBtn").addEventListener("click",()=>applySiteLook().catch(e=>toast(e.message,true)));
     // Templates can also be inserted from the compact Add menu.
