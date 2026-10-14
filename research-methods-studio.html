@@ -95,16 +95,15 @@
     </table>
   </div>
   <div class="reading project-reading">
-    <p>I would use these distinctions to evaluate whether the guidance asks students to justify a decision before choosing an analysis. In the salinity example, an apparent sample of many plants might represent very few assigned treatment units. That issue has to be resolved at the design stage. No later statistical option can supply independent treatment replication that the experiment did not include.</p>
-    <p>Because the notebook is stored locally and Research Chat is optional, data handling is also a design decision. Students need to know when work is stored in their browser, what a backup contains, and which material a networked feature may receive. These controls merit direct testing in the application; a statement on this page is not a privacy or security audit.</p>
+    <p>The comparison identifies questions that the guidance should help learners investigate before selecting an analysis. These are methodological review criteria for the workspace, and the table does not establish that every possible study design receives an automated check.</p>
   </div>
 </section>
 <section id="methods-implementation" class="section">
   <div class="section-head"><h2>How the released system handles guidance and student work</h2></div>
   <div class="reading project-reading">
-    <p>The version 3 release documentation describes a local-first research notebook, eighteen stages, and optional Research Chat. The application can retrieve validated published guidance for the stages, while retaining a bundled curriculum as a fallback if the remote guidance is unavailable or invalid. This separates the stage guidance that can be updated from the student's own project work.</p>
-    <p>Research Chat introduces a different data boundary. According to the repository documentation, the browser minimizes project context when it is enabled for chat, with additional server-side minimization. The application does not enable research-study data collection or operational telemetry in this release. These are documented architectural claims whose deployment and security would require separate independent testing.</p>
-    <p>A meaningful design evaluation would ask whether students understand these boundaries before using the workspace. It would also examine whether the guidance helps them notice an inappropriate experimental unit, unsupported causal inference, or mismatch between a question and an analysis. The existence of a warning or method check cannot establish that learners acted on it.</p>
+    <p>The version 3 release separates instructional guidance from students’ active research notebooks. An authenticated Content Studio can publish a complete, validated set of guidance for all eighteen stages. The public loader accepts updates to six defined fields per stage, including the stage title, purpose, and guidance. It rejects incomplete or invalid releases, and the bundled curriculum remains available if the published content cannot be loaded promptly. Publishing guidance does not change the application version or replace a student’s locally stored research project.</p>
+    <p>The application also separates public guidance delivery from optional Research Chat. According to the release documentation, project context sent to Research Chat is minimized in the browser and checked again by the server, while the notebook itself normally remains in browser storage. Students can export a Word document or make a JSON backup. The current release does not enable research-study data collection or operational telemetry. These are documented implementation boundaries, not the results of an independent security or privacy audit.</p>
+    <p>The content-publication design includes revision history and rollback through a new published release. That offers a way to correct instructional guidance without silently rewriting the student application. A separate evaluation would still be needed to determine whether students understand the guidance, recognize methodological problems, or make better research decisions while using the tool.</p>
   </div>
   <p class="project-status-note">Architecture and release details are taken from the <a href="https://github.com/gmoon-code/research-methods/blob/main/README.md">application's repository documentation</a>. No private administration features, network responses, or user records were accessed in this review.</p>
 </section>
@@ -132,8 +131,7 @@
 <section class="section">
   <div class="section-head"><h2>Saving and sharing work</h2></div>
   <div class="reading project-reading">
-    <p>The research notebook is kept locally in the student's browser. Backup and recovery options are available, and Research Chat is optional. A learner choosing to use a networked chat feature should review what project context they share and avoid entering identifiable or sensitive records.</p>
-    <p>The workspace offers questions, examples, and checks. Students still make the methodological decisions, verify their sources, and examine the limits of their own results. I designed the stages to keep those decisions visible while a project is still taking shape.</p>
+    <p>Students can export their notebook or make a JSON backup. Since work is stored in their browser, they should keep a separate copy of anything they need to retain and review what they share when using optional Research Chat. The workspace provides guidance and checks, while the decisions about methods, sources, and conclusions remain with the researcher.</p>
   </div>
 </section>
 <p class="project-return"><a href="projects.html">← All projects</a></p>
