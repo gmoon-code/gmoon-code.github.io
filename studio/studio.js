@@ -145,7 +145,8 @@
     $("workspace").hidden=false;
     renderPages();
     setupParentChoices();
-    await switchPage("index.html");
+    const restoredPath=await window.WebsiteStudioPlus?.restore?.();
+    await switchPage(restoredPath||"index.html");
     toast("Connected as "+OWNER+". Your edits stay private until you publish.");
   }
   function showLoginError(message){
@@ -163,6 +164,7 @@
   function logout(){
     if(hasChanges()&&!confirm("Your unpublished edits will be lost if you sign out. Continue?"))return;
     sessionStorage.removeItem(SESSION_KEY);
+    window.WebsiteStudioPlus?.onSignOut?.();
     state.token=null;state.connected=false;state.currentPath=null;
     state.drafts.clear();state.uploads.clear();state.deleted.clear();
     state.manifest=null;state.manifestDirty=false;state.selected=null;
@@ -243,6 +245,7 @@
     draft.html=html;
     draft.dirty= draft.isNew||draft.html!==draft.savedHtml;
     updateStatus();renderPages();
+    window.WebsiteStudioPlus?.onChanged?.();
   }
   function remember(){
     const draft=activeDraft();if(!draft)return;
@@ -342,6 +345,7 @@
     $("inspectorEmpty").hidden=false;
     $("selectedKind").textContent="Nothing selected";
     renderSections();updateStatus();
+    window.WebsiteStudioPlus?.onPreviewReady?.();
   }
   function selectElement(node,scroll=false){
     if(!node||!docOf()||!docOf().contains(node))return;
@@ -350,6 +354,7 @@
     $("inspectorEmpty").hidden=true;$("inspectorContent").hidden=false;
     $("selectedKind").textContent=labelForNode(node);
     updateInspectorFields();renderSections();
+    window.WebsiteStudioPlus?.onSelection?.(node);
     if(scroll)node.scrollIntoView({behavior:"smooth",block:"center"});
   }
   function labelForNode(node){
@@ -820,6 +825,7 @@
         activeDraft().canonicalSet=false;
         $("previewFrame").srcdoc=withPreviewBase(activeDraft().html);
       }
+      window.WebsiteStudioPlus?.onPublished?.();
       toast("All changes were published together. GitHub Pages may need a few minutes to refresh.");
     }catch(error){
       toast("Your drafts are still here. Publishing stopped: "+errorDescription(error),true);
@@ -1029,5 +1035,10 @@
       catch(error){sessionStorage.removeItem(SESSION_KEY);state.token=null;showLoginError("Your saved tab session expired. Please connect again.")}
     }
   }
+  window.WebsiteStudioAPI={
+    state,$,docOf,activeDraft,remember,syncCurrent,renderSections,selectElement,insertBlock,mutate,
+    toast,github,fetchFile,ensureDraft,nameFor,toneForPage,renderPages,switchPage,updateStatus,
+    safeUrl,withPreviewBase,openImagePicker,slugify,esc
+  };
   init().catch(error=>toast(errorDescription(error),true));
 })();

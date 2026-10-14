@@ -10,6 +10,7 @@
   <title>Website Studio | Ye Eun Moon</title>
   <link rel="stylesheet" href="studio.css">
   <script src="studio.js" defer></script>
+  <script src="studio-plus.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#studioMain">Skip to editing tools</a>
@@ -51,6 +52,7 @@
           <span id="saveStatus" class="save-status" role="status">Ready</span>
           <button id="undoBtn" type="button" class="plain-button" title="Undo a change (Ctrl+Z)">Undo</button>
           <button id="redoBtn" type="button" class="plain-button" title="Redo a change (Ctrl+Shift+Z)">Redo</button>
+          <button id="siteLookBtn" type="button" class="plain-button" title="Change the overall appearance of your site">Site style</button>
           <button id="helpBtn" type="button" class="plain-button">Help</button>
           <button id="publishBtn" type="button" class="primary-button">Publish changes</button>
           <button id="logoutBtn" type="button" class="plain-button" title="Forget GitHub token">Sign out</button>
@@ -105,13 +107,21 @@
               <option value="spacer">Space</option>
             </select>
             <button id="insertBtn" type="button" class="small-button accent-button">+ Add</button>
+            <button id="libraryBtn" type="button" class="small-button">Browse layouts</button>
+            <button id="photosBtn" type="button" class="small-button">My photos</button>
             <span class="toolbar-help">Click an item below to edit it. Double-click text to edit on the page.</span>
           </div>
           <div class="preview-outer" id="previewOuter">
             <div id="loadingPreview" class="loading-preview">Loading page…</div>
+            <div id="quickActions" class="quick-actions" role="toolbar" aria-label="Selected item quick tools" hidden>
+              <button type="button" data-quick="edit">Edit text</button>
+              <button type="button" data-quick="move">Move</button>
+              <button type="button" data-quick="duplicate">Duplicate</button>
+              <button type="button" data-quick="style">Style</button>
+            </div>
             <iframe id="previewFrame" title="Editable preview of selected website page" sandbox="allow-same-origin"></iframe>
           </div>
-          <p class="preview-note">Preview is a draft. Select an item to edit it in the right panel. Links will not open while editing.</p>
+          <p class="preview-note">Your changes are kept as a draft in this browser. Click text twice to edit directly, or click once for options. Check phone size before publishing. <span id="draftRecoveryStatus" aria-live="polite"></span></p>
         </section>
 
         <aside class="inspector" aria-label="Selected item settings">
@@ -142,6 +152,14 @@
               <div id="imageEditBox" hidden>
                 <label for="imageAlt">Image description (for accessibility)</label>
                 <input id="imageAlt" type="text" placeholder="Describe what is in the photo">
+                <label for="imageShape">Image frame</label>
+                <select id="imageShape">
+                  <option value="natural">Original proportions</option>
+                  <option value="square">Square (1:1)</option>
+                  <option value="landscape">Landscape (16:9)</option>
+                  <option value="portrait">Portrait (3:4)</option>
+                  <option value="wide">Wide banner (21:9)</option>
+                </select>
                 <label for="imageFit">How the image fits</label>
                 <select id="imageFit"><option value="cover">Fill frame (crop if needed)</option><option value="contain">Show whole image</option></select>
                 <label for="imageFocus">Image focus</label>
@@ -159,6 +177,21 @@
               </div>
             </div>
             <div id="designTab" class="inspector-panel" role="tabpanel" hidden>
+              <label for="stylePreset">Ready-made appearance</label>
+              <select id="stylePreset">
+                <option value="">Keep current appearance</option>
+                <option value="plain">Clean and simple</option>
+                <option value="outlined">Thin bordered card</option>
+                <option value="soft">Soft tinted panel</option>
+                <option value="feature">Feature panel with accent line</option>
+              </select>
+              <label for="spacePreset">Spacing</label>
+              <select id="spacePreset">
+                <option value="">Keep current spacing</option>
+                <option value="compact">Compact</option>
+                <option value="comfortable">Comfortable</option>
+                <option value="airy">Airy</option>
+              </select>
               <label for="sectionAccent">Section highlight</label>
               <select id="sectionAccent"><option value="default">Use page color</option><option value="yellow">Soft yellow</option><option value="green">Soft green</option><option value="blue">Soft blue</option><option value="magenta">Soft magenta</option></select>
               <label for="backgroundColor">Background</label>
@@ -236,6 +269,9 @@
       <form id="pageSettingsForm" method="dialog">
         <h2 id="pageSettingsTitle">Page settings</h2>
         <label for="settingsTitle">Page title</label><input id="settingsTitle" type="text" maxlength="100" required>
+        <label for="settingsDescription">Description for search results</label>
+        <textarea id="settingsDescription" rows="3" maxlength="160" placeholder="A clear, gentle summary of this page"></textarea>
+        <p class="micro-help">Appears in search results when search engines choose to show it. Aim for a useful description, around 100–155 characters.</p>
         <label for="settingsAccent">Page highlight</label>
         <select id="settingsAccent"><option value="yellow">Soft yellow</option><option value="green">Soft green</option><option value="blue">Soft blue</option><option value="magenta">Soft magenta</option></select>
         <p id="settingsPath" class="micro-help"></p>
@@ -260,6 +296,66 @@
       </ol>
       <p class="micro-help">For images, add an Image block or select an existing image and choose Replace image. Describe each image briefly for visitors who cannot see it.</p>
       <button id="closeHelpBtn" type="button" class="primary-button">Got it</button>
+    </dialog>
+
+    <dialog id="blockLibraryDialog" class="studio-dialog large-dialog" aria-labelledby="libraryTitle">
+      <div class="dialog-heading">
+        <div><h2 id="libraryTitle">Add something to your page</h2><p class="micro-help">Choose a layout or smaller block. You can edit all the words and pictures afterward.</p></div>
+        <button type="button" id="closeLibraryBtn" class="plain-button">Close</button>
+      </div>
+      <label for="blockSearch">Find a layout or tool</label>
+      <input id="blockSearch" type="search" placeholder="Try photos, FAQ, quote, cards…">
+      <div class="library-filters" role="group" aria-label="Block categories">
+        <button type="button" data-block-filter="all" class="is-active">Everything</button>
+        <button type="button" data-block-filter="sections">Sections</button>
+        <button type="button" data-block-filter="blocks">Small blocks</button>
+      </div>
+      <div id="blockLibraryItems" class="library-grid"></div>
+    </dialog>
+
+    <dialog id="mediaDialog" class="studio-dialog large-dialog" aria-labelledby="mediaTitle">
+      <div class="dialog-heading">
+        <div><h2 id="mediaTitle">My photos</h2><p class="micro-help">Reuse a photo already on your website, or upload a new one. Click a photo to use it.</p></div>
+        <button type="button" id="closeMediaBtn" class="plain-button">Close</button>
+      </div>
+      <div class="media-header-controls">
+        <input id="mediaSearch" type="search" placeholder="Find a photo by name" aria-label="Search photos">
+        <button type="button" id="mediaUploadBtn" class="primary-button">Upload photo</button>
+      </div>
+      <div id="mediaGrid" class="media-grid" aria-live="polite"></div>
+      <p id="mediaLibraryStatus" class="micro-help"></p>
+    </dialog>
+
+    <dialog id="siteLookDialog" class="studio-dialog" aria-labelledby="siteLookTitle">
+      <div class="dialog-heading"><h2 id="siteLookTitle">Site style</h2><button type="button" id="closeSiteLookBtn" class="plain-button">Close</button></div>
+      <p class="micro-help">Change the look of the whole website in one place. Your words and layout stay as they are.</p>
+      <label for="sitePalette">Highlighter colors</label>
+      <select id="sitePalette">
+        <option value="soft">Soft yellow, sage green, blue, magenta</option>
+        <option value="subtle">Very light and quiet</option>
+        <option value="earthy">Warmer, earthy tones</option>
+        <option value="crisp">A little more definition</option>
+      </select>
+      <div id="sitePalettePreview" class="palette-strip" aria-label="Selected palette preview"></div>
+      <label for="siteFont">Site typography</label>
+      <select id="siteFont">
+        <option value="times">Times New Roman · Classic</option>
+        <option value="georgia">Georgia · Friendly serif</option>
+        <option value="system">System sans serif · Clean</option>
+      </select>
+      <label for="siteWidth">Content width</label>
+      <select id="siteWidth">
+        <option value="980">Narrower reading area</option>
+        <option value="1120">Balanced (current)</option>
+        <option value="1280">Wider layout</option>
+      </select>
+      <label for="siteCorners">Card corners</label>
+      <select id="siteCorners">
+        <option value="2">Almost square</option>
+        <option value="4">Subtle (current)</option>
+        <option value="10">Gently rounded</option>
+      </select>
+      <div class="dialog-actions"><button type="button" id="resetSiteLookBtn" class="plain-button">Reset to current look</button><button type="button" id="applySiteLookBtn" class="primary-button">Apply to draft</button></div>
     </dialog>
     <input id="imagePicker" type="file" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
     <div id="toast" role="status" aria-live="polite" class="toast" hidden></div>
