@@ -8,6 +8,16 @@ Justice-oriented science education is the primary research commitment. Questions
 
 The doctoral letter of intent was read as a source for the author's conceptual hierarchy and tone. The public website must develop independent substantive material and must never simply reproduce the application narrative. The published Krishnamoorthy, Duncan, and Tan (2026) case of youth negotiating concerns about a community survey is one grounded instance of the question. The site must not present the author as having already conducted collaborative curriculum co-design or a classroom interaction study.
 
+## Editorial guardrails for Research and About
+
+The Research overview is an independent space for sustained scientific, curricular, and scholarly analysis. Do not reproduce the letter of intent's narrative arc, classroom anecdotes, projected dissertation structure, or rhetorical questions verbatim. Use specific theoretical problems and clearly labelled possible curriculum tasks. Preserve justice-oriented science education as the main commitment. An example of a chemistry or genetics problem on the public website must be marked as prospective unless actual classroom records verify its use.
+
+The About page is a personal introduction to an educator who values justice-oriented, anti-racist, decolonial and queer-inclusive science education. Convey these interests through their actual teaching context, interests, habits, and continuing learning. Avoid borrowing any prospective supervisor's biography, identity-based standpoint, record of community partnership, or claims of expertise. The author's interests can intersect with scholarship without their experience being equivalent.
+
+In public prose prefer “students,” “classmates,” and “teachers.” “Youth” is appropriate when referring to established scholarship or a documented research setting that uses it. Avoid “young people” as a recurring substitute for students.
+
+The current research-page examples of advanced chemistry equilibrium and human genetic variation are prospective analyses, with no claim that the author has implemented or evaluated them. Keep their distinctions among established science, societal questions, student agency, and ethical research conditions visible.
+
 ## Purpose and editorial standard
 
 This is a scholarly and personal website for Ye Eun Moon as a practicing secondary science educator, researcher, and designer of learning resources. It must be useful independently of a doctoral application, a CV, or manuscript abstracts.

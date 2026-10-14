@@ -1157,3 +1157,80 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
  .justice-research .research-justice-dimensions>div{break-inside:avoid}
  .justice-research .research-justice-directions>article{grid-template-columns:1fr}
 }
+
+
+/* Independent research essays and personal About revision, October 2026. */
+.research-essay .research-essay-hero .hero-copy{max-width:920px}
+.research-essay .research-essay-lead{font-size:clamp(20px,2.45vw,26px)!important;line-height:1.5!important;margin:0 0 16px!important}
+.research-essay .research-essay-hero .hero-copy>p:not(.research-eyebrow):not(.research-essay-lead){max-width:81ch}
+.research-essay-navigation{margin:0 0 16px!important}
+.research-essay .research-essay-section{padding:37px 0}
+.research-essay .research-essay-section .section-head{margin-bottom:23px}
+.research-essay .research-essay-section .section-head>p{max-width:79ch}
+.research-essay .research-essay-prose{max-width:78ch}
+.research-essay .research-essay-prose p{font-size:17px;line-height:1.76;color:#313a32;margin-bottom:19px}
+.research-essay .research-essay-prose p:last-child{margin-bottom:0}
+.research-essay .research-essay-prose a,.research-essay .research-curriculum-note a,
+.research-essay .research-biology-note a,.research-essay .research-reading-list a{
+ text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--section-green-line)}
+.research-essay .research-essay-prose a:hover,.research-essay .research-curriculum-note a:hover,
+.research-essay .research-biology-note a:hover{text-decoration-color:currentColor}
+.research-essay-intro{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(225px,.7fr);
+ gap:clamp(25px,5vw,62px);align-items:start}
+.research-essay-margin{padding:20px 21px 19px;background:var(--section-green-soft);
+ border-top:3px solid var(--section-green-line)}
+.research-essay-margin .meta{font-size:13px;margin:0 0 12px}
+.research-essay-margin>p:nth-child(2){font-size:20px;line-height:1.53;margin:0 0 15px}
+.research-essay .research-essay-small{font-size:14px;line-height:1.63;color:#536051;margin:0}
+.research-curriculum-note,.research-biology-note{display:grid;
+ grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0;border:1px solid var(--moon-rule);
+ border-top:4px solid var(--section-green-line)}
+.research-curriculum-question,.research-biology-explanation{min-width:0;padding:23px 24px;background:var(--section-green-soft)}
+.research-curriculum-response,.research-biology-questions{min-width:0;padding:23px 24px}
+.research-curriculum-note h3,.research-biology-note h3{font-size:21px;line-height:1.35;margin:0 0 13px}
+.research-curriculum-note p,.research-biology-note p{font-size:16px;line-height:1.72;color:#313d32;margin:0 0 16px}
+.research-curriculum-note p:last-child,.research-biology-note p:last-child{margin-bottom:0}
+.research-curriculum-note .meta{font-size:13px;line-height:1.5;color:var(--moon-muted);margin-bottom:12px}
+.research-curriculum-note .research-chemical-equation{font-size:clamp(19px,2.3vw,25px);
+ line-height:1.45;padding:13px 0;margin:7px 0 15px;font-family:Georgia,serif;font-weight:700;
+ border-top:1px solid var(--section-green-line);border-bottom:1px solid var(--section-green-line)}
+.research-biology-questions ol{padding-left:21px;margin:5px 0 18px}
+.research-biology-questions li{font-size:16px;line-height:1.64;margin:0 0 13px;padding-left:2px}
+.research-evidence-path{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+ gap:12px;margin:25px 0 8px}
+.research-evidence-path>div{min-width:0;padding:16px 15px 15px;border-top:3px solid var(--section-green-line);border-bottom:1px solid var(--moon-rule)}
+.research-evidence-path .meta{display:block;margin-bottom:10px}
+.research-evidence-path strong{display:block;font-size:17px;line-height:1.35;margin-bottom:9px}
+.research-evidence-path p{font-size:14px;line-height:1.59;color:#404940;margin:0}
+.research-example-disclaimer{font-size:13px;color:var(--moon-muted);line-height:1.61;max-width:85ch;margin:13px 0 0}
+.research-essay .research-hub-studies .research-study-preview{padding:22px 0 26px}
+.research-essay-refs li{scroll-margin-top:96px}
+.about-revised .about-intro .hero-copy>p{max-width:70ch;line-height:1.7}
+.about-revised .about-chapter{padding-top:38px;padding-bottom:38px}
+.about-revised .about-prose{max-width:74ch}
+.about-revised .about-prose p{line-height:1.78}
+.about-revised .about-interest-link{font-size:14px}
+@media(max-width:910px){
+ .research-essay-intro{grid-template-columns:1fr}
+ .research-essay-margin{max-width:65ch}
+ .research-evidence-path{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:745px){
+ .research-curriculum-note,.research-biology-note{grid-template-columns:1fr}
+ .research-curriculum-question,.research-curriculum-response,
+ .research-biology-explanation,.research-biology-questions{padding:19px 18px}
+ .research-essay .research-essay-section{padding:29px 0}
+ .about-revised .about-chapter{padding-top:29px;padding-bottom:29px}
+ .research-evidence-path{gap:9px}
+}
+@media(max-width:480px){
+ .research-evidence-path{grid-template-columns:1fr}
+ .research-essay .research-essay-hero .hero-copy p{font-size:16px}
+ .research-essay .research-essay-lead{font-size:20px!important}
+ .research-essay .research-essay-prose p{font-size:16px}
+}
+@media print{
+ .research-essay .research-essay-navigation{display:none!important}
+ .research-curriculum-note,.research-biology-note{grid-template-columns:1fr}
+ .research-evidence-path>div{break-inside:avoid}
+}
