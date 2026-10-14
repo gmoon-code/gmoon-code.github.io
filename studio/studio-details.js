@@ -350,7 +350,7 @@
     if(m)return "#"+[m[1],m[2],m[3]].map(x=>Math.max(0,Math.min(255,Number(x))).toString(16).padStart(2,"0")).join("").toUpperCase();
     return "";
   }
-  function readNum(prop){const raw=getProp(area(),prop);return Number.parseFloat(raw)||""}
+  function readNum(prop){const n=Number.parseFloat(getProp(area(),prop));return Number.isFinite(n)?String(n):""}
   function refresh(){
     const target=area();
     if(!target||!docOf()){
