@@ -56,7 +56,7 @@
         <button type="button" data-preview-close>Close preview</button>
       </div>
       <div class="project-preview-stage" data-preview-stage data-device="desktop"></div>
-      <p class="project-preview-caption">This is the live public site. This is the live application, not a demonstration copy. Work completed in the preview may update the same browser-saved progress used by the full site. Open the full site for more space.</p>
+      <p class="project-preview-caption">This preview loads the public application. Progress made here may also appear in the full site because both use the same browser storage. Open the full site for more space.</p>
     </div>
   </div>
 </section>
@@ -106,7 +106,7 @@
   <div class="section-head"><h2>What the released application actually checks</h2></div>
   <div class="reading project-reading">
     <p>The public release uses static curriculum records for all eight AP Biology units. The application keeps progress, review scheduling, and assisted-recall state in the student's browser. Its release documentation describes two safeguards that are educationally consequential. When a learner requests a Quick Recall hint, the response remains marked as assisted after a short reload or unit change. During Review, a hint appears before the answer. Those decisions distinguish supported retrieval from unaided recall in the way the interface records and presents practice.</p>
-    <p>The release contains 58 guided journeys, 448 scenes, 152 intentional Quick Recalls, and 112 Challenge Lab items. For GitHub Pages, a build script packages the student runtime and its released curriculum records while excluding development files, source documents, and testing materials. The release checks load the staged static package across all eight units, and deployment follows a successful quality-assurance workflow at the validated commit. These checks address content integrity, data loading, and release consistency. They do not establish learning gains or substitute for independent visual and usability testing.</p>
+    <p>For GitHub Pages, a build script packages the student runtime and released curriculum records without development files, source documents, or test materials. The static release check reads the staged package across all eight units, including its journeys, scenes, retrieval prompts, review targets, and application questions. The packaging process must also produce identical output across two builds. Deployment then uses the commit that passed the quality-assurance workflow. These are checks of what was packaged and whether it can be loaded consistently. They cannot determine whether a memorable scene helps a learner explain an unfamiliar biological problem.</p>
     <p>I would therefore evaluate a future revision at two levels. First, whether the application preserves the intended scientific meaning and the distinction between aided and unaided responses. Second, whether learners can explain an unfamiliar mechanism or experimental decision after working through a scene. That second question would require actual evidence from learners.</p>
   </div>
   <p class="project-status-note">Implementation details are derived from the public <a href="https://github.com/gmoon-code/memory-palace-u1-8/blob/main/README.md">application repository and release documentation</a>, not a new usability test.</p>
@@ -118,7 +118,7 @@
     <div><strong>Home, Learn, and Review</strong><p>The student interface follows progress through a unit and provides opportunities to revisit earlier work.</p></div>
     <div><strong>Challenge Lab</strong><p>Application questions are available in released units, separate from the story and retrieval prompts.</p></div>
   </div>
-  <p class="project-status-note">The current public release is an AP Biology course. Additional course offerings are outside this release.</p>
+  <p class="project-status-note">These figures describe the released AP Biology curriculum. They are counts of available learning material, not measures of student use or learning.</p>
 </section>
 <p class="project-return"><a href="projects.html">← All projects</a></p>
 </main>
