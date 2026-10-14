@@ -133,7 +133,7 @@
     const max=Math.max(r.width,Math.min(2800,parent?.getBoundingClientRect().width||r.width||2800));
     remember();saveOriginal(el,d);
     return {el,doc:docOf(),d,dir,x,y,w:r.width,h:r.height,ratio:r.height?r.width/r.height:1,
-      lock:!line(el)&&(image(el)||$("keepResizeRatio").checked),
+      lock:!line(el)&&$("keepResizeRatio").checked,
       mx:parseFloat(style?.marginLeft)||0,my:parseFloat(style?.marginTop)||0,
       border:parseFloat(style?.borderTopWidth)||1,max,moved:false,
       initial:Object.fromEntries(properties.map(p=>[p,details.getDirectProperty(el,d,p)||""]))};
