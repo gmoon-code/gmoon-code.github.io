@@ -21,6 +21,9 @@
     garamond:'Garamond,Georgia,serif',
     palatino:'"Palatino Linotype",Palatino,serif',
     arial:'Arial,Helvetica,sans-serif',
+    verdana:'Verdana,Geneva,sans-serif',
+    trebuchet:'"Trebuchet MS",Arial,sans-serif',
+    mono:'Consolas,"Courier New",monospace',
     system:'system-ui,-apple-system,"Segoe UI",sans-serif'
   };
   let prefs={...SETTINGS_DEFAULT},filter="all",photoCache=null,saveTimer=null,dbPromise=null;
