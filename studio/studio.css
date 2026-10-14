@@ -219,3 +219,14 @@ input[type=checkbox]{accent-color:#3e7380}
 .resize-actions .small-button{background:white}
 #resizeModeNote{white-space:nowrap}
 #resizeHandle{display:none!important} /* Replaced with eight accessible, element-relative grips inside the page preview */
+
+/* Friendly in-context arranging controls. Move grips in the preview are temporary and never published. */
+.move-controls{border:1px solid #c2d7c9;background:#f5f9f6;border-radius:8px;padding:12px 13px;margin-bottom:14px}
+.move-title{display:flex;align-items:center;gap:8px;justify-content:space-between}
+.move-title strong{font-family:Georgia,serif;font-size:15px}
+.move-caption{font-size:10px;white-space:nowrap;color:#516b5c}
+.move-controls p{font-size:12px;line-height:1.5;margin:8px 0 10px;color:#46594d}
+.move-controls .micro-help{font-size:11px;margin:9px 0 0}
+.move-control-actions{display:flex;gap:8px}
+.move-control-actions button{flex:1;min-height:34px}
+@media(max-width:600px){.move-caption{white-space:normal}}
