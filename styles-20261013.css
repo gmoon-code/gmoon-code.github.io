@@ -972,3 +972,11 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
 .research-references a,.project-return a{text-decoration:underline;text-underline-offset:3px}
 .research-references a:focus-visible,.project-return a:focus-visible{outline:2px solid currentColor;outline-offset:3px}
 .project-return{margin:27px 0 2px;border-top:1px solid var(--moon-rule);padding-top:17px;font-size:14px}
+
+/* Questions developed from actual paired-response analysis. */
+.research-followups{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:22px 0 8px}
+.research-followups article{min-width:0;padding:18px;border:1px solid var(--moon-rule);border-top:3px solid var(--section-green-line)}
+.research-followups .meta{font-size:13px;line-height:1.5;margin:0 0 12px}
+.research-followups h3{font-size:18px;line-height:1.35;margin:0 0 10px}
+.research-followups article>p:last-child{font-size:15px;line-height:1.66;color:#373737;margin:0}
+@media(max-width:830px){.research-followups{grid-template-columns:1fr;gap:10px}}
