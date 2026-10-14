@@ -293,7 +293,7 @@
   function candidateFor(target){
     if(!(target instanceof docOf().defaultView.Element))return null;
     const main=docOf().querySelector("main");if(!main||!main.contains(target))return null;
-    const choices="img,figcaption,a,h1,h2,h3,h4,h5,h6,p,li,blockquote,figure,article,section,.question,.list-row,.reading,.grid-2,.grid-3,.studio-columns,.studio-gallery";
+    const choices="img,figcaption,summary,a,h1,h2,h3,h4,h5,h6,p,li,blockquote,figure,article,section,.question,.list-row,.reading,.grid-2,.grid-3,.studio-columns,.studio-gallery,.studio-split";
     return target.closest(choices)||target.closest("main > section");
   }
   function onPreviewLoad(){
@@ -311,7 +311,7 @@
     doc.addEventListener("dblclick",event=>{
       const target=candidateFor(event.target);
       if(!target)return;
-      if(!/^(H[1-6]|P|SPAN|FIGCAPTION|LI|A|BLOCKQUOTE)$/.test(target.tagName))return;
+      if(!/^(H[1-6]|P|SPAN|FIGCAPTION|LI|A|BLOCKQUOTE|SUMMARY)$/.test(target.tagName))return;
       selectElement(target);remember();
       state.editingInline=true;
       target.setAttribute("contenteditable","true");
@@ -423,13 +423,14 @@
   function updateInspectorFields(){
     const el=state.selected;
     if(!el)return;
-    const textAllowed=/^(H[1-6]|P|SPAN|FIGCAPTION|LI|A|BLOCKQUOTE)$/.test(el.tagName);
+    const textAllowed=/^(H[1-6]|P|SPAN|FIGCAPTION|LI|A|BLOCKQUOTE|SUMMARY)$/.test(el.tagName);
     const nestedLink=textAllowed&&el.tagName!=="A"&&!!el.querySelector("a,button,img");
+    const richText=textAllowed&&!!el.querySelector("strong,b,em,i,u,mark,code,span");
     $("textEditBox").hidden=!textAllowed;
-    $("elementText").disabled=nestedLink;
+    $("elementText").disabled=nestedLink||richText;
     $("elementText").value=textAllowed?el.textContent.trim():"";
-    $("textEditHelp").textContent=nestedLink?
-      "This text contains a link or image. Double-click it in the preview to edit while keeping the link.":
+    $("textEditHelp").textContent=nestedLink||richText?
+      "This text has links or formatting. Double-click it in the preview to edit without losing those details.":
       "Changes appear in the preview as you type.";
     $("linkEditBox").hidden=el.tagName!=="A";
     if(el.tagName==="A")$("linkDestination").value=el.getAttribute("href")||"";
@@ -697,6 +698,8 @@
         const emptyFigure=gallery&&target.closest("figure")?.querySelector("img")===null?
           target.closest("figure"):null;
         if(emptyFigure){
+          emptyFigure.querySelector(".studio-photo-target")?.remove();
+          emptyFigure.classList.remove("studio-empty-photo");
           emptyFigure.insertBefore(img,emptyFigure.firstChild);
           const addedCaption=emptyFigure.querySelector("figcaption");
           if(addedCaption)addedCaption.textContent="Photo caption (optional)";
