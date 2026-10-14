@@ -307,7 +307,7 @@
       // While editing words directly, clicks must be allowed to place the caret or select text.
       if(event.target.closest('[contenteditable="true"]'))return;
       if(event.target.closest("main a"))event.preventDefault();
-      const node=candidateFor(event.target);
+      const node=window.WebsiteStudioResize?.nearbyLine?.(event)||candidateFor(event.target);
       if(!node)return;
       event.preventDefault();event.stopPropagation();
       selectElement(node);

@@ -233,6 +233,19 @@
     if(t.moved){syncCurrent();selectElement(t.el)}
     update();
   }
+  function nearbyLine(event){
+    const doc=docOf(),main=doc?.querySelector("main");
+    if(!main?.contains(event.target))return null;
+    const x=event.clientX,y=event.clientY;
+    let best=null,distance=12;
+    for(const hr of doc.querySelectorAll("main hr")){
+      const r=rect(hr);
+      if(x<r.left-7||x>r.right+7)continue;
+      const delta=Math.abs(y-(r.top+r.height/2));
+      if(delta<=distance){best=hr;distance=delta}
+    }
+    return best;
+  }
   function reset(){
     const el=element();if(!el||state.busy)return;
     const d=screen();let map={};
@@ -277,6 +290,6 @@
     document.querySelectorAll("[data-tab]").forEach(button=>button.addEventListener("click",queueUpdate));
     $("previewFrame").addEventListener("load",queueUpdate);
   }
-  window.WebsiteStudioResize={refresh:queueUpdate,reset,apply};
+  window.WebsiteStudioResize={refresh:queueUpdate,reset,apply,nearbyLine};
   install();
 })();
