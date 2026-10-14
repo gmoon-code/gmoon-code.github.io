@@ -434,11 +434,11 @@ h4{
 .about-portrait{display:block;width:170px;height:169px;max-width:100%;object-fit:cover;border:1px solid var(--moon-rule);margin:0 0 15px}
 
 /* Alternating page and home-section accents: yellow, green, blue, magenta */
-.home-color-block{--page-highlight:var(--home-highlight);--page-line:var(--home-line)}
-.home-yellow{--home-highlight:var(--section-yellow);--home-line:var(--section-yellow-line)}
-.home-green{--home-highlight:var(--section-green);--home-line:var(--section-green-line)}
-.home-blue{--home-highlight:var(--section-blue);--home-line:var(--section-blue-line)}
-.home-magenta{--home-highlight:var(--section-magenta);--home-line:var(--section-magenta-line)}
+.home-color-block{--page-highlight:var(--home-highlight);--page-line:var(--home-line);--page-soft:var(--home-soft)}
+.home-yellow{--home-highlight:var(--section-yellow);--home-line:var(--section-yellow-line);--home-soft:var(--section-yellow-soft)}
+.home-green{--home-highlight:var(--section-green);--home-line:var(--section-green-line);--home-soft:var(--section-green-soft)}
+.home-blue{--home-highlight:var(--section-blue);--home-line:var(--section-blue-line);--home-soft:var(--section-blue-soft)}
+.home-magenta{--home-highlight:var(--section-magenta);--home-line:var(--section-magenta-line);--home-soft:var(--section-magenta-soft)}
 .page-hero.home-color-block{border-top:4px solid var(--home-line);padding-top:25px}
 .section.home-color-block{border-top:4px solid var(--home-line);padding-top:25px}
 .site-nav .cv-link[aria-current="page"]{border-bottom:3px solid var(--section-blue-line)}
