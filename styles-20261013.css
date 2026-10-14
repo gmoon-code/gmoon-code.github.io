@@ -962,3 +962,13 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
   .article-jumps span{width:100%}
   .story-scene-note{padding:15px}
 }
+
+/* Small reference and return links sit after the substantive analysis. */
+.research-references{max-width:88ch;margin-top:24px;padding:15px 0;border-top:1px solid var(--moon-rule);border-bottom:1px solid var(--moon-rule)}
+.research-references summary{font-size:15px;font-weight:700;cursor:pointer;padding:0 0 1px}
+.research-references ol{padding:10px 0 0 22px;margin:0}
+.research-references li{font-size:13px;line-height:1.7;margin:0 0 9px;overflow-wrap:anywhere}
+.research-references li:last-child{margin-bottom:0}
+.research-references a,.project-return a{text-decoration:underline;text-underline-offset:3px}
+.research-references a:focus-visible,.project-return a:focus-visible{outline:2px solid currentColor;outline-offset:3px}
+.project-return{margin:27px 0 2px;border-top:1px solid var(--moon-rule);padding-top:17px;font-size:14px}
