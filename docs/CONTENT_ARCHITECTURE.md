@@ -64,3 +64,7 @@ Research overview expanded and grounded in verified peer-reviewed sources. Resea
 - Rende Mendoza & Johnson (2024), 10.1002/tea.21928
 
 Keep this source set accurate. New sources require verification of bibliographic metadata, relevance, and the specific claim.
+
+## Teaching redesign, 14 October 2026
+
+The public Teaching overview now directs to two full advanced science case studies. AP Biology is grounded in the research manuscript and recorded classroom assessment procedure; its four-meeting extension is clearly prospective. AP Chemistry is a new AP Unit 7 instructional design informed by the verified course framework and peer-reviewed scholarship, with illustrative pressure data and invented diagnostic examples. Neither example claims observed improvement from an unevaluated lesson sequence. The former Grade 6 life-science routine is no longer the main Teaching page, although the separate optional osmosis worksheet remains available. Future updates should privilege actual AP Chemistry classroom artifacts and feedback records if the author supplies verifiable records and disclosure permission.

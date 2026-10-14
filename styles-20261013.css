@@ -1234,3 +1234,143 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
  .research-curriculum-note,.research-biology-note{grid-template-columns:1fr}
  .research-evidence-path>div{break-inside:avoid}
 }
+
+
+/* Advanced science Teaching portfolio, October 2026. */
+.teaching-scholarship .teaching-essay-hero .hero-copy{max-width:930px}
+.teaching-scholarship .teaching-essay-hero .meta{font-size:13px;margin:0 0 12px}
+.teaching-scholarship .teaching-lead{font-size:clamp(20px,2.35vw,24px);line-height:1.48;color:#222;margin:0 0 15px}
+.teaching-scholarship .teaching-essay-hero .hero-copy>p:not(.meta):not(.teaching-lead){font-size:17px;line-height:1.72;margin:13px 0 0}
+.teaching-scholarship .teaching-contents{margin:0 0 13px}
+.teaching-essay-section{padding:34px 0}
+.teaching-essay-section .section-head>p{font-size:15px;line-height:1.65;max-width:79ch}
+.teaching-case-collection{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px}
+.teaching-case-preview{border:1px solid var(--moon-rule);border-top:4px solid var(--section-magenta-line);padding:21px 21px 19px;display:flex;flex-direction:column;min-width:0}
+.teaching-case-preview .meta{font-size:13px;line-height:1.4;margin:0 0 9px}
+.teaching-case-preview h3{font-size:23px;line-height:1.3;margin:0 0 13px}
+.teaching-case-preview>p:not(.meta){font-size:16px;line-height:1.7;margin:0 0 12px;color:#373337}
+.teaching-case-preview .teaching-preview-note{font-size:14px!important;color:#585058!important}
+.teaching-case-preview .inline-link{margin-top:auto;padding-top:15px}
+.teaching-case-bridge{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin:11px 0 15px;font-size:13px;font-weight:700;color:#3f3940}
+.teaching-case-bridge span:not([aria-hidden]){padding:7px 9px;background:var(--section-magenta-soft);border:1px solid var(--moon-rule)}
+.teaching-planning-layout{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(230px,.72fr);gap:clamp(20px,4vw,58px);align-items:start}
+.teaching-longform{max-width:82ch}
+.teaching-longform p,.teaching-case-prose p{font-size:17px;line-height:1.75;color:#373337;margin:0 0 18px}
+.teaching-longform p:last-child,.teaching-case-prose p:last-child{margin-bottom:0}
+.teaching-longform a,.teaching-case-prose a,.teaching-resource-pair a,.teaching-source-list a{color:inherit;text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--section-magenta-line)}
+.teaching-longform a:hover,.teaching-case-prose a:hover,.teaching-resource-pair a:hover,.teaching-source-list a:hover{text-decoration-color:currentColor}
+.teaching-planning-aside{padding:17px 20px;background:var(--section-magenta-soft);border-top:3px solid var(--section-magenta-line)}
+.teaching-planning-aside .meta{margin:0 0 12px}
+.teaching-planning-aside ol{margin:0;padding-left:23px}
+.teaching-planning-aside li{font-size:15px;line-height:1.59;margin-bottom:12px;padding-left:1px}
+.teaching-planning-aside li:last-child{margin-bottom:0}
+.teaching-evidence-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:21px 0}
+.teaching-evidence-cards>div{padding:13px 12px;border-top:3px solid var(--section-magenta-line);border-bottom:1px solid var(--moon-rule)}
+.teaching-evidence-cards strong{font-size:16px;line-height:1.38;display:block;margin-bottom:7px}
+.teaching-evidence-cards p{font-size:14px;line-height:1.59;margin:0;color:#484148}
+.teaching-resource-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(20px,4vw,50px)}
+.teaching-resource-pair>div{padding-top:15px;border-top:2px solid var(--section-magenta-line)}
+.teaching-resource-pair h3{font-size:20px;margin-bottom:11px}
+.teaching-resource-pair p{font-size:16px;line-height:1.68;margin:0;max-width:68ch}
+.teaching-evidence-note,.teaching-source-note{max-width:86ch;color:#5b525b;font-size:14px;line-height:1.63;margin:16px 0 0}
+.teaching-source-list{list-style:none;margin:10px 0 0;padding:0;max-width:100ch}
+.teaching-source-list li{font-size:14px;line-height:1.7;overflow-wrap:anywhere;border-top:1px solid var(--moon-rule);padding:11px 3px}
+.teaching-source-list li:last-child{border-bottom:1px solid var(--moon-rule)}
+.teaching-source-list li[id]{scroll-margin-top:95px}
+.teaching-case-page .teaching-case-hero .hero-copy{max-width:890px}
+.teaching-case-page .teaching-case-hero .meta{font-size:13px;margin:0 0 11px}
+.teaching-case-page .teaching-case-lead{font-size:clamp(20px,2.3vw,25px);line-height:1.5;margin:0 0 15px;color:#292329}
+.teaching-case-page .teaching-case-hero .hero-copy>p:not(.meta):not(.teaching-case-lead){font-size:17px;line-height:1.72;max-width:83ch}
+.teaching-case-section{padding:32px 0}
+.teaching-case-section .section-head>p{max-width:86ch;line-height:1.63}
+.teaching-case-prose{max-width:83ch}
+.teaching-original-prompt{padding:23px 25px 19px;border-left:4px solid var(--section-magenta-line);background:var(--section-magenta-soft);margin-bottom:23px;max-width:920px}
+.teaching-original-prompt .meta{font-size:13px;margin:0 0 13px}
+.teaching-original-prompt blockquote{font-size:clamp(20px,2.3vw,24px);line-height:1.5;font-weight:700;margin:0 0 16px}
+.teaching-small-note{font-size:13px!important;line-height:1.62!important;color:#5f555f!important;margin:0!important}
+.teaching-bio-mechanism{max-width:970px;border:1px solid var(--moon-rule);padding:18px 19px;margin:0 0 24px}
+.bio-mechanism-start,.bio-mechanism-result{padding:17px 19px;background:var(--section-magenta-soft);border:1px solid var(--section-magenta-line);text-align:center}
+.bio-mechanism-start strong,.bio-mechanism-result strong{display:block;font-size:18px;line-height:1.45}
+.bio-mechanism-start span,.bio-mechanism-result p{display:block;font-size:15px;line-height:1.59;color:#423942;margin:7px 0 0}
+.bio-mechanism-arrows{text-align:center;font-size:20px;line-height:1.4;padding:4px;color:#94708e}
+.bio-mechanism-two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.bio-mechanism-two>div{padding:16px;border:1px solid var(--moon-rule);min-width:0}
+.bio-mechanism-two strong{display:block;font-size:17px;line-height:1.37;margin:0 0 8px}
+.bio-mechanism-two p{font-size:15px;line-height:1.62;margin:0 0 11px}
+.bio-mechanism-consequence{display:block;font-size:14px;font-weight:700;border-top:1px solid var(--moon-rule);padding-top:10px}
+.bio-mechanism-caveat{font-size:13px;line-height:1.63;color:#554f55;margin:15px 0 0}
+.teaching-decision-grid,.teaching-paired-questions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px;margin:23px 0}
+.teaching-decision-grid>div,.teaching-paired-questions>div{padding:17px 14px;border-top:3px solid var(--section-magenta-line)}
+.teaching-decision-grid h3,.teaching-paired-questions h3{font-size:19px;line-height:1.34;margin:0 0 9px}
+.teaching-decision-grid p,.teaching-paired-questions p{font-size:15px;line-height:1.67;margin:0;color:#403940}
+.teaching-paired-questions .meta{margin-bottom:10px;font-size:13px}
+.teaching-reading-line{font-size:15px;line-height:1.7;max-width:90ch;color:#454045}
+.teaching-reading-line a{text-decoration:underline;text-underline-offset:3px}
+.teaching-record-sequence{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:0 0 23px}
+.teaching-record-sequence>div{border:1px solid var(--moon-rule);padding:16px 18px}
+.teaching-step-code{display:block;font-size:12px;color:#805e7c;font-weight:700;margin:0 0 10px}
+.teaching-record-sequence h3{font-size:18px;line-height:1.36;margin:0 0 10px}
+.teaching-record-sequence p{font-size:15px;line-height:1.66;margin:0}
+.teaching-insight-panel{background:var(--section-magenta-soft);border-left:4px solid var(--section-magenta-line);padding:21px 24px;max-width:92ch}
+.teaching-insight-panel h3{font-size:20px;margin:0 0 12px}
+.teaching-insight-panel p{font-size:16px;line-height:1.69;margin:0 0 15px}
+.teaching-insight-panel .inline-link{margin-top:0}
+.teaching-sequence-table-wrap{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%;margin:20px 0}
+.teaching-sequence-table{width:100%;min-width:780px;border-collapse:collapse}
+.teaching-sequence-table th,.teaching-sequence-table td{vertical-align:top;text-align:left;font-size:14px;line-height:1.56;padding:12px 12px;border-bottom:1px solid var(--moon-rule)}
+.teaching-sequence-table th{font-weight:700}
+.teaching-sequence-table thead th{background:var(--section-magenta-soft)}
+.teaching-sequence-table tbody th{width:18%;font-size:15px}
+.teaching-chem-case .chem-equilibrium-example{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border:1px solid var(--moon-rule);border-top:4px solid var(--section-magenta-line);margin:20px 0 15px}
+.chem-equation-panel,.chem-computation-panel{padding:21px 23px;min-width:0}
+.chem-equation-panel{background:var(--section-magenta-soft)}
+.chem-equilibrium-example p{font-size:16px;line-height:1.71;margin:0 0 15px}
+.chem-equilibrium-example p:last-child{margin-bottom:0}
+.chem-equilibrium-example .meta{font-size:13px;margin:0 0 13px}
+.chem-equilibrium-example .chem-equation{font-size:clamp(20px,2.2vw,25px);font-weight:700;line-height:1.5}
+.chem-formula{font-family:Georgia,serif;overflow-wrap:anywhere}
+.chem-large-calculation{font-size:clamp(18px,2vw,22px)!important;font-weight:700;overflow-wrap:anywhere}
+.teaching-three-representations,.teaching-chem-responses{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;margin:21px 0}
+.teaching-three-representations>article,.teaching-chem-responses>article{padding:17px 15px;border:1px solid var(--moon-rule);border-top:3px solid var(--section-magenta-line)}
+.teaching-three-representations .meta,.teaching-chem-responses .meta{font-size:13px;margin:0 0 10px}
+.teaching-three-representations h3,.teaching-chem-responses h3{font-size:18px;margin:0 0 11px;line-height:1.37}
+.teaching-three-representations p:not(.meta),.teaching-chem-responses p:not(.meta){font-size:15px;line-height:1.67;margin:0}
+.chem-pressure-check{padding:19px 22px;margin:23px 0;border:1px solid var(--moon-rule);background:var(--section-magenta-soft);max-width:920px}
+.chem-pressure-check h3{font-size:20px;margin:0 0 12px}
+.chem-pressure-check p{font-size:16px;line-height:1.7;margin:0 0 15px}
+.chem-pressure-check p:last-child{margin:0}
+.teaching-return{font-size:14px;margin:26px 0 0;border-top:1px solid var(--moon-rule);padding-top:15px}
+.teaching-return a{text-decoration:underline;text-underline-offset:3px}
+.teaching-scholarship .section[id],.teaching-case-page .section[id]{scroll-margin-top:85px}
+@media(max-width:970px){
+ .teaching-case-collection{grid-template-columns:1fr}
+ .teaching-planning-layout{grid-template-columns:1fr}
+ .teaching-planning-aside{max-width:73ch}
+ .teaching-evidence-cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:790px){
+ .teaching-case-page .teaching-decision-grid,.teaching-paired-questions{grid-template-columns:1fr;gap:10px}
+ .teaching-record-sequence,.teaching-three-representations,.teaching-chem-responses{grid-template-columns:1fr}
+ .teaching-chem-case .chem-equilibrium-example{grid-template-columns:1fr}
+ .bio-mechanism-two{grid-template-columns:1fr}
+ .teaching-resource-pair{grid-template-columns:1fr;gap:20px}
+}
+@media(max-width:630px){
+ .teaching-evidence-cards{grid-template-columns:1fr}
+ .teaching-case-preview{padding:17px 16px}
+ .teaching-case-section,.teaching-essay-section{padding:26px 0}
+ .teaching-record-sequence{gap:9px}
+ .teaching-original-prompt,.teaching-insight-panel{padding:17px}
+ .teaching-bio-mechanism{padding:11px}
+ .teaching-sequence-table-wrap{border:1px solid var(--moon-rule)}
+ .teaching-chem-case .chem-equilibrium-example{margin-top:12px}
+ .chem-equation-panel,.chem-computation-panel{padding:17px}
+ .teaching-scholarship .section[id],.teaching-case-page .section[id]{scroll-margin-top:24px}
+}
+@media print{
+ .teaching-contents,.teaching-case-page .article-jumps{display:none!important}
+ .teaching-sequence-table{min-width:0}
+ .teaching-sequence-table-wrap{overflow:visible}
+ .teaching-case-preview,.teaching-original-prompt,.teaching-three-representations>article{break-inside:avoid}
+ .teaching-chem-case .chem-equilibrium-example{grid-template-columns:1fr}
+}

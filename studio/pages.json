@@ -68,6 +68,22 @@
       "locked": true
     },
     {
+      "path": "teaching-ap-biology.html",
+      "title": "AP Biology teaching case",
+      "group": "Teaching resources",
+      "parent": "teaching.html",
+      "accent": "magenta",
+      "locked": false
+    },
+    {
+      "path": "teaching-ap-chemistry.html",
+      "title": "AP Chemistry teaching case",
+      "group": "Teaching resources",
+      "parent": "teaching.html",
+      "accent": "magenta",
+      "locked": false
+    },
+    {
       "path": "teaching-osmosis-practice.html",
       "title": "Osmosis practice activity",
       "group": "Teaching resources",
