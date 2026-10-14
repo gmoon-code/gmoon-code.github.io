@@ -622,3 +622,103 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
   .about-chapter{padding-top:28px;padding-bottom:28px}
   .about-prose p{font-size:16px;line-height:1.7}
 }
+
+
+/* Teaching and Projects, editorial stage 2. */
+.teaching-page .hero-copy>p+p{margin-top:13px}
+.teaching-page .page-hero.single .hero-copy{max-width:790px}
+.lesson-sequence{list-style:none;margin:22px 0 0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.lesson-sequence li{min-width:0;padding:15px 16px 17px;border:1px solid var(--moon-rule);border-top:3px solid var(--section-magenta-line)}
+.lesson-minutes{display:block;font-size:13px;font-weight:700;color:#5b4d57;margin:0 0 10px}
+.lesson-sequence strong{display:block;font-size:17px;line-height:1.28}
+.lesson-sequence p{margin:9px 0 0;font-size:14px;line-height:1.55;color:#444}
+.teaching-activity-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(215px,.55fr);gap:clamp(22px,4vw,55px);align-items:start}
+.teaching-activity .reading p,.teaching-decisions .reading p,.teaching-inquiry .reading p{font-size:17px;line-height:1.7;max-width:77ch}
+.teaching-prompt-card{background:var(--section-magenta-soft);border:1px solid var(--moon-rule);border-left:4px solid var(--section-magenta-line);padding:18px 20px}
+.teaching-prompt-card .meta{margin:0 0 10px}
+.teaching-prompt{margin:0;font-size:20px;line-height:1.4;font-weight:700}
+.teaching-prompt-note{font-size:14px;color:#454545;line-height:1.55;margin:12px 0 0}
+.projects-page .page-hero.single .hero-copy{max-width:760px}
+.project-showcase{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+.project-showcase-item{min-width:0;border-top:4px solid var(--section-blue-line);padding:21px 20px;border-right:1px solid var(--moon-rule);border-bottom:1px solid var(--moon-rule);border-left:1px solid var(--moon-rule);display:flex;flex-direction:column}
+.project-showcase-item h2{font-size:26px;margin:8px 0 14px}
+.project-showcase-item>p:not(.meta){font-size:16px;line-height:1.63;margin:0;color:#373737}
+.project-showcase-item .controls{margin-top:auto;padding-top:19px}
+.project-try{margin-top:20px;padding:14px 16px;border-left:3px solid var(--section-blue-line);background:var(--section-blue-soft)}
+.project-try strong{font-size:15px}
+.project-try p{font-size:14px;line-height:1.6;margin:7px 0 0}
+.project-detail-page .page-hero.single .hero-copy{max-width:810px}
+.project-detail-page .hero-copy .controls{margin-top:21px}
+.project-section-intro{max-width:75ch;color:#3b3b3b;font-size:16px;line-height:1.63;margin:0 0 19px}
+.project-steps{margin:0;padding:0;list-style:none;border-top:1px solid var(--moon-rule)}
+.project-steps li{display:grid;grid-template-columns:62px minmax(0,1fr);gap:14px;border-bottom:1px solid var(--moon-rule);padding:19px 0}
+.project-step-number{color:#69717c;font-size:15px;padding-top:2px}
+.project-steps h3{font-size:19px;margin:0 0 7px}
+.project-steps p{font-size:16px;line-height:1.65;color:#383838;max-width:82ch;margin:0}
+.project-reading p{font-size:17px;line-height:1.72;max-width:81ch}
+.project-status-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.project-status-grid>div{border-top:3px solid var(--section-blue-line);padding:14px 13px;border-bottom:1px solid var(--moon-rule)}
+.project-status-grid strong{font-size:17px;line-height:1.3;display:block}
+.project-status-grid p{font-size:14px;color:#424242;line-height:1.55;margin:8px 0 0}
+.project-status-note{max-width:82ch;color:var(--moon-muted);font-size:14px;line-height:1.55;margin:15px 0 0}
+.project-decision-sequence{display:grid;gap:0;border-top:1px solid var(--moon-rule);margin-top:24px}
+.project-decision-sequence>div{display:grid;grid-template-columns:126px minmax(0,1fr);gap:20px;padding:17px 0;border-bottom:1px solid var(--moon-rule)}
+.project-sequence-label{font-size:14px;font-weight:700}
+.project-decision-sequence p{margin:0;line-height:1.62;color:#333;max-width:82ch}
+.project-phase-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+.project-phase-grid article{padding:14px 12px;border-top:3px solid var(--section-blue-line);border-bottom:1px solid var(--moon-rule)}
+.project-phase-grid article h3{font-size:17px;line-height:1.3;margin:7px 0 9px}
+.project-phase-grid article p{font-size:14px;line-height:1.55;color:#444;margin:0}
+.project-tool-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:30px}
+.project-tool-list>div{padding:15px 0;border-bottom:1px solid var(--moon-rule)}
+.project-tool-list h3{font-size:18px;margin:0 0 7px}
+.project-tool-list p{margin:0;font-size:15px;line-height:1.61;color:#414141}
+.teaching-resource-page .page-hero.single .hero-copy{max-width:850px}
+.teaching-resource-page .hero-copy .meta{font-size:13px;margin:0 0 7px}
+.teaching-resource-page .hero-copy .controls{margin-top:20px}
+.teaching-resource-page button.control{font-family:inherit;line-height:inherit;cursor:pointer}
+.worksheet-data{width:100%;max-width:860px;border-collapse:collapse;margin:19px 0 18px;table-layout:fixed}
+.worksheet-data caption{text-align:left;color:#575757;font-size:13px;padding:0 0 8px}
+.worksheet-data th,.worksheet-data td{border:1px solid var(--moon-rule-dark);text-align:left;padding:11px 14px;font-size:15px;line-height:1.35}
+.worksheet-data thead th{background:var(--section-magenta-soft);font-weight:700}
+.worksheet-data tbody th{font-weight:400}
+.worksheet-formula{font-size:15px;font-weight:700;max-width:80ch;line-height:1.5;margin:18px 0 0}
+.worksheet-task-list{margin:0;max-width:860px;padding:0;list-style:none;counter-reset:task}
+.worksheet-task-list li{counter-increment:task;padding:15px 0 13px;border-bottom:1px solid var(--moon-rule);line-height:1.63}
+.worksheet-task-list li:before{content:counter(task) ".";display:inline-block;font-weight:700;min-width:26px}
+.worksheet-task-list strong{font-size:16px}
+.worksheet-answer-space{border-bottom:1px solid #d0d0d0;height:40px;margin:13px 0 4px 26px}
+.worksheet-teacher-notes{border-top:1px solid var(--moon-rule);border-bottom:1px solid var(--moon-rule);max-width:850px}
+.worksheet-teacher-notes summary{padding:15px 0;cursor:pointer;font-weight:700}
+.worksheet-teacher-notes .reading{padding:6px 0 19px}
+.worksheet-teacher-notes .reading p{font-size:15px;line-height:1.65;max-width:80ch}
+@media(max-width:950px){
+  .lesson-sequence{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .project-phase-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:700px){
+  .lesson-sequence,.project-showcase,.teaching-activity-grid,.project-tool-list,.project-status-grid{grid-template-columns:1fr}
+  .project-phase-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .project-decision-sequence>div{grid-template-columns:1fr;gap:5px}
+  .project-steps li{grid-template-columns:40px minmax(0,1fr);gap:9px}
+}
+@media(max-width:460px){
+  .project-phase-grid{grid-template-columns:1fr}
+  .worksheet-data th,.worksheet-data td{padding:8px 6px;font-size:13px;overflow-wrap:break-word}
+  .worksheet-formula{font-size:14px}
+}
+@media print{
+  .teaching-resource-page{max-width:none;padding:0}
+  body:has(.teaching-resource-page){font-size:11pt}
+  body:has(.teaching-resource-page) .topbar,
+  body:has(.teaching-resource-page) .skip-link,
+  .teaching-resource-page .breadcrumb,
+  .teaching-resource-page .worksheet-actions,
+  .teaching-resource-page .worksheet-teacher-section{display:none!important}
+  .teaching-resource-page .page-hero,.teaching-resource-page .section{padding:13px 0;margin:0;break-inside:auto;border:0}
+  .teaching-resource-page .page-hero h1{font-size:24pt}
+  .teaching-resource-page .hero-copy>p{font-size:11pt}
+  .worksheet-data{break-inside:avoid}
+  .worksheet-task-list li{break-inside:avoid}
+  .worksheet-answer-space{height:55px}
+}
