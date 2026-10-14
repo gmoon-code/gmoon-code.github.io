@@ -24,7 +24,7 @@
 <p class="teaching-case-lead">Haemoglobin, malaria, and the care needed when interpreting human variation.</p>
 <p>One allele can have different consequences across genotypes and environments. I would use this problem to connect molecular function, inheritance, natural selection, and the interpretation of evidence. It also requires attention to the categories through which people are represented in science. This is a developed curriculum proposal for my website, informed by established biology and science education scholarship. I have not presented it as an implemented or evaluated classroom unit.</p>
 </div></section>
-<nav class="article-jumps" aria-label="In this curriculum case"><span>Explore</span><a href="#variation-science">Biology</a><a href="#variation-evidence">Evidence</a><a href="#variation-sequence">Teaching sequence</a><a href="#variation-assessment">Assessment</a><a href="#variation-ethics">Interpretation and ethics</a><a href="#variation-sources">Sources</a></nav>
+<nav class="article-jumps" aria-label="In this curriculum case"><span>Explore</span><a href="#variation-science">Biology</a><a href="#variation-evidence">Evidence</a><a href="#variation-sequence">Teaching sequence</a><a href="#variation-assessment">Assessment</a><a href="#variation-selection-model">Selection model</a><a href="#variation-ethics">Interpretation and ethics</a><a href="#variation-sources">Sources</a></nav>
 <section id="variation-science" class="section teaching-case-section"><div class="section-head"><h2>Begin with a biological explanation</h2></div>
 <div class="reading teaching-case-prose">
 <p>Haemoglobin transports oxygen in red blood cells. A variant of the β-globin gene, <i>HBB</i>, produces haemoglobin S (HbS). The classic HbS allele involves a single nucleotide substitution that changes glutamic acid to valine at position six of the mature β-globin chain. When oxygen levels are low, deoxygenated HbS can polymerize. Red blood cells may then become less deformable, contributing to haemolysis and obstruction of small blood vessels. The severity and clinical manifestations of sickle cell disease vary and can be influenced by other genetic and physiological factors.</p>
@@ -56,6 +56,25 @@
 <p>With p = 0.8 and q = 0.2, p² = 0.64, 2pq = 0.32, and q² = 0.04. Those are expected frequencies at the specified starting point under Hardy–Weinberg assumptions, not measured values and not a prediction of genotype frequencies after selection. A plausible selection explanation must connect differences in survival and reproduction across genotypes to changes in allele frequencies across generations. The strength and direction of selection depend on the environment; the example does not provide fitness coefficients from which to calculate the next generation.</p>
 <p>I would assess the numerical result, the genotype-dependent biological mechanism, the distinction between starting expectations and evolutionary change, and the limits placed on claims about identity. A mathematically correct table would remain incomplete if the biological explanation treated populations as homogeneous or presented race as a diagnostic genotype category.</p>
 </div>
+</section>
+<section id="variation-selection-model" class="section teaching-case-section">
+  <div class="section-head"><h2>From genotype frequencies to selection</h2><p>Constructed fitness values for teaching the calculation. They are not measured survival rates in any human population.</p></div>
+  <div class="reading teaching-case-prose">
+    <p>The Hardy–Weinberg calculation above supplies a starting genotype distribution. It does not itself model selection. For a separate hypothetical exercise, suppose the relative contributions of HbAA, HbAS, and HbSS genotypes to the breeding population are 0.70, 1.00, and 0.20, respectively. These illustrative values describe combined survival and reproductive contribution under a particular imagined environment. We assume a very large population, no migration or mutation, and random mating before the next generation.</p>
+  </div>
+  <div class="teaching-sequence-table-wrap" role="region" aria-label="Hypothetical one-generation viability and reproductive selection calculation" tabindex="0">
+    <table class="teaching-sequence-table"><thead><tr><th scope="col">Genotype</th><th scope="col">Starting frequency</th><th scope="col">Relative contribution</th><th scope="col">Weighted contribution</th></tr></thead>
+    <tbody><tr><th scope="row">HbAA</th><td>0.64</td><td>0.70</td><td>0.448</td></tr>
+    <tr><th scope="row">HbAS</th><td>0.32</td><td>1.00</td><td>0.320</td></tr>
+    <tr><th scope="row">HbSS</th><td>0.04</td><td>0.20</td><td>0.008</td></tr>
+    <tr><th scope="row">Total</th><td>1.00</td><td>Illustrative</td><td>0.776</td></tr></tbody></table>
+  </div>
+  <div class="reading teaching-case-prose">
+    <h3>Work through the next step</h3>
+    <p>Normalize each weighted contribution by the total, 0.776. The expected HbS allele frequency among the contributors to the next generation is q′ = [0.320/2 + 0.008]/0.776 = 0.168/0.776 ≈ 0.2165. It increases from 0.20 in this single modeled generation. Assuming random union of gametes, the next zygote genotype frequencies can then be computed from p′ = 1 − q′ and q′. Those zygote frequencies describe a later stage than the weighted genotype contributions shown in the table.</p>
+    <p>I would ask students to account for every factor in the calculation before interpreting the result. Why is the heterozygote contribution divided by two when finding the HbS allele frequency? Which assumption makes the next generation's Hardy–Weinberg proportions appropriate? What would have to change in the fitness values for the direction of allele-frequency change to differ? The numbers show how a mechanism could work under stipulated conditions. They provide no estimate of an equilibrium allele frequency or of selection strength in a real population.</p>
+  </div>
+  <p class="teaching-evidence-note">Teacher check. This extension supplies the quantitative selection step promised in meeting three. It can be worked independently before students inspect the calculation and its assumptions.</p>
 </section>
 <section id="variation-ethics" class="section teaching-case-section"><div class="section-head"><h2>Scientific precision and responsibility</h2></div>
 <div class="reading teaching-case-prose">
