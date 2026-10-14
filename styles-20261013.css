@@ -1012,3 +1012,93 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
   .section{break-inside:auto}
   .research-route-card,.research-case,.research-followups article{break-inside:avoid}
 }
+
+
+/* Research hub, October 2026. The overview carries intellectual context;
+   the two study pages retain their empirical detail. */
+.research-hub .research-hub-hero{padding-bottom:39px}
+.research-hub .research-hub-hero .hero-copy{max-width:890px}
+.research-eyebrow{font-size:13px!important;letter-spacing:.015em;color:var(--moon-muted)!important;margin-bottom:13px!important}
+.research-hub .research-hub-lead{font-size:clamp(21px,2.35vw,27px)!important;
+  line-height:1.44!important;color:var(--moon-ink)!important;margin-bottom:17px!important}
+.research-hub .research-hub-hero .hero-copy>p:not(.research-eyebrow):not(.research-hub-lead){
+  font-size:17px;line-height:1.72;margin-top:15px;max-width:82ch}
+.research-hub .research-hub-jumps{margin:0 0 17px}
+.research-hub .research-hub-section{padding:38px 0}
+.research-hub .research-hub-section .section-head{margin-bottom:21px}
+.research-hub .research-hub-section .section-head h2{font-size:clamp(27px,3vw,31px)}
+.research-hub .research-hub-section .section-head>p{max-width:78ch;line-height:1.64;font-size:16px}
+.research-hub-prose{max-width:75ch}
+.research-hub-prose p{font-size:17px;line-height:1.76;color:#303633;margin:0 0 19px}
+.research-hub-intro-grid{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(235px,.72fr);gap:clamp(24px,5vw,60px);align-items:start}
+.research-hub-margin{padding:19px 20px 17px;background:var(--section-green-soft);
+  border-top:3px solid var(--section-green-line)}
+.research-hub-margin .meta{margin:0 0 12px;font-size:13px}
+.research-hub-margin>p:nth-child(2){font-size:19px;line-height:1.49;margin:0 0 14px}
+.research-hub-margin .research-hub-aside-note{font-size:14px;line-height:1.62;color:#505b53;margin:0}
+.research-interest-collection{border-top:1px solid var(--moon-rule)}
+.research-interest{display:grid;grid-template-columns:minmax(215px,.7fr) minmax(0,1.5fr);
+  gap:clamp(20px,4vw,52px);padding:30px 0;border-bottom:1px solid var(--moon-rule)}
+.research-interest-heading .meta{font-size:13px;line-height:1.55;margin:0 0 11px}
+.research-interest-heading h3{font-size:clamp(21px,2.4vw,25px);line-height:1.25;margin:0 0 14px}
+.research-interest-question{font-size:15px;line-height:1.63;color:#516451;margin:0}
+.research-interest-body p{font-size:16px;line-height:1.76;color:#303633;margin:0 0 17px;max-width:79ch}
+.research-interest-body p:last-child{margin-bottom:0}
+.research-citation{text-decoration:underline;text-underline-offset:3px;text-decoration-color:#8aab80}
+.research-citation:hover{text-decoration-color:currentColor}
+.research-thought-example{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.12fr);gap:0;
+  border:1px solid var(--moon-rule);border-top:4px solid var(--section-green-line)}
+.research-thought-scenario{padding:23px 24px;background:var(--section-green-soft)}
+.research-thought-scenario .meta{margin:0 0 14px;font-size:13px}
+.research-thought-scenario .research-thought-prompt{font-size:clamp(18px,2vw,21px);font-weight:700;
+  line-height:1.53;color:#243329;margin:0 0 18px}
+.research-thought-scenario p:last-child{font-size:16px;line-height:1.7;margin:0}
+.research-thought-analysis{padding:23px 25px 20px}
+.research-thought-analysis h3{font-size:21px;margin:0 0 16px}
+.research-thought-analysis dl{margin:0 0 19px}
+.research-thought-analysis dl>div{padding:11px 0;border-bottom:1px solid var(--moon-rule)}
+.research-thought-analysis dl>div:first-child{padding-top:0}
+.research-thought-analysis dt{font-weight:700;font-size:15px;margin:0 0 5px}
+.research-thought-analysis dd{font-size:15px;line-height:1.63;color:#414741;margin:0}
+.research-thought-analysis>p{font-size:15px;line-height:1.67;color:#414741;margin:0}
+.research-hub .research-hub-studies{margin-top:21px}
+.research-hub .research-hub-studies .research-study-preview{padding:24px 0 29px}
+.research-hub .research-hub-studies .research-study-preview h3{font-size:24px}
+.research-hub .research-hub-studies .research-study-preview p:not(.meta){max-width:82ch}
+.research-hub .research-approach-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(21px,5vw,60px)}
+.research-hub .research-approach-grid>div{padding-top:15px;border-top:3px solid var(--section-green-line)}
+.research-hub .research-approach h3{font-size:21px;margin:0 0 13px}
+.research-hub .research-approach p{font-size:16px;line-height:1.73;margin:0;color:#323a33}
+.research-hub .research-ethics-note{max-width:85ch;margin-top:31px;padding:20px 25px;
+  border-left:4px solid var(--section-green-line);background:var(--section-green-soft)}
+.research-hub .research-ethics-note p+p{margin-top:15px}
+.research-reading-list{padding:0;list-style:none;margin:5px 0 0;max-width:100ch}
+.research-reading-list li{font-size:14px;line-height:1.73;color:#3a403b;
+  border-bottom:1px solid var(--moon-rule);padding:11px 0 12px 24px;
+  text-indent:-24px;scroll-margin-top:100px;overflow-wrap:anywhere}
+.research-reading-list li:first-child{border-top:1px solid var(--moon-rule)}
+.research-reading-list a{text-decoration:underline;text-underline-offset:3px;text-decoration-color:#8da783}
+.research-reading-list a:hover{text-decoration-color:currentColor}
+.research-hub .section[id]{scroll-margin-top:89px}
+@media(max-width:860px){
+  .research-hub-intro-grid{grid-template-columns:minmax(0,1fr)}
+  .research-hub-margin{max-width:68ch}
+  .research-interest{grid-template-columns:minmax(0,1fr);gap:12px;padding:27px 0}
+  .research-interest-heading{max-width:80ch}
+  .research-thought-example{grid-template-columns:minmax(0,1fr)}
+}
+@media(max-width:700px){
+  .research-hub .research-hub-section{padding:30px 0}
+  .research-hub .research-approach-grid{grid-template-columns:minmax(0,1fr);gap:22px}
+  .research-hub .research-ethics-note{padding:17px 18px}
+  .research-thought-scenario,.research-thought-analysis{padding:18px}
+  .research-hub .section[id]{scroll-margin-top:24px}
+  .research-reading-list li{font-size:13px}
+  .research-hub .research-hub-jumps{margin-bottom:11px}
+}
+@media print{
+  .research-hub .research-hub-jumps{display:none}
+  .research-hub .research-hub-section{padding:16px 0}
+  .research-interest{break-inside:avoid;grid-template-columns:minmax(0,1fr)}
+  .research-reading-list li{break-inside:avoid}
+}
