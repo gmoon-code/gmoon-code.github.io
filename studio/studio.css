@@ -230,3 +230,14 @@ input[type=checkbox]{accent-color:#3e7380}
 .move-control-actions{display:flex;gap:8px}
 .move-control-actions button{flex:1;min-height:34px}
 @media(max-width:600px){.move-caption{white-space:normal}}
+
+/* Keep text tools in the editor toolbar, clear of resize and move grips. */
+.canvas-insert-toolbar .quick-actions{
+  position:static!important;top:auto!important;left:auto!important;
+  max-width:100%;width:auto!important;box-shadow:none;
+  border:1px solid #cadad0;background:#f7faf8;border-radius:6px;
+  flex:0 1 auto;white-space:normal
+}
+.canvas-insert-toolbar .quick-actions button{min-height:30px}
+.canvas-insert-toolbar .toolbar-help{flex:1 1 220px}
+@media(max-width:720px){.canvas-insert-toolbar .quick-actions{width:100%!important}}

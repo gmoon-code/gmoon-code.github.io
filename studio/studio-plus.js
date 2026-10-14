@@ -215,20 +215,13 @@
     const node=state.selected;return !!node&&/^(H[1-6]|P|SPAN|A|FIGCAPTION|LI|BLOCKQUOTE)$/.test(node.tagName);
   }
   function positionQuick(){
-    const item=state.selected,outer=$("previewOuter"),frame=$("previewFrame"),bar=$("quickActions");
-    const handle=$("resizeHandle");
-    if(!item||!frame||!outer){bar.hidden=true;handle.hidden=true;return}
-    const target=item.getBoundingClientRect(),f=frame.getBoundingClientRect(),o=outer.getBoundingClientRect();
-    if(target.width===0||target.height===0){bar.hidden=true;handle.hidden=true;return}
-    const x=Math.max(7,Math.min(Math.max(7,o.width-310),f.left+target.left-o.left+outer.scrollLeft));
-    const y=Math.max(6,f.top+target.top-o.top+outer.scrollTop-43);
-    bar.style.left=x+"px";bar.style.top=y+"px";
-    bar.hidden=false;
-    if(item.tagName==="IMG"&&!resizeSession){
-      handle.style.left=Math.max(6,f.left+target.right-o.left+outer.scrollLeft-17)+"px";
-      handle.style.top=Math.max(6,f.top+target.bottom-o.top+outer.scrollTop-17)+"px";
-      handle.hidden=false;
-    }else if(!resizeSession)handle.hidden=true;
+    const item=state.selected,bar=$("quickActions");
+    const dock=document.querySelector(".canvas-insert-toolbar");
+    if(dock&&bar.parentElement!==dock)dock.appendChild(bar);
+    bar.style.left="";bar.style.top="";
+    bar.hidden=!item||!item.isConnected||item.getBoundingClientRect().width===0;
+    // The old image-only resize control is replaced by the shared on-page grips.
+    $("resizeHandle").hidden=true;
   }
   function enterInlineEdit(){
     const node=state.selected;if(!iconKindSelected()){document.querySelector('[data-tab="content"]')?.click();$("elementText").focus();return}
