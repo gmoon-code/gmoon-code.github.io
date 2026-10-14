@@ -27,7 +27,7 @@
   </div>
 </section>
 <nav class="article-jumps" aria-label="Sections in the AP Chemistry case">
-  <span>Explore</span><a href="#chem-task">Worked problem</a><a href="#chem-representations">Representations</a><a href="#chem-sequence">Lesson plan</a><a href="#chem-feedback">Feedback</a><a href="#chem-assessment">Transfer task</a><a href="#chem-disturbance-check">Compression reasoning</a><a href="#chem-evidence-chain">Environmental evidence</a><a href="#chem-public-data">Public data</a><a href="#chem-justice">Wider inquiry</a><a href="#chem-participation">Participation</a><a href="#chem-reading">Reading</a>
+  <span>Explore</span><a href="#chem-task">Worked problem</a><a href="#chem-representations">Representations</a><a href="#chem-sequence">Lesson plan</a><a href="#chem-feedback">Feedback</a><a href="#chem-assessment">Transfer task</a><a href="#chem-disturbance-check">Compression reasoning</a><a href="#chem-evidence-chain">Environmental evidence</a><a href="#chem-public-data">Public data</a><a href="#chem-data-protocol">Data protocol</a><a href="#chem-justice">Wider inquiry</a><a href="#chem-participation">Participation</a><a href="#chem-reading">Reading</a>
 </nav>
 
 <section id="chem-task" class="section teaching-case-section">
@@ -173,6 +173,33 @@
 <p>Use the portal documentation to identify the fields that would allow comparison of nitrate measurements from two locations. Record the analyte name, fraction, units, collection dates, methods, and any quality qualifiers. Explain one comparison the selected records might support and two reasons why the records might remain incomparable. Propose one additional observation that could help evaluate a possible source of nitrogen.</p></div>
 <p class="teaching-evidence-note">This exercise names a real public data source, but it does not assert that a comparable dataset has already been selected or analysed. A future classroom dataset would need a reproducible query, retained metadata, and a checked download.</p>
 </section>
+<section id="chem-data-protocol" class="section teaching-case-section">
+  <div class="section-head"><h2>A reproducible public-data exercise</h2><p>Teacher preparation protocol · A real data service, with the site-specific nitrate observations still to be extracted and checked.</p></div>
+  <div class="reading teaching-case-prose">
+    <p>For a first reproducible trial, I would use the <a href="https://waterdata.usgs.gov/download-samples/">US Geological Survey's discrete sample data download</a>. The USGS documents monitoring location <code>USGS-04183500</code> in its <a href="https://water.code-pages.usgs.gov/dataRetrieval/articles/samples_data.html">data retrieval tutorial</a>. That identifier provides an explicit starting location, although the tutorial does not establish that this site has an appropriate nitrate series for our question. The site must pass the availability check before its data can be used.</p>
+    <h3>Retrieval and screening record</h3>
+    <ol>
+      <li>Open the USGS discrete sample download and enter <code>USGS-04183500</code> as the monitoring location. Inspect the available results. Keep the returned site name, agency identifier, retrieval date, and source download URL.</li>
+      <li>Check whether a nitrate result is available. Select one precisely named characteristic and one consistently expressed result basis, such as nitrate reported as nitrogen, if offered. If the site does not contain comparable nitrate results, record that outcome and select another documented monitoring location through the same interface. Do not substitute total nitrogen or ammonia measurements.</li>
+      <li>Restrict the date range to <code>2020-01-01</code> through <code>2024-12-31</code> for this exercise. Download the <em>Full physical chemical</em> CSV profile, retaining original column names and metadata. A historical window is used so that a repeat query has a stable stated boundary; records may still be revised.</li>
+      <li>Retain collection date, monitoring location, analyte name, result value, units, fraction or basis, detection qualification, and laboratory method where available. Record missing fields. Exclude results that cannot be compared on a common analyte definition and basis, explaining the exclusions.</li>
+      <li>Make a simple date-ordered plot only after screening. Mark non-detects or censored results distinctly and do not silently assign them a concentration of zero. Preserve the raw file separately from any cleaned extract, and report the number of records retained and excluded.</li>
+    </ol>
+    <p>The student question would be modest. What temporal variation is visible in the screened measurements at this monitoring location, and what can reasonably be inferred about that variation? A single-station series cannot isolate an upstream source or represent the exposure of a whole community. Seasonal patterns would need adequate sampling across years and appropriate consideration of streamflow and sampling conditions.</p>
+  </div>
+  <div class="teaching-sequence-table-wrap" role="region" aria-label="Reproducible water-quality evidence record template" tabindex="0"><table class="teaching-sequence-table">
+    <thead><tr><th scope="col">Evidence record field</th><th scope="col">What to enter after downloading</th><th scope="col">Why it is necessary</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Source and retrieval</th><td>Download URL, date retrieved, site ID, original file name</td><td>Enables the query to be revisited and revisions to be identified</td></tr>
+      <tr><th scope="row">Analyte definition</th><td>Exact characteristic, chemical reporting basis, fraction, unit</td><td>Prevents mixing results that quantify different substances or fractions</td></tr>
+      <tr><th scope="row">Observation metadata</th><td>Collection time/date, result qualifier, detection limit, method if present</td><td>Identifies censored observations and possible comparability problems</td></tr>
+      <tr><th scope="row">Screening decision</th><td>Rows retained, rows excluded, reasons and any conversion performed</td><td>Makes the plotted data and exclusions auditable</td></tr>
+      <tr><th scope="row">Interpretation</th><td>Observed variation, uncertainty, alternative explanations, next measurement</td><td>Distinguishes description from unsupported source attribution</td></tr>
+    </tbody></table></div>
+  <div class="teaching-original-prompt"><p class="meta">Assessment after retrieval</p>
+  <p>Provide your screened data table, a date-ordered visualization, and a statement of one pattern the observations support. Then identify one possible sampling artefact and one additional kind of evidence needed to examine its cause. Explain whether the dataset supports a claim about a specific source of nitrogen. Cite the query and retrieval date so that a reader can repeat the analysis.</p></div>
+  <p class="teaching-evidence-note">The monitoring site is a documented tutorial example, not a verified nitrate dataset for this lesson. No measured values, counts, trends, or impacts are reported here. The activity becomes an empirical case only after an appropriate CSV has been retrieved and audited.</p>
+</section>
 <section id="chem-justice" class="section teaching-case-section">
   <div class="section-head"><h2>Where a chemical question meets a social decision</h2></div>
   <div class="reading teaching-case-prose">
@@ -198,6 +225,8 @@
     <li id="chem-ref-johnstone">Johnstone, A. H. (1991). Why is science difficult to learn? Things are seldom what they seem. <em>Journal of Computer Assisted Learning, 7</em>(2), 75–83. <a href="https://doi.org/10.1111/j.1365-2729.1991.tb00230.x">https://doi.org/10.1111/j.1365-2729.1991.tb00230.x</a></li>
     <li id="chem-ref-morales">Morales-Doyle, D. (2017). Justice-centered science pedagogy: A catalyst for academic achievement and social transformation. <em>Science Education, 101</em>(6), 1034–1060. <a href="https://doi.org/10.1002/sce.21305">https://doi.org/10.1002/sce.21305</a></li>
     <li id="chem-ref-talanquer">Talanquer, V. (2011). Macro, submicro, and symbolic: The many faces of the chemistry “triplet.” <em>International Journal of Science Education, 33</em>(2), 179–195. <a href="https://doi.org/10.1080/09500690903386435">https://doi.org/10.1080/09500690903386435</a></li>
+    <li>U.S. Geological Survey. (n.d.). <em>Download discrete sample data</em>. <a href="https://waterdata.usgs.gov/download-samples/">USGS data download</a>.</li>
+    <li>DeCicco, L. A. (n.d.). <em>Introducing read_waterdata_samples</em>. U.S. Geological Survey dataRetrieval documentation. <a href="https://water.code-pages.usgs.gov/dataRetrieval/articles/samples_data.html">Retrieval tutorial</a>.</li>
     <li>U.S. Environmental Protection Agency. (n.d.). <i>Water quality data download</i>. <a href="https://www.epa.gov/waterdata/water-quality-data-download">Water Quality Portal access and documentation</a>.</li>
     <li>College Board. (2024). <em>AP Chemistry course and exam description</em>, Unit 7, Equilibrium. <a href="https://apcentral.collegeboard.org/media/pdf/ap-chemistry-course-and-exam-description-effective-fall-2024.pdf">Course framework</a>.</li>
   </ol>
