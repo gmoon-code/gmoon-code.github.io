@@ -584,7 +584,9 @@
       clone=el.cloneNode(true);
       clone.removeAttribute("data-studio-selected");
       clone.removeAttribute("id");
+      clone.removeAttribute("data-site-id");
       clone.querySelectorAll("[id]").forEach(child=>child.removeAttribute("id"));
+      clone.querySelectorAll("[data-site-id]").forEach(child=>child.removeAttribute("data-site-id"));
       el.after(clone);
     });
     selectElement(clone,true);
