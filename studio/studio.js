@@ -302,6 +302,8 @@
     if(!doc||!doc.querySelector("main")){toast("This page does not have an editable main area.",true);return}
     addOverlayStyle(doc);
     doc.addEventListener("click",event=>{
+      // While editing words directly, clicks must be allowed to place the caret or select text.
+      if(event.target.closest('[contenteditable="true"]'))return;
       if(event.target.closest("main a"))event.preventDefault();
       const node=candidateFor(event.target);
       if(!node)return;

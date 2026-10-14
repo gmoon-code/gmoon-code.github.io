@@ -128,11 +128,23 @@
     const store=responsiveStore(docOf());
     return id&&store[screen]?.[id]?.[property]||"";
   }
-  function withProperties(values){
+  function withProperties(values,scopedClass=null){
     const target=area(),doc=docOf();
     if(!target||!doc){toast("Select something in the preview before changing its details.",true);return}
     const screen=currentScreen();
     api.mutate(()=>{
+      if(scopedClass){
+        const [className,variable]=scopedClass;
+        const desired=values[variable];
+        if(desired)target.classList.add(className);
+        else{
+          const id=target.getAttribute("data-site-id");
+          const breakpoints=responsiveStore(doc);
+          const otherResponsive=!!id&&["tablet","phone"].some(d=>d!==screen&&breakpoints[d]?.[id]?.[variable]);
+          const existingAll=screen!=="all"&&!!target.style.getPropertyValue(variable);
+          if(!otherResponsive&&!existingAll)target.classList.remove(className);
+        }
+      }
       if(screen==="all"){
         for(const [property,value] of Object.entries(values)){
           if(value===null||value==="")target.style.removeProperty(property);
@@ -169,11 +181,7 @@
     };
     if(global&&map[property]){
       const [cssVariable,className]=map[property];
-      if(value)target.classList.add(className);
-      withProperties({[cssVariable]:value});
-      if(!value&&currentScreen()==="all"){
-        api.mutate(()=>target.classList.remove(className));
-      }
+      withProperties({[cssVariable]:value},[className,cssVariable]);
     }else withProperties({[property]:value});
   }
   function highlightProperty(){

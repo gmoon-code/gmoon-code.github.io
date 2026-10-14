@@ -535,3 +535,20 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
 
 /* New pages can be added to the menu without pushing links off-screen. */
 .site-nav{flex-wrap:wrap;row-gap:8px}
+
+/* Fine-detail typography scopes. Site defaults still apply outside edited areas. */
+.studio-font-scope,
+.studio-font-scope :is(h1,h2,h3,h4,h5,h6,p,li,blockquote,figcaption,a,summary,span){
+  font-family:var(--studio-scope-font)!important
+}
+.studio-color-scope,
+.studio-color-scope :is(h1,h2,h3,h4,h5,h6,p,li,blockquote,figcaption,a,summary,span){
+  color:var(--studio-scope-text-color)!important
+}
+.studio-size-scope :is(p,li,blockquote,figcaption,summary){
+  font-size:var(--studio-scope-font-size)!important
+}
+.studio-line-scope :is(h1,h2,h3,h4,h5,h6,p,li,blockquote,figcaption,summary){
+  line-height:var(--studio-scope-line-height)!important
+}
+[data-site-inline-highlight]{-webkit-box-decoration-break:clone;box-decoration-break:clone}
