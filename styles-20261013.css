@@ -1374,3 +1374,8 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
  .teaching-case-preview,.teaching-original-prompt,.teaching-three-representations>article{break-inside:avoid}
  .teaching-chem-case .chem-equilibrium-example{grid-template-columns:1fr}
 }
+
+/* Mobile guidance for horizontally scrollable instructional tables. */
+.teaching-table-hint{display:none}
+@media(max-width:790px){.teaching-table-hint{display:block;font-size:13px;color:var(--moon-muted);line-height:1.55;margin:-8px 0 17px}}
+@media print{.teaching-table-hint{display:none!important}}
