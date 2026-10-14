@@ -4,8 +4,10 @@
   const api=window.WebsiteStudioAPI, plus=window.WebsiteStudioPlus, details=window.WebsiteStudioDetails;
   if(!api||!plus||!details)return;
   const {state,$,docOf,remember,syncCurrent,selectElement,toast}=api;
-  const directions=["nw","n","ne","e","se","s","sw","w","border"];
-  const properties=["width","height","min-height","max-width","margin-left","margin-top","border-top-width","border-top-style","object-fit","display"];
+  const directions=["nw","n","ne","e","se","s","sw","w","border-top","border-right","border-bottom","border-left"];
+  const properties=["width","height","min-height","max-width","margin-left","margin-top","object-fit","display",
+    "border-top-width","border-top-style","border-right-width","border-right-style",
+    "border-bottom-width","border-bottom-style","border-left-width","border-left-style"];
   let overlay=null,watcher=null,watching=null,drag=null,frameRequested=0,ratioTarget=null;
   const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
   const line=el=>el&&el.tagName==="HR";
@@ -42,7 +44,8 @@
       '#studio-direct-resize-ui button[data-handle="n"],#studio-direct-resize-ui button[data-handle="s"]{cursor:ns-resize}',
       '#studio-direct-resize-ui button[data-handle="w"],#studio-direct-resize-ui button[data-handle="e"]{cursor:ew-resize}',
       '#studio-direct-resize-ui button[data-handle="ne"],#studio-direct-resize-ui button[data-handle="sw"]{cursor:nesw-resize}',
-      '#studio-direct-resize-ui button[data-handle="border"]{background:#e4f1da;border-color:#528060;cursor:ns-resize}',
+      '#studio-direct-resize-ui button[data-handle^="border-"]{background:#e4f1da;border-color:#528060;cursor:ns-resize}',
+      '#studio-direct-resize-ui button[data-handle="border-left"],#studio-direct-resize-ui button[data-handle="border-right"]{cursor:ew-resize}',
       "#studio-direct-resize-ui .studio-size-label{position:absolute;background:#fff;border:1px solid #9fc5cb;color:#154b5b;padding:5px 8px;border-radius:5px;white-space:nowrap;box-shadow:0 2px 8px #0002;pointer-events:none}",
       "#studio-direct-resize-ui .studio-size-tip{position:absolute;background:#183c47;color:white;padding:5px 8px;border-radius:5px;white-space:nowrap;pointer-events:none}",
       "[data-studio-selected]{outline:none!important}",
@@ -57,7 +60,7 @@
     for(const dir of directions){
       const h=doc.createElement("button");
       h.type="button";h.dataset.handle=dir;
-      const name=dir==="border"?"border or divider thickness":({
+      const name=dir.startsWith("border-")?dir.slice(7)+" border thickness":({
         nw:"top-left corner",n:"top edge",ne:"top-right corner",e:"right edge",
         se:"bottom-right corner",s:"bottom edge",sw:"bottom-left corner",w:"left edge"
       })[dir];
@@ -78,9 +81,10 @@
     doc.body.appendChild(root);
     overlay={root,outline,handles,label,tip};
   }
-  function hasBorder(el){
+  function hasBorder(el,side){
     const style=css(el);if(!style)return false;
-    return ["top","right","bottom","left"].some(side=>parseFloat(style.getPropertyValue("border-"+side+"-width"))>0&&style.getPropertyValue("border-"+side+"-style")!=="none");
+    return parseFloat(style.getPropertyValue("border-"+side+"-width"))>0&&
+      style.getPropertyValue("border-"+side+"-style")!=="none";
   }
   function update(){
     if(!overlay)return;
@@ -97,11 +101,15 @@
       nw:[r.left,r.top],n:[r.left+w/2,r.top],ne:[r.right,r.top],
       e:[r.right,r.top+h/2],se:[r.right,r.top+h],s:[r.left+w/2,r.top+h],
       sw:[r.left,r.top+h],w:[r.left,r.top+h/2],
-      border:[r.left+Math.min(34,w*.3),r.top]
+      "border-top":[r.left+Math.min(38,w*.3),r.top],
+      "border-right":[r.right,r.top+Math.min(38,h*.3)],
+      "border-bottom":[r.right-Math.min(38,w*.3),r.top+h],
+      "border-left":[r.left,r.top+h-Math.min(38,h*.3)]
     };
     for(const dir of directions){
       const hnd=overlay.handles[dir];
-      const visible=dir==="border"?hasBorder(el):(line(el)?["e","w"].includes(dir):true);
+      const visible=dir.startsWith("border-")?hasBorder(el,dir.slice(7)):
+        (line(el)?["e","w"].includes(dir):true);
       hnd.hidden=!visible;if(!visible)continue;
       hnd.style.left=locations[dir][0]+"px";
       hnd.style.top=locations[dir][1]+"px";
@@ -135,7 +143,9 @@
     return {el,doc:docOf(),d,dir,x,y,w:r.width,h:r.height,ratio:r.height?r.width/r.height:1,
       lock:!line(el)&&$("keepResizeRatio").checked,
       mx:parseFloat(style?.marginLeft)||0,my:parseFloat(style?.marginTop)||0,
-      border:parseFloat(style?.borderTopWidth)||1,max,moved:false,
+      borderWidths:Object.fromEntries(["top","right","bottom","left"].map(side=>[
+        side,parseFloat(style?.getPropertyValue("border-"+side+"-width"))||0
+      ])),max,moved:false,
       initial:Object.fromEntries(properties.map(p=>[p,details.getDirectProperty(el,d,p)||""]))};
   }
   function apply(t,x,y,shift){
@@ -144,10 +154,12 @@
       north=t.dir.includes("n"),south=t.dir.includes("s"),widthSide=west||east,
       heightSide=north||south;
     const changes={};
-    if(t.dir==="border"){
-      const v=clamp(Math.round(t.border+dy),0,36);
-      changes["border-top-width"]=v+"px";
-      changes["border-top-style"]=v?"solid":"none";
+    if(t.dir.startsWith("border-")){
+      const side=t.dir.slice(7);
+      const shift=side==="top"?dy:side==="bottom"?-dy:side==="left"?dx:-dx;
+      const v=clamp(Math.round(t.borderWidths[side]+shift),0,36);
+      changes["border-"+side+"-width"]=v+"px";
+      changes["border-"+side+"-style"]=v?"solid":"none";
     }else if(line(t.el)){
       changes.width=clamp(Math.round(t.w+(west?-dx:dx)),24,Math.min(2800,t.max+600))+"px";
       changes["max-width"]="100%";
