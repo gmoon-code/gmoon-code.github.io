@@ -13,7 +13,7 @@
     token:null,connected:false,busy:false,currentPath:null,selected:null,
     manifest:null,manifestSha:null,manifestDirty:false,
     drafts:new Map(),uploads:new Map(),deleted:new Map(),
-    tab:"content",remember:false,editingInline:false,toastTimer:null
+    tab:"content",remember:false,editingInline:false,toastTimer:null,duplicateFrom:null
   };
   const colorMap = {yellow:"#F5E6A8",green:"#CEE5C1",blue:"#C8DDF1",magenta:"#EACBE3"};
 
@@ -748,6 +748,10 @@
       const doc=new DOMParser().parseFromString(draft.html,"text/html");
       const invalid=[...doc.querySelectorAll("img")].some(img=>!img.hasAttribute("alt")||img.alt==="Describe this image");
       if(invalid){toast("Please add a meaningful image description on "+nameFor(path)+" before publishing.",true);return}
+      if(doc.querySelector(".studio-photo-target")){
+        toast(nameFor(path)+" still has an empty photo slot. Choose an image or remove the placeholder before publishing.",true);
+        return;
+      }
     }
     state.busy=true;updateStatus();
     try{
@@ -870,12 +874,29 @@
     window.WebsiteStudioPlus?.onChanged?.();
   }
   function openPageDialog(){
+    state.duplicateFrom=null;
+    $("pageDialogTitle").textContent="Create a page";
+    $("pageDialogHelp").textContent="Start with a clean page. You can add and rearrange sections afterward.";
     $("pageForm").reset();
     $("pageSlug").value="";
     setupParentChoices();
     $("pageParent").value=state.currentPath||"";
     $("pageColor").value=toneForPage(state.currentPath||"index.html");
     $("pageDialog").showModal();$("pageName").focus();
+  }
+
+  function openDuplicatePage(){
+    const path=state.currentPath;
+    if(!path)return;
+    openPageDialog();
+    state.duplicateFrom=path;
+    $("pageDialogTitle").textContent="Duplicate this page";
+    $("pageDialogHelp").textContent="Start from the current page's layout, words, and photos. You can change anything in your copy before publishing.";
+    const title=nameFor(path)+" copy";
+    $("pageName").value=title;
+    $("pageSlug").value=slugify(title);
+    $("pageParent").value="";
+    $("pageName").focus();
   }
   async function createPage(event){
     event.preventDefault();
@@ -890,17 +911,22 @@
       toast("A page with this address already exists.",true);return;
     }
     try{
-      const base=await ensureDraft("about.html");
+      const duplicate=state.duplicateFrom;
+      const base=await ensureDraft(duplicate||"about.html");
       const doc=new DOMParser().parseFromString(base.html,"text/html");
       doc.title=title+" | Ye Eun Moon";
       doc.querySelector('meta[name="description"]')?.setAttribute("content",title+" | Ye Eun Moon");
       doc.querySelectorAll('nav a[aria-current="page"]').forEach(a=>a.removeAttribute("aria-current"));
       doc.body.className="theme-"+accent;
-      doc.querySelector("main").innerHTML=
-        '<section class="page-hero single"><div class="hero-copy"><h1>'+esc(title)+'</h1>'+
-        '<p>Write a short introduction to this page.</p></div></section>'+
-        '<section class="section"><div class="section-head"><h2>First section</h2></div>'+
-        '<div class="reading"><p>Start writing here.</p></div></section>';
+      if(duplicate){
+        const h1=doc.querySelector("main h1");if(h1)h1.textContent=title;
+      }else{
+        doc.querySelector("main").innerHTML=
+          '<section class="page-hero single"><div class="hero-copy"><h1>'+esc(title)+'</h1>'+
+          '<p>Write a short introduction to this page.</p></div></section>'+
+          '<section class="section"><div class="section-head"><h2>First section</h2></div>'+
+          '<div class="reading"><p>Start writing here.</p></div></section>';
+      }
       const html="<!doctype html>\n"+doc.documentElement.outerHTML+"\n";
       state.drafts.set(path,{html,savedHtml:"",sha:null,isNew:true,dirty:true,undo:[],redo:[],canonicalSet:false});
       state.manifest.pages.push({path,title,group:parent?nameFor(parent):"Other",parent,accent,locked:false});
@@ -929,6 +955,7 @@
         original.dirty=true;
       }
       $("pageDialog").close();
+      state.duplicateFrom=null;
       state.currentPath=null;
       renderPages();setupParentChoices();
       await switchPage(path);
@@ -1010,7 +1037,8 @@
     $("pageSlug").addEventListener("input",()=>{$("pageSlug").dataset.manuallyEdited="yes"});
     $("newPageBtn").addEventListener("click",()=>{delete $("pageSlug").dataset.manuallyEdited});
     $("pageForm").addEventListener("submit",createPage);
-    $("cancelPageBtn").addEventListener("click",()=>$("pageDialog").close());
+    $("cancelPageBtn").addEventListener("click",()=>{state.duplicateFrom=null;$("pageDialog").close()});
+    $("duplicatePageBtn").addEventListener("click",()=>{$("pageSettingsDialog").close();openDuplicatePage()});
     $("pageSettingsBtn").addEventListener("click",openPageSettings);
     $("openLivePageBtn").addEventListener("click",()=>{
       if(!state.currentPath)return;
