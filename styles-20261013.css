@@ -846,12 +846,12 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
 .project-preview-heading .inline-link{font-size:13px;margin:0}
 .project-preview-before{display:flex;gap:17px;flex-wrap:wrap;align-items:center;padding:25px 19px;background:var(--page-soft,var(--section-blue-soft))}
 .project-preview-before p{font-size:15px;line-height:1.5;flex:1 1 290px;margin:0;max-width:62ch}
-.project-preview-before .control{font-family:inherit;cursor:pointer;min-height:36px}
+.project-preview-before .control{font-family:inherit;cursor:pointer;min-height:44px}
 .project-preview-fallback{font-size:13px;text-decoration:underline;text-underline-offset:3px}
 .project-preview-active[hidden],.project-preview-before[hidden],.project-preview-open[hidden]{display:none!important}
 .project-preview-toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:11px 15px;border-bottom:1px solid var(--moon-rule);flex-wrap:wrap}
 .project-preview-device{display:inline-flex;flex-wrap:wrap;gap:4px}
-.project-preview-toolbar button{background:#fff;border:1px solid var(--moon-rule-dark);border-radius:2px;font:inherit;font-size:13px;padding:6px 12px;cursor:pointer;min-height:36px}
+.project-preview-toolbar button{background:#fff;border:1px solid var(--moon-rule-dark);border-radius:2px;font:inherit;font-size:13px;padding:9px 12px;cursor:pointer;min-height:44px}
 .project-preview-toolbar button:hover{background:var(--page-soft,var(--section-blue-soft))}
 .project-preview-toolbar button[aria-pressed="true"]{background:var(--page-highlight,var(--section-blue));border-color:var(--page-line,var(--section-blue-line))}
 .project-preview-toolbar button:focus-visible,.project-preview-open:focus-visible{outline:2px solid var(--moon-ink);outline-offset:3px}
