@@ -980,3 +980,35 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
 .research-followups h3{font-size:18px;line-height:1.35;margin:0 0 10px}
 .research-followups article>p:last-child{font-size:15px;line-height:1.66;color:#373737;margin:0}
 @media(max-width:830px){.research-followups{grid-template-columns:1fr;gap:10px}}
+
+
+/* Visitor reading and navigation improvements, October 2026.
+   Retain the existing type and highlighter palette, with larger hit areas. */
+.site-nav a{display:inline-flex;align-items:center;min-height:40px;padding:8px 3px}
+.site-nav a:focus-visible{outline:2px solid var(--moon-ink);outline-offset:3px}
+.site-footer-links a{display:inline-flex;align-items:center;min-height:38px}
+.article-jumps a{display:inline-flex;align-items:center;min-height:36px}
+.teaching-page .reading,.teaching-resource-page .reading{max-width:min(100%,76ch)}
+.teaching-page .teaching-activity-grid .reading{max-width:100%}
+.table-scroll-hint{display:none}
+@media(min-width:761px){
+  .article-jumps{position:sticky;top:0;z-index:15;background:#fff;
+    border-top:1px solid var(--moon-rule);padding-top:9px;padding-bottom:9px}
+  .research-detail-page .section[id],.project-detail-page .section[id]{scroll-margin-top:84px}
+}
+@media(max-width:700px){
+  .site-nav{align-items:stretch;justify-items:start;gap:6px 5px}
+  .site-nav a{min-height:44px;padding:10px 7px;font-size:14px;line-height:1.25}
+  .site-nav .cv-link{min-width:44px;min-height:44px;padding:10px 9px!important}
+  .table-scroll-hint{display:block;font-size:13px;line-height:1.45;
+    color:var(--moon-muted);margin:6px 0 13px}
+}
+@media(max-width:760px){
+  .article-jumps{position:static}
+}
+@media print{
+  .topbar,.site-footer,.article-jumps,.table-scroll-hint{display:none!important}
+  .page{padding-top:0;padding-bottom:0}
+  .section{break-inside:auto}
+  .research-route-card,.research-case,.research-followups article{break-inside:avoid}
+}
