@@ -31,7 +31,7 @@
 </section>
 <nav class="article-jumps" aria-label="On this project page">
   <span>On this page</span>
-  <a href="#story-example">A learning journey</a><a href="#story-design-review">Design critique</a>
+  <a href="#story-example">A learning journey</a><a href="#story-design-review">Design critique</a><a href="#story-implementation">Implementation</a>
   <a href="#preview">Live preview</a>
 </nav>
 
@@ -109,6 +109,15 @@
     <div><span class="project-sequence-label">Possible revision</span><p>If a scene encourages the learner to equate a memorable object with a scientific concept, refine its wording and the subsequent retrieval question. This is a proposed review criterion, not a documented test result.</p></div>
   </div>
   <p class="project-status-note">This analysis examines the released scene structure and suggests a way to audit it. No learner performance, transfer effect, or completed design revision is implied.</p>
+</section>
+<section id="story-implementation" class="section">
+  <div class="section-head"><h2>What the released application actually checks</h2></div>
+  <div class="reading project-reading">
+    <p>The public release uses static curriculum records for all eight AP Biology units. The application keeps progress, review scheduling, and assisted-recall state in the student's browser. Its release documentation describes two safeguards that are educationally consequential. When a learner requests a Quick Recall hint, the response remains marked as assisted after a short reload or unit change. During Review, a hint appears before the answer. Those decisions distinguish supported retrieval from unaided recall in the way the interface records and presents practice.</p>
+    <p>The same documentation identifies 58 guided journeys, 448 scenes, 152 intentional Quick Recalls, and 112 Challenge Lab items. Its automated checks cover the staged static course and data loading. Those are implementation and content-integrity checks. They do not establish that students learned more, that an individual scene caused transfer, or that the deployed interface has passed a recent independent visual inspection.</p>
+    <p>I would therefore evaluate a future revision at two levels. First, whether the application preserves the intended scientific meaning and the distinction between aided and unaided responses. Second, whether learners can explain an unfamiliar mechanism or experimental decision after working through a scene. That second question would require actual evidence from learners.</p>
+  </div>
+  <p class="project-status-note">Implementation details are derived from the public <a href="https://github.com/gmoon-code/memory-palace-u1-8/blob/main/README.md">application repository and release documentation</a>, not a new usability test.</p>
 </section>
 <section class="section">
   <div class="section-head"><h2>What is available</h2></div>
