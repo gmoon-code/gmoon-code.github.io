@@ -88,14 +88,6 @@
   <p class="project-status-note">This is an actual released Unit 1 journey, summarized from its scene content. It illustrates the intended learning design; no comparative learning-effect claim is being made.</p>
 </section>
 
-<section class="section">
-  <div class="section-head"><h2>Keeping the science intact</h2></div>
-  <div class="reading project-reading">
-    <p>Every mnemonic has to remain answerable to the science it represents. The control benches in the example give students a place to recall two terms, but the distinction rests on what each does. A control group provides a comparison. Controlled variables are conditions kept comparable across groups. A story that helped students remember the words while confusing those roles would need revision.</p>
-    <p>Students can revisit the canonical scientific explanation separately from the narrative and then attempt retrieval or application questions. This separation gives me a practical way to check whether an engaging scene has preserved the relationship it is meant to teach.</p>
-  </div>
-</section>
-
 <section id="story-design-review" class="section">
   <div class="section-head"><h2>What a story can make memorable, and what it must preserve</h2></div>
   <div class="reading project-reading">
@@ -114,7 +106,7 @@
   <div class="section-head"><h2>What the released application actually checks</h2></div>
   <div class="reading project-reading">
     <p>The public release uses static curriculum records for all eight AP Biology units. The application keeps progress, review scheduling, and assisted-recall state in the student's browser. Its release documentation describes two safeguards that are educationally consequential. When a learner requests a Quick Recall hint, the response remains marked as assisted after a short reload or unit change. During Review, a hint appears before the answer. Those decisions distinguish supported retrieval from unaided recall in the way the interface records and presents practice.</p>
-    <p>The same documentation identifies 58 guided journeys, 448 scenes, 152 intentional Quick Recalls, and 112 Challenge Lab items. Its automated checks cover the staged static course and data loading. Those are implementation and content-integrity checks. They do not establish that students learned more, that an individual scene caused transfer, or that the deployed interface has passed a recent independent visual inspection.</p>
+    <p>The release contains 58 guided journeys, 448 scenes, 152 intentional Quick Recalls, and 112 Challenge Lab items. For GitHub Pages, a build script packages the student runtime and its released curriculum records while excluding development files, source documents, and testing materials. The release checks load the staged static package across all eight units, and deployment follows a successful quality-assurance workflow at the validated commit. These checks address content integrity, data loading, and release consistency. They do not establish learning gains or substitute for independent visual and usability testing.</p>
     <p>I would therefore evaluate a future revision at two levels. First, whether the application preserves the intended scientific meaning and the distinction between aided and unaided responses. Second, whether learners can explain an unfamiliar mechanism or experimental decision after working through a scene. That second question would require actual evidence from learners.</p>
   </div>
   <p class="project-status-note">Implementation details are derived from the public <a href="https://github.com/gmoon-code/memory-palace-u1-8/blob/main/README.md">application repository and release documentation</a>, not a new usability test.</p>
