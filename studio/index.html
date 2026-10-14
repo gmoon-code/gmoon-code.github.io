@@ -52,6 +52,7 @@
           <span id="saveStatus" class="save-status" role="status">Ready</span>
           <button id="undoBtn" type="button" class="plain-button" title="Undo a change (Ctrl+Z)">Undo</button>
           <button id="redoBtn" type="button" class="plain-button" title="Redo a change (Ctrl+Shift+Z)">Redo</button>
+          <button id="navigationBtn" type="button" class="plain-button" title="Choose which pages appear in the main menu">Navigation</button>
           <button id="siteLookBtn" type="button" class="plain-button" title="Change the overall appearance of your site">Site style</button>
           <button id="helpBtn" type="button" class="plain-button">Help</button>
           <button id="publishBtn" type="button" class="primary-button">Publish changes</button>
@@ -326,6 +327,17 @@
       <p id="mediaLibraryStatus" class="micro-help"></p>
     </dialog>
 
+
+    <dialog id="navigationDialog" class="studio-dialog large-dialog" aria-labelledby="navigationTitle">
+      <div class="dialog-heading">
+        <div><h2 id="navigationTitle">Your website menu</h2>
+        <p class="micro-help">Choose which pages visitors see across the top. Rearrange them with the arrows. Every page still has its own address, even when hidden from this menu.</p></div>
+        <button type="button" id="closeNavigationBtn" class="plain-button">Done</button>
+      </div>
+      <div class="nav-editor-labels"><span>Page and menu label</span><span>In menu</span><span>Order</span></div>
+      <div id="navigationItems" class="nav-editor-list"></div>
+      <p class="micro-help">Home stays first so visitors can always find their way back. The soft highlight colors follow the order of visible menu pages.</p>
+    </dialog>
     <dialog id="siteLookDialog" class="studio-dialog" aria-labelledby="siteLookTitle">
       <div class="dialog-heading"><h2 id="siteLookTitle">Site style</h2><button type="button" id="closeSiteLookBtn" class="plain-button">Close</button></div>
       <p class="micro-help">Change the look of the whole website in one place. Your words and layout stay as they are.</p>

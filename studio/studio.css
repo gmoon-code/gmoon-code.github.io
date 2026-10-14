@@ -153,3 +153,14 @@ input[type=checkbox]{accent-color:#3e7380}
 .palette-strip span{display:block;height:38px;flex:1;border:1px solid #d2d2d2;border-radius:4px}
 #draftRecoveryStatus{font-weight:650;color:#487064}
 @media(max-width:720px){.library-grid{grid-template-columns:1fr}.media-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.large-dialog{padding:16px}.quick-actions{position:sticky!important;top:0!important;left:0!important;width:100%;max-width:none}}
+
+/* Clear, simple navigation editor */
+.nav-editor-labels{display:grid;grid-template-columns:minmax(0,1fr) 75px 108px;gap:12px;color:var(--muted);font-size:11px;font-weight:650;padding:8px 8px 10px}
+.nav-editor-row{display:grid;grid-template-columns:minmax(0,1fr) 75px 108px;gap:12px;align-items:center;border-top:1px solid var(--line);padding:10px 8px}
+.nav-editor-row .nav-label-input{margin:3px 0 0;min-width:0}
+.nav-editor-row .nav-path{display:block;color:var(--muted);font-size:11px;overflow-wrap:anywhere}
+.nav-editor-row .nav-visible{text-align:center;display:flex;justify-content:center}
+.nav-editor-row .nav-arrows{display:flex;gap:5px;justify-content:flex-end}
+.nav-editor-row .nav-arrows button{min-width:40px}
+.nav-editor-row .nav-fixed{font-size:11px;color:var(--muted);text-align:right}
+@media(max-width:540px){.nav-editor-row,.nav-editor-labels{grid-template-columns:minmax(0,1fr) 54px 80px;gap:7px}.nav-editor-row .nav-arrows button{min-width:32px;padding:6px}}

@@ -730,6 +730,7 @@
   async function publish(){
     if(!state.connected||state.busy)return;
     syncCurrent();
+    await window.WebsiteStudioPlus?.beforePublish?.();
     if(!hasChanges()){toast("No unpublished changes.");return}
     const draftsToSave=[...state.drafts].filter(([path,draft])=>draft.dirty);
     for(const [path,draft] of draftsToSave){

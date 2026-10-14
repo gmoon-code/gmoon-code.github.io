@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "items": [
+    {
+      "path": "index.html",
+      "label": "Home",
+      "visible": true
+    },
+    {
+      "path": "research.html",
+      "label": "Research",
+      "visible": true
+    },
+    {
+      "path": "projects.html",
+      "label": "Projects",
+      "visible": true
+    },
+    {
+      "path": "teaching.html",
+      "label": "Teaching",
+      "visible": true
+    },
+    {
+      "path": "interests.html",
+      "label": "Interests",
+      "visible": true
+    },
+    {
+      "path": "about.html",
+      "label": "About",
+      "visible": true
+    },
+    {
+      "path": "cv.html",
+      "label": "CV",
+      "visible": true
+    }
+  ]
+}
