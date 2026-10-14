@@ -232,6 +232,8 @@
     clone.querySelector("#studio-preview-theme")?.remove();
     clone.querySelector("#studio-direct-resize-ui")?.remove();
     clone.querySelector("#studio-direct-resize-style")?.remove();
+    clone.querySelector("#studio-move-overlay")?.remove();
+    clone.querySelector("#studio-move-style")?.remove();
     clone.querySelectorAll("[data-studio-selected]").forEach(node=>node.removeAttribute("data-studio-selected"));
     clone.querySelectorAll("[contenteditable]").forEach(node=>node.removeAttribute("contenteditable"));
     clone.querySelectorAll("[draggable]").forEach(node=>node.removeAttribute("draggable"));
