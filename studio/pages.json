@@ -68,6 +68,14 @@
       "locked": true
     },
     {
+      "path": "teaching-ap-evolution.html",
+      "title": "AP Biology curriculum study",
+      "group": "Teaching resources",
+      "parent": "teaching.html",
+      "accent": "magenta",
+      "locked": false
+    },
+    {
       "path": "teaching-ap-biology.html",
       "title": "AP Biology teaching case",
       "group": "Teaching resources",
