@@ -28,7 +28,7 @@
 </section>
 <nav class="article-jumps" aria-label="On this project page">
   <span>On this page</span>
-  <a href="#research-example">Design example</a><a href="#methods-design-review">Methodological choices</a>
+  <a href="#research-example">Design example</a><a href="#methods-design-review">Methodological choices</a><a href="#methods-implementation">Implementation</a>
   <a href="#preview">Live preview</a>
 </nav>
 
@@ -98,6 +98,15 @@
     <p>I would use these distinctions to evaluate whether the guidance asks students to justify a decision before choosing an analysis. In the salinity example, an apparent sample of many plants might represent very few assigned treatment units. That issue has to be resolved at the design stage. No later statistical option can supply independent treatment replication that the experiment did not include.</p>
     <p>Because the notebook is stored locally and Research Chat is optional, data handling is also a design decision. Students need to know when work is stored in their browser, what a backup contains, and which material a networked feature may receive. These controls merit direct testing in the application; a statement on this page is not a privacy or security audit.</p>
   </div>
+</section>
+<section id="methods-implementation" class="section">
+  <div class="section-head"><h2>How the released system handles guidance and student work</h2></div>
+  <div class="reading project-reading">
+    <p>The version 3 release documentation describes a local-first research notebook, eighteen stages, and optional Research Chat. The application can retrieve validated published guidance for the stages, while retaining a bundled curriculum as a fallback if the remote guidance is unavailable or invalid. This separates the stage guidance that can be updated from the student's own project work.</p>
+    <p>Research Chat introduces a different data boundary. According to the repository documentation, the browser minimizes project context when it is enabled for chat, with additional server-side minimization. The application does not enable research-study data collection or operational telemetry in this release. These are documented architectural claims whose deployment and security would require separate independent testing.</p>
+    <p>A meaningful design evaluation would ask whether students understand these boundaries before using the workspace. It would also examine whether the guidance helps them notice an inappropriate experimental unit, unsupported causal inference, or mismatch between a question and an analysis. The existence of a warning or method check cannot establish that learners acted on it.</p>
+  </div>
+  <p class="project-status-note">Architecture and release details are taken from the <a href="https://github.com/gmoon-code/research-methods/blob/main/README.md">application's repository documentation</a>. No private administration features, network responses, or user records were accessed in this review.</p>
 </section>
 <section class="section">
   <div class="section-head"><h2>Where the work goes</h2></div>
