@@ -878,6 +878,7 @@
     $("pageDialogTitle").textContent="Create a page";
     $("pageDialogHelp").textContent="Start with a clean page. You can add and rearrange sections afterward.";
     $("pageForm").reset();
+    delete $("pageSlug").dataset.manuallyEdited;
     $("pageSlug").value="";
     setupParentChoices();
     $("pageParent").value=state.currentPath||"";
