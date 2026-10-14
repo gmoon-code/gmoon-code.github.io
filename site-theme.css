@@ -1,0 +1,18 @@
+/* Site-wide styles managed by Website Studio. Edit these using Site style. */
+:root{
+  --section-yellow:#F5E6A8;
+  --section-yellow-soft:#FCF9ED;
+  --section-yellow-line:#C6AD58;
+  --section-green:#CEE5C1;
+  --section-green-soft:#F4F9F0;
+  --section-green-line:#8FAE80;
+  --section-blue:#C8DDF1;
+  --section-blue-soft:#F3F8FC;
+  --section-blue-line:#82A6C7;
+  --section-magenta:#EACBE3;
+  --section-magenta-soft:#FBF4F9;
+  --section-magenta-line:#B58BAE;
+  --page-max:1120px;
+  --radius:4px;
+}
+body,button,input,textarea,select,h1,h2,h3,h4,h5,h6{font-family:"Times New Roman",Times,serif}

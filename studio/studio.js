@@ -229,6 +229,7 @@
     const clone=doc.documentElement.cloneNode(true);
     const base=clone.querySelector("base[data-studio-base]");if(base)base.remove();
     const overlay=clone.querySelector("#studio-preview-overlays");if(overlay)overlay.remove();
+    clone.querySelector("#studio-preview-theme")?.remove();
     clone.querySelectorAll("[data-studio-selected]").forEach(node=>node.removeAttribute("data-studio-selected"));
     clone.querySelectorAll("[contenteditable]").forEach(node=>node.removeAttribute("contenteditable"));
     clone.querySelectorAll("[draggable]").forEach(node=>node.removeAttribute("draggable"));
@@ -841,6 +842,7 @@
     d.dirty=d.isNew||d.html!==d.savedHtml;
     state.selected=null;$("previewFrame").srcdoc=withPreviewBase(d.html);
     updateStatus();renderPages();
+    window.WebsiteStudioPlus?.onChanged?.();
   }
   function redo(){
     const d=activeDraft();if(!d?.redo.length)return;
@@ -850,6 +852,7 @@
     d.dirty=d.isNew||d.html!==d.savedHtml;
     state.selected=null;$("previewFrame").srcdoc=withPreviewBase(d.html);
     updateStatus();renderPages();
+    window.WebsiteStudioPlus?.onChanged?.();
   }
   function openPageDialog(){
     $("pageForm").reset();
@@ -921,6 +924,8 @@
     const path=state.currentPath;if(!path)return;
     const page=state.manifest.pages.find(p=>p.path===path);
     $("settingsTitle").value=page.title;
+    const currentDescription=docOf()?.querySelector('meta[name="description"]')?.getAttribute("content")||"";
+    $("settingsDescription").value=currentDescription;
     $("settingsAccent").value=toneForPage(path);
     $("settingsPath").textContent="Website address: /"+path;
     $("deletePageBtn").hidden=page.locked!==false;
@@ -936,6 +941,10 @@
     remember();
     const doc=docOf();
     doc.title=name+" | Ye Eun Moon";
+    const description=$("settingsDescription").value.trim();
+    let meta=doc.querySelector('meta[name="description"]');
+    if(!meta){meta=doc.createElement("meta");meta.setAttribute("name","description");doc.head.appendChild(meta)}
+    meta.setAttribute("content",description);
     doc.querySelector("main h1").textContent=name;
     doc.body.className="theme-"+accent;
     page.title=name;page.accent=accent;state.manifestDirty=true;
