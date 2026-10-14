@@ -205,3 +205,17 @@ input[type=checkbox]{accent-color:#3e7380}
 .site-color-swatch label{display:flex;align-items:center;justify-content:space-between;font-size:11px;margin:7px 0}
 .site-color-swatch input[type=color]{width:45px;min-height:27px;padding:2px}
 @media(max-width:540px){.site-color-grid{grid-template-columns:1fr}}
+
+/* Simple direct-on-page resizing controls */
+.resize-controls{border:1px solid #bfcec9;background:#f4f9f6;border-radius:8px;padding:12px 13px;margin-bottom:16px}
+.resize-title{display:flex;align-items:center;justify-content:space-between;gap:9px}
+.resize-title strong{font-family:Georgia,serif;font-size:15px}
+#resizeMeasurements{font-family:ui-monospace,monospace;font-size:11px;background:white;border:1px solid #d8e1dd;padding:4px 5px;border-radius:4px;white-space:nowrap}
+.resize-controls p{font-size:12px;color:#4e605b;line-height:1.45;margin:9px 0}
+.resize-ratio-label{display:flex;align-items:center;gap:7px;font-size:12px;cursor:pointer;margin:9px 0!important;font-weight:500!important}
+.resize-ratio-label input{flex:none}
+.resize-optional{font-size:11px;font-weight:400;color:var(--muted)}
+.resize-actions{display:flex;gap:8px;align-items:center;justify-content:space-between;font-size:11px;color:#547067}
+.resize-actions .small-button{background:white}
+#resizeModeNote{white-space:nowrap}
+#resizeHandle{display:none!important} /* Replaced with eight accessible, element-relative grips inside the page preview */

@@ -12,6 +12,7 @@
   <script src="studio.js" defer></script>
   <script src="studio-plus.js" defer></script>
   <script src="studio-details.js" defer></script>
+  <script src="studio-resize.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#studioMain">Skip to editing tools</a>
@@ -112,7 +113,7 @@
             <button id="insertBtn" type="button" class="small-button accent-button">+ Add</button>
             <button id="libraryBtn" type="button" class="small-button">Browse layouts</button>
             <button id="photosBtn" type="button" class="small-button">My photos</button>
-            <span class="toolbar-help">Click an item below to edit it. Double-click text to edit on the page.</span>
+            <span class="toolbar-help">Click any item, then drag its blue edges or corners to resize. Double-click text to edit.</span>
           </div>
           <div class="preview-outer" id="previewOuter">
             <div id="loadingPreview" class="loading-preview">Loading page…</div>
@@ -128,7 +129,7 @@
             <button id="resizeHandle" type="button" title="Drag to resize the selected image. Use arrow keys to fine-tune." aria-label="Resize selected image" hidden>↘</button>
             <iframe id="previewFrame" title="Editable preview of selected website page" sandbox="allow-same-origin"></iframe>
           </div>
-          <p class="preview-note">Your changes are kept as a draft in this browser. Click text twice to edit directly, or click once for options. Check phone size before publishing. <span id="draftRecoveryStatus" aria-live="polite"></span></p>
+          <p class="preview-note">Click any text, photo, box, section edge, or divider to select it. Drag the blue handles to resize. Hold Shift while dragging a corner to keep proportions. Your changes are kept as a draft in this browser. Click text twice to edit directly, or click once for options. Check phone size before publishing. <span id="draftRecoveryStatus" aria-live="polite"></span></p>
         </section>
 
         <aside class="inspector" aria-label="Selected item settings">
@@ -141,6 +142,12 @@
             <p>Choose a section on the left to move, duplicate, or remove it.</p>
           </div>
           <div id="inspectorContent" hidden>
+            <div class="resize-controls" aria-label="Visual resizing">
+              <div class="resize-title"><strong>Resize directly</strong><span id="resizeMeasurements">Select an item</span></div>
+              <p>Drag the blue handles around the item in the preview. Drag a corner to change width and height together.</p>
+              <label class="resize-ratio-label"><input type="checkbox" id="keepResizeRatio"> Keep proportions <span class="resize-optional">(useful for photos)</span></label>
+              <div class="resize-actions"><button id="resetDirectSize" type="button" class="small-button">Reset size</button><span id="resizeModeNote">Drag on the page</span></div>
+            </div>
             <div class="inspector-tabs" role="tablist" aria-label="Editing controls">
               <button type="button" data-tab="content" class="inspector-tab is-active" role="tab" aria-selected="true">Content</button>
               <button type="button" data-tab="design" class="inspector-tab" role="tab" aria-selected="false">Design</button>
@@ -459,7 +466,7 @@
         <li><strong>Change the look</strong> in Design. Width, height, spacing, and optional pixel offsets live in Position.</li>
         <li><strong>Check phone and tablet previews</strong>, then choose Publish changes. All changes publish together; until then, the public website is untouched. For bold or italic text, double-click a paragraph and use the usual Ctrl+B or Ctrl+I shortcuts.</li>
       </ol>
-      <p class="micro-help">For images, choose My photos, then drag the ↘ resize handle or enter exact dimensions in Position. For formatted text, select the words while editing and use B, I, or Link in the quick toolbar. Describe each image briefly for visitors who cannot see it.</p>
+      <p class="micro-help">To resize anything, click the element and drag the blue corner or edge handles. For a divider, use its endpoints and thickness handle. To undo a resize, choose Undo or Reset size. Images keep their proportions by default, and text remains readable. For exact pixel sizes, use Position.</p>
       <button id="closeHelpBtn" type="button" class="primary-button">Got it</button>
     </dialog>
 

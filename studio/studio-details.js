@@ -516,8 +516,38 @@
     // Avoid a large, empty inspector when no element is selected.
     query("detailScope").value="element";
   }
+  function setDirectProperties(element,screen,changes){
+    if(!element||!["all","tablet","phone"].includes(screen))return;
+    const doc=docOf();
+    if(!doc)return;
+    if(screen==="all"){
+      for(const [key,value] of Object.entries(changes)){
+        if(value===null||value==="")element.style.removeProperty(key);
+        else element.style.setProperty(key,String(value),"important");
+      }
+    }else{
+      const id=ensureId(element);
+      const store=responsiveStore(doc);
+      const values=store[screen][id]||{};
+      for(const [key,value] of Object.entries(changes)){
+        if(value===null||value==="")delete values[key];
+        else values[key]=String(value);
+      }
+      if(Object.keys(values).length)store[screen][id]=values;
+      else delete store[screen][id];
+      renderResponsiveStyle(doc,store);
+    }
+  }
+  function getDirectProperty(element,screen,key){
+    if(!element)return "";
+    if(screen==="all")return element.style.getPropertyValue(key).trim();
+    const id=element.getAttribute("data-site-id");
+    if(!id)return "";
+    return responsiveStore(docOf())[screen]?.[id]?.[key]||"";
+  }
   window.WebsiteStudioDetails={
-    onSelection:refresh,onPreviewReady,resetAll,applyColor,scope:area,selectedScreen:currentScreen
+    onSelection:refresh,onPreviewReady,resetAll,applyColor,scope:area,selectedScreen:currentScreen,
+    setDirectProperties,getDirectProperty
   };
   install();
 })();

@@ -1,0 +1,1 @@
+/* Direct resize controls loading. */

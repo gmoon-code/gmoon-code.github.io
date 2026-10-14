@@ -230,6 +230,8 @@
     const base=clone.querySelector("base[data-studio-base]");if(base)base.remove();
     const overlay=clone.querySelector("#studio-preview-overlays");if(overlay)overlay.remove();
     clone.querySelector("#studio-preview-theme")?.remove();
+    clone.querySelector("#studio-direct-resize-ui")?.remove();
+    clone.querySelector("#studio-direct-resize-style")?.remove();
     clone.querySelectorAll("[data-studio-selected]").forEach(node=>node.removeAttribute("data-studio-selected"));
     clone.querySelectorAll("[contenteditable]").forEach(node=>node.removeAttribute("contenteditable"));
     clone.querySelectorAll("[draggable]").forEach(node=>node.removeAttribute("draggable"));
@@ -293,7 +295,7 @@
   function candidateFor(target){
     if(!(target instanceof docOf().defaultView.Element))return null;
     const main=docOf().querySelector("main");if(!main||!main.contains(target))return null;
-    const choices="img,figcaption,summary,a,h1,h2,h3,h4,h5,h6,p,li,blockquote,figure,article,section,.question,.list-row,.reading,.grid-2,.grid-3,.studio-columns,.studio-gallery,.studio-split";
+    const choices="img,svg,canvas,video,iframe,hr,summary,button,figcaption,mark,strong,em,span,a,h1,h2,h3,h4,h5,h6,p,li,blockquote,pre,table,ul,ol,figure,article,aside,section,div,.question,.list-row,.reading,.grid-2,.grid-3,.studio-columns,.studio-gallery,.studio-split";
     return target.closest(choices)||target.closest("main > section");
   }
   function onPreviewLoad(){
@@ -365,6 +367,10 @@
     if(node.tagName==="SECTION")return "Section";
     if(node.tagName==="ARTICLE")return "Card / article";
     if(node.tagName==="IMG")return "Image";
+    if(node.tagName==="HR")return "Divider / line";
+    if(node.tagName==="DIV")return "Layout or text box";
+    if(node.tagName==="ASIDE")return "Bordered panel";
+    if(node.tagName==="SPAN"||node.tagName==="MARK")return "Inline text";
     if(node.tagName==="A")return "Link";
     if(node.tagName==="FIGURE")return "Photo and caption";
     if(/^H[1-6]$/.test(node.tagName))return "Heading";
