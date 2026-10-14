@@ -6,7 +6,7 @@
   const {state,$,docOf,remember,syncCurrent,selectElement,toast}=api;
   const directions=["nw","n","ne","e","se","s","sw","w","border"];
   const properties=["width","height","min-height","max-width","margin-left","margin-top","border-top-width","border-top-style","object-fit","display"];
-  let overlay=null,watcher=null,watching=null,drag=null,frameRequested=0;
+  let overlay=null,watcher=null,watching=null,drag=null,frameRequested=0,ratioTarget=null;
   const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
   const line=el=>el&&el.tagName==="HR";
   const image=el=>el&&["IMG","SVG","VIDEO","CANVAS"].includes(el.tagName);
@@ -209,6 +209,7 @@
     }
   }
   function keys(event){
+    if(event.key==="Escape"&&drag){event.preventDefault();cancel(event);return}
     if(!["ArrowLeft","ArrowRight","ArrowUp","ArrowDown"].includes(event.key))return;
     event.preventDefault();event.stopPropagation();
     const step=event.shiftKey?10:2;
@@ -236,12 +237,15 @@
   function selectionChanged(el){
     if(!overlay||!el)return;
     watch(el);
-    $("keepResizeRatio").checked=!!image(el);
+    if(ratioTarget!==el){
+      $("keepResizeRatio").checked=!!image(el);
+      ratioTarget=el;
+    }
     $("keepResizeRatio").disabled=!!line(el);
     queueUpdate();
   }
   function pageLoaded(){
-    watcher?.disconnect();watcher=null;watching=null;overlay=null;drag=null;frameRequested=0;
+    watcher?.disconnect();watcher=null;watching=null;overlay=null;drag=null;frameRequested=0;ratioTarget=null;
     $("resizeMeasurements").textContent="Select an item";
     const d=docOf();if(!d?.querySelector("main"))return;
     resizeStyles(d);makeOverlay(d);
