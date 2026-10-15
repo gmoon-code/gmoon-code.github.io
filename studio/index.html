@@ -17,6 +17,7 @@
   <script src="studio-tables.js" defer></script>
   <script src="studio-canvas.js" defer></script>
   <script src="studio-chrome.js" defer></script>
+  <script src="studio-layers.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#studioMain">Skip to editing tools</a>
@@ -80,6 +81,17 @@
           </div>
           <p class="sidebar-hint">Drag sections to reorder them, or use the arrows in Edit.</p>
           <div id="sectionList" class="section-list"></div>
+          <div class="layers-heading">
+            <div class="sidebar-heading-row">
+              <h2>Page layers</h2>
+              <button id="layersExpandBtn" type="button" class="small-button" title="Expand or collapse the page outline">Expand</button>
+            </div>
+            <label for="layersSearch" class="layers-search-label">Find an element</label>
+            <input id="layersSearch" type="search" placeholder="Find text, photo, card, table…">
+            <p class="sidebar-hint">Select nested elements, reorder blocks or hide a section without deleting it.</p>
+            <div id="layersTree" class="layers-tree" role="tree" aria-label="Editable page elements"></div>
+            <p id="layersStatus" class="micro-help" role="status"></p>
+          </div>
           <div class="sidebar-footer">
             <p>Your public website remains unchanged until you choose <strong>Publish changes</strong>.</p>
             <a href="../index.html" target="_blank" rel="noopener noreferrer">Open public website ↗</a>
@@ -477,6 +489,7 @@
         <li><strong>Click an item in the preview</strong> to select it. Edit its words in Content or double-click text directly in the preview.</li>
         <li><strong>Add something</strong> using the Add menu above the preview. Select a section first if you want to add a block inside it.</li>
         <li><strong>Rearrange or remove</strong> using the actions in Content. Undo is available at the top.</li>
+        <li><strong>Page layers</strong> in the left sidebar shows the structure of the selected page. Expand sections and content groups to select precisely, rearrange eligible blocks, or hide a block without deleting it.</li>
         <li><strong>Work directly on the page</strong> with the contextual Add content and Section buttons. Click a container in the selection path to edit an entire group. Quick layout offers width, alignment, full-row positioning, and copying a visual style between items.</li>
         <li><strong>Change the look</strong> in Design. Width, height, spacing, and optional pixel offsets live in Position.</li>
         <li><strong>Check phone and tablet previews</strong>, then choose Publish changes. All changes publish together; until then, the public website is untouched. For bold or italic text, double-click a paragraph and use the usual Ctrl+B or Ctrl+I shortcuts.</li>
