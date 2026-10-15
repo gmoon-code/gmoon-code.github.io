@@ -22,7 +22,7 @@
 <section class="page-hero single">
   <div class="hero-copy">
     <h1>The Story Method</h1>
-    <p>In The Story Method, AP Biology concepts unfold through connected places, characters, and events. The stories give learners something memorable to return to, while retrieval and application questions ask them to work through the scientific relationships. I am especially interested in the point where remembering a scene leads to explaining why a biological process works as it does.</p>
+    <p>The Story Method organizes AP Biology learning into journeys with connected places, characters, and events. Recall and application questions ask learners to revisit scientific relationships introduced in the story. I am interested in whether those connections remain available when students work through a biological problem beyond the original scene.</p>
     <div class="controls">
       <a class="control primary" href="https://gmoon-code.github.io/memory-palace-u1-8/">Visit The Story Method ↗</a>
       <a class="control" href="https://gmoon-code.github.io/memory-palace-u1-8/?unit=unit-1">Start with Unit 1 ↗</a>
@@ -38,7 +38,7 @@
 
 
 <section class="section project-preview-section" id="preview">
-  <div class="section-head"><h2>Take a look inside</h2></div>
+  <div class="section-head"><h2>Application preview</h2></div>
   <p class="project-preview-intro">You can open a small view of the current learning site here. It loads the actual application, so you can see its layout and try the first journey. The full-size site gives you more room to work.</p>
   <div class="project-preview-panel" data-live-preview="story">
     <div class="project-preview-heading"><span>Live preview · The Story Method</span><a class="inline-link" href="https://gmoon-code.github.io/memory-palace-u1-8/?unit=unit-1">Open full-size Unit 1 ↗</a></div>
@@ -62,7 +62,7 @@
 </section>
 
 <section id="story-example" class="section story-example-section">
-  <div class="section-head"><h2>Inside one journey</h2></div>
+  <div class="section-head"><h2>Unit 1 journey example</h2></div>
   <div class="reading project-reading">
     <p>Unit 1 includes <em>The Evidence Lockdown</em>, a nine-location journey in a fictional laboratory. A reporter-cell experiment has produced an unexpectedly bright signal. Dr. Rowan Lee, the guide, begins by describing the observation before asking what it could mean.</p>
   </div>
@@ -81,7 +81,7 @@
     </ol>
   </div>
   <div class="story-design-comment">
-    <h3>The decision behind the scene</h3>
+    <h3>Observation and experimental inference</h3>
     <p>I kept the reporter-cell observation in view across several scenes so a learner could return to it with a different question each time. They begin by describing the light they see, then consider possible causes and the comparisons needed to investigate them. The story gives learners a recurring context, while the questions ask them to do the scientific reasoning.</p>
     <p>Later in the journey, the learner encounters variability and sampling uncertainty. The final judgment still concerns how far the evidence supports the claim. The setting provides a route through that reasoning, and the Review and Challenge Lab give the student further occasions to retrieve and apply the biology.</p>
   </div>
@@ -89,7 +89,7 @@
 </section>
 
 <section id="story-design-review" class="section">
-  <div class="section-head"><h2>What a story can make memorable, and what it must preserve</h2></div>
+  <div class="section-head"><h2>Scientific reasoning across the story</h2></div>
   <div class="reading project-reading">
     <p>The reporter-cell journey depends on carrying one observation through several decisions. The unexpectedly bright signal invites an explanation, but brightness alone cannot tell the learner whether treatment, measurement conditions, or another variable produced it. I would examine each scene against the scientific inference it invites and the information available at that point in the journey.</p>
     <p>The Hypothesis Doors and Control Benches are especially useful places to examine this. A learner can remember a door or a bench without distinguishing a testable prediction from an experimental control. The Review and Challenge Lab provide opportunities to move beyond recognition, but the existence of those activities does not establish that a student transfers the reasoning to an unfamiliar laboratory problem.</p>
@@ -103,7 +103,7 @@
   <p class="project-status-note">This analysis examines the released scene structure and suggests a way to audit it. No learner performance, transfer effect, or completed design revision is implied.</p>
 </section>
 <section id="story-implementation" class="section">
-  <div class="section-head"><h2>What the released application actually checks</h2></div>
+  <div class="section-head"><h2>Released materials and application checks</h2></div>
   <div class="reading project-reading">
     <p>The public release uses static curriculum records for all eight AP Biology units. The application keeps progress, review scheduling, and assisted-recall state in the student's browser. Its release documentation describes two safeguards that are educationally consequential. When a learner requests a Quick Recall hint, the response remains marked as assisted after a short reload or unit change. During Review, a hint appears before the answer. Those decisions distinguish supported retrieval from unaided recall in the way the interface records and presents practice.</p>
     <p>For GitHub Pages, a build script packages the student runtime and released curriculum records without development files, source documents, or test materials. The static release check reads the staged package across all eight units, including its journeys, scenes, retrieval prompts, review targets, and application questions. The packaging process must also produce identical output across two builds. Deployment then uses the commit that passed the quality-assurance workflow. These are checks of what was packaged and whether it can be loaded consistently. They cannot determine whether a memorable scene helps a learner explain an unfamiliar biological problem.</p>
@@ -112,7 +112,7 @@
   <p class="project-status-note">Implementation details are derived from the public <a href="https://github.com/gmoon-code/memory-palace-u1-8/blob/main/README.md">application repository and release documentation</a>, not a new usability test.</p>
 </section>
 <section class="section">
-  <div class="section-head"><h2>What is available</h2></div>
+  <div class="section-head"><h2>Released AP Biology content</h2></div>
   <div class="project-status-grid">
     <div><strong>AP Biology Units 1–8</strong><p>The released course covers all eight units, with 58 guided journeys and 448 permanent scenes.</p></div>
     <div><strong>Home, Learn, and Review</strong><p>The student interface follows progress through a unit and provides opportunities to revisit earlier work.</p></div>
