@@ -10,6 +10,10 @@
     "border-bottom-width","border-bottom-style","border-left-width","border-left-style"];
   let overlay=null,watcher=null,watching=null,drag=null,frameRequested=0,ratioTarget=null;
   const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
+  const suffix=d=>d==="all"?"desktop":d;
+  const sizeProp=(d,name)=>"--studio-size-"+suffix(d)+"-"+name;
+  const sizeVars=["desktop","tablet","phone"].flatMap(d=>
+    ["width","height"].map(name=>"--studio-size-"+d+"-"+name));
   const line=el=>el&&el.tagName==="HR";
   const image=el=>el&&["IMG","SVG","VIDEO","CANVAS"].includes(el.tagName);
   const screen=()=>{
@@ -27,7 +31,9 @@
     try{map=JSON.parse(el.getAttribute("data-site-resize-original")||"{}")}catch(e){}
     if(!Object.prototype.hasOwnProperty.call(map,device)){
       const base={};
-      for(const p of properties)base[p]=details.getDirectProperty(el,device,p)||"";
+      for(const p of [...properties,...sizeVars])
+        base[p]=details.getDirectProperty(el,p.startsWith("--studio-size-")?"all":device,p)||"";
+      base.__hadFreeSize=el.classList.contains("studio-unrestricted-size");
       map[device]=base;
       el.setAttribute("data-site-resize-original",JSON.stringify(map));
     }
@@ -138,10 +144,12 @@
   function session(dir,x,y){
     const el=element();if(!el||state.busy)return null;
     const r=rect(el),style=css(el),d=screen(),parent=el.parentElement;
-    const max=Math.max(r.width,Math.min(2800,parent?.getBoundingClientRect().width||r.width||2800));
+    const max=4000; // Blue handles can now extend beyond the original parent column.
     remember();saveOriginal(el,d);
     return {el,doc:docOf(),d,dir,x,y,w:r.width,h:r.height,ratio:r.height?r.width/r.height:1,
       lock:!line(el)&&$("keepResizeRatio").checked,
+      previousStyle:el.getAttribute("style"),
+      previousClass:el.getAttribute("class"),
       mx:parseFloat(style?.marginLeft)||0,my:parseFloat(style?.marginTop)||0,
       borderWidths:Object.fromEntries(["top","right","bottom","left"].map(side=>[
         side,parseFloat(style?.getPropertyValue("border-"+side+"-width"))||0
@@ -161,8 +169,7 @@
       changes["border-"+side+"-width"]=v+"px";
       changes["border-"+side+"-style"]=v?"solid":"none";
     }else if(line(t.el)){
-      changes.width=clamp(Math.round(t.w+(west?-dx:dx)),24,Math.min(2800,t.max+600))+"px";
-      changes["max-width"]="100%";
+      changes.width=clamp(Math.round(t.w+(west?-dx:dx)),24,4000)+"px";
       if(west)changes["margin-left"]=Math.round(t.mx+dx)+"px";
     }else{
       let w=t.w+(west?-dx:east?dx:0),h=t.h+(north?-dy:south?dy:0);
@@ -176,9 +183,9 @@
           w=t.w*scale;h=t.h*scale;
         }
       }
-      w=clamp(Math.round(w),24,Math.min(2800,t.max+600));
+      w=clamp(Math.round(w),24,4000);
       h=clamp(Math.round(h),10,2200);
-      if(widthSide||keep){changes.width=w+"px";changes["max-width"]="100%"}
+      if(widthSide||keep){changes.width=w+"px"}
       if(heightSide||keep){
         if(image(t.el)){changes.height=h+"px";changes["object-fit"]="cover"}
         else changes["min-height"]=h+"px";
@@ -187,7 +194,35 @@
       if(north)changes["margin-top"]=Math.round(t.my+dy)+"px";
       if(["A","SPAN","EM","STRONG","MARK"].includes(t.el.tagName))changes.display="inline-block";
     }
-    details.setDirectProperties(t.el,t.d,changes);
+    // Width and height use viewport-specific CSS variables. Inline width
+    // constraints (including old max-width:100%) are removed once, so a drag
+    // is not blocked by the original grid cell or narrow article measure.
+    const freeDimensions={};
+    if(changes.width){
+      freeDimensions[sizeProp(t.d,"width")]=changes.width;
+      delete changes.width;
+    }
+    const height=changes.height||changes["min-height"];
+    if(height){
+      freeDimensions[sizeProp(t.d,"height")]=height;
+      delete changes.height;
+      delete changes["min-height"];
+    }
+    if(Object.keys(freeDimensions).length){
+      if(!t.el.classList.contains("studio-unrestricted-size")){
+        const originalWidth=t.el.style.getPropertyValue("width");
+        const originalHeight=t.el.style.getPropertyValue("height")||
+          t.el.style.getPropertyValue("min-height");
+        if(originalWidth)freeDimensions["--studio-size-desktop-width"]=originalWidth;
+        if(originalHeight)freeDimensions["--studio-size-desktop-height"]=originalHeight;
+      }
+      details.setDirectProperties(t.el,"all",{
+        "width":null,"max-width":null,"height":null,"min-height":null
+      });
+      t.el.classList.add("studio-unrestricted-size");
+      details.setDirectProperties(t.el,"all",freeDimensions);
+    }
+    if(Object.keys(changes).length)details.setDirectProperties(t.el,t.d,changes);
     t.moved=true;
     update();
   }
@@ -217,6 +252,10 @@
     const t=drag;drag=null;
     if(t.doc===docOf()){
       details.setDirectProperties(t.el,t.d,t.initial);
+      if(t.previousStyle===null)t.el.removeAttribute("style");
+      else t.el.setAttribute("style",t.previousStyle);
+      if(t.previousClass===null)t.el.removeAttribute("class");
+      else t.el.setAttribute("class",t.previousClass);
       syncCurrent();selectElement(t.el);update();
     }
   }
