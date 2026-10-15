@@ -216,11 +216,23 @@
     if(selected())plus.openLibrary("blocks");
   });
   quick?.appendChild(add);
+  const addSection=document.createElement("button");
+  addSection.type="button";addSection.textContent="+ Section";
+  addSection.id="canvasQuickSection";
+  addSection.title="Insert a full section after the current one";
+  addSection.addEventListener("click",()=>{
+    const section=sectionFor(selected());
+    if(!section)return;
+    selectElement(section);
+    plus.openLibrary("sections");
+  });
+  quick?.appendChild(addSection);
   function updateQuickActions(){
     const node=selected();
     visible(replace,!!node&&node.tagName==="IMG");
     visible(remove,!!node&&!id("deleteBtn")?.disabled);
     visible(add,!!node);
+    visible(addSection,!!sectionFor(node));
   }
 
   // Two contextual add points in the preview. They never become website content.
