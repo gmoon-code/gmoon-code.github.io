@@ -872,14 +872,6 @@
         ...state.deleted
       ];
       if(state.manifestDirty)pathsToCheck.push(["studio/pages.json",state.manifestSha]);
-      for(const [path,expectedSha] of pathsToCheck){
-        let latest=null;
-        try{latest=await fetchFile(path)}
-        catch(error){if(!String(error.message).includes("(404)"))throw error}
-        if(expectedSha&&(!latest||latest.sha!==expectedSha))
-          throw Error("Someone else changed "+path+" after you opened it. Your draft is safe here; refresh the source before publishing.");
-        if(!expectedSha&&latest)throw Error(path+" already exists. Choose another page address.");
-      }
       const prefix="/repos/"+OWNER+"/"+REPO;
       $("saveStatus").textContent="Preparing a single website update…";
       const reference=await github(prefix+"/git/ref/heads/main");
@@ -888,6 +880,33 @@
       const previousCommit=await github(prefix+"/git/commits/"+oldHead);
       const baseTree=previousCommit.tree?.sha;
       if(!baseTree)throw Error("GitHub did not return the website file tree.");
+
+      // One tree request checks all draft file identities. The previous approach
+      // requested every page separately and could trigger GitHub secondary limits
+      // when site-wide changes touched many pages.
+      $("saveStatus").textContent="Checking edited files against GitHub…";
+      const snapshot=await github(prefix+"/git/trees/"+baseTree+"?recursive=1");
+      const treeIndex=snapshot.truncated?null:new Map(
+        (snapshot.tree||[]).filter(item=>item.type==="blob")
+          .map(item=>[item.path,item.sha])
+      );
+      for(const [path,expectedSha] of pathsToCheck){
+        let actualSha;
+        if(treeIndex){
+          actualSha=treeIndex.get(path)||null;
+        }else{
+          // Very large repositories may return a truncated recursive tree.
+          let latest=null;
+          try{latest=await fetchFile(path)}
+          catch(error){if(!String(error.message).includes("(404)"))throw error}
+          actualSha=latest?.sha||null;
+        }
+        if(expectedSha&&actualSha!==expectedSha)
+          throw Error("Another change updated "+path+
+            " after you opened it. Your draft is safe; review the newer version before publishing.");
+        if(!expectedSha&&actualSha)
+          throw Error(path+" already exists. Choose another page address.");
+      }
 
       // Git blobs can be prepared without changing the live website.
       const photos=changedReferences();
