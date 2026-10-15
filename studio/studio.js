@@ -724,7 +724,7 @@
         caption.textContent="Photo caption (optional)";
         caption.style.color="#575757";caption.style.fontSize="13px";
         figure.appendChild(caption);
-        const target=state.selected;
+        const target=placementTarget(state.selected);
         const gallery=target?.closest(".studio-gallery");
         const emptyFigure=gallery&&target.closest("figure")?.querySelector("img")===null?
           target.closest("figure"):null;
