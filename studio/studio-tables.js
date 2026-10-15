@@ -125,9 +125,9 @@
     if(!shape?.simple||shape.columns<=1||!cell)return;
     if(!confirm("Delete this table column? You can undo before publishing."))return;
     const index=cell.cellIndex;
+    const selectedRow=cell.parentElement;
     mutate(()=>shape.rows.forEach(row=>row.cells[index].remove()));
-    const row=table.rows[Math.min(cell.parentElement.rowIndex,table.rows.length-1)];
-    selectElement(row.cells[Math.min(index,row.cells.length-1)],true);
+    selectElement(selectedRow.cells[Math.min(index,selectedRow.cells.length-1)],true);
     refresh();
   }
 
