@@ -573,6 +573,7 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
 .home-spotlight-text .inline-link{margin-top:17px}
 .home-spotlight-note{padding:18px 20px 15px;background:var(--home-soft);border:1px solid var(--moon-rule);border-left:4px solid var(--home-line)}
 .home-spotlight-note h4{font-size:16px;margin:0 0 12px;line-height:1.35}
+.home-spotlight-note>p{margin:0;font-size:15px;line-height:1.58;color:#383838}
 .home-spotlight-note ol{margin:0;padding-left:21px}
 .home-spotlight-note li{padding:0 0 11px 2px;line-height:1.48;font-size:15px}
 .home-spotlight-note li:last-child{padding-bottom:0}
