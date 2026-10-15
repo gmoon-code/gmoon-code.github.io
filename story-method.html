@@ -39,7 +39,7 @@
 
 <section class="section project-preview-section" id="preview">
   <div class="section-head"><h2>Application preview</h2></div>
-  <p class="project-preview-intro">You can open a small view of the current learning site here. It loads the actual application, so you can see its layout and try the first journey. The full-size site gives you more room to work.</p>
+  <p class="project-preview-intro">The preview below opens the published Unit 1 application. You can explore its opening journey here or use the full-size site.</p>
   <div class="project-preview-panel" data-live-preview="story">
     <div class="project-preview-heading"><span>Live preview · The Story Method</span><a class="inline-link" href="https://gmoon-code.github.io/memory-palace-u1-8/?unit=unit-1">Open full-size Unit 1 ↗</a></div>
     <div class="project-preview-before">
@@ -56,7 +56,7 @@
         <button type="button" data-preview-close>Close preview</button>
       </div>
       <div class="project-preview-stage" data-preview-stage data-device="desktop"></div>
-      <p class="project-preview-caption">This preview loads the public application. Progress made here may also appear in the full site because both use the same browser storage. Open the full site for more space.</p>
+      <p class="project-preview-caption">Progress made in the preview may also appear in the full site because both use the same browser storage. For longer sessions, open the full-size application.</p>
     </div>
   </div>
 </section>
@@ -107,7 +107,7 @@
   <div class="reading project-reading">
     <p>The public release uses static curriculum records for all eight AP Biology units. The application keeps progress, review scheduling, and assisted-recall state in the student's browser. Its release documentation describes two safeguards that are educationally consequential. When a learner requests a Quick Recall hint, the response remains marked as assisted after a short reload or unit change. During Review, a hint appears before the answer. Those decisions distinguish supported retrieval from unaided recall in the way the interface records and presents practice.</p>
     <p>For GitHub Pages, a build script packages the student runtime and released curriculum records without development files, source documents, or test materials. The static release check reads the staged package across all eight units, including its journeys, scenes, retrieval prompts, review targets, and application questions. The packaging process must also produce identical output across two builds. Deployment then uses the commit that passed the quality-assurance workflow. These are checks of what was packaged and whether it can be loaded consistently. They cannot determine whether a memorable scene helps a learner explain an unfamiliar biological problem.</p>
-    <p>I would therefore evaluate a future revision at two levels. First, whether the application preserves the intended scientific meaning and the distinction between aided and unaided responses. Second, whether learners can explain an unfamiliar mechanism or experimental decision after working through a scene. That second question would require actual evidence from learners.</p>
+    <p>A future evaluation would need to examine the scientific accuracy of the activities and the distinction between assisted and unaided responses. Assessing whether learners can apply the reasoning to an unfamiliar problem would also require evidence from their work after completing a journey.</p>
   </div>
   <p class="project-status-note">Implementation details are derived from the public <a href="https://github.com/gmoon-code/memory-palace-u1-8/blob/main/README.md">application repository and release documentation</a>, not a new usability test.</p>
 </section>
