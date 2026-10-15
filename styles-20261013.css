@@ -1720,3 +1720,23 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
     max-width:100%!important;
   }
 }
+
+/* The homepage portrait was enlarged in Studio. Reserve the corresponding
+   column in the desktop grid so the reading copy remains unobstructed. */
+@media (min-width:1024px){
+  #main.home-page .home-intro{
+    grid-template-columns:minmax(0,1fr) 318px;
+  }
+  #main.home-page .home-intro .hero-copy{
+    min-width:0;
+  }
+  #main.home-page .home-intro .hero-copy>.studio-unrestricted-size{
+    max-width:100%!important;
+  }
+  #main.home-page .home-photo{
+    justify-self:end;
+  }
+  #main.home-page .home-photo img.studio-unrestricted-size{
+    width:100%!important;
+  }
+}
