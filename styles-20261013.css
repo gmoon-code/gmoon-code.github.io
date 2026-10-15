@@ -1545,3 +1545,7 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
 /* Groups created in Website Studio remain normal responsive document flow. */
 .studio-group{display:block;min-width:0;max-width:100%}
 .studio-group>*{min-width:0;max-width:100%}
+
+/* Hide an item through Website Studio Layers without deleting its content.
+   This class is saved with the website; all devices respect the choice. */
+.studio-layer-hidden{display:none!important}
