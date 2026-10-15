@@ -294,6 +294,10 @@
     const normalized=typeof value==="string"&&/^(?:\d+(?:\.\d+)?)(?:px|%)$/.test(value)?value:null;
     if(!normalized){
       el.style.removeProperty(key);
+      if(!el.classList.contains("studio-unrestricted-size")){
+        el.style.removeProperty("width");
+        el.style.removeProperty("max-width");
+      }
       if(!sizeVars.some(p=>el.style.getPropertyValue(p))){
         el.classList.remove("studio-unrestricted-size");
         window.WebsiteStudioFree?.cleanClips?.(el);
