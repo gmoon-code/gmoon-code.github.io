@@ -35,6 +35,46 @@
       "path": "cv.html",
       "label": "CV",
       "visible": true
+    },
+    {
+      "path": "research-scoping.html",
+      "label": "Scoping review",
+      "visible": false
+    },
+    {
+      "path": "research-action.html",
+      "label": "Classroom action research",
+      "visible": false
+    },
+    {
+      "path": "story-method.html",
+      "label": "The Story Method",
+      "visible": false
+    },
+    {
+      "path": "research-methods-studio.html",
+      "label": "Research Methods Studio",
+      "visible": false
+    },
+    {
+      "path": "teaching-ap-evolution.html",
+      "label": "AP Biology curriculum study",
+      "visible": false
+    },
+    {
+      "path": "teaching-ap-biology.html",
+      "label": "AP Biology teaching case",
+      "visible": false
+    },
+    {
+      "path": "teaching-ap-chemistry.html",
+      "label": "AP Chemistry teaching case",
+      "visible": false
+    },
+    {
+      "path": "teaching-osmosis-practice.html",
+      "label": "Osmosis practice activity",
+      "visible": false
     }
   ]
 }
