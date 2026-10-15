@@ -370,6 +370,12 @@
   }
   function labelForNode(node){
     if(!node)return "Nothing selected";
+    if(node.matches(".studio-table-wrap"))return "Whole table";
+    if(node.tagName==="TABLE")return "Table";
+    if(node.tagName==="TD")return "Table cell";
+    if(node.tagName==="TH")return "Table heading cell";
+    if(node.tagName==="CAPTION")return "Table caption";
+    if(node.tagName==="FIGCAPTION")return "Image caption";
     if(node.tagName==="SECTION")return "Section";
     if(node.tagName==="ARTICLE")return "Card / article";
     if(node.tagName==="IMG")return "Image";
