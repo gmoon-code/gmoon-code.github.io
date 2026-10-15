@@ -238,6 +238,8 @@
     clone.querySelector("#studio-canvas-style")?.remove();
     clone.querySelector("#studio-free-overlay")?.remove();
     clone.querySelector("#studio-free-style")?.remove();
+    clone.querySelector("#studio-free-preview-style")?.remove();
+    clone.querySelector("body")?.removeAttribute("data-studio-screen");
     clone.querySelectorAll("[data-studio-selected]").forEach(node=>node.removeAttribute("data-studio-selected"));
     clone.querySelectorAll("[contenteditable]").forEach(node=>node.removeAttribute("contenteditable"));
     clone.querySelectorAll("[draggable]").forEach(node=>node.removeAttribute("draggable"));
@@ -1136,6 +1138,9 @@
           const active=b===button;b.classList.toggle("is-active",active);
           b.setAttribute("aria-pressed",active?"true":"false");
         });
+        updateInspectorFields();
+        window.WebsiteStudioCanvas?.onSelection?.(state.selected);
+        window.WebsiteStudioFree?.applyPreviewScreen?.();
       });
     }
     bindInspector();
