@@ -253,6 +253,7 @@
     draft.dirty= draft.isNew||draft.html!==draft.savedHtml;
     updateStatus();renderPages();
     window.WebsiteStudioPlus?.onChanged?.();
+    window.WebsiteStudioLayers?.onChanged?.();
   }
   function remember(){
     const draft=activeDraft();if(!draft)return;
@@ -360,6 +361,7 @@
     window.WebsiteStudioTables?.onPreviewReady?.();
     window.WebsiteStudioCanvas?.onPreviewReady?.();
     window.WebsiteStudioChrome?.onPreviewReady?.();
+    window.WebsiteStudioLayers?.onPreviewReady?.();
   }
   function selectElement(node,scroll=false){
     if(!node||!docOf()||!docOf().contains(node))return;
@@ -371,6 +373,7 @@
     window.WebsiteStudioPlus?.onSelection?.(node);
     window.WebsiteStudioTables?.onSelection?.(node);
     window.WebsiteStudioCanvas?.onSelection?.(node);
+    window.WebsiteStudioLayers?.onSelection?.(node);
     if(scroll)node.scrollIntoView({behavior:"smooth",block:"center"});
   }
   function labelForNode(node){
