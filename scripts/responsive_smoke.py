@@ -107,6 +107,34 @@ async def main():
                         if "View photo" not in gallery:
                             failures.append({"page": filename, "viewport": width,
                                              "galleryCue": gallery})
+                        media = await page.evaluate("""() => {
+                          const cards = [...document.querySelectorAll("#main .media-entry")];
+                          return cards.map(card => {
+                            const row = card.querySelector("p.media-explore");
+                            const link = row?.querySelector("a");
+                            const links = [...card.querySelectorAll("a")];
+                            const review = card.querySelector("p:not(.meta):not(.media-explore)");
+                            return {heading:card.querySelector("h3")?.textContent,
+                              hasRow:!!row, links:links.length,
+                              reviewHasLinks:!!review?.querySelector("a"),
+                              visible:!!link && getComputedStyle(link).display !== "none",
+                              underline:link ? getComputedStyle(link).textDecorationLine : "",
+                              external:!!link && /^https?:/.test(link.href)};
+                          });
+                        }""")
+                        result["mediaResources"] = media
+                        if (len(media) != 6 or any(
+                                not card["hasRow"] or card["links"] != 1 or
+                                card["reviewHasLinks"] or not card["visible"] or
+                                "underline" not in card["underline"] or
+                                not card["external"] for card in media)):
+                            failures.append({"page": filename, "viewport": width,
+                                             "mediaResources": media})
+                    if filename == "teaching.html":
+                        has_novice = await page.locator("#teaching-resources").count()
+                        if has_novice:
+                            failures.append({"page": filename, "viewport": width,
+                                             "unexpectedSection": "#teaching-resources"})
                     result["page"] = filename
                     result["httpStatus"] = response.status if response else None
                     results.append(result)
