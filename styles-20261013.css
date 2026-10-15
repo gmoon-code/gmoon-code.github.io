@@ -1831,3 +1831,44 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
   background:#e6f2ea;
   border-color:#175641;
 }
+
+/* Personal media reviews are complete thoughts. Related links have the
+   same predictable location in every card without interrupting the prose. */
+#main .media-entry>div{
+  display:flex;
+  flex:1 1 0%;
+  flex-direction:column;
+  min-width:0;
+}
+#main .media-entry p.media-explore{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:baseline;
+  column-gap:9px;
+  row-gap:2px;
+  border-top:1px solid var(--moon-rule);
+  padding:12px 0 0;
+  margin:16px 0 0;
+  margin-top:auto;
+  font-size:13px;
+  line-height:1.5;
+}
+#main .media-entry .media-explore-label{
+  color:var(--moon-muted);
+  font-size:12px;
+  font-weight:700;
+  white-space:nowrap;
+}
+#main .media-entry .media-explore a{
+  font-size:13px;
+  font-weight:700;
+  overflow-wrap:anywhere;
+  text-decoration-thickness:1.5px;
+  text-underline-offset:3px;
+}
+#main .media-entry .media-explore a:focus-visible{
+  outline-offset:3px;
+}
+@media(max-width:480px){
+  #main .media-entry p.media-explore{padding-top:10px}
+}
