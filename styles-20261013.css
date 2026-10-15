@@ -1509,3 +1509,35 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
     max-width:100%;
   }
 }
+
+/* Tables inserted and edited in Website Studio. */
+.studio-table-wrap{
+  width:100%;
+  max-width:100%;
+  margin:18px 0 24px;
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+}
+.studio-editable-table{
+  width:100%;
+  min-width:510px;
+  border-collapse:collapse;
+  font-size:15px;
+  line-height:1.55;
+  text-align:left;
+}
+.studio-editable-table th,.studio-editable-table td{
+  padding:12px 14px;
+  text-align:left;
+  vertical-align:top;
+  border-bottom:1px solid var(--moon-rule);
+  overflow-wrap:break-word;
+}
+.studio-editable-table thead th{
+  background:var(--page-soft,var(--section-green-soft));
+  border-top:2px solid var(--page-line,var(--section-green-line));
+}
+.studio-editable-table tbody tr:last-child>*{border-bottom:1px solid var(--moon-rule-dark)}
+@media(max-width:600px){
+  .studio-editable-table th,.studio-editable-table td{padding:10px 11px}
+}
