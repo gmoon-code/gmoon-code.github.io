@@ -220,6 +220,7 @@
         "width":null,"max-width":null,"height":null,"min-height":null
       });
       t.el.classList.add("studio-unrestricted-size");
+      window.WebsiteStudioFree?.releaseClips?.(t.el);
       details.setDirectProperties(t.el,"all",freeDimensions);
     }
     if(Object.keys(changes).length)details.setDirectProperties(t.el,t.d,changes);
@@ -301,8 +302,10 @@
     delete map[d];
     if(Object.keys(map).length)el.setAttribute("data-site-resize-original",JSON.stringify(map));
     else el.removeAttribute("data-site-resize-original");
-    if(!sizeVars.some(p=>el.style.getPropertyValue(p))&&!saved.__hadFreeSize)
+    if(!sizeVars.some(p=>el.style.getPropertyValue(p))&&!saved.__hadFreeSize){
       el.classList.remove("studio-unrestricted-size");
+      window.WebsiteStudioFree?.cleanClips?.(el);
+    }
     syncCurrent();selectElement(el);update();
     toast("Original dimensions restored for this screen.");
   }
