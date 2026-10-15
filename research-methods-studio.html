@@ -21,46 +21,23 @@
 <section class="page-hero single">
   <div class="hero-copy">
     <h1>Research Methods Studio</h1>
-    <p>A research question can seem workable until a student begins looking for measurements, sources, or participants. At that point, the methods may call for the question to change. I developed Research Methods Studio to support these decisions across eighteen connected stages, from an initial interest and literature work to design, analysis, and writing. The stages give students places to return as they learn more about what their evidence can support.</p>
+    <p>A research question can seem workable until a student begins deciding what to measure, where to find evidence, or whom to involve. Research Methods Studio is a workspace I developed to help students revisit those decisions across eighteen connected stages. A hypothetical seedling experiment below illustrates one of its central methodological questions. If salinity is assigned to a whole tray, what counts as an independent observation when the results are analysed?</p>
     <div class="controls"><a class="control primary" href="https://gmoon-code.github.io/research-methods/">Open Research Methods Studio ↗</a></div>
   </div>
 </section>
+
 <nav class="article-jumps" aria-label="On this project page">
   <span>On this page</span>
-  <a href="#research-example">Design example</a><a href="#methods-design-review">Methodological choices</a><a href="#methods-implementation">Implementation</a>
-  <a href="#preview">Live preview</a>
+  <a href="#research-example">Seedling example</a><a href="#methods-design-review">Research approaches</a><a href="#methods-stages">Eighteen stages</a><a href="#methods-tools">Workspaces</a><a href="#preview">Try the application</a><a href="#methods-privacy">Privacy and backups</a><a href="#methods-implementation">Technical notes</a>
 </nav>
 
 
 
-<section class="section project-preview-section" id="preview">
-  <div class="section-head"><h2>Application preview</h2></div>
-  <p class="project-preview-intro">The preview below shows the opening stages of the published workspace. The full-size application provides more room for working through a project.</p>
-  <div class="project-preview-panel" data-live-preview="methods">
-    <div class="project-preview-heading"><span>Live preview · Research Methods Studio</span><a class="inline-link" href="https://gmoon-code.github.io/research-methods/">Open the full workspace ↗</a></div>
-    <div class="project-preview-before">
-      <p>Look at the opening research guidance and the tools available along the path.</p>
-      <button type="button" class="control primary project-preview-open" data-preview-open="" hidden="">Show the live preview</button>
-      <a class="project-preview-fallback" href="https://gmoon-code.github.io/research-methods/">Visit Research Methods Studio ↗</a>
-    </div>
-    <div class="project-preview-active" data-preview-active="" hidden="">
-      <div class="project-preview-toolbar">
-        <div class="project-preview-device" role="group" aria-label="Preview screen size">
-          <button type="button" data-preview-device="desktop" aria-pressed="true">Desktop</button>
-          <button type="button" data-preview-device="phone" aria-pressed="false">Phone</button>
-        </div>
-        <button type="button" data-preview-close="">Close preview</button>
-      </div>
-      <div class="project-preview-stage" data-preview-stage="" data-device="desktop"></div>
-      <p class="project-preview-caption">The preview and full-size application may share a locally stored project in this browser. For extended writing and backups, use the full workspace.</p>
-    </div>
-  </div>
-</section>
 
 <section id="research-example" class="section rms-example-section">
   <div class="section-head"><h2>Experimental design example</h2></div>
   <div class="reading project-reading">
-    <p>The experimental-study guidance follows a hypothetical investigation of seedling growth under assigned salinity conditions. This example introduces a decision that affects the entire analysis. Whether treatment is assigned to each plant or to a whole tray determines which observations can count as independent replications. Students also need to define growth and establish what the comparison could reasonably show.</p>
+    <p>The experimental-study guidance uses an investigation of seedling growth under assigned salinity conditions. The decision about treatment assignment affects everything that follows. If each whole tray receives a salinity condition, the plants within it share that treatment; counting them as independent experimental replications would overstate the evidence. The student also needs to define growth, plan the observation period, and determine what the resulting comparison can support.</p>
   </div>
   <div class="project-decision-sequence">
     <div><span class="project-sequence-label">Question</span><p>How does assigned salinity concentration affect mean seedling growth under standardized laboratory conditions?</p></div>
@@ -94,20 +71,13 @@
     </table>
   </div>
   <div class="reading project-reading">
-    <p>In the seedling experiment, the assignment procedure determines the evidence available for comparing treatments. In a review, the corresponding record is the search and selection process that determines which publications are examined. The workspace encourages students to document those choices, while responsibility for the final methodological justification remains with the researcher.</p>
+    <p>These approaches require different records. In the seedling experiment, the treatment assignment determines what can be compared independently. In an evidence review, the search and selection record establishes which publications entered the analysis. The workspace prompts students to document the decisions relevant to their approach so that they can examine them again when writing their conclusions. Responsibility for the methodological justification remains with the researcher.</p>
   </div>
 </section>
-<section id="methods-implementation" class="section">
-  <div class="section-head"><h2>Guidance delivery and research records</h2></div>
-  <div class="reading project-reading">
-    <p>The workspace also keeps instructional guidance separate from students' working notebooks. An authenticated Content Studio can publish a validated release of guidance for the eighteen stages. The loader checks six defined fields per stage and rejects incomplete or invalid releases; when an update cannot be loaded, the bundled curriculum remains available. Updating published guidance does not alter the application version or overwrite a student's locally stored project.</p>
-    <p>Student work follows a different path from published guidance. The notebook normally stays in browser storage, while optional Research Chat sends a reduced selection of project context to a server. The release documentation describes checks in both the browser and server and reports no collection of research-study data or operational telemetry. I have not independently audited those claims for security or privacy.</p>
-    <p>An earlier guidance release can be restored if published instructions need correcting, without altering students' working notebooks. That separation also raises a question for evaluation. I would want to examine whether students notice changes to the guidance and how they use it when reconsidering a methodological decision.</p>
-  </div>
-  <p class="project-status-note">Architecture and release details are taken from the <a href="https://github.com/gmoon-code/research-methods/blob/main/README.md">application's repository documentation</a>. No private administration features, network responses, or user records were accessed in this review.</p>
-</section>
-<section class="section">
-  <div class="section-head"><h2>Research stages</h2></div>
+
+<section id="methods-stages" class="section">
+  <div class="section-head"><h2>The eighteen-stage research pathway</h2></div>
+  <div class="reading project-reading"><p>Questions about sources, measurements, and analysis arise at different points in a project. The pathway keeps the stages connected so that a decision made during data collection or writing can lead students back to reconsider an earlier choice.</p></div>
   <div class="project-phase-grid">
     <article><span class="meta">Stages 1–4</span><h3>Research topic and question</h3><p>Explore interests and develop a question that can be investigated.</p></article>
     <article><span class="meta">Stages 5–8</span><h3>Literature and evidence</h3><p>Search and compare related studies, keeping track of where a claim comes from.</p></article>
@@ -117,8 +87,9 @@
   </div>
 </section>
 
-<section class="section">
-  <div class="section-head"><h2>Methods and writing tools</h2></div>
+<section id="methods-tools" class="section">
+  <div class="section-head"><h2>Workspaces for methodological decisions</h2></div>
+  <div class="reading project-reading"><p>Within the pathway, separate tools support source comparison, research design, data inspection, and scientific writing. Their prompts invite students to examine their evidence and revise a decision when needed.</p></div>
   <div class="project-tool-list">
     <div><h3>Literature Workspace</h3><p>Record and compare sources, including agreements, differences, and questions that remain.</p></div>
     <div><h3>Methods Lab</h3><p>Review the match between the research question, proposed measurements, and study design.</p></div>
@@ -127,11 +98,50 @@
   </div>
 </section>
 
-<section class="section">
+<section class="section project-preview-section" id="preview">
+  <div class="section-head"><h2>Application preview</h2></div>
+  <p class="project-preview-intro">The published workspace brings these decisions into the student's ongoing project. You can explore its opening guidance below, while the full-size application provides more room for developing a research plan and recording work.</p>
+  <div class="project-preview-panel" data-live-preview="methods">
+    <div class="project-preview-heading"><span>Live preview · Research Methods Studio</span><a class="inline-link" href="https://gmoon-code.github.io/research-methods/">Open the full workspace ↗</a></div>
+    <div class="project-preview-before">
+      <p>Look at the opening research guidance and the tools available along the path.</p>
+      <button type="button" class="control primary project-preview-open" data-preview-open="" hidden="">Show the live preview</button>
+      <a class="project-preview-fallback" href="https://gmoon-code.github.io/research-methods/">Visit Research Methods Studio ↗</a>
+    </div>
+    <div class="project-preview-active" data-preview-active="" hidden="">
+      <div class="project-preview-toolbar">
+        <div class="project-preview-device" role="group" aria-label="Preview screen size">
+          <button type="button" data-preview-device="desktop" aria-pressed="true">Desktop</button>
+          <button type="button" data-preview-device="phone" aria-pressed="false">Phone</button>
+        </div>
+        <button type="button" data-preview-close="">Close preview</button>
+      </div>
+      <div class="project-preview-stage" data-preview-stage="" data-device="desktop"></div>
+      <p class="project-preview-caption">The preview and full-size application may share a locally stored project in this browser. For extended writing and backups, use the full workspace.</p>
+    </div>
+  </div>
+</section>
+
+<section id="methods-privacy" class="section">
   <div class="section-head"><h2>Exports, backups, and privacy</h2></div>
   <div class="reading project-reading">
-    <p>Students can export a Word document for reading or sharing and make a JSON backup of their project. Because the working notebook is normally kept in browser storage, an external backup is valuable for work they need to retain. Optional Research Chat sends selected project context across a network boundary. These features can support the writing process, while students still need to check sources and explain their methodological choices.</p>
+    <p>Students can export a Word document for reading or sharing and save a JSON backup of their project. The working notebook normally remains in browser storage, so an external copy is important when students need to retain work across browsers or devices. Optional Research Chat sends selected project context to a server. Students should understand that difference before choosing whether to use it, and they remain responsible for checking sources and explaining their methodological choices.</p>
   </div>
+</section>
+
+<section id="methods-implementation" class="section">
+  <div class="section-head"><h2>How the workspace handles guidance and records</h2></div>
+  <div class="reading project-reading">
+    <p>Research guidance and students' working notebooks are maintained separately. The public <a href="https://github.com/gmoon-code/research-methods/blob/main/README.md" target="_blank" rel="noopener noreferrer">application documentation</a> describes a release process that can update instructional guidance without overwriting a locally stored project. It also describes technical checks and the optional network features discussed above. Those documented safeguards have not been independently audited for privacy or security.</p>
+  </div>
+  <details class="project-technical-details">
+    <summary>Guidance releases, validation, and recovery</summary>
+    <div class="reading project-reading">
+      <p>An authenticated Content Studio can publish a validated release of guidance for the eighteen stages. The loader checks six defined fields per stage and rejects incomplete or invalid releases. If updated guidance cannot be loaded, the bundled curriculum remains available, and a prior guidance release can be restored without changing the application version or a student's working notebook.</p>
+      <p>The documentation also describes checks in the browser and server, and reports no collection of research-study data or operational telemetry. These are statements about the documented implementation; I have not inspected private administration features, network responses, or user records in preparing this account.</p>
+      <p>A subsequent evaluation could examine whether students notice revisions to guidance and how those changes affect the methodological decisions they revisit.</p>
+    </div>
+  </details>
 </section>
 <p class="project-return"><a href="projects.html">← All projects</a></p>
 </main>
