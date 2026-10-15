@@ -14,6 +14,7 @@
   <script src="studio-details.js" defer></script>
   <script src="studio-resize.js" defer></script>
   <script src="studio-move.js" defer></script>
+  <script src="studio-tables.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#studioMain">Skip to editing tools</a>
@@ -470,6 +471,7 @@
       <h2 id="helpTitle">Editing, without the guesswork</h2>
       <ol class="help-list">
         <li><strong>Choose a page</strong> on the left. New pages start with a simple title and section.</li>
+        <li><strong>Tables</strong> can be added through Browse layouts. Select or double-click a cell to edit it, then use the Table controls to add or remove rows and columns. Merged-cell layouts are protected from structural changes.</li>
         <li><strong>Click an item in the preview</strong> to select it. Edit its words in Content or double-click text directly in the preview.</li>
         <li><strong>Add something</strong> using the Add menu above the preview. Select a section first if you want to add a block inside it.</li>
         <li><strong>Rearrange or remove</strong> using the actions in Content. Undo is available at the top.</li>
@@ -549,6 +551,14 @@
         <option value="1120">Balanced (current)</option>
         <option value="1280">Wider layout</option>
       </select>
+      <label for="siteReadingWidth">Text column width</label>
+      <select id="siteReadingWidth">
+        <option value="840">Comfortable reading column</option>
+        <option value="920">Medium</option>
+        <option value="1040">Wide (current)</option>
+        <option value="1200">Fill the available page width</option>
+      </select>
+      <p class="micro-help">Adjust the main paragraph columns across the site. Tables, photos, and sidebars keep their own layout.</p>
       <label for="siteCorners">Card corners</label>
       <select id="siteCorners">
         <option value="2">Almost square</option>
