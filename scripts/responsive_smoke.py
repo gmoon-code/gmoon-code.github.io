@@ -72,6 +72,41 @@ async def main():
                     await page.locator("main").wait_for(timeout=5000)
                     await page.wait_for_timeout(160)
                     result = await page.evaluate(MEASURE)
+                    # Sample computed styles from actual page links. An inline
+                    # source must look clickable before hover, including on phones.
+                    if filename in ("interests.html", "research-scoping.html",
+                                    "teaching-ap-chemistry.html", "story-method.html",
+                                    "research-methods-studio.html"):
+                        affordance = await page.evaluate("""() => {
+                          const a = document.querySelector(
+                            '#main p a[href^="https://"]:not(.inline-link):not(.control)'
+                          );
+                          if (!a) return {error:"inline external link missing"};
+                          const style = getComputedStyle(a);
+                          const after = getComputedStyle(a, "::after").content;
+                          a.focus();
+                          const focused = getComputedStyle(a);
+                          return {label:a.textContent.trim().slice(0,60),
+                            underline:style.textDecorationLine,
+                            color:style.color,
+                            after, focusOutline:focused.outlineStyle};
+                        }""")
+                        result["linkAffordance"] = affordance
+                        if (affordance.get("error") or
+                                "underline" not in affordance.get("underline", "") or
+                                "↗" not in affordance.get("after", "") or
+                                affordance.get("focusOutline") in ("none", "")):
+                            failures.append({"page": filename, "viewport": width,
+                                             "linkAffordance": affordance})
+                    if filename == "interests.html":
+                        gallery = await page.evaluate("""() => {
+                          const a = document.querySelector("#main .pungmul-gallery a");
+                          return a ? getComputedStyle(a, "::after").content : "";
+                        }""")
+                        result["galleryCue"] = gallery
+                        if "View photo" not in gallery:
+                            failures.append({"page": filename, "viewport": width,
+                                             "galleryCue": gallery})
                     result["page"] = filename
                     result["httpStatus"] = response.status if response else None
                     results.append(result)
