@@ -87,7 +87,7 @@
     const node=createSnippet(doc,templates[id]);
     if(!node)return;
     remember();
-    const selected=state.selected;
+    const selected=definition.category==="sections"?state.selected:api.placementTarget(state.selected);
     if(definition.category==="sections"){
       const parentSection=selected?.closest("section");
       const top=parentSection?.parentElement===main?parentSection:null;
