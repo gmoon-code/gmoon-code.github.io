@@ -20,6 +20,7 @@
       <button type="button" id="tableColumnAfter" class="small-button">+ Column right</button>
       <button type="button" id="tableRowRemove" class="small-button">Remove row</button>
       <button type="button" id="tableColumnRemove" class="small-button">Remove column</button>
+      <button type="button" id="tableSelectAll" class="small-button table-select-all">Select whole table</button>
     </div>
   `;
   document.getElementById("contentTab")?.appendChild(controls);
@@ -137,5 +138,13 @@
   $("tableColumnAfter").addEventListener("click",()=>addColumn(false));
   $("tableRowRemove").addEventListener("click",removeRow);
   $("tableColumnRemove").addEventListener("click",removeColumn);
+  $("tableSelectAll").addEventListener("click",()=>{
+    const table=selectedTable();
+    if(!table)return;
+    const outer=table.parentElement?.matches(".studio-table-wrap")?table.parentElement:table;
+    selectElement(outer,true);
+    toast("Whole table selected. Use Content to duplicate or remove it.");
+    refresh();
+  });
   window.WebsiteStudioTables={onSelection:refresh,onPreviewReady:refresh};
 })();
