@@ -323,3 +323,28 @@ input[type=checkbox]{accent-color:#3e7380}
 .site-chrome-dialog input,.site-chrome-dialog textarea{width:100%;max-width:100%}
 .site-chrome-dialog .micro-help{line-height:1.55}
 .canvas-layout-buttons button:active{transform:translateY(1px)}
+
+/* Visual page hierarchy. Nested groups can be selected without precise clicking. */
+.layers-heading{margin-top:24px;padding-top:17px;border-top:1px solid var(--line)}
+.layers-heading .sidebar-heading-row{margin:0 0 7px}
+.layers-heading h2{font-size:16px}
+.layers-search-label{display:block;color:var(--muted);font-size:12px;margin:11px 0 5px}
+#layersSearch{width:100%;padding:9px;font-size:13px;min-height:37px;border:1px solid #cbd6cf;border-radius:4px}
+.layers-tree{border:1px solid #e1e7e3;background:#fff;border-radius:4px;max-height:420px;overflow:auto;padding:3px 0}
+.layers-row{display:flex;align-items:center;gap:3px;min-width:0;min-height:33px;
+  padding:2px 4px 2px calc(4px + var(--layers-depth,0)*10px);border-bottom:1px solid #f0f3f1}
+.layers-row:hover{background:#f5f9f6}
+.layers-row.is-selected{background:#dff0e4}
+.layers-row.is-hidden{opacity:.7}
+.layers-row button{font:inherit;border:0;background:none;border-radius:3px;color:#30453b;cursor:pointer}
+.layers-row button:focus-visible{outline:2px solid #37664d;outline-offset:1px}
+.layers-row .layers-toggle{flex:0 0 16px;padding:4px 1px;font-size:13px}
+.layers-row .layers-toggle:disabled{color:#b1bbb4;cursor:default}
+.layers-row .layers-name{flex:1 1 auto;min-width:0;text-align:left;font-size:12px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:5px 2px}
+.layers-row .layers-visibility{flex:0 0 auto;font-size:10px;color:#547664;
+  padding:5px 4px;opacity:.65}
+.layers-row:hover .layers-visibility,.layers-row.is-hidden .layers-visibility{opacity:1}
+.layers-row .layers-visibility:hover{background:#dcece2}
+.layers-heading .micro-help{font-size:11px;color:var(--muted);line-height:1.45;margin:8px 0 0}
+@media(max-width:900px){.layers-tree{max-height:310px}}
