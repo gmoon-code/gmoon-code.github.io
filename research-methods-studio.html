@@ -21,7 +21,7 @@
 <section class="page-hero single">
   <div class="hero-copy">
     <h1>Research Methods Studio</h1>
-    <p>A research question can seem workable until a student begins deciding what to measure, where to find evidence, or whom to involve. Research Methods Studio is a workspace I developed to help students revisit those decisions across eighteen connected stages. A hypothetical seedling experiment below illustrates one of its central methodological questions. If salinity is assigned to a whole tray, what counts as an independent observation when the results are analysed?</p>
+    <p>A research question can seem workable until a student begins deciding what to measure, where to find evidence, or whom to involve. Research Methods Studio is a workspace I developed to help students revisit those decisions across eighteen connected stages. The synthetic radish-salinity example below follows one such decision from treatment assignment to analysis. It asks what counts as an independent observation when five seeds share the same assigned treatment in a dish.</p>
     <div class="controls"><a class="control primary" href="https://gmoon-code.github.io/research-methods/">Open Research Methods Studio ↗</a></div>
   </div>
 </section>
@@ -35,25 +35,39 @@
 
 
 <section id="research-example" class="section rms-example-section">
-  <div class="section-head"><h2>Experimental design example</h2></div>
+  <div class="section-head"><h2>A synthetic experiment from design to analysis</h2></div>
   <div class="reading project-reading">
-    <p>The experimental-study guidance begins with a hypothetical investigation of seedling growth under assigned salinity conditions. Before choosing an analysis, students must decide how the treatment will be assigned. They also need to define growth, establish an observation period, and consider which comparisons their design can support. The assignment decision becomes especially consequential when several plants share the same tray.</p>
+    <p>The application's repository includes a <a href="https://github.com/gmoon-code/research-methods/tree/main/examples/radish-salinity" target="_blank" rel="noopener noreferrer">worked radish-salinity exemplar</a> in which eighteen Petri dishes are assigned to 0, 50, or 100 mM sodium chloride. Each dish contains five seeds. The experimental procedure, measurements, and findings are constructed for teaching, allowing students to inspect the path from research question to analysis without implying that an experiment was conducted.</p>
   </div>
   <div class="project-decision-sequence">
-    <div><span class="project-sequence-label">Question</span><p>How does assigned salinity concentration affect mean seedling growth under standardized laboratory conditions?</p></div>
-    <div><span class="project-sequence-label">Assignment</span><p>Decide whether the salinity treatment is assigned to individual plants or to entire trays. If a whole tray receives one condition, several plants inside it do not automatically become independent treatment replicates.</p></div>
-    <div><span class="project-sequence-label">Measurement</span><p>Define growth, the observation period, and the number of independent units in each condition. Record starting size and keep relevant growing conditions consistent.</p></div>
-    <div><span class="project-sequence-label">Comparison</span><p>Plan to inspect group differences alongside variation. The analysis must respect the experimental unit and the way conditions were assigned.</p></div>
-    <div><span class="project-sequence-label">Claim</span><p>Explain what the comparison supports within the tested species, conditions, and time period. An observed difference alone would not establish every biological mechanism responsible.</p></div>
-  </div>
-  <div class="rms-analysis-note">
-    <h3>Treatment assignment and experimental units</h3>
-    <p>Suppose each salinity condition is assigned to one tray containing several seedlings. Treatment then varies between trays, while plants in a tray share both their assigned condition and aspects of their environment. Measuring more seedlings within that tray would give additional observations of those plants, but would not replicate the treatment assignment. With only one tray per condition, students could describe differences between the trays but could not separate those differences from the treatment itself. The Methods Lab asks them to identify this dependency while the design can still be revised, for example by assigning the same treatment to multiple independently maintained trays.</p>
+    <div><span class="project-sequence-label">Question</span><p>How does assigned salinity concentration affect mean radicle length after 72 hours?</p></div>
+    <div><span class="project-sequence-label">Assignment</span><p>Six independent dishes are assigned to each concentration, with five seed subsamples inside every dish.</p></div>
+    <div><span class="project-sequence-label">Measurement</span><p>Record germination for all ninety seeds and radicle length for those that germinate. Calculate dish-level mean length and germination proportion.</p></div>
+    <div><span class="project-sequence-label">Analysis</span><p>Compare eighteen dish-level observations. Ninety seed rows do not represent ninety independent assignments of the treatment.</p></div>
+    <div><span class="project-sequence-label">Claim</span><p>Interpret any difference within the experimental conditions and distinguish the measured outcomes from an explanation of the biological mechanism.</p></div>
   </div>
   <div class="reading project-reading">
-    <h3>From experimental units to an analysis table</h3>
-    <p>A separate <a href="https://github.com/gmoon-code/research-methods/blob/main/examples/radish-salinity/README.md" target="_blank" rel="noopener noreferrer">synthetic radish-salinity exemplar</a> in the application's repository carries this issue into the data. It contains 90 seed-level observations, with five subsamples from each of 18 independently assigned dishes. For the primary treatment comparison, the exemplar uses 18 dish-level observations. Treating all 90 seed rows as independent treatment replicates would misrepresent the number of independent assignments.</p>
-    <p>The exemplar's data, analysis output, and findings are constructed for teaching. Its significance here is the traceable relationship between how a treatment was assigned, the rows retained for analysis, and the claim the analysis can support. It supplies a concrete companion to the hypothetical tray-design discussion above.</p>
+    <h3>The constructed analysis records</h3>
+    <p>The <a href="https://github.com/gmoon-code/research-methods/blob/main/examples/radish-salinity/SYNTHETIC_DISH_LEVEL_ANALYSIS_DATA.csv" target="_blank" rel="noopener noreferrer">dish-level file</a> provides one outcome per assigned dish. Its group summaries, checked against the <a href="https://github.com/gmoon-code/research-methods/blob/main/examples/radish-salinity/SYNTHETIC_ANALYSIS_OUTPUT.json" target="_blank" rel="noopener noreferrer">synthetic analysis output</a>, appear below.</p>
+  </div>
+  <div class="teaching-sequence-table-wrap" role="region" tabindex="0" aria-label="Constructed radish salinity results">
+    <table class="teaching-sequence-table">
+      <caption>Invented outcomes after 72 hours, with six dishes per concentration</caption>
+      <thead><tr><th scope="col">NaCl concentration</th><th scope="col">Dishes</th><th scope="col">Mean radicle length per dish</th><th scope="col">Mean germination proportion</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">0 mM</th><td>6</td><td>34.7 mm</td><td>1.00</td></tr>
+        <tr><th scope="row">50 mM</th><td>6</td><td>26.8 mm</td><td>0.93</td></tr>
+        <tr><th scope="row">100 mM</th><td>6</td><td>16.6 mm</td><td>0.73</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="rms-analysis-note">
+    <h3>Two questions hidden in the same dataset</h3>
+    <p>Treatment varies between dishes, while seeds within each dish share its assigned condition and environment. Treating the ninety <a href="https://github.com/gmoon-code/research-methods/blob/main/examples/radish-salinity/SYNTHETIC_SEED_LEVEL_DATA.csv" target="_blank" rel="noopener noreferrer">seed-level rows</a> as independent treatment replicates would exaggerate replication. With only one dish per condition, treatment would be inseparable from differences among those individual dishes. The exemplar therefore uses the eighteen independently assigned dishes for its main comparison.</p>
+    <p>The two reported outcomes also involve different sets of seeds. Germination proportion includes all five seeds in each dish, whereas mean radicle length is calculated only among those that germinated. As germination proportions change across the constructed conditions, the mean length needs to be read with that selection in mind. The example makes this choice visible before students interpret differences or make claims about why growth may have changed.</p>
+  </div>
+  <div class="reading project-reading">
+    <p>The synthetic data document how the design, analysis table, and conclusion can remain connected. They provide no empirical evidence about radish salinity tolerance or students' learning outcomes.</p>
   </div>
 </section>
 
