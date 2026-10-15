@@ -327,8 +327,13 @@
     const saved=map[d];
     const earlier={};
     for(const p of properties)earlier[p]=saved[p]||"";
-    details.setDirectProperties(el,d,earlier);
     const dimensionKeys=[sizeProp(d,"width"),sizeProp(d,"height")];
+    const otherDeviceSizes=sizeVars.some(p=>!dimensionKeys.includes(p)&&el.style.getPropertyValue(p));
+    // Do not re-introduce an old inline width cap that would override sizing
+    // already set for another screen.
+    if(d==="all"&&otherDeviceSizes)
+      for(const p of ["width","height","min-height","max-width"])delete earlier[p];
+    details.setDirectProperties(el,d,earlier);
     const dimensions=Object.fromEntries(dimensionKeys.map(p=>[p,saved[p]||null]));
     details.setDirectProperties(el,"all",dimensions);
     delete map[d];
