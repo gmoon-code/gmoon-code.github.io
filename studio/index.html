@@ -15,6 +15,7 @@
   <script src="studio-resize.js" defer></script>
   <script src="studio-move.js" defer></script>
   <script src="studio-tables.js" defer></script>
+  <script src="studio-canvas.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#studioMain">Skip to editing tools</a>
@@ -115,7 +116,7 @@
             <button id="insertBtn" type="button" class="small-button accent-button">+ Add</button>
             <button id="libraryBtn" type="button" class="small-button">Browse layouts</button>
             <button id="photosBtn" type="button" class="small-button">My photos</button>
-            <span class="toolbar-help">Blue handles resize. Green Move handle rearranges items. Double-click text to edit.</span>
+            <span class="toolbar-help">Click to select, then add content or change its layout. Blue handles resize; green Move handle reorders.</span>
           </div>
           <div class="preview-outer" id="previewOuter">
             <div id="loadingPreview" class="loading-preview">Loading page…</div>
@@ -131,7 +132,7 @@
             <button id="resizeHandle" type="button" title="Drag to resize the selected image. Use arrow keys to fine-tune." aria-label="Resize selected image" hidden>↘</button>
             <iframe id="previewFrame" title="Editable preview of selected website page" sandbox="allow-same-origin"></iframe>
           </div>
-          <p class="preview-note">Click to select. Drag the <strong>green Move handle</strong> to rearrange, or the blue handles to resize. Hold Shift on a resize corner to keep proportions. Your changes are kept as a draft in this browser. Click text twice to edit directly, or click once for options. Check phone size before publishing. <span id="draftRecoveryStatus" aria-live="polite"></span></p>
+          <p class="preview-note">Click any item to select it. Use <strong>+ Add content</strong> and <strong>+ Section here</strong> directly in the preview, or drag the green Move handle and blue resize handles. Use the selection path and Quick layout controls to work with nested areas without editing HTML. Double-click words to edit them. Review the phone preview before publishing. <span id="draftRecoveryStatus" aria-live="polite"></span></p>
         </section>
 
         <aside class="inspector" aria-label="Selected item settings">
@@ -475,6 +476,7 @@
         <li><strong>Click an item in the preview</strong> to select it. Edit its words in Content or double-click text directly in the preview.</li>
         <li><strong>Add something</strong> using the Add menu above the preview. Select a section first if you want to add a block inside it.</li>
         <li><strong>Rearrange or remove</strong> using the actions in Content. Undo is available at the top.</li>
+        <li><strong>Work directly on the page</strong> with the contextual Add content and Section buttons. Click a container in the selection path to edit an entire group. Quick layout offers width, alignment, full-row positioning, and copying a visual style between items.</li>
         <li><strong>Change the look</strong> in Design. Width, height, spacing, and optional pixel offsets live in Position.</li>
         <li><strong>Check phone and tablet previews</strong>, then choose Publish changes. All changes publish together; until then, the public website is untouched. For bold or italic text, double-click a paragraph and use the usual Ctrl+B or Ctrl+I shortcuts.</li>
       </ol>
