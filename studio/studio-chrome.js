@@ -109,7 +109,7 @@
         }
         if(values.footerEnding)fragments.push(doc.createTextNode(
           values.email&&values.footerLinkText?values.footerEnding:
-          (values.footerIntro?" ":"")+values.footerEnding
+          (values.footerIntro&&!/^[.,!?;:]/.test(values.footerEnding)?" ":"")+values.footerEnding
         ));
         paragraph.replaceChildren(...fragments);
         if(paragraph.innerHTML!==before)changed=true;
