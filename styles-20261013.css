@@ -1649,3 +1649,41 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
 
 /* Open only ancestors that previously clipped a deliberately freed block. */
 #main .studio-free-open{overflow:visible!important}
+
+/* Editorial sections keep learner-facing design before the optional technical details. */
+.project-technical-details{
+  max-width:940px;
+  border-top:1px solid var(--moon-rule);
+  border-bottom:1px solid var(--moon-rule);
+  margin:22px 0 8px;
+  padding:0;
+}
+.project-technical-details>summary{
+  cursor:pointer;
+  color:var(--moon-ink,#242424);
+  font-size:17px;
+  font-weight:700;
+  line-height:1.5;
+  padding:15px 29px 15px 5px;
+  position:relative;
+}
+.project-technical-details>summary:hover{text-decoration:underline;text-underline-offset:4px}
+.project-technical-details>summary:focus-visible{outline:2px solid var(--page-line,var(--section-blue-line));outline-offset:4px}
+.project-technical-details[open]>summary{margin-bottom:12px}
+.project-technical-details>.reading{padding:0 12px 14px}
+.project-detail-page #preview{padding-top:30px}
+.teaching-chem-case .chem-environment-extension{
+  border-top:2px solid var(--section-magenta-line);
+  padding-top:42px;
+  margin-top:18px;
+}
+.teaching-chem-case .chem-environment-extension .section-head>.meta{
+  color:#77546b;
+  margin:0 0 8px;
+  font-size:13px;
+  letter-spacing:.025em;
+}
+@media(max-width:700px){
+  .project-technical-details>.reading{padding:0 5px 12px}
+  .teaching-chem-case .chem-environment-extension{padding-top:30px}
+}
