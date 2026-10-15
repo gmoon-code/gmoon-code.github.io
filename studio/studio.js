@@ -194,6 +194,13 @@
     catch(error){showLoginError(errorDescription(error));state.token=null;state.connected=false;sessionStorage.removeItem(SESSION_KEY)}
     finally{$("connectBtn").disabled=false}
   }
+  function setAccessToken(token){
+    const value=String(token||"").trim();
+    if(!state.connected||!value)throw Error("Connect to your website before updating access.");
+    state.token=value;
+    if(state.remember)sessionStorage.setItem(SESSION_KEY,value);
+    else sessionStorage.removeItem(SESSION_KEY);
+  }
   function logout(){
     if(hasChanges()&&!confirm("Your unpublished edits will be lost if you sign out. Continue?"))return;
     sessionStorage.removeItem(SESSION_KEY);
@@ -976,9 +983,12 @@
         $("previewFrame").srcdoc=withPreviewBase(activeDraft().html);
       }
       window.WebsiteStudioPlus?.onPublished?.();
+      window.WebsiteStudioAccess?.onPublished?.();
       toast("All changes were published together. GitHub Pages may need a few minutes to refresh.");
     }catch(error){
-      toast("Your drafts are still here. Publishing stopped: "+errorDescription(error),true);
+      const detail=errorDescription(error);
+      toast("Your drafts are still here. Publishing stopped: "+detail,true);
+      window.WebsiteStudioAccess?.onPublishFailure?.(detail);
     }finally{
       state.busy=false;updateStatus();renderPages();
     }
@@ -1224,7 +1234,7 @@
   window.WebsiteStudioAPI={
     state,$,docOf,activeDraft,remember,syncCurrent,renderSections,selectElement,insertBlock,mutate,
     toast,github,fetchFile,ensureDraft,nameFor,toneForPage,renderPages,switchPage,updateStatus,
-    safeUrl,withPreviewBase,openImagePicker,slugify,esc,placementTarget
+    safeUrl,withPreviewBase,openImagePicker,slugify,esc,placementTarget,setAccessToken
   };
   init().catch(error=>toast(errorDescription(error),true));
 })();
