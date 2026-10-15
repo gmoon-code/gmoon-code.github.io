@@ -51,12 +51,17 @@
   ].join("");
   document.body.appendChild(dialog);
   const el=id=>document.getElementById(id);
+  const fields={
+    brand:"chromeBrand",footerIntro:"chromeIntro",
+    footerLinkText:"chromeLinkText",footerEnding:"chromeEnding",
+    email:"chromeEmail",externalLabel:"chromeExternalLabel",
+    externalUrl:"chromeExternalUrl"
+  };
   function cleanText(value){return String(value||"").replace(/[\r\n\t]+/g," ").replace(/\s+/g," ").trim()}
   function configFromInputs(){
     const obj={};
     for(const key of Object.keys(defaults)){
-      const name=key.charAt(0).toUpperCase()+key.slice(1);
-      obj[key]=cleanText(el("chrome"+name)?.value);
+      obj[key]=cleanText(el(fields[key])?.value);
     }
     if(!obj.brand||!obj.footerIntro||!obj.footerLinkText||!obj.email||!obj.externalLabel||
       !obj.externalUrl)throw Error("Please fill in the website title, contact and link fields.");
@@ -97,8 +102,7 @@
       settings={...defaults,...JSON.parse(draft.html)};
     }catch(e){settings={...defaults};}
     for(const [key,value] of Object.entries(settings)){
-      const name=key.charAt(0).toUpperCase()+key.slice(1);
-      if(el("chrome"+name))el("chrome"+name).value=value;
+      if(el(fields[key]))el(fields[key]).value=value;
     }
     el("siteChromeError").hidden=true;
     dialog.showModal();
