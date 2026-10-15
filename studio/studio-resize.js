@@ -291,12 +291,20 @@
     try{map=JSON.parse(el.getAttribute("data-site-resize-original")||"{}")}catch(e){}
     if(!map[d]){toast("No resized dimensions to reset on this screen.");return}
     remember();
-    details.setDirectProperties(el,d,map[d]);
+    const saved=map[d];
+    const earlier={};
+    for(const p of properties)earlier[p]=saved[p]||"";
+    details.setDirectProperties(el,d,earlier);
+    const dimensionKeys=[sizeProp(d,"width"),sizeProp(d,"height")];
+    const dimensions=Object.fromEntries(dimensionKeys.map(p=>[p,saved[p]||null]));
+    details.setDirectProperties(el,"all",dimensions);
     delete map[d];
     if(Object.keys(map).length)el.setAttribute("data-site-resize-original",JSON.stringify(map));
     else el.removeAttribute("data-site-resize-original");
+    if(!sizeVars.some(p=>el.style.getPropertyValue(p))&&!saved.__hadFreeSize)
+      el.classList.remove("studio-unrestricted-size");
     syncCurrent();selectElement(el);update();
-    toast("Original dimensions restored.");
+    toast("Original dimensions restored for this screen.");
   }
   function selectionChanged(el){
     if(!overlay||!el)return;
