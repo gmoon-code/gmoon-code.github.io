@@ -148,6 +148,52 @@ async def main():
                                 not card["external"] for card in media)):
                             failures.append({"page": filename, "viewport": width,
                                              "mediaResources": media})
+                    if width == 1440:
+                        # Local images should decode from the actual staged site,
+                        # including images that normally load only when scrolled into view.
+                        local_images = await page.evaluate("""async () => {
+                          const images = [...document.querySelectorAll(
+                            'main img[src^="assets/"]'
+                          )];
+                          return Promise.all(images.map(async img => {
+                            try {
+                              await img.decode();
+                              return {src:img.getAttribute("src"),
+                                loaded:img.naturalWidth > 0};
+                            } catch (e) {
+                              return {src:img.getAttribute("src"), loaded:false};
+                            }
+                          }));
+                        }""")
+                        result["localImages"] = local_images
+                        if any(not img["loaded"] for img in local_images):
+                            failures.append({"page": filename, "viewport": width,
+                                             "localImages": local_images})
+                    if filename in ("story-method.html",
+                                    "research-methods-studio.html") and width in (375, 1440):
+                        # Preview controls must open the expected first-party app
+                        # and return to a keyboard-accessible closed state.
+                        preview = page.locator("[data-live-preview]")
+                        open_button = preview.locator("[data-preview-open]")
+                        await open_button.wait_for(state="visible", timeout=5000)
+                        await open_button.click()
+                        frame = preview.locator("[data-preview-stage] iframe")
+                        await frame.wait_for(state="attached", timeout=5000)
+                        src = await frame.get_attribute("src")
+                        expected = ("/memory-palace-u1-8/" if
+                                    filename == "story-method.html" else
+                                    "/research-methods/")
+                        escaped = False
+                        await page.keyboard.press("Escape")
+                        if await frame.count() == 0:
+                            await open_button.wait_for(state="visible", timeout=5000)
+                            escaped = True
+                        result["previewTest"] = {
+                            "path": src, "expectedPath": expected,
+                            "closedWithEscape": escaped}
+                        if not src or expected not in src or not escaped:
+                            failures.append({"page": filename, "viewport": width,
+                                             "previewTest": result["previewTest"]})
                     if filename == "teaching.html":
                         has_novice = await page.locator("#teaching-resources").count()
                         if has_novice:
