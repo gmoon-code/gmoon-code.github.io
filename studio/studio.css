@@ -399,3 +399,13 @@ input[type=checkbox]{accent-color:#3e7380}
 .studio-free-buttons button:disabled{opacity:.4;cursor:not-allowed}
 .studio-free-buttons button:focus-visible{outline:2px solid #9a652f;outline-offset:2px}
 .studio-free-settings .studio-free-note{font-size:11px;line-height:1.45;color:#866440;margin:9px 0 0}
+
+/* Optional full-width canvas gives the preview room for freeform work. */
+.workspace.studio-focus-mode .studio-columns-layout{grid-template-columns:minmax(0,1fr)!important}
+.workspace.studio-focus-mode .left-sidebar,
+.workspace.studio-focus-mode .inspector{display:none!important}
+.workspace.studio-focus-mode .canvas-area{grid-column:1!important;min-width:0}
+.workspace.studio-focus-mode .preview-outer{padding:14px 16px}
+.workspace.studio-focus-mode #previewFrame{max-width:none}
+#focusCanvasBtn[aria-pressed=true]{background:#e6f1e9;border-color:#659679;color:#225739}
+#focusCanvasBtn:focus-visible{outline:2px solid #37664d;outline-offset:2px}
