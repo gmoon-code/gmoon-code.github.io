@@ -1872,3 +1872,25 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
 @media(max-width:480px){
   #main .media-entry p.media-explore{padding-top:10px}
 }
+
+/* A published student-facing practice item is shown as task material,
+   distinct from the surrounding editorial description. */
+#main .project-student-prompt{
+  margin:14px 0 18px;
+  padding:10px 18px;
+  border-left:3px solid #708678;
+  background:#fafbf9;
+  color:var(--moon-ink,#242424);
+  font-style:normal;
+  font-size:16px;
+  line-height:1.65;
+}
+/* Keep the recorded episode and the interpretation of it visibly distinct. */
+#main .research-example-steps p.research-example-interpret{
+  margin-top:11px;
+  padding-top:11px;
+  border-top:1px solid var(--moon-rule);
+}
+#main .research-example-steps p.research-example-interpret strong{
+  font-weight:700;
+}
