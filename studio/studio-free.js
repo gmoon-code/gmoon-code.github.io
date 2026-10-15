@@ -260,7 +260,11 @@
   function cancel(){
     if(!drag)return;
     const t=drag;drag=null;
-    if(t.doc===docOf()&&t.active){restore(t.el,t.original);syncCurrent();selectElement(t.el);}
+    if(t.doc===docOf()&&t.active){
+      restore(t.el,t.original);
+      cleanClips(t.el);
+      syncCurrent();selectElement(t.el);
+    }
     updateControls();
   }
   function keys(event){
