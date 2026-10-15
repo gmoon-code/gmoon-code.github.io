@@ -1396,3 +1396,116 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
     padding:5px 2px;
   }
 }
+
+
+/*
+  Content-width alignment | October 2026
+  The page shell is deliberately wider than the old article text measures.
+  On sections without a sidebar, use that available width consistently.
+  Two-column notes, sidebars, tables and cards keep their own grid layout.
+*/
+:root{
+  --editorial-measure:1040px;
+}
+
+/* Let the introductory copy occupy the same usable width as its section. */
+.page .page-hero.single .hero-copy{
+  width:100%;
+  max-width:100%;
+  min-width:0;
+}
+.page .page-hero.single .hero-copy>p:not(.meta):not(.research-eyebrow){
+  max-width:min(100%,var(--editorial-measure))!important;
+}
+.about-page .about-intro .hero-copy>p:not(.meta),
+.home-page .home-intro .hero-copy>p:not(.home-kicker){
+  max-width:100%;
+}
+
+/* Remove layered, legacy character caps from primary full-width text areas. */
+.page :is(
+  .reading,
+  .about-prose,
+  .research-prose,
+  .research-essay-prose,
+  .research-hub-prose,
+  .teaching-longform,
+  .teaching-case-prose,
+  .project-reading
+){
+  width:100%;
+  max-width:min(100%,var(--editorial-measure));
+  min-width:0;
+}
+.page .reading p{
+  max-width:100%;
+}
+.page :is(
+  .project-section-intro,
+  .project-preview-intro,
+  .research-section-intro,
+  .teaching-reading-line,
+  .research-study-preview p:not(.meta),
+  .research-example>p:not(.meta)
+){
+  max-width:min(100%,var(--editorial-measure));
+}
+.page .section-head>p{
+  max-width:min(100%,var(--editorial-measure));
+}
+
+/* Bring free-standing reading material and evidence displays into alignment. */
+.page :is(
+  .research-reading-list,
+  .teaching-source-list,
+  .research-references,
+  .research-count-bars,
+  .research-evidence-table,
+  .mechanism-figure,
+  .teaching-bio-mechanism,
+  .teaching-original-prompt,
+  .teaching-insight-panel,
+  .chem-pressure-check,
+  .worksheet-data,
+  .worksheet-task-list,
+  .worksheet-teacher-notes,
+  .rms-analysis-note
+){
+  max-width:100%;
+}
+.page .research-reading-list,
+.page .teaching-source-list,
+.page .research-references,
+.page .mechanism-figure,
+.page .teaching-bio-mechanism,
+.page .teaching-original-prompt,
+.page .teaching-insight-panel,
+.page .chem-pressure-check,
+.page .rms-analysis-note{
+  width:100%;
+}
+
+/* Maintain comfortable proportions within intentional split sections. */
+.page :is(
+  .research-essay-intro,
+  .teaching-planning-layout,
+  .home-spotlight,
+  .home-outside-grid
+)>*{
+  min-width:0;
+}
+.home-page .home-spotlight-text,
+.home-page .home-path>p:not(.meta),
+.home-page .home-outside-grid>div>p{
+  max-width:100%;
+}
+
+/* Narrow screens should simply use the available column without offsets. */
+@media(max-width:760px){
+  .page .page-hero.single .hero-copy>p:not(.meta):not(.research-eyebrow){
+    max-width:100%!important;
+  }
+  .page :is(.reading,.about-prose,.research-prose,.research-essay-prose,.teaching-longform,.teaching-case-prose,.project-reading){
+    max-width:100%;
+  }
+}
