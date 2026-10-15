@@ -74,6 +74,23 @@
     '<div id="canvasGridTools" hidden><div class="canvas-layout-caption">Inside a column layout</div>',
     '<div class="canvas-layout-buttons two"><button type="button" data-layout-grid="normal">Normal position</button>',
     '<button type="button" data-layout-grid="full">Across all columns</button></div></div>',
+    '<div class="canvas-layout-caption">Space above and below</div>',
+    '<div class="canvas-layout-buttons" role="group" aria-label="Selected element spacing">',
+    '<button type="button" data-layout-space="0">None</button>',
+    '<button type="button" data-layout-space="12">Small</button>',
+    '<button type="button" data-layout-space="24">Medium</button>',
+    '<button type="button" data-layout-space="40">Large</button></div>',
+    '<div class="canvas-layout-caption">Group items</div>',
+    '<div class="canvas-layout-buttons two">',
+    '<button type="button" id="canvasGroupNext">Group with next</button>',
+    '<button type="button" id="canvasUngroup" disabled>Ungroup</button></div>',
+    '<div class="canvas-layout-caption">Fine positioning</div>',
+    '<p class="micro-help">Shift this item 8 pixels at a time. Check the phone preview when using offsets.</p>',
+    '<div class="canvas-layout-buttons">',
+    '<button type="button" data-layout-nudge="left">← Left</button>',
+    '<button type="button" data-layout-nudge="right">Right →</button>',
+    '<button type="button" data-layout-nudge="up">↑ Up</button>',
+    '<button type="button" data-layout-nudge="down">Down ↓</button></div>',
     '<div class="canvas-layout-caption">Reuse appearance</div>',
     '<div class="canvas-layout-buttons two">',
     '<button type="button" id="canvasCopyStyle">Copy style</button>',
@@ -123,6 +140,36 @@
       path.appendChild(button);
     }
   }
+  function canGroup(node){
+    if(!node||!node.nextElementSibling||node.parentElement===main())return false;
+    if(!/^(P|H[2-6]|DIV|ARTICLE|ASIDE|FIGURE|BLOCKQUOTE|UL|OL|TABLE|HR|PRE)$/.test(node.tagName))return false;
+    if(!/^(MAIN|SECTION|DIV|ARTICLE|ASIDE)$/.test(node.parentElement.tagName))return false;
+    return !node.closest("table,ul,ol")&&node.nextElementSibling.tagName!=="SCRIPT";
+  }
+  function groupWithNext(){
+    const node=selected();if(!canGroup(node))return;
+    const sibling=node.nextElementSibling;
+    const doc=docOf();
+    const wrapper=doc.createElement("div");wrapper.className="studio-group";
+    mutate(()=>{
+      node.before(wrapper);
+      wrapper.append(node,sibling);
+    });
+    selectElement(wrapper,true);
+    toast("Items grouped. Select the group to move, resize or style them together.");
+  }
+  function ungroup(){
+    const node=selected();
+    const group=node?.closest(".studio-group");
+    if(!group||!within(group)||!group.parentElement)return;
+    const first=group.firstElementChild;
+    mutate(()=>{
+      while(group.firstChild)group.parentElement.insertBefore(group.firstChild,group);
+      group.remove();
+    });
+    if(first)selectElement(first,true);
+    toast("Group separated. Original items remain in the same order.");
+  }
   function refresh(){
     const node=selected();
     renderPath();
@@ -140,6 +187,11 @@
       button.setAttribute("aria-pressed",button.dataset.layoutAlign===aligned?"true":"false");
     });
     id("canvasPasteStyle").disabled=!copiedStyle;
+    id("canvasGroupNext").disabled=!canGroup(node);
+    id("canvasUngroup").disabled=!node.closest(".studio-group");
+    palette.querySelectorAll("[data-layout-nudge]").forEach(button=>{
+      button.disabled=/^(TD|TH|SPAN|STRONG|EM|A|SUB|SUP)$/.test(node.tagName);
+    });
     id("canvasLayoutMessage").textContent="Select a parent above to edit its entire layout.";
     updateOverlay();
     updateQuickActions();
@@ -168,7 +220,22 @@
       if(!parentIsGrid(node))return;
       saveProperties(node,{"grid-column":button.dataset.layoutGrid==="full"?"1 / -1":null});
     }
+    if(button.hasAttribute("data-layout-space")){
+      const px=button.dataset.layoutSpace+"px";
+      saveProperties(node,{"margin-top":px,"margin-bottom":px});
+    }
+    if(button.hasAttribute("data-layout-nudge")){
+      const currentX=parseFloat(node.style.getPropertyValue("--studio-offset-x"))||0;
+      const currentY=parseFloat(node.style.getPropertyValue("--studio-offset-y"))||0;
+      const direction=button.dataset.layoutNudge;
+      const x=Math.max(-240,Math.min(240,currentX+(direction==="left"?-8:direction==="right"?8:0)));
+      const y=Math.max(-240,Math.min(240,currentY+(direction==="up"?-8:direction==="down"?8:0)));
+      saveProperties(node,{"--studio-offset-x":x+"px","--studio-offset-y":y+"px",
+        "transform":"translate(var(--studio-offset-x),var(--studio-offset-y))"});
+    }
   });
+  id("canvasGroupNext").addEventListener("click",groupWithNext);
+  id("canvasUngroup").addEventListener("click",ungroup);
   id("canvasCopyStyle").addEventListener("click",()=>{
     const node=selected();if(!node)return;
     copiedStyle={};
