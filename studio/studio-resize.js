@@ -291,7 +291,7 @@
   function setDimension(el,name,value,d=screen()){
     if(!el||!["width","height"].includes(name)||!["all","tablet","phone"].includes(d))return;
     const key=sizeProp(d,name);
-    const normalized=typeof value==="string"&&/^(?:\\d+(?:\\.\\d+)?)(?:px|%)$/.test(value)?value:null;
+    const normalized=typeof value==="string"&&/^(?:\d+(?:\.\d+)?)(?:px|%)$/.test(value)?value:null;
     if(!normalized){
       el.style.removeProperty(key);
       if(!sizeVars.some(p=>el.style.getPropertyValue(p))){
