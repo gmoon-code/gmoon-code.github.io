@@ -295,6 +295,9 @@
       const base='body[data-studio-screen="'+screen+'"] #main ';
       rules.push(base+'.studio-free-element{transform:translate(var(--studio-free-'+screen+'-x,0px),var(--studio-free-'+screen+'-y,0px))!important}');
       rules.push(base+'.studio-unrestricted-size{width:var(--studio-size-'+screen+'-width,auto)!important;max-width:none!important}');
+      if(screen!=="desktop"){
+        rules.push(base+'.studio-unrestricted-size:not(.studio-free-element){max-width:100%!important}');
+      }
       rules.push(base+'.studio-unrestricted-size:is(img,svg,video,canvas,iframe){height:var(--studio-size-'+screen+'-height,auto)!important}');
       rules.push(base+'.studio-unrestricted-size:not(img):not(svg):not(video):not(canvas):not(iframe){min-height:var(--studio-size-'+screen+'-height,0px)!important}');
     }
