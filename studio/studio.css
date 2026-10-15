@@ -372,3 +372,30 @@ input[type=checkbox]{accent-color:#3e7380}
   border-radius:3px;min-width:19px;min-height:25px;padding:2px;cursor:pointer;color:#436653}
 .layers-reorder button:hover{background:#dcece2;border-color:#b6c9bc}
 .layers-reorder button:focus-visible{outline:2px solid #37664d;outline-offset:2px}
+
+/* Free movement is an explicit option alongside structural reordering. */
+.studio-free-settings{
+  margin:0 0 16px;padding:13px 12px 14px;
+  border:1px solid #e6ceae;border-top:3px solid #ac7940;
+  background:#fffaf4;border-radius:5px;color:#53371d;
+}
+.studio-free-settings[hidden]{display:none!important}
+.studio-free-heading{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:5px}
+.studio-free-heading strong{font-size:14px}
+.studio-free-heading span{font-size:10px;color:#88603c}
+.studio-free-settings>p{font-size:12px;line-height:1.52;margin:9px 0}
+.studio-free-snap{display:flex!important;align-items:center;gap:8px;
+  font-size:12px!important;margin:10px 0!important;cursor:pointer}
+.studio-free-snap input{width:auto}
+.studio-free-coordinates{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.studio-free-coordinates label{display:block;font-size:11px;margin:0!important}
+.studio-free-coordinates input{display:block;width:100%;padding:8px 7px;margin-top:5px;
+  border:1px solid #d4c4ad;border-radius:4px}
+.studio-free-buttons{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:10px}
+.studio-free-buttons button{min-height:37px;background:white;border:1px solid #cfb48c;
+  color:#65401e;border-radius:4px;font:600 12px/1.3 system-ui,sans-serif;
+  cursor:pointer;padding:7px 4px}
+.studio-free-buttons button:hover{background:#f9eddb}
+.studio-free-buttons button:disabled{opacity:.4;cursor:not-allowed}
+.studio-free-buttons button:focus-visible{outline:2px solid #9a652f;outline-offset:2px}
+.studio-free-settings .studio-free-note{font-size:11px;line-height:1.45;color:#866440;margin:9px 0 0}
