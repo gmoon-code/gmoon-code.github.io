@@ -236,6 +236,8 @@
     clone.querySelector("#studio-move-style")?.remove();
     clone.querySelector("#studio-canvas-overlay")?.remove();
     clone.querySelector("#studio-canvas-style")?.remove();
+    clone.querySelector("#studio-free-overlay")?.remove();
+    clone.querySelector("#studio-free-style")?.remove();
     clone.querySelectorAll("[data-studio-selected]").forEach(node=>node.removeAttribute("data-studio-selected"));
     clone.querySelectorAll("[contenteditable]").forEach(node=>node.removeAttribute("contenteditable"));
     clone.querySelectorAll("[draggable]").forEach(node=>node.removeAttribute("draggable"));
@@ -363,6 +365,7 @@
     window.WebsiteStudioChrome?.onPreviewReady?.();
     window.WebsiteStudioLayers?.onPreviewReady?.();
     window.WebsiteStudioComponents?.onPreviewReady?.();
+    window.WebsiteStudioFree?.onPreviewReady?.();
   }
   function selectElement(node,scroll=false){
     if(!node||!docOf()||!docOf().contains(node))return;
@@ -376,6 +379,7 @@
     window.WebsiteStudioCanvas?.onSelection?.(node);
     window.WebsiteStudioLayers?.onSelection?.(node);
     window.WebsiteStudioComponents?.onSelection?.(node);
+    window.WebsiteStudioFree?.onSelection?.(node);
     if(scroll)node.scrollIntoView({behavior:"smooth",block:"center"});
   }
   function labelForNode(node){
