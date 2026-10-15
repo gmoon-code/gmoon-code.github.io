@@ -20,6 +20,7 @@
   <script src="studio-layers.js" defer></script>
   <script src="studio-components.js" defer></script>
   <script src="studio-free.js" defer></script>
+  <script src="studio-access.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#studioMain">Skip to editing tools</a>
@@ -63,12 +64,24 @@
           <button id="redoBtn" type="button" class="plain-button" title="Redo a change (Ctrl+Shift+Z)">Redo</button>
           <button id="navigationBtn" type="button" class="plain-button" title="Choose which pages appear in the main menu">Navigation</button>
           <button id="siteLookBtn" type="button" class="plain-button" title="Change the overall appearance of your site">Site style</button>
+          <button id="accessSettingsBtn" type="button" class="plain-button" title="Check publishing access or update token without losing drafts">Access</button>
           <button id="helpBtn" type="button" class="plain-button">Help</button>
           <button id="publishBtn" type="button" class="primary-button">Publish changes</button>
           <button id="logoutBtn" type="button" class="plain-button" title="Forget GitHub token">Sign out</button>
         </div>
       </header>
 
+      <div id="publishFailurePanel" class="publish-failure" hidden role="alert">
+        <div>
+          <strong>Publishing stopped. Your drafts have not been cleared.</strong>
+          <p id="publishFailureDetails"></p>
+        </div>
+        <div class="publish-failure-actions">
+          <button type="button" id="publishRetryBtn" class="small-button">Retry publish</button>
+          <button type="button" id="publishAccessBtn" class="small-button">Check access</button>
+          <button type="button" id="publishFailureDismiss" class="plain-button">Dismiss</button>
+        </div>
+      </div>
       <div class="studio-columns-layout">
         <aside class="left-sidebar" aria-label="Pages and section order">
           <div class="sidebar-heading-row">
