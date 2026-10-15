@@ -297,7 +297,7 @@
   function candidateFor(target){
     if(!(target instanceof docOf().defaultView.Element))return null;
     const main=docOf().querySelector("main");if(!main||!main.contains(target))return null;
-    const choices="img,svg,canvas,video,iframe,hr,summary,button,figcaption,td,th,caption,dt,dd,small,code,mark,strong,em,span,a,h1,h2,h3,h4,h5,h6,p,li,blockquote,pre,table,ul,ol,figure,article,aside,section,div,.question,.list-row,.reading,.grid-2,.grid-3,.studio-columns,.studio-gallery,.studio-split";
+    const choices="img,svg,canvas,video,iframe,hr,summary,button,figcaption,td,th,caption,dt,dd,small,code,sub,sup,i,b,u,mark,strong,em,span,a,h1,h2,h3,h4,h5,h6,p,li,blockquote,pre,table,ul,ol,figure,article,aside,section,div,.question,.list-row,.reading,.grid-2,.grid-3,.studio-columns,.studio-gallery,.studio-split";
     return target.closest(choices)||target.closest("main > section");
   }
   function onPreviewLoad(){
@@ -319,7 +319,7 @@
       if(!target)return;
       // A table cell is the editable unit even when it contains inline formatting.
       target=target.closest("td,th")||target;
-      if(!/^(H[1-6]|P|SPAN|STRONG|B|EM|I|SMALL|CODE|MARK|FIGCAPTION|LI|A|BLOCKQUOTE|SUMMARY|TD|TH|CAPTION|DT|DD)$/.test(target.tagName))return;
+      if(!/^(H[1-6]|P|SPAN|STRONG|B|EM|I|SMALL|CODE|MARK|FIGCAPTION|LI|A|BLOCKQUOTE|SUMMARY|TD|TH|CAPTION|DT|DD|SUB|SUP|U)$/.test(target.tagName))return;
       selectElement(target);remember();
       state.editingInline=true;
       target.setAttribute("contenteditable","true");
@@ -375,6 +375,8 @@
     if(node.tagName==="TD")return "Table cell";
     if(node.tagName==="TH")return "Table heading cell";
     if(node.tagName==="CAPTION")return "Table caption";
+    if(node.tagName==="SUB")return "Subscript";
+    if(node.tagName==="SUP")return "Superscript";
     if(node.tagName==="FIGCAPTION")return "Image caption";
     if(node.tagName==="SECTION")return "Section";
     if(node.tagName==="ARTICLE")return "Card / article";
@@ -443,7 +445,7 @@
   function updateInspectorFields(){
     const el=state.selected;
     if(!el)return;
-    const textAllowed=/^(H[1-6]|P|SPAN|STRONG|B|EM|I|SMALL|CODE|MARK|FIGCAPTION|LI|A|BLOCKQUOTE|SUMMARY|TD|TH|CAPTION|DT|DD)$/.test(el.tagName);
+    const textAllowed=/^(H[1-6]|P|SPAN|STRONG|B|EM|I|SMALL|CODE|MARK|FIGCAPTION|LI|A|BLOCKQUOTE|SUMMARY|TD|TH|CAPTION|DT|DD|SUB|SUP|U)$/.test(el.tagName);
     const nestedLink=textAllowed&&el.tagName!=="A"&&!!el.querySelector("a,button,img");
     const richText=textAllowed&&!!el.querySelector("strong,b,em,i,u,mark,code,span");
     $("textEditBox").hidden=!textAllowed;
@@ -629,7 +631,7 @@
     if(table)return table.parentElement?.matches(".studio-table-wrap")?table.parentElement:table;
     const item=node.closest("li");
     if(item)return item.closest("ul,ol")||item;
-    if(node.matches("span,strong,em,b,i,mark,small,code,a"))
+    if(node.matches("span,strong,em,b,i,u,sub,sup,mark,small,code,a"))
       return node.closest("p,h1,h2,h3,h4,h5,h6,blockquote,figcaption,summary")||node;
     return node;
   }
