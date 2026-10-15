@@ -1740,3 +1740,94 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
     width:100%!important;
   }
 }
+
+/* Visitor link affordances.
+   Keep cited work and other destinations inside the prose while making links
+   identifiable without hover, including on touch screens.
+   Navigation, buttons, photographic links, and editing controls keep their
+   established patterns. */
+:root{
+  --moon-link-ink:#175641;
+  --moon-link-visited:#594175;
+  --moon-link-accent:#367b63;
+  --moon-link-hover:#e6f2ea;
+}
+#main :is(p,li,blockquote,figcaption) a:not(.control):not(.inline-link):not(.project-preview-fallback){
+  color:var(--moon-link-ink);
+  text-decoration-line:underline;
+  text-decoration-style:solid;
+  text-decoration-color:var(--moon-link-accent);
+  text-decoration-thickness:1.6px;
+  text-underline-offset:3px;
+  text-decoration-skip-ink:auto;
+  cursor:pointer;
+  -webkit-box-decoration-break:clone;
+  box-decoration-break:clone;
+}
+#main :is(p,li,blockquote,figcaption) a:not(.control):not(.inline-link):not(.project-preview-fallback):visited{
+  color:var(--moon-link-visited);
+}
+#main :is(p,li,blockquote,figcaption) a:not(.control):not(.inline-link):not(.project-preview-fallback):is(:hover,:focus-visible){
+  background:var(--moon-link-hover);
+  color:#144c3b;
+  text-decoration-color:currentColor;
+  text-decoration-thickness:2px;
+}
+#main :is(p,li,blockquote,figcaption) a:not(.control):not(.inline-link):not(.project-preview-fallback):focus-visible{
+  outline:2px solid #175641;
+  outline-offset:3px;
+  border-radius:1px;
+}
+/* Outside resources have a permanent, small external-destination cue.
+   Bibliographic links are already identifiable by their DOI or URL, so
+   avoid repeating the mark throughout reference lists. */
+#main :is(p,li,blockquote,figcaption) a:is([href^="https://"],[href^="http://"]):not(.control):not(.inline-link):not(.project-preview-fallback)::after{
+  content:" ↗";
+  font-size:.8em;
+  vertical-align:.08em;
+  white-space:nowrap;
+}
+#main :is(.research-reading-list,.teaching-source-list,.research-references,.research-reading,.reference-list,.bibliography,.source-list) :is(p,li) a:is([href^="https://"],[href^="http://"])::after{
+  content:none;
+}
+/* Standalone invitations to explore are clearly links, including on mobile.
+   Existing arrows in their labels convey direction without a duplicate icon. */
+#main a.inline-link{
+  color:var(--moon-link-ink);
+  font-weight:700;
+  text-decoration-line:underline;
+  text-decoration-style:solid;
+  text-decoration-color:var(--moon-link-accent);
+  text-decoration-thickness:2px;
+  text-underline-offset:4px;
+  cursor:pointer;
+}
+#main a.inline-link:visited{color:var(--moon-link-visited)}
+#main a.inline-link:is(:hover,:focus-visible){
+  color:#144c3b;
+  background:var(--moon-link-hover);
+  text-decoration-color:currentColor;
+}
+#main a.inline-link:focus-visible{outline:2px solid #175641;outline-offset:4px}
+/* Keep the image itself as the clickable surface while showing a small
+   always-visible cue; nothing needs to be hovered to discover the link. */
+#main .pungmul-gallery a{
+  position:relative;
+  cursor:zoom-in;
+}
+#main .pungmul-gallery a::after{
+  content:"View photo ↗";
+  position:absolute;
+  right:7px;
+  bottom:7px;
+  padding:3px 6px;
+  background:rgba(255,255,255,.94);
+  color:#144c3b;
+  border:1px solid rgba(20,76,59,.55);
+  font:700 12px/1.35 "Times New Roman",Times,serif;
+  pointer-events:none;
+}
+#main .pungmul-gallery a:is(:hover,:focus-visible)::after{
+  background:#e6f2ea;
+  border-color:#175641;
+}
