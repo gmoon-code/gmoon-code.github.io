@@ -297,7 +297,7 @@
   function candidateFor(target){
     if(!(target instanceof docOf().defaultView.Element))return null;
     const main=docOf().querySelector("main");if(!main||!main.contains(target))return null;
-    const choices="img,svg,canvas,video,iframe,hr,summary,button,figcaption,mark,strong,em,span,a,h1,h2,h3,h4,h5,h6,p,li,blockquote,pre,table,ul,ol,figure,article,aside,section,div,.question,.list-row,.reading,.grid-2,.grid-3,.studio-columns,.studio-gallery,.studio-split";
+    const choices="img,svg,canvas,video,iframe,hr,summary,button,figcaption,td,th,caption,dt,dd,small,code,mark,strong,em,span,a,h1,h2,h3,h4,h5,h6,p,li,blockquote,pre,table,ul,ol,figure,article,aside,section,div,.question,.list-row,.reading,.grid-2,.grid-3,.studio-columns,.studio-gallery,.studio-split";
     return target.closest(choices)||target.closest("main > section");
   }
   function onPreviewLoad(){
@@ -315,9 +315,11 @@
       selectElement(node);
     },true);
     doc.addEventListener("dblclick",event=>{
-      const target=candidateFor(event.target);
+      let target=candidateFor(event.target);
       if(!target)return;
-      if(!/^(H[1-6]|P|SPAN|FIGCAPTION|LI|A|BLOCKQUOTE|SUMMARY)$/.test(target.tagName))return;
+      // A table cell is the editable unit even when it contains inline formatting.
+      target=target.closest("td,th")||target;
+      if(!/^(H[1-6]|P|SPAN|STRONG|B|EM|I|SMALL|CODE|MARK|FIGCAPTION|LI|A|BLOCKQUOTE|SUMMARY|TD|TH|CAPTION|DT|DD)$/.test(target.tagName))return;
       selectElement(target);remember();
       state.editingInline=true;
       target.setAttribute("contenteditable","true");
@@ -353,6 +355,7 @@
     $("selectedKind").textContent="Nothing selected";
     renderSections();updateStatus();
     window.WebsiteStudioPlus?.onPreviewReady?.();
+    window.WebsiteStudioTables?.onPreviewReady?.();
   }
   function selectElement(node,scroll=false){
     if(!node||!docOf()||!docOf().contains(node))return;
@@ -362,6 +365,7 @@
     $("selectedKind").textContent=labelForNode(node);
     updateInspectorFields();renderSections();
     window.WebsiteStudioPlus?.onSelection?.(node);
+    window.WebsiteStudioTables?.onSelection?.(node);
     if(scroll)node.scrollIntoView({behavior:"smooth",block:"center"});
   }
   function labelForNode(node){
@@ -433,7 +437,7 @@
   function updateInspectorFields(){
     const el=state.selected;
     if(!el)return;
-    const textAllowed=/^(H[1-6]|P|SPAN|FIGCAPTION|LI|A|BLOCKQUOTE|SUMMARY)$/.test(el.tagName);
+    const textAllowed=/^(H[1-6]|P|SPAN|STRONG|B|EM|I|SMALL|CODE|MARK|FIGCAPTION|LI|A|BLOCKQUOTE|SUMMARY|TD|TH|CAPTION|DT|DD)$/.test(el.tagName);
     const nestedLink=textAllowed&&el.tagName!=="A"&&!!el.querySelector("a,button,img");
     const richText=textAllowed&&!!el.querySelector("strong,b,em,i,u,mark,code,span");
     $("textEditBox").hidden=!textAllowed;
