@@ -19,6 +19,7 @@
   <script src="studio-chrome.js" defer></script>
   <script src="studio-layers.js" defer></script>
   <script src="studio-components.js" defer></script>
+  <script src="studio-free.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#studioMain">Skip to editing tools</a>
@@ -146,7 +147,7 @@
             <button id="resizeHandle" type="button" title="Drag to resize the selected image. Use arrow keys to fine-tune." aria-label="Resize selected image" hidden>↘</button>
             <iframe id="previewFrame" title="Editable preview of selected website page" sandbox="allow-same-origin"></iframe>
           </div>
-          <p class="preview-note">Click any item to select it. Use <strong>+ Add content</strong> and <strong>+ Section here</strong> directly in the preview, or drag the green Move handle and blue resize handles. Use the selection path and Quick layout controls to work with nested areas without editing HTML. Double-click words to edit them. Review the phone preview before publishing. <span id="draftRecoveryStatus" aria-live="polite"></span></p>
+          <p class="preview-note">Use the <strong>amber Free move handle</strong> to drag a selected block past its original columns or container edges. The green Move handle keeps the normal reading order. Resize with the blue handles and check other screen sizes. Click any item to select it. Use <strong>+ Add content</strong> and <strong>+ Section here</strong> directly in the preview, or drag the green Move handle and blue resize handles. Use the selection path and Quick layout controls to work with nested areas without editing HTML. Double-click words to edit them. Review the phone preview before publishing. <span id="draftRecoveryStatus" aria-live="polite"></span></p>
         </section>
 
         <aside class="inspector" aria-label="Selected item settings">
@@ -490,6 +491,7 @@
         <li><strong>Click an item in the preview</strong> to select it. Edit its words in Content or double-click text directly in the preview.</li>
         <li><strong>Add something</strong> using the Add menu above the preview. Select a section first if you want to add a block inside it.</li>
         <li><strong>Rearrange or remove</strong> using the actions in Content. Undo is available at the top.</li>
+        <li><strong>Move without layout borders</strong> by dragging the amber Free move handle. Fine-tune positions in the editor, independently on desktop, tablet and phone. Resize beyond the original column with blue handles. These adjustments may overlap other content, so review each screen size.</li>
         <li><strong>Page layers</strong> in the left sidebar shows the structure of the selected page. Expand sections and content groups to select precisely, rearrange eligible blocks, or hide a block without deleting it.</li>
         <li><strong>Work directly on the page</strong> with the contextual Add content and Section buttons. Click a container in the selection path to edit an entire group. Quick layout offers width, alignment, full-row positioning, and copying a visual style between items.</li>
         <li><strong>Change the look</strong> in Design. Width, height, spacing, and optional pixel offsets live in Position.</li>
