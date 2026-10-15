@@ -310,3 +310,16 @@ input[type=checkbox]{accent-color:#3e7380}
   .canvas-insert-toolbar .quick-actions{order:2;flex:1 1 100%;margin-left:0}
   .canvas-insert-toolbar .toolbar-help{flex:1 1 100%;margin-left:0}
 }
+
+/* Editing shared header/footer text across pages. */
+.site-chrome-dialog{max-height:88vh;overflow-y:auto}
+.site-chrome-dialog textarea{min-height:65px;resize:vertical}
+.chrome-footer-fields{
+  margin:16px 0 0;padding:12px 14px 16px;border:1px solid #d1dcd3;
+  border-radius:5px;min-width:0;
+}
+.chrome-footer-fields legend{font-size:13px;font-weight:700;color:#395d43;padding:0 5px}
+.chrome-footer-fields label{display:block;font-size:12px}
+.site-chrome-dialog input,.site-chrome-dialog textarea{width:100%;max-width:100%}
+.site-chrome-dialog .micro-help{line-height:1.55}
+.canvas-layout-buttons button:active{transform:translateY(1px)}
