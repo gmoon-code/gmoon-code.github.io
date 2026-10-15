@@ -1687,3 +1687,36 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
   .project-technical-details>.reading{padding:0 5px 12px}
   .teaching-chem-case .chem-environment-extension{padding-top:30px}
 }
+
+/* Responsive guardrails for older Studio-resized content.
+   A block explicitly placed with Free move may extend past its parent.
+   Ordinary resized images and text must still fit the reader's viewport.
+   Desktop custom positions remain unchanged. */
+@media (max-width:1023px){
+  #main .studio-unrestricted-size:not(.studio-free-element){
+    max-width:100%!important;
+  }
+  #main .studio-unrestricted-size:is(img,svg,video,canvas,iframe):not(.studio-free-element){
+    max-width:100%!important;
+  }
+  /* Earlier desktop portrait adjustments should not pull photos out of a
+     tablet or single-column mobile layout. */
+  #main.home-page .home-photo,
+  #main.home-page .home-photo img,
+  #main.home-page .home-outside-photo img{
+    margin-left:0!important;
+    margin-right:0!important;
+    margin-top:0!important;
+  }
+}
+@media (max-width:640px){
+  #main.home-page .home-photo.studio-unrestricted-size{
+    width:min(var(--studio-size-phone-width,162px),100%)!important;
+    max-width:100%!important;
+  }
+  #main.home-page .home-photo img.studio-unrestricted-size,
+  #main.home-page .home-outside-photo img.studio-unrestricted-size{
+    width:min(var(--studio-size-phone-width,100%),100%)!important;
+    max-width:100%!important;
+  }
+}
