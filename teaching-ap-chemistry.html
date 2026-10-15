@@ -87,7 +87,7 @@
   </div>
   <p class="teaching-table-hint">On a narrow screen, scroll the table sideways to see all columns.</p>
   <div class="reading teaching-case-prose">
-    <p>The proposed meetings would need to accommodate the class's prior knowledge, laboratory or simulation access, and time for feedback. The final meeting would also depend on finding a water-quality source whose measurements could support the investigation students choose. I would examine the relevance of that evidence before making any claim about environmental effects or a particular community.</p>
+    <p>The four-meeting sequence would depend on students' prior understanding of equilibrium and the time available for laboratory work, simulation, and feedback. Its final meeting would also require a water-quality source suited to the question the class chooses. Before using the measurements to make an environmental claim, students would need to consider what each source records and what remains uncertain.</p>
   </div>
 </section>
 
@@ -171,12 +171,11 @@
 </div>
 <div class="teaching-original-prompt"><p class="meta">Student-facing source audit · Before making a claim</p>
 <p>Use the portal documentation to identify the fields that would allow comparison of nitrate measurements from two locations. Record the analyte name, fraction, units, collection dates, methods, and any quality qualifiers. Explain one comparison the selected records might support and two reasons why the records might remain incomparable. Propose one additional observation that could help evaluate a possible source of nitrogen.</p></div>
-<p class="teaching-evidence-note">This exercise names a real public data source, but it does not assert that a comparable dataset has already been selected or analyzed. A future classroom dataset would need a reproducible query, retained metadata, and a checked download.</p>
 </section>
 <section id="chem-data-protocol" class="section teaching-case-section">
   <div class="section-head"><h2>Data retrieval and screening exercise</h2><p>Teacher preparation protocol · A real data service, with the site-specific nitrate observations still to be extracted and checked.</p></div>
   <div class="reading teaching-case-prose">
-    <p>For an initial retrieval trial, I would use the <a href="https://waterdata.usgs.gov/download-samples/">US Geological Survey discrete sample download</a>. The USGS <a href="https://water.code-pages.usgs.gov/dataRetrieval/articles/samples_data.html">data retrieval tutorial</a> demonstrates the site identifier <code>USGS-04183500</code> using a <strong>phosphorus</strong> characteristic. The tutorial does not demonstrate nitrate availability at this station. The nitrate investigation must begin with a separate site-by-characteristic availability check and must stop if the data are unsuitable. The <a href="https://api.waterdata.usgs.gov/samples-data/summary/USGS-04183500?mimeType=text%2Fcsv">USGS site results summary</a> is a documented way to begin checking available characteristics, although I have not retrieved its current response.</p>
+    <p>For an initial retrieval trial, I would begin with the US Geological Survey discrete sample download. The agency's tutorial demonstrates station USGS-04183500 using a phosphorus characteristic, which does not establish that suitable nitrate records are available there. The first task would therefore be to check the site's recorded characteristics and collection dates. If appropriate nitrate observations are absent, the procedure below calls for documenting that result and checking another monitoring location.</p>
     <h3>Retrieval procedure</h3>
     <ol>
       <li>Open the USGS discrete sample download and enter <code>USGS-04183500</code> as the monitoring location. Inspect the site results summary and identify whether nitrate is actually present. Record the site name, agency identifier, query URL, retrieval date, and the available characteristic labels. <strong>Do not proceed to a nitrate trend plot without confirming relevant records.</strong></li>
@@ -198,7 +197,7 @@
     </tbody></table></div>
   <div class="teaching-original-prompt"><p class="meta">Assessment after retrieval</p>
   <p>Provide your screened data table, a date-ordered visualization, and a statement of one pattern the observations support. Then identify one possible sampling artefact and one additional kind of evidence needed to examine its cause. Explain whether the dataset supports a claim about a specific source of nitrogen. Cite the query and retrieval date so that a reader can repeat the analysis.</p></div>
-  <p class="teaching-evidence-note">The USGS tutorial demonstrates this monitoring site with phosphorus data. Nitrate availability for the selected period has not been verified, and the current API response was inaccessible in this review. No measured concentrations, record counts, trends, or community impacts are reported here. This remains a source-discovery and screening exercise until a nitrate CSV has been retrieved and audited.</p>
+  <p class="teaching-evidence-note">Until a nitrate dataset has been retrieved and screened, this remains a source-discovery and data-screening exercise. No measured concentrations, record counts, trends, or community impacts are claimed here.</p>
 </section>
 <section id="chem-participation" class="section teaching-case-section">
   <div class="section-head"><h2>Assessment across representations</h2></div>
