@@ -359,6 +359,7 @@
     window.WebsiteStudioPlus?.onPreviewReady?.();
     window.WebsiteStudioTables?.onPreviewReady?.();
     window.WebsiteStudioCanvas?.onPreviewReady?.();
+    window.WebsiteStudioChrome?.onPreviewReady?.();
   }
   function selectElement(node,scroll=false){
     if(!node||!docOf()||!docOf().contains(node))return;
