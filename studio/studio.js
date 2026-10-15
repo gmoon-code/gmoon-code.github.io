@@ -78,10 +78,43 @@
     let payload=null;
     try{payload=await response.json()}catch(e){}
     if(!response.ok){
-      const message=(payload&&payload.message)||("HTTP "+response.status);
-      if(response.status===401)throw Error("GitHub did not accept the token. Check that it has not expired.");
-      if(response.status===403)throw Error("GitHub denied permission. Check the token's repository access and Contents permission.");
-      throw Error(message+" ("+response.status+")");
+      const raw=(payload&&typeof payload.message==="string"?payload.message:"HTTP "+response.status);
+      const message=state.token?raw.replaceAll(state.token,"[hidden token]"):raw;
+      const method=options.method||"GET";
+      const stage=path.includes("/git/refs/heads/")?"updating the main branch":
+        path.includes("/git/trees")?"preparing the website file tree":
+        path.includes("/git/commits")?"creating or inspecting the website commit":
+        path.includes("/git/blobs")?"saving a Git file object":
+        path.includes("/contents/")?"checking a website file":
+        path.includes("/git/ref/")?"reading the current branch":
+        "contacting GitHub";
+      const label=method+" while "+stage+" (HTTP "+response.status+")";
+      const retryAfter=response.headers.get("retry-after");
+      const remaining=response.headers.get("x-ratelimit-remaining");
+      if(response.status===401)
+        throw Error("GitHub rejected this access token during "+label+
+          ". Update the token in Access settings without signing out. GitHub says: "+message);
+      if(response.status===403||response.status===429){
+        if(/secondary rate limit|abuse detection|too many requests/i.test(message))
+          throw Error("GitHub temporarily limited the publishing requests during "+label+
+            ". Your drafts are safe. "+
+            (retryAfter?"GitHub requested a retry after "+retryAfter+" seconds. ":"")+
+            "Try Publish again after the limit clears. GitHub says: "+message);
+        if(remaining==="0"||/API rate limit exceeded|rate limit exceeded/i.test(message))
+          throw Error("GitHub's API request allowance has been reached during "+label+
+            ". Your drafts are safe. Try again when the limit resets. GitHub says: "+message);
+        if(/Resource not accessible by personal access token|requires authentication|must have|permission|insufficient/i.test(message))
+          throw Error("This token cannot complete "+label+
+            ". In GitHub token settings, allow this repository and set Contents to Read and write. "+
+            "GitHub says: "+message);
+        throw Error("GitHub rejected "+label+". GitHub says: "+message+
+          ". This may involve token permissions, account restrictions, or temporary GitHub limits.");
+      }
+      if((response.status===409||response.status===422)&&method==="PATCH")
+        throw Error("GitHub could not move the main branch to the new commit ("+
+          response.status+"). Another edit or repository protection may have intervened. "+
+          "Your drafts remain safe. GitHub says: "+message);
+      throw Error("GitHub error during "+label+". "+message);
     }
     return payload;
   }
