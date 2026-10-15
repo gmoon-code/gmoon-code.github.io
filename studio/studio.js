@@ -362,6 +362,7 @@
     window.WebsiteStudioCanvas?.onPreviewReady?.();
     window.WebsiteStudioChrome?.onPreviewReady?.();
     window.WebsiteStudioLayers?.onPreviewReady?.();
+    window.WebsiteStudioComponents?.onPreviewReady?.();
   }
   function selectElement(node,scroll=false){
     if(!node||!docOf()||!docOf().contains(node))return;
@@ -374,6 +375,7 @@
     window.WebsiteStudioTables?.onSelection?.(node);
     window.WebsiteStudioCanvas?.onSelection?.(node);
     window.WebsiteStudioLayers?.onSelection?.(node);
+    window.WebsiteStudioComponents?.onSelection?.(node);
     if(scroll)node.scrollIntoView({behavior:"smooth",block:"center"});
   }
   function labelForNode(node){
