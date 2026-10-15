@@ -366,3 +366,9 @@ input[type=checkbox]{accent-color:#3e7380}
 .studio-component-buttons button:hover{background:#ebf4ed}
 .studio-component-buttons button:disabled{opacity:.48;cursor:not-allowed}
 .studio-component-buttons button:focus-visible{outline:2px solid #37664d;outline-offset:2px}
+
+.layers-reorder{display:flex;align-items:center;gap:1px;flex:0 0 auto}
+.layers-reorder button{font:700 13px/1 system-ui,sans-serif;border:1px solid transparent;
+  border-radius:3px;min-width:19px;min-height:25px;padding:2px;cursor:pointer;color:#436653}
+.layers-reorder button:hover{background:#dcece2;border-color:#b6c9bc}
+.layers-reorder button:focus-visible{outline:2px solid #37664d;outline-offset:2px}
