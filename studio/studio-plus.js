@@ -155,8 +155,9 @@
       const caption=doc.createElement("figcaption");
       caption.textContent="Add a caption";
       figure.appendChild(caption);
-      if(original?.tagName==="SECTION")original.appendChild(figure);
-      else if(original?.parentElement&&main.contains(original))original.after(figure);
+      const position=api.placementTarget(original);
+      if(position?.tagName==="SECTION")position.appendChild(figure);
+      else if(position?.parentElement&&main.contains(position))position.after(figure);
       else (main.querySelector("section:last-of-type")||main).appendChild(figure);
     }
     image.src=src;
