@@ -100,13 +100,15 @@
     const hasChildren=hasContentChildren(node);
     const selected=node===state.selected;
     const isOpen=!!query||expandAll||expanded.has(node);
+    const wrapper=document.createElement("div");
+    wrapper.className="layers-node";
+    wrapper.setAttribute("role","treeitem");
+    wrapper.setAttribute("aria-level",String(depth+1));
+    wrapper.setAttribute("aria-selected",String(selected));
+    if(hasChildren)wrapper.setAttribute("aria-expanded",String(isOpen));
     const row=document.createElement("div");
     row.className="layers-row"+(selected?" is-selected":"")+
       (node.classList.contains("studio-layer-hidden")?" is-hidden":"");
-    row.setAttribute("role","treeitem");
-    row.setAttribute("aria-level",String(depth+1));
-    row.setAttribute("aria-selected",String(selected));
-    if(hasChildren)row.setAttribute("aria-expanded",String(isOpen));
     row.style.setProperty("--layers-depth",String(Math.min(depth,7)));
     const toggle=document.createElement("button");
     toggle.className="layers-toggle";toggle.type="button";
@@ -161,17 +163,16 @@
       visibility.addEventListener("click",()=>toggleVisibility(node));
       row.appendChild(visibility);
     }
-    const fragment=document.createDocumentFragment();
-    fragment.appendChild(row);
+    wrapper.appendChild(row);
     if(hasChildren&&isOpen){
       const nested=document.createElement("div");nested.className="layers-children";nested.setAttribute("role","group");
       for(const child of children){
         if(query&&!matches(child,query))continue;
         nested.appendChild(treeRow(child,depth+1,query));
       }
-      fragment.appendChild(nested);
+      wrapper.appendChild(nested);
     }
-    return fragment;
+    return wrapper;
   }
   function render(){
     const doc=docOf(),root=main();
