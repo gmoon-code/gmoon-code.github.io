@@ -26,7 +26,7 @@
   dialog.innerHTML=[
     '<div class="dialog-heading"><h2 id="siteChromeTitle">Header & footer</h2>',
     '<button type="button" id="closeSiteChrome" class="plain-button">Close</button></div>',
-    '<p class="micro-help">Changes appear across your public pages when you publish. Menu links are edited in Navigation.</p>',
+    '<p class="micro-help">Changes appear across your public pages when you publish. Menu links are edited in Navigation. Leave both fields for an optional link blank to remove it from the footer.</p>',
     '<label for="chromeBrand">Website title in the header</label>',
     '<input type="text" id="chromeBrand" maxlength="100">',
     '<fieldset class="chrome-footer-fields"><legend>Footer contact</legend>',
@@ -63,13 +63,19 @@
     for(const key of Object.keys(defaults)){
       obj[key]=cleanText(el(fields[key])?.value);
     }
-    if(!obj.brand||!obj.footerIntro||!obj.footerLinkText||!obj.email||!obj.externalLabel||
-      !obj.externalUrl)throw Error("Please fill in the website title, contact and link fields.");
-    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(obj.email))throw Error("Enter a valid contact email address.");
-    try{
-      const url=new URL(obj.externalUrl);
-      if(url.protocol!=="https:"&&url.protocol!=="http:")throw Error();
-    }catch(e){throw Error("Enter a complete http or https link for the footer.");}
+    if(!obj.brand)throw Error("Please provide a website title.");
+    if(Boolean(obj.email)!==Boolean(obj.footerLinkText))
+      throw Error("Provide both the contact email and its link text, or leave both blank to remove the email link.");
+    if(obj.email&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(obj.email))
+      throw Error("Enter a valid contact email address.");
+    if(Boolean(obj.externalUrl)!==Boolean(obj.externalLabel))
+      throw Error("Provide both the additional link label and URL, or leave both blank to remove it.");
+    if(obj.externalUrl){
+      try{
+        const url=new URL(obj.externalUrl);
+        if(url.protocol!=="https:"&&url.protocol!=="http:")throw Error();
+      }catch(e){throw Error("Enter a complete http or https link for the footer.");}
+    }
     return obj;
   }
   function applyToDocument(doc,values){
@@ -78,20 +84,55 @@
     const brand=doc.querySelector("header.topbar a.brand");
     if(brand&&brand.textContent!==values.brand){brand.textContent=values.brand;changed=true;}
     const footer=doc.querySelector("footer.site-footer");
-    const paragraph=footer?.querySelector(".site-footer-inner > p");
-    if(paragraph){
-      const email=doc.createElement("a");
-      email.href="mailto:"+values.email;
-      email.textContent=values.footerLinkText;
-      const before=paragraph.innerHTML;
-      paragraph.replaceChildren(doc.createTextNode(values.footerIntro+" "),email,
-        doc.createTextNode(values.footerEnding));
-      if(paragraph.innerHTML!==before)changed=true;
+    const container=footer?.querySelector(".site-footer-inner");
+    const hasMessage=Boolean(values.footerIntro||values.footerEnding||
+      (values.email&&values.footerLinkText));
+    let paragraph=container?.querySelector(":scope > p");
+    if(!paragraph&&container&&hasMessage){
+      paragraph=doc.createElement("p");
+      container.prepend(paragraph);
+      changed=true;
     }
-    const ext=footer?.querySelector("nav.site-footer-links a[href^='http']");
-    if(ext){
-      if(ext.textContent!==values.externalLabel){ext.textContent=values.externalLabel;changed=true;}
-      if(ext.getAttribute("href")!==values.externalUrl){ext.setAttribute("href",values.externalUrl);changed=true;}
+    if(paragraph){
+      if(!hasMessage){
+        paragraph.remove();changed=true;
+      }else{
+        const before=paragraph.innerHTML;
+        const fragments=[];
+        if(values.footerIntro)fragments.push(doc.createTextNode(values.footerIntro+
+          (values.email&&values.footerLinkText?" ":"")));
+        if(values.email&&values.footerLinkText){
+          const link=doc.createElement("a");
+          link.href="mailto:"+values.email;
+          link.textContent=values.footerLinkText;
+          fragments.push(link);
+        }
+        if(values.footerEnding)fragments.push(doc.createTextNode(
+          values.email&&values.footerLinkText?values.footerEnding:
+          (values.footerIntro?" ":"")+values.footerEnding
+        ));
+        paragraph.replaceChildren(...fragments);
+        if(paragraph.innerHTML!==before)changed=true;
+      }
+    }
+    const nav=footer?.querySelector("nav.site-footer-links");
+    let external=nav?.querySelector("a[href^='http']");
+    if(!values.externalUrl||!values.externalLabel){
+      if(external){external.remove();changed=true;}
+    }else{
+      if(!external&&nav){
+        external=doc.createElement("a");
+        nav.prepend(external);
+        changed=true;
+      }
+      if(external){
+        if(external.textContent!==values.externalLabel){
+          external.textContent=values.externalLabel;changed=true;
+        }
+        if(external.getAttribute("href")!==values.externalUrl){
+          external.setAttribute("href",values.externalUrl);changed=true;
+        }
+      }
     }
     return changed;
   }
