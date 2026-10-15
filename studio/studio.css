@@ -409,3 +409,28 @@ input[type=checkbox]{accent-color:#3e7380}
 .workspace.studio-focus-mode #previewFrame{max-width:none}
 #focusCanvasBtn[aria-pressed=true]{background:#e6f1e9;border-color:#659679;color:#225739}
 #focusCanvasBtn:focus-visible{outline:2px solid #37664d;outline-offset:2px}
+
+/* Publishing diagnostics stay visible until dismissed or successfully published. */
+.publish-failure{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:14px;padding:13px 20px;border-bottom:1px solid #d9b9a6;
+  background:#fff8f3;color:#66361f;flex-wrap:wrap;
+}
+.publish-failure[hidden]{display:none!important}
+.publish-failure>div:first-child{flex:1 1 320px}
+.publish-failure strong{font-size:13px}
+.publish-failure p{font:12px/1.5 system-ui,sans-serif;max-width:850px;margin:6px 0 0;
+  overflow-wrap:anywhere;white-space:pre-wrap}
+.publish-failure-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.publish-failure-actions button{min-height:35px}
+.studio-access-dialog{max-height:88vh;overflow-y:auto}
+.studio-access-dialog .micro-help{font-size:12px;line-height:1.55}
+.studio-access-dialog .access-result{min-height:22px;font:600 12px/1.5 system-ui,sans-serif;
+  color:#285d3f;margin:10px 0;white-space:pre-wrap;overflow-wrap:anywhere}
+.studio-access-dialog .access-result.is-error{color:#913c32}
+.studio-access-dialog #accessTestBtn{width:100%;min-height:37px;margin-top:10px}
+.studio-access-dialog .access-token-details{border-top:1px solid #d9e2dc;padding-top:14px;margin:16px 0}
+.studio-access-dialog .access-token-details summary{font-weight:650;cursor:pointer}
+.studio-access-dialog .access-token-details input{width:100%;margin:5px 0 10px}
+.studio-access-dialog #accessReplaceBtn{width:100%;min-height:38px}
+.studio-access-dialog button:disabled{opacity:.55;cursor:wait}
