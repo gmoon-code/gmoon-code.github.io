@@ -856,6 +856,8 @@
         await window.WebsiteStudioPlus.beforePublish();
       }catch(error){
         toast("Could not prepare the website changes: "+errorDescription(error),true);
+        window.WebsiteStudioAccess?.onPublishFailure?.(
+          "Preparing site-wide changes failed. "+(error?.message||String(error)).slice(0,1500));
         state.busy=false;updateStatus();
         return;
       }
@@ -989,7 +991,8 @@
     }catch(error){
       const detail=errorDescription(error);
       toast("Your drafts are still here. Publishing stopped: "+detail,true);
-      window.WebsiteStudioAccess?.onPublishFailure?.(detail);
+      window.WebsiteStudioAccess?.onPublishFailure?.(
+        (error?.message||String(error)).slice(0,1500));
     }finally{
       state.busy=false;updateStatus();renderPages();
     }
