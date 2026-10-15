@@ -286,6 +286,34 @@
     }
     return best;
   }
+  // Shared exact sizing entry point used by the Position and Quick layout panels.
+  // Uses the same responsive dimensions as the blue on-canvas grips.
+  function setDimension(el,name,value,d=screen()){
+    if(!el||!["width","height"].includes(name)||!["all","tablet","phone"].includes(d))return;
+    const key=sizeProp(d,name);
+    const normalized=typeof value==="string"&&/^(?:\\d+(?:\\.\\d+)?)(?:px|%)$/.test(value)?value:null;
+    if(!normalized){
+      el.style.removeProperty(key);
+      if(!sizeVars.some(p=>el.style.getPropertyValue(p))){
+        el.classList.remove("studio-unrestricted-size");
+        window.WebsiteStudioFree?.cleanClips?.(el);
+      }
+      return;
+    }
+    if(!el.classList.contains("studio-unrestricted-size")){
+      const previousWidth=el.style.getPropertyValue("width");
+      const previousHeight=el.style.getPropertyValue("height")||
+        el.style.getPropertyValue("min-height");
+      if(previousWidth)el.style.setProperty(sizeProp("all","width"),previousWidth);
+      if(previousHeight)el.style.setProperty(sizeProp("all","height"),previousHeight);
+    }
+    for(const property of ["width","max-width","height","min-height"])
+      el.style.removeProperty(property);
+    el.classList.add("studio-unrestricted-size");
+    el.style.setProperty(key,normalized);
+    window.WebsiteStudioFree?.releaseClips?.(el);
+    queueUpdate();
+  }
   function reset(){
     const el=element();if(!el||state.busy)return;
     const d=screen();let map={};
@@ -340,6 +368,6 @@
     document.querySelectorAll("[data-tab]").forEach(button=>button.addEventListener("click",queueUpdate));
     $("previewFrame").addEventListener("load",queueUpdate);
   }
-  window.WebsiteStudioResize={refresh:queueUpdate,reset,apply,nearbyLine};
+  window.WebsiteStudioResize={refresh:queueUpdate,reset,apply,nearbyLine,setDimension,screen};
   install();
 })();
