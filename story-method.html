@@ -22,7 +22,7 @@
 <section class="page-hero single">
   <div class="hero-copy">
     <h1>The Story Method</h1>
-    <p>The Story Method brings AP Biology concepts into connected journeys through places, characters, and events. After encountering an idea in a scene, learners return to it through recall and application questions that ask for scientific relationships. I am interested in how these activities might help students move from remembering the setting to explaining a biological process in a new context.</p>
+    <p>The Story Method is an AP Biology learning environment built around journeys through imagined places, characters, and events. I designed the stories to give students a setting in which they could encounter an idea and then return to it through recall and application questions. I am interested in whether the experience helps them explain a biological process after the details of the story are no longer available.</p>
     <div class="controls">
       <a class="control primary" href="https://gmoon-code.github.io/memory-palace-u1-8/">Visit The Story Method ↗</a>
       <a class="control" href="https://gmoon-code.github.io/memory-palace-u1-8/?unit=unit-1">Start with Unit 1 ↗</a>
@@ -64,7 +64,7 @@
 <section id="story-example" class="section story-example-section">
   <div class="section-head"><h2>Unit 1 journey example</h2></div>
   <div class="reading project-reading">
-    <p>Unit 1 includes <em>The Evidence Lockdown</em>, a nine-location journey in a fictional laboratory. A reporter-cell experiment has produced an unexpectedly bright signal. Dr. Rowan Lee, the guide, begins by describing the observation before asking what it could mean.</p>
+    <p>In Unit 1, <em>The Evidence Lockdown</em> unfolds across nine locations in a fictional laboratory. A reporter-cell experiment has produced an unexpectedly bright signal, and Dr. Rowan Lee begins with the observation itself. As the journey proceeds, the learner has to consider what might have caused the difference and which comparisons would help investigate it.</p>
   </div>
   <div class="story-example-layout">
     <div class="story-scene-note">
@@ -82,7 +82,7 @@
   </div>
   <div class="story-design-comment">
     <h3>Observation and experimental inference</h3>
-    <p>The reporter-cell result appears across several scenes, allowing the learner to reconsider the same observation as new questions arise. First they describe the difference in brightness. Later they examine possible causes and the comparisons needed to investigate them. The recurring setting helps organize the sequence, while the questions ask learners to make the scientific decisions.</p>
+    <p>The same reporter-cell observation returns across several scenes, giving learners a chance to reconsider it as the scientific problem develops. They first describe the difference in brightness, then compare possible causes and the controls needed to investigate them. As variability and sampling uncertainty enter the story, the question changes from what appears to have happened to what the evidence can justify. The Review and Challenge activities return to that reasoning through further questions.</p>
     <p>As the journey continues, variability and sampling uncertainty complicate the initial observation. By the end, the learner must consider how far the available evidence supports a claim. Review and Challenge activities offer further opportunities to revisit that reasoning, although the application has not yet been evaluated for transfer to unfamiliar problems.</p>
   </div>
   <p class="project-status-note">This example follows a released Unit 1 journey and illustrates the learning design. Its effectiveness with students has not been evaluated here.</p>
@@ -91,8 +91,8 @@
 <section id="story-design-review" class="section">
   <div class="section-head"><h2>Scientific reasoning across the story</h2></div>
   <div class="reading project-reading">
-    <p>The unexpectedly bright reporter-cell signal gives the journey a recurring observation, but brightness by itself cannot distinguish a treatment effect from changes in measurement conditions or another variable. That uncertainty creates the need for predictions, controls, and careful interpretation. In reviewing these scenes, I would examine whether the information given to the learner supports the scientific inference being requested.</p>
-    <p>The Hypothesis Doors and Control Benches make those decisions part of the narrative. A learner may remember the locations while still needing to explain the difference between a testable prediction and an experimental control. The later Review and Challenge activities provide another occasion to examine that distinction. Whether learners can apply it independently to an unfamiliar investigation would require evidence from their responses.</p>
+    <p>Brightness alone cannot distinguish a treatment effect from differences in measurement conditions or other variables. That uncertainty provides the reason for introducing predictions, controls, and interpretation across the journey. When examining the scene design, I ask whether each question supplies enough information for learners to make the inference it requests.</p>
+    <p>At the Hypothesis Doors and Control Benches, the story invites learners to make different scientific decisions. Remembering a location may help them recall a term, yet an adequate explanation still has to distinguish a testable prediction from an experimental control. The later activities revisit these decisions, and an unfamiliar experiment would provide a more demanding check of whether the reasoning carries beyond the original setting.</p>
   </div>
   <div class="project-decision-sequence">
     <div><span class="project-sequence-label">Scene</span><p>Describe what the reporter-cell result displays, including the visible difference and what remains unknown about its cause.</p></div>
@@ -105,9 +105,9 @@
 <section id="story-implementation" class="section">
   <div class="section-head"><h2>Released materials and application checks</h2></div>
   <div class="reading project-reading">
-    <p>The released curriculum covers all eight AP Biology units, with progress, review scheduling, and assisted-recall information stored in the learner's browser. The application also preserves a distinction between aided and unaided retrieval. A Quick Recall response remains marked as assisted after a short reload or unit change when a hint was requested, and the Review interface presents a hint before showing the answer. These details describe how the application records practice; they do not establish how much students learn from it.</p>
-    <p>The GitHub Pages release is built from the student runtime and curriculum records, without development files or source documents. Before deployment, a static check examines the staged package across all eight units, including journeys, scenes, retrieval prompts, review targets, and application questions. Two builds must also produce identical output, after which deployment uses the commit that passed the quality-assurance workflow. These checks support consistent packaging and loading. Questions about whether the activities improve explanations of unfamiliar biology still require evidence from learners.</p>
-    <p>A future evaluation would need to examine the scientific accuracy of the activities and the distinction between assisted and unaided responses. Assessing whether learners can apply the reasoning to an unfamiliar problem would also require evidence from their work after completing a journey.</p>
+    <p>The released curriculum covers all eight AP Biology units. The application stores progress and review information in the learner's browser and distinguishes assisted from unaided recall. If a learner requests a hint, Quick Recall remains recorded as assisted after a reload or change of unit. The Review interface also offers a hint before displaying an answer. These details describe how practice is organized and recorded, while students' responses would be needed to evaluate the learning it supports.</p>
+    <p>The GitHub Pages release is assembled from the student application and curriculum records without development files or source documents. Before deployment, static checks examine the package across all eight units, including scenes, retrieval prompts, review targets, and application questions. The workflow also requires two identical builds and deploys the commit that passed the checks. These safeguards concern packaging and reproducibility; the scientific quality of learners' explanations requires a different kind of evaluation.</p>
+    <p>I would begin that evaluation by checking whether learners can explain the science accurately after completing a journey, with particular attention to the distinction between aided recall and unaided responses. A new experimental context could then test whether they can apply the same reasoning when the fictional setting is absent.</p>
   </div>
   <p class="project-status-note">Implementation details are derived from the public <a href="https://github.com/gmoon-code/memory-palace-u1-8/blob/main/README.md">application repository and release documentation</a>, not a new usability test.</p>
 </section>
