@@ -474,9 +474,11 @@
     $("offsetX").value=parseFloat(el.style.getPropertyValue("--studio-offset-x"))||0;
     $("offsetY").value=parseFloat(el.style.getPropertyValue("--studio-offset-y"))||0;
     const parent=el.parentElement;
-    $("moveUpBtn").disabled=!parent||!el.previousElementSibling||el.tagName==="H1";
-    $("moveDownBtn").disabled=!parent||!el.nextElementSibling||el.tagName==="H1";
-    $("deleteBtn").disabled=el.tagName==="H1";
+    const tableCell=el.matches("td,th");
+    $("moveUpBtn").disabled=tableCell||!parent||!el.previousElementSibling||el.tagName==="H1";
+    $("moveDownBtn").disabled=tableCell||!parent||!el.nextElementSibling||el.tagName==="H1";
+    $("duplicateBtn").disabled=tableCell||el.tagName==="H1";
+    $("deleteBtn").disabled=tableCell||el.tagName==="H1";
   }
   function colorToHex(value){
     if(/^#[0-9a-f]{6}$/i.test(value))return value.toUpperCase();
@@ -582,7 +584,7 @@
     }
   }
   function moveElement(direction){
-    const el=state.selected;if(!el||el.tagName==="H1")return;
+    const el=state.selected;if(!el||el.tagName==="H1"||el.matches("td,th"))return;
     const sibling=direction<0?el.previousElementSibling:el.nextElementSibling;
     if(!sibling){toast("There is nowhere further to move this item.");return}
     mutate(()=>{if(direction<0)sibling.before(el);else sibling.after(el)});
@@ -590,6 +592,7 @@
   }
   function duplicateElement(){
     const el=state.selected;if(!el)return;
+    if(el.matches("td,th")){toast("Use the Table controls to add a row or column.");return}
     if(el.tagName==="H1"){toast("The page title is unique. Add another heading using the Add menu.");return}
     let clone;
     mutate(()=>{
@@ -605,6 +608,7 @@
   }
   function deleteElement(){
     const el=state.selected;if(!el||el.tagName==="H1")return;
+    if(el.matches("td,th")){toast("Use the Table controls to remove its row or column.");return}
     const description=labelForNode(el).toLowerCase();
     if(!confirm("Remove this "+description+" from the page? You can still undo before publishing."))return;
     remember();el.remove();state.selected=null;
