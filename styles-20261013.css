@@ -1589,7 +1589,7 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
   Each viewport uses its own coordinates, avoiding unintended phone shifts.
   Visual offsets do not reparent blocks or change their document order.
 */
-.page .studio-free-element{
+#main .studio-free-element{
   position:relative!important;
   overflow:visible!important;
   transform:translate(
@@ -1598,51 +1598,54 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
   )!important;
   z-index:2;
 }
-.page .studio-unrestricted-size{
+#main .studio-unrestricted-size{
   width:var(--studio-size-desktop-width,auto)!important;
   max-width:none!important;
   min-width:0!important;
 }
-.page .studio-unrestricted-size:is(img,svg,video,canvas,iframe){
+#main .studio-unrestricted-size:is(img,svg,video,canvas,iframe){
   height:var(--studio-size-desktop-height,auto)!important;
 }
-.page .studio-unrestricted-size:not(img):not(svg):not(video):not(canvas):not(iframe){
+#main .studio-unrestricted-size:not(img):not(svg):not(video):not(canvas):not(iframe){
   min-height:var(--studio-size-desktop-height,0px)!important;
 }
-.page .studio-unrestricted-size:is(a,span,em,strong,mark){display:inline-block!important}
+#main .studio-unrestricted-size:is(a,span,em,strong,mark){display:inline-block!important}
 @media (min-width:701px) and (max-width:1023px){
-  .page .studio-free-element{
+  #main .studio-free-element{
     transform:translate(
       var(--studio-free-tablet-x,0px),
       var(--studio-free-tablet-y,0px)
     )!important;
   }
-  .page .studio-unrestricted-size{
+  #main .studio-unrestricted-size{
     width:var(--studio-size-tablet-width,auto)!important;
-    max-width:100%!important;
+    max-width:none!important;
   }
-  .page .studio-unrestricted-size:is(img,svg,video,canvas,iframe){
+  #main .studio-unrestricted-size:is(img,svg,video,canvas,iframe){
     height:var(--studio-size-tablet-height,auto)!important;
   }
-  .page .studio-unrestricted-size:not(img):not(svg):not(video):not(canvas):not(iframe){
+  #main .studio-unrestricted-size:not(img):not(svg):not(video):not(canvas):not(iframe){
     min-height:var(--studio-size-tablet-height,0px)!important;
   }
 }
 @media (max-width:700px){
-  .page .studio-free-element{
+  #main .studio-free-element{
     transform:translate(
       var(--studio-free-phone-x,0px),
       var(--studio-free-phone-y,0px)
     )!important;
   }
-  .page .studio-unrestricted-size{
+  #main .studio-unrestricted-size{
     width:var(--studio-size-phone-width,auto)!important;
-    max-width:100%!important;
+    max-width:none!important;
   }
-  .page .studio-unrestricted-size:is(img,svg,video,canvas,iframe){
+  #main .studio-unrestricted-size:is(img,svg,video,canvas,iframe){
     height:var(--studio-size-phone-height,auto)!important;
   }
-  .page .studio-unrestricted-size:not(img):not(svg):not(video):not(canvas):not(iframe){
+  #main .studio-unrestricted-size:not(img):not(svg):not(video):not(canvas):not(iframe){
     min-height:var(--studio-size-phone-height,0px)!important;
   }
 }
+
+/* Open only ancestors that previously clipped a deliberately freed block. */
+#main .studio-free-open{overflow:visible!important}
