@@ -616,6 +616,17 @@
     $("inspectorContent").hidden=true;$("inspectorEmpty").hidden=false;
     $("selectedKind").textContent="Nothing selected";
   }
+  // Insert beside the containing block, never between cells or list items.
+  function placementTarget(node){
+    if(!node)return null;
+    const table=node.closest("table");
+    if(table)return table.parentElement?.matches(".studio-table-wrap")?table.parentElement:table;
+    const item=node.closest("li");
+    if(item)return item.closest("ul,ol")||item;
+    if(node.matches("span,strong,em,b,i,mark,small,code,a"))
+      return node.closest("p,h1,h2,h3,h4,h5,h6,blockquote,figcaption,summary")||node;
+    return node;
+  }
   function makeBlock(doc,type){
     const wrapper=doc.createElement("div");
     const snippets={
@@ -643,7 +654,7 @@
       const top=chosen&&chosen.parentElement===main?chosen:null;
       if(top)top.after(node);else main.appendChild(node);
     }else{
-      const target=state.selected;
+      const target=placementTarget(state.selected);
       if(target&&main.contains(target)){
         if(target.tagName==="SECTION"){
           const container=target.querySelector(".reading,.grid-2,.studio-columns,.media-shelf")||target;
@@ -1111,7 +1122,7 @@
   window.WebsiteStudioAPI={
     state,$,docOf,activeDraft,remember,syncCurrent,renderSections,selectElement,insertBlock,mutate,
     toast,github,fetchFile,ensureDraft,nameFor,toneForPage,renderPages,switchPage,updateStatus,
-    safeUrl,withPreviewBase,openImagePicker,slugify,esc
+    safeUrl,withPreviewBase,openImagePicker,slugify,esc,placementTarget
   };
   init().catch(error=>toast(errorDescription(error),true));
 })();
