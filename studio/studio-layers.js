@@ -129,6 +129,28 @@
       render();
     });
     row.append(toggle,name);
+    if(node!==main()&&!["H1","TD","TH","TR","THEAD","TBODY","TFOOT"].includes(node.tagName)){
+      const move=window.WebsiteStudioMove;
+      const unit=move?.moveUnit?.(node);
+      if(unit){
+        const actions=document.createElement("span");
+        actions.className="layers-reorder";
+        for(const [direction,symbol,label] of [["earlier","↑","Move item earlier"],["later","↓","Move item later"]]){
+          const action=document.createElement("button");
+          action.type="button";action.textContent=symbol;action.title=label;
+          action.setAttribute("aria-label",label);
+          action.addEventListener("click",()=>{
+            selectElement(node);
+            const moveAPI=window.WebsiteStudioMove;
+            if(direction==="earlier")moveAPI?.moveEarlier?.();
+            else moveAPI?.moveLater?.();
+            queueRender();
+          });
+          actions.appendChild(action);
+        }
+        row.appendChild(actions);
+      }
+    }
     if(safeToHide(node)){
       const visibility=document.createElement("button");
       visibility.type="button";visibility.className="layers-visibility";
