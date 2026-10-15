@@ -114,7 +114,8 @@
         throw Error("GitHub could not move the main branch to the new commit ("+
           response.status+"). Another edit or repository protection may have intervened. "+
           "Your drafts remain safe. GitHub says: "+message);
-      throw Error("GitHub error during "+label+". "+message);
+      // Keep the existing (404) marker used when creating new pages and photos.
+      throw Error("GitHub error during "+label+". "+message+" ("+response.status+")");
     }
     return payload;
   }
