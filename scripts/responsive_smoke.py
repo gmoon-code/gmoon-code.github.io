@@ -72,6 +72,38 @@ async def main():
                     await page.locator("main").wait_for(timeout=5000)
                     await page.wait_for_timeout(160)
                     result = await page.evaluate(MEASURE)
+                    # A keyboard skip link should move focus to the main
+                    # landmark, allowing navigation to continue after the header.
+                    if width in (375, 1440):
+                        skip = page.locator("a.skip-link")
+                        await skip.focus()
+                        await page.keyboard.press("Enter")
+                        skip_target = await page.evaluate("""() => ({
+                          hash:location.hash,
+                          onMain:document.activeElement === document.querySelector("#main")
+                        })""")
+                        result["skipNavigation"] = skip_target
+                        if skip_target["hash"] != "#main" or not skip_target["onMain"]:
+                            failures.append({"page": filename, "viewport": width,
+                                             "skipNavigation": skip_target})
+                    if width == 1440:
+                        canonical = await page.locator('link[rel="canonical"]').all()
+                        if filename not in ("404.html", "teaching-osmosis-practice.html"):
+                            expected_url = ("https://gmoon-code.github.io/" if
+                                            filename == "index.html" else
+                                            f"https://gmoon-code.github.io/{filename}")
+                            actual_url = (await canonical[0].get_attribute("href")
+                                          if len(canonical) == 1 else None)
+                            result["canonical"] = actual_url
+                            if actual_url != expected_url:
+                                failures.append({"page": filename, "viewport": width,
+                                                 "canonical": actual_url,
+                                                 "expected": expected_url})
+                        else:
+                            robots = await page.locator('meta[name="robots"]').get_attribute("content")
+                            if "noindex" not in robots:
+                                failures.append({"page": filename, "viewport": width,
+                                                 "missingNoindex": robots})
                     # Sample computed styles from actual page links. An inline
                     # source must look clickable before hover, including on phones.
                     if filename in ("interests.html", "research-scoping.html",
