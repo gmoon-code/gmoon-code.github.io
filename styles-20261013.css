@@ -1549,3 +1549,37 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
 /* Hide an item through Website Studio Layers without deleting its content.
    This class is saved with the website; all devices respect the choice. */
 .studio-layer-hidden{display:none!important}
+
+/* Component-editor layouts preserve existing content and phone responsiveness. */
+.studio-editable-columns{display:grid!important;min-width:0;gap:var(--studio-column-gap,18px)!important}
+@media(min-width:801px){
+  .studio-editable-columns{grid-template-columns:repeat(var(--studio-cols,2),minmax(0,1fr))!important}
+}
+@media(max-width:800px){
+  .studio-editable-columns{grid-template-columns:minmax(0,1fr)!important}
+}
+.studio-comparison-panel{
+  min-width:0;padding:19px 21px;border:1px solid var(--moon-rule);
+  border-top:3px solid var(--page-line,var(--section-blue-line));
+}
+.studio-comparison-panel h3{margin:0 0 11px;font-size:20px}
+.studio-comparison-panel p{font-size:16px;line-height:1.68;margin:0;color:#373737}
+.studio-process{
+  list-style:none;counter-reset:studio-process-step;margin:18px 0 24px;padding:0;
+  border-top:1px solid var(--moon-rule);
+}
+.studio-process>li{
+  counter-increment:studio-process-step;position:relative;
+  padding:19px 14px 20px 61px;margin:0;
+  border-bottom:1px solid var(--moon-rule);min-width:0;
+}
+.studio-process>li:before{
+  content:counter(studio-process-step);position:absolute;top:19px;left:12px;
+  min-width:29px;height:29px;display:grid;place-items:center;
+  border:1px solid var(--page-line,var(--section-green-line));
+  border-radius:50%;font:bold 15px/1 "Times New Roman",Times,serif;
+  background:var(--page-soft,var(--section-green-soft));
+}
+.studio-process>li>strong{display:block;font-size:18px;line-height:1.4;margin-bottom:7px}
+.studio-process>li>p{margin:0;font-size:16px;line-height:1.67;max-width:100%}
+@media(max-width:650px){.studio-comparison-panel{padding:16px}.studio-process>li{padding-right:5px}}
