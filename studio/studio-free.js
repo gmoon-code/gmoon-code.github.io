@@ -304,5 +304,14 @@
   function onSelection(){updateControls()}
   document.querySelectorAll("[data-device]").forEach(b=>
     b.addEventListener("click",()=>window.setTimeout(applyPreviewScreen,0)));
+  const focus=$("focusCanvasBtn");
+  focus?.addEventListener("click",()=>{
+    const workspace=$("workspace");if(!workspace)return;
+    const active=workspace.classList.toggle("studio-focus-mode");
+    focus.textContent=active?"Show editor panels":"Expand canvas";
+    focus.setAttribute("aria-pressed",active?"true":"false");
+    focus.title=active?"Restore page and design sidebars":"Expand the page canvas";
+    requestUpdate();
+  });
   window.WebsiteStudioFree={onPreviewReady,onSelection,requestUpdate,releaseClips,cleanClips,applyPreviewScreen};
 })();
