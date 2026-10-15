@@ -75,8 +75,7 @@ async def main():
                     # Sample computed styles from actual page links. An inline
                     # source must look clickable before hover, including on phones.
                     if filename in ("interests.html", "research-scoping.html",
-                                    "teaching-ap-chemistry.html", "story-method.html",
-                                    "research-methods-studio.html"):
+                                    "story-method.html", "research-methods-studio.html"):
                         affordance = await page.evaluate("""() => {
                           const a = document.querySelector(
                             '#main p a[href^="https://"]:not(.inline-link):not(.control)'
@@ -98,6 +97,25 @@ async def main():
                                 affordance.get("focusOutline") in ("none", "")):
                             failures.append({"page": filename, "viewport": width,
                                              "linkAffordance": affordance})
+                    if filename == "teaching-ap-chemistry.html":
+                        # This case now has research references but no in-prose
+                        # outbound link. Test that the cited sources remain visible.
+                        reference = await page.evaluate("""() => {
+                          const a = document.querySelector(
+                            '#main .teaching-source-list li a[href^="https://"]'
+                          );
+                          if (!a) return {error:"source link missing"};
+                          a.focus();
+                          const style = getComputedStyle(a);
+                          return {underline:style.textDecorationLine,
+                            focusOutline:style.outlineStyle};
+                        }""")
+                        result["referenceAffordance"] = reference
+                        if (reference.get("error") or
+                                "underline" not in reference.get("underline", "") or
+                                reference.get("focusOutline") in ("none", "")):
+                            failures.append({"page": filename, "viewport": width,
+                                             "referenceAffordance": reference})
                     if filename == "interests.html":
                         gallery = await page.evaluate("""() => {
                           const a = document.querySelector("#main .pungmul-gallery a");
