@@ -274,17 +274,35 @@
       snap(number(el,d,"y")+step*delta[1])));
     selectElement(el);
   }
+  function applyPreviewScreen(){
+    const doc=docOf();if(!doc?.body||doc!==docLoaded)return;
+    doc.body.setAttribute("data-studio-screen",device());
+    updateControls();requestUpdate();
+  }
   function onPreviewReady(){
     const doc=docOf();
     if(!doc?.querySelector("main"))return;
     overlay=null;drag=null;docLoaded=doc;frame=0;
     addOverlay(doc);
+    const viewStyle=doc.createElement("style");
+    viewStyle.id="studio-free-preview-style";
+    const rules=[];
+    for(const screen of ["desktop","tablet","phone"]){
+      const base='body[data-studio-screen="'+screen+'"] #main ';
+      rules.push(base+'.studio-free-element{transform:translate(var(--studio-free-'+screen+'-x,0px),var(--studio-free-'+screen+'-y,0px))!important}');
+      rules.push(base+'.studio-unrestricted-size{width:var(--studio-size-'+screen+'-width,auto)!important;max-width:none!important}');
+      rules.push(base+'.studio-unrestricted-size:is(img,svg,video,canvas,iframe){height:var(--studio-size-'+screen+'-height,auto)!important}');
+      rules.push(base+'.studio-unrestricted-size:not(img):not(svg):not(video):not(canvas):not(iframe){min-height:var(--studio-size-'+screen+'-height,0px)!important}');
+    }
+    viewStyle.textContent=rules.join("\n");
+    doc.head.appendChild(viewStyle);
+    doc.body.setAttribute("data-studio-screen",device());
     doc.addEventListener("scroll",requestUpdate,true);
     doc.defaultView?.addEventListener("resize",requestUpdate,{passive:true});
     updateControls();
   }
   function onSelection(){updateControls()}
   document.querySelectorAll("[data-device]").forEach(b=>
-    b.addEventListener("click",()=>window.setTimeout(updateControls,30)));
-  window.WebsiteStudioFree={onPreviewReady,onSelection,requestUpdate,releaseClips,cleanClips};
+    b.addEventListener("click",()=>window.setTimeout(applyPreviewScreen,0)));
+  window.WebsiteStudioFree={onPreviewReady,onSelection,requestUpdate,releaseClips,cleanClips,applyPreviewScreen};
 })();
