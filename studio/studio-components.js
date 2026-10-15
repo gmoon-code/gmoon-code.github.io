@@ -165,7 +165,7 @@
     const summary=docOf().createElement("summary");summary.textContent="New question";
     const paragraph=docOf().createElement("p");paragraph.textContent="Write your answer here.";
     details.append(summary,paragraph);
-    mutate(()=>ctx.item?.after(details)||ctx.root.appendChild(details));
+    mutate(()=>{if(ctx.item)ctx.item.after(details);else ctx.root.appendChild(details)});
     selectElement(summary,true);render();
   });
   $("studioRemoveFAQ").addEventListener("click",()=>{
