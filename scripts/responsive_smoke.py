@@ -1,0 +1,110 @@
+#!/usr/bin/env python3
+"""Responsive smoke test for the public GitHub Pages site.
+
+Runs a local HTTP server started by the CI workflow and verifies that the
+document viewport does not acquire horizontal scrolling. Deliberately
+scrollable data tables are allowed. The script never writes to page sources.
+"""
+import asyncio
+import json
+import pathlib
+import sys
+
+from playwright.async_api import async_playwright
+
+BASE = "http://127.0.0.1:8765"
+PAGES = (
+    "index.html", "research.html", "research-action.html",
+    "research-scoping.html", "teaching.html", "teaching-ap-biology.html",
+    "teaching-ap-chemistry.html", "teaching-ap-evolution.html",
+    "teaching-osmosis-practice.html", "projects.html", "story-method.html",
+    "research-methods-studio.html", "interests.html", "about.html",
+    "cv.html", "404.html",
+)
+WIDTHS = (375, 768, 1024, 1440)
+ARTIFACTS = pathlib.Path("visual-audit-output")
+ARTIFACTS.mkdir(exist_ok=True)
+
+MEASURE = """() => {
+  const root = document.documentElement;
+  const viewport = window.innerWidth;
+  const width = root.scrollWidth;
+  const main = document.querySelector("main");
+  const extra = [...document.querySelectorAll("main *")]
+    .filter(el => {
+      const style = getComputedStyle(el);
+      if (style.display === "none" || style.visibility === "hidden") return false;
+      const rect = el.getBoundingClientRect();
+      if (rect.width < 1 || rect.height < 1) return false;
+      if (rect.right <= viewport + 3 && rect.left >= -3) return false;
+      for (let ancestor = el.parentElement; ancestor && ancestor !== main; ancestor = ancestor.parentElement) {
+        const s = getComputedStyle(ancestor);
+        if (/(auto|scroll|hidden|clip)/.test(s.overflowX)) return false;
+      }
+      return true;
+    }).slice(0, 8).map(el => {
+      const r = el.getBoundingClientRect();
+      return {tag:el.tagName.toLowerCase(), cls:String(el.className).slice(0,90),
+        x:Math.round(r.x), right:Math.round(r.right)};
+    });
+  return {viewport,scrollWidth:width,overflow:Math.max(0,width-viewport),
+    pageTitle:document.title, mainPresent:!!main, culprits:extra};
+}"""
+
+async def main():
+    failures = []
+    results = []
+    async with async_playwright() as pw:
+        browser = await pw.chromium.launch(headless=True)
+        for width in WIDTHS:
+            context = await browser.new_context(
+                viewport={"width": width, "height": 900},
+                device_scale_factor=1,
+                reduced_motion="reduce",
+            )
+            page = await context.new_page()
+            for filename in PAGES:
+                try:
+                    response = await page.goto(
+                        f"{BASE}/{filename}", wait_until="domcontentloaded",
+                        timeout=20000,
+                    )
+                    await page.locator("main").wait_for(timeout=5000)
+                    await page.wait_for_timeout(160)
+                    result = await page.evaluate(MEASURE)
+                    result["page"] = filename
+                    result["httpStatus"] = response.status if response else None
+                    results.append(result)
+                    label = "OK" if result["overflow"] <= 3 else "OVERFLOW"
+                    print(f"{label} {filename} @{width}px: "
+                          f"document {result['scrollWidth']}px / viewport {width}px")
+                    if response is None or response.status != 200 or not result["mainPresent"]:
+                        failures.append(result)
+                    elif result["overflow"] > 3:
+                        failures.append(result)
+                    if filename in ("index.html", "research.html",
+                                    "teaching-ap-chemistry.html", "interests.html") and width in (375, 1440):
+                        await page.screenshot(
+                            path=str(ARTIFACTS / f"{filename.removesuffix('.html')}-{width}.png"),
+                            full_page=True,
+                        )
+                except Exception as exc:
+                    failure = {"page": filename, "viewport": width, "error": str(exc)}
+                    results.append(failure)
+                    failures.append(failure)
+                    print("ERROR", failure, flush=True)
+            await context.close()
+        await browser.close()
+    (ARTIFACTS / "results.json").write_text(
+        json.dumps({"results": results, "failures": failures}, indent=2), encoding="utf-8"
+    )
+    if failures:
+        print(f"\n{len(failures)} responsive rendering failure(s):")
+        for item in failures:
+            print(json.dumps(item, ensure_ascii=False))
+        return 1
+    print(f"\nAll {len(results)} browser / viewport checks passed.")
+    return 0
+
+if __name__ == "__main__":
+    sys.exit(asyncio.run(main()))
