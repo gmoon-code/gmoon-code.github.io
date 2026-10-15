@@ -177,7 +177,9 @@
     if(!node)return;
     palette.querySelectorAll("[data-layout-width]").forEach(button=>{
       button.disabled=!canWidth(node);
-      const value=node.style.getPropertyValue("width").trim();
+      const device=document.querySelector("[data-device].is-active")?.dataset.device||"desktop";
+      const value=node.style.getPropertyValue("--studio-size-"+device+"-width").trim()||
+        node.style.getPropertyValue("width").trim();
       button.setAttribute("aria-pressed",button.dataset.layoutWidth===(value||"auto")?"true":"false");
     });
     id("canvasGridTools").hidden=!parentIsGrid(node);
@@ -203,9 +205,11 @@
     if(button.hasAttribute("data-layout-width")){
       if(!canWidth(node))return;
       const value=button.dataset.layoutWidth;
-      saveProperties(node,value==="auto"?{"width":null,"max-width":null}:
-        {"width":value,"max-width":"100%","min-width":"0"});
-      toast(value==="auto"?"Automatic width restored.":"Width set to "+value+".");
+      const resize=window.WebsiteStudioResize;
+      if(!resize?.setDimension)return;
+      mutate(()=>resize.setDimension(node,"width",value==="auto"?null:value));
+      selectElement(node);
+      toast(value==="auto"?"Automatic width restored for this screen.":"Width set to "+value+" on this screen.");
     }
     if(button.hasAttribute("data-layout-align")){
       const alignment=button.dataset.layoutAlign;
