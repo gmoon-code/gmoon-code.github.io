@@ -53,7 +53,29 @@
   ].join("");
   $("inspectorContent")?.insertBefore(reset,$("inspectorContent").querySelector(".resize-controls"));
 
+  function releaseClips(el){
+    const root=main(),doc=docOf();
+    if(!root||!doc||!root.contains(el))return;
+    for(let ancestor=el.parentElement;ancestor&&ancestor!==root;ancestor=ancestor.parentElement){
+      const computed=doc.defaultView?.getComputedStyle(ancestor);
+      if(!computed)continue;
+      if(["hidden","clip"].includes(computed.overflowX)||
+        ["hidden","clip"].includes(computed.overflowY)){
+        ancestor.classList.add("studio-free-open");
+      }
+    }
+  }
+  function cleanClips(el){
+    const root=main();if(!root)return;
+    for(let ancestor=el.parentElement;ancestor&&ancestor!==root;ancestor=ancestor.parentElement){
+      if(ancestor.classList.contains("studio-free-open")&&
+        !ancestor.querySelector(".studio-free-element,.studio-unrestricted-size")){
+        ancestor.classList.remove("studio-free-open");
+      }
+    }
+  }
   function ensure(el){
+    releaseClips(el);
     el.classList.add("studio-free-element");
     el.setAttribute("data-studio-free","true");
     // Convert the old Position-tab offset the first time an element moves freely.
@@ -105,6 +127,7 @@
       el.classList.remove("studio-free-element");
       el.removeAttribute("data-studio-free");
       el.style.removeProperty("overflow");
+      cleanClips(el);
     }
     syncCurrent();selectElement(el);
     toast("Free position reset on "+d+".");
@@ -263,5 +286,5 @@
   function onSelection(){updateControls()}
   document.querySelectorAll("[data-device]").forEach(b=>
     b.addEventListener("click",()=>window.setTimeout(updateControls,30)));
-  window.WebsiteStudioFree={onPreviewReady,onSelection,requestUpdate};
+  window.WebsiteStudioFree={onPreviewReady,onSelection,requestUpdate,releaseClips,cleanClips};
 })();
