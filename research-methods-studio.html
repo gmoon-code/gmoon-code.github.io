@@ -22,7 +22,7 @@
 <section class="page-hero single">
   <div class="hero-copy">
     <h1>Research Methods Studio</h1>
-    <p>A research question can change as someone discovers what can actually be measured, observed, or supported by the available evidence. Research Methods Studio gives students room to revisit those decisions as their work develops. Its eighteen stages connect an initial interest with the question, evidence, design, analysis, and written account.</p>
+    <p>Research projects often change as students learn more about what their methods can establish. A question that initially seems workable may need revision once the available measurements, sources, or participants are considered. Research Methods Studio provides a place to revisit those decisions through eighteen connected stages, from exploring an interest and reviewing evidence to study design, analysis, and writing.</p>
     <div class="controls"><a class="control primary" href="https://gmoon-code.github.io/research-methods/">Open Research Methods Studio ↗</a></div>
   </div>
 </section>
@@ -61,7 +61,7 @@
 <section id="research-example" class="section rms-example-section">
   <div class="section-head"><h2>Experimental design example</h2></div>
   <div class="reading project-reading">
-    <p>The experimental-study guidance includes a question about assigned salinity concentrations and seedling growth. A learner could write a plausible question quickly, yet the study would still depend on decisions about treatment assignment, independent units, measurement, and the scope of the eventual conclusion.</p>
+    <p>The experimental-study guidance uses seedling growth under assigned salinity conditions to illustrate a decision that can affect the entire analysis. Although the research question is straightforward to state, interpreting the eventual results depends on how treatments are assigned, which units are independent, and what measurements can support the claim.</p>
   </div>
   <div class="project-decision-sequence">
     <div><span class="project-sequence-label">Question</span><p>How does assigned salinity concentration affect mean seedling growth under standardized laboratory conditions?</p></div>
@@ -72,7 +72,7 @@
   </div>
   <div class="rms-analysis-note">
     <h3>Treatment assignment and experimental units</h3>
-    <p>Suppose each salinity condition is delivered to one tray holding several seedlings. The treatment has been assigned to trays, so the plants sharing a tray do not provide independent replications of that treatment assignment. Treating every plant as independent would make the evidence seem more extensive than the design supports. The Methods Lab asks for the experimental unit and assignment structure so students can examine that issue before collecting data.</p>
+    <p>Suppose each salinity condition is assigned to one tray containing several seedlings. Because the treatment is applied at the tray level, plants sharing a tray cannot be treated as independent replications of that treatment. Counting each plant separately would overstate the available evidence. The Methods Lab prompts learners to identify the experimental unit and assignment procedure while the design can still be revised.</p>
   </div>
   <p class="project-status-note">This hypothetical seedling example illustrates the experimental-study guidance and Methods Lab checks available in the workspace.</p>
 </section>
@@ -80,8 +80,8 @@
 <section id="methods-design-review" class="section">
   <div class="section-head"><h2>Methods across research designs</h2></div>
   <div class="reading project-reading">
-    <p>The seedling example concerns a decision specific to experimental research, where treatment assignment determines the independent unit. Other designs bring different methodological questions. In an observational study, selection and measurement affect the claims that can be supported. An interview-based study requires careful decisions about recruitment, consent, and interpretation. A literature review depends on a traceable process for searching, selecting, and examining published work.</p>
-    <p>The workspace combines its staged pathway with specialised labs. The comparison below helps explain how the research decisions differ across approaches; it does not describe an automated validation of every choice.</p>
+    <p>The seedling example concerns treatment assignment in an experiment. Other research designs call for different decisions, so the workspace distinguishes among their methodological demands. An observational study requires attention to selection and measurement without researcher-assigned treatments, while interview-based inquiry calls for decisions about recruitment, consent, and interpretation. In a literature review, the reader needs to be able to trace how the publications were located, selected, and examined.</p>
+    <p>The staged pathway works alongside more specialized labs that address these different approaches. The comparison below shows the decisions each approach requires, while leaving responsibility for evaluating the choices with the researcher.</p>
   </div>
   <div class="teaching-sequence-table-wrap" role="region" tabindex="0" aria-label="Design decisions that differ across research approaches">
     <table class="teaching-sequence-table">
@@ -95,15 +95,15 @@
     </table>
   </div>
   <div class="reading project-reading">
-    <p>For an experiment, assignment defines the unit that can support a treatment comparison. In a review, the analogous obligation is a traceable inclusion decision. The workspace can prompt these questions, but a student still has to justify the methodological choice and check the evidence on which it rests.</p>
+    <p>In an experiment, the assignment procedure determines which units can support a treatment comparison. In a literature review, a comparable concern is whether inclusion decisions can be traced to the stated criteria and sources. The workspace prompts students to examine such decisions, but its guidance does not replace their responsibility to justify an approach and check the evidence.</p>
   </div>
 </section>
 <section id="methods-implementation" class="section">
   <div class="section-head"><h2>Guidance delivery and research records</h2></div>
   <div class="reading project-reading">
-    <p>The version 3 release separates instructional guidance from students’ active research notebooks. An authenticated Content Studio can publish a complete, validated set of guidance for all eighteen stages. The public loader accepts updates to six defined fields per stage, including the stage title, purpose, and guidance. It rejects incomplete or invalid releases, and the bundled curriculum remains available if the published content cannot be loaded promptly. Publishing guidance does not change the application version or replace a student’s locally stored research project.</p>
-    <p>The application also separates public guidance delivery from optional Research Chat. According to the release documentation, project context sent to Research Chat is minimized in the browser and checked again by the server, while the notebook itself normally remains in browser storage. Students can export a Word document or make a JSON backup. The current release does not enable research-study data collection or operational telemetry. These are documented implementation boundaries, not the results of an independent security or privacy audit.</p>
-    <p>The content-publication design includes revision history and rollback through a new published release. That offers a way to correct instructional guidance without silently rewriting the student application. A separate evaluation would still be needed to determine whether students understand the guidance, recognize methodological problems, or make better research decisions while using the tool.</p>
+    <p>Research Methods Studio separates published instructional guidance from the research notebooks students are working on. An authenticated Content Studio can publish a validated set of guidance for all eighteen stages. The public loader accepts updates to six defined fields per stage, including the title, purpose, and guidance, and rejects releases that are incomplete or invalid. If updated content cannot be loaded promptly, the bundled curriculum remains available. Publishing new guidance does not change the application version or overwrite a student's locally stored project.</p>
+    <p>Student records are handled separately from the delivery of public guidance. The working notebook normally remains in browser storage, while optional Research Chat can send a minimized selection of project context for a response. According to the release documentation, that context is reduced in the browser and checked again by the server. Students can also export a Word document or make a JSON backup. The current release does not collect research-study data or operational telemetry. These describe documented implementation boundaries and have not been independently audited for security or privacy.</p>
+    <p>Instructional guidance can be revised through publication history and a new release that restores earlier content. This provides a way to correct the guidance while keeping student notebooks separate. Whether students understand those changes or make more defensible methodological decisions while using the workspace remains a question for future evaluation.</p>
   </div>
   <p class="project-status-note">Architecture and release details are taken from the <a href="https://github.com/gmoon-code/research-methods/blob/main/README.md">application's repository documentation</a>. No private administration features, network responses, or user records were accessed in this review.</p>
 </section>
@@ -131,7 +131,7 @@
 <section class="section">
   <div class="section-head"><h2>Exports, backups, and privacy</h2></div>
   <div class="reading project-reading">
-    <p>The Word export is useful for reading or sharing a written account. A JSON backup serves a different purpose by preserving project information for recovery. Because the working notebook remains in browser storage, students should keep a backup outside the browser for work they need to retain. Research Chat is optional, and choosing to share project context crosses a separate network boundary. Neither export nor chat resolves the researcher's responsibility to verify evidence and explain methodological choices.</p>
+    <p>Students can export a Word document to read or share their written account, while a JSON backup preserves project information for recovery. Because the working notebook normally remains in browser storage, keeping an external backup is important for work they wish to retain. Research Chat is optional and involves sending selected project context across a network boundary. Whatever tools they use, students remain responsible for verifying evidence and explaining their methodological choices.</p>
   </div>
 </section>
 <p class="project-return"><a href="projects.html">← All projects</a></p>
