@@ -13,7 +13,7 @@
     earthy:{yellow:["#E8D9B4","#F9F5EA","#BEA977"],green:["#D1DEC5","#F5F8F0","#91AC87"],blue:["#C6D9DF","#F2F8F9","#92B3C0"],magenta:["#E5CCD7","#FAF4F7","#BC99AA"]},
     crisp:{yellow:["#F2E09A","#FCFAEE","#C3AC56"],green:["#C3DFAE","#F4F9F0","#89B17A"],blue:["#BDD8F0","#F3F7FC","#7EA6CE"],magenta:["#E6C2E0","#FCF4FA","#B687B1"]}
   };
-  const SETTINGS_DEFAULT={palette:"soft",font:"times",headingFont:"same",width:1120,corners:4,bodySize:16,headingScale:100,lineHeight:1.55,pageBackground:"#ffffff"};
+  const SETTINGS_DEFAULT={palette:"soft",font:"times",headingFont:"same",width:1120,readingWidth:1040,corners:4,bodySize:16,headingScale:100,lineHeight:1.55,pageBackground:"#ffffff"};
   const FACE={
     times:'"Times New Roman",Times,serif',
     georgia:'Georgia,"Times New Roman",serif',
@@ -46,6 +46,7 @@
     {id:"columns",category:"blocks",title:"Two columns",desc:"Place related information side by side.",bars:2},
     {id:"gallery",category:"blocks",title:"Small gallery",desc:"A row of photographs with captions.",bars:3},
     {id:"list",category:"blocks",title:"List",desc:"Several related points.",bars:3},
+    {id:"table",category:"blocks",title:"Editable table",desc:"A table whose individual cells and rows can be edited.",bars:3},
     {id:"callout",category:"blocks",title:"Highlighted note",desc:"A gentle note that is easy to find.",bars:1},
     {id:"button",category:"blocks",title:"Link / button",desc:"Lead visitors to a page or resource.",bars:1},
     {id:"divider",category:"blocks",title:"Divider",desc:"Separate neighboring ideas.",bars:1},
@@ -66,6 +67,7 @@
     columns:'<div class="studio-columns" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;--studio-cols:2"><div class="paper-card"><h3>First column</h3><p>Write here.</p></div><div class="paper-card"><h3>Second column</h3><p>Write here too.</p></div></div>',
     gallery:'<div class="studio-gallery"><figure class="studio-empty-photo"><div class="studio-photo-target">Choose a photo</div><figcaption>Caption</figcaption></figure><figure class="studio-empty-photo"><div class="studio-photo-target">Choose a photo</div><figcaption>Caption</figcaption></figure></div>',
     list:'<ul class="studio-reading-list"><li>First point</li><li>Another point</li><li>A final point</li></ul>',
+    table:'<div class="studio-table-wrap" role="region" aria-label="Editable data table" tabindex="0"><table class="studio-editable-table"><thead><tr><th scope="col">First heading</th><th scope="col">Second heading</th><th scope="col">Third heading</th></tr></thead><tbody><tr><td>First value</td><td>Second value</td><td>Third value</td></tr><tr><td>Another value</td><td>Another value</td><td>Another value</td></tr></tbody></table></div>',
     callout:'<aside class="callout"><p>A brief note that deserves a little extra attention.</p></aside>',
     button:'<a class="control" href="index.html">Open another page</a>',
     divider:'<hr class="studio-rule">',
@@ -526,6 +528,7 @@
     const family=FACE[p.font]||FACE.times;
     const headingFamily=p.headingFont==="same"?family:(FACE[p.headingFont]||family);
     const width=[980,1120,1280].includes(Number(p.width))?Number(p.width):1120;
+    const readingWidth=[840,920,1040,1200].includes(Number(p.readingWidth))?Number(p.readingWidth):1040;
     const radius=[2,4,10].includes(Number(p.corners))?Number(p.corners):4;
     const baseSize=Math.max(12,Math.min(26,Number(p.bodySize)||16));
     const headingScale=Math.max(.75,Math.min(1.5,(Number(p.headingScale)||100)/100));
@@ -540,7 +543,7 @@
     }
     const px=x=>(x*headingScale).toFixed(2).replace(/\.00$/,"");
     return "/* Site-wide choices managed by Website Studio. */\n:root{"+vars+
-      "\n  --page-max:"+width+"px;\n  --radius:"+radius+"px;\n}\n"+
+      "\n  --page-max:"+width+"px;\n  --editorial-measure:"+readingWidth+"px;\n  --radius:"+radius+"px;\n}\n"+
       "html,body{background-color:"+background+"}\n"+
       "body,button,input,textarea,select{font-family:"+family+"}\n"+
       "body{font-size:"+baseSize+"px;line-height:"+lineHeight+"}\n"+
@@ -560,6 +563,7 @@
     $("sitePalette").value=prefs.palette;
     $("siteFont").value=prefs.font;
     $("siteWidth").value=String(prefs.width);
+    $("siteReadingWidth").value=String(prefs.readingWidth||1040);
     $("siteCorners").value=String(prefs.corners);
     $("siteHeadingFont").value=prefs.headingFont||"same";
     $("siteBodySize").value=String(prefs.bodySize||16);
@@ -574,6 +578,7 @@
       palette:$("sitePalette").value,
       font:$("siteFont").value,
       width:Number($("siteWidth").value),
+      readingWidth:Number($("siteReadingWidth").value),
       corners:Number($("siteCorners").value),
       headingFont:$("siteHeadingFont").value,
       bodySize:Number($("siteBodySize").value),
@@ -584,7 +589,7 @@
     };
     if(!COLORS[next.palette]||!FACE[next.font]||
       (next.headingFont!=="same"&&!FACE[next.headingFont])||
-      ![980,1120,1280].includes(next.width)||![2,4,10].includes(next.corners)||
+      ![980,1120,1280].includes(next.width)||![840,920,1040,1200].includes(next.readingWidth)||![2,4,10].includes(next.corners)||
       next.bodySize<12||next.bodySize>26||next.headingScale<75||next.headingScale>150||
       next.lineHeight<1||next.lineHeight>2.5)return;
     prefs=next;
@@ -791,7 +796,7 @@
     $("sitePalette").addEventListener("change",()=>fillSiteColors($("sitePalette").value));
     $("resetSiteLookBtn").addEventListener("click",()=>{
       $("sitePalette").value=SETTINGS_DEFAULT.palette;$("siteFont").value=SETTINGS_DEFAULT.font;
-      $("siteWidth").value=String(SETTINGS_DEFAULT.width);$("siteCorners").value=String(SETTINGS_DEFAULT.corners);
+      $("siteWidth").value=String(SETTINGS_DEFAULT.width);$("siteReadingWidth").value=String(SETTINGS_DEFAULT.readingWidth);$("siteCorners").value=String(SETTINGS_DEFAULT.corners);
       $("siteHeadingFont").value=SETTINGS_DEFAULT.headingFont;
       $("siteBodySize").value=String(SETTINGS_DEFAULT.bodySize);
       $("siteHeadingScale").value=String(SETTINGS_DEFAULT.headingScale);
