@@ -26,6 +26,10 @@ Every substantial page should provide at least one genuine object of inquiry, su
 
 Preserve the author's gentle, reflective, direct prose. Avoid inflated claims, defensive sentences, artificial virtue statements, rhetorical filler, long comma chains, em dashes, and contrast formulations such as “not X but Y.” Cite peer-reviewed scholarship where it materially informs a conceptual distinction or documented instructional/design decision. Do not retrospectively claim a paper caused a decision unless the underlying design history supports it. Never invent student voices, evidence, measured effects, or collaborator experiences.
 
+## Sentence and paragraph cohesion
+
+Each sentence should explain, develop, qualify, or extend a claim the reader can follow. When an abstract research interest is followed by a classroom example, identify the observation, decision, or scientific relationship that connects them. Assess the explanation that follows against what the example can actually establish. Repair the progression of ideas by changing the sentence structure or order when necessary, without relying on formulaic transition words. Preserve passages whose development and rhythm are already clear.
+
 ## Page roles
 
 | Page | Distinct responsibility |
