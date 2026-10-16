@@ -210,6 +210,58 @@ async def main():
                             failures.append({"page": filename, "viewport": width,
                                              "structure": structure,
                                              "expectedCurrent": expected_current})
+                    if width == 1440:
+                        # Sample computed foreground/background colours. These
+                        # are diagnostics, not an automated WCAG conformance claim.
+                        # Transparent layers and imagery need human review.
+                        contrast = await page.evaluate("""() => {
+                          function rgb(s) {
+                            const m=s.match(/^rgba?\\(([^)]+)\\)$/);
+                            if(!m)return null;
+                            const n=m[1].split(',').map(Number);
+                            return n.length===4 ? n : [...n,1];
+                          }
+                          function lum(n) {
+                            const a=n.slice(0,3).map(x=>{
+                              const v=x/255;
+                              return v<=0.04045?v/12.92:((v+0.055)/1.055)**2.4;
+                            });
+                            return a[0]*0.2126+a[1]*0.7152+a[2]*0.0722;
+                          }
+                          function opaqueBG(el) {
+                            for(let e=el;e;e=e.parentElement) {
+                              const bg=rgb(getComputedStyle(e).backgroundColor);
+                              if(bg&&bg[3]>=.999)return bg;
+                            }
+                            return [255,255,255,1];
+                          }
+                          const selectors='main p, main li, main a, main h1, main h2, main h3, main h4, .site-nav a, .site-footer a';
+                          const seen=new Set(),low=[];
+                          for(const el of document.querySelectorAll(selectors)) {
+                            if(!el.textContent.trim())continue;
+                            const st=getComputedStyle(el),rect=el.getBoundingClientRect();
+                            if(st.display==='none'||st.visibility==='hidden'||
+                                rect.width===0||rect.height===0)continue;
+                            const fg=rgb(st.color),bg=opaqueBG(el);
+                            if(!fg||fg[3]<.999)continue;
+                            const l1=lum(fg),l2=lum(bg);
+                            const ratio=(Math.max(l1,l2)+.05)/(Math.min(l1,l2)+.05);
+                            const size=parseFloat(st.fontSize),weight=parseInt(st.fontWeight)||400;
+                            const large=size>=24||(size>=18.66&&weight>=700);
+                            const min=large?3:4.5;
+                            if(ratio+0.001>=min)continue;
+                            const label=el.textContent.trim().replace(/\\s+/g,' ').slice(0,68);
+                            const key=[st.color,st.backgroundColor,bg.join(','),st.fontSize,st.fontWeight,el.tagName].join('|');
+                            if(seen.has(key))continue;seen.add(key);
+                            low.push({tag:el.tagName,cls:String(el.className).slice(0,55),
+                              label,ratio:+ratio.toFixed(2),min,
+                              foreground:st.color,background:bg.join(','),fontSize:st.fontSize});
+                          }
+                          return low.slice(0,30);
+                        }""")
+                        result["contrastDiagnostics"] = contrast
+                        if contrast:
+                            print("CONTRAST REVIEW", filename, json.dumps(contrast[:8]))
                     # Sample computed styles from actual page links. An inline
                     # source must look clickable before hover, including on phones.
                     if filename in ("interests.html", "research-scoping.html",
