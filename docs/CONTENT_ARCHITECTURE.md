@@ -58,6 +58,15 @@ Research overview expanded and grounded in verified peer-reviewed sources. Resea
 - The site has repeatable axe-core accessibility scanning at desktop width and selected narrow-screen layouts, plus sequential keyboard tab-order and skip-link tests. The latest accessibility workflow succeeded on 16 October 2026.
 - Outbound hyperlinks and remotely hosted images have a diagnostic audit that distinguishes reachable links, confirmed 404/410 responses, and destinations that cannot be verified because of access restrictions or network behaviour. A successful workflow run does not by itself establish that every external destination was reachable.
 
+## Source-level accessibility follow-up, 16 October 2026
+
+- Reviewed 16 public HTML pages for duplicated element IDs, unresolved same-page fragment targets, and skipped heading levels. No instances were detected by these static checks.
+- Inspected all image elements in these pages. Each has an alt attribute; the contextual suitability of the wording remains a human review question.
+- Inspected the two optional embedded application previews and their shared JavaScript. Both create titled iframes on request, expose labelled screen-size controls with updated pressed states, shift focus to the close control after opening, and restore focus to the opening control after closing. A full-size application link remains available.
+- Confirmed that the stylesheet explicitly hides preview states marked with the hidden attribute, and includes visible focus treatments and reduced-motion rules.
+- These checks do not represent interactive browser or screen-reader certification. Still outstanding are keyboard navigation inside the embedded applications, screen-reader announcements and landmark reading order in actual assistive technology, image alternatives in context, and resource fallback behaviour under blocked network conditions.
+- No production page edits were justified by the source checks alone. Preserve working interfaces and avoid adding ARIA attributes or explanatory copy without a demonstrated user benefit.
+
 ## Remaining work and editorial decisions
 
 1. **Pending manuscript update.** The author will provide a revised AP Biology action research paper later. Until then, keep the public study account accurate, preserve participant protections and manuscript-review anonymity, and do not post the unpublished paper or identifiable student records.
