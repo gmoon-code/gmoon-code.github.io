@@ -67,6 +67,15 @@ Research overview expanded and grounded in verified peer-reviewed sources. Resea
 - These checks do not represent interactive browser or screen-reader certification. Still outstanding are keyboard navigation inside the embedded applications, screen-reader announcements and landmark reading order in actual assistive technology, image alternatives in context, and resource fallback behaviour under blocked network conditions.
 - No production page edits were justified by the source checks alone. Preserve working interfaces and avoid adding ARIA attributes or explanatory copy without a demonstrated user benefit.
 
+## Publication-readiness source audit, 16 October 2026
+
+- Inspected the current 16 public HTML documents, including Home, Research, both research studies, Teaching, three advanced teaching cases, Projects, both project detail pages, Interests, About, CV, the independent classification essay, and the supplementary osmosis activity.
+- Checked local HTML link destinations against the site's page set. No unresolved local HTML destinations were identified by this static comparison. This does not establish remote-link reachability.
+- Checked all inspected pages for a single main landmark and h1, nonempty text or accessible labels for anchors, and image alt attributes. No missing instances were detected.
+- Scanned published page content for the author's explicitly prohibited wording patterns, including “not only”, “rather than”, “instead of”, “young people”, “research shows”, and “found that”. No matches were detected in the inspected source.
+- Compared the public descriptions of the scoping review, AP Biology action research, advanced teaching cases, and CV. Reported counts remained consistent at 20 scoping-review studies, 28 AP Biology students, three unit assessments, and ten paired reconstruction records. The curriculum sequences were described as proposed and unevaluated, while the manuscripts were labelled in preparation.
+- No unsupported public-facing revision was made from these source checks. Remaining human verification includes screen-reader use, interaction inside embedded applications, contextual appropriateness of image alternatives, and independent checks of remote-resource availability. Repeat factual cross-checks when an updated action research manuscript is supplied.
+
 ## Remaining work and editorial decisions
 
 1. **Pending manuscript update.** The author will provide a revised AP Biology action research paper later. Until then, keep the public study account accurate, preserve participant protections and manuscript-review anonymity, and do not post the unpublished paper or identifiable student records.
