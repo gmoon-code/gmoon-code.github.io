@@ -21,7 +21,26 @@ PAGES = (
     "research-methods-studio.html", "interests.html", "about.html",
     "cv.html", "writing-biological-classification.html", "404.html",
 )
-WIDTHS = (375, 768, 1024, 1440)
+WIDTHS = (320, 375, 768, 1024, 1440)
+EXPECTED_SECTION = {
+    "index.html": "Home",
+    "research.html": "Research",
+    "research-action.html": "Research",
+    "research-scoping.html": "Research",
+    "writing-biological-classification.html": "Research",
+    "projects.html": "Projects",
+    "story-method.html": "Projects",
+    "research-methods-studio.html": "Projects",
+    "teaching.html": "Teaching",
+    "teaching-ap-biology.html": "Teaching",
+    "teaching-ap-chemistry.html": "Teaching",
+    "teaching-ap-evolution.html": "Teaching",
+    "teaching-osmosis-practice.html": "Teaching",
+    "interests.html": "Interests",
+    "about.html": "About",
+    "cv.html": "CV",
+    "404.html": None,
+}
 ARTIFACTS = pathlib.Path("visual-audit-output")
 ARTIFACTS.mkdir(exist_ok=True)
 
@@ -74,7 +93,7 @@ async def main():
                     result = await page.evaluate(MEASURE)
                     # A keyboard skip link should move focus to the main
                     # landmark, allowing navigation to continue after the header.
-                    if width in (375, 1440):
+                    if width in (320, 375, 1440):
                         skip = page.locator("a.skip-link")
                         await skip.focus()
                         await page.keyboard.press("Enter")
@@ -104,6 +123,48 @@ async def main():
                             if "noindex" not in robots:
                                 failures.append({"page": filename, "viewport": width,
                                                  "missingNoindex": robots})
+                    if width == 1440:
+                        # Structural and accessibility checks run against the
+                        # browser-rendered DOM on every page.
+                        structure = await page.evaluate("""() => {
+                          const current = [...document.querySelectorAll(
+                            '.site-nav a[aria-current="page"]'
+                          )].map(a => a.textContent.trim());
+                          const unnamedTables = [...document.querySelectorAll(
+                            'main table'
+                          )].filter(t => !t.getAttribute('aria-label') &&
+                            !t.getAttribute('aria-labelledby') &&
+                            !t.querySelector('caption')).length;
+                          const unlabelledRegions = [...document.querySelectorAll(
+                            'main [role="region"]'
+                          )].filter(el => !el.getAttribute('aria-label') &&
+                            !el.getAttribute('aria-labelledby')).length;
+                          const unresolvedFragments = [...document.querySelectorAll(
+                            'a[href^="#"]'
+                          )].filter(a => {
+                            const hash = a.getAttribute('href');
+                            return hash && hash.length > 1 &&
+                              !document.getElementById(decodeURIComponent(hash.slice(1)));
+                          }).map(a => a.getAttribute('href'));
+                          return {current, mainHeadingCount:document.querySelectorAll(
+                              'main h1').length,
+                            imagesWithoutAlt:document.querySelectorAll(
+                              'img:not([alt])').length,
+                            unnamedTables, unlabelledRegions, unresolvedFragments};
+                        }""")
+                        result["structure"] = structure
+                        expected_section = EXPECTED_SECTION[filename]
+                        expected_current = ([expected_section]
+                                            if expected_section else [])
+                        if (structure["current"] != expected_current or
+                                structure["mainHeadingCount"] != 1 or
+                                structure["imagesWithoutAlt"] != 0 or
+                                structure["unnamedTables"] != 0 or
+                                structure["unlabelledRegions"] != 0 or
+                                structure["unresolvedFragments"]):
+                            failures.append({"page": filename, "viewport": width,
+                                             "structure": structure,
+                                             "expectedCurrent": expected_current})
                     # Sample computed styles from actual page links. An inline
                     # source must look clickable before hover, including on phones.
                     if filename in ("interests.html", "research-scoping.html",
@@ -243,7 +304,7 @@ async def main():
                         failures.append(result)
                     if filename in ("index.html", "research.html",
                                     "writing-biological-classification.html",
-                                    "teaching-ap-chemistry.html", "interests.html") and width in (375, 1440):
+                                    "teaching-ap-chemistry.html", "interests.html") and width in (320, 375, 1440):
                         await page.screenshot(
                             path=str(ARTIFACTS / f"{filename.removesuffix('.html')}-{width}.png"),
                             full_page=True,
