@@ -22,6 +22,16 @@ PAGES = (
     "cv.html", "writing-biological-classification.html", "404.html",
 )
 WIDTHS = (320, 375, 768, 1024, 1440)
+CORE_SCREENSHOT_PAGES = (
+    "index.html", "research.html", "writing-biological-classification.html",
+    "teaching-ap-chemistry.html", "interests.html",
+)
+EXTENDED_SCREENSHOT_PAGES = (
+    "about.html", "cv.html", "projects.html", "teaching.html",
+    "research-action.html", "research-scoping.html",
+    "teaching-ap-biology.html", "teaching-ap-evolution.html",
+    "story-method.html", "research-methods-studio.html",
+)
 EXPECTED_SECTION = {
     "index.html": "Home",
     "research.html": "Research",
@@ -302,9 +312,8 @@ async def main():
                         failures.append(result)
                     elif result["overflow"] > 3:
                         failures.append(result)
-                    if filename in ("index.html", "research.html",
-                                    "writing-biological-classification.html",
-                                    "teaching-ap-chemistry.html", "interests.html") and width in (320, 375, 1440):
+                    if ((filename in CORE_SCREENSHOT_PAGES and width in (320, 375, 1440)) or
+                            (filename in EXTENDED_SCREENSHOT_PAGES and width in (320, 1440))):
                         # Screenshots capture the full page, including sections
                         # normally reached by scrolling. Load and decode local
                         # photographs before capture so lazy-loading does not
