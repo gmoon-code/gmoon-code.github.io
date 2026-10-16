@@ -93,7 +93,7 @@ async def main():
     print(f"Scanned {len(reports)} page/viewport combinations. "
           f"Automated violation nodes by rule: {json.dumps(counts)}")
     print("Review incomplete rules and perform manual keyboard/screen-reader checks.")
-    return 1 if any("error" in r for r in reports) else 0
+    return 1 if any("error" in r or r.get("violations") for r in reports) else 0
 
 
 if __name__ == "__main__":

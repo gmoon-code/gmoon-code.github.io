@@ -1,0 +1,33 @@
+name: External resource audit
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "*.html"
+      - "scripts/external_resource_audit.py"
+      - ".github/workflows/external-resource-audit.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  external-links:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Check off-site links and images
+        run: python scripts/external_resource_audit.py
+      - name: Save resource audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: external-resource-results
+          path: external-link-audit-output/
+          retention-days: 14
