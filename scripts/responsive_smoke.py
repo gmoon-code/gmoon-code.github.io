@@ -319,22 +319,20 @@ async def main():
                         # photographs before capture so lazy-loading does not
                         # create misleading blank rectangles.
                         screenshot_images = await page.evaluate("""async () => {
-                          const images = [...document.querySelectorAll(
-                            'main img[src^="assets/"]'
-                          )];
+                          const images = [...document.querySelectorAll('main img')];
                           return Promise.all(images.map(async img => {
                             img.loading = 'eager';
-                            try {
-                              await img.decode();
-                              return {src:img.getAttribute('src'),
-                                loaded:img.naturalWidth > 0};
-                            } catch (e) {
-                              return {src:img.getAttribute('src'), loaded:false};
-                            }
+                            const loaded = await Promise.race([
+                              img.decode().then(() => img.naturalWidth > 0)
+                                .catch(() => false),
+                              new Promise(resolve => setTimeout(() => resolve(false), 4500))
+                            ]);
+                            return {src:img.getAttribute('src'), loaded,
+                              local:img.getAttribute('src')?.startsWith('assets/')};
                           }));
                         }""")
                         result["screenshotImages"] = screenshot_images
-                        if any(not img["loaded"] for img in screenshot_images):
+                        if any(img["local"] and not img["loaded"] for img in screenshot_images):
                             failures.append({"page": filename, "viewport": width,
                                              "screenshotImages": screenshot_images})
                         await page.screenshot(
