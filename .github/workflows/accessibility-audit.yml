@@ -1,0 +1,42 @@
+name: Accessibility audit
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "*.html"
+      - "styles-20261013.css"
+      - "site-theme.css"
+      - "scripts/accessibility_audit.py"
+      - ".github/workflows/accessibility-audit.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  axe-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install axe-core and browser
+        run: |
+          npm install --no-save --ignore-scripts --no-audit --no-fund axe-core@4.14.0
+          python -m pip install playwright==1.57.0
+          python -m playwright install --with-deps chromium
+      - name: Audit rendered pages
+        run: |
+          python -m http.server 8765 --bind 127.0.0.1 >/tmp/accessibility-http.log 2>&1 &
+          python scripts/accessibility_audit.py
+      - name: Upload accessibility report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: accessibility-audit-results
+          path: accessibility-audit-output/
+          retention-days: 14
