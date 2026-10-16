@@ -1,6 +1,6 @@
 # Website editorial architecture
 
-Updated 14 October 2026.
+Updated 16 October 2026.
 
 ## Central intellectual orientation
 
@@ -49,12 +49,22 @@ Each sentence should explain, develop, qualify, or extend a claim the reader can
 
 Research overview expanded and grounded in verified peer-reviewed sources. Research study pages remain separate, with actual empirical findings. Research overview includes a clearly labeled hypothetical biology discussion only to illustrate a potential question; it is not presented as classroom data. Current manuscript activity is distinguished from hoped-for future methods.
 
-## Next work, prioritized
+## Completed through 16 October 2026
 
-1. Replace the default Grade 6 teaching centerpiece with documented AP Biology and AP Chemistry case studies. Select authentic course materials, sequence across lessons, timings, prerequisite reasoning, assessment items, samples of feedback, rubric criteria, student work only with consent, and actual changes. Where artifacts are absent, do not fabricate them. The existing osmosis page can remain as a supplementary general biology resource.
-2. Expand The Story Method into an evidence-linked design account. Examine narrative design, memory retrieval, scientific-mechanism representation, potential extraneous cognitive load, transfer tasks, specific scene revisions, how design alternatives were selected, and accessible learning interactions. Sources must be tied to actual design choices or explicitly discussed as subsequent lenses for evaluating the system.
-3. Expand Research Methods Studio into a genuine design case study. Explain the research pathway and why certain branches differ for experimental, observational, qualitative and review approaches; identify the checks for experimental unit, sampling and evidence standards, design tensions, learner autonomy, privacy, and limitations of automated feedback.
-4. Independently verify page rendering in desktop/tablet/mobile, keyboard navigation, image sizing, interactive project previews, text line lengths and spacing. Automated link/HTML/CSS checks do not substitute for this.
+- The former Grade 6 teaching centerpiece has been replaced by advanced AP Biology and AP Chemistry teaching cases. The haemoglobin S/malaria curriculum proposal, assessment-based photosynthetic electron transport account, and prospective equilibrium sequence are distinct and labelled according to their evidence.
+- The Story Method and Research Methods Studio now have detailed design pages tied to released application material or explicitly labelled synthetic examples. Claims of classroom effectiveness remain unmade.
+- An original independent essay, `writing-biological-classification.html`, has been published as website scholarship, separately from empirical manuscript records. It is linked from Research and the CV.
+- All 17 top-level HTML pages were included in automated desktop/mobile responsiveness and rendered-structure checks; the most recent responsive workflow and Pages deployment succeeded on 16 October 2026.
+- The site has repeatable axe-core accessibility scanning at desktop width and selected narrow-screen layouts, plus sequential keyboard tab-order and skip-link tests. The latest accessibility workflow succeeded on 16 October 2026.
+- Outbound hyperlinks and remotely hosted images have a diagnostic audit that distinguishes reachable links, confirmed 404/410 responses, and destinations that cannot be verified because of access restrictions or network behaviour. A successful workflow run does not by itself establish that every external destination was reachable.
+
+## Remaining work and editorial decisions
+
+1. **Pending manuscript update.** The author will provide a revised AP Biology action research paper later. Until then, keep the public study account accurate, preserve participant protections and manuscript-review anonymity, and do not post the unpublished paper or identifiable student records.
+2. **Optional authentic teaching evidence.** The prospective chemistry and haemoglobin cases can be strengthened with actual teaching materials and documented feedback if such material becomes available and can be shared ethically. Do not invent observation, implementation, impact, student quotations, or teaching changes.
+3. **Manual accessibility review.** Automated passing results do not establish complete WCAG conformance. Human checks of screen-reader announcements, page landmarks and reading order, image alternatives in context, and external-resource fallbacks remain valuable. Treat inaccessible external resources and anti-bot errors as matters for verification, not automatic proof of missing content.
+4. **Scholarly writing designation.** The existing classification essay is clearly designated as an independent website essay. Whether to select a formal academic writing sample for an application is a separate decision. Do not imply that a website essay is peer-reviewed or that manuscripts in preparation are published.
+5. **Editorial restraint.** Preserve already coherent prose, its connection to the author's research orientation, and the careful distinctions between empirical records, interpretive analysis, hypothetical examples and future interests. Address only evidenced problems, including awkward transitions that interrupt reasoning, citations that do not support a claim, or unbalanced/irrelevant links.
 
 ## Research page source set (DOIs verified against publisher records)
 
