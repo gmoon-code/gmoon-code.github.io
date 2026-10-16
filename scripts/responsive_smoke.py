@@ -19,7 +19,7 @@ PAGES = (
     "teaching-ap-chemistry.html", "teaching-ap-evolution.html",
     "teaching-osmosis-practice.html", "projects.html", "story-method.html",
     "research-methods-studio.html", "interests.html", "about.html",
-    "cv.html", "404.html",
+    "cv.html", "writing-biological-classification.html", "404.html",
 )
 WIDTHS = (375, 768, 1024, 1440)
 ARTIFACTS = pathlib.Path("visual-audit-output")
@@ -242,6 +242,7 @@ async def main():
                     elif result["overflow"] > 3:
                         failures.append(result)
                     if filename in ("index.html", "research.html",
+                                    "writing-biological-classification.html",
                                     "teaching-ap-chemistry.html", "interests.html") and width in (375, 1440):
                         await page.screenshot(
                             path=str(ARTIFACTS / f"{filename.removesuffix('.html')}-{width}.png"),
