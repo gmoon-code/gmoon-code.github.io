@@ -101,6 +101,41 @@ async def main():
                     await page.locator("main").wait_for(timeout=5000)
                     await page.wait_for_timeout(160)
                     result = await page.evaluate(MEASURE)
+                    # Exercise the actual sequential keyboard route through
+                    # the skip link, identity link and all seven navigation links.
+                    # This catches broken keyboard order that structural rules
+                    # and programmatic focus alone would miss.
+                    if width in (320, 1440):
+                        expected_tabs = [
+                            "#main", "index.html", "index.html",
+                            "research.html", "projects.html", "teaching.html",
+                            "interests.html", "about.html", "cv.html",
+                        ]
+                        tab_states = []
+                        for expected_href in expected_tabs:
+                            await page.keyboard.press("Tab")
+                            state = await page.evaluate("""() => {
+                              const element = document.activeElement;
+                              const r = element.getBoundingClientRect();
+                              const style = getComputedStyle(element);
+                              return {
+                                href:element.getAttribute('href'),
+                                tag:element.tagName,
+                                outline:style.outlineStyle,
+                                visible:r.width > 0 && r.height > 0 &&
+                                  r.right > 0 && r.left < innerWidth &&
+                                  r.bottom > 0 && r.top < innerHeight
+                              };
+                            }""")
+                            tab_states.append(state)
+                            if (state["href"] != expected_href or
+                                    state["outline"] in ("none", "") or
+                                    not state["visible"]):
+                                failures.append({
+                                    "page": filename, "viewport": width,
+                                    "expectedTab": expected_href, "focused": state,
+                                })
+                        result["keyboardNavigation"] = tab_states
                     # A keyboard skip link should move focus to the main
                     # landmark, allowing navigation to continue after the header.
                     if width in (320, 375, 1440):
