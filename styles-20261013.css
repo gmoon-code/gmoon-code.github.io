@@ -891,7 +891,7 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
   .site-footer{margin-top:46px}
 }
 @media(max-width:370px){
-  .site-nav{grid-template-columns:repeat(3,minmax(0,1fr));row-gap:6px}
+  .site-nav{grid-template-columns:repeat(4,minmax(0,1fr));row-gap:6px}
   .project-preview-toolbar{align-items:flex-start;flex-direction:column}
   .project-preview-stage iframe{height:345px}
 }

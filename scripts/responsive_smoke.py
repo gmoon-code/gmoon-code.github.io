@@ -305,6 +305,29 @@ async def main():
                     if filename in ("index.html", "research.html",
                                     "writing-biological-classification.html",
                                     "teaching-ap-chemistry.html", "interests.html") and width in (320, 375, 1440):
+                        # Screenshots capture the full page, including sections
+                        # normally reached by scrolling. Load and decode local
+                        # photographs before capture so lazy-loading does not
+                        # create misleading blank rectangles.
+                        screenshot_images = await page.evaluate("""async () => {
+                          const images = [...document.querySelectorAll(
+                            'main img[src^="assets/"]'
+                          )];
+                          return Promise.all(images.map(async img => {
+                            img.loading = 'eager';
+                            try {
+                              await img.decode();
+                              return {src:img.getAttribute('src'),
+                                loaded:img.naturalWidth > 0};
+                            } catch (e) {
+                              return {src:img.getAttribute('src'), loaded:false};
+                            }
+                          }));
+                        }""")
+                        result["screenshotImages"] = screenshot_images
+                        if any(not img["loaded"] for img in screenshot_images):
+                            failures.append({"page": filename, "viewport": width,
+                                             "screenshotImages": screenshot_images})
                         await page.screenshot(
                             path=str(ARTIFACTS / f"{filename.removesuffix('.html')}-{width}.png"),
                             full_page=True,
