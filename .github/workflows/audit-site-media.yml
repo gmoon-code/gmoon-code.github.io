@@ -7,6 +7,7 @@ on:
       - scripts/audit-site-media.mjs
       - writing-biological-classification.html
       - research.html
+      - interests.html
       - styles-20261013.css
   workflow_dispatch:
 
