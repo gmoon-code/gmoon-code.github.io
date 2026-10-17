@@ -1,0 +1,42 @@
+name: Audit project visuals across viewport sizes
+
+on:
+  push:
+    paths:
+      - .github/workflows/audit-project-layout.yml
+      - scripts/audit-project-layout.mjs
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: project-page-visual-audit
+  cancel-in-progress: false
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install browser and image tools
+        run: |
+          npm install --no-save --no-package-lock playwright@1.56.1 sharp@0.34.4
+          npx playwright install --with-deps chromium
+      - name: Test deployed project pages and capture images
+        run: node scripts/audit-project-layout.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: project-page-visual-audit
+          path: docs/visual-audit/
+          if-no-files-found: error
+      - name: Publish visual QA record for review
+        run: |
+          git add docs/visual-audit/
+          if git diff --cached --quiet; then exit 0; fi
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m "Record rendered project-page visual audit"
+          git push origin HEAD:main
