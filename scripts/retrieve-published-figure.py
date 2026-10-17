@@ -5,13 +5,13 @@ import json
 import pathlib
 import urllib.request
 import fitz
+from PIL import Image
 
 OUT = pathlib.Path("docs/visual-audit")
 OUT.mkdir(parents=True, exist_ok=True)
 status = {"status": "started", "sources_tried": []}
 
 sources = [
-    ("publisher-pdf", "https://journals.sagepub.com/doi/pdf/10.3102/0013189X231206172?download=true"),
     ("nsf-public-manuscript", "https://par.nsf.gov/servlets/purl/10480924"),
 ]
 try:
@@ -36,9 +36,24 @@ try:
             pix = page.get_pixmap(matrix=fitz.Matrix(1.65, 1.65), alpha=False)
             path = OUT / "gonzalez-figure-source-page.png"
             pix.save(str(path))
+            if label != "nsf-public-manuscript" or idx != 30:
+                raise ValueError("Unexpected source/layout. Do not crop without verifying the original figure.")
+            # Visible Figure 1 and legend are in this precise panel on page 31.
+            # Remove only manuscript header, empty page area, and page number.
+            clip = fitz.Rect(60, 68, 554, 421)
+            figure_pix = page.get_pixmap(matrix=fitz.Matrix(2.2, 2.2), clip=clip, alpha=False)
+            from io import BytesIO
+            figure = Image.open(BytesIO(figure_pix.tobytes("png"))).convert("RGB")
+            output = pathlib.Path("assets/gonzalez-howard-2023-figure-1.webp")
+            output.parent.mkdir(parents=True, exist_ok=True)
+            figure.save(output, format="WEBP", quality=89, method=6)
+            if figure.width < 950 or figure.height < 650:
+                raise ValueError("Figure extraction has unexpected image dimensions")
             status.update(status="source_page_captured", source=label, source_url=url, pages=len(pdf),
                           candidate_pages=matches, selected_page=idx, page_width=page.rect.width,
-                          page_height=page.rect.height, saved_image=str(path))
+                          page_height=page.rect.height, saved_image=str(path), figure_image=str(output),
+                          clip_pdf_points=list(clip), crop_description="Original figure with manuscript header, empty lower page, and page number removed",
+                          figure_width=figure.width, figure_height=figure.height)
             break
         except Exception as e:
             status["sources_tried"].append({"source": label, "issue": str(e)[:420]})
