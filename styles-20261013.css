@@ -1963,17 +1963,6 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
 @media(max-width:690px){#main .chem-stages{grid-template-columns:1fr;gap:9px}#main .chem-stage{min-height:0}#main .chem-stage:not(:last-child)::after{content:none}}
 
 
-/* Side-by-side evidential comparisons in the classification essay. */
-#main .classification-compare{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
-#main .classification-case{border:1px solid var(--moon-rule-dark);border-radius:3px;padding:15px 17px}
-#main .classification-case h3{font-size:17px;line-height:1.35;margin:0 0 13px}
-#main .classification-case dl{margin:0}
-#main .classification-case dt{font-size:13px;font-weight:700;margin-top:12px}
-#main .classification-case dd{font-size:14px;line-height:1.55;margin:3px 0 0}
-#main .classification-case dt:first-child{margin-top:0}
-@media(max-width:680px){#main .classification-compare{grid-template-columns:1fr}}
-
-
 /* Match the older photosynthesis figure caption to the editorial figure system. */
 #main .teaching-bio-mechanism .bio-mechanism-caption{
   display:block;
@@ -1990,7 +1979,6 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
 #main .teaching-bio-mechanism .bio-mechanism-caption .figure-source{font-size:13px}
 @media(max-width:480px){
   #main .teaching-bio-mechanism{padding:12px}
-  #main .classification-case{padding:12px}
   #main .editorial-figure{margin-block:17px 21px}
 }
 
@@ -2002,7 +1990,6 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
 #main .figure-treatment,
 #main .hbs-figure-stage,
 #main .chem-stage,
-#main .classification-case{min-width:0;overflow-wrap:break-word}
 @media(max-width:690px){
  #main .figure-dishes span{width:26px;height:26px;font-size:12px}
  #main .figure-treatment strong{font-size:13px}
