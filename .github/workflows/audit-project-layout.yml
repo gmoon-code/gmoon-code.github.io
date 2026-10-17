@@ -5,6 +5,10 @@ on:
     paths:
       - .github/workflows/audit-project-layout.yml
       - scripts/audit-project-layout.mjs
+      - projects.html
+      - story-method.html
+      - research-methods-studio.html
+      - styles-20261013.css
   workflow_dispatch:
 
 permissions:
