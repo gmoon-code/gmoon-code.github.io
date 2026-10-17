@@ -1,5 +1,5 @@
 {
-  "testedAt": "2026-10-17T14:26:56.518Z",
+  "testedAt": "2026-10-17T15:25:24.721Z",
   "results": [
     {
       "path": "index.html",
@@ -57,6 +57,7 @@
           "source": "https://gmoon-code.github.io/assets/pungmul-stage.webp"
         }
       ],
+      "showLogoMetrics": [],
       "failures": []
     },
     {
@@ -93,6 +94,7 @@
           "source": "https://gmoon-code.github.io/assets/profile-portrait.webp"
         }
       ],
+      "showLogoMetrics": [],
       "failures": []
     },
     {
@@ -129,6 +131,7 @@
           "source": "https://gmoon-code.github.io/assets/gonzalez-howard-2023-figure-1.webp"
         }
       ],
+      "showLogoMetrics": [],
       "failures": []
     },
     {
@@ -141,6 +144,7 @@
         "figures": []
       },
       "images": [],
+      "showLogoMetrics": [],
       "failures": []
     },
     {
@@ -199,6 +203,7 @@
           "source": "https://gmoon-code.github.io/assets/research-methods-studio-interface.webp"
         }
       ],
+      "showLogoMetrics": [],
       "failures": []
     },
     {
@@ -358,7 +363,7 @@
           "naturalHeight": 92,
           "complete": true,
           "renderedWidth": 112,
-          "renderedHeight": 168,
+          "renderedHeight": 88,
           "left": 177,
           "right": 289,
           "alt": "Official Detective Conan logo",
@@ -371,12 +376,30 @@
           "naturalHeight": 976,
           "complete": true,
           "renderedWidth": 112,
-          "renderedHeight": 168,
+          "renderedHeight": 88,
           "left": 747,
           "right": 859,
           "alt": "Dimension 20 series wordmark",
           "loading": "lazy",
           "source": "https://commons.wikimedia.org/wiki/Special:FilePath/Dimension_20_logo_white.png"
+        }
+      ],
+      "showLogoMetrics": [
+        {
+          "src": "https://commons.wikimedia.org/wiki/Special:FilePath/Detective_Conan_logo.svg",
+          "objectFit": "contain",
+          "width": 112,
+          "height": 88,
+          "naturalWidth": 302,
+          "naturalHeight": 92
+        },
+        {
+          "src": "https://commons.wikimedia.org/wiki/Special:FilePath/Dimension_20_logo_white.png",
+          "objectFit": "contain",
+          "width": 112,
+          "height": 88,
+          "naturalWidth": 2438,
+          "naturalHeight": 976
         }
       ],
       "failures": []
@@ -391,6 +414,7 @@
         "figures": []
       },
       "images": [],
+      "showLogoMetrics": [],
       "failures": []
     },
     {
@@ -422,6 +446,7 @@
         ]
       },
       "images": [],
+      "showLogoMetrics": [],
       "failures": []
     },
     {
@@ -434,6 +459,7 @@
         "figures": []
       },
       "images": [],
+      "showLogoMetrics": [],
       "failures": []
     },
     {
@@ -470,6 +496,7 @@
           "source": "https://gmoon-code.github.io/assets/story-method-observation-window.webp"
         }
       ],
+      "showLogoMetrics": [],
       "failures": []
     },
     {
@@ -515,6 +542,7 @@
           "source": "https://gmoon-code.github.io/assets/research-methods-data-lab.webp"
         }
       ],
+      "showLogoMetrics": [],
       "failures": []
     },
     {
@@ -560,6 +588,7 @@
           "source": "https://upload.wikimedia.org/wikipedia/commons/4/45/Chloroplast_30000x_%283660656624%29.jpg"
         }
       ],
+      "showLogoMetrics": [],
       "failures": []
     },
     {
@@ -605,6 +634,7 @@
           "source": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ae/Sickle_cells_in_blood.jpg/960px-Sickle_cells_in_blood.jpg"
         }
       ],
+      "showLogoMetrics": [],
       "failures": []
     },
     {
@@ -627,6 +657,7 @@
         ]
       },
       "images": [],
+      "showLogoMetrics": [],
       "failures": []
     },
     {
@@ -639,6 +670,7 @@
         "figures": []
       },
       "images": [],
+      "showLogoMetrics": [],
       "failures": []
     },
     {
@@ -651,6 +683,7 @@
         "figures": []
       },
       "images": [],
+      "showLogoMetrics": [],
       "failures": []
     },
     {
@@ -709,6 +742,7 @@
           "source": "https://gmoon-code.github.io/assets/pungmul-stage.webp"
         }
       ],
+      "showLogoMetrics": [],
       "failures": []
     },
     {
@@ -745,6 +779,7 @@
           "source": "https://gmoon-code.github.io/assets/profile-portrait.webp"
         }
       ],
+      "showLogoMetrics": [],
       "screenshot": "docs/visual-audit/site-media-about-phone.webp",
       "failures": []
     },
@@ -782,6 +817,7 @@
           "source": "https://gmoon-code.github.io/assets/gonzalez-howard-2023-figure-1.webp"
         }
       ],
+      "showLogoMetrics": [],
       "screenshot": "docs/visual-audit/site-media-research-phone.webp",
       "failures": []
     },
@@ -795,6 +831,7 @@
         "figures": []
       },
       "images": [],
+      "showLogoMetrics": [],
       "failures": []
     },
     {
@@ -853,6 +890,7 @@
           "source": "https://gmoon-code.github.io/assets/research-methods-studio-interface.webp"
         }
       ],
+      "showLogoMetrics": [],
       "screenshot": "docs/visual-audit/site-media-projects-phone.webp",
       "failures": []
     },
@@ -1013,7 +1051,7 @@
           "naturalHeight": 92,
           "complete": true,
           "renderedWidth": 90,
-          "renderedHeight": 135,
+          "renderedHeight": 74,
           "left": 27,
           "right": 117,
           "alt": "Official Detective Conan logo",
@@ -1026,12 +1064,30 @@
           "naturalHeight": 976,
           "complete": true,
           "renderedWidth": 90,
-          "renderedHeight": 135,
+          "renderedHeight": 74,
           "left": 27,
           "right": 117,
           "alt": "Dimension 20 series wordmark",
           "loading": "lazy",
           "source": "https://commons.wikimedia.org/wiki/Special:FilePath/Dimension_20_logo_white.png"
+        }
+      ],
+      "showLogoMetrics": [
+        {
+          "src": "https://commons.wikimedia.org/wiki/Special:FilePath/Detective_Conan_logo.svg",
+          "objectFit": "contain",
+          "width": 90,
+          "height": 74,
+          "naturalWidth": 302,
+          "naturalHeight": 92
+        },
+        {
+          "src": "https://commons.wikimedia.org/wiki/Special:FilePath/Dimension_20_logo_white.png",
+          "objectFit": "contain",
+          "width": 90,
+          "height": 74,
+          "naturalWidth": 2438,
+          "naturalHeight": 976
         }
       ],
       "screenshot": "docs/visual-audit/site-media-interests-phone.webp",
@@ -1047,6 +1103,7 @@
         "figures": []
       },
       "images": [],
+      "showLogoMetrics": [],
       "failures": []
     },
     {
@@ -1078,6 +1135,7 @@
         ]
       },
       "images": [],
+      "showLogoMetrics": [],
       "failures": []
     },
     {
@@ -1090,6 +1148,7 @@
         "figures": []
       },
       "images": [],
+      "showLogoMetrics": [],
       "failures": []
     },
     {
@@ -1126,6 +1185,7 @@
           "source": "https://gmoon-code.github.io/assets/story-method-observation-window.webp"
         }
       ],
+      "showLogoMetrics": [],
       "failures": []
     },
     {
@@ -1171,6 +1231,7 @@
           "source": "https://gmoon-code.github.io/assets/research-methods-data-lab.webp"
         }
       ],
+      "showLogoMetrics": [],
       "failures": []
     },
     {
@@ -1216,6 +1277,7 @@
           "source": "https://upload.wikimedia.org/wikipedia/commons/4/45/Chloroplast_30000x_%283660656624%29.jpg"
         }
       ],
+      "showLogoMetrics": [],
       "screenshot": "docs/visual-audit/site-media-teaching-ap-biology-phone.webp",
       "failures": []
     },
@@ -1262,6 +1324,7 @@
           "source": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ae/Sickle_cells_in_blood.jpg/960px-Sickle_cells_in_blood.jpg"
         }
       ],
+      "showLogoMetrics": [],
       "screenshot": "docs/visual-audit/site-media-teaching-ap-evolution-phone.webp",
       "failures": []
     },
@@ -1285,6 +1348,7 @@
         ]
       },
       "images": [],
+      "showLogoMetrics": [],
       "failures": []
     },
     {
@@ -1297,6 +1361,7 @@
         "figures": []
       },
       "images": [],
+      "showLogoMetrics": [],
       "failures": []
     },
     {
@@ -1309,6 +1374,7 @@
         "figures": []
       },
       "images": [],
+      "showLogoMetrics": [],
       "failures": []
     }
   ]
