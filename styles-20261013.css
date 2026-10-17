@@ -1197,13 +1197,62 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
  border-top:1px solid var(--section-green-line);border-bottom:1px solid var(--section-green-line)}
 .research-biology-questions ol{padding-left:21px;margin:5px 0 18px}
 .research-biology-questions li{font-size:16px;line-height:1.64;margin:0 0 13px;padding-left:2px}
-.research-evidence-path{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
- gap:12px;margin:25px 0 8px}
-.research-evidence-path>div{min-width:0;padding:16px 15px 15px;border-top:3px solid var(--section-green-line);border-bottom:1px solid var(--moon-rule)}
+/* Evidence-based visualizations on the Research essay. */
+.research-inquiry-figure,.research-evidence-figure{max-width:940px;min-width:0;margin:29px 0 8px}
+.research-inquiry-map{max-width:840px;min-width:0}
+.research-inquiry-question,.research-inquiry-next{
+  width:min(100%,550px);margin-inline:auto;border:1px solid var(--moon-rule-dark);
+  background:#fff;padding:14px 19px;text-align:center;
+}
+.research-inquiry-question{border-top:3px solid var(--section-green-line)}
+.research-inquiry-question .meta,.research-inquiry-next .meta{display:block;margin-bottom:7px;font-size:12px}
+.research-inquiry-question strong,.research-inquiry-next strong{display:block;font-size:17px;line-height:1.48}
+.research-inquiry-next p{font-size:14px;line-height:1.54;color:#3e493e;margin:8px 0 0}
+.research-inquiry-fork,.research-inquiry-join{height:25px;position:relative;pointer-events:none}
+.research-inquiry-fork::before,.research-inquiry-join::after{
+  content:"";position:absolute;left:50%;border-left:1px solid var(--section-green-line);
+}
+.research-inquiry-fork::before{top:0;height:12px}
+.research-inquiry-join::after{top:12px;bottom:0}
+.research-inquiry-fork::after,.research-inquiry-join::before{
+  content:"";position:absolute;left:25%;width:50%;border-top:1px solid var(--section-green-line);top:12px;
+}
+.research-inquiry-strands{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.research-inquiry-strand{min-width:0;position:relative;border:1px solid var(--moon-rule);padding:16px 19px 15px}
+.research-inquiry-strand::before,.research-inquiry-strand::after{
+  content:"";position:absolute;left:50%;height:13px;border-left:1px solid var(--section-green-line);
+}
+.research-inquiry-strand::before{top:-13px}
+.research-inquiry-strand::after{bottom:-13px}
+.research-inquiry-strand-label{display:block;font-size:12px;font-weight:700;color:#48644e;margin-bottom:8px}
+.research-inquiry-strand strong{display:block;font-size:16px;line-height:1.43;font-weight:700}
+.research-inquiry-strand p{font-size:14px;line-height:1.56;color:#414b43;margin:7px 0 0}
+.research-inquiry-figure figcaption,.research-evidence-figure figcaption{
+  max-width:83ch;margin:15px 0 0;padding-top:11px;border-top:1px solid var(--moon-rule);
+  color:var(--moon-ink);font-size:14px;line-height:1.65;
+}
+.research-inquiry-figure figcaption .figure-source,.research-evidence-figure figcaption .figure-source{
+  display:block;color:var(--moon-muted);font-size:13px;margin-top:5px;
+}
+.research-evidence-path{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:0}
+.research-evidence-path>div{
+  position:relative;min-width:0;padding:16px 15px 15px;
+  border-top:3px solid var(--section-green-line);border-bottom:1px solid var(--moon-rule)
+}
+.research-evidence-path>div:not(:last-child)::after{
+  content:"→";position:absolute;right:-14px;top:42%;color:#54775d;font-size:19px;line-height:1;
+}
 .research-evidence-path .meta{display:block;margin-bottom:10px}
 .research-evidence-path strong{display:block;font-size:17px;line-height:1.35;margin-bottom:9px}
 .research-evidence-path p{font-size:14px;line-height:1.59;color:#404940;margin:0}
-.research-example-disclaimer{font-size:13px;color:var(--moon-muted);line-height:1.61;max-width:85ch;margin:13px 0 0}
+.research-evidence-across{
+  display:grid;grid-template-columns:135px 180px minmax(0,1fr);gap:16px;align-items:start;
+  padding:14px 18px;background:var(--section-green-soft);border-left:3px solid var(--section-green-line);
+  margin-top:15px;
+}
+.research-evidence-across-label{font-size:12px;font-weight:700;color:#48644e;line-height:1.55}
+.research-evidence-across strong{font-size:16px;line-height:1.4}
+.research-evidence-across p{font-size:14px;line-height:1.58;margin:0;color:#404940}
 .research-essay .research-hub-studies .research-study-preview{padding:22px 0 26px}
 .research-essay-refs li{scroll-margin-top:96px}
 .about-revised .about-intro .hero-copy>p{max-width:70ch;line-height:1.7}
@@ -1214,7 +1263,9 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
 @media(max-width:910px){
  .research-essay-intro{grid-template-columns:1fr}
  .research-essay-margin{max-width:65ch}
- .research-evidence-path{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .research-evidence-path{grid-template-columns:1fr;gap:13px}
+ .research-evidence-path>div:not(:last-child)::after{content:"↓";right:50%;top:auto;bottom:-15px;transform:translateX(50%);font-size:17px}
+ .research-evidence-across{grid-template-columns:1fr;gap:5px}
 }
 @media(max-width:745px){
  .research-curriculum-note,.research-biology-note{grid-template-columns:1fr}
@@ -1225,7 +1276,13 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
  .research-evidence-path{gap:9px}
 }
 @media(max-width:480px){
- .research-evidence-path{grid-template-columns:1fr}
+ .research-inquiry-strands{grid-template-columns:1fr;gap:16px}
+ .research-inquiry-fork,.research-inquiry-join{height:18px}
+ .research-inquiry-fork::after,.research-inquiry-join::before{display:none}
+ .research-inquiry-fork::before,.research-inquiry-join::after{height:100%;top:0;bottom:0}
+ .research-inquiry-strand::before,.research-inquiry-strand::after{display:none}
+ .research-inquiry-question,.research-inquiry-next{padding:13px 14px}
+ .research-inquiry-strand{padding:14px}
  .research-essay .research-essay-hero .hero-copy p{font-size:16px}
  .research-essay .research-essay-lead{font-size:20px!important}
  .research-essay .research-essay-prose p{font-size:16px}
