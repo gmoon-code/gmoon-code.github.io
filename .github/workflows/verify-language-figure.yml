@@ -20,20 +20,25 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install PDF figure inspection tools
-        run: pip install PyMuPDF==1.26.4
+        run: pip install PyMuPDF==1.26.4 Pillow==11.3.0
       - name: Locate source figure and render for visual review
         run: python scripts/retrieve-published-figure.py
       - name: Save extraction evidence
         uses: actions/upload-artifact@v4
         with:
           name: published-figure-source-page
-          path: docs/visual-audit/gonzalez-figure-source-page.png
+          path: |
+            docs/visual-audit/gonzalez-figure-source-page.png
+            assets/gonzalez-howard-2023-figure-1.webp
           if-no-files-found: warn
       - name: Commit result report and any valid preview
         run: |
           git add docs/visual-audit/figure-retrieval-status.json
           if [ -f docs/visual-audit/gonzalez-figure-source-page.png ]; then
             git add docs/visual-audit/gonzalez-figure-source-page.png
+          fi
+          if [ -f assets/gonzalez-howard-2023-figure-1.webp ]; then
+            git add assets/gonzalez-howard-2023-figure-1.webp
           fi
           if git diff --cached --quiet; then exit 0; fi
           git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m "Report licensed scholarly figure retrieval"
