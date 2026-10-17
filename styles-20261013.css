@@ -2108,3 +2108,12 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
   font-size:14px;
   line-height:1.6;
 }
+
+
+/* The application screenshots become too small in two columns on tablets. */
+@media(max-width:960px){
+  #main .project-showcase{
+    grid-template-columns:minmax(0,1fr);
+    max-width:750px;
+  }
+}
