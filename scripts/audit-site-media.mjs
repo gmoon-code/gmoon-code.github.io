@@ -72,7 +72,14 @@ try{
           await sharp(png).resize({width:650,withoutEnlargement:true}).webp({quality:80,effort:5}).toFile(screenshot);
         }
       }
+      let showLogoMetrics=[];
       if(path==='interests.html'){
+        showLogoMetrics=await page.locator('.media-shelf-shows img.media-logo').evaluateAll(images=>images.map(im=>{
+          const c=getComputedStyle(im),r=im.getBoundingClientRect();
+          return {src:im.getAttribute('src'),objectFit:c.objectFit,
+            width:Math.round(r.width),height:Math.round(r.height),naturalWidth:im.naturalWidth,
+            naturalHeight:im.naturalHeight};
+        }));
         const shows=page.locator('.media-shelf').nth(1).locator('article.media-entry');
         for(let i=0;i<await shows.count();i++){
           const card=shows.nth(i);
@@ -93,8 +100,16 @@ try{
         if(img.left< -4||img.right>viewport.width+4)failures.push('image '+(i+1)+' outside viewport');
         if(img.alt===null)failures.push('image '+(i+1)+' has no alt attribute');
       });
+      if(path==='interests.html'){
+        if(showLogoMetrics.length!==2)failures.push('expected two show wordmarks');
+        const targetHeight=viewport.width<=480?74:88;
+        for(const logo of showLogoMetrics){
+          if(logo.objectFit!=='contain')failures.push('wordmark is cropped rather than contained');
+          if(Math.abs(logo.height-targetHeight)>1)failures.push('wrong wordmark frame height');
+        }
+      }
       if(issues.length)failures.push('JS errors: '+issues.join(' | '));
-      results.push({path,viewport:viewport.name,geometry,images:readings,screenshot,failures});
+      results.push({path,viewport:viewport.name,geometry,images:readings,showLogoMetrics,screenshot,failures});
       console.log(JSON.stringify({path,viewport:viewport.name,imageCount:count,failures}));
     }catch(e){
       const msg=String(e.message||e).slice(0,480);
