@@ -70,5 +70,5 @@ try {
 } finally {
   await browser.close();
   await mkdir('docs', { recursive: true });
-  await writeFile('docs/capture-detail-status.json', JSON.stringify(report, null, 2) + '\\n');
+  await writeFile('docs/capture-detail-status.json', JSON.stringify(report, null, 2) + '\n');
 }
