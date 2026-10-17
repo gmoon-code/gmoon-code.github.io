@@ -101,7 +101,7 @@ This inventory distinguishes image provenance, **display method**, and **permiss
 | On-site image | Current source | Current finding / next action |
 | --- | --- | --- |
 | Profile portrait on Home and About | Local `assets/profile-portrait.webp` | First-party hosted. Confirm photographer and permission if supplied by someone else; preserve authenticity. |
-| Four pungmul photographs on Interests, plus the stage photo on Home | Local `assets/pungmul-*.webp` | First-party hosted. Confirm photographer/ensemble permission and any consent considerations for clearly visible participants; no further public copy without confirmation. |
+| Four pungmul photographs on Interests, plus the stage photo on Home | Local `assets/pungmul-*.webp` | **Owner-confirmed personal photographs.** The website owner has confirmed that the pungmul pictures are theirs. Retain the existing images. No photographer identity or wider reuse licence has been inferred; consider any separate obligations regarding recognisable performers if applicable. |
 | *The Priory of the Orange Tree* cover | `covers.openlibrary.org` / ISBN 9781635570304 | Open Library permits public-facing display through its Covers API and welcomes a service backlink. Underlying cover artwork is not thereby established as freely licensed. |
 | *The Lord of the Rings* cover | `covers.openlibrary.org` / ISBN 9780618640157 | Same Open Library guidance and underlying-artwork caveat. |
 | *Rose* cover | `covers.openlibrary.org` / ISBN 9780918526526 | Same Open Library guidance and underlying-artwork caveat. |
@@ -117,23 +117,23 @@ This inventory distinguishes image provenance, **display method**, and **permiss
 
 **Source-level gallery verification, 17 October 2026:** natural WebP dimensions obtained from the current repository assets are 860 × 645 for `pungmul-stage.webp`, 860 × 484 for `pungmul-group.webp`, 650 × 433 for `pungmul-solo.webp`, 650 × 366 for `pungmul-rehearsal.webp`, and 520 × 516 for `profile-portrait.webp`. The Interests gallery HTML uses these source dimensions so the browser can reserve the correct image proportions. The solo image's alt text was corrected after visual inspection to remove an inaccurate description of a hat. Full-size gallery links now open in a named new browser tab and disclose that behaviour in their accessible link labels. Visual rendering and keyboard/screen-reader interactions on the deployed site still require manual testing.
 
-### Personal photograph permission checklist, pending confirmation
+### Personal photograph ownership and outstanding questions
 
-Photographs already present on the public website remain in place during this documentation review. Hosting an image in this repository does not by itself establish authorship or permission to publish. The following information has **not** been supplied or verified and should be confirmed with the person who supplied the files.
+The website owner confirmed on 18 October 2026 that the pungmul photographs belong to them. That statement establishes the owner's account of the images' provenance and their intended use on their own website. It does not identify the person who operated the camera or establish a licence for unrelated third-party reuse. The outdoor portrait was not covered by that confirmation.
 
 | Original website asset | Depicted context | Photographer or copyright holder | Publication or subject permissions |
 | --- | --- | --- | --- |
 | `assets/profile-portrait.webp` | Individual outdoor portrait, shown on Home and About | Unknown, confirm who took the photograph and the permission to use it on a public academic website | Confirm photographer licence or direct permission; the person pictured should approve public display |
-| `assets/pungmul-stage.webp` | Ensemble performance, shown on Home and Interests | Unknown | Confirm photographer permission and whether organisers or recognisable performers have any applicable publicity, consent, or publication conditions |
-| `assets/pungmul-group.webp` | Outdoor ensemble | Unknown | Same checks as stage photograph |
-| `assets/pungmul-solo.webp` | Individual janggu player during performance | Unknown | Confirm photographer permission and any relevant performer consent or publicity restrictions |
-| `assets/pungmul-rehearsal.webp` | Indoor group drumming | Unknown | Confirm photographer permission and any applicable performer or ensemble conditions |
+| `assets/pungmul-stage.webp` | Ensemble performance, shown on Home and Interests | User-confirmed personal photograph | Ownership clarified. No additional creator credit is assigned. Check any separate conditions for recognisable performers or organisers only if applicable |
+| `assets/pungmul-group.webp` | Outdoor ensemble | User-confirmed personal photograph | Ownership clarified. Other individuals' publicity or consent conditions are separate if applicable |
+| `assets/pungmul-solo.webp` | Individual janggu player during performance | User-confirmed personal photograph | Ownership clarified. No photographer attribution is inferred; consider performer restrictions if applicable |
+| `assets/pungmul-rehearsal.webp` | Indoor group drumming | User-confirmed personal photograph | Ownership clarified. Other individuals' publicity or consent conditions are separate if applicable |
 
-**Evidence to retain privately if obtained:** photographer name, source of the file, any written permission or licence, required wording for credit, restrictions on crops or reuse, and any publication permissions relevant to identifiable people. Avoid placing personal contact details, private consent documents, or identifying records in this public repository.
+**Records worth retaining privately if needed:** ownership or photographer documentation, any required image credit, restrictions on further reuse, and any applicable publication conditions concerning identifiable people. Do not put private consent documents or contact information into this public repository.
 
-**Website decision:** Do not invent creator credits or remove meaningful photographs based only on missing records. If an image's public use is ultimately unauthorised or restricted, seek permission or replace that specific asset without changing the accompanying personal narrative.
+**Website decision:** Keep the user's own pungmul photographs and their existing captions. Do not fabricate photographer credits or treat user ownership as permission for others to republish the files. If any specific third-party restriction is identified later, address the affected image without changing the accompanying personal narrative.
 
-**Publication decision:** both unverified commercial-hosted images have been replaced with suitable service-hosted identifiers. Preserve the substantive personal reviews. Photographer/ensemble permission for first-party performance photographs remains to be confirmed before any further reproduction or republication.
+**Publication decision:** both unverified commercial-hosted images have been replaced with suitable service-hosted identifiers. The pungmul images are confirmed by their owner as personal photographs and remain published. The portrait's photographic rights remain unconfirmed. Any separate performer or event-specific restrictions, if applicable, should be checked without presuming that the existing photographs are unauthorised.
 
 ## Published student biosphere model, reproduction permission pending
 
