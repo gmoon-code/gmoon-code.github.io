@@ -82,6 +82,18 @@ These screenshots were captured from the actual deployed applications, using fre
 - **Presentation:** The Story Method capture shows only the original interface section around the Observation Window, preserving the application’s text and layout without invented visual objects. The Data Lab capture shows a browser-viewport screenshot with an empty file picker and a temporary demonstration notebook. Both images are resized only as necessary for web delivery, with no annotations added to the image files.
 - **Scope:** The images document software design and availability. They are not empirical evidence of student learning, classroom evaluation, or completed research.
 
+## Published language-conceptualisation figure, 17 October 2026
+
+- **Page:** `research.html`, multilingual participation section.
+- **Source:** González-Howard, M., Andersen, S., Méndez Pérez, K., & Suárez, E. (2023). Language views for scientific sensemaking matter: A synthesis of research on multilingual students’ experiences with science practices through a translanguaging lens. *Educational Researcher, 52*(9), 570–579. https://doi.org/10.3102/0013189X231206172
+- **Original figure:** Figure 1, *Focal science practice(s) by language conceptualization*.
+- **Publisher image record:** https://journals.sagepub.com/cms/10.3102/0013189X231206172/asset/c4fc6f9a-b8c5-47c5-abfb-5d29bea1bfaa/assets/images/large/10.3102_0013189x231206172-fig1.jpg
+- **Rights:** © 2023 AERA. The publisher states the article is licensed Creative Commons Attribution 4.0 (https://creativecommons.org/licenses/by/4.0/). The published graph is presented as the article authors' own synthesis figure with no third-party credit indicated.
+- **Display:** An original publisher JPEG is linked directly from the article page and embedded at its natural proportions on the Research page. No data or figure content has been altered. Browser loading of the publisher-hosted image is independently checked in the site's responsive visual audit. A local archiving workflow is under verification; do not claim a successful local copy unless the binary asset exists.
+- **Research distinction:** The published source compares language views and focal science practices in 28 included articles. The 20-study ERIC-indexed scoping review on this website is a separate analysis; the figure makes no claim about its sample or results.
+- **On-page credit:** Full creator/year/journal/figure citation, publisher source DOI, © AERA notice, linked Creative Commons licence, modification declaration, and explanatory alt text.
+- **Editorial role:** Primary published synthesis evidence underlying the discussion of how definitions of language influence which science practices researchers examine; it does not depict a classroom event or a student-written artefact.
+
 ## Personal photographs and media artwork inventory, 17 October 2026
 
 This inventory distinguishes image provenance, **display method**, and **permission**. A usable image URL or source citation is not proof that an underlying copyrighted illustration is licensed for republication.
