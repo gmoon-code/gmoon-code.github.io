@@ -2037,3 +2037,9 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
 }
 #main .editorial-source-image figcaption{max-width:700px}
 #main .editorial-source-image .figure-source{font-size:13px}
+
+
+/* Keep structural micrographs smaller than full-width mechanism diagrams. */
+#main .editorial-source-image-compact{max-width:560px}
+#main .editorial-source-image-compact img{max-width:520px}
+#main .editorial-source-image-compact figcaption{max-width:520px}
