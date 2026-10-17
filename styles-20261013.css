@@ -2023,3 +2023,17 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
  #main .figure-nesting-groups{grid-template-columns:1fr;gap:9px}
  #main .figure-dishes{grid-template-columns:repeat(6,minmax(0,1fr))}
 }
+
+
+/* Licensed scientific photographs are editorial figures, never cropped. */
+#main .editorial-source-image{max-width:760px}
+#main .editorial-source-image img{
+  display:block;
+  width:100%;
+  height:auto;
+  max-width:700px;
+  margin-inline:auto;
+  object-fit:contain;
+}
+#main .editorial-source-image figcaption{max-width:700px}
+#main .editorial-source-image .figure-source{font-size:13px}
