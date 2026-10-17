@@ -89,6 +89,18 @@ This inventory distinguishes image provenance, **display method**, and **permiss
 
 **Publication decision:** retain the existing personal essay and cover identifications during this phase. Investigate the two unverified commercial-hosted images and confirm photographer/ensemble rights before mirroring or replacing any assets. If an image is removed, keep the surrounding substantive review unchanged.
 
+## Published student biosphere model, reproduction permission pending
+
+- **Relevant site page:** `research-scoping.html`, example from Pierson, Clark, and Brady (2021).
+- **Published figure:** Figure 3, *Luis, Carlos, and Sean's biosphere plan*.
+- **Reference:** Pierson, A. E., Clark, D. B., & Brady, C. E. (2021). Scientific modeling and translanguaging: A multilingual and multimodal approach to support science learning and engagement. *Science Education, 105*(4), 776–813. https://doi.org/10.1002/sce.21622
+- **Publisher record:** https://onlinelibrary.wiley.com/doi/full/10.1002/sce.21622
+- **Current website use:** A source link from the discussion of the students' original written and visual representations. No image was downloaded, hotlinked or reproduced on the site.
+- **Rights status:** Article is labelled *Free Access* by Wiley; this is not evidence of a Creative Commons reuse licence. A hosted copy of the published article identifies Wiley Periodicals LLC as the 2021 copyright holder. No licence authorising republication of Figure 3 on this public website has been obtained or verified.
+- **Permission route:** In the Wiley article, use **Tools → Request permission** and the RightsLink process for online reproduction of Figure 3, or contact Wiley's permissions team if the figure cannot be licensed through RightsLink. Publisher guidance: https://www.wiley.com/research-intelligence/content-solutions/permissions/general-queries and https://authors.wiley.com/help/license-signing-and-permissions.html
+- **Additional considerations:** The figure reproduces work made by school-aged students. Confirm whether the publisher's permission covers that underlying material and whether any additional permissions or restrictions apply. Preserve the original image without re-labelling student contributions or presenting it as data from this site's author's classroom.
+- **Next publication gate:** Reproduce only after all relevant rights and permission conditions are documented. Add the granted licence/credit wording to the caption, cite the original study, provide accurate alt text, and update this register. If permission cannot be established, retain the publication link without an embedded image.
+
 ## Audit outstanding
 
 Images on `interests.html` include externally hosted book-cover and media artwork. Their image licences, source reliability, and reproduction permissions should be checked individually before these items are replaced, mirrored, or expanded. Citation by itself does not establish permission to reproduce an image.
