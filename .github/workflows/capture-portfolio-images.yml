@@ -1,0 +1,54 @@
+name: Capture published application interfaces
+
+on:
+  push:
+    paths:
+      - .github/workflows/capture-portfolio-images.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: capture-published-project-interfaces
+  cancel-in-progress: false
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out the academic website
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install browser capture tools
+        run: |
+          npm install --no-save --no-package-lock playwright@1.56.1 sharp@0.34.4
+          npx playwright install --with-deps chromium
+
+      - name: Capture live public applications with a fresh browser profile
+        run: node scripts/capture-project-interfaces.mjs
+
+      - name: Preserve screenshots as workflow artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: verified-public-application-captures
+          path: |
+            assets/story-method-interface.webp
+            assets/research-methods-studio-interface.webp
+          if-no-files-found: error
+
+      - name: Commit image assets for editorial review
+        run: |
+          git add assets/story-method-interface.webp assets/research-methods-studio-interface.webp
+          if git diff --cached --quiet; then
+            echo "No updated screenshot assets"
+            exit 0
+          fi
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m "Capture authentic released application interfaces"
+          git push origin HEAD:main
