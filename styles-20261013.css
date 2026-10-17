@@ -1959,3 +1959,14 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
  #main .hbs-figure-stage{min-height:0;padding:10px 12px}
  #main .hbs-figure-stage:not(:last-child)::after{content:none}
 }
+
+
+/* Three distinct stages in the AP Chemistry compression example. */
+#main .chem-stages{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+#main .chem-stage{position:relative;border:1px solid var(--moon-rule-dark);border-radius:3px;padding:14px 12px;display:flex;flex-direction:column;gap:5px;min-height:195px}
+#main .chem-stage:not(:last-child)::after{content:"→";position:absolute;right:-15px;top:48px;color:var(--moon-muted)}
+#main .chem-stage strong{font-size:14px;margin-bottom:5px}
+#main .chem-stage span{font-size:13px}
+#main .chem-stage b{font-size:13px;margin-top:6px}
+#main .chem-stage small{font-size:12px;line-height:1.45;color:var(--moon-muted);margin-top:auto}
+@media(max-width:690px){#main .chem-stages{grid-template-columns:1fr;gap:9px}#main .chem-stage{min-height:0}#main .chem-stage:not(:last-child)::after{content:none}}
