@@ -5,6 +5,9 @@ on:
     paths:
       - .github/workflows/audit-site-media.yml
       - scripts/audit-site-media.mjs
+      - writing-biological-classification.html
+      - research.html
+      - styles-20261013.css
   workflow_dispatch:
 
 permissions:
