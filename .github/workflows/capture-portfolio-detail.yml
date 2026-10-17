@@ -24,12 +24,25 @@ jobs:
         with:
           node-version: '22'
       - name: Install browser capture dependencies
+        id: install
+        continue-on-error: true
         run: |
           npm install --no-save --no-package-lock playwright@1.56.1 sharp@0.34.4
           npx playwright install --with-deps chromium
       - name: Capture published learning screens
+        if: steps.install.outcome == 'success'
+        id: capture_screen
+        continue-on-error: true
         run: node scripts/capture-project-detail.mjs
+      - name: Persist capture status even if dependencies failed
+        if: always()
+        run: |
+          mkdir -p docs
+          if [ ! -f docs/capture-detail-status.json ]; then
+            printf '{"status":"failed","stage":"workflow-install-or-script","install_outcome":"%s","capture_outcome":"%s"}\n' "${{ steps.install.outcome }}" "${{ steps.capture_screen.outcome }}" > docs/capture-detail-status.json
+          fi
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: published-learning-screens
           path: |
@@ -37,6 +50,7 @@ jobs:
             assets/research-methods-data-lab.webp
           if-no-files-found: warn
       - name: Commit verified screenshot files
+        if: always()
         run: |
           git add docs/capture-detail-status.json
           if grep -q '"status": "success"' docs/capture-detail-status.json; then
