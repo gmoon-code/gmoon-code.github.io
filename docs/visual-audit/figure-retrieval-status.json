@@ -1,0 +1,21 @@
+{
+  "status": "source_page_captured",
+  "sources_tried": [
+    {
+      "source": "publisher-pdf",
+      "issue": "HTTP Error 403: Forbidden"
+    }
+  ],
+  "source": "nsf-public-manuscript",
+  "source_url": "https://par.nsf.gov/servlets/purl/10480924",
+  "pages": 31,
+  "candidate_pages": [
+    11,
+    12,
+    30
+  ],
+  "selected_page": 30,
+  "page_width": 612.0,
+  "page_height": 792.0,
+  "saved_image": "docs/visual-audit/gonzalez-figure-source-page.png"
+}
