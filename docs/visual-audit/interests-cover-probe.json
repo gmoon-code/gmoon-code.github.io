@@ -1,0 +1,38 @@
+{
+  "source": "Open Library Covers API",
+  "results": [
+    {
+      "isbn": "9780062951465",
+      "url": "https://covers.openlibrary.org/b/isbn/9780062951465-L.jpg?default=false",
+      "http_status": 200,
+      "available": true,
+      "width": 337,
+      "height": 500,
+      "content_type": "image/jpeg"
+    },
+    {
+      "isbn": "9780008433796",
+      "url": "https://covers.openlibrary.org/b/isbn/9780008433796-L.jpg?default=false",
+      "available": false,
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "isbn": "9780008433833",
+      "url": "https://covers.openlibrary.org/b/isbn/9780008433833-L.jpg?default=false",
+      "http_status": 200,
+      "available": true,
+      "width": 254,
+      "height": 400,
+      "content_type": "image/jpeg"
+    },
+    {
+      "isbn": "9780062951472",
+      "url": "https://covers.openlibrary.org/b/isbn/9780062951472-L.jpg?default=false",
+      "http_status": 200,
+      "available": true,
+      "width": 332,
+      "height": 500,
+      "content_type": "image/jpeg"
+    }
+  ]
+}
