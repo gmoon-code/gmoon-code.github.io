@@ -18,17 +18,17 @@ async function contextPage() {
   });
   return { context, page: await context.newPage() };
 }
-async function exportImage(page, file, requireText) {
+async function exportImage(page, file, requireText, elementSelector = null) {
   await page.waitForFunction(
     text => document.body?.innerText?.includes(text),
     requireText,
     { timeout: 30000 }
   );
   await page.waitForTimeout(700);
-  const screenshot = await page.screenshot({ fullPage: false, animations: 'disabled' });
+  const screenshot = elementSelector ? await page.locator(elementSelector).screenshot({ animations: 'disabled' }) : await page.screenshot({ fullPage: false, animations: 'disabled' });
   await sharp(screenshot).resize({ width: 1280, withoutEnlargement: true }).webp({ quality: 85, effort: 6 }).toFile('assets/' + file);
   const metadata = await sharp('assets/' + file).metadata();
-  if (metadata.width !== 1280 || metadata.height !== 800) throw new Error('Unexpected output dimensions for ' + file);
+  if ((metadata.width ?? 0) < 750 || (metadata.height ?? 0) < 350) throw new Error('Unexpected output dimensions for ' + file);
   console.log(JSON.stringify({ file, width: metadata.width, height: metadata.height, checkedText: requireText }));
 }
 
@@ -43,7 +43,7 @@ try {
     await page.locator('.scene-orientation h2').getByText('Observation Window').waitFor({ timeout: 45000 });
     await page.locator('.scene-orientation').scrollIntoViewIfNeeded();
     if ((await page.locator('.scene-stage .stage-zone').count()) < 2) throw new Error('Story layout did not render');
-    await exportImage(page, 'story-method-observation-window.webp', 'Observation Window');
+    await exportImage(page, 'story-method-observation-window.webp', 'Observation Window', '.scene-orientation');
     report.files.push('assets/story-method-observation-window.webp');
     await context.close();
   }
