@@ -1930,9 +1930,6 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
 #main .figure-nesting-key{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 18px;align-items:center;border-top:1px solid var(--moon-rule);margin-top:15px;padding-top:12px;text-align:center}
 #main .figure-nesting-key strong{font-size:14px}
 #main .figure-nesting-key span{font-size:13px;color:var(--moon-muted)}
-/* Existing evidence cards already distinguish their corpus counts; add a rule
-   to anchor the scientific categories without repeating the chart. */
-#main .research-route-card{border-top:3px solid #889b91}
 @media(max-width:690px){
  #main .figure-sequence{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
  #main .figure-step:not(:last-child)::after{content:none}
