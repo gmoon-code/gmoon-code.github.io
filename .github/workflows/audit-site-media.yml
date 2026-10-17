@@ -1,0 +1,47 @@
+name: Audit all website images and figures
+
+on:
+  push:
+    paths:
+      - .github/workflows/audit-site-media.yml
+      - scripts/audit-site-media.mjs
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: audit-all-site-media
+  cancel-in-progress: false
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install browser and image tools
+        run: |
+          npm install --no-save --no-package-lock playwright@1.56.1 sharp@0.34.4
+          npx playwright install --with-deps chromium
+      - name: Audit published pages at desktop and phone widths
+        run: node scripts/audit-site-media.mjs
+      - name: Preserve results
+        uses: actions/upload-artifact@v4
+        with:
+          name: site-media-audit
+          path: |
+            docs/visual-audit/site-media-report.json
+            docs/visual-audit/site-media-*.webp
+          if-no-files-found: error
+      - name: Publish audit artifacts for review
+        run: |
+          git add docs/visual-audit/site-media-report.json docs/visual-audit/site-media-*.webp
+          if git diff --cached --quiet; then exit 0; fi
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m "Record sitewide browser media audit"
+          git fetch origin main
+          git rebase origin/main
+          git push origin HEAD:main
