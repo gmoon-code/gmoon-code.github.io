@@ -1,0 +1,41 @@
+name: Archive CC BY science education figure
+
+on:
+  push:
+    paths:
+      - .github/workflows/archive-language-figure.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download publisher's original open-licence figure
+        run: |
+          mkdir -p assets
+          curl --fail --location --retry 3 --silent --show-error \
+            --user-agent 'Mozilla/5.0 academic-site-figure-preservation/1.0' \
+            'https://journals.sagepub.com/cms/10.3102/0013189X231206172/asset/c4fc6f9a-b8c5-47c5-abfb-5d29bea1bfaa/assets/images/large/10.3102_0013189x231206172-fig1.jpg' \
+            --output assets/gonzalez-howard-2023-figure-1.jpg
+          file assets/gonzalez-howard-2023-figure-1.jpg
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('assets/gonzalez-howard-2023-figure-1.jpg')
+          blob = p.read_bytes()
+          assert blob[:3] == b'\xff\xd8\xff', 'Publisher response is not a JPEG image'
+          assert len(blob) > 15000, 'Source image unexpectedly small'
+          print('Verified original JPEG bytes', len(blob))
+          PY
+      - name: Commit verified original figure
+        run: |
+          git add assets/gonzalez-howard-2023-figure-1.jpg
+          if git diff --cached --quiet; then exit 0; fi
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m "Archive licensed González-Howard et al. (2023) published figure"
+          git fetch origin main
+          git rebase origin/main
+          git push origin HEAD:main
