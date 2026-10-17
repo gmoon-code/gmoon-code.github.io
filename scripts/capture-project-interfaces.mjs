@@ -41,7 +41,8 @@ try {
       target.expected,
       { timeout: 40000 }
     );
-    await page.waitForTimeout(1800);
+    await page.waitForFunction(() => !document.querySelector('.loading-shell') && !document.querySelector('.error-shell'), null, { timeout: 45000 });
+    await page.waitForTimeout(1200);
     const bodyText = (await page.locator('body').innerText()).trim();
     if (bodyText.length < 300 || /404\s+(?:file\s+)?not\s+found|application\s+error/i.test(bodyText.slice(0, 500))) {
       throw new Error(target.name + ': page does not show a valid application screen.');
