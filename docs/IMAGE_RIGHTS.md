@@ -111,11 +111,27 @@ This inventory distinguishes image provenance, **display method**, and **permiss
 
 **Open Library usage documentation:** https://openlibrary.org/dev/docs/api/covers . Its guidance supports cover thumbnails on public-facing pages and appreciates courtesy links. Four Open Library book-cover thumbnails are credited by a single compact notice below the Books group.
 
-**Current HTML performance controls:** the four externally served book covers on `interests.html` reserve 112 × 168 frames, while two horizontal show wordmarks reserve 112 × 88 frames (and smaller proportional frames on phones). All six images load lazily and decode asynchronously. The replacement cover and wordmarks have passed the live image-loading audit at desktop and phone widths; the latest layout revision is scheduled for a fresh visual check.
+**Current HTML performance controls:** the four externally served book covers on `interests.html` reserve 112 × 168 frames, while two horizontal show wordmarks reserve 112 × 88 frames (and smaller proportional frames on phones). All six images load lazily and decode asynchronously. The revised wordmark frames were verified in the 18 October 2026 browser audit at 1,440 px and 390 px. Both images loaded, used `object-fit: contain`, and rendered at 112 × 88 px on desktop and 90 × 74 px on phones. The rendered show-entry screenshots were inspected for cropping and legibility.
 
 **Edition and logo verification, 17 October 2026:** the Open Library cover for ISBN 9780062951465 was fetched and visually examined alongside three other verified or unavailable English editions. Source evidence and edition samples are in `docs/visual-audit/interests-cover-probe.json` and `docs/visual-audit/interests-cover-probe.webp`. The edition identifies the 2021 Harper Voyager publication. Its original artwork remains copyrighted; Open Library's API explicitly supports showing cover images from its service on public-facing pages. The shows now use identity wordmarks from Wikimedia Commons with visible source links, marked on Commons as PD-textlogo and potentially subject to trademark restrictions. These marks are displayed for identification only, without implying endorsement.
 
 **Source-level gallery verification, 17 October 2026:** natural WebP dimensions obtained from the current repository assets are 860 × 645 for `pungmul-stage.webp`, 860 × 484 for `pungmul-group.webp`, 650 × 433 for `pungmul-solo.webp`, 650 × 366 for `pungmul-rehearsal.webp`, and 520 × 516 for `profile-portrait.webp`. The Interests gallery HTML uses these source dimensions so the browser can reserve the correct image proportions. The solo image's alt text was corrected after visual inspection to remove an inaccurate description of a hat. Full-size gallery links now open in a named new browser tab and disclose that behaviour in their accessible link labels. Visual rendering and keyboard/screen-reader interactions on the deployed site still require manual testing.
+
+### Personal photograph permission checklist, pending confirmation
+
+Photographs already present on the public website remain in place during this documentation review. Hosting an image in this repository does not by itself establish authorship or permission to publish. The following information has **not** been supplied or verified and should be confirmed with the person who supplied the files.
+
+| Original website asset | Depicted context | Photographer or copyright holder | Publication or subject permissions |
+| --- | --- | --- | --- |
+| `assets/profile-portrait.webp` | Individual outdoor portrait, shown on Home and About | Unknown, confirm who took the photograph and the permission to use it on a public academic website | Confirm photographer licence or direct permission; the person pictured should approve public display |
+| `assets/pungmul-stage.webp` | Ensemble performance, shown on Home and Interests | Unknown | Confirm photographer permission and whether organisers or recognisable performers have any applicable publicity, consent, or publication conditions |
+| `assets/pungmul-group.webp` | Outdoor ensemble | Unknown | Same checks as stage photograph |
+| `assets/pungmul-solo.webp` | Individual janggu player during performance | Unknown | Confirm photographer permission and any relevant performer consent or publicity restrictions |
+| `assets/pungmul-rehearsal.webp` | Indoor group drumming | Unknown | Confirm photographer permission and any applicable performer or ensemble conditions |
+
+**Evidence to retain privately if obtained:** photographer name, source of the file, any written permission or licence, required wording for credit, restrictions on crops or reuse, and any publication permissions relevant to identifiable people. Avoid placing personal contact details, private consent documents, or identifying records in this public repository.
+
+**Website decision:** Do not invent creator credits or remove meaningful photographs based only on missing records. If an image's public use is ultimately unauthorised or restricted, seek permission or replace that specific asset without changing the accompanying personal narrative.
 
 **Publication decision:** both unverified commercial-hosted images have been replaced with suitable service-hosted identifiers. Preserve the substantive personal reviews. Photographer/ensemble permission for first-party performance photographs remains to be confirmed before any further reproduction or republication.
 
