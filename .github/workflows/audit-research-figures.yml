@@ -29,7 +29,7 @@ jobs:
         run: |
           npm install --no-save --no-package-lock playwright@1.56.1 sharp@0.34.4
           npx playwright install --with-deps chromium
-      - name: Capture research diagrams at three viewports
+      - name: Capture original published Research figure at three viewports
         run: node scripts/audit-research-figures.mjs
       - uses: actions/upload-artifact@v4
         with:
@@ -40,7 +40,8 @@ jobs:
           if-no-files-found: error
       - name: Publish visual audit evidence
         run: |
-          git add docs/visual-audit/research-*.webp docs/visual-audit/research-figures-report.json
+          rm -f docs/visual-audit/research-inquiry-*.webp docs/visual-audit/research-evidence-*.webp
+          git add -A docs/visual-audit/
           if git diff --cached --quiet; then exit 0; fi
           git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m "Verify research figures in live browser"
           git fetch origin main
