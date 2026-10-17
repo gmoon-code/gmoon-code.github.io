@@ -1,8 +1,8 @@
 {
-  "status": "failed",
+  "status": "success",
   "files": [
-    "assets/story-method-observation-window.webp"
+    "assets/story-method-observation-window.webp",
+    "assets/research-methods-data-lab.webp"
   ],
-  "capturedAt": "2026-10-17T12:08:23.171Z",
-  "error": "Seven-step analysis workflow did not render"
+  "capturedAt": "2026-10-17T12:09:10.689Z"
 }
