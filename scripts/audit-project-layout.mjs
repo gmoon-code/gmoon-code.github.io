@@ -28,6 +28,9 @@ try{
     const response=await page.goto(origin+'/'+target.path,{waitUntil:'load',timeout:60000});
     if(!response||response.status()>=400)throw Error('HTTP '+response?.status());
     await page.locator('figure.project-interface-figure img').first().waitFor({state:'attached'});
+    // Readers reach these images by scrolling; trigger native lazy loading first.
+    await page.locator('figure.project-interface-figure').first().evaluate(el=>el.scrollIntoView({block:'center'}));
+    await page.waitForTimeout(350);
     const audit=await page.evaluate(async()=>{
       const figures=[...document.querySelectorAll('figure.project-interface-figure')];
       await Promise.all(figures.map(f=>f.querySelector('img')?.decode().catch(()=>{})));
