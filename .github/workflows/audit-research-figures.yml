@@ -5,6 +5,8 @@ on:
     paths:
       - .github/workflows/audit-research-figures.yml
       - scripts/audit-research-figures.mjs
+      - research.html
+      - styles-20261013.css
   workflow_dispatch:
 
 permissions:
