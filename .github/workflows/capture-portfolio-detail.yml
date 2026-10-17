@@ -1,0 +1,46 @@
+name: Capture detailed public application screens
+
+on:
+  push:
+    paths:
+      - .github/workflows/capture-portfolio-detail.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: capture-detailed-public-applications
+  cancel-in-progress: false
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install browser capture dependencies
+        run: |
+          npm install --no-save --no-package-lock playwright@1.56.1 sharp@0.34.4
+          npx playwright install --with-deps chromium
+      - name: Capture published learning screens
+        run: node scripts/capture-project-detail.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: published-learning-screens
+          path: |
+            assets/story-method-observation-window.webp
+            assets/research-methods-data-lab.webp
+          if-no-files-found: error
+      - name: Commit verified screenshot files
+        run: |
+          git add assets/story-method-observation-window.webp assets/research-methods-data-lab.webp
+          if git diff --cached --quiet; then
+            echo "No changes to screenshots"
+            exit 0
+          fi
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m "Capture real instructional application screens"
+          git push origin HEAD:main
