@@ -1,21 +1,6 @@
 {
-  "createdAt": "2026-10-17T12:22:47.239Z",
-  "errors": [
-    {
-      "page": "research-methods-studio.html",
-      "size": "tablet",
-      "failures": [
-        "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('figure.project-interface-figure img').first() to be visible\n    65 × locator resolved to hidden <img width=\"1280\" height=\"800\" loading=\"lazy\" decoding=\"async\" src=\"assets/research-methods-data-lab.webp\" alt=\"Research Methods Studio Data Analysis and Statistics Laboratory showing step one of seven, the CSV import screen, an empty file picker, and the raw-data documentation rule.\"/>\n"
-      ]
-    },
-    {
-      "page": "research-methods-studio.html",
-      "size": "phone",
-      "failures": [
-        "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('figure.project-interface-figure img').first() to be visible\n    65 × locator resolved to hidden <img width=\"1280\" height=\"800\" loading=\"lazy\" decoding=\"async\" src=\"assets/research-methods-data-lab.webp\" alt=\"Research Methods Studio Data Analysis and Statistics Laboratory showing step one of seven, the CSV import screen, an empty file picker, and the raw-data documentation rule.\"/>\n"
-      ]
-    }
-  ],
+  "createdAt": "2026-10-17T12:44:16.098Z",
+  "errors": [],
   "results": [
     {
       "page": "projects.html",
@@ -56,6 +41,89 @@
             "overflowLeft": false,
             "overflowRight": false
           }
+        ],
+        "ancestors": [
+          {
+            "tag": "IMG",
+            "cls": "",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 504,
+            "rectHeight": 315,
+            "hidden": false
+          },
+          {
+            "tag": "A",
+            "cls": "",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 506,
+            "rectHeight": 342,
+            "hidden": false
+          },
+          {
+            "tag": "FIGURE",
+            "cls": "project-interface-figure",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 506,
+            "rectHeight": 413,
+            "hidden": false
+          },
+          {
+            "tag": "ARTICLE",
+            "cls": "project-showcase-item",
+            "display": "flex",
+            "visibility": "visible",
+            "rectWidth": 548,
+            "rectHeight": 809,
+            "hidden": false
+          },
+          {
+            "tag": "DIV",
+            "cls": "project-showcase",
+            "display": "grid",
+            "visibility": "visible",
+            "rectWidth": 1120,
+            "rectHeight": 809,
+            "hidden": false
+          },
+          {
+            "tag": "SECTION",
+            "cls": "section",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 1120,
+            "rectHeight": 869,
+            "hidden": false
+          },
+          {
+            "tag": "MAIN",
+            "cls": "site-shell page projects-page",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 1120,
+            "rectHeight": 1226,
+            "hidden": false
+          },
+          {
+            "tag": "BODY",
+            "cls": "theme-blue",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 1440,
+            "rectHeight": 1465,
+            "hidden": false
+          },
+          {
+            "tag": "HTML",
+            "cls": "",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 1440,
+            "rectHeight": 1465,
+            "hidden": false
+          }
         ]
       },
       "preview": null,
@@ -72,7 +140,7 @@
         "viewport": 768,
         "docWidth": 768,
         "bodyWidth": 768,
-        "pageHeight": 1493,
+        "pageHeight": 2351,
         "figures": [
           {
             "index": 1,
@@ -80,8 +148,8 @@
             "alt": "The Story Method opening interface displaying eight AP Biology units in a grid, with Unit 1 Chemistry of Life selected and the first journey available to begin.",
             "naturalWidth": 1280,
             "naturalHeight": 800,
-            "imageWidth": 300,
-            "imageHeight": 188,
+            "imageWidth": 668,
+            "imageHeight": 418,
             "captionGap": 35,
             "captionText": "Figure 1. The Story Method course overview. The released eight-unit interface, with Unit 1 selected.\nScreenshot from the public application, October 2026. Select the image to view ",
             "fullSize": "assets/story-method-interface.webp",
@@ -95,14 +163,97 @@
             "alt": "Research Methods Studio opening page with an overview of the research process, guidance about connected research decisions, and a form to create a research notebook.",
             "naturalWidth": 1280,
             "naturalHeight": 800,
-            "imageWidth": 300,
-            "imageHeight": 188,
+            "imageWidth": 668,
+            "imageHeight": 418,
             "captionGap": 35,
             "captionText": "Figure 2. Research Methods Studio opening screen. The research-notebook setup before any project work has been entered.\nScreenshot from the public application in a fresh browser se",
             "fullSize": "assets/research-methods-studio-interface.webp",
             "opensNewTab": true,
             "overflowLeft": false,
             "overflowRight": false
+          }
+        ],
+        "ancestors": [
+          {
+            "tag": "IMG",
+            "cls": "",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 668,
+            "rectHeight": 418,
+            "hidden": false
+          },
+          {
+            "tag": "A",
+            "cls": "",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 670,
+            "rectHeight": 444,
+            "hidden": false
+          },
+          {
+            "tag": "FIGURE",
+            "cls": "project-interface-figure",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 670,
+            "rectHeight": 495,
+            "hidden": false
+          },
+          {
+            "tag": "ARTICLE",
+            "cls": "project-showcase-item",
+            "display": "flex",
+            "visibility": "visible",
+            "rectWidth": 712,
+            "rectHeight": 847,
+            "hidden": false
+          },
+          {
+            "tag": "DIV",
+            "cls": "project-showcase",
+            "display": "grid",
+            "visibility": "visible",
+            "rectWidth": 712,
+            "rectHeight": 1718,
+            "hidden": false
+          },
+          {
+            "tag": "SECTION",
+            "cls": "section",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 712,
+            "rectHeight": 1778,
+            "hidden": false
+          },
+          {
+            "tag": "MAIN",
+            "cls": "site-shell page projects-page",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 712,
+            "rectHeight": 2142,
+            "hidden": false
+          },
+          {
+            "tag": "BODY",
+            "cls": "theme-blue",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 768,
+            "rectHeight": 2351,
+            "hidden": false
+          },
+          {
+            "tag": "HTML",
+            "cls": "",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 768,
+            "rectHeight": 2351,
+            "hidden": false
           }
         ]
       },
@@ -149,6 +300,89 @@
             "overflowLeft": false,
             "overflowRight": false
           }
+        ],
+        "ancestors": [
+          {
+            "tag": "IMG",
+            "cls": "",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 318,
+            "rectHeight": 199,
+            "hidden": false
+          },
+          {
+            "tag": "A",
+            "cls": "",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 320,
+            "rectHeight": 226,
+            "hidden": false
+          },
+          {
+            "tag": "FIGURE",
+            "cls": "project-interface-figure",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 320,
+            "rectHeight": 315,
+            "hidden": false
+          },
+          {
+            "tag": "ARTICLE",
+            "cls": "project-showcase-item",
+            "display": "flex",
+            "visibility": "visible",
+            "rectWidth": 362,
+            "rectHeight": 790,
+            "hidden": false
+          },
+          {
+            "tag": "DIV",
+            "cls": "project-showcase",
+            "display": "grid",
+            "visibility": "visible",
+            "rectWidth": 362,
+            "rectHeight": 1623,
+            "hidden": false
+          },
+          {
+            "tag": "SECTION",
+            "cls": "section",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 362,
+            "rectHeight": 1683,
+            "hidden": false
+          },
+          {
+            "tag": "MAIN",
+            "cls": "site-shell page projects-page",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 362,
+            "rectHeight": 2117,
+            "hidden": false
+          },
+          {
+            "tag": "BODY",
+            "cls": "theme-blue",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 390,
+            "rectHeight": 2467,
+            "hidden": false
+          },
+          {
+            "tag": "HTML",
+            "cls": "",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 390,
+            "rectHeight": 2467,
+            "hidden": false
+          }
         ]
       },
       "preview": null,
@@ -181,6 +415,71 @@
             "opensNewTab": true,
             "overflowLeft": false,
             "overflowRight": false
+          }
+        ],
+        "ancestors": [
+          {
+            "tag": "IMG",
+            "cls": "",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 858,
+            "rectHeight": 383,
+            "hidden": false
+          },
+          {
+            "tag": "A",
+            "cls": "",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 860,
+            "rectHeight": 409,
+            "hidden": false
+          },
+          {
+            "tag": "FIGURE",
+            "cls": "project-interface-figure project-detail-figure",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 860,
+            "rectHeight": 485,
+            "hidden": false
+          },
+          {
+            "tag": "SECTION",
+            "cls": "section story-example-section",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 1120,
+            "rectHeight": 1303,
+            "hidden": false
+          },
+          {
+            "tag": "MAIN",
+            "cls": "site-shell page project-detail-page",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 1120,
+            "rectHeight": 4245,
+            "hidden": false
+          },
+          {
+            "tag": "BODY",
+            "cls": "theme-blue",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 1440,
+            "rectHeight": 4484,
+            "hidden": false
+          },
+          {
+            "tag": "HTML",
+            "cls": "",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 1440,
+            "rectHeight": 4484,
+            "hidden": false
           }
         ]
       },
@@ -218,6 +517,71 @@
             "overflowLeft": false,
             "overflowRight": false
           }
+        ],
+        "ancestors": [
+          {
+            "tag": "IMG",
+            "cls": "",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 710,
+            "rectHeight": 317,
+            "hidden": false
+          },
+          {
+            "tag": "A",
+            "cls": "",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 712,
+            "rectHeight": 343,
+            "hidden": false
+          },
+          {
+            "tag": "FIGURE",
+            "cls": "project-interface-figure project-detail-figure",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 712,
+            "rectHeight": 419,
+            "hidden": false
+          },
+          {
+            "tag": "SECTION",
+            "cls": "section story-example-section",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 712,
+            "rectHeight": 1339,
+            "hidden": false
+          },
+          {
+            "tag": "MAIN",
+            "cls": "site-shell page project-detail-page",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 712,
+            "rectHeight": 4721,
+            "hidden": false
+          },
+          {
+            "tag": "BODY",
+            "cls": "theme-blue",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 768,
+            "rectHeight": 4930,
+            "hidden": false
+          },
+          {
+            "tag": "HTML",
+            "cls": "",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 768,
+            "rectHeight": 4930,
+            "hidden": false
+          }
         ]
       },
       "preview": {
@@ -251,6 +615,71 @@
             "opensNewTab": true,
             "overflowLeft": false,
             "overflowRight": false
+          }
+        ],
+        "ancestors": [
+          {
+            "tag": "IMG",
+            "cls": "",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 360,
+            "rectHeight": 160,
+            "hidden": false
+          },
+          {
+            "tag": "A",
+            "cls": "",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 362,
+            "rectHeight": 187,
+            "hidden": false
+          },
+          {
+            "tag": "FIGURE",
+            "cls": "project-interface-figure project-detail-figure",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 362,
+            "rectHeight": 327,
+            "hidden": false
+          },
+          {
+            "tag": "SECTION",
+            "cls": "section story-example-section",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 362,
+            "rectHeight": 1838,
+            "hidden": false
+          },
+          {
+            "tag": "MAIN",
+            "cls": "site-shell page project-detail-page",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 362,
+            "rectHeight": 7076,
+            "hidden": false
+          },
+          {
+            "tag": "BODY",
+            "cls": "theme-blue",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 390,
+            "rectHeight": 7426,
+            "hidden": false
+          },
+          {
+            "tag": "HTML",
+            "cls": "",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 390,
+            "rectHeight": 7426,
+            "hidden": false
           }
         ]
       },
@@ -288,6 +717,71 @@
             "overflowLeft": false,
             "overflowRight": false
           }
+        ],
+        "ancestors": [
+          {
+            "tag": "IMG",
+            "cls": "",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 858,
+            "rectHeight": 536,
+            "hidden": false
+          },
+          {
+            "tag": "A",
+            "cls": "",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 860,
+            "rectHeight": 563,
+            "hidden": false
+          },
+          {
+            "tag": "FIGURE",
+            "cls": "project-interface-figure project-detail-figure",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 860,
+            "rectHeight": 681,
+            "hidden": false
+          },
+          {
+            "tag": "SECTION",
+            "cls": "section",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 1120,
+            "rectHeight": 1100,
+            "hidden": false
+          },
+          {
+            "tag": "MAIN",
+            "cls": "site-shell page project-detail-page",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 1120,
+            "rectHeight": 5406,
+            "hidden": false
+          },
+          {
+            "tag": "BODY",
+            "cls": "theme-blue",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 1440,
+            "rectHeight": 5645,
+            "hidden": false
+          },
+          {
+            "tag": "HTML",
+            "cls": "",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 1440,
+            "rectHeight": 5645,
+            "hidden": false
+          }
         ]
       },
       "preview": {
@@ -303,12 +797,202 @@
     {
       "page": "research-methods-studio.html",
       "size": "tablet",
-      "error": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('figure.project-interface-figure img').first() to be visible\n    65 × locator resolved to hidden <img width=\"1280\" height=\"800\" loading=\"lazy\" decoding=\"async\" src=\"assets/research-methods-data-lab.webp\" alt=\"Research Methods Studio Data Analysis and Statistics Laboratory showing step one of seven, the CSV import screen, an empty file picker, and the raw-data documentation rule.\"/>\n"
+      "audit": {
+        "viewport": 768,
+        "docWidth": 768,
+        "bodyWidth": 768,
+        "pageHeight": 6285,
+        "figures": [
+          {
+            "index": 1,
+            "src": "assets/research-methods-data-lab.webp",
+            "alt": "Research Methods Studio Data Analysis and Statistics Laboratory showing step one of seven, the CSV import screen, an empty file picker, and the raw-data documentation rule.",
+            "naturalWidth": 1280,
+            "naturalHeight": 800,
+            "imageWidth": 710,
+            "imageHeight": 444,
+            "captionGap": 35,
+            "captionText": "Figure 2. Opening the Data and Statistics Lab. The published interface begins with raw-data import and directs students to preserve their original records. No dataset or analysis r",
+            "fullSize": "assets/research-methods-data-lab.webp",
+            "opensNewTab": true,
+            "overflowLeft": false,
+            "overflowRight": false
+          }
+        ],
+        "ancestors": [
+          {
+            "tag": "IMG",
+            "cls": "",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 710,
+            "rectHeight": 444,
+            "hidden": false
+          },
+          {
+            "tag": "A",
+            "cls": "",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 712,
+            "rectHeight": 471,
+            "hidden": false
+          },
+          {
+            "tag": "FIGURE",
+            "cls": "project-interface-figure project-detail-figure",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 712,
+            "rectHeight": 588,
+            "hidden": false
+          },
+          {
+            "tag": "SECTION",
+            "cls": "section",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 712,
+            "rectHeight": 1061,
+            "hidden": false
+          },
+          {
+            "tag": "MAIN",
+            "cls": "site-shell page project-detail-page",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 712,
+            "rectHeight": 6076,
+            "hidden": false
+          },
+          {
+            "tag": "BODY",
+            "cls": "theme-blue",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 768,
+            "rectHeight": 6285,
+            "hidden": false
+          },
+          {
+            "tag": "HTML",
+            "cls": "",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 768,
+            "rectHeight": 6285,
+            "hidden": false
+          }
+        ]
+      },
+      "preview": {
+        "src": "https://gmoon-code.github.io/research-methods/",
+        "title": "Research Methods Studio, live research workspace",
+        "closeWorked": true
+      },
+      "shots": [],
+      "failures": []
     },
     {
       "page": "research-methods-studio.html",
       "size": "phone",
-      "error": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('figure.project-interface-figure img').first() to be visible\n    65 × locator resolved to hidden <img width=\"1280\" height=\"800\" loading=\"lazy\" decoding=\"async\" src=\"assets/research-methods-data-lab.webp\" alt=\"Research Methods Studio Data Analysis and Statistics Laboratory showing step one of seven, the CSV import screen, an empty file picker, and the raw-data documentation rule.\"/>\n"
+      "audit": {
+        "viewport": 390,
+        "docWidth": 390,
+        "bodyWidth": 390,
+        "pageHeight": 9159,
+        "figures": [
+          {
+            "index": 1,
+            "src": "assets/research-methods-data-lab.webp",
+            "alt": "Research Methods Studio Data Analysis and Statistics Laboratory showing step one of seven, the CSV import screen, an empty file picker, and the raw-data documentation rule.",
+            "naturalWidth": 1280,
+            "naturalHeight": 800,
+            "imageWidth": 360,
+            "imageHeight": 225,
+            "captionGap": 35,
+            "captionText": "Figure 2. Opening the Data and Statistics Lab. The published interface begins with raw-data import and directs students to preserve their original records. No dataset or analysis r",
+            "fullSize": "assets/research-methods-data-lab.webp",
+            "opensNewTab": true,
+            "overflowLeft": false,
+            "overflowRight": false
+          }
+        ],
+        "ancestors": [
+          {
+            "tag": "IMG",
+            "cls": "",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 360,
+            "rectHeight": 225,
+            "hidden": false
+          },
+          {
+            "tag": "A",
+            "cls": "",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 362,
+            "rectHeight": 252,
+            "hidden": false
+          },
+          {
+            "tag": "FIGURE",
+            "cls": "project-interface-figure project-detail-figure",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 362,
+            "rectHeight": 392,
+            "hidden": false
+          },
+          {
+            "tag": "SECTION",
+            "cls": "section",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 362,
+            "rectHeight": 1176,
+            "hidden": false
+          },
+          {
+            "tag": "MAIN",
+            "cls": "site-shell page project-detail-page",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 362,
+            "rectHeight": 8809,
+            "hidden": false
+          },
+          {
+            "tag": "BODY",
+            "cls": "theme-blue",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 390,
+            "rectHeight": 9159,
+            "hidden": false
+          },
+          {
+            "tag": "HTML",
+            "cls": "",
+            "display": "block",
+            "visibility": "visible",
+            "rectWidth": 390,
+            "rectHeight": 9159,
+            "hidden": false
+          }
+        ]
+      },
+      "preview": {
+        "src": "https://gmoon-code.github.io/research-methods/",
+        "title": "Research Methods Studio, live research workspace",
+        "closeWorked": true
+      },
+      "shots": [
+        "docs/visual-audit/methods-1-phone.webp"
+      ],
+      "failures": []
     }
   ]
 }
