@@ -38,7 +38,7 @@
 <section id="research-example" class="section rms-example-section">
   <div class="section-head"><h2>A synthetic experiment from design to analysis</h2></div>
   <div class="reading project-reading">
-    <p>The application's repository includes a <a href="https://github.com/gmoon-code/research-methods/tree/main/examples/radish-salinity" target="_blank" rel="noopener noreferrer">worked radish-salinity exemplar</a> in which eighteen Petri dishes are assigned to 0, 50, or 100 mM sodium chloride. Each dish contains five seeds. The experimental procedure, measurements, and findings are constructed for teaching, allowing students to inspect the path from research question to analysis without implying that an experiment was conducted.</p>
+    <p>The application's repository includes a <a href="https://github.com/gmoon-code/research-methods/tree/main/examples/radish-salinity" target="_blank" rel="noopener noreferrer">worked radish-salinity exemplar<span class="new-tab-note"> (opens in a new tab)</span></a> in which eighteen Petri dishes are assigned to 0, 50, or 100 mM sodium chloride. Each dish contains five seeds. The experimental procedure, measurements, and findings are constructed for teaching, allowing students to inspect the path from research question to analysis without implying that an experiment was conducted.</p>
   </div>
   <div class="project-decision-sequence">
     <div><span class="project-sequence-label">Question</span><p>How does assigned salinity concentration affect mean radicle length after 72 hours?</p></div>
@@ -49,7 +49,7 @@
   </div>
   <div class="reading project-reading">
     <h3>The constructed analysis records</h3>
-    <p>The <a href="https://github.com/gmoon-code/research-methods/blob/main/examples/radish-salinity/SYNTHETIC_DISH_LEVEL_ANALYSIS_DATA.csv" target="_blank" rel="noopener noreferrer">dish-level file</a> provides one outcome per assigned dish. Its group summaries, checked against the <a href="https://github.com/gmoon-code/research-methods/blob/main/examples/radish-salinity/SYNTHETIC_ANALYSIS_OUTPUT.json" target="_blank" rel="noopener noreferrer">synthetic analysis output</a>, appear below.</p>
+    <p>The <a href="https://github.com/gmoon-code/research-methods/blob/main/examples/radish-salinity/SYNTHETIC_DISH_LEVEL_ANALYSIS_DATA.csv" target="_blank" rel="noopener noreferrer">dish-level file<span class="new-tab-note"> (opens in a new tab)</span></a> provides one outcome per assigned dish. Its group summaries, checked against the <a href="https://github.com/gmoon-code/research-methods/blob/main/examples/radish-salinity/SYNTHETIC_ANALYSIS_OUTPUT.json" target="_blank" rel="noopener noreferrer">synthetic analysis output<span class="new-tab-note"> (opens in a new tab)</span></a>, appear below.</p>
   </div>
   <div class="teaching-sequence-table-wrap" role="region" tabindex="0" aria-label="Constructed radish salinity results">
     <table class="teaching-sequence-table">
@@ -64,7 +64,7 @@
   </div>
   <div class="rms-analysis-note">
     <h3>Two questions hidden in the same dataset</h3>
-    <p>Treatment varies between dishes, while seeds within each dish share its assigned condition and environment. Treating the ninety <a href="https://github.com/gmoon-code/research-methods/blob/main/examples/radish-salinity/SYNTHETIC_SEED_LEVEL_DATA.csv" target="_blank" rel="noopener noreferrer">seed-level rows</a> as independent treatment replicates would exaggerate replication. With only one dish per condition, treatment would be inseparable from differences among those individual dishes. The exemplar therefore uses the eighteen independently assigned dishes for its main comparison.</p>
+    <p>Treatment varies between dishes, while seeds within each dish share its assigned condition and environment. Treating the ninety <a href="https://github.com/gmoon-code/research-methods/blob/main/examples/radish-salinity/SYNTHETIC_SEED_LEVEL_DATA.csv" target="_blank" rel="noopener noreferrer">seed-level rows<span class="new-tab-note"> (opens in a new tab)</span></a> as independent treatment replicates would exaggerate replication. With only one dish per condition, treatment would be inseparable from differences among those individual dishes. The exemplar therefore uses the eighteen independently assigned dishes for its main comparison.</p>
     <p>The two reported outcomes also involve different sets of seeds. Germination proportion includes all five seeds in each dish, whereas mean radicle length is calculated only among those that germinated. As germination proportions change across the constructed conditions, the mean length needs to be read with that selection in mind. The example makes this choice visible before students interpret differences or make claims about why growth may have changed.</p>
   </div>
   <div class="reading project-reading">
@@ -151,7 +151,7 @@
 <section id="methods-implementation" class="section">
   <div class="section-head"><h2>How the workspace handles guidance and records</h2></div>
   <div class="reading project-reading">
-    <p>Research guidance and students' working notebooks are maintained separately. The public <a href="https://github.com/gmoon-code/research-methods/blob/main/README.md" target="_blank" rel="noopener noreferrer">application documentation</a> describes a release process that can update instructional guidance without overwriting a locally stored project. It also describes technical checks and the optional network features discussed above. Those documented safeguards have not been independently audited for privacy or security.</p>
+    <p>Research guidance and students' working notebooks are maintained separately. The public <a href="https://github.com/gmoon-code/research-methods/blob/main/README.md" target="_blank" rel="noopener noreferrer">application documentation<span class="new-tab-note"> (opens in a new tab)</span></a> describes a release process that can update instructional guidance without overwriting a locally stored project. It also describes technical checks and the optional network features discussed above. Those documented safeguards have not been independently audited for privacy or security.</p>
   </div>
   <details class="project-technical-details">
     <summary>Guidance releases, validation, and recovery</summary>
