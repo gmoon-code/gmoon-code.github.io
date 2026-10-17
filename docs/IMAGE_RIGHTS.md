@@ -34,11 +34,37 @@ This record documents third-party images and original interface captures used on
 - **Interpretive limit:** This is an example of thylakoid ultrastructure. It is not an observation of bentazon-treated tissue, electron flux, proton-gradient size, or ATP/NADPH concentrations.
 - **Accessibility:** meaningful alternative text, caption and preserved scale bar.
 
-## Application interface screenshots awaiting direct capture
+## Original application screenshots captured in October 2026
 
-The Story Method and Research Methods Studio have working embedded application previews on their respective website pages. No screenshots were added during this phase. Genuine captures must show the actual released interface at a known version, with any private student work excluded. A guessed or recreated illustration must not be labelled as a screenshot.
+These are **genuine screenshots of the released public applications**, captured in a fresh, logged-out Chromium browser on GitHub Actions and reviewed visually before publication. They appear on `projects.html`, with a link to each larger image. Both applications retain their working interactive previews on their own project pages.
 
-For future screenshots, record the public release/version, view or screen captured, date, source repository or application, whether any data shown are synthetic, any edits or annotations, and an appropriate author-source note.
+### The Story Method opening interface
+
+- **Local asset:** `assets/story-method-interface.webp`.
+- **Published application:** https://gmoon-code.github.io/memory-palace-u1-8/?unit=unit-1
+- **Repository and release history:** https://github.com/gmoon-code/memory-palace-u1-8 . The site documentation calls this released interface *Site UX1*.
+- **Observed screen:** Eight-unit AP Biology course overview, showing Unit 1 selected and an option to begin *The Evidence Lockdown*. It is not a screenshot of the Observation Window or a learner's response.
+- **Attribution:** original author's application, captured from its public interface in October 2026.
+- **User content:** fresh browser context with no saved learner work or login.
+- **Alteration:** browser viewport screenshot proportionally resized to 1280 × 800 and encoded as WebP; no overlay, synthetic interface, or image-content modification.
+
+### Research Methods Studio opening interface
+
+- **Local asset:** `assets/research-methods-studio-interface.webp`.
+- **Published application:** https://gmoon-code.github.io/research-methods/
+- **Repository and release history:** https://github.com/gmoon-code/research-methods . Its repository release is described as *v3.0.0*; the screen includes the older internal *v2.13.3 Guided Student Flow* label.
+- **Observed screen:** introductory research pathway and empty research-notebook creation form. It does not show the Data and Statistics Lab, results, or any example dataset.
+- **Attribution:** original author's application, captured from its public interface in October 2026.
+- **User content:** fresh browser context with no locally saved research project.
+- **Alteration:** browser viewport screenshot proportionally resized to 1280 × 800 and encoded as WebP; no annotation or artificial UI content.
+
+### Capture workflow and editorial rules
+
+- **Capture code:** `scripts/capture-project-interfaces.mjs`.
+- **GitHub Actions workflow:** `.github/workflows/capture-portfolio-images.yml`, triggered by its initial commit and available for manual refresh.
+- **Controls:** capture waits for the published page to load, confirms named interface content, checks for the absence of an application loading/error screen, checks image size, and captures without signing in. Generated screenshots are reviewed before updating the portfolio.
+- **Caption policy:** specify which actual part of the application is visible. Do not describe the overview as an Observation Window journey or the starting form as a Methods or Statistics Lab. Original interface screenshots do not count as classroom evaluation.
+- **Accessibility:** each screenshot has a descriptive alt attribute, nearby caption, and accessible full-size link. The interactive published applications remain separately available.
 
 ## Personal photographs and media artwork inventory, 17 October 2026
 
