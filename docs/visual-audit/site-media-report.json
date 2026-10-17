@@ -1,0 +1,1336 @@
+{
+  "testedAt": "2026-10-17T14:02:12.554Z",
+  "results": [
+    {
+      "path": "index.html",
+      "viewport": "desktop",
+      "geometry": {
+        "docWidth": 1440,
+        "bodyWidth": 1440,
+        "viewportWidth": 1440,
+        "figures": [
+          {
+            "className": "home-photo studio-unrestricted-size",
+            "hasCaption": false,
+            "hasAccessibleName": false,
+            "width": 318,
+            "left": 962,
+            "right": 1280,
+            "contentChars": 0
+          },
+          {
+            "className": "home-outside-photo",
+            "hasCaption": false,
+            "hasAccessibleName": false,
+            "width": 270,
+            "left": 1010,
+            "right": 1280,
+            "contentChars": 0
+          }
+        ]
+      },
+      "images": [
+        {
+          "src": "assets/profile-portrait.webp",
+          "naturalWidth": 520,
+          "naturalHeight": 516,
+          "complete": true,
+          "renderedWidth": 298,
+          "renderedHeight": 298,
+          "left": 972,
+          "right": 1270,
+          "alt": "Portrait of Ye Eun Moon outdoors",
+          "loading": "eager",
+          "source": "https://gmoon-code.github.io/assets/profile-portrait.webp"
+        },
+        {
+          "src": "assets/pungmul-stage.webp",
+          "naturalWidth": 860,
+          "naturalHeight": 645,
+          "complete": true,
+          "renderedWidth": 254,
+          "renderedHeight": 170,
+          "left": 1018,
+          "right": 1272,
+          "alt": "Pungmul ensemble performing together on stage",
+          "loading": "lazy",
+          "source": "https://gmoon-code.github.io/assets/pungmul-stage.webp"
+        }
+      ],
+      "failures": []
+    },
+    {
+      "path": "about.html",
+      "viewport": "desktop",
+      "geometry": {
+        "docWidth": 1440,
+        "bodyWidth": 1440,
+        "viewportWidth": 1440,
+        "figures": [
+          {
+            "className": "about-photo",
+            "hasCaption": false,
+            "hasAccessibleName": false,
+            "width": 190,
+            "left": 1090,
+            "right": 1280,
+            "contentChars": 0
+          }
+        ]
+      },
+      "images": [
+        {
+          "src": "assets/profile-portrait.webp",
+          "naturalWidth": 520,
+          "naturalHeight": 516,
+          "complete": true,
+          "renderedWidth": 170,
+          "renderedHeight": 170,
+          "left": 1100,
+          "right": 1270,
+          "alt": "Portrait of Ye Eun Moon outdoors",
+          "loading": "eager",
+          "source": "https://gmoon-code.github.io/assets/profile-portrait.webp"
+        }
+      ],
+      "failures": []
+    },
+    {
+      "path": "research.html",
+      "viewport": "desktop",
+      "geometry": {
+        "docWidth": 1440,
+        "bodyWidth": 1440,
+        "viewportWidth": 1440,
+        "figures": [
+          {
+            "className": "research-published-figure",
+            "hasCaption": true,
+            "hasAccessibleName": true,
+            "width": 800,
+            "left": 160,
+            "right": 960,
+            "contentChars": 509
+          }
+        ]
+      },
+      "images": [
+        {
+          "src": "assets/gonzalez-howard-2023-figure-1.webp",
+          "naturalWidth": 1087,
+          "naturalHeight": 778,
+          "complete": true,
+          "renderedWidth": 760,
+          "renderedHeight": 544,
+          "left": 160,
+          "right": 920,
+          "alt": "Original published graph comparing focal science practices under linguistic and expansive conceptualisations of language. Modelling is reported for 2 linguistic-view and 8 expansive-view studies; explanation for 6 and 3; and argumentation for 9 and 2, respectively.",
+          "loading": "lazy",
+          "source": "https://gmoon-code.github.io/assets/gonzalez-howard-2023-figure-1.webp"
+        }
+      ],
+      "failures": []
+    },
+    {
+      "path": "teaching.html",
+      "viewport": "desktop",
+      "geometry": {
+        "docWidth": 1440,
+        "bodyWidth": 1440,
+        "viewportWidth": 1440,
+        "figures": []
+      },
+      "images": [],
+      "failures": []
+    },
+    {
+      "path": "projects.html",
+      "viewport": "desktop",
+      "geometry": {
+        "docWidth": 1440,
+        "bodyWidth": 1440,
+        "viewportWidth": 1440,
+        "figures": [
+          {
+            "className": "project-interface-figure",
+            "hasCaption": true,
+            "hasAccessibleName": true,
+            "width": 506,
+            "left": 181,
+            "right": 687,
+            "contentChars": 196
+          },
+          {
+            "className": "project-interface-figure",
+            "hasCaption": true,
+            "hasAccessibleName": true,
+            "width": 506,
+            "left": 753,
+            "right": 1259,
+            "contentChars": 242
+          }
+        ]
+      },
+      "images": [
+        {
+          "src": "assets/story-method-interface.webp",
+          "naturalWidth": 1280,
+          "naturalHeight": 800,
+          "complete": true,
+          "renderedWidth": 504,
+          "renderedHeight": 315,
+          "left": 182,
+          "right": 686,
+          "alt": "The Story Method opening interface displaying eight AP Biology units in a grid, with Unit 1 Chemistry of Life selected and the first journey available to begin.",
+          "loading": "lazy",
+          "source": "https://gmoon-code.github.io/assets/story-method-interface.webp"
+        },
+        {
+          "src": "assets/research-methods-studio-interface.webp",
+          "naturalWidth": 1280,
+          "naturalHeight": 800,
+          "complete": true,
+          "renderedWidth": 504,
+          "renderedHeight": 315,
+          "left": 754,
+          "right": 1258,
+          "alt": "Research Methods Studio opening page with an overview of the research process, guidance about connected research decisions, and a form to create a research notebook.",
+          "loading": "lazy",
+          "source": "https://gmoon-code.github.io/assets/research-methods-studio-interface.webp"
+        }
+      ],
+      "failures": []
+    },
+    {
+      "path": "interests.html",
+      "viewport": "desktop",
+      "geometry": {
+        "docWidth": 1440,
+        "bodyWidth": 1440,
+        "viewportWidth": 1440,
+        "figures": [
+          {
+            "className": "",
+            "hasCaption": true,
+            "hasAccessibleName": true,
+            "width": 270,
+            "left": 160,
+            "right": 430,
+            "contentChars": 19
+          },
+          {
+            "className": "",
+            "hasCaption": true,
+            "hasAccessibleName": true,
+            "width": 270,
+            "left": 444,
+            "right": 713,
+            "contentChars": 12
+          },
+          {
+            "className": "",
+            "hasCaption": true,
+            "hasAccessibleName": true,
+            "width": 270,
+            "left": 727,
+            "right": 997,
+            "contentChars": 17
+          },
+          {
+            "className": "",
+            "hasCaption": true,
+            "hasAccessibleName": true,
+            "width": 270,
+            "left": 1011,
+            "right": 1280,
+            "contentChars": 16
+          }
+        ]
+      },
+      "images": [
+        {
+          "src": "assets/pungmul-stage.webp",
+          "naturalWidth": 860,
+          "naturalHeight": 645,
+          "complete": true,
+          "renderedWidth": 268,
+          "renderedHeight": 201,
+          "left": 161,
+          "right": 429,
+          "alt": "Pungmul ensemble performing on stage",
+          "loading": "lazy",
+          "source": "https://gmoon-code.github.io/assets/pungmul-stage.webp"
+        },
+        {
+          "src": "assets/pungmul-group.webp",
+          "naturalWidth": 860,
+          "naturalHeight": 484,
+          "complete": true,
+          "renderedWidth": 268,
+          "renderedHeight": 151,
+          "left": 445,
+          "right": 712,
+          "alt": "Pungmul ensemble performing outdoors near a city square",
+          "loading": "lazy",
+          "source": "https://gmoon-code.github.io/assets/pungmul-group.webp"
+        },
+        {
+          "src": "assets/pungmul-solo.webp",
+          "naturalWidth": 650,
+          "naturalHeight": 433,
+          "complete": true,
+          "renderedWidth": 268,
+          "renderedHeight": 178,
+          "left": 728,
+          "right": 996,
+          "alt": "A seated performer playing janggu under blue stage lighting",
+          "loading": "lazy",
+          "source": "https://gmoon-code.github.io/assets/pungmul-solo.webp"
+        },
+        {
+          "src": "assets/pungmul-rehearsal.webp",
+          "naturalWidth": 650,
+          "naturalHeight": 366,
+          "complete": true,
+          "renderedWidth": 268,
+          "renderedHeight": 151,
+          "left": 1012,
+          "right": 1279,
+          "alt": "Pungmul drummers in colourful costumes performing together indoors",
+          "loading": "lazy",
+          "source": "https://gmoon-code.github.io/assets/pungmul-rehearsal.webp"
+        },
+        {
+          "src": "https://covers.openlibrary.org/b/isbn/9781635570304-L.jpg",
+          "naturalWidth": 326,
+          "naturalHeight": 500,
+          "complete": true,
+          "renderedWidth": 112,
+          "renderedHeight": 168,
+          "left": 177,
+          "right": 289,
+          "alt": "Cover of The Priory of the Orange Tree",
+          "loading": "lazy",
+          "source": "https://covers.openlibrary.org/b/isbn/9781635570304-L.jpg"
+        },
+        {
+          "src": "https://covers.openlibrary.org/b/isbn/9780618640157-L.jpg",
+          "naturalWidth": 314,
+          "naturalHeight": 500,
+          "complete": true,
+          "renderedWidth": 112,
+          "renderedHeight": 168,
+          "left": 747,
+          "right": 859,
+          "alt": "Cover of The Lord of the Rings",
+          "loading": "lazy",
+          "source": "https://covers.openlibrary.org/b/isbn/9780618640157-L.jpg"
+        },
+        {
+          "src": "https://target.scene7.com/is/image/Target/GUEST_e7ffa222-1832-4090-a0a1-d5722ff38378?fmt=pjpeg&hei=488&wid=488",
+          "naturalWidth": 488,
+          "naturalHeight": 488,
+          "complete": true,
+          "renderedWidth": 112,
+          "renderedHeight": 168,
+          "left": 177,
+          "right": 289,
+          "alt": "Cover of I'm Waiting for You",
+          "loading": "lazy",
+          "source": "https://target.scene7.com/is/image/Target/GUEST_e7ffa222-1832-4090-a0a1-d5722ff38378?fmt=pjpeg&hei=488&wid=488"
+        },
+        {
+          "src": "https://covers.openlibrary.org/b/isbn/9780918526526-L.jpg",
+          "naturalWidth": 333,
+          "naturalHeight": 500,
+          "complete": true,
+          "renderedWidth": 112,
+          "renderedHeight": 168,
+          "left": 747,
+          "right": 859,
+          "alt": "Cover of Rose",
+          "loading": "lazy",
+          "source": "https://covers.openlibrary.org/b/isbn/9780918526526-L.jpg"
+        },
+        {
+          "src": "https://commons.wikimedia.org/wiki/Special:FilePath/Detective_Conan_logo.svg",
+          "naturalWidth": 302,
+          "naturalHeight": 92,
+          "complete": true,
+          "renderedWidth": 112,
+          "renderedHeight": 168,
+          "left": 177,
+          "right": 289,
+          "alt": "Official Detective Conan logo",
+          "loading": "lazy",
+          "source": "https://commons.wikimedia.org/wiki/Special:FilePath/Detective_Conan_logo.svg"
+        },
+        {
+          "src": "https://media.senscritique.com/media/000018121717/0/dimension_20.jpg",
+          "naturalWidth": 680,
+          "naturalHeight": 1000,
+          "complete": true,
+          "renderedWidth": 112,
+          "renderedHeight": 168,
+          "left": 747,
+          "right": 859,
+          "alt": "Dimension 20 series artwork",
+          "loading": "lazy",
+          "source": "https://media.senscritique.com/media/000018121717/0/dimension_20.jpg"
+        }
+      ],
+      "failures": []
+    },
+    {
+      "path": "cv.html",
+      "viewport": "desktop",
+      "geometry": {
+        "docWidth": 1440,
+        "bodyWidth": 1440,
+        "viewportWidth": 1440,
+        "figures": []
+      },
+      "images": [],
+      "failures": []
+    },
+    {
+      "path": "research-action.html",
+      "viewport": "desktop",
+      "geometry": {
+        "docWidth": 1440,
+        "bodyWidth": 1440,
+        "viewportWidth": 1440,
+        "figures": [
+          {
+            "className": "editorial-figure",
+            "hasCaption": true,
+            "hasAccessibleName": true,
+            "width": 1120,
+            "left": 160,
+            "right": 1280,
+            "contentChars": 287
+          },
+          {
+            "className": "mechanism-figure",
+            "hasCaption": true,
+            "hasAccessibleName": true,
+            "width": 1120,
+            "left": 160,
+            "right": 1280,
+            "contentChars": 72
+          }
+        ]
+      },
+      "images": [],
+      "failures": []
+    },
+    {
+      "path": "research-scoping.html",
+      "viewport": "desktop",
+      "geometry": {
+        "docWidth": 1440,
+        "bodyWidth": 1440,
+        "viewportWidth": 1440,
+        "figures": []
+      },
+      "images": [],
+      "failures": []
+    },
+    {
+      "path": "story-method.html",
+      "viewport": "desktop",
+      "geometry": {
+        "docWidth": 1440,
+        "bodyWidth": 1440,
+        "viewportWidth": 1440,
+        "figures": [
+          {
+            "className": "project-interface-figure project-detail-figure",
+            "hasCaption": true,
+            "hasAccessibleName": true,
+            "width": 860,
+            "left": 160,
+            "right": 1020,
+            "contentChars": 268
+          }
+        ]
+      },
+      "images": [
+        {
+          "src": "assets/story-method-observation-window.webp",
+          "naturalWidth": 978,
+          "naturalHeight": 436,
+          "complete": true,
+          "renderedWidth": 858,
+          "renderedHeight": 383,
+          "left": 161,
+          "right": 1019,
+          "alt": "The Story Method Observation Window panel, with text describing two reporter-cell trays and three spatial cues for the hypothesis door, reporter-cell chamber, and evidence board.",
+          "loading": "lazy",
+          "source": "https://gmoon-code.github.io/assets/story-method-observation-window.webp"
+        }
+      ],
+      "failures": []
+    },
+    {
+      "path": "research-methods-studio.html",
+      "viewport": "desktop",
+      "geometry": {
+        "docWidth": 1440,
+        "bodyWidth": 1440,
+        "viewportWidth": 1440,
+        "figures": [
+          {
+            "className": "editorial-figure",
+            "hasCaption": true,
+            "hasAccessibleName": true,
+            "width": 1120,
+            "left": 160,
+            "right": 1280,
+            "contentChars": 335
+          },
+          {
+            "className": "project-interface-figure project-detail-figure",
+            "hasCaption": true,
+            "hasAccessibleName": true,
+            "width": 860,
+            "left": 160,
+            "right": 1020,
+            "contentChars": 315
+          }
+        ]
+      },
+      "images": [
+        {
+          "src": "assets/research-methods-data-lab.webp",
+          "naturalWidth": 1280,
+          "naturalHeight": 800,
+          "complete": true,
+          "renderedWidth": 858,
+          "renderedHeight": 536,
+          "left": 161,
+          "right": 1019,
+          "alt": "Research Methods Studio Data Analysis and Statistics Laboratory showing step one of seven, the CSV import screen, an empty file picker, and the raw-data documentation rule.",
+          "loading": "lazy",
+          "source": "https://gmoon-code.github.io/assets/research-methods-data-lab.webp"
+        }
+      ],
+      "failures": []
+    },
+    {
+      "path": "teaching-ap-biology.html",
+      "viewport": "desktop",
+      "geometry": {
+        "docWidth": 1440,
+        "bodyWidth": 1440,
+        "viewportWidth": 1440,
+        "figures": [
+          {
+            "className": "editorial-figure editorial-source-image editorial-source-image-compact",
+            "hasCaption": true,
+            "hasAccessibleName": true,
+            "width": 560,
+            "left": 440,
+            "right": 1000,
+            "contentChars": 394
+          },
+          {
+            "className": "teaching-bio-mechanism",
+            "hasCaption": true,
+            "hasAccessibleName": true,
+            "width": 1120,
+            "left": 160,
+            "right": 1280,
+            "contentChars": 303
+          }
+        ]
+      },
+      "images": [
+        {
+          "src": "https://upload.wikimedia.org/wikipedia/commons/4/45/Chloroplast_30000x_%283660656624%29.jpg",
+          "naturalWidth": 680,
+          "naturalHeight": 516,
+          "complete": true,
+          "renderedWidth": 520,
+          "renderedHeight": 395,
+          "left": 460,
+          "right": 980,
+          "alt": "Electron micrograph of a chloroplast, showing dark parallel thylakoid membrane stacks and a 500-nanometre scale bar.",
+          "loading": "lazy",
+          "source": "https://upload.wikimedia.org/wikipedia/commons/4/45/Chloroplast_30000x_%283660656624%29.jpg"
+        }
+      ],
+      "failures": []
+    },
+    {
+      "path": "teaching-ap-evolution.html",
+      "viewport": "desktop",
+      "geometry": {
+        "docWidth": 1440,
+        "bodyWidth": 1440,
+        "viewportWidth": 1440,
+        "figures": [
+          {
+            "className": "editorial-figure editorial-source-image",
+            "hasCaption": true,
+            "hasAccessibleName": true,
+            "width": 760,
+            "left": 300,
+            "right": 1060,
+            "contentChars": 346
+          },
+          {
+            "className": "editorial-figure",
+            "hasCaption": true,
+            "hasAccessibleName": true,
+            "width": 1120,
+            "left": 160,
+            "right": 1280,
+            "contentChars": 581
+          }
+        ]
+      },
+      "images": [
+        {
+          "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ae/Sickle_cells_in_blood.jpg/960px-Sickle_cells_in_blood.jpg",
+          "naturalWidth": 699,
+          "naturalHeight": 395,
+          "complete": true,
+          "renderedWidth": 700,
+          "renderedHeight": 396,
+          "left": 330,
+          "right": 1030,
+          "alt": "Photomicrograph of a stained blood film containing many red cells, including several elongated, curved sickle-shaped cells.",
+          "loading": "lazy",
+          "source": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ae/Sickle_cells_in_blood.jpg/960px-Sickle_cells_in_blood.jpg"
+        }
+      ],
+      "failures": []
+    },
+    {
+      "path": "teaching-ap-chemistry.html",
+      "viewport": "desktop",
+      "geometry": {
+        "docWidth": 1440,
+        "bodyWidth": 1440,
+        "viewportWidth": 1440,
+        "figures": [
+          {
+            "className": "editorial-figure",
+            "hasCaption": true,
+            "hasAccessibleName": true,
+            "width": 1074,
+            "left": 183,
+            "right": 1257,
+            "contentChars": 427
+          }
+        ]
+      },
+      "images": [],
+      "failures": []
+    },
+    {
+      "path": "writing-biological-classification.html",
+      "viewport": "desktop",
+      "geometry": {
+        "docWidth": 1440,
+        "bodyWidth": 1440,
+        "viewportWidth": 1440,
+        "figures": [
+          {
+            "className": "editorial-figure",
+            "hasCaption": true,
+            "hasAccessibleName": true,
+            "width": 1040,
+            "left": 160,
+            "right": 1200,
+            "contentChars": 499
+          }
+        ]
+      },
+      "images": [],
+      "failures": []
+    },
+    {
+      "path": "teaching-osmosis-practice.html",
+      "viewport": "desktop",
+      "geometry": {
+        "docWidth": 1440,
+        "bodyWidth": 1440,
+        "viewportWidth": 1440,
+        "figures": []
+      },
+      "images": [],
+      "failures": []
+    },
+    {
+      "path": "index.html",
+      "viewport": "phone",
+      "geometry": {
+        "docWidth": 390,
+        "bodyWidth": 390,
+        "viewportWidth": 390,
+        "figures": [
+          {
+            "className": "home-photo studio-unrestricted-size",
+            "hasCaption": false,
+            "hasAccessibleName": false,
+            "width": 162,
+            "left": 14,
+            "right": 176,
+            "contentChars": 0
+          },
+          {
+            "className": "home-outside-photo",
+            "hasCaption": false,
+            "hasAccessibleName": false,
+            "width": 270,
+            "left": 14,
+            "right": 284,
+            "contentChars": 0
+          }
+        ]
+      },
+      "images": [
+        {
+          "src": "assets/profile-portrait.webp",
+          "naturalWidth": 520,
+          "naturalHeight": 516,
+          "complete": true,
+          "renderedWidth": 142,
+          "renderedHeight": 142,
+          "left": 24,
+          "right": 166,
+          "alt": "Portrait of Ye Eun Moon outdoors",
+          "loading": "eager",
+          "source": "https://gmoon-code.github.io/assets/profile-portrait.webp"
+        },
+        {
+          "src": "assets/pungmul-stage.webp",
+          "naturalWidth": 860,
+          "naturalHeight": 645,
+          "complete": true,
+          "renderedWidth": 254,
+          "renderedHeight": 191,
+          "left": 22,
+          "right": 276,
+          "alt": "Pungmul ensemble performing together on stage",
+          "loading": "lazy",
+          "source": "https://gmoon-code.github.io/assets/pungmul-stage.webp"
+        }
+      ],
+      "failures": []
+    },
+    {
+      "path": "about.html",
+      "viewport": "phone",
+      "geometry": {
+        "docWidth": 390,
+        "bodyWidth": 390,
+        "viewportWidth": 390,
+        "figures": [
+          {
+            "className": "about-photo",
+            "hasCaption": false,
+            "hasAccessibleName": false,
+            "width": 190,
+            "left": 14,
+            "right": 204,
+            "contentChars": 0
+          }
+        ]
+      },
+      "images": [
+        {
+          "src": "assets/profile-portrait.webp",
+          "naturalWidth": 520,
+          "naturalHeight": 516,
+          "complete": true,
+          "renderedWidth": 170,
+          "renderedHeight": 170,
+          "left": 24,
+          "right": 194,
+          "alt": "Portrait of Ye Eun Moon outdoors",
+          "loading": "eager",
+          "source": "https://gmoon-code.github.io/assets/profile-portrait.webp"
+        }
+      ],
+      "screenshot": "docs/visual-audit/site-media-about-phone.webp",
+      "failures": []
+    },
+    {
+      "path": "research.html",
+      "viewport": "phone",
+      "geometry": {
+        "docWidth": 390,
+        "bodyWidth": 390,
+        "viewportWidth": 390,
+        "figures": [
+          {
+            "className": "research-published-figure",
+            "hasCaption": true,
+            "hasAccessibleName": true,
+            "width": 362,
+            "left": 14,
+            "right": 376,
+            "contentChars": 509
+          }
+        ]
+      },
+      "images": [
+        {
+          "src": "assets/gonzalez-howard-2023-figure-1.webp",
+          "naturalWidth": 1087,
+          "naturalHeight": 778,
+          "complete": true,
+          "renderedWidth": 362,
+          "renderedHeight": 259,
+          "left": 14,
+          "right": 376,
+          "alt": "Original published graph comparing focal science practices under linguistic and expansive conceptualisations of language. Modelling is reported for 2 linguistic-view and 8 expansive-view studies; explanation for 6 and 3; and argumentation for 9 and 2, respectively.",
+          "loading": "lazy",
+          "source": "https://gmoon-code.github.io/assets/gonzalez-howard-2023-figure-1.webp"
+        }
+      ],
+      "screenshot": "docs/visual-audit/site-media-research-phone.webp",
+      "failures": []
+    },
+    {
+      "path": "teaching.html",
+      "viewport": "phone",
+      "geometry": {
+        "docWidth": 390,
+        "bodyWidth": 390,
+        "viewportWidth": 390,
+        "figures": []
+      },
+      "images": [],
+      "failures": []
+    },
+    {
+      "path": "projects.html",
+      "viewport": "phone",
+      "geometry": {
+        "docWidth": 390,
+        "bodyWidth": 390,
+        "viewportWidth": 390,
+        "figures": [
+          {
+            "className": "project-interface-figure",
+            "hasCaption": true,
+            "hasAccessibleName": true,
+            "width": 320,
+            "left": 35,
+            "right": 355,
+            "contentChars": 196
+          },
+          {
+            "className": "project-interface-figure",
+            "hasCaption": true,
+            "hasAccessibleName": true,
+            "width": 320,
+            "left": 35,
+            "right": 355,
+            "contentChars": 242
+          }
+        ]
+      },
+      "images": [
+        {
+          "src": "assets/story-method-interface.webp",
+          "naturalWidth": 1280,
+          "naturalHeight": 800,
+          "complete": true,
+          "renderedWidth": 318,
+          "renderedHeight": 199,
+          "left": 36,
+          "right": 354,
+          "alt": "The Story Method opening interface displaying eight AP Biology units in a grid, with Unit 1 Chemistry of Life selected and the first journey available to begin.",
+          "loading": "lazy",
+          "source": "https://gmoon-code.github.io/assets/story-method-interface.webp"
+        },
+        {
+          "src": "assets/research-methods-studio-interface.webp",
+          "naturalWidth": 1280,
+          "naturalHeight": 800,
+          "complete": true,
+          "renderedWidth": 318,
+          "renderedHeight": 199,
+          "left": 36,
+          "right": 354,
+          "alt": "Research Methods Studio opening page with an overview of the research process, guidance about connected research decisions, and a form to create a research notebook.",
+          "loading": "lazy",
+          "source": "https://gmoon-code.github.io/assets/research-methods-studio-interface.webp"
+        }
+      ],
+      "screenshot": "docs/visual-audit/site-media-projects-phone.webp",
+      "failures": []
+    },
+    {
+      "path": "interests.html",
+      "viewport": "phone",
+      "geometry": {
+        "docWidth": 390,
+        "bodyWidth": 390,
+        "viewportWidth": 390,
+        "figures": [
+          {
+            "className": "",
+            "hasCaption": true,
+            "hasAccessibleName": true,
+            "width": 362,
+            "left": 14,
+            "right": 376,
+            "contentChars": 19
+          },
+          {
+            "className": "",
+            "hasCaption": true,
+            "hasAccessibleName": true,
+            "width": 362,
+            "left": 14,
+            "right": 376,
+            "contentChars": 12
+          },
+          {
+            "className": "",
+            "hasCaption": true,
+            "hasAccessibleName": true,
+            "width": 362,
+            "left": 14,
+            "right": 376,
+            "contentChars": 17
+          },
+          {
+            "className": "",
+            "hasCaption": true,
+            "hasAccessibleName": true,
+            "width": 362,
+            "left": 14,
+            "right": 376,
+            "contentChars": 16
+          }
+        ]
+      },
+      "images": [
+        {
+          "src": "assets/pungmul-stage.webp",
+          "naturalWidth": 860,
+          "naturalHeight": 645,
+          "complete": true,
+          "renderedWidth": 360,
+          "renderedHeight": 270,
+          "left": 15,
+          "right": 375,
+          "alt": "Pungmul ensemble performing on stage",
+          "loading": "lazy",
+          "source": "https://gmoon-code.github.io/assets/pungmul-stage.webp"
+        },
+        {
+          "src": "assets/pungmul-group.webp",
+          "naturalWidth": 860,
+          "naturalHeight": 484,
+          "complete": true,
+          "renderedWidth": 360,
+          "renderedHeight": 203,
+          "left": 15,
+          "right": 375,
+          "alt": "Pungmul ensemble performing outdoors near a city square",
+          "loading": "lazy",
+          "source": "https://gmoon-code.github.io/assets/pungmul-group.webp"
+        },
+        {
+          "src": "assets/pungmul-solo.webp",
+          "naturalWidth": 650,
+          "naturalHeight": 433,
+          "complete": true,
+          "renderedWidth": 360,
+          "renderedHeight": 240,
+          "left": 15,
+          "right": 375,
+          "alt": "A seated performer playing janggu under blue stage lighting",
+          "loading": "lazy",
+          "source": "https://gmoon-code.github.io/assets/pungmul-solo.webp"
+        },
+        {
+          "src": "assets/pungmul-rehearsal.webp",
+          "naturalWidth": 650,
+          "naturalHeight": 366,
+          "complete": true,
+          "renderedWidth": 360,
+          "renderedHeight": 203,
+          "left": 15,
+          "right": 375,
+          "alt": "Pungmul drummers in colourful costumes performing together indoors",
+          "loading": "lazy",
+          "source": "https://gmoon-code.github.io/assets/pungmul-rehearsal.webp"
+        },
+        {
+          "src": "https://covers.openlibrary.org/b/isbn/9781635570304-L.jpg",
+          "naturalWidth": 326,
+          "naturalHeight": 500,
+          "complete": true,
+          "renderedWidth": 90,
+          "renderedHeight": 135,
+          "left": 27,
+          "right": 117,
+          "alt": "Cover of The Priory of the Orange Tree",
+          "loading": "lazy",
+          "source": "https://covers.openlibrary.org/b/isbn/9781635570304-L.jpg"
+        },
+        {
+          "src": "https://covers.openlibrary.org/b/isbn/9780618640157-L.jpg",
+          "naturalWidth": 314,
+          "naturalHeight": 500,
+          "complete": true,
+          "renderedWidth": 90,
+          "renderedHeight": 135,
+          "left": 27,
+          "right": 117,
+          "alt": "Cover of The Lord of the Rings",
+          "loading": "lazy",
+          "source": "https://covers.openlibrary.org/b/isbn/9780618640157-L.jpg"
+        },
+        {
+          "src": "https://target.scene7.com/is/image/Target/GUEST_e7ffa222-1832-4090-a0a1-d5722ff38378?fmt=pjpeg&hei=488&wid=488",
+          "naturalWidth": 488,
+          "naturalHeight": 488,
+          "complete": true,
+          "renderedWidth": 90,
+          "renderedHeight": 135,
+          "left": 27,
+          "right": 117,
+          "alt": "Cover of I'm Waiting for You",
+          "loading": "lazy",
+          "source": "https://target.scene7.com/is/image/Target/GUEST_e7ffa222-1832-4090-a0a1-d5722ff38378?fmt=pjpeg&hei=488&wid=488"
+        },
+        {
+          "src": "https://covers.openlibrary.org/b/isbn/9780918526526-L.jpg",
+          "naturalWidth": 333,
+          "naturalHeight": 500,
+          "complete": true,
+          "renderedWidth": 90,
+          "renderedHeight": 135,
+          "left": 27,
+          "right": 117,
+          "alt": "Cover of Rose",
+          "loading": "lazy",
+          "source": "https://covers.openlibrary.org/b/isbn/9780918526526-L.jpg"
+        },
+        {
+          "src": "https://commons.wikimedia.org/wiki/Special:FilePath/Detective_Conan_logo.svg",
+          "naturalWidth": 302,
+          "naturalHeight": 92,
+          "complete": true,
+          "renderedWidth": 90,
+          "renderedHeight": 135,
+          "left": 27,
+          "right": 117,
+          "alt": "Official Detective Conan logo",
+          "loading": "lazy",
+          "source": "https://commons.wikimedia.org/wiki/Special:FilePath/Detective_Conan_logo.svg"
+        },
+        {
+          "src": "https://media.senscritique.com/media/000018121717/0/dimension_20.jpg",
+          "naturalWidth": 680,
+          "naturalHeight": 1000,
+          "complete": true,
+          "renderedWidth": 90,
+          "renderedHeight": 135,
+          "left": 27,
+          "right": 117,
+          "alt": "Dimension 20 series artwork",
+          "loading": "lazy",
+          "source": "https://media.senscritique.com/media/000018121717/0/dimension_20.jpg"
+        }
+      ],
+      "screenshot": "docs/visual-audit/site-media-interests-phone.webp",
+      "failures": []
+    },
+    {
+      "path": "cv.html",
+      "viewport": "phone",
+      "geometry": {
+        "docWidth": 390,
+        "bodyWidth": 390,
+        "viewportWidth": 390,
+        "figures": []
+      },
+      "images": [],
+      "failures": []
+    },
+    {
+      "path": "research-action.html",
+      "viewport": "phone",
+      "geometry": {
+        "docWidth": 390,
+        "bodyWidth": 390,
+        "viewportWidth": 390,
+        "figures": [
+          {
+            "className": "editorial-figure",
+            "hasCaption": true,
+            "hasAccessibleName": true,
+            "width": 362,
+            "left": 14,
+            "right": 376,
+            "contentChars": 287
+          },
+          {
+            "className": "mechanism-figure",
+            "hasCaption": true,
+            "hasAccessibleName": true,
+            "width": 362,
+            "left": 14,
+            "right": 376,
+            "contentChars": 72
+          }
+        ]
+      },
+      "images": [],
+      "failures": []
+    },
+    {
+      "path": "research-scoping.html",
+      "viewport": "phone",
+      "geometry": {
+        "docWidth": 390,
+        "bodyWidth": 390,
+        "viewportWidth": 390,
+        "figures": []
+      },
+      "images": [],
+      "failures": []
+    },
+    {
+      "path": "story-method.html",
+      "viewport": "phone",
+      "geometry": {
+        "docWidth": 390,
+        "bodyWidth": 390,
+        "viewportWidth": 390,
+        "figures": [
+          {
+            "className": "project-interface-figure project-detail-figure",
+            "hasCaption": true,
+            "hasAccessibleName": true,
+            "width": 362,
+            "left": 14,
+            "right": 376,
+            "contentChars": 268
+          }
+        ]
+      },
+      "images": [
+        {
+          "src": "assets/story-method-observation-window.webp",
+          "naturalWidth": 978,
+          "naturalHeight": 436,
+          "complete": true,
+          "renderedWidth": 360,
+          "renderedHeight": 160,
+          "left": 15,
+          "right": 375,
+          "alt": "The Story Method Observation Window panel, with text describing two reporter-cell trays and three spatial cues for the hypothesis door, reporter-cell chamber, and evidence board.",
+          "loading": "lazy",
+          "source": "https://gmoon-code.github.io/assets/story-method-observation-window.webp"
+        }
+      ],
+      "failures": []
+    },
+    {
+      "path": "research-methods-studio.html",
+      "viewport": "phone",
+      "geometry": {
+        "docWidth": 390,
+        "bodyWidth": 390,
+        "viewportWidth": 390,
+        "figures": [
+          {
+            "className": "editorial-figure",
+            "hasCaption": true,
+            "hasAccessibleName": true,
+            "width": 362,
+            "left": 14,
+            "right": 376,
+            "contentChars": 335
+          },
+          {
+            "className": "project-interface-figure project-detail-figure",
+            "hasCaption": true,
+            "hasAccessibleName": true,
+            "width": 362,
+            "left": 14,
+            "right": 376,
+            "contentChars": 315
+          }
+        ]
+      },
+      "images": [
+        {
+          "src": "assets/research-methods-data-lab.webp",
+          "naturalWidth": 1280,
+          "naturalHeight": 800,
+          "complete": true,
+          "renderedWidth": 360,
+          "renderedHeight": 225,
+          "left": 15,
+          "right": 375,
+          "alt": "Research Methods Studio Data Analysis and Statistics Laboratory showing step one of seven, the CSV import screen, an empty file picker, and the raw-data documentation rule.",
+          "loading": "lazy",
+          "source": "https://gmoon-code.github.io/assets/research-methods-data-lab.webp"
+        }
+      ],
+      "failures": []
+    },
+    {
+      "path": "teaching-ap-biology.html",
+      "viewport": "phone",
+      "geometry": {
+        "docWidth": 390,
+        "bodyWidth": 390,
+        "viewportWidth": 390,
+        "figures": [
+          {
+            "className": "editorial-figure editorial-source-image editorial-source-image-compact",
+            "hasCaption": true,
+            "hasAccessibleName": true,
+            "width": 362,
+            "left": 14,
+            "right": 376,
+            "contentChars": 394
+          },
+          {
+            "className": "teaching-bio-mechanism",
+            "hasCaption": true,
+            "hasAccessibleName": true,
+            "width": 362,
+            "left": 14,
+            "right": 376,
+            "contentChars": 303
+          }
+        ]
+      },
+      "images": [
+        {
+          "src": "https://upload.wikimedia.org/wikipedia/commons/4/45/Chloroplast_30000x_%283660656624%29.jpg",
+          "naturalWidth": 680,
+          "naturalHeight": 516,
+          "complete": true,
+          "renderedWidth": 362,
+          "renderedHeight": 275,
+          "left": 14,
+          "right": 376,
+          "alt": "Electron micrograph of a chloroplast, showing dark parallel thylakoid membrane stacks and a 500-nanometre scale bar.",
+          "loading": "lazy",
+          "source": "https://upload.wikimedia.org/wikipedia/commons/4/45/Chloroplast_30000x_%283660656624%29.jpg"
+        }
+      ],
+      "screenshot": "docs/visual-audit/site-media-teaching-ap-biology-phone.webp",
+      "failures": []
+    },
+    {
+      "path": "teaching-ap-evolution.html",
+      "viewport": "phone",
+      "geometry": {
+        "docWidth": 390,
+        "bodyWidth": 390,
+        "viewportWidth": 390,
+        "figures": [
+          {
+            "className": "editorial-figure editorial-source-image",
+            "hasCaption": true,
+            "hasAccessibleName": true,
+            "width": 362,
+            "left": 14,
+            "right": 376,
+            "contentChars": 346
+          },
+          {
+            "className": "editorial-figure",
+            "hasCaption": true,
+            "hasAccessibleName": true,
+            "width": 362,
+            "left": 14,
+            "right": 376,
+            "contentChars": 581
+          }
+        ]
+      },
+      "images": [
+        {
+          "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ae/Sickle_cells_in_blood.jpg/960px-Sickle_cells_in_blood.jpg",
+          "naturalWidth": 389,
+          "naturalHeight": 220,
+          "complete": true,
+          "renderedWidth": 362,
+          "renderedHeight": 205,
+          "left": 14,
+          "right": 376,
+          "alt": "Photomicrograph of a stained blood film containing many red cells, including several elongated, curved sickle-shaped cells.",
+          "loading": "lazy",
+          "source": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ae/Sickle_cells_in_blood.jpg/960px-Sickle_cells_in_blood.jpg"
+        }
+      ],
+      "screenshot": "docs/visual-audit/site-media-teaching-ap-evolution-phone.webp",
+      "failures": []
+    },
+    {
+      "path": "teaching-ap-chemistry.html",
+      "viewport": "phone",
+      "geometry": {
+        "docWidth": 390,
+        "bodyWidth": 390,
+        "viewportWidth": 390,
+        "figures": [
+          {
+            "className": "editorial-figure",
+            "hasCaption": true,
+            "hasAccessibleName": true,
+            "width": 316,
+            "left": 37,
+            "right": 353,
+            "contentChars": 427
+          }
+        ]
+      },
+      "images": [],
+      "failures": []
+    },
+    {
+      "path": "writing-biological-classification.html",
+      "viewport": "phone",
+      "geometry": {
+        "docWidth": 390,
+        "bodyWidth": 390,
+        "viewportWidth": 390,
+        "figures": [
+          {
+            "className": "editorial-figure",
+            "hasCaption": true,
+            "hasAccessibleName": true,
+            "width": 362,
+            "left": 14,
+            "right": 376,
+            "contentChars": 499
+          }
+        ]
+      },
+      "images": [],
+      "screenshot": "docs/visual-audit/site-media-writing-biological-classification-phone.webp",
+      "failures": []
+    },
+    {
+      "path": "teaching-osmosis-practice.html",
+      "viewport": "phone",
+      "geometry": {
+        "docWidth": 390,
+        "bodyWidth": 390,
+        "viewportWidth": 390,
+        "figures": []
+      },
+      "images": [],
+      "failures": []
+    }
+  ]
+}
