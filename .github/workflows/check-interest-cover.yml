@@ -1,0 +1,37 @@
+name: Check public-domain-service book-cover editions
+
+on:
+  push:
+    paths:
+      - .github/workflows/check-interest-cover.yml
+      - scripts/check-interest-cover.py
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install Pillow==11.3.0
+      - run: python scripts/check-interest-cover.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: book-cover-edition-review
+          path: |
+            docs/visual-audit/interests-cover-probe.json
+            docs/visual-audit/interests-cover-probe.webp
+      - name: Publish evidence for editorial review
+        run: |
+          git add docs/visual-audit/interests-cover-probe.json docs/visual-audit/interests-cover-probe.webp
+          if git diff --cached --quiet; then exit 0; fi
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m "Record verified book-cover editions"
+          git fetch origin main
+          git rebase origin/main
+          git push origin HEAD:main
