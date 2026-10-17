@@ -2100,9 +2100,11 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
 #main .project-detail-figure img{
   width:100%;
   height:auto;
-  aspect-ratio:auto;
   object-fit:contain;
 }
+/* Reserve their genuine proportions before lazy-loaded files arrive. */
+#main .project-detail-figure img[src$="story-method-observation-window.webp"]{aspect-ratio:auto 978 / 436}
+#main .project-detail-figure img[src$="research-methods-data-lab.webp"]{aspect-ratio:auto 1280 / 800}
 #main .project-detail-figure figcaption{
   max-width:80ch;
   font-size:14px;
