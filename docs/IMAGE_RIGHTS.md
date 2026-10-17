@@ -66,6 +66,22 @@ These are **genuine screenshots of the released public applications**, captured 
 - **Caption policy:** specify which actual part of the application is visible. Do not describe the overview as an Observation Window journey or the starting form as a Methods or Statistics Lab. Original interface screenshots do not count as classroom evaluation.
 - **Accessibility:** each screenshot has a descriptive alt attribute, nearby caption, and accessible full-size link. The interactive published applications remain separately available.
 
+### Detailed instructional interface captures, 17 October 2026
+
+These screenshots were captured from the actual deployed applications, using fresh Chromium browser contexts in GitHub Actions. Their source files are preserved locally in the website repository, and both images link to a full-size copy on their respective project pages. Neither image is a reconstruction or a generic illustration.
+
+| Website page | Image | Actual content | Capture conditions |
+| --- | --- | --- | --- |
+| `story-method.html` | `assets/story-method-observation-window.webp` | Scene 1 *Observation Window* of Unit 1, showing the reporter-cell observation and three labelled room zones. | Public Unit 1; navigated into the first journey in a fresh profile; screenshot of the real scene-orientation panel, 978 × 436. No learner work. |
+| `research-methods-studio.html` | `assets/research-methods-data-lab.webp` | *Data Analysis & Statistics Laboratory*, Step 1 of 7, before CSV import; shows how original raw-data records are introduced. | Public application; fresh local notebook labelled as illustrative, with context stating demonstration only. No dataset imported and no analysis performed. Screenshot 1280 × 800. |
+
+- **Capture script:** `scripts/capture-project-detail.mjs`, using Playwright and Chromium; WebP encoding through Sharp.
+- **Capture automation:** `.github/workflows/capture-portfolio-detail.yml`.
+- **Validation record:** `docs/capture-detail-status.json`, reporting success on 17 October 2026 after an initial overly restrictive UI-selector check was corrected.
+- **Attribution:** Screenshots of the author's original publicly released applications. Live public software remains linked next to each figure.
+- **Presentation:** The Story Method capture shows only the original interface section around the Observation Window, preserving the application’s text and layout without invented visual objects. The Data Lab capture shows a browser-viewport screenshot with an empty file picker and a temporary demonstration notebook. Both images are resized only as necessary for web delivery, with no annotations added to the image files.
+- **Scope:** The images document software design and availability. They are not empirical evidence of student learning, classroom evaluation, or completed research.
+
 ## Personal photographs and media artwork inventory, 17 October 2026
 
 This inventory distinguishes image provenance, **display method**, and **permission**. A usable image URL or source citation is not proof that an underlying copyrighted illustration is licensed for republication.
