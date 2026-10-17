@@ -35,10 +35,13 @@ jobs:
           path: |
             assets/story-method-observation-window.webp
             assets/research-methods-data-lab.webp
-          if-no-files-found: error
+          if-no-files-found: warn
       - name: Commit verified screenshot files
         run: |
-          git add assets/story-method-observation-window.webp assets/research-methods-data-lab.webp
+          git add docs/capture-detail-status.json
+          if grep -q '"status": "success"' docs/capture-detail-status.json; then
+            git add assets/story-method-observation-window.webp assets/research-methods-data-lab.webp
+          fi
           if git diff --cached --quiet; then
             echo "No changes to screenshots"
             exit 0
