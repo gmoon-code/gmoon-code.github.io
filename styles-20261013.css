@@ -1970,3 +1970,14 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
 #main .chem-stage b{font-size:13px;margin-top:6px}
 #main .chem-stage small{font-size:12px;line-height:1.45;color:var(--moon-muted);margin-top:auto}
 @media(max-width:690px){#main .chem-stages{grid-template-columns:1fr;gap:9px}#main .chem-stage{min-height:0}#main .chem-stage:not(:last-child)::after{content:none}}
+
+
+/* Side-by-side evidential comparisons in the classification essay. */
+#main .classification-compare{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+#main .classification-case{border:1px solid var(--moon-rule-dark);border-radius:3px;padding:15px 17px}
+#main .classification-case h3{font-size:17px;line-height:1.35;margin:0 0 13px}
+#main .classification-case dl{margin:0}
+#main .classification-case dt{font-size:13px;font-weight:700;margin-top:12px}
+#main .classification-case dd{font-size:14px;line-height:1.55;margin:3px 0 0}
+#main .classification-case dt:first-child{margin-top:0}
+@media(max-width:680px){#main .classification-compare{grid-template-columns:1fr}}
