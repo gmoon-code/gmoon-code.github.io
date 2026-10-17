@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - .github/workflows/capture-portfolio-detail.yml
+      - scripts/capture-project-detail.mjs
   workflow_dispatch:
 
 permissions:
