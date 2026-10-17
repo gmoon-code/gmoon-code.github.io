@@ -1199,7 +1199,7 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
 .research-biology-questions li{font-size:16px;line-height:1.64;margin:0 0 13px;padding-left:2px}
 /* Evidence-based visualizations on the Research essay. */
 .research-inquiry-figure,.research-evidence-figure{max-width:940px;min-width:0;margin:29px 0 8px}
-.research-inquiry-map{max-width:840px;min-width:0}
+.research-inquiry-map{max-width:840px;min-width:0;margin-inline:auto}
 .research-inquiry-question,.research-inquiry-next{
   width:min(100%,550px);margin-inline:auto;border:1px solid var(--moon-rule-dark);
   background:#fff;padding:14px 19px;text-align:center;
@@ -1276,10 +1276,13 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
  .research-evidence-path{gap:9px}
 }
 @media(max-width:480px){
- .research-inquiry-strands{grid-template-columns:1fr;gap:16px}
- .research-inquiry-fork,.research-inquiry-join{height:18px}
- .research-inquiry-fork::after,.research-inquiry-join::before{display:none}
- .research-inquiry-fork::before,.research-inquiry-join::after{height:100%;top:0;bottom:0}
+ .research-inquiry-strands{
+   grid-template-columns:1fr;gap:11px;
+   margin-left:12px;padding-left:13px;border-left:2px solid var(--section-green-line)
+ }
+ .research-inquiry-fork,.research-inquiry-join{height:14px}
+ .research-inquiry-fork::before,.research-inquiry-fork::after,
+ .research-inquiry-join::before,.research-inquiry-join::after{display:none}
  .research-inquiry-strand::before,.research-inquiry-strand::after{display:none}
  .research-inquiry-question,.research-inquiry-next{padding:13px 14px}
  .research-inquiry-strand{padding:14px}
