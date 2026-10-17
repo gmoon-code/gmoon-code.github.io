@@ -104,3 +104,42 @@ The public Teaching overview now directs to two full advanced science case studi
 ## Flagship Teaching revision, 14 October 2026
 
 The primary AP Biology curriculum case is now a developed proposal on haemoglobin variation, malaria, heterozygote advantage, and careful interpretation of human genetic variation at `teaching-ap-evolution.html`. The existing bentazon inquiry remains available as a documented assessment-research teaching case, without conflating research records and proposed lesson design. The Chemistry case is still prospective. New teaching proposals must remain explicitly unevaluated until authentic classroom artifacts justify stronger claims.
+
+
+## Visual editorial plan, 17 October 2026
+
+Purpose: make dense reading easier without reducing scholarly prose, fabricating datasets, or adding decorative stock imagery. Every proposed figure needs a defined interpretive job, a short accessible caption, and an appropriate provenance note.
+
+### First implementation wave
+
+1. `research-action.html`, immediately after “Research design and assessment sequence”: a responsive, text-native chronological sequence for Unit 2 assessment → correction/reflection → preparation report → Unit 3 assessment → independent reconstruction → Unit 4 assessment. Distinguish what was done during teaching from the subsequent research coding. Avoid implying a controlled intervention or equivalent items.
+2. `research-action.html`, adjacent to “Mechanistic classifications across assessments”: a compact bar chart of complete-mechanistic classifications, 7/28, 18/28, 25/28 for Units 2–4. Explicitly label that item demands and teaching differed between assessments, so bars are descriptive classifications and not an estimated treatment effect. Confirm against the final manuscript before release.
+3. `research-scoping.html`, following “Forms of evidence in the included studies”: a three-column evidence/interpretation matrix for written assessment, interactional talk, and models/drawings. These are interpretive distinctions, **not** mutually exclusive corpus counts. Existing page reports 20 included papers; do not invent per-form study frequencies.
+4. `research-methods-studio.html`, after “Two questions hidden in the same dataset”: a nested schematic showing three salinity treatments, six independently assigned dishes per treatment, and five seed subsamples per dish (18 dishes, 90 seeds). Label the assignment unit and the two outcomes, germination proportion per dish and mean radicle length among germinated seeds. Show synthetic/illustrative status prominently.
+
+### Next wave
+
+- `research.html`: one compact evidence → interpretation → classroom-decision diagram positioned after the two research summaries, with a visible distinction between empirical findings and future questions; avoid a grand unified schematic that implies the proposed study was conducted.
+- `teaching-ap-biology.html`: one simple principal photosynthetic pathway figure by the mechanism discussion, distinguishing electron transfer, proton gradient/ATP, NADPH, carbon fixation, and longer-term injury. Label the pathway as simplified and permit alternative mechanisms.
+- `teaching-ap-evolution.html`: one paired-scale diagram showing HbS allele/protein → red cell → clinical malaria outcomes → fitness assumptions → potential population change. Clearly flag the hypothetical model and preserve boundaries between observed cohort outcomes and made-up coefficients.
+- `teaching-ap-chemistry.html`: a two-state or three-state comparison for the compression exercise, displaying the initial equilibrium, immediate volume change, and later re-equilibration without inventing final measured pressures. Reuse calculations already on the page.
+- `story-method.html`: one annotated capture of the actual released Unit 1 journey interface, supplied from the app itself and with permission/credit to the author's app; no fabricated screenshot. A short diagram may show observation → control selection → unfamiliar application without suggesting evaluated learning outcomes.
+- `writing-biological-classification.html`: a restrained two-case comparison matrix mapping measurement, claim justified, inference that needs additional evidence, and possible student question for HbS and XYY; grounded in citations already on the page.
+- `teaching.html`: possibly a small response → clarification → next-question schematic if the existing case presentation remains hard to scan after the detailed figures are added.
+
+### Pages to keep image-light
+
+- `index.html`: rely on the existing cards and content; optionally feature one real, cropped case-study figure when the pilot is evaluated. No abstract hero image.
+- `about.html`: personal voice carries the page; an authentic portrait is optional, not required.
+- `projects.html`: use tiny genuine app previews/thumbnails only if they improve recognition beyond the descriptive cards.
+- `interests.html`: already has meaningful performance and media imagery; prioritize captions, attribution and balance instead of more graphics.
+- `cv.html`: retain readable, printable text; no chart.
+- `teaching-osmosis-practice.html`: optional simple axis-labelled plot of the explicitly hypothetical mass-change values, if it aids the exercise; not a priority.
+
+### Figure system and verification
+
+- Prefer inline semantic HTML and accessible SVG for diagrams, and legible static SVG for charts; reserve raster images for authentic photos and application screenshots. All figures must be responsive and legible on mobile without relying solely on colour.
+- Figure blocks use restrained neutral rules and site typography, with one figure number/title, prose caption, source note and useful text alternative. Avoid a mandatory tinted card or decorative icon.
+- Distinguish “created for this site from author's records,” “synthetic values,” “based on [published source]”, and “adapted from” as appropriate. Keep third-party images subject to copyright and reuse permission, not merely attribution.
+- Use source counts already verified or published, never infer them from qualitative examples. A descriptive category chart should not imply causal improvement. Update research figures to the final approved manuscript when supplied.
+- Pilot the first wave on narrow/wide screens, with keyboard navigation, forced colours, screen readers, and text-only interpretation. Figures must support rather than replace the full prose.
