@@ -59,6 +59,8 @@ This inventory distinguishes image provenance, **display method**, and **permiss
 
 **Current HTML performance controls:** the six externally served media images on `interests.html` now reserve a 112 × 168 display slot, load lazily, and decode asynchronously. CSS may resize or contain the original images depending on the artwork. The external image services' uptime and availability have **not** been tested in a live browser.
 
+**Source-level gallery verification, 17 October 2026:** natural WebP dimensions obtained from the current repository assets are 860 × 645 for `pungmul-stage.webp`, 860 × 484 for `pungmul-group.webp`, 650 × 433 for `pungmul-solo.webp`, 650 × 366 for `pungmul-rehearsal.webp`, and 520 × 516 for `profile-portrait.webp`. The Interests gallery HTML uses these source dimensions so the browser can reserve the correct image proportions. The solo image's alt text was corrected after visual inspection to remove an inaccurate description of a hat. Full-size gallery links now open in a named new browser tab and disclose that behaviour in their accessible link labels. Visual rendering and keyboard/screen-reader interactions on the deployed site still require manual testing.
+
 **Publication decision:** retain the existing personal essay and cover identifications during this phase. Investigate the two unverified commercial-hosted images and confirm photographer/ensemble rights before mirroring or replacing any assets. If an image is removed, keep the surrounding substantive review unchanged.
 
 ## Audit outstanding
