@@ -52,7 +52,8 @@ try {
     await page.locator('#projectName').fill('Illustrative research notebook');
     await page.locator('#projectContext').fill('Demonstration only; no research data');
     await page.locator('#beginProject').click();
-    await page.locator('#dataLab').click();
+    // Legacy tool hook is visually hidden. Calling its genuine click handler opens the same application laboratory.
+    await page.locator('#dataLab').evaluate(button => button.click());
     await page.locator('#dataBackdrop h3').getByText('Data Analysis & Statistics Laboratory').waitFor({ timeout: 45000 });
     if ((await page.locator('[data-dtab]').count()) !== 7) throw new Error('Seven-step analysis workflow did not render');
     await exportImage(page, 'research-methods-data-lab.webp', 'Data Analysis & Statistics Laboratory');
