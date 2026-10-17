@@ -1,5 +1,5 @@
 {
-  "testedAt": "2026-10-17T15:25:24.721Z",
+  "testedAt": "2026-10-17T15:38:56.834Z",
   "results": [
     {
       "path": "index.html",
@@ -366,7 +366,7 @@
           "renderedHeight": 88,
           "left": 177,
           "right": 289,
-          "alt": "Official Detective Conan logo",
+          "alt": "Detective Conan series wordmark",
           "loading": "lazy",
           "source": "https://commons.wikimedia.org/wiki/Special:FilePath/Detective_Conan_logo.svg"
         },
@@ -1054,7 +1054,7 @@
           "renderedHeight": 74,
           "left": 27,
           "right": 117,
-          "alt": "Official Detective Conan logo",
+          "alt": "Detective Conan series wordmark",
           "loading": "lazy",
           "source": "https://commons.wikimedia.org/wiki/Special:FilePath/Detective_Conan_logo.svg"
         },
