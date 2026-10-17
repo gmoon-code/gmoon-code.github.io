@@ -27,7 +27,7 @@ try{
    try {
     const response=await page.goto(origin+'/'+target.path,{waitUntil:'load',timeout:60000});
     if(!response||response.status()>=400)throw Error('HTTP '+response?.status());
-    await page.locator('figure.project-interface-figure img').first().waitFor();
+    await page.locator('figure.project-interface-figure img').first().waitFor({state:'attached'});
     const audit=await page.evaluate(async()=>{
       const figures=[...document.querySelectorAll('figure.project-interface-figure')];
       await Promise.all(figures.map(f=>f.querySelector('img')?.decode().catch(()=>{})));
@@ -36,7 +36,7 @@ try{
         const box=im?.getBoundingClientRect(),cb=cap?.getBoundingClientRect();
         return {index:i+1,src:im?.getAttribute('src'),alt:im?.getAttribute('alt'),naturalWidth:im?.naturalWidth,naturalHeight:im?.naturalHeight,imageWidth:Math.round(box?.width||0),imageHeight:Math.round(box?.height||0),captionGap:Math.round((cb?.top||0)-(box?.bottom||0)),captionText:cap?.innerText?.slice(0,180),fullSize:link?.getAttribute('href'),opensNewTab:link?.getAttribute('target')==='_blank',overflowLeft:(box?.left||0)<-2,overflowRight:(box?.right||0)>innerWidth+2};
       });
-      return {viewport:innerWidth,docWidth:document.documentElement.scrollWidth,bodyWidth:document.body.scrollWidth,pageHeight:document.documentElement.scrollHeight,figures:metrics};
+      const img=figures[0]?.querySelector('img');const ancestors=[];for(let e=img;e&&ancestors.length<10;e=e.parentElement){const cs=getComputedStyle(e),r=e.getBoundingClientRect();ancestors.push({tag:e.tagName,cls:String(e.className).slice(0,120),display:cs.display,visibility:cs.visibility,rectWidth:Math.round(r.width),rectHeight:Math.round(r.height),hidden:e.hidden})}return {viewport:innerWidth,docWidth:document.documentElement.scrollWidth,bodyWidth:document.body.scrollWidth,pageHeight:document.documentElement.scrollHeight,figures:metrics,ancestors};
     });
     const failures=[];
     if(audit.docWidth>viewport.width+2||audit.bodyWidth>viewport.width+2)failures.push('horizontal overflow');
@@ -44,12 +44,13 @@ try{
     for(const fig of audit.figures){
       if(!fig.naturalWidth||!fig.naturalHeight)failures.push('missing image '+fig.index);
       if(fig.imageWidth<200)failures.push('image too narrow '+fig.index);
+      if(fig.imageWidth===0)failures.push('image zero width '+fig.index);
       if(fig.captionGap< -2)failures.push('caption overlaps image '+fig.index);
       if(fig.overflowLeft||fig.overflowRight)failures.push('image outside viewport '+fig.index);
       if(!fig.alt||!fig.captionText||!fig.opensNewTab)failures.push('missing alt, caption or link '+fig.index);
     }
     const shots=[];
-    if(viewport.name!=='tablet'){
+    if(viewport.name!=='tablet' && audit.figures.every(f=>f.imageWidth>0 && f.imageHeight>0)){
       for(let i=0;i<audit.figures.length;i++){
         const parent=target.key==='projects'?page.locator('article.project-showcase-item').nth(i):page.locator('figure.project-interface-figure').nth(i);
         const png=await parent.screenshot({animations:'disabled'});
