@@ -4,7 +4,7 @@
  */
 import { chromium } from 'playwright';
 import sharp from 'sharp';
-import { mkdir } from 'node:fs/promises';
+import { mkdir, writeFile } from 'node:fs/promises';
 
 const browser = await chromium.launch({ headless: true });
 await mkdir('assets', { recursive: true });
@@ -32,6 +32,7 @@ async function exportImage(page, file, requireText) {
   console.log(JSON.stringify({ file, width: metadata.width, height: metadata.height, checkedText: requireText }));
 }
 
+const report = { status: 'started', files: [], capturedAt: new Date().toISOString() };
 try {
   {
     const { context, page } = await contextPage();
@@ -43,6 +44,7 @@ try {
     await page.locator('.scene-orientation').scrollIntoViewIfNeeded();
     if ((await page.locator('.scene-stage .stage-zone').count()) < 2) throw new Error('Story layout did not render');
     await exportImage(page, 'story-method-observation-window.webp', 'Observation Window');
+    report.files.push('assets/story-method-observation-window.webp');
     await context.close();
   }
   {
@@ -57,8 +59,16 @@ try {
     await page.locator('#dataBackdrop h3').getByText('Data Analysis & Statistics Laboratory').waitFor({ timeout: 45000 });
     if ((await page.locator('[data-dtab]').count()) !== 7) throw new Error('Seven-step analysis workflow did not render');
     await exportImage(page, 'research-methods-data-lab.webp', 'Data Analysis & Statistics Laboratory');
+    report.files.push('assets/research-methods-data-lab.webp');
     await context.close();
   }
+  report.status = 'success';
+} catch (error) {
+  report.status = 'failed';
+  report.error = String(error?.message || error).slice(0, 1500);
+  console.error(report.error);
 } finally {
   await browser.close();
+  await mkdir('docs', { recursive: true });
+  await writeFile('docs/capture-detail-status.json', JSON.stringify(report, null, 2) + '\\n');
 }
