@@ -1,5 +1,5 @@
 {
-  "testedAt": "2026-10-17T14:02:12.554Z",
+  "testedAt": "2026-10-17T14:07:21.636Z",
   "results": [
     {
       "path": "index.html",
@@ -636,17 +636,7 @@
         "docWidth": 1440,
         "bodyWidth": 1440,
         "viewportWidth": 1440,
-        "figures": [
-          {
-            "className": "editorial-figure",
-            "hasCaption": true,
-            "hasAccessibleName": true,
-            "width": 1040,
-            "left": 160,
-            "right": 1200,
-            "contentChars": 499
-          }
-        ]
+        "figures": []
       },
       "images": [],
       "failures": []
@@ -1304,20 +1294,9 @@
         "docWidth": 390,
         "bodyWidth": 390,
         "viewportWidth": 390,
-        "figures": [
-          {
-            "className": "editorial-figure",
-            "hasCaption": true,
-            "hasAccessibleName": true,
-            "width": 362,
-            "left": 14,
-            "right": 376,
-            "contentChars": 499
-          }
-        ]
+        "figures": []
       },
       "images": [],
-      "screenshot": "docs/visual-audit/site-media-writing-biological-classification-phone.webp",
       "failures": []
     },
     {
