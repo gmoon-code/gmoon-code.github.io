@@ -18,6 +18,22 @@ This record documents third-party images and original interface captures used on
 - **Editorial relevance:** illustrates red-cell morphology in a patient with sickle cell disease. The image does not demonstrate HbAS trait, genotype-specific malaria protection, reproductive fitness, or allele-frequency change.
 - **Accessibility:** descriptive alternative text and numbered contextual caption.
 
+## Structural micrograph added 17 October 2026
+
+- **Site page:** `teaching-ap-biology.html`
+- **Image:** *Chloroplast 30000x (3660656624).jpg*
+- **Creator attribution:** Image credits Andreas Anderluh and Bela Hausmann; Wikimedia metadata lists Bela Hausmann as author.
+- **Image description:** Transmission electron micrograph of chloroplast grana / thylakoid membrane stacks, originally presented at approximately 30,000× magnification, with a 500 nm scale bar.
+- **Source date:** 25 June 2009.
+- **Original file and licence:** https://commons.wikimedia.org/wiki/File:Chloroplast_30000x_(3660656624).jpg
+- **Reuse licence:** Creative Commons Attribution–ShareAlike 2.0 Generic (CC BY-SA 2.0), https://creativecommons.org/licenses/by-sa/2.0/ . Wikimedia Commons records a historical Flickr licence review.
+- **Image URL:** https://upload.wikimedia.org/wikipedia/commons/4/45/Chloroplast_30000x_%283660656624%29.jpg
+- **Hosting:** Wikimedia original file; not copied into this site's repository.
+- **Modification:** No crop or image-content edits; CSS scales the complete frame for the layout.
+- **On-page attribution:** both credited people, original Commons record, licence and no-alteration statement.
+- **Interpretive limit:** This is an example of thylakoid ultrastructure. It is not an observation of bentazon-treated tissue, electron flux, proton-gradient size, or ATP/NADPH concentrations.
+- **Accessibility:** meaningful alternative text, caption and preserved scale bar.
+
 ## Application interface screenshots awaiting direct capture
 
 The Story Method and Research Methods Studio have working embedded application previews on their respective website pages. No screenshots were added during this phase. Genuine captures must show the actual released interface at a known version, with any private student work excluded. A guessed or recreated illustration must not be labelled as a screenshot.
