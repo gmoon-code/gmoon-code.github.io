@@ -1,0 +1,185 @@
+{
+  "testedAt": "2026-10-17T12:56:26.505Z",
+  "checks": [
+    {
+      "size": "desktop",
+      "metrics": {
+        "documentWidth": 1440,
+        "bodyWidth": 1440,
+        "viewportWidth": 1440,
+        "figures": [
+          {
+            "name": "research-inquiry-figure",
+            "boxWidth": 940,
+            "left": 160,
+            "right": 1100,
+            "captionBelow": true,
+            "cited": true,
+            "caption": true,
+            "childText": "A possible starting point\nA student questions a biological model or classification\nThe scientific question\nWhat evidence would hel"
+          },
+          {
+            "name": "research-evidence-figure",
+            "boxWidth": 940,
+            "left": 160,
+            "right": 1100,
+            "captionBelow": true,
+            "cited": true,
+            "caption": true,
+            "childText": "Before\nThe original material\n\nWhat did the task invite students to investigate?\n\nDuring\nClassroom interaction\n\nWhat was questioned"
+          }
+        ],
+        "strands": [
+          {
+            "x": 160,
+            "y": -3053,
+            "w": 412
+          },
+          {
+            "x": 588,
+            "y": -3053,
+            "w": 412
+          }
+        ],
+        "evidenceStages": [
+          {
+            "x": 160,
+            "y": 287,
+            "w": 303
+          },
+          {
+            "x": 479,
+            "y": 287,
+            "w": 303
+          },
+          {
+            "x": 797,
+            "y": 287,
+            "w": 303
+          }
+        ]
+      },
+      "problems": []
+    },
+    {
+      "size": "tablet",
+      "metrics": {
+        "documentWidth": 768,
+        "bodyWidth": 768,
+        "viewportWidth": 768,
+        "figures": [
+          {
+            "name": "research-inquiry-figure",
+            "boxWidth": 712,
+            "left": 28,
+            "right": 740,
+            "captionBelow": true,
+            "cited": true,
+            "caption": true,
+            "childText": "A possible starting point\nA student questions a biological model or classification\nThe scientific question\nWhat evidence would hel"
+          },
+          {
+            "name": "research-evidence-figure",
+            "boxWidth": 712,
+            "left": 28,
+            "right": 740,
+            "captionBelow": true,
+            "cited": true,
+            "caption": true,
+            "childText": "Before\nThe original material\n\nWhat did the task invite students to investigate?\n\nDuring\nClassroom interaction\n\nWhat was questioned"
+          }
+        ],
+        "strands": [
+          {
+            "x": 28,
+            "y": -3958,
+            "w": 348
+          },
+          {
+            "x": 392,
+            "y": -3958,
+            "w": 348
+          }
+        ],
+        "evidenceStages": [
+          {
+            "x": 28,
+            "y": 204,
+            "w": 712
+          },
+          {
+            "x": 28,
+            "y": 335,
+            "w": 712
+          },
+          {
+            "x": 28,
+            "y": 466,
+            "w": 712
+          }
+        ]
+      },
+      "problems": []
+    },
+    {
+      "size": "mobile",
+      "metrics": {
+        "documentWidth": 390,
+        "bodyWidth": 390,
+        "viewportWidth": 390,
+        "figures": [
+          {
+            "name": "research-inquiry-figure",
+            "boxWidth": 362,
+            "left": 14,
+            "right": 376,
+            "captionBelow": true,
+            "cited": true,
+            "caption": true,
+            "childText": "A possible starting point\nA student questions a biological model or classification\nThe scientific question\nWhat evidence would hel"
+          },
+          {
+            "name": "research-evidence-figure",
+            "boxWidth": 362,
+            "left": 14,
+            "right": 376,
+            "captionBelow": true,
+            "cited": true,
+            "caption": true,
+            "childText": "Before\nThe original material\n\nWhat did the task invite students to investigate?\n\nDuring\nClassroom interaction\n\nWhat was questioned"
+          }
+        ],
+        "strands": [
+          {
+            "x": 14,
+            "y": -6262,
+            "w": 362
+          },
+          {
+            "x": 14,
+            "y": -6093,
+            "w": 362
+          }
+        ],
+        "evidenceStages": [
+          {
+            "x": 14,
+            "y": 84,
+            "w": 362
+          },
+          {
+            "x": 14,
+            "y": 210,
+            "w": 362
+          },
+          {
+            "x": 14,
+            "y": 337,
+            "w": 362
+          }
+        ]
+      },
+      "problems": []
+    }
+  ]
+}
