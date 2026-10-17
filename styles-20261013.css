@@ -2052,3 +2052,41 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
   color:var(--moon-muted);
   margin:10px 0 18px;
 }
+
+
+/* Genuine application captures on Projects; readable full-size originals remain linked. */
+#main .project-interface-figure{
+  margin:20px 0 3px;
+  min-width:0;
+}
+#main .project-interface-figure>a{
+  display:block;
+  border:1px solid var(--moon-rule);
+  background:#fff;
+  overflow:hidden;
+  cursor:zoom-in;
+}
+#main .project-interface-figure>a:focus-visible{
+  outline:2px solid currentColor;
+  outline-offset:3px;
+}
+#main .project-interface-figure img{
+  display:block;
+  width:100%;
+  height:auto;
+  aspect-ratio:8/5;
+  object-fit:contain;
+}
+#main .project-interface-figure figcaption{
+  font-size:13px;
+  line-height:1.55;
+  color:var(--moon-ink);
+  margin:9px 0 0;
+}
+#main .project-interface-figure figcaption strong{font-weight:700}
+#main .project-interface-credit{
+  display:block;
+  margin-top:3px;
+  font-size:12px;
+  color:var(--moon-muted);
+}
