@@ -1,5 +1,5 @@
 {
-  "testedAt": "2026-10-17T13:29:47.342Z",
+  "testedAt": "2026-10-17T13:39:46.404Z",
   "checks": [
     {
       "size": "desktop",
@@ -16,16 +16,14 @@
             "captionBelow": true,
             "cited": true,
             "caption": true,
-            "imageLoaded": false,
-            "imageWidth": 0,
-            "imageHeight": 0,
-            "childText": "Figure 1. Science practices examined under different conceptualisations of language. González-Howard and colleagues compare the pr"
+            "imageLoaded": true,
+            "imageWidth": 1087,
+            "imageHeight": 778,
+            "childText": "Figure 1. Science practices examined under different conceptualisations of language. This published synthesis compares practices e"
           }
         ]
       },
-      "problems": [
-        "Publisher image failed to load research-published-figure"
-      ]
+      "problems": []
     },
     {
       "size": "tablet",
@@ -42,16 +40,14 @@
             "captionBelow": true,
             "cited": true,
             "caption": true,
-            "imageLoaded": false,
-            "imageWidth": 0,
-            "imageHeight": 0,
-            "childText": "Figure 1. Science practices examined under different conceptualisations of language. González-Howard and colleagues compare the pr"
+            "imageLoaded": true,
+            "imageWidth": 1087,
+            "imageHeight": 778,
+            "childText": "Figure 1. Science practices examined under different conceptualisations of language. This published synthesis compares practices e"
           }
         ]
       },
-      "problems": [
-        "Publisher image failed to load research-published-figure"
-      ]
+      "problems": []
     },
     {
       "size": "mobile",
@@ -68,16 +64,14 @@
             "captionBelow": true,
             "cited": true,
             "caption": true,
-            "imageLoaded": false,
-            "imageWidth": 0,
-            "imageHeight": 0,
-            "childText": "Figure 1. Science practices examined under different conceptualisations of language. González-Howard and colleagues compare the pr"
+            "imageLoaded": true,
+            "imageWidth": 1087,
+            "imageHeight": 778,
+            "childText": "Figure 1. Science practices examined under different conceptualisations of language. This published synthesis compares practices e"
           }
         ]
       },
-      "problems": [
-        "Publisher image failed to load research-published-figure"
-      ]
+      "problems": []
     }
   ]
 }
