@@ -1951,10 +1951,14 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
 #main .hbs-figure-stage span{font-size:12px;line-height:1.45}
 #main .hbs-figure-stage small{margin-top:auto;font-size:11px;color:var(--moon-muted)}
 #main .hbs-figure-stage.hbs-inference{border-style:dashed}
-@media(max-width:760px){
- #main .hbs-figure{grid-template-columns:1fr;gap:8px}
- #main .hbs-figure-stage{min-height:0;padding:10px 12px}
+@media(max-width:1050px){
+ #main .hbs-figure{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+ #main .hbs-figure-stage{min-height:0}
  #main .hbs-figure-stage:not(:last-child)::after{content:none}
+}
+@media(max-width:600px){
+ #main .hbs-figure{grid-template-columns:1fr;gap:8px}
+ #main .hbs-figure-stage{padding:11px 12px}
 }
 
 
@@ -1998,4 +2002,24 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
   #main .teaching-bio-mechanism{padding:12px}
   #main .classification-case{padding:12px}
   #main .editorial-figure{margin-block:17px 21px}
+}
+
+
+/* Avoid miniature labels at phone widths and long unbroken figure content. */
+#main .editorial-figure,
+#main .teaching-bio-mechanism{min-width:0;max-width:100%}
+#main .figure-step,
+#main .figure-treatment,
+#main .hbs-figure-stage,
+#main .chem-stage,
+#main .classification-case{min-width:0;overflow-wrap:break-word}
+@media(max-width:690px){
+ #main .figure-dishes span{width:26px;height:26px;font-size:12px}
+ #main .figure-treatment strong{font-size:13px}
+ #main .figure-step small,
+ #main .hbs-figure-stage small{font-size:12px}
+}
+@media(max-width:380px){
+ #main .figure-nesting-groups{grid-template-columns:1fr;gap:9px}
+ #main .figure-dishes{grid-template-columns:repeat(6,minmax(0,1fr))}
 }
