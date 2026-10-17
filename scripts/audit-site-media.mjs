@@ -72,6 +72,18 @@ try{
           await sharp(png).resize({width:650,withoutEnlargement:true}).webp({quality:80,effort:5}).toFile(screenshot);
         }
       }
+      if(path==='interests.html'){
+        const shows=page.locator('.media-shelf').nth(1).locator('article.media-entry');
+        for(let i=0;i<await shows.count();i++){
+          const card=shows.nth(i);
+          await card.scrollIntoViewIfNeeded();
+          const img=card.locator('img');
+          await img.evaluate(image=>image.decode().catch(()=>{}));
+          const png=await card.screenshot({animations:'disabled'});
+          const file=out+'/site-shows-'+(i+1)+'-'+viewport.name+'.webp';
+          await sharp(png).resize({width:900,withoutEnlargement:true}).webp({quality:83,effort:5}).toFile(file);
+        }
+      }
       const failures=[];
       if(geometry.docWidth>viewport.width+3||geometry.bodyWidth>viewport.width+3)
         failures.push('horizontal overflow');
