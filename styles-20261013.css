@@ -1981,3 +1981,24 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
 #main .classification-case dd{font-size:14px;line-height:1.55;margin:3px 0 0}
 #main .classification-case dt:first-child{margin-top:0}
 @media(max-width:680px){#main .classification-compare{grid-template-columns:1fr}}
+
+
+/* Match the older photosynthesis figure caption to the editorial figure system. */
+#main .teaching-bio-mechanism .bio-mechanism-caption{
+  display:block;
+  margin:17px 0 0;
+  padding-top:12px;
+  border-top:1px solid var(--moon-rule);
+  font-size:14px;
+  line-height:1.6;
+  font-weight:400;
+  color:var(--moon-ink);
+  text-align:left;
+}
+#main .teaching-bio-mechanism .bio-mechanism-caption strong{font-weight:700}
+#main .teaching-bio-mechanism .bio-mechanism-caption .figure-source{font-size:13px}
+@media(max-width:480px){
+  #main .teaching-bio-mechanism{padding:12px}
+  #main .classification-case{padding:12px}
+  #main .editorial-figure{margin-block:17px 21px}
+}
