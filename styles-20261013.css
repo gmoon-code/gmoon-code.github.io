@@ -2043,3 +2043,12 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
 #main .editorial-source-image-compact{max-width:560px}
 #main .editorial-source-image-compact img{max-width:520px}
 #main .editorial-source-image-compact figcaption{max-width:520px}
+
+
+/* Modest service credit for the book-cover thumbnails, outside review prose. */
+#main .media-cover-source{
+  font-size:12px;
+  line-height:1.5;
+  color:var(--moon-muted);
+  margin:10px 0 18px;
+}
