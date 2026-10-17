@@ -2114,3 +2114,17 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
   background:#27292d;
   object-fit:contain;
 }
+
+
+/* Shows use horizontal identifying wordmarks, while book entries retain cover proportions. */
+#main .media-shelf-shows .media-logo{
+  box-sizing:border-box;
+  display:block;
+  width:112px;
+  height:88px;
+  aspect-ratio:auto;
+  object-fit:contain;
+}
+@media(max-width:480px){
+  #main .media-shelf-shows .media-logo{width:90px;height:74px}
+}
