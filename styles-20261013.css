@@ -2090,3 +2090,21 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
   font-size:12px;
   color:var(--moon-muted);
 }
+
+
+/* Application detail captures retain their actual interface proportions. */
+#main .project-detail-figure{
+  max-width:860px;
+  margin:22px 0 27px;
+}
+#main .project-detail-figure img{
+  width:100%;
+  height:auto;
+  aspect-ratio:auto;
+  object-fit:contain;
+}
+#main .project-detail-figure figcaption{
+  max-width:80ch;
+  font-size:14px;
+  line-height:1.6;
+}
