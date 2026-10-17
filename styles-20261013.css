@@ -2106,3 +2106,11 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
 #main .research-published-figure figcaption{max-width:76ch;margin:12px 0 0;padding-top:10px;border-top:1px solid var(--moon-rule);font-size:14px;line-height:1.6;color:var(--moon-ink)}
 #main .research-published-figure .research-image-view{display:block;margin:8px 0 1px;font-size:13px;line-height:1.6}
 #main .research-published-figure .figure-source{display:block;margin-top:6px;color:var(--moon-muted);font-size:13px;line-height:1.6}
+
+/* A white series wordmark needs contrast, without recreating promotional artwork. */
+#main .media-entry .media-logo-inverse{
+  box-sizing:border-box;
+  padding:12px;
+  background:#27292d;
+  object-fit:contain;
+}
