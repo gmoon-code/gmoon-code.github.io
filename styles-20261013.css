@@ -1989,7 +1989,7 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
 #main .figure-step,
 #main .figure-treatment,
 #main .hbs-figure-stage,
-#main .chem-stage,
+#main .chem-stage{min-width:0;overflow-wrap:break-word}
 @media(max-width:690px){
  #main .figure-dishes span{width:26px;height:26px;font-size:12px}
  #main .figure-treatment strong{font-size:13px}
