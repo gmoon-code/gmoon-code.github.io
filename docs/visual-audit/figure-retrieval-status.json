@@ -1,11 +1,6 @@
 {
   "status": "source_page_captured",
-  "sources_tried": [
-    {
-      "source": "publisher-pdf",
-      "issue": "HTTP Error 403: Forbidden"
-    }
-  ],
+  "sources_tried": [],
   "source": "nsf-public-manuscript",
   "source_url": "https://par.nsf.gov/servlets/purl/10480924",
   "pages": 31,
@@ -17,5 +12,15 @@
   "selected_page": 30,
   "page_width": 612.0,
   "page_height": 792.0,
-  "saved_image": "docs/visual-audit/gonzalez-figure-source-page.png"
+  "saved_image": "docs/visual-audit/gonzalez-figure-source-page.png",
+  "figure_image": "assets/gonzalez-howard-2023-figure-1.webp",
+  "clip_pdf_points": [
+    60.0,
+    68.0,
+    554.0,
+    421.0
+  ],
+  "crop_description": "Original figure with manuscript header, empty lower page, and page number removed",
+  "figure_width": 1087,
+  "figure_height": 778
 }
