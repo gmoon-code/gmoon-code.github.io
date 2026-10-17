@@ -1,0 +1,314 @@
+{
+  "createdAt": "2026-10-17T12:22:47.239Z",
+  "errors": [
+    {
+      "page": "research-methods-studio.html",
+      "size": "tablet",
+      "failures": [
+        "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('figure.project-interface-figure img').first() to be visible\n    65 × locator resolved to hidden <img width=\"1280\" height=\"800\" loading=\"lazy\" decoding=\"async\" src=\"assets/research-methods-data-lab.webp\" alt=\"Research Methods Studio Data Analysis and Statistics Laboratory showing step one of seven, the CSV import screen, an empty file picker, and the raw-data documentation rule.\"/>\n"
+      ]
+    },
+    {
+      "page": "research-methods-studio.html",
+      "size": "phone",
+      "failures": [
+        "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('figure.project-interface-figure img').first() to be visible\n    65 × locator resolved to hidden <img width=\"1280\" height=\"800\" loading=\"lazy\" decoding=\"async\" src=\"assets/research-methods-data-lab.webp\" alt=\"Research Methods Studio Data Analysis and Statistics Laboratory showing step one of seven, the CSV import screen, an empty file picker, and the raw-data documentation rule.\"/>\n"
+      ]
+    }
+  ],
+  "results": [
+    {
+      "page": "projects.html",
+      "size": "desktop",
+      "audit": {
+        "viewport": 1440,
+        "docWidth": 1440,
+        "bodyWidth": 1440,
+        "pageHeight": 1465,
+        "figures": [
+          {
+            "index": 1,
+            "src": "assets/story-method-interface.webp",
+            "alt": "The Story Method opening interface displaying eight AP Biology units in a grid, with Unit 1 Chemistry of Life selected and the first journey available to begin.",
+            "naturalWidth": 1280,
+            "naturalHeight": 800,
+            "imageWidth": 504,
+            "imageHeight": 315,
+            "captionGap": 35,
+            "captionText": "Figure 1. The Story Method course overview. The released eight-unit interface, with Unit 1 selected.\nScreenshot from the public application, October 2026. Select the image to view ",
+            "fullSize": "assets/story-method-interface.webp",
+            "opensNewTab": true,
+            "overflowLeft": false,
+            "overflowRight": false
+          },
+          {
+            "index": 2,
+            "src": "assets/research-methods-studio-interface.webp",
+            "alt": "Research Methods Studio opening page with an overview of the research process, guidance about connected research decisions, and a form to create a research notebook.",
+            "naturalWidth": 1280,
+            "naturalHeight": 800,
+            "imageWidth": 504,
+            "imageHeight": 315,
+            "captionGap": 35,
+            "captionText": "Figure 2. Research Methods Studio opening screen. The research-notebook setup before any project work has been entered.\nScreenshot from the public application in a fresh browser se",
+            "fullSize": "assets/research-methods-studio-interface.webp",
+            "opensNewTab": true,
+            "overflowLeft": false,
+            "overflowRight": false
+          }
+        ]
+      },
+      "preview": null,
+      "shots": [
+        "docs/visual-audit/projects-1-desktop.webp",
+        "docs/visual-audit/projects-2-desktop.webp"
+      ],
+      "failures": []
+    },
+    {
+      "page": "projects.html",
+      "size": "tablet",
+      "audit": {
+        "viewport": 768,
+        "docWidth": 768,
+        "bodyWidth": 768,
+        "pageHeight": 1493,
+        "figures": [
+          {
+            "index": 1,
+            "src": "assets/story-method-interface.webp",
+            "alt": "The Story Method opening interface displaying eight AP Biology units in a grid, with Unit 1 Chemistry of Life selected and the first journey available to begin.",
+            "naturalWidth": 1280,
+            "naturalHeight": 800,
+            "imageWidth": 300,
+            "imageHeight": 188,
+            "captionGap": 35,
+            "captionText": "Figure 1. The Story Method course overview. The released eight-unit interface, with Unit 1 selected.\nScreenshot from the public application, October 2026. Select the image to view ",
+            "fullSize": "assets/story-method-interface.webp",
+            "opensNewTab": true,
+            "overflowLeft": false,
+            "overflowRight": false
+          },
+          {
+            "index": 2,
+            "src": "assets/research-methods-studio-interface.webp",
+            "alt": "Research Methods Studio opening page with an overview of the research process, guidance about connected research decisions, and a form to create a research notebook.",
+            "naturalWidth": 1280,
+            "naturalHeight": 800,
+            "imageWidth": 300,
+            "imageHeight": 188,
+            "captionGap": 35,
+            "captionText": "Figure 2. Research Methods Studio opening screen. The research-notebook setup before any project work has been entered.\nScreenshot from the public application in a fresh browser se",
+            "fullSize": "assets/research-methods-studio-interface.webp",
+            "opensNewTab": true,
+            "overflowLeft": false,
+            "overflowRight": false
+          }
+        ]
+      },
+      "preview": null,
+      "shots": [],
+      "failures": []
+    },
+    {
+      "page": "projects.html",
+      "size": "phone",
+      "audit": {
+        "viewport": 390,
+        "docWidth": 390,
+        "bodyWidth": 390,
+        "pageHeight": 2467,
+        "figures": [
+          {
+            "index": 1,
+            "src": "assets/story-method-interface.webp",
+            "alt": "The Story Method opening interface displaying eight AP Biology units in a grid, with Unit 1 Chemistry of Life selected and the first journey available to begin.",
+            "naturalWidth": 1280,
+            "naturalHeight": 800,
+            "imageWidth": 318,
+            "imageHeight": 199,
+            "captionGap": 35,
+            "captionText": "Figure 1. The Story Method course overview. The released eight-unit interface, with Unit 1 selected.\nScreenshot from the public application, October 2026. Select the image to view ",
+            "fullSize": "assets/story-method-interface.webp",
+            "opensNewTab": true,
+            "overflowLeft": false,
+            "overflowRight": false
+          },
+          {
+            "index": 2,
+            "src": "assets/research-methods-studio-interface.webp",
+            "alt": "Research Methods Studio opening page with an overview of the research process, guidance about connected research decisions, and a form to create a research notebook.",
+            "naturalWidth": 1280,
+            "naturalHeight": 800,
+            "imageWidth": 318,
+            "imageHeight": 199,
+            "captionGap": 35,
+            "captionText": "Figure 2. Research Methods Studio opening screen. The research-notebook setup before any project work has been entered.\nScreenshot from the public application in a fresh browser se",
+            "fullSize": "assets/research-methods-studio-interface.webp",
+            "opensNewTab": true,
+            "overflowLeft": false,
+            "overflowRight": false
+          }
+        ]
+      },
+      "preview": null,
+      "shots": [
+        "docs/visual-audit/projects-1-phone.webp",
+        "docs/visual-audit/projects-2-phone.webp"
+      ],
+      "failures": []
+    },
+    {
+      "page": "story-method.html",
+      "size": "desktop",
+      "audit": {
+        "viewport": 1440,
+        "docWidth": 1440,
+        "bodyWidth": 1440,
+        "pageHeight": 4484,
+        "figures": [
+          {
+            "index": 1,
+            "src": "assets/story-method-observation-window.webp",
+            "alt": "The Story Method Observation Window panel, with text describing two reporter-cell trays and three spatial cues for the hypothesis door, reporter-cell chamber, and evidence board.",
+            "naturalWidth": 978,
+            "naturalHeight": 436,
+            "imageWidth": 858,
+            "imageHeight": 383,
+            "captionGap": 35,
+            "captionText": "Figure 1. The Observation Window in the released Unit 1 journey. The interface establishes a location for noticing the unequal reporter-cell signals and revisiting possible explana",
+            "fullSize": "assets/story-method-observation-window.webp",
+            "opensNewTab": true,
+            "overflowLeft": false,
+            "overflowRight": false
+          }
+        ]
+      },
+      "preview": {
+        "src": "https://gmoon-code.github.io/memory-palace-u1-8/?unit=unit-1",
+        "title": "The Story Method, live AP Biology Unit 1",
+        "closeWorked": true
+      },
+      "shots": [
+        "docs/visual-audit/story-1-desktop.webp"
+      ],
+      "failures": []
+    },
+    {
+      "page": "story-method.html",
+      "size": "tablet",
+      "audit": {
+        "viewport": 768,
+        "docWidth": 768,
+        "bodyWidth": 768,
+        "pageHeight": 4930,
+        "figures": [
+          {
+            "index": 1,
+            "src": "assets/story-method-observation-window.webp",
+            "alt": "The Story Method Observation Window panel, with text describing two reporter-cell trays and three spatial cues for the hypothesis door, reporter-cell chamber, and evidence board.",
+            "naturalWidth": 978,
+            "naturalHeight": 436,
+            "imageWidth": 710,
+            "imageHeight": 317,
+            "captionGap": 35,
+            "captionText": "Figure 1. The Observation Window in the released Unit 1 journey. The interface establishes a location for noticing the unequal reporter-cell signals and revisiting possible explana",
+            "fullSize": "assets/story-method-observation-window.webp",
+            "opensNewTab": true,
+            "overflowLeft": false,
+            "overflowRight": false
+          }
+        ]
+      },
+      "preview": {
+        "src": "https://gmoon-code.github.io/memory-palace-u1-8/?unit=unit-1",
+        "title": "The Story Method, live AP Biology Unit 1",
+        "closeWorked": true
+      },
+      "shots": [],
+      "failures": []
+    },
+    {
+      "page": "story-method.html",
+      "size": "phone",
+      "audit": {
+        "viewport": 390,
+        "docWidth": 390,
+        "bodyWidth": 390,
+        "pageHeight": 7426,
+        "figures": [
+          {
+            "index": 1,
+            "src": "assets/story-method-observation-window.webp",
+            "alt": "The Story Method Observation Window panel, with text describing two reporter-cell trays and three spatial cues for the hypothesis door, reporter-cell chamber, and evidence board.",
+            "naturalWidth": 978,
+            "naturalHeight": 436,
+            "imageWidth": 360,
+            "imageHeight": 160,
+            "captionGap": 35,
+            "captionText": "Figure 1. The Observation Window in the released Unit 1 journey. The interface establishes a location for noticing the unequal reporter-cell signals and revisiting possible explana",
+            "fullSize": "assets/story-method-observation-window.webp",
+            "opensNewTab": true,
+            "overflowLeft": false,
+            "overflowRight": false
+          }
+        ]
+      },
+      "preview": {
+        "src": "https://gmoon-code.github.io/memory-palace-u1-8/?unit=unit-1",
+        "title": "The Story Method, live AP Biology Unit 1",
+        "closeWorked": true
+      },
+      "shots": [
+        "docs/visual-audit/story-1-phone.webp"
+      ],
+      "failures": []
+    },
+    {
+      "page": "research-methods-studio.html",
+      "size": "desktop",
+      "audit": {
+        "viewport": 1440,
+        "docWidth": 1440,
+        "bodyWidth": 1440,
+        "pageHeight": 5645,
+        "figures": [
+          {
+            "index": 1,
+            "src": "assets/research-methods-data-lab.webp",
+            "alt": "Research Methods Studio Data Analysis and Statistics Laboratory showing step one of seven, the CSV import screen, an empty file picker, and the raw-data documentation rule.",
+            "naturalWidth": 1280,
+            "naturalHeight": 800,
+            "imageWidth": 858,
+            "imageHeight": 536,
+            "captionGap": 35,
+            "captionText": "Figure 2. Opening the Data and Statistics Lab. The published interface begins with raw-data import and directs students to preserve their original records. No dataset or analysis r",
+            "fullSize": "assets/research-methods-data-lab.webp",
+            "opensNewTab": true,
+            "overflowLeft": false,
+            "overflowRight": false
+          }
+        ]
+      },
+      "preview": {
+        "src": "https://gmoon-code.github.io/research-methods/",
+        "title": "Research Methods Studio, live research workspace",
+        "closeWorked": true
+      },
+      "shots": [
+        "docs/visual-audit/methods-1-desktop.webp"
+      ],
+      "failures": []
+    },
+    {
+      "page": "research-methods-studio.html",
+      "size": "tablet",
+      "error": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('figure.project-interface-figure img').first() to be visible\n    65 × locator resolved to hidden <img width=\"1280\" height=\"800\" loading=\"lazy\" decoding=\"async\" src=\"assets/research-methods-data-lab.webp\" alt=\"Research Methods Studio Data Analysis and Statistics Laboratory showing step one of seven, the CSV import screen, an empty file picker, and the raw-data documentation rule.\"/>\n"
+    },
+    {
+      "page": "research-methods-studio.html",
+      "size": "phone",
+      "error": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('figure.project-interface-figure img').first() to be visible\n    65 × locator resolved to hidden <img width=\"1280\" height=\"800\" loading=\"lazy\" decoding=\"async\" src=\"assets/research-methods-data-lab.webp\" alt=\"Research Methods Studio Data Analysis and Statistics Laboratory showing step one of seven, the CSV import screen, an empty file picker, and the raw-data documentation rule.\"/>\n"
+    }
+  ]
+}
