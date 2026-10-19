@@ -19,7 +19,6 @@
 .pungmul-performance-grid img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover}
 .pungmul-performance-grid figcaption{font-size:13px;color:var(--moon-muted);padding:8px 10px}
 .pungmul-photo-credit{font-size:12px;color:var(--moon-muted);margin:10px 0 0}
-.pungmul-recordings-note{max-width:79ch;font-size:14px;color:var(--moon-muted);margin:15px 0 0}
 .pungmul-reference-list{list-style:none;padding:0;margin:0;max-width:85ch}
 .pungmul-reference-list li{font-size:14px;line-height:1.65;padding-left:1.5em;text-indent:-1.5em;margin:0 0 14px;overflow-wrap:break-word;scroll-margin-top:28px}
 .pungmul-reference-list li:target{background:var(--section-yellow-soft)}
