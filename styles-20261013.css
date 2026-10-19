@@ -22,21 +22,21 @@
   --moon-rule:#d8d8d8;
   --moon-rule-dark:#b7b7b7;
 
-  --section-yellow:#F5E6A8;
-  --section-yellow-soft:#FCF9ED;
-  --section-yellow-line:#C6AD58;
+  --section-yellow:#fff36d;
+  --section-yellow-soft:#fffbd1;
+  --section-yellow-line:#d8c85d;
 
-  --section-green:#CEE5C1;
-  --section-green-soft:#F4F9F0;
-  --section-green-line:#8FAE80;
+  --section-green:#8cff8a;
+  --section-green-soft:#eaffea;
+  --section-green-line:#72b96f;
 
-  --section-blue:#C8DDF1;
-  --section-blue-soft:#F3F8FC;
-  --section-blue-line:#82A6C7;
+  --section-blue:#72e6e3;
+  --section-blue-soft:#e8fbfb;
+  --section-blue-line:#62bfc0;
 
-  --section-magenta:#EACBE3;
-  --section-magenta-soft:#FBF4F9;
-  --section-magenta-line:#B58BAE;
+  --section-magenta:#ff8fd3;
+  --section-magenta-soft:#fff0f8;
+  --section-magenta-line:#d78db4;
 
   --page-max:1120px;
   --reading:820px;
