@@ -7,11 +7,11 @@
 @media print{.moon-appearance{display:none!important}}
 /* Portfolio dark theme: restrained editorial paper, not an inverted light page. */
 html[data-moon-theme="dark"]{
- --moon-page:#121212;--moon-paper:#1e1e1e;--moon-raised:#292929;
+ --moon-page:#0f0f0f;--moon-paper:#161616;--moon-raised:#1c1c1c;
  --moon-ink:#ececec;--moon-muted:#b8b8b8;
- --moon-rule:#3d3d3d;--moon-rule-dark:#595959;
- --section-yellow-soft:#282828;--section-green-soft:#282828;
- --section-blue-soft:#282828;--section-magenta-soft:#282828;
+ --moon-rule:#303030;--moon-rule-dark:#484848;
+ --section-yellow-soft:#1c1c1c;--section-green-soft:#1c1c1c;
+ --section-blue-soft:#1c1c1c;--section-magenta-soft:#1c1c1c;
  color-scheme:dark;
 }
 html[data-moon-theme="dark"],html[data-moon-theme="dark"] body{background:var(--moon-page);color:var(--moon-ink)}
@@ -19,7 +19,7 @@ html[data-moon-theme="dark"] :is(h1,h2,h3,h4,h5,h6){color:var(--moon-ink)}
 html[data-moon-theme="dark"] :is(.topbar,.site-footer){background:#171717;border-color:var(--moon-rule-dark)}
 html[data-moon-theme="dark"] :is(.brand,.site-nav a,.site-footer a){color:var(--moon-ink)}
 html[data-moon-theme="dark"] .site-nav a:hover:not(.cv-link),
-html[data-moon-theme="dark"] .site-nav a[aria-current="page"]:not(.cv-link){color:#121212}
+html[data-moon-theme="dark"] .site-nav a[aria-current="page"]:not(.cv-link){color:#0f0f0f}
 html[data-moon-theme="dark"] .site-nav .cv-link{background:var(--moon-paper)!important;color:var(--moon-ink)}
 html[data-moon-theme="dark"] .site-nav .cv-link:hover{background:var(--section-blue-soft)!important}
 html[data-moon-theme="dark"] :is(.meta,.note,.caption,.breadcrumb,.media-cover-source,.pungmul-photo-credit,.pungmul-back,
@@ -36,7 +36,7 @@ html[data-moon-theme="dark"] .section-head h2{
  padding-bottom:6px;
 }
 html[data-moon-theme="dark"] .section-head h2 a{color:inherit!important}
-html[data-moon-theme="dark"] :is(.hero-card .label,.site-nav a[aria-current="page"]:not(.cv-link)){color:#121212}
+html[data-moon-theme="dark"] :is(.hero-card .label,.site-nav a[aria-current="page"]:not(.cv-link)){color:#0f0f0f}
 html[data-moon-theme="dark"] :is(.home-page .home-kicker,.research-eyebrow,.home-color-block .meta){
  color:var(--moon-muted)!important;background:none
 }
@@ -90,7 +90,7 @@ html[data-moon-theme="dark"] :is(.control,.project-preview-toolbar button,.nav-c
  background:var(--moon-paper);color:var(--moon-ink);border-color:var(--moon-rule-dark)
 }
 html[data-moon-theme="dark"] .control.primary{background:var(--moon-ink);color:var(--moon-page);border-color:var(--moon-ink)}
-html[data-moon-theme="dark"] .control.primary:hover{background:#e0e0e0;color:#121212}
+html[data-moon-theme="dark"] .control.primary:hover{background:#e0e0e0;color:#0f0f0f}
 html[data-moon-theme="dark"] :is(.inline-link,.reading a,.research-hub-prose a,.teaching-longform a){
  text-decoration-color:var(--section-blue);color:var(--moon-ink)
 }
@@ -218,4 +218,45 @@ html[data-moon-theme="dark"] :is(.lesson-minutes,.project-step-number,.research-
 /* Dark app pages should preserve the user's familiar violet section identity. */
 html[data-moon-theme="dark"] .teaching-case-preview .meta{
  color:var(--moon-muted)!important
+}
+
+/* Quiet dark appearance: reading content sits on the page, with accent rules
+   and spacing providing structure. Reserve filled panels for controls. */
+html[data-moon-theme="dark"] :is(
+ .paper-card,.teaching-case-preview,.research-route-card,.research-case,
+ .research-followups article,.media-entry,.home-spotlight-note,
+ .research-hub .research-approach-grid>div,.research-example-steps>div,
+ .project-status-grid>div,.project-phase-grid article
+){
+ background:transparent;
+ border-left-color:transparent;
+ border-right-color:transparent;
+ border-bottom-color:var(--moon-rule);
+}
+html[data-moon-theme="dark"] :is(
+ .paper-card,.teaching-case-preview,.research-route-card,.research-case,
+ .research-followups article,.home-spotlight-note
+){border-top-color:var(--page-line,var(--section-magenta-line))}
+html[data-moon-theme="dark"] :is(.article-jumps,.pungmul-jump-nav,.home-path){
+ background:transparent;
+}
+html[data-moon-theme="dark"] :is(.research-essay-margin,.research-hub-margin,
+ .teaching-planning-aside,.teaching-insight-panel,.project-try,
+ .project-preview-before,.teaching-original-prompt){
+ background:var(--moon-paper);
+ border-color:var(--moon-rule);
+}
+html[data-moon-theme="dark"] :is(.media-cover,.home-photo,.home-outside-photo,
+ .pungmul-gallery figure,.pungmul-performance-grid figure){
+ background:var(--moon-paper);
+ border-color:var(--moon-rule);
+}
+html[data-moon-theme="dark"] :is(.teaching-case-bridge span:not([aria-hidden])){
+ background:var(--moon-raised);
+ border-color:var(--moon-rule-dark);
+ color:var(--moon-ink);
+}
+html[data-moon-theme="dark"] :is(.topbar,.site-footer){
+ background:var(--moon-page);
+ border-color:var(--moon-rule);
 }
