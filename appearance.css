@@ -21,8 +21,8 @@ html[data-moon-theme="dark"] :is(.topbar,.site-footer){border-color:var(--moon-r
 html[data-moon-theme="dark"] .site-nav .cv-link{background:var(--moon-paper)!important;color:var(--moon-ink)}
 html[data-moon-theme="dark"] .site-nav .cv-link:hover{background:var(--section-blue-soft)!important}
 html[data-moon-theme="dark"] :is(.hero-copy>p,.reading p,.home-page p,.about-page p,.home-spotlight-text>p,.home-path>p,.home-outside-grid>div>p,.hero-card p,.home-spotlight-note p,.research-case p,.teaching-longform p,.teaching-case-prose p){color:var(--moon-ink)}
-html[data-moon-theme="dark"] :is(.section-head h2,.home-page .home-kicker,.home-color-block .meta,.hero-card .label){color:#101317!important}
-html[data-moon-theme="dark"] :is(.section-head h2,.home-page .home-kicker,.hero-card .label){background:var(--page-highlight,var(--section-yellow))}
+html[data-moon-theme="dark"] :is(.section-head h2,.hero-card .label){color:#101317!important}
+html[data-moon-theme="dark"] :is(.section-head h2,.hero-card .label){background:var(--page-highlight,var(--section-yellow))}
 html[data-moon-theme="dark"] :is(.home-path .meta,.home-spotlight .meta,.research-route-card .meta){color:var(--moon-muted)!important;background:transparent}
 html[data-moon-theme="dark"] :is(.home-path,.home-spotlight-note,.research-example,.research-essay-margin,.research-hub-margin,.teaching-planning-aside,.teaching-original-prompt,.teaching-insight-panel,.chem-pressure-check,.rms-analysis-note,.project-try,.story-scene-note){border-color:var(--moon-rule-dark)}
 html[data-moon-theme="dark"] :is(.home-spotlight-note,.research-example,.research-essay-margin,.research-hub-margin,.teaching-planning-aside,.teaching-original-prompt,.teaching-insight-panel,.chem-pressure-check,.rms-analysis-note,.project-try,.story-scene-note){background:var(--page-soft,var(--moon-paper))}
@@ -47,8 +47,8 @@ html[data-moon-theme="dark"] .moon-appearance-select{background:var(--moon-paper
 html[data-moon-theme="dark"] main :is(p,li,blockquote,figcaption,td,th,summary){color:var(--moon-ink)!important}
 html[data-moon-theme="dark"] main a{color:var(--moon-ink)}
 html[data-moon-theme="dark"] :is(.meta,.note,.caption,.breadcrumb,.media-cover-source,.pungmul-photo-credit,.pungmul-hero-photo figcaption,.pungmul-performance-grid figcaption,.project-intro-note,.teaching-preview-note,.teaching-small-note){color:var(--moon-muted)!important}
-html[data-moon-theme="dark"] :is(.home-page .home-kicker,.section-head h2,.hero-card .label,.research-eyebrow){color:#101317!important}
-html[data-moon-theme="dark"] .site-nav a:hover,
+html[data-moon-theme="dark"] :is(.section-head h2,.hero-card .label){color:#101317!important}
+html[data-moon-theme="dark"] .site-nav a:hover:not(.cv-link),
 html[data-moon-theme="dark"] .site-nav a[aria-current="page"]:not(.cv-link){color:#101317!important}
 html[data-moon-theme="dark"] :is(.pungmul-gallery figure,.pungmul-performance-grid figure,.studio-look-feature,.studio-photo-target,.research-example-steps>div,.research-route-card,.teaching-chem-case .chem-equilibrium-example,.home-spotlight-note,.research-hub .research-approach-grid>div,.project-status-grid>div,.project-phase-grid article){background:var(--moon-paper);color:var(--moon-ink);border-color:var(--moon-rule)}
 html[data-moon-theme="dark"] :is(.research-hub .research-hub-lead,.research-hub .research-hub-margin p,.research-essay-margin p,.research-case p,.research-curriculum-question p,.research-biology-explanation p,.studio-timeline li p){color:var(--moon-ink)!important}
@@ -67,3 +67,5 @@ html[data-moon-theme="dark"] .moon-appearance-label{color:var(--moon-muted)}
  .topbar-inner>.site-nav{grid-column:1/-1;grid-row:2}
  .moon-appearance-label{display:none}
 }
+
+html[data-moon-theme="dark"] :is(.home-page .home-kicker,.research-eyebrow,.home-color-block .meta){color:var(--moon-muted)!important;background:transparent}
