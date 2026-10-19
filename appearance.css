@@ -1,0 +1,44 @@
+/* Appearance control, shared with the other Moon Notes sites. */
+.moon-appearance{display:flex;align-items:center;justify-content:flex-end;gap:7px;flex:none;font-family:"Times New Roman",Times,serif;font-size:13px}
+.moon-appearance-label{color:var(--moon-muted,#575757);font-size:12px;white-space:nowrap}
+.moon-appearance-select{font:inherit;min-width:85px;max-width:110px;padding:6px 7px;border:1px solid var(--moon-rule-dark,#b7b7b7);border-radius:3px;background:var(--moon-paper,#fff);color:var(--moon-ink,#111);cursor:pointer;line-height:1.3}
+.moon-appearance-select:focus-visible{outline:2px solid var(--moon-ink,#111);outline-offset:2px}
+@media(max-width:700px){.moon-appearance{justify-content:flex-start;gap:8px}.moon-appearance-select{min-height:36px}}
+@media print{.moon-appearance{display:none!important}}
+/* Dark presentation for the academic portfolio. All highlight colours remain unchanged. */
+html[data-moon-theme="dark"]{
+  --moon-page:#12171c;--moon-paper:#1d242b;--moon-ink:#edf1f4;
+  --moon-muted:#b9c3cb;--moon-rule:#3a4651;--moon-rule-dark:#566574;
+  --section-yellow-soft:#343420;--section-green-soft:#1b3825;
+  --section-blue-soft:#18363b;--section-magenta-soft:#39243c;
+  color-scheme:dark;
+}
+html[data-moon-theme="dark"],html[data-moon-theme="dark"] body{background:var(--moon-page);color:var(--moon-ink)}
+html[data-moon-theme="dark"] :is(h1,h2,h3,h4,h5,h6,p,li,dt,dd,blockquote,figcaption,small,td,th,label){color:var(--moon-ink)}
+html[data-moon-theme="dark"] :is(.meta,.note,.caption,.breadcrumb,.media-cover-source,.pungmul-photo-credit,.pungmul-back,.pungmul-eyebrow,.pungmul-jump-nav span){color:var(--moon-muted)}
+html[data-moon-theme="dark"] :is(.topbar,.site-footer,.hero-card,.paper-card,.media-entry,.home-photo,.home-outside-photo,.home-path,.project-showcase-item,.project-preview-panel,.research-case,.research-route-card,.research-followups article,.teaching-case-preview,.teaching-three-representations>article,.teaching-chem-responses>article,.table-wrap,.card,.list-row,.control,.note-card){background:var(--moon-paper)}
+html[data-moon-theme="dark"] :is(.topbar,.site-footer){border-color:var(--moon-rule-dark)}
+html[data-moon-theme="dark"] .site-nav .cv-link{background:var(--moon-paper)!important;color:var(--moon-ink)}
+html[data-moon-theme="dark"] .site-nav .cv-link:hover{background:var(--section-blue-soft)!important}
+html[data-moon-theme="dark"] :is(.hero-copy>p,.reading p,.home-page p,.about-page p,.home-spotlight-text>p,.home-path>p,.home-outside-grid>div>p,.hero-card p,.home-spotlight-note p,.research-case p,.teaching-longform p,.teaching-case-prose p){color:var(--moon-ink)}
+html[data-moon-theme="dark"] :is(.section-head h2,.home-page .home-kicker,.home-color-block .meta,.hero-card .label){color:#101317!important}
+html[data-moon-theme="dark"] :is(.section-head h2,.home-page .home-kicker,.hero-card .label){background:var(--page-highlight,var(--section-yellow))}
+html[data-moon-theme="dark"] :is(.home-path .meta,.home-spotlight .meta,.research-route-card .meta){color:var(--moon-muted)!important;background:transparent}
+html[data-moon-theme="dark"] :is(.home-path,.home-spotlight-note,.research-example,.research-essay-margin,.research-hub-margin,.teaching-planning-aside,.teaching-original-prompt,.teaching-insight-panel,.chem-pressure-check,.rms-analysis-note,.project-try,.story-scene-note){border-color:var(--moon-rule-dark)}
+html[data-moon-theme="dark"] :is(.home-spotlight-note,.research-example,.research-essay-margin,.research-hub-margin,.teaching-planning-aside,.teaching-original-prompt,.teaching-insight-panel,.chem-pressure-check,.rms-analysis-note,.project-try,.story-scene-note){background:var(--page-soft,var(--moon-paper))}
+html[data-moon-theme="dark"] :is(.paper-card,.media-entry,.pungmul-performance-grid figure,.home-photo,.home-outside-photo,.project-showcase-item,.project-preview-panel,.lesson-sequence li){border-color:var(--moon-rule)}
+html[data-moon-theme="dark"] :is(.project-preview-before,.project-route span,.research-thought-scenario,.research-curriculum-question,.research-biology-explanation,.research-ethics-note,.research-justice-note,.teaching-prompt-card,.chem-equation-panel,.bio-mechanism-start,.bio-mechanism-result){background:var(--page-soft,var(--moon-paper))}
+html[data-moon-theme="dark"] :is(input,select,textarea,button){background:var(--moon-paper);color:var(--moon-ink);border-color:var(--moon-rule-dark)}
+html[data-moon-theme="dark"] :is(input,textarea)::placeholder{color:var(--moon-muted)}
+html[data-moon-theme="dark"] :is(.control,.control.primary){background:var(--moon-paper);color:var(--moon-ink);border-color:var(--moon-rule-dark)}
+html[data-moon-theme="dark"] .control.primary{background:var(--moon-ink);color:var(--moon-page);border-color:var(--moon-ink)}
+html[data-moon-theme="dark"] :is(.control:hover,.control.primary:hover){background:#33404b;color:var(--moon-ink)}
+html[data-moon-theme="dark"] :is(table,th,td,thead,tbody,tr){border-color:var(--moon-rule)}
+html[data-moon-theme="dark"] :is(thead th,.research-evidence-table thead th,.worksheet-data thead th,.teaching-sequence-table thead th){background:var(--page-soft,var(--moon-paper));color:var(--moon-ink)}
+html[data-moon-theme="dark"] :is(tbody tr,.table-wrap,.project-preview-toolbar,.research-evidence-table){background:var(--moon-paper)}
+html[data-moon-theme="dark"] :is(pre,code,.research-code,.code-block){background:#262f38;color:#edf1f4}
+html[data-moon-theme="dark"] :is(.pungmul-hero-photo figcaption,.pungmul-performance-grid figcaption,.media-cover-source){color:var(--moon-muted)}
+html[data-moon-theme="dark"] :is(.pungmul-performance-grid figure,.pungmul-jump-nav){border-color:var(--moon-rule)}
+html[data-moon-theme="dark"] :is(a:focus-visible,button:focus-visible,select:focus-visible){outline-color:var(--moon-ink)}
+html[data-moon-theme="dark"] .moon-appearance-select{background:var(--moon-paper);color:var(--moon-ink)}
+@media print{html[data-moon-theme="dark"],html[data-moon-theme="dark"] body{background:#fff!important;color:#111!important}}
