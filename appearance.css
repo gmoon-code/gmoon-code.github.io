@@ -196,3 +196,26 @@ html[data-moon-theme="dark"] :is(.studio-photo-target,.studio-look-feature,.proj
  .media-cover,.research-published-image,.research-example-steps>div){
  border-color:var(--moon-rule);
 }
+
+/* Legacy prose with fixed light-theme greys. Keep reading copy and annotations
+   distinct so detailed research and teaching pages preserve their hierarchy. */
+html[data-moon-theme="dark"] :is(.home-other-work,.lesson-sequence p,.teaching-prompt-note,
+ .project-steps p,.project-decision-sequence p,.project-tool-list p,
+ .research-prose p,.research-cycle p,.project-preview-intro,.story-learning-sequence p,
+ .mechanism-branches p,.research-thought-analysis dd,.research-thought-analysis>p,
+ .research-curriculum-note p,.research-biology-note p,.teaching-scholarship .teaching-lead,
+ .teaching-evidence-cards p,.teaching-case-page .teaching-case-lead,
+ .teaching-decision-grid p,.teaching-paired-questions p,.studio-comparison-panel p,
+ .research-hub .research-approach p,.research-interest-question){
+ color:var(--moon-ink)
+}
+html[data-moon-theme="dark"] :is(.lesson-minutes,.project-step-number,.research-table-note,
+ .research-flow-arrow,.research-cycle-stage,.project-route span+span::before,
+ .story-learning-sequence li:before,.mechanism-connector,.mechanism-caption,
+ .teaching-evidence-note,.teaching-source-note,.bio-mechanism-caveat){
+ color:var(--moon-muted)
+}
+/* Dark app pages should preserve the user's familiar violet section identity. */
+html[data-moon-theme="dark"] .teaching-case-preview .meta{
+ color:var(--moon-muted)!important
+}
