@@ -1,5 +1,5 @@
 {
-  "testedAt": "2026-10-19T00:19:24.410Z",
+  "testedAt": "2026-10-19T02:40:13.352Z",
   "results": [
     {
       "path": "index.html",
@@ -306,30 +306,17 @@
           "source": "https://gmoon-code.github.io/assets/pungmul-rehearsal.webp"
         },
         {
-          "src": "https://covers.openlibrary.org/b/isbn/9781635570304-L.jpg",
-          "naturalWidth": 326,
+          "src": "https://covers.openlibrary.org/b/isbn/9780547928227-L.jpg",
+          "naturalWidth": 323,
           "naturalHeight": 500,
           "complete": true,
           "renderedWidth": 112,
           "renderedHeight": 168,
           "left": 177,
           "right": 289,
-          "alt": "Cover of The Priory of the Orange Tree",
+          "alt": "Cover of The Hobbit",
           "loading": "lazy",
-          "source": "https://covers.openlibrary.org/b/isbn/9781635570304-L.jpg"
-        },
-        {
-          "src": "https://covers.openlibrary.org/b/isbn/9780618640157-L.jpg",
-          "naturalWidth": 314,
-          "naturalHeight": 500,
-          "complete": true,
-          "renderedWidth": 112,
-          "renderedHeight": 168,
-          "left": 747,
-          "right": 859,
-          "alt": "Cover of The Lord of the Rings",
-          "loading": "lazy",
-          "source": "https://covers.openlibrary.org/b/isbn/9780618640157-L.jpg"
+          "source": "https://covers.openlibrary.org/b/isbn/9780547928227-L.jpg"
         },
         {
           "src": "https://covers.openlibrary.org/b/isbn/9780062951465-L.jpg",
@@ -338,8 +325,8 @@
           "complete": true,
           "renderedWidth": 112,
           "renderedHeight": 168,
-          "left": 177,
-          "right": 289,
+          "left": 747,
+          "right": 859,
           "alt": "Cover of I'm Waiting for You",
           "loading": "lazy",
           "source": "https://covers.openlibrary.org/b/isbn/9780062951465-L.jpg"
@@ -351,8 +338,8 @@
           "complete": true,
           "renderedWidth": 112,
           "renderedHeight": 168,
-          "left": 747,
-          "right": 859,
+          "left": 177,
+          "right": 289,
           "alt": "Cover of Rose",
           "loading": "lazy",
           "source": "https://covers.openlibrary.org/b/isbn/9780918526526-L.jpg"
@@ -994,30 +981,17 @@
           "source": "https://gmoon-code.github.io/assets/pungmul-rehearsal.webp"
         },
         {
-          "src": "https://covers.openlibrary.org/b/isbn/9781635570304-L.jpg",
-          "naturalWidth": 326,
+          "src": "https://covers.openlibrary.org/b/isbn/9780547928227-L.jpg",
+          "naturalWidth": 323,
           "naturalHeight": 500,
           "complete": true,
           "renderedWidth": 90,
           "renderedHeight": 135,
           "left": 27,
           "right": 117,
-          "alt": "Cover of The Priory of the Orange Tree",
+          "alt": "Cover of The Hobbit",
           "loading": "lazy",
-          "source": "https://covers.openlibrary.org/b/isbn/9781635570304-L.jpg"
-        },
-        {
-          "src": "https://covers.openlibrary.org/b/isbn/9780618640157-L.jpg",
-          "naturalWidth": 314,
-          "naturalHeight": 500,
-          "complete": true,
-          "renderedWidth": 90,
-          "renderedHeight": 135,
-          "left": 27,
-          "right": 117,
-          "alt": "Cover of The Lord of the Rings",
-          "loading": "lazy",
-          "source": "https://covers.openlibrary.org/b/isbn/9780618640157-L.jpg"
+          "source": "https://covers.openlibrary.org/b/isbn/9780547928227-L.jpg"
         },
         {
           "src": "https://covers.openlibrary.org/b/isbn/9780062951465-L.jpg",
