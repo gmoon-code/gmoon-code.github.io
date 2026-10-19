@@ -113,3 +113,18 @@ html[data-moon-theme="dark"] :is(.moon-appearance-select){background:var(--moon-
 @media print{
  html[data-moon-theme="dark"]{--moon-page:#fff;--moon-paper:#fff;--moon-raised:#fff;--moon-ink:#111;--moon-muted:#575757;--moon-rule:#ddd;--moon-rule-dark:#aaa;color-scheme:light}
 }
+
+/* Keep structural accent rules visible above neutral card outlines. */
+html[data-moon-theme="dark"] :is(.hero-card,.paper-card,.project-showcase-item,.project-preview-panel,
+ .research-case,.research-route-card,.research-followups article,.teaching-case-preview,
+ .home-spotlight-note,.home-path,.project-status-grid>div,.project-phase-grid article){
+ border-top-color:var(--page-line,var(--section-blue-line))
+}
+html[data-moon-theme="dark"] :is(.home-spotlight-note,.research-example,.research-essay-margin,
+ .research-hub-margin,.teaching-original-prompt,.teaching-insight-panel,.project-try){
+ border-left-color:var(--page-line,var(--section-blue-line))
+}
+html[data-moon-theme="dark"] .page :is(p,li,blockquote,figcaption,td,th,summary):not(.meta):not(.note):not(.home-kicker):not(.research-eyebrow){
+ color:var(--moon-ink)
+}
+html[data-moon-theme="dark"] :is(.section-head h2,.section-head h2 a){color:var(--moon-ink)!important}
