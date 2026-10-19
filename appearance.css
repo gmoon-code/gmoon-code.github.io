@@ -59,3 +59,11 @@ html[data-moon-theme="dark"] :is(.studio-look-feature,.studio-look-outlined,.pun
 html[data-moon-theme="dark"] :is(.worksheet-data,.research-evidence-table,.research-count-track,.source-list,.table-scroll){background:var(--moon-paper)}
 html[data-moon-theme="dark"] .moon-appearance-label{color:var(--moon-muted)}
 @media print{html[data-moon-theme="dark"]{--moon-page:#fff;--moon-paper:#fff;--moon-ink:#111;--moon-muted:#575757;--moon-rule:#d8d8d8;--moon-rule-dark:#b7b7b7}}
+
+@media(max-width:700px){
+ .topbar-inner:has(>.moon-appearance){display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px}
+ .topbar-inner>.brand{grid-column:1;grid-row:1}
+ .topbar-inner>.moon-appearance{grid-column:2;grid-row:1}
+ .topbar-inner>.site-nav{grid-column:1/-1;grid-row:2}
+ .moon-appearance-label{display:none}
+}
