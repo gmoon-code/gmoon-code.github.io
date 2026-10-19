@@ -57,7 +57,7 @@
     select.addEventListener("change", function () { set(select.value); });
     holder.appendChild(label);
     holder.appendChild(select);
-    var container = header.querySelector(".topbar-inner") || header;
+    var container = header.querySelector(".topbar-inner") || header.querySelector(".student-top-actions") || header;
     container.appendChild(holder);
   }
 
