@@ -42,3 +42,20 @@ html[data-moon-theme="dark"] :is(.pungmul-performance-grid figure,.pungmul-jump-
 html[data-moon-theme="dark"] :is(a:focus-visible,button:focus-visible,select:focus-visible){outline-color:var(--moon-ink)}
 html[data-moon-theme="dark"] .moon-appearance-select{background:var(--moon-paper);color:var(--moon-ink)}
 @media print{html[data-moon-theme="dark"],html[data-moon-theme="dark"] body{background:#fff!important;color:#111!important}}
+
+/* Portfolio-specific contrast corrections for site-wide typography and cards. */
+html[data-moon-theme="dark"] main :is(p,li,blockquote,figcaption,td,th,summary){color:var(--moon-ink)!important}
+html[data-moon-theme="dark"] main a{color:var(--moon-ink)}
+html[data-moon-theme="dark"] :is(.meta,.note,.caption,.breadcrumb,.media-cover-source,.pungmul-photo-credit,.pungmul-hero-photo figcaption,.pungmul-performance-grid figcaption,.project-intro-note,.teaching-preview-note,.teaching-small-note){color:var(--moon-muted)!important}
+html[data-moon-theme="dark"] :is(.home-page .home-kicker,.section-head h2,.hero-card .label,.research-eyebrow){color:#101317!important}
+html[data-moon-theme="dark"] .site-nav a:hover,
+html[data-moon-theme="dark"] .site-nav a[aria-current="page"]:not(.cv-link){color:#101317!important}
+html[data-moon-theme="dark"] :is(.pungmul-gallery figure,.pungmul-performance-grid figure,.studio-look-feature,.studio-photo-target,.research-example-steps>div,.research-route-card,.teaching-chem-case .chem-equilibrium-example,.home-spotlight-note,.research-hub .research-approach-grid>div,.project-status-grid>div,.project-phase-grid article){background:var(--moon-paper);color:var(--moon-ink);border-color:var(--moon-rule)}
+html[data-moon-theme="dark"] :is(.research-hub .research-hub-lead,.research-hub .research-hub-margin p,.research-essay-margin p,.research-case p,.research-curriculum-question p,.research-biology-explanation p,.studio-timeline li p){color:var(--moon-ink)!important}
+html[data-moon-theme="dark"] .studio-color-scope,
+html[data-moon-theme="dark"] .studio-color-scope :is(h1,h2,h3,h4,h5,h6,p,li,blockquote,figcaption,a,summary,span){color:var(--moon-ink)!important}
+html[data-moon-theme="dark"] :is(.studio-look-soft,.studio-photo-target,.project-try,.project-preview-before,.research-hub-margin,.research-essay-margin){background:var(--page-soft,var(--moon-paper))}
+html[data-moon-theme="dark"] :is(.studio-look-feature,.studio-look-outlined,.pungmul-gallery figure,.pungmul-performance-grid figure){border-color:var(--moon-rule-dark)}
+html[data-moon-theme="dark"] :is(.worksheet-data,.research-evidence-table,.research-count-track,.source-list,.table-scroll){background:var(--moon-paper)}
+html[data-moon-theme="dark"] .moon-appearance-label{color:var(--moon-muted)}
+@media print{html[data-moon-theme="dark"]{--moon-page:#fff;--moon-paper:#fff;--moon-ink:#111;--moon-muted:#575757;--moon-rule:#d8d8d8;--moon-rule-dark:#b7b7b7}}
