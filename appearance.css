@@ -45,7 +45,7 @@ html[data-moon-theme="dark"] .moon-appearance-select{background:var(--moon-paper
 
 /* Portfolio-specific contrast corrections for site-wide typography and cards. */
 html[data-moon-theme="dark"] main :is(p,li,blockquote,figcaption,td,th,summary){color:var(--moon-ink)!important}
-html[data-moon-theme="dark"] main a{color:var(--moon-ink)}
+html[data-moon-theme="dark"] main a{color:var(--moon-ink)!important}
 html[data-moon-theme="dark"] :is(.meta,.note,.caption,.breadcrumb,.media-cover-source,.pungmul-photo-credit,.pungmul-hero-photo figcaption,.pungmul-performance-grid figcaption,.project-intro-note,.teaching-preview-note,.teaching-small-note){color:var(--moon-muted)!important}
 html[data-moon-theme="dark"] :is(.section-head h2,.hero-card .label){color:#101317!important}
 html[data-moon-theme="dark"] .site-nav a:hover:not(.cv-link),
