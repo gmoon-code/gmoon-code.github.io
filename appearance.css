@@ -69,3 +69,7 @@ html[data-moon-theme="dark"] .moon-appearance-label{color:var(--moon-muted)}
 }
 
 html[data-moon-theme="dark"] :is(.home-page .home-kicker,.research-eyebrow,.home-color-block .meta){color:var(--moon-muted)!important;background:transparent}
+
+html[data-moon-theme="dark"] main :is(.section-head h2 a,.hero-card .label a){color:#101317!important}
+html[data-moon-theme="dark"] main a.control.primary{color:var(--moon-page)!important}
+html[data-moon-theme="dark"] main a.control.primary:hover{color:var(--moon-ink)!important}
