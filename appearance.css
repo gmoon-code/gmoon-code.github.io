@@ -7,19 +7,19 @@
 @media print{.moon-appearance{display:none!important}}
 /* Portfolio dark theme: restrained editorial paper, not an inverted light page. */
 html[data-moon-theme="dark"]{
- --moon-page:#11161b;--moon-paper:#1b2229;--moon-raised:#232c35;
- --moon-ink:#e8edf1;--moon-muted:#b5c0c8;
- --moon-rule:#39444e;--moon-rule-dark:#53616d;
- --section-yellow-soft:#34331e;--section-green-soft:#1b3826;
- --section-blue-soft:#19383c;--section-magenta-soft:#3a2540;
+ --moon-page:#121212;--moon-paper:#1e1e1e;--moon-raised:#292929;
+ --moon-ink:#ececec;--moon-muted:#b8b8b8;
+ --moon-rule:#3d3d3d;--moon-rule-dark:#595959;
+ --section-yellow-soft:#282828;--section-green-soft:#282828;
+ --section-blue-soft:#282828;--section-magenta-soft:#282828;
  color-scheme:dark;
 }
 html[data-moon-theme="dark"],html[data-moon-theme="dark"] body{background:var(--moon-page);color:var(--moon-ink)}
 html[data-moon-theme="dark"] :is(h1,h2,h3,h4,h5,h6){color:var(--moon-ink)}
-html[data-moon-theme="dark"] :is(.topbar,.site-footer){background:#161c22;border-color:var(--moon-rule-dark)}
+html[data-moon-theme="dark"] :is(.topbar,.site-footer){background:#171717;border-color:var(--moon-rule-dark)}
 html[data-moon-theme="dark"] :is(.brand,.site-nav a,.site-footer a){color:var(--moon-ink)}
 html[data-moon-theme="dark"] .site-nav a:hover:not(.cv-link),
-html[data-moon-theme="dark"] .site-nav a[aria-current="page"]:not(.cv-link){color:#11161b}
+html[data-moon-theme="dark"] .site-nav a[aria-current="page"]:not(.cv-link){color:#121212}
 html[data-moon-theme="dark"] .site-nav .cv-link{background:var(--moon-paper)!important;color:var(--moon-ink)}
 html[data-moon-theme="dark"] .site-nav .cv-link:hover{background:var(--section-blue-soft)!important}
 html[data-moon-theme="dark"] :is(.meta,.note,.caption,.breadcrumb,.media-cover-source,.pungmul-photo-credit,.pungmul-back,
@@ -36,7 +36,7 @@ html[data-moon-theme="dark"] .section-head h2{
  padding-bottom:6px;
 }
 html[data-moon-theme="dark"] .section-head h2 a{color:inherit!important}
-html[data-moon-theme="dark"] :is(.hero-card .label,.site-nav a[aria-current="page"]:not(.cv-link)){color:#11161b}
+html[data-moon-theme="dark"] :is(.hero-card .label,.site-nav a[aria-current="page"]:not(.cv-link)){color:#121212}
 html[data-moon-theme="dark"] :is(.home-page .home-kicker,.research-eyebrow,.home-color-block .meta){
  color:var(--moon-muted)!important;background:none
 }
@@ -90,7 +90,7 @@ html[data-moon-theme="dark"] :is(.control,.project-preview-toolbar button,.nav-c
  background:var(--moon-paper);color:var(--moon-ink);border-color:var(--moon-rule-dark)
 }
 html[data-moon-theme="dark"] .control.primary{background:var(--moon-ink);color:var(--moon-page);border-color:var(--moon-ink)}
-html[data-moon-theme="dark"] .control.primary:hover{background:#cddce5;color:#11161b}
+html[data-moon-theme="dark"] .control.primary:hover{background:#e0e0e0;color:#121212}
 html[data-moon-theme="dark"] :is(.inline-link,.reading a,.research-hub-prose a,.teaching-longform a){
  text-decoration-color:var(--section-blue);color:var(--moon-ink)
 }
@@ -134,10 +134,10 @@ html[data-moon-theme="dark"] :is(.section-head h2,.section-head h2 a){color:var(
 /* High-contrast dark links. The light theme has intentionally dark green/purple
    link colours; override the tokens only in dark appearance. */
 html[data-moon-theme="dark"]{
- --moon-link-ink:#9eeaf2;
- --moon-link-visited:#e3b5f9;
- --moon-link-accent:#66f0f0;
- --moon-link-hover:#283e45;
+ --moon-link-ink:#b8f2ce;
+ --moon-link-visited:#f0c8e5;
+ --moon-link-accent:#91dbaa;
+ --moon-link-hover:#303030;
 }
 html[data-moon-theme="dark"] #main :is(p,li,blockquote,figcaption,dt,dd) a:not(.control):not(.inline-link):not(.project-preview-fallback),
 html[data-moon-theme="dark"] #main a.inline-link,
@@ -158,7 +158,7 @@ html[data-moon-theme="dark"] #main a.inline-link:is(:hover,:focus-visible),
 html[data-moon-theme="dark"] #main :is(.article-jumps,.pungmul-reference-list,.pungmul-jump-nav,.research-reading-list,.teaching-source-list,.teaching-reading-line) a:not(.control):is(:hover,:focus-visible),
 html[data-moon-theme="dark"] .site-footer a:is(:hover,:focus-visible){
  background:var(--moon-link-hover);
- color:#e3faff;
+ color:#ffffff;
  text-decoration-color:currentColor;
 }
 html[data-moon-theme="dark"] #main a:focus-visible,
@@ -172,12 +172,12 @@ html[data-moon-theme="dark"] #main .project-interface-figure>a{background:transp
 /* Genuine dark cards need legible text in the small conceptual progression chips. */
 html[data-moon-theme="dark"] .teaching-case-bridge{color:var(--moon-muted)}
 html[data-moon-theme="dark"] .teaching-case-bridge span:not([aria-hidden]){
- color:#e8edf1;
- background:#30263b;
- border:1px solid #76577d;
+ color:#ececec;
+ background:#2b2b2b;
+ border:1px solid #646464;
 }
 html[data-moon-theme="dark"] .teaching-case-bridge span[aria-hidden]{
- color:#bdc7ce;
+ color:#b8b8b8;
 }
 html[data-moon-theme="dark"] .teaching-case-preview .teaching-preview-note,
 html[data-moon-theme="dark"] .teaching-small-note{color:var(--moon-muted)!important}
