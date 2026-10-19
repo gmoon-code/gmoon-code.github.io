@@ -29,9 +29,11 @@ html[data-moon-theme="dark"] :is(.meta,.note,.caption,.breadcrumb,.media-cover-s
 html[data-moon-theme="dark"] :is(.page-hero,.section,.site-footer,.pungmul-jump-nav,.article-jumps){border-color:var(--moon-rule)}
 /* Keep the existing sequence, with an elegant underline in place of neon blocks. */
 html[data-moon-theme="dark"] .section-head h2{
- color:var(--moon-ink)!important;background:transparent!important;
- text-decoration:underline;text-decoration-color:var(--page-highlight,var(--section-yellow));
- text-decoration-thickness:.16em;text-underline-offset:.16em;
+ color:var(--moon-ink)!important;
+ background:transparent!important;
+ text-decoration:none!important;
+ border-bottom:4px solid var(--page-highlight,var(--section-yellow));
+ padding-bottom:6px;
 }
 html[data-moon-theme="dark"] .section-head h2 a{color:inherit!important}
 html[data-moon-theme="dark"] :is(.hero-card .label,.site-nav a[aria-current="page"]:not(.cv-link)){color:#11161b}
@@ -128,3 +130,69 @@ html[data-moon-theme="dark"] .page :is(p,li,blockquote,figcaption,td,th,summary)
  color:var(--moon-ink)
 }
 html[data-moon-theme="dark"] :is(.section-head h2,.section-head h2 a){color:var(--moon-ink)!important}
+
+/* High-contrast dark links. The light theme has intentionally dark green/purple
+   link colours; override the tokens only in dark appearance. */
+html[data-moon-theme="dark"]{
+ --moon-link-ink:#9eeaf2;
+ --moon-link-visited:#e3b5f9;
+ --moon-link-accent:#66f0f0;
+ --moon-link-hover:#283e45;
+}
+html[data-moon-theme="dark"] #main :is(p,li,blockquote,figcaption,dt,dd) a:not(.control):not(.inline-link):not(.project-preview-fallback),
+html[data-moon-theme="dark"] #main a.inline-link,
+html[data-moon-theme="dark"] #main :is(.article-jumps,.pungmul-reference-list,.pungmul-jump-nav,.research-reading-list,.teaching-source-list,.teaching-reading-line) a:not(.control),
+html[data-moon-theme="dark"] .site-footer a{
+ color:var(--moon-link-ink);
+ text-decoration-color:var(--moon-link-accent);
+}
+html[data-moon-theme="dark"] #main :is(p,li,blockquote,figcaption,dt,dd) a:not(.control):not(.inline-link):not(.project-preview-fallback):visited,
+html[data-moon-theme="dark"] #main a.inline-link:visited,
+html[data-moon-theme="dark"] #main :is(.article-jumps,.pungmul-reference-list,.pungmul-jump-nav,.research-reading-list,.teaching-source-list,.teaching-reading-line) a:not(.control):visited,
+html[data-moon-theme="dark"] .site-footer a:visited{
+ color:var(--moon-link-visited);
+ text-decoration-color:var(--moon-link-visited);
+}
+html[data-moon-theme="dark"] #main :is(p,li,blockquote,figcaption,dt,dd) a:not(.control):not(.inline-link):not(.project-preview-fallback):is(:hover,:focus-visible),
+html[data-moon-theme="dark"] #main a.inline-link:is(:hover,:focus-visible),
+html[data-moon-theme="dark"] #main :is(.article-jumps,.pungmul-reference-list,.pungmul-jump-nav,.research-reading-list,.teaching-source-list,.teaching-reading-line) a:not(.control):is(:hover,:focus-visible),
+html[data-moon-theme="dark"] .site-footer a:is(:hover,:focus-visible){
+ background:var(--moon-link-hover);
+ color:#e3faff;
+ text-decoration-color:currentColor;
+}
+html[data-moon-theme="dark"] #main a:focus-visible,
+html[data-moon-theme="dark"] .site-footer a:focus-visible{
+ outline:2px solid var(--moon-link-accent);
+ outline-offset:3px;
+}
+/* Keep the link affordance without colouring linked illustrations and images. */
+html[data-moon-theme="dark"] #main .media-cover a,
+html[data-moon-theme="dark"] #main .project-interface-figure>a{background:transparent}
+/* Genuine dark cards need legible text in the small conceptual progression chips. */
+html[data-moon-theme="dark"] .teaching-case-bridge{color:var(--moon-muted)}
+html[data-moon-theme="dark"] .teaching-case-bridge span:not([aria-hidden]){
+ color:#e8edf1;
+ background:#30263b;
+ border:1px solid #76577d;
+}
+html[data-moon-theme="dark"] .teaching-case-bridge span[aria-hidden]{
+ color:#bdc7ce;
+}
+html[data-moon-theme="dark"] .teaching-case-preview .teaching-preview-note,
+html[data-moon-theme="dark"] .teaching-small-note{color:var(--moon-muted)!important}
+html[data-moon-theme="dark"] :is(.teaching-case-preview,.teaching-planning-aside,.teaching-original-prompt,.research-essay-margin,.research-hub-margin) :is(.meta,.note){
+ color:var(--moon-muted)!important;
+}
+/* Additional reading and project content with fixed light-theme text colours. */
+html[data-moon-theme="dark"] :is(.teaching-case-preview p:not(.meta),.research-study-preview p:not(.meta),
+ .research-interest-body p,.research-reading-list li,.justice-research .research-justice-dimensions p,
+ .justice-research .research-direction-body p,.research-essay .research-essay-prose p,
+ .research-hub-prose p,.about-prose p,.project-section-intro p,
+ .project-student-prompt,.research-followups article>p,.site-footer p){
+ color:var(--moon-ink);
+}
+html[data-moon-theme="dark"] :is(.studio-photo-target,.studio-look-feature,.project-preview-panel,
+ .media-cover,.research-published-image,.research-example-steps>div){
+ border-color:var(--moon-rule);
+}
