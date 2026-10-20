@@ -420,6 +420,227 @@
     updateDirty(state.selected);
   }
 
+
+  /* Movements are restricted to sibling sections within an uninterrupted
+     run. Any navigation or other element forms a hard boundary. */
+  function validSectionOrder(ids) {
+    if(!Array.isArray(ids)||ids.length!==state.originalSections.length||
+       new Set(ids).size!==ids.length||
+       ids.some(id=>!state.originalSections.includes(id)))return false;
+    let offset=0;
+    for(const group of state.sectionGroups){
+      const segment=ids.slice(offset,offset+group.length);
+      if(segment.length!==group.length||
+         segment.some(id=>!group.includes(id)))return false;
+      offset+=group.length;
+    }
+    return true;
+  }
+  function applySectionOrder(ids) {
+    if(!validSectionOrder(ids))throw new Error("Section order does not match this page.");
+    const main=state.doc.querySelector("main");
+    for(const group of state.sectionGroups){
+      if(group.length<2)continue;
+      const last=main.querySelector('[data-editor-section="'+group.at(-1)+'"]');
+      const boundary=last.nextElementSibling;
+      const wanted=ids.filter(id=>group.includes(id));
+      for(const id of wanted) {
+        const node=main.querySelector('[data-editor-section="'+id+'"]');
+        main.insertBefore(node,boundary);
+      }
+    }
+    state.sectionOrder=ids.slice();
+  }
+  function moveSection(id,direction) {
+    const current=state.doc.querySelector('[data-editor-section="'+id+'"]');
+    if(!current||![-1,1].includes(direction))return;
+    const neighbour=direction<0?current.previousElementSibling:current.nextElementSibling;
+    if(!neighbour||neighbour.tagName!=="SECTION"||
+       !neighbour.hasAttribute("data-editor-section"))return;
+    const group=state.sectionGroups.find(g=>g.includes(id));
+    if(!group||!group.includes(neighbour.getAttribute("data-editor-section")))return;
+    checkpoint();
+    if(direction<0)neighbour.before(current);
+    else neighbour.after(current);
+    state.sectionOrder=[...state.doc.querySelectorAll("main > section[data-editor-section]")]
+      .map(n=>n.getAttribute("data-editor-section"));
+    if(!validSectionOrder(state.sectionOrder)){
+      undo();notice("That section move would cross a protected page boundary.");return;
+    }
+    renderPreview();
+    scheduleDraft();
+    updateStatus("Section order changed · Not published");
+  }
+  function updateSectionList() {
+    const list=$("sectionList");
+    list.replaceChildren();
+    const sections=[...state.doc.querySelectorAll("main > section[data-editor-section]")];
+    for(let i=0;i<sections.length;i++){
+      const node=sections[i];
+      const id=node.getAttribute("data-editor-section");
+      const heading=node.querySelector("h1,h2,h3");
+      const title=heading?.textContent.trim()||"Section "+(i+1);
+      const row=document.createElement("div");
+      row.className="section-order-row";
+      const label=document.createElement("span");
+      label.textContent=title.slice(0,75);
+      label.title=title;
+      const buttons=document.createElement("div");buttons.className="section-order-actions";
+      const group=state.sectionGroups.find(g=>g.includes(id))||[];
+      for(const direction of [-1,1]){
+        const neighbour=direction<0?node.previousElementSibling:node.nextElementSibling;
+        const enabled=neighbour?.tagName==="SECTION"&&
+          group.includes(neighbour.getAttribute("data-editor-section"));
+        const button=document.createElement("button");
+        button.type="button";
+        button.textContent=direction<0?"↑":"↓";
+        button.setAttribute("aria-label",(direction<0?"Move up: ":"Move down: ")+title);
+        button.title=(direction<0?"Move section up":"Move section down");
+        button.disabled=!enabled;
+        button.addEventListener("click",()=>moveSection(id,direction));
+        buttons.appendChild(button);
+      }
+      row.append(label,buttons);
+      list.appendChild(row);
+    }
+    $("sectionNotice").textContent=sections.length?
+      "Sections separated by page navigation cannot cross it.":"No movable sections on this page.";
+  }
+  function rawMainSections(source) {
+    const opener=/<main\b[^>]*>/i.exec(source);
+    if(!opener)throw new Error("Main page region cannot be located.");
+    const begin=opener.index+opener[0].length;
+    const close=/<\/main\s*>/gi;
+    close.lastIndex=begin;
+    const last=close.exec(source);
+    if(!last)throw new Error("Main page closing tag was not found.");
+    const content=source.slice(begin,last.index);
+    const tags=/<\/?section\b[^>]*>/gi;
+    let token,depth=0,start=0;
+    const spans=[];
+    while((token=tags.exec(content))){
+      const closing=/^<\//.test(token[0]);
+      if(!closing){
+        if(depth===0)start=begin+token.index;
+        depth++;
+      }else{
+        depth--;
+        if(depth<0)throw new Error("Unbalanced sections in page source.");
+        if(depth===0)spans.push({start,end:begin+tags.lastIndex});
+      }
+    }
+    if(depth||spans.length!==state.originalSections.length)
+      throw new Error("Section boundaries differ from the original page. Reordering is blocked.");
+    return spans;
+  }
+  function exportSectionOrder(html) {
+    if(state.sectionOrder.every((id,i)=>id===state.originalSections[i]))return html;
+    if(!validSectionOrder(state.sectionOrder))
+      throw new Error("The section order crosses a page boundary.");
+    const spans=rawMainSections(html);
+    const changes=[];
+    for(const group of state.sectionGroups){
+      const desired=state.sectionOrder.filter(id=>group.includes(id));
+      if(group.length<2||desired.every((id,i)=>id===group[i]))continue;
+      const first=Number(group[0].slice(1));
+      const last=Number(group.at(-1).slice(1));
+      const fragments=new Map(),gaps=[];
+      for(let i=0;i<group.length;i++){
+        const pos=Number(group[i].slice(1));
+        fragments.set(group[i],html.slice(spans[pos].start,spans[pos].end));
+        if(i+1<group.length){
+          const after=Number(group[i+1].slice(1));
+          const gap=html.slice(spans[pos].end,spans[after].start);
+          if(gap.trim())throw new Error("A non-section element separates these blocks. Move cancelled.");
+          gaps.push(gap);
+        }
+      }
+      let reordered="";
+      for(let i=0;i<desired.length;i++){
+        reordered+=fragments.get(desired[i])+(gaps[i]||"");
+      }
+      changes.push({start:spans[first].start,end:spans[last].end,replacement:reordered});
+    }
+    for(const item of changes.sort((a,b)=>b.start-a.start)){
+      html=html.slice(0,item.start)+item.replacement+html.slice(item.end);
+    }
+    return html;
+  }
+
+  /* The media browser uses image files already referenced on the public site.
+     It never uploads assets or introduces arbitrary third-party sources. */
+  const IMAGE_PATH=/^assets\/[a-z0-9._/-]+\.(?:webp|png|jpg|jpeg|gif|avif)$/i;
+  async function availableImages() {
+    if(state.mediaAssets)return state.mediaAssets;
+    if(state.mediaPromise)return state.mediaPromise;
+    const pages=[...$("pagePicker").options].map(option=>option.value);
+    state.mediaPromise=(async()=>{
+      const found=new Map();
+      const results=await Promise.all(pages.map(async page=>{
+        try{
+          const r=await fetch(page,{cache:"force-cache",credentials:"same-origin"});
+          return r.ok?await r.text():"";
+        }catch{return ""}
+      }));
+      for(const text of results){
+        if(!text)continue;
+        const doc=new DOMParser().parseFromString(text,"text/html");
+        for(const img of doc.querySelectorAll("img[src]")){
+          const src=img.getAttribute("src")||"";
+          if(!IMAGE_PATH.test(src)||src.includes(".."))continue;
+          if(!found.has(src))found.set(src,{
+            path:src,description:img.getAttribute("alt")||src.split("/").at(-1)
+          });
+        }
+      }
+      state.mediaAssets=[...found.values()].sort((a,b)=>a.path.localeCompare(b.path));
+      return state.mediaAssets;
+    })();
+    try{return await state.mediaPromise}
+    finally{state.mediaPromise=null}
+  }
+  function renderMediaResults(items) {
+    const root=$("mediaResults");root.replaceChildren();
+    for(const item of items){
+      const button=document.createElement("button");
+      button.className="media-option";
+      button.type="button";
+      button.setAttribute("role","listitem");
+      button.title="Use "+item.path;
+      const img=document.createElement("img");
+      img.src=item.path;img.alt="";img.loading="lazy";
+      const label=document.createElement("strong");
+      label.textContent=item.description.slice(0,125);
+      const code=document.createElement("small");code.textContent=item.path;
+      button.append(img,label,code);
+      button.addEventListener("click",()=>{
+        const selected=state.frameDoc?.querySelector(
+          '[data-editor-key="'+state.selected+'"]');
+        if(!selected||selected.tagName!=="IMG"){
+          $("mediaStatus").textContent="Select an image in the page preview first.";
+          return;
+        }
+        updateSelectedAttribute("src",item.path);
+        $("mediaDialog").close();
+      });
+      root.appendChild(button);
+    }
+    $("mediaStatus").textContent=items.length+
+      " existing image"+(items.length===1?"":"s")+".";
+  }
+  async function openMediaLibrary(){
+    const selected=state.frameDoc?.querySelector(
+      '[data-editor-key="'+state.selected+'"]');
+    if(!selected||selected.tagName!=="IMG")return;
+    $("mediaSearch").value="";
+    $("mediaResults").replaceChildren();
+    $("mediaStatus").textContent="Finding images already used on the site…";
+    $("mediaDialog").showModal();
+    const images=await availableImages();
+    if(!$("mediaDialog").open)return;
+    renderMediaResults(images);
+  }
+
   function updateOutline() {
     const nav=$("outline");
     nav.replaceChildren();
