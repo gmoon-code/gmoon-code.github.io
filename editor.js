@@ -21,8 +21,9 @@
   function updatePublishControls() {
     $("publisherConnect").disabled=!publisherConfigured()||publisher.busy;
     $("publisherSummary").disabled=!publisher.session||publisher.busy;
+    const moved=state.sectionOrder.some((id,i)=>id!==state.originalSections[i]);
     $("publisherPropose").disabled=!publisher.session||publisher.busy||
-      !state.dirty.size||!$("publisherSummary").value.trim();
+      (!state.dirty.size&&!moved)||!$("publisherSummary").value.trim();
   }
   function publishMessage(text) {
     $("publisherStatus").textContent=text;
@@ -32,7 +33,8 @@
   const state = {
     page:null,source:"",doc:null,frameDoc:null,original:new Map(),dirty:new Set(),
     selected:null,history:[],fingerprint:"",loadToken:0,saveTimer:null,staleDraft:false,
-    originalSections:[],sectionGroups:[],sectionOrder:[],mediaAssets:null,mediaPromise:null
+    originalSections:[],sectionGroups:[],sectionOrder:[],mediaAssets:null,mediaPromise:null,
+    stagedMedia:null
   };
 
   function hashText(text) {
@@ -261,6 +263,7 @@
         const d=state.frameDoc;
         d.documentElement.setAttribute("data-moon-theme",$("previewTheme").value);
         d.documentElement.style.colorScheme=$("previewTheme").value;
+        updateStagedPreview();
         d.addEventListener("click",onPreviewClick,true);
         d.addEventListener("input",onPreviewInput,true);
         d.addEventListener("focusin",onPreviewFocus,true);
@@ -345,7 +348,7 @@
     $("selectionText").closest(".inspector-group").hidden=isImage;
     $("revertElementBtn").disabled=!state.dirty.has(state.selected);
     if (isImage) {
-      $("imageSrc").value=node.getAttribute("src")||"";
+      $("imageSrc").value=getWorking(state.selected)?.getAttribute("src")||node.getAttribute("src")||"";
       $("imageAlt").value=node.getAttribute("alt")||"";
       $("imageMaxWidth").value=["100%","75%","50%","25%"].includes(node.style.maxWidth)?node.style.maxWidth:"";
     } else {
@@ -477,6 +480,100 @@
     scheduleDraft();
     updateStatus("Section order changed · Not published");
   }
+
+  function updateStagedPreview(){
+    if(!state.stagedMedia||!state.frameDoc)return;
+    const node=state.frameDoc.querySelector(
+      '[data-editor-key="'+state.stagedMedia.key+'"]');
+    if(node?.tagName==="IMG"&&
+       getWorking(state.stagedMedia.key)?.getAttribute("src")===state.stagedMedia.path)
+      node.src=state.stagedMedia.objectUrl;
+  }
+  function clearStagedMedia(){
+    if(state.stagedMedia){
+      URL.revokeObjectURL(state.stagedMedia.objectUrl);
+      state.stagedMedia=null;
+    }
+    $("newImageFile").value="";
+    $("stageImageBtn").disabled=true;
+    $("downloadStagedImage").disabled=true;
+    $("stagedImageStatus").textContent="No new image staged.";
+  }
+  function mediaSignature(bytes,mime){
+    if(bytes.length<24||bytes.length>1572864)return false;
+    if(mime==="image/png"){
+      return [137,80,78,71,13,10,26,10].every((v,i)=>bytes[i]===v)&&
+        String.fromCharCode(...bytes.slice(12,16))==="IHDR";
+    }
+    if(mime==="image/jpeg")return bytes[0]===255&&bytes[1]===216&&bytes[2]===255;
+    if(mime==="image/webp")return String.fromCharCode(...bytes.slice(0,4))==="RIFF"&&
+      String.fromCharCode(...bytes.slice(8,12))==="WEBP";
+    return false;
+  }
+  async function stageNewImage(){
+    const file=$("newImageFile").files?.[0];
+    const key=state.selected;
+    const target=key&&getWorking(key);
+    if(!file||target?.tagName!=="IMG")return;
+    if(state.stagedMedia&&state.stagedMedia.key!==key){
+      notice("Only one new image can be staged per review request. Reset or publish the current page before adding another.");
+      return;
+    }
+    if(file.size>1572864||file.size<24){
+      notice("Choose an image smaller than 1.5 MB and larger than 24 bytes.");return;
+    }
+    const ext={"image/png":"png","image/jpeg":"jpg","image/webp":"webp"}[file.type];
+    if(!ext){notice("Choose a PNG, JPEG, or WebP image.");return;}
+    const bytes=new Uint8Array(await file.arrayBuffer());
+    if(!mediaSignature(bytes,file.type)){
+      notice("The file signature does not match its image type.");return;
+    }
+    try {
+      const bitmap=await createImageBitmap(file);
+      if(!bitmap.width||!bitmap.height||bitmap.width>8000||bitmap.height>8000){
+        bitmap.close();throw new Error("The image exceeds the 8000-pixel dimension limit.");
+      }
+      bitmap.close();
+    } catch(e){notice(e.message||"This image could not be decoded.");return;}
+    const random=Array.from(crypto.getRandomValues(new Uint8Array(5)),v=>
+      v.toString(16).padStart(2,"0")).join("");
+    const newPath="assets/editor-"+Date.now().toString(36)+"-"+random+"."+ext;
+    const old=state.stagedMedia;
+    checkpoint();
+    updateSelectedAttribute("src",newPath);
+    if(getWorking(key)?.getAttribute("src")!==newPath)return;
+    const objectUrl=URL.createObjectURL(file);
+    const checksum=new Uint8Array(await crypto.subtle.digest("SHA-256",bytes));
+    const sha256=Array.from(checksum,v=>v.toString(16).padStart(2,"0")).join("");
+    state.stagedMedia={path:newPath,key,file,objectUrl,sha256,mime:file.type};
+    if(old)URL.revokeObjectURL(old.objectUrl);
+    updateStagedPreview();
+    $("downloadStagedImage").disabled=false;
+    $("stagedImageStatus").textContent=file.name+" · "+Math.round(file.size/1024)+
+      " KB staged at "+newPath+". Not published. Keep the image file with exported HTML.";
+    scheduleDraft();
+  }
+  function downloadStagedImage(){
+    const m=state.stagedMedia;
+    if(!m)return;
+    const link=document.createElement("a");
+    link.href=m.objectUrl;
+    link.download=m.path.split("/").at(-1);
+    document.body.appendChild(link);link.click();link.remove();
+  }
+  async function mediaPayload(){
+    const m=state.stagedMedia;
+    if(!m)return undefined;
+    const content=buildExport();
+    if(!content.includes('src="'+m.path+'"')&&!content.includes("src='"+m.path+"'"))
+      return undefined;
+    const bytes=new Uint8Array(await m.file.arrayBuffer());
+    let binary="";
+    for(let i=0;i<bytes.length;i+=16384)
+      binary+=String.fromCharCode(...bytes.subarray(i,i+16384));
+    return {path:m.path,mime:m.mime,sha256:m.sha256,base64:btoa(binary)};
+  }
+
   function updateSectionList() {
     const list=$("sectionList");
     list.replaceChildren();
@@ -780,6 +877,12 @@
       next=next.slice(0,pos)+after+next.slice(pos+before.length);
     }
     next=exportSectionOrder(next);
+    const references=[...next.matchAll(/\bsrc\s*=\s*["\'](assets\/editor-[a-z0-9-]+\.(?:png|jpg|webp))["\']/gi)]
+      .map(match=>match[1]).filter(path=>!state.source.includes(path));
+    for(const path of references){
+      if(!state.stagedMedia||state.stagedMedia.path!==path)
+        throw new Error("This draft uses a new image whose file is unavailable. Re-select and stage that image before exporting.");
+    }
     if (next===state.source) throw new Error("There are no exportable changes.");
     return next;
   }
@@ -840,7 +943,8 @@
   }
 
   async function createPublisherProposal() {
-    if(!publisher.session||!state.dirty.size||publisher.busy)return;
+    const reordered=state.sectionOrder.some((id,i)=>id!==state.originalSections[i]);
+    if(!publisher.session||(!state.dirty.size&&!reordered)||publisher.busy)return;
     const summary=$("publisherSummary").value.trim();
     if(!summary||summary.length>140){publishMessage("Enter a short change summary.");return;}
     let content;
@@ -858,7 +962,8 @@
         method:"POST",cache:"no-store",
         headers:{"Content-Type":"application/json",
           "Authorization":"Bearer "+publisher.session},
-        body:JSON.stringify({path:state.page,sourceHash,content,summary})
+        body:JSON.stringify({path:state.page,sourceHash,content,summary,
+          media:await mediaPayload()})
       });
       const payload=await result.json();
       if(!result.ok||payload.ok!==true)
@@ -923,6 +1028,12 @@
       }
       list.appendChild(item);
     }
+    if(state.stagedMedia){
+      const node=document.createElement("p");
+      node.textContent="Staged image · "+state.stagedMedia.path+
+        ". The binary file must accompany this HTML in the review PR.";
+      list.appendChild(node);
+    }
     if(reordered){
       const row=document.createElement("section");row.className="review-change";
       const heading=document.createElement("h3");heading.textContent="Section order";
@@ -955,7 +1066,9 @@
       link.click();
       link.remove();
       setTimeout(()=>URL.revokeObjectURL(url),10000);
-      updateStatus("Edited HTML exported · Not published");
+      updateStatus(state.stagedMedia?
+        "HTML exported. Download the staged image separately · Not published":
+        "Edited HTML exported · Not published");
     } catch(e) {
       notice(e.message||"Could not export this page safely.","Export stopped");
     }
@@ -974,6 +1087,7 @@
 
   function resetPage() {
     if (!state.doc||!confirm("Discard all local changes to this page?")) return;
+    clearStagedMedia();
     state.doc=new DOMParser().parseFromString(state.source,"text/html");
     initialIndex();
     state.dirty.clear();
@@ -1008,7 +1122,12 @@
 
   async function loadPage(page) {
     if (!/^[a-z0-9-]+\.html$/.test(page)) return;
+    if(state.page&&page!==state.page&&state.stagedMedia&&
+       !confirm("The new image is only staged in this browser. Switching pages will discard its file. Continue?")){
+      $("pagePicker").value=state.page;return;
+    }
     if (state.doc) saveDraft();
+    if(page!==state.page)clearStagedMedia();
     const token=++state.loadToken;
     updateStatus("Loading page…");
     $("previewHeading").textContent=$("pagePicker").selectedOptions[0]?.textContent||page;
@@ -1064,6 +1183,11 @@
     $("resetBtn").addEventListener("click",resetPage);
     $("revertElementBtn").addEventListener("click",revertSelected);
     $("exportBtn").addEventListener("click",exportHtml);
+    $("newImageFile").addEventListener("change",()=>{
+      $("stageImageBtn").disabled=!$("newImageFile").files?.length;
+    });
+    $("stageImageBtn").addEventListener("click",stageNewImage);
+    $("downloadStagedImage").addEventListener("click",downloadStagedImage);
     $("reviewBtn").addEventListener("click",reviewChanges);
     $("chooseExistingImage").addEventListener("click",openMediaLibrary);
     $("mediaSearch").addEventListener("input",event=>{
