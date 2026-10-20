@@ -392,6 +392,24 @@
           pos=next.indexOf(before);
         }
       }
+      if (pos<0) {
+        /* Images are void elements. Their attributes can be written safely
+           when the original image can be identified uniquely by source and alt. */
+        const beforeNode=new DOMParser().parseFromString(op.before,"text/html").body.firstElementChild;
+        const afterNode=new DOMParser().parseFromString(op.after,"text/html").body.firstElementChild;
+        if (beforeNode?.tagName==="IMG"&&afterNode?.tagName==="IMG") {
+          const candidates=[...next.matchAll(/<img\b[^>]*>/gi)].filter(match=>{
+            const candidate=new DOMParser().parseFromString(match[0],"text/html").body.firstElementChild;
+            return candidate?.getAttribute("src")===beforeNode.getAttribute("src")&&
+              candidate?.getAttribute("alt")===beforeNode.getAttribute("alt");
+          });
+          if (candidates.length===1) {
+            const image=candidates[0];
+            next=next.slice(0,image.index)+afterNode.outerHTML+next.slice(image.index+image[0].length);
+            continue;
+          }
+        }
+      }
       if (pos<0) throw new Error("The page source cannot uniquely locate element "+op.key+". No HTML has been exported.");
       if (next.indexOf(before,pos+before.length)>=0) throw new Error("Element "+op.key+" has identical source duplicates. Review this change manually.");
       next=next.slice(0,pos)+after+next.slice(pos+before.length);
