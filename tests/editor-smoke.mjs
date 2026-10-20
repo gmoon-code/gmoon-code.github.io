@@ -170,8 +170,8 @@ try {
   assert.match(await page.frameLocator("#pageFrame")
     .locator("main > section").first().getAttribute("class"),/home-yellow/,
     "The second drag should restore the original first section");
-  page.once("dialog",dialog=>dialog.accept());
-  await page.locator("#resetBtn").click();
+  assert.equal(await page.locator("#resetBtn").isDisabled(),true,
+    "Reversing every section move should clear all local changes");
 
   const first=page.frameLocator("#pageFrame").locator("main > section").first();
   assert.match(await first.getAttribute("class"),/home-yellow/);
