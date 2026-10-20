@@ -7,6 +7,7 @@
   <meta name="referrer" content="same-origin">
   <title>Visual Editor | Ye Eun Moon</title>
   <link rel="stylesheet" href="editor.css">
+  <script src="editor-publisher-config.js" defer></script>
   <script src="editor.js" defer></script>
 </head>
 <body>
@@ -132,8 +133,17 @@
           </div>
         </div>
         <div class="inspector-footer">
-          <h3>Publication</h3>
-          <p>Exported HTML can be reviewed before it replaces the corresponding GitHub file. A secure publishing connection is a separate next step.</p>
+          <h3>Propose changes</h3>
+          <p>Connect your authorized GitHub account to create a draft pull request. Nothing is published automatically.</p>
+          <p id="publisherStatus" role="status" aria-live="polite" class="publisher-status">GitHub publishing is not configured. Export HTML remains available.</p>
+          <div class="inspector-group">
+            <button type="button" id="publisherConnect" class="secondary" disabled>Connect GitHub</button>
+            <label for="publisherSummary">Brief change summary</label>
+            <input id="publisherSummary" type="text" maxlength="140" placeholder="Revise Teaching page introduction" disabled>
+            <button type="button" id="publisherPropose" class="primary" disabled>Create draft pull request</button>
+            <div id="publisherResult" aria-live="polite"></div>
+          </div>
+          <p class="small-note">The editor only submits changes after you review and confirm them. Publishing requires a separately configured private service.</p>
         </div>
       </aside>
     </div>
