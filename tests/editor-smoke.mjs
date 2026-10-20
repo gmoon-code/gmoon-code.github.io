@@ -42,6 +42,11 @@ try {
   await page.locator("#selectionText").fill("Editable site heading for a smoke test");
   assert.equal((await kicker.textContent()).trim(),"Editable site heading for a smoke test");
   assert.equal(await page.locator("#exportBtn").isEnabled(),true);
+  await page.locator("#reviewBtn").click();
+  assert.equal(await page.locator("#reviewDialog").isVisible(),true);
+  assert.match(await page.locator("#reviewChangeList").textContent(),/Before[\\s\\S]*After/);
+  assert.match(await page.locator("#reviewExportStatus").textContent(),/Source check passed/);
+  await page.locator("#reviewDialog form button").click();
   const html=await downloadedHtml();
   assert(html.includes("Editable site heading for a smoke test"),"Changed text must be exported");
   assert(!html.includes("javascript:void"),"No scripts should be introduced");
