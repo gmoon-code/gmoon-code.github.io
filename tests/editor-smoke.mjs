@@ -35,6 +35,10 @@ function checkNoPageErrors(where) {
 try {
   await ready();
   await page.screenshot({path:"/tmp/editor-test-artifacts/desktop-editor.png",fullPage:true});
+  assert.equal(await page.locator("#publisherConnect").isDisabled(),true,
+    "Owner sign-in must remain disabled when no private publisher is configured");
+  assert.equal(await page.locator("#publisherPropose").isDisabled(),true,
+    "Publishing must fail closed without a private service");
   assert.equal(await page.locator("#exportBtn").isDisabled(),true);
   const kicker=page.frameLocator("#pageFrame").locator("main .home-kicker").first();
   await kicker.click();
