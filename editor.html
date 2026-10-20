@@ -60,6 +60,12 @@
           <nav id="outline" class="outline" aria-label="Page section outline">
             <p class="muted">Select a page to see its sections.</p>
           </nav>
+          <div class="section-order" aria-label="Section order controls">
+            <h3>Move page sections</h3>
+            <p class="small-note">Select a section below and move it between neighbouring sections. Navigation and fixed page elements stay in place.</p>
+            <div id="sectionList" class="section-list"></div>
+            <p id="sectionNotice" class="small-note" role="status" aria-live="polite"></p>
+          </div>
         </div>
         <div class="sidebar-section">
           <h2>Editing</h2>
@@ -135,6 +141,7 @@
           <div id="imageFields" class="inspector-group" hidden>
             <label for="imageSrc">Image path or URL</label>
             <input id="imageSrc" type="text" spellcheck="false" autocomplete="off">
+            <button type="button" id="chooseExistingImage" class="secondary">Choose from existing images</button>
             <label for="imageAlt">Image description (alt text)</label>
             <textarea id="imageAlt" rows="3"></textarea>
             <label for="imageMaxWidth">Image maximum width</label>
@@ -167,6 +174,15 @@
       </aside>
     </div>
   </div>
+  <dialog id="mediaDialog" class="media-dialog" aria-labelledby="mediaTitle">
+    <h2 id="mediaTitle">Choose an existing website image</h2>
+    <p class="small-note">Use images already referenced by the portfolio. New uploads will be handled by a separate media publisher.</p>
+    <label for="mediaSearch">Search images by filename or description</label>
+    <input id="mediaSearch" type="search" placeholder="Search images">
+    <div id="mediaResults" class="media-results" role="list"></div>
+    <p id="mediaStatus" class="small-note" role="status"></p>
+    <form method="dialog"><button type="submit" class="secondary">Close image library</button></form>
+  </dialog>
   <dialog id="reviewDialog" class="review-dialog" aria-labelledby="reviewTitle">
     <h2 id="reviewTitle">Review your changes</h2>
     <p id="reviewSummary" class="small-note"></p>
