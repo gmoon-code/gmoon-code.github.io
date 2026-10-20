@@ -142,6 +142,11 @@ dialog form { text-align:right;margin-top:20px; }
 .section-list { display:grid;gap:3px;max-height:390px;overflow:auto; }
 .section-order-row { display:flex;align-items:center;justify-content:space-between;gap:6px;border-bottom:1px solid var(--line);padding:7px 0; }
 .section-order-row>span { font-size:12px;line-height:1.35;overflow-wrap:anywhere;min-width:0; }
+.section-order-row[draggable="true"] { cursor:grab; }
+.section-order-row.section-dragging { opacity:.53; cursor:grabbing; }
+.section-order-row.drop-before { box-shadow:inset 0 3px #287c59; }
+.section-order-row.drop-after { box-shadow:inset 0 -3px #287c59; }
+@media (prefers-reduced-motion:reduce) { .section-order-row { scroll-behavior:auto; } }
 .section-order-actions { display:flex;gap:3px;flex:none; }
 .section-order-actions button { font-size:15px;padding:5px 8px;min-width:30px;line-height:1; }
 .media-dialog { width:min(880px,95vw);max-height:90vh;overflow:auto; }
