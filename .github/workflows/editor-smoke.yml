@@ -1,0 +1,49 @@
+name: Visual editor smoke test
+
+on:
+  pull_request:
+    paths:
+      - "editor.html"
+      - "editor.js"
+      - "editor.css"
+      - "tests/editor-smoke.mjs"
+      - ".github/workflows/editor-smoke.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  chromium-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install browser test dependency
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Start local static site
+        run: |
+          python -m http.server 8765 --bind 127.0.0.1 > /tmp/editor-server.log 2>&1 &
+          for i in $(seq 1 30); do
+            curl --silent --fail http://127.0.0.1:8765/editor.html > /dev/null && break
+            sleep 1
+          done
+      - name: Run actual-browser editing and export checks
+        env:
+          EDITOR_TEST_URL: http://127.0.0.1:8765
+        run: node tests/editor-smoke.mjs
+      - name: Upload screenshot after failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: editor-test-screenshot
+          path: /tmp/editor-test-artifacts/
+          if-no-files-found: ignore
