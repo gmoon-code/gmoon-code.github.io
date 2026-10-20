@@ -273,10 +273,16 @@ async function propose(body,session) {
       await github("/repos/"+REPO+"/contents/"+media.path+"?ref="+BASE_BRANCH,token);
       throw new Error("Image filename already exists on the live website");
     }catch(error){if(error.status!==404)throw error;}
-  } else if(/assets\/editor-[a-z0-9-]+\.(?:png|jpg|webp)/i.test(content)&&
-            !/assets\/editor-[a-z0-9-]+\.(?:png|jpg|webp)/i.test(oldContent)){
-    throw new Error("A new editor image must include its binary file");
   }
+  const findEditorImages=html=>new Set(
+    [...html.matchAll(/\bsrc\s*=\s*["'](assets\/editor-[a-z0-9-]+\.(?:png|jpg|webp))["']/gi)]
+      .map(match=>match[1])
+  );
+  const oldImages=findEditorImages(oldContent);
+  const newImages=[...findEditorImages(content)].filter(image=>!oldImages.has(image));
+  if(newImages.length>(media?1:0)||
+     (media&&(newImages.length!==1||newImages[0]!==media.path)))
+    throw new Error("All new editor images must include their matching binary files");
   const branchName="editor/review-"+Date.now().toString(36)+"-"+
     base64url(crypto.getRandomValues(new Uint8Array(5))).toLowerCase();
   await github("/repos/"+REPO+"/git/refs",token,{
