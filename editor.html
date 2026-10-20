@@ -24,6 +24,7 @@
         <span id="editorSaveStatus" class="save-status" role="status" aria-live="polite">Local draft · Not published</span>
         <button type="button" id="undoBtn" class="secondary" disabled>Undo</button>
         <button type="button" id="resetBtn" class="secondary" disabled>Reset page</button>
+        <button type="button" id="reviewBtn" class="secondary" disabled>Review changes</button>
         <button type="button" id="exportBtn" class="primary" disabled>Export edited HTML</button>
       </div>
     </header>
@@ -137,6 +138,13 @@
       </aside>
     </div>
   </div>
+  <dialog id="reviewDialog" class="review-dialog" aria-labelledby="reviewTitle">
+    <h2 id="reviewTitle">Review your changes</h2>
+    <p id="reviewSummary" class="small-note"></p>
+    <div id="reviewChangeList" class="review-change-list"></div>
+    <div id="reviewExportStatus" role="status" aria-live="polite"></div>
+    <form method="dialog"><button type="submit" class="primary">Close review</button></form>
+  </dialog>
   <dialog id="noticeDialog" aria-labelledby="noticeTitle">
     <h2 id="noticeTitle">Editor notice</h2>
     <p id="noticeMessage"></p>
