@@ -145,3 +145,71 @@ test("create draft PR on new branch without modifying main and reject stale page
   assert.equal(stale.status,409);
  });
 });
+
+
+test("validate staged image signatures, sizes and file hashes",async()=>{
+ const binary=Buffer.alloc(45);
+ Buffer.from([137,80,78,71,13,10,26,10]).copy(binary,0);
+ binary.write("IHDR",12,"ascii");
+ binary.writeUInt32BE(16,16);
+ binary.writeUInt32BE(16,20);
+ const base64=binary.toString("base64");
+ const actual=Buffer.from(await crypto.subtle.digest("SHA-256",binary))
+   .toString("hex");
+ const media={
+   path:"assets/editor-testupload-abcdef1234.png",
+   mime:"image/png",base64,sha256:actual
+ };
+ const updated=edited.replace("</main>",'<img src="'+media.path+'" alt="New photograph"></main>');
+ const checked=await util.validateMedia(media,updated);
+ assert.equal(checked.bytes,binary.length);
+ assert.equal(checked.path,media.path);
+ await assert.rejects(util.validateMedia({...media,sha256:"0".repeat(64)},updated),/checksum/);
+ await assert.rejects(util.validateMedia({...media,mime:"image/jpeg"},updated),/type/);
+ await assert.rejects(util.validateMedia({...media,path:"assets/../../escape.png"},updated),/path/);
+ await assert.rejects(util.validateMedia({...media,base64:Buffer.from("not an image").toString("base64")},updated),/signature|limit/);
+});
+test("create a two-file draft PR with a new image and updated page",async()=>{
+ const binary=Buffer.alloc(45);
+ Buffer.from([137,80,78,71,13,10,26,10]).copy(binary,0);
+ binary.write("IHDR",12,"ascii");
+ binary.writeUInt32BE(18,16);binary.writeUInt32BE(18,20);
+ const media={
+  path:"assets/editor-photo-abcdef1234.png",
+  mime:"image/png",
+  base64:binary.toString("base64"),
+  sha256:Buffer.from(await crypto.subtle.digest("SHA-256",binary)).toString("hex")
+ };
+ const updated=page.replace("Original title","Revised title").replace("</main>",
+   '<img src="'+media.path+'" alt="Sample image"></main>');
+ const sourceHash=await util.digest(page);
+ const token=await util.issueSession(env,"gmoon-code","test-token");
+ const calls=[];
+ await withMockFetch(async(input,options={})=>{
+  const uri=String(input),method=options.method||"GET",body=options.body?JSON.parse(options.body):null;
+  calls.push({uri,method,body});
+  if(uri.endsWith("/git/ref/heads/main"))return json({object:{sha:"a".repeat(40)}});
+  if(uri.includes("/contents/index.html?ref="))
+   return json({type:"file",sha:"b".repeat(40),content:Buffer.from(page).toString("base64")});
+  if(uri.includes("/contents/"+media.path+"?ref="))return json({message:"Not Found"},404);
+  if(method==="POST"&&uri.endsWith("/git/refs"))return json({ref:body.ref},201);
+  if(method==="PUT"&&uri.includes("/contents/"))return json({content:{sha:"d".repeat(40)}},201);
+  if(method==="POST"&&uri.endsWith("/pulls"))
+   return json({number:51,html_url:"https://github.com/gmoon-code/gmoon-code.github.io/pull/51"},201);
+  throw Error("Unexpected "+method+" "+uri);
+ },async()=>{
+  const response=await worker.fetch(request("/proposals",{
+   path:"index.html",sourceHash,content:updated,summary:"Add one photograph",media
+  },token),env);
+  assert.equal(response.status,201,await response.clone().text());
+  const puts=calls.filter(x=>x.method==="PUT");
+  assert.equal(puts.length,2,"Binary and HTML files must be committed on the review branch");
+  assert(puts[0].uri.includes("/contents/"+media.path));
+  assert.equal(puts[0].body.content,media.base64);
+  assert(puts[1].uri.includes("/contents/index.html"));
+  assert.equal(puts[0].body.branch,puts[1].body.branch);
+  const pr=calls.find(x=>x.method==="POST"&&x.uri.endsWith("/pulls"));
+  assert.equal(pr.body.draft,true);
+  assert.equal(pr.body.head,puts[1].body.branch);
+ });
+});
