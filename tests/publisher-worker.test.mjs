@@ -43,6 +43,18 @@ test("approve only portfolio HTML pages and preserve protected resources",()=>{
   edited.replace("site-theme.css","untrusted.css")),/Scripts/);
  assert.throws(()=>util.validateEdit("index.html",page,
   edited.replace("</main>","<img onerror=\"alert(1)\"></main>")),/executable/);
+ assert.throws(()=>util.validateEdit("index.html",page,
+  edited.replace("</main>","<img src=x onerror=alert(1)></main>")),/executable/,
+  "Unquoted event handlers must be blocked");
+ assert.throws(()=>util.validateEdit("index.html",page,
+  edited.replace("</main>",'<a href=javascript:alert(1)>bad</a></main>')),/executable/,
+  "Dangerous unquoted URL schemes must be blocked");
+ assert.throws(()=>util.validateEdit("index.html",page,
+  edited.replace("</main>",'<iframe srcdoc=hello></iframe></main>')),/executable/,
+  "Added active embedded documents must be blocked");
+ assert.throws(()=>util.validateEdit("index.html",page,
+  edited.replace("</main>",'<div style="width:expression(alert(1))">unsafe</div></main>')),/executable/,
+  "Executable style expressions must be blocked");
 });
 test("encrypt, authenticate, expire and reject tampered publishing sessions",async()=>{
  const token=await util.issueSession(env,"gmoon-code","private-github-token");
