@@ -9,7 +9,7 @@
   const $ = id => document.getElementById(id);
   const state = {
     page:null,source:"",doc:null,frameDoc:null,original:new Map(),dirty:new Set(),
-    selected:null,history:[],fingerprint:"",loadToken:0,saveTimer:null,silent:false
+    selected:null,history:[],fingerprint:"",loadToken:0,saveTimer:null,staleDraft:false
   };
 
   function hashText(text) {
@@ -113,6 +113,7 @@
     const key=DRAFT_PREFIX+state.page;
     try {
       if (!items.length) {
+        if (state.staleDraft) return;
         localStorage.removeItem(key);
       } else {
         localStorage.setItem(key,JSON.stringify({
@@ -138,7 +139,8 @@
     try { draft=JSON.parse(raw); } catch(e) {return;}
     if (draft.version!==1||!Array.isArray(draft.items)) return;
     if (draft.sourceHash!==state.fingerprint) {
-      updateStatus("A previous draft exists for an older page version");
+      state.staleDraft=true;
+      updateStatus("Older local draft exists · Not applied");
       return;
     }
     try {
@@ -453,6 +455,7 @@
     initialIndex();
     state.dirty.clear();
     state.history.length=0;
+    state.staleDraft=false;
     renderPreview();
     saveDraft();
   }
@@ -497,12 +500,14 @@
       state.doc=new DOMParser().parseFromString(source,"text/html");
       state.dirty.clear();
       state.history.length=0;
+      state.staleDraft=false;
       initialIndex();
       restoreDraft();
       renderPreview();
-      updateStatus(state.dirty.size?"Draft restored · Not published":"Ready to edit · Not published");
+      updateStatus(state.dirty.size?"Draft restored · Not published":state.staleDraft?"Older local draft exists · Not applied":"Ready to edit · Not published");
     } catch(e) {
       notice("Could not load "+page+". "+e.message,"Page load failed");
+      if (state.page) $("pagePicker").value=state.page;
       updateStatus("Unable to load page");
     }
   }
