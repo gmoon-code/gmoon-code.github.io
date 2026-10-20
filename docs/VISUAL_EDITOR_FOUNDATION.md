@@ -65,6 +65,22 @@ Its Units 1–8 and review content are governed by a frozen, QA-gated curriculum
 
 All three editors should ultimately share the three-panel layout, element selection, accessible property controls, responsive preview, draft history, and change review. They can have different content adapters and publishing pipelines. Cross-project access should require explicit authorization rather than relying on the GitHub Pages origin alone.
 
-## Next secure publication milestone
+## Secure publisher implementation (not yet deployed)
 
-Build a private publisher using an authenticated GitHub App or a server-side OAuth exchange. Restrict it to allowlisted repositories and paths, show the proposed diff, and create a reviewable pull request before any live deployment. Do not add a public page that accepts or persists a long-lived personal access token.
+The next publication milestone has now been implemented **in code** on this draft branch.
+
+- `publisher/worker.mjs` is an independent, private Cloudflare Worker proposal service.
+- `editor-publisher-config.js` contains deliberately empty public connection settings.
+- The editor has disabled-by-default GitHub sign-in, an explicit change-summary field, and a review-only Create draft pull request action.
+- The Worker verifies GitHub App user authorization for the allowlisted owner, protects its session with AES-GCM, expires sessions after 15 minutes, and restricts submissions to the 17 portfolio HTML files.
+- It checks that the live `main` page has not changed, prevents editing executable dependencies, and creates a new branch and draft pull request. It cannot merge or publish directly to `main`.
+- `tests/publisher-worker.test.mjs` tests authentication, tampering, cross-origin requests, owner verification, source conflicts and PR creation with mocked GitHub calls.
+
+**Actual activation still requires owner action.** GitHub App registration, installation and private Worker deployment are not yet configured, and cannot be simulated by the test suite. Instructions are in `publisher/SETUP.md`.
+
+The live portfolio website and the two learning applications are not affected by this development branch. Until the publishing service is configured, local drafts, review and HTML export remain available.
+
+## Next editing capabilities
+
+After the authenticated proposal flow has been tested against a real GitHub App, the portfolio editor should gain media upload/management, drag-and-drop structural sections, and style properties. Research Methods Studio should continue using its existing authenticated Content Studio and its specialized content validation. The Story Method needs a separate structured curriculum adapter and must continue passing its frozen-content QA gates.
+
