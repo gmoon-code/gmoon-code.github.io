@@ -260,3 +260,18 @@ html[data-moon-theme="dark"] :is(.topbar,.site-footer){
  background:var(--moon-page);
  border-color:var(--moon-rule);
 }
+
+/* Remaining light-only editorial and figure surfaces. */
+html[data-moon-theme="dark"] :is(.about-photo,.skip-link:focus,
+ .studio-editable-table thead th,.studio-process>li:before){
+ background:var(--moon-paper);color:var(--moon-ink);border-color:var(--moon-rule);
+}
+html[data-moon-theme="dark"] #main .figure-dishes span{
+ background:var(--moon-raised);color:var(--moon-ink);border-color:var(--moon-rule-dark);
+}
+html[data-moon-theme="dark"] :is(.mechanism-start,.mechanism-outcome){
+ background:var(--moon-raised);color:var(--moon-ink);
+}
+html[data-moon-theme="dark"] .skip-link:focus{
+ border:2px solid var(--moon-link-accent);outline:2px solid var(--moon-link-accent);
+}
