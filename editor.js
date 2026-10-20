@@ -379,10 +379,22 @@
     }));
     for (const op of ops) {
       if (!op.before) throw new Error("A changed block has lost its original markup.");
-      const pos=next.indexOf(op.before);
+      let before=op.before,after=op.after;
+      let pos=next.indexOf(before);
+      if (pos<0) {
+        /* Browsers normalize whitespace within multiline opening tags.
+           A unique inner-HTML match preserves the original tag verbatim. */
+        const originalNode=new DOMParser().parseFromString(op.before,"text/html").body.firstElementChild;
+        const editedNode=new DOMParser().parseFromString(op.after,"text/html").body.firstElementChild;
+        if (originalNode&&editedNode&&originalNode.innerHTML) {
+          before=originalNode.innerHTML;
+          after=editedNode.innerHTML;
+          pos=next.indexOf(before);
+        }
+      }
       if (pos<0) throw new Error("The page source cannot uniquely locate element "+op.key+". No HTML has been exported.");
-      if (next.indexOf(op.before,pos+op.before.length)>=0) throw new Error("Element "+op.key+" has identical source duplicates. Review this change manually.");
-      next=next.slice(0,pos)+op.after+next.slice(pos+op.before.length);
+      if (next.indexOf(before,pos+before.length)>=0) throw new Error("Element "+op.key+" has identical source duplicates. Review this change manually.");
+      next=next.slice(0,pos)+after+next.slice(pos+before.length);
     }
     if (next===state.source) throw new Error("There are no exportable changes.");
     return next;
