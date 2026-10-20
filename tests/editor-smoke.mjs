@@ -34,6 +34,7 @@ function checkNoPageErrors(where) {
 
 try {
   await ready();
+  await page.screenshot({path:"/tmp/editor-test-artifacts/desktop-editor.png",fullPage:true});
   assert.equal(await page.locator("#exportBtn").isDisabled(),true);
   const kicker=page.frameLocator("#pageFrame").locator("main .home-kicker").first();
   await kicker.click();
@@ -63,6 +64,7 @@ try {
   assert.match(await page.locator("#previewContainer").getAttribute("class"),/mobile/);
   await page.locator("#previewTheme").selectOption("dark");
   assert.equal(await page.locator("#pageFrame").evaluate(frame=>frame.contentDocument.documentElement.getAttribute("data-moon-theme")),"dark");
+  await page.screenshot({path:"/tmp/editor-test-artifacts/dark-mobile-preview.png",fullPage:true});
   checkNoPageErrors("page switching and responsive preview");
 
   // Separate context to test link destination on an untouched home page.
