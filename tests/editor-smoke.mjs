@@ -76,7 +76,44 @@ try {
   const linked=await downloadedHtml();
   assert(linked.includes('href="research.html#editor-test"'),"Link change must survive export");
   checkNoPageErrors("link editing");
-  console.log("PASS: preview, editable text, draft persistence, reset, page switching, responsive preview, link export");
+
+  // Test image descriptions and attribute export on a real image.
+  page.once("dialog",dialog=>dialog.accept());
+  await page.locator("#resetBtn").click();
+  const image=page.frameLocator("#pageFrame").locator("main img").first();
+  await image.click();
+  assert.equal(await page.locator("#imageFields").isVisible(),true);
+  await page.locator("#imageAlt").fill("Editor visual test image description");
+  await page.locator("#imageAlt").press("Tab");
+  const imageHtml=await downloadedHtml();
+  assert(imageHtml.includes('alt="Editor visual test image description"'),
+    "Image description must survive source export");
+
+  page.once("dialog",dialog=>dialog.accept());
+  await page.locator("#resetBtn").click();
+  const pages=[
+    "index.html","research.html","projects.html","teaching.html","interests.html",
+    "about.html","cv.html","pungmul.html","research-action.html",
+    "research-scoping.html","writing-biological-classification.html",
+    "research-methods-studio.html","story-method.html","teaching-ap-biology.html",
+    "teaching-ap-chemistry.html","teaching-ap-evolution.html",
+    "teaching-osmosis-practice.html"
+  ];
+  for (const file of pages) {
+    await page.locator("#pagePicker").selectOption(file);
+    await page.waitForFunction(name=>{
+      const menu=document.querySelector("#pagePicker");
+      const status=document.querySelector("#editorSaveStatus")?.textContent||"";
+      const frame=document.querySelector("#pageFrame");
+      return menu?.value===name&&
+        (status.startsWith("Ready to edit")||status.startsWith("Draft restored"))&&
+        !!frame?.contentDocument?.querySelector("main");
+    },file,{timeout:12000});
+    assert(await page.locator("#outline button").count()>0,
+      "Expected editable outline in "+file);
+  }
+  checkNoPageErrors("all 17 portfolio pages");
+  console.log("PASS: text, drafts, reset, link/image export, 17 pages, dark/mobile previews");
 } finally {
   await page.screenshot({path:"/tmp/editor-test-artifacts/editor-last.png",fullPage:true}).catch(()=>{});
   await browser.close();
