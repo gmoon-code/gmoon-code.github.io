@@ -88,6 +88,12 @@
       }
     }
     if(group.length)state.sectionGroups.push(group);
+    /* Section moves on pages with a table of contents would leave its
+       navigational order stale. Lock those pages until the two can be
+       updated as one reviewed operation. */
+    if(main.querySelector('nav a[href^="#"]')){
+      state.sectionGroups=state.originalSections.map(id=>[id]);
+    }
   }
 
   function reindex() {
@@ -503,8 +509,11 @@
       row.append(label,buttons);
       list.appendChild(row);
     }
-    $("sectionNotice").textContent=sections.length?
-      "Sections separated by page navigation cannot cross it.":"No movable sections on this page.";
+    const toc=!!state.doc.querySelector('main nav a[href^="#"]');
+    $("sectionNotice").textContent=!sections.length?
+      "No movable sections on this page.":toc?
+      "Section moves are locked while this page has a contents menu, to prevent mismatched navigation.":
+      "Move neighbouring sections. Sections separated by other page elements cannot cross them.";
   }
   function rawMainSections(source) {
     const opener=/<main\b[^>]*>/i.exec(source);
