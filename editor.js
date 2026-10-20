@@ -6,6 +6,28 @@
   const EDITABLE = "h1,h2,h3,h4,h5,h6,p,li,figcaption,blockquote,dt,dd,a,img,th,td";
   const TEXT_TAGS = new Set(["H1","H2","H3","H4","H5","H6","P","LI","FIGCAPTION","BLOCKQUOTE","DT","DD","A","TH","TD"]);
   const DRAFT_PREFIX = "moon-portfolio-visual-editor-v1:";
+  const PUBLISH_CONFIG=window.MoonEditorPublisherConfig||{};
+  const publisher={session:null,login:"",busy:false};
+  function publisherEndpoint() {
+    try {
+      const base=new URL(String(PUBLISH_CONFIG.apiBase||""));
+      if(base.protocol!=="https:"||base.username||base.password||base.search||base.hash)return "";
+      return base.href.replace(/\/$/,"");
+    } catch{return "";}
+  }
+  function publisherConfigured() {
+    return !!(publisherEndpoint()&&/^[A-Za-z0-9_-]+$/.test(PUBLISH_CONFIG.clientId||""));
+  }
+  function updatePublishControls() {
+    $("publisherConnect").disabled=!publisherConfigured()||publisher.busy;
+    $("publisherSummary").disabled=!publisher.session||publisher.busy;
+    $("publisherPropose").disabled=!publisher.session||publisher.busy||
+      !state.dirty.size||!$("publisherSummary").value.trim();
+  }
+  function publishMessage(text) {
+    $("publisherStatus").textContent=text;
+  }
+
   const $ = id => document.getElementById(id);
   const state = {
     page:null,source:"",doc:null,frameDoc:null,original:new Map(),dirty:new Set(),
@@ -36,6 +58,7 @@
     $("reviewBtn").disabled=!state.dirty.size;
     $("resetBtn").disabled=!state.dirty.size;
     $("undoBtn").disabled=!state.history.length;
+    updatePublishControls();
   }
 
   function annotationId(i) {return "e"+i;}
@@ -449,6 +472,104 @@
     return next;
   }
 
+  async function connectPublisher() {
+    if(!publisherConfigured()) return;
+    const nonce=new Uint8Array(24);
+    crypto.getRandomValues(nonce);
+    const stateValue=Array.from(nonce,n=>n.toString(16).padStart(2,"0")).join("");
+    try{sessionStorage.setItem("moon-publisher-oauth-state",stateValue);}
+    catch{publishMessage("This browser must allow session storage for GitHub sign-in.");return;}
+    const url=new URL("https://github.com/login/oauth/authorize");
+    url.searchParams.set("client_id",PUBLISH_CONFIG.clientId);
+    url.searchParams.set("redirect_uri",
+      PUBLISH_CONFIG.redirectUri||"https://gmoon-code.github.io/editor.html");
+    url.searchParams.set("state",stateValue);
+    window.location.assign(url.toString());
+  }
+
+  async function processPublisherCallback() {
+    const url=new URL(location.href);
+    const code=url.searchParams.get("code");
+    const givenState=url.searchParams.get("state");
+    const oauthError=url.searchParams.get("error");
+    if(!code&&!oauthError)return;
+    url.searchParams.delete("code");
+    url.searchParams.delete("state");
+    url.searchParams.delete("error");
+    url.searchParams.delete("error_description");
+    window.history.replaceState(null,"",url.pathname+url.search+url.hash);
+    let expected="";
+    try{
+      expected=sessionStorage.getItem("moon-publisher-oauth-state")||"";
+      sessionStorage.removeItem("moon-publisher-oauth-state");
+    }catch{}
+    if(oauthError){publishMessage("GitHub connection was cancelled.");return;}
+    if(!publisherConfigured()||!expected||!givenState||
+       expected!==givenState||!code) {
+      publishMessage("GitHub sign-in could not be verified. Try again.");
+      return;
+    }
+    publisher.busy=true;updatePublishControls();
+    publishMessage("Verifying GitHub authorization…");
+    try{
+      const result=await fetch(publisherEndpoint()+"/oauth/exchange",{
+        method:"POST",cache:"no-store",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({code})
+      });
+      const payload=await result.json();
+      if(!result.ok||payload.ok!==true||typeof payload.session!=="string")
+        throw new Error(payload.error||"GitHub sign-in failed");
+      publisher.session=payload.session;
+      publisher.login=payload.login;
+      publishMessage("Connected as "+publisher.login+". Changes create draft pull requests only.");
+    }catch(error){publishMessage("Unable to connect. "+(error.message||"Try again."));}
+    finally{publisher.busy=false;updatePublishControls();}
+  }
+
+  async function createPublisherProposal() {
+    if(!publisher.session||!state.dirty.size||publisher.busy)return;
+    const summary=$("publisherSummary").value.trim();
+    if(!summary||summary.length>140){publishMessage("Enter a short change summary.");return;}
+    let content;
+    try{content=buildExport();}
+    catch(error){notice(error.message,"Review required before publishing");return;}
+    if(!window.confirm("Create a draft GitHub pull request for "+state.page+
+      "?\n\n"+summary+"\n\nThis will not publish to the website."))return;
+    publisher.busy=true;updatePublishControls();
+    publishMessage("Creating a review-only pull request…");
+    try{
+      const buffer=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(state.source));
+      const sourceHash=Array.from(new Uint8Array(buffer),byte=>
+        byte.toString(16).padStart(2,"0")).join("");
+      const result=await fetch(publisherEndpoint()+"/proposals",{
+        method:"POST",cache:"no-store",
+        headers:{"Content-Type":"application/json",
+          "Authorization":"Bearer "+publisher.session},
+        body:JSON.stringify({path:state.page,sourceHash,content,summary})
+      });
+      const payload=await result.json();
+      if(!result.ok||payload.ok!==true)
+        throw new Error(payload.error||"The publishing service rejected the proposal");
+      if(!/^https:\/\/github\.com\/gmoon-code\/gmoon-code\.github\.io\/pull\/\d+$/.test(payload.url))
+        throw new Error("Publisher did not return an expected GitHub review link");
+      const region=$("publisherResult");
+      region.replaceChildren();
+      const link=document.createElement("a");
+      link.href=payload.url;
+      link.target="_blank";
+      link.rel="noopener noreferrer";
+      link.textContent="Review draft pull request #"+payload.number+" on GitHub ↗";
+      region.appendChild(link);
+      publishMessage("Review request created. The live website is unchanged.");
+    }catch(error){
+      publishMessage("Proposal not created. "+(error.message||"Try again."));
+      if(/Session expired|401/.test(error.message||"")) {
+        publisher.session=null;publisher.login="";
+      }
+    }finally{publisher.busy=false;updatePublishControls();}
+  }
+
   function reviewChanges() {
     const list=$("reviewChangeList");
     list.replaceChildren();
@@ -616,6 +737,14 @@
     $("revertElementBtn").addEventListener("click",revertSelected);
     $("exportBtn").addEventListener("click",exportHtml);
     $("reviewBtn").addEventListener("click",reviewChanges);
+    $("publisherConnect").addEventListener("click",connectPublisher);
+    $("publisherPropose").addEventListener("click",createPublisherProposal);
+    $("publisherSummary").addEventListener("input",updatePublishControls);
+    publishMessage(publisherConfigured()?
+      "Not connected. Sign in with your authorized GitHub account.":
+      "GitHub publishing is not configured. Export HTML remains available.");
+    updatePublishControls();
+    processPublisherCallback();
     window.addEventListener("beforeunload",()=>{if (state.page) saveDraft();});
     loadPage($("pagePicker").value);
   }
