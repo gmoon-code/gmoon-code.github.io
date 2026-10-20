@@ -118,6 +118,27 @@ try {
   assert.equal(await image.getAttribute("src"),"assets/pungmul-stage.webp");
   assert.equal(await page.locator("#imageSrc").inputValue(),"assets/pungmul-stage.webp");
 
+  // Stage an actual, browser-decodable PNG without uploading it to GitHub.
+  const tinyPng="iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAAGUlEQVR4nGNsS3BkIAUwkaR6VMOohiGlAQC5pAFHpALGkwAAAABJRU5ErkJggg==";
+  await page.locator("#newImageFile").setInputFiles({
+    name:"editor-test.png",mimeType:"image/png",buffer:Buffer.from(tinyPng,"base64")
+  });
+  await page.locator("#stageImageBtn").click();
+  await page.waitForFunction(()=>document.querySelector("#stagedImageStatus")?.textContent.includes("staged at "));
+  const stagedPath=await page.locator("#imageSrc").inputValue();
+  assert.match(stagedPath,/^assets\/editor-[a-z0-9-]+\.png$/);
+  assert.match(await image.getAttribute("src"),/^blob:/,
+    "Selected image should display the local staged binary in the isolated preview");
+  const stagedHtml=await downloadedHtml();
+  assert(stagedHtml.includes('src="'+stagedPath+'"'),
+    "Exported HTML must reference the staged image filename");
+  const downloadPending=page.waitForEvent("download");
+  await page.locator("#downloadStagedImage").click();
+  const mediaDownload=await downloadPending;
+  assert.equal(mediaDownload.suggestedFilename(),stagedPath.split("/").at(-1));
+  assert.deepEqual(Buffer.from(await readFile(await mediaDownload.path())),
+    Buffer.from(tinyPng,"base64"));
+
   page.once("dialog",dialog=>dialog.accept());
   await page.locator("#resetBtn").click();
   const first=page.frameLocator("#pageFrame").locator("main > section").first();
