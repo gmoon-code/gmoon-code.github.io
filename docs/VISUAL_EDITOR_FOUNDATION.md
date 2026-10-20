@@ -13,7 +13,7 @@ Features currently implemented
 - edit image paths, alt text, and constrained image width settings
 - edit link destinations and new-tab behaviour
 - adjust text alignment on individual content elements
-- move neighbouring top-level sections on eligible pages using Up and Down controls
+- reorder eligible neighbouring top-level sections using drag-and-drop or accessible Up and Down controls
 - browse a searchable library of images already used in the portfolio and replace the selected image without typing its path
 - switch between desktop, tablet, and mobile widths
 - preview light and dark themes
@@ -48,11 +48,11 @@ The editor's browser storage is for draft content only. It is not suitable for s
 
 ## Section and media safety
 
-**Section order**. The editor permits moves only between consecutive top-level `<section>` siblings within `<main>`. Other elements, including page navigation, form boundaries and anchored contents menus, are protected. Pages with an in-page contents menu intentionally disable reordering until that menu can be updated in the same reviewed change. Changes remain reversible, persist in local drafts, and are exported by conservatively swapping uniquely identified raw section ranges. When the source structure differs or non-section content interrupts a proposed group, the export is rejected.
+**Section order**. The editor permits drag-and-drop and arrow-button moves only between consecutive top-level `<section>` siblings within `<main>`. Drag targets are visually marked, and keyboard and touch users retain the arrow controls. Other elements, including page navigation, form boundaries and anchored contents menus, are protected. Pages with an in-page contents menu intentionally disable reordering until that menu can be updated in the same reviewed change. Changes remain reversible, persist in local drafts, and are exported by conservatively swapping uniquely identified raw section ranges. When the source structure differs or non-section content interrupts a proposed group, the export is rejected.
 
 **Existing image library**. The media chooser reads `<img>` references from the same 17 portfolio pages, shows thumbnails and alt descriptions, and limits selection to existing relative `assets/` image paths. It does not upload files, browse private local directories, or publish new assets. Authoring new media and its metadata requires a separate authenticated upload and review workflow.
 
-Combined structural and text changes are covered by the browser smoke test. Moving a section does not automatically revise design-sensitive section colours or page navigation. Review the proposed HTML and responsive appearance before approving any structural change.
+Drag-only exports, local draft restore after a drag, repeated rearrangement, and combined structural and text changes are covered by the browser smoke test. Moving a section does not automatically revise design-sensitive section colours or page navigation. Review the proposed HTML and responsive appearance before approving any structural change.
 
 ## New image uploads
 
@@ -70,7 +70,7 @@ The Chromium browser suite tests local image staging, object-URL preview, exact 
 
 ## Current limitations
 
-- This release edits existing elements. Full structural rearrangement, page creation, component insertion, media uploads, theme-variable editing, and authenticated publication are not yet provided.
+- This release edits existing elements and reorders eligible sibling sections. Page creation, arbitrary component insertion, full layout editing, and theme-variable editing are not yet provided. One new image can be staged for manual export or a draft PR, although live authenticated publication remains unconfigured.
 - In the preview, page JavaScript is disabled. The editor is therefore intended for the portfolio's static HTML pages.
 - Editing rich blocks with nested links is supported directly in the preview. The inspector's plain-text field becomes read-only for such blocks to avoid deleting formatting.
 - If the underlying live page changes after a draft was saved, the draft is not automatically applied to the new source.
