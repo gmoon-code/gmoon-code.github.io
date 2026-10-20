@@ -984,6 +984,7 @@
     const parsed=new DOMParser().parseFromString(sourceMarkup,"text/html");
     const replacement=parsed.body.firstElementChild;
     if (!replacement||node.tagName!==replacement.tagName) return;
+    replacement.setAttribute("data-editor-key",key);
     node.replaceWith(state.doc.importNode(replacement,true));
     try {reindex();} catch(e) {undo();notice(e.message,"Revert stopped");return;}
     state.dirty.delete(key);
@@ -1018,7 +1019,8 @@
       initialIndex();
       restoreDraft();
       renderPreview();
-      updateStatus(state.dirty.size?"Draft restored · Not published":state.staleDraft?"Older local draft exists · Not applied":"Ready to edit · Not published");
+      const moved=state.sectionOrder.some((id,i)=>id!==state.originalSections[i]);
+      updateStatus(state.dirty.size||moved?"Draft restored · Not published":state.staleDraft?"Older local draft exists · Not applied":"Ready to edit · Not published");
     } catch(e) {
       notice("Could not load "+page+". "+e.message,"Page load failed");
       if (state.page) $("pagePicker").value=state.page;
@@ -1054,6 +1056,12 @@
     $("revertElementBtn").addEventListener("click",revertSelected);
     $("exportBtn").addEventListener("click",exportHtml);
     $("reviewBtn").addEventListener("click",reviewChanges);
+    $("chooseExistingImage").addEventListener("click",openMediaLibrary);
+    $("mediaSearch").addEventListener("input",event=>{
+      const query=event.target.value.trim().toLowerCase();
+      renderMediaResults((state.mediaAssets||[]).filter(item=>
+        (item.path+" "+item.description).toLowerCase().includes(query)));
+    });
     $("publisherConnect").addEventListener("click",connectPublisher);
     $("publisherPropose").addEventListener("click",createPublisherProposal);
     $("publisherSummary").addEventListener("input",updatePublishControls);
