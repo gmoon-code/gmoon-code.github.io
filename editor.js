@@ -304,13 +304,17 @@
     const isLink=node.tagName==="A";
     $("imageFields").hidden=!isImage;
     $("linkFields").hidden=!isLink;
+    $("textAppearanceFields").hidden=isImage;
     $("selectionText").closest(".inspector-group").hidden=isImage;
     $("revertElementBtn").disabled=!state.dirty.has(state.selected);
     if (isImage) {
       $("imageSrc").value=node.getAttribute("src")||"";
       $("imageAlt").value=node.getAttribute("alt")||"";
+      $("imageMaxWidth").value=["100%","75%","50%","25%"].includes(node.style.maxWidth)?node.style.maxWidth:"";
     } else {
       $("selectionText").value=node.textContent;
+      $("textAlignment").value=["left","center","right","justify"].includes(node.style.textAlign)?
+        node.style.textAlign:"";
       const rich=[...node.children].length>0;
       $("selectionText").readOnly=rich;
       $("richTextNote").textContent=rich?
@@ -359,6 +363,20 @@
     }
     updateDirty(state.selected);
     updateInspector(preview);
+  }
+
+  function updateSelectedStyle(property,value,allowed) {
+    if(!state.selected||!(value===""||allowed.includes(value)))return;
+    const actual=getWorking(state.selected);
+    const rendered=state.frameDoc?.querySelector('[data-editor-key="'+state.selected+'"]');
+    if(!actual||!rendered)return;
+    checkpoint();
+    for(const node of [actual,rendered]) {
+      node.style[property]=value;
+      if(!node.getAttribute("style")?.trim())node.removeAttribute("style");
+    }
+    updateDirty(state.selected);
+    updateInspector(rendered);
   }
 
   function onInspectorText() {
@@ -730,6 +748,10 @@
     $("selectionText").addEventListener("input",onInspectorText);
     $("imageSrc").addEventListener("change",event=>updateSelectedAttribute("src",event.target.value));
     $("imageAlt").addEventListener("change",event=>updateSelectedAttribute("alt",event.target.value));
+    $("imageMaxWidth").addEventListener("change",event=>
+      updateSelectedStyle("maxWidth",event.target.value,["100%","75%","50%","25%"]));
+    $("textAlignment").addEventListener("change",event=>
+      updateSelectedStyle("textAlign",event.target.value,["left","center","right","justify"]));
     $("linkHref").addEventListener("change",event=>updateSelectedAttribute("href",event.target.value));
     $("linkTarget").addEventListener("change",event=>updateSelectedAttribute("target",event.target.value==="new"?"_blank":""));
     $("undoBtn").addEventListener("click",undo);
