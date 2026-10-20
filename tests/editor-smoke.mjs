@@ -44,7 +44,7 @@ try {
   assert.equal(await page.locator("#exportBtn").isEnabled(),true);
   await page.locator("#reviewBtn").click();
   assert.equal(await page.locator("#reviewDialog").isVisible(),true);
-  assert.match(await page.locator("#reviewChangeList").textContent(),/Before[\\s\\S]*After/);
+  assert.match(await page.locator("#reviewChangeList").textContent(),/Before[\s\S]*After/);
   assert.match(await page.locator("#reviewExportStatus").textContent(),/Source check passed/);
   await page.locator("#reviewDialog form button").click();
   const html=await downloadedHtml();
