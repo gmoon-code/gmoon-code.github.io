@@ -56,6 +56,15 @@ test("approve only portfolio HTML pages and preserve protected resources",()=>{
   edited.replace("</main>",'<div style="width:expression(alert(1))">unsafe</div></main>')),/executable/,
   "Executable style expressions must be blocked");
 });
+test("accept an HTML-only section reorder as a reviewable change",()=>{
+ const original=page.replace("<h1>Original title</h1>",
+   '<section id="first"><h2>First</h2></section><section id="second"><h2>Second</h2></section>');
+ const reordered=original.replace(
+   '<section id="first"><h2>First</h2></section><section id="second"><h2>Second</h2></section>',
+   '<section id="second"><h2>Second</h2></section><section id="first"><h2>First</h2></section>');
+ assert.notEqual(reordered,original);
+ assert.doesNotThrow(()=>util.validateEdit("index.html",original,reordered));
+});
 test("encrypt, authenticate, expire and reject tampered publishing sessions",async()=>{
  const token=await util.issueSession(env,"gmoon-code","private-github-token");
  assert(!token.includes("private-github-token"));
