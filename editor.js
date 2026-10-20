@@ -31,7 +31,8 @@
   const $ = id => document.getElementById(id);
   const state = {
     page:null,source:"",doc:null,frameDoc:null,original:new Map(),dirty:new Set(),
-    selected:null,history:[],fingerprint:"",loadToken:0,saveTimer:null,staleDraft:false
+    selected:null,history:[],fingerprint:"",loadToken:0,saveTimer:null,staleDraft:false,
+    originalSections:[],sectionGroups:[],sectionOrder:[],mediaAssets:null,mediaPromise:null
   };
 
   function hashText(text) {
@@ -53,10 +54,13 @@
 
   function updateStatus(message) {
     $("editorSaveStatus").textContent=message;
-    $("changeCount").textContent=state.dirty.size+" locally edited element"+(state.dirty.size===1?"":"s");
-    $("exportBtn").disabled=!state.dirty.size;
-    $("reviewBtn").disabled=!state.dirty.size;
-    $("resetBtn").disabled=!state.dirty.size;
+    const moved=state.sectionOrder.filter((id,i)=>id!==state.originalSections[i]).length;
+    const total=state.dirty.size+moved;
+    $("changeCount").textContent=state.dirty.size+" edited element"+(state.dirty.size===1?"":"s")+
+      (moved?" · "+moved+" moved section"+(moved===1?"":"s"):"");
+    $("exportBtn").disabled=!total;
+    $("reviewBtn").disabled=!total;
+    $("resetBtn").disabled=!total;
     $("undoBtn").disabled=!state.history.length;
     updatePublishControls();
   }
@@ -68,6 +72,22 @@
     const nodes=[...state.doc.querySelectorAll("body "+EDITABLE.replaceAll(",",",body "))];
     nodes.forEach((node,i)=>state.original.set(annotationId(i),node.outerHTML));
     nodes.forEach((node,i)=>node.setAttribute("data-editor-key",annotationId(i)));
+    const main=state.doc.querySelector("main");
+    const sections=[...main.children].filter(element=>element.tagName==="SECTION");
+    state.originalSections=sections.map((_,i)=>"s"+i);
+    sections.forEach((element,i)=>element.setAttribute("data-editor-section","s"+i));
+    state.sectionOrder=state.originalSections.slice();
+    state.sectionGroups=[];
+    let group=[];
+    for(const child of main.children){
+      if(child.tagName==="SECTION"){
+        group.push(child.getAttribute("data-editor-section"));
+      }else if(group.length){
+        state.sectionGroups.push(group);
+        group=[];
+      }
+    }
+    if(group.length)state.sectionGroups.push(group);
   }
 
   function reindex() {
@@ -75,7 +95,10 @@
     if (nodes.length!==state.original.size) {
       throw new Error("The edited block changed the number of editable elements. Undo that edit before exporting.");
     }
-    nodes.forEach((node,i)=>node.setAttribute("data-editor-key",annotationId(i)));
+    const seen=new Set(nodes.map(element=>element.getAttribute("data-editor-key")));
+    if(seen.size!==nodes.length||!nodes.every(element=>seen.has(element.getAttribute("data-editor-key"))&&state.original.has(element.getAttribute("data-editor-key")))){
+      throw new Error("The element identifiers changed unexpectedly. Export has been stopped.");
+    }
   }
 
   function getWorking(key) {
@@ -86,10 +109,12 @@
     clone.removeAttribute("data-editor-key");
     clone.removeAttribute("contenteditable");
     clone.removeAttribute("data-editor-selected");
-    for (const child of clone.querySelectorAll("[data-editor-key],[contenteditable],[data-editor-selected]")) {
+    clone.removeAttribute("data-editor-section");
+    for (const child of clone.querySelectorAll("[data-editor-key],[contenteditable],[data-editor-selected],[data-editor-section]")) {
       child.removeAttribute("data-editor-key");
       child.removeAttribute("contenteditable");
       child.removeAttribute("data-editor-selected");
+      child.removeAttribute("data-editor-section");
     }
     return clone;
   }
@@ -117,7 +142,8 @@
   }
 
   function snapshot() {
-    return {html:state.doc.documentElement.outerHTML,dirty:[...state.dirty]};
+    return {html:state.doc.documentElement.outerHTML,dirty:[...state.dirty],
+      order:state.sectionOrder.slice()};
   }
 
   function checkpoint() {
@@ -138,15 +164,17 @@
     }).filter(Boolean);
     const key=DRAFT_PREFIX+state.page;
     try {
-      if (!items.length) {
+      const orderChanged=state.sectionOrder.some((id,i)=>id!==state.originalSections[i]);
+      if (!items.length&&!orderChanged) {
         if (state.staleDraft) return;
         localStorage.removeItem(key);
       } else {
         localStorage.setItem(key,JSON.stringify({
-          version:1,sourceHash:state.fingerprint,updated:Date.now(),items
+          version:1,sourceHash:state.fingerprint,updated:Date.now(),items,
+          sectionOrder:state.sectionOrder.slice()
         }));
       }
-      updateStatus(items.length?"Draft saved in this browser · Not published":"No changes · Not published");
+      updateStatus(items.length||orderChanged?"Draft saved in this browser · Not published":"No changes · Not published");
     } catch (e) {
       updateStatus("Draft storage unavailable · Export your HTML");
     }
@@ -182,6 +210,8 @@
         state.dirty.add(item.id);
       }
       reindex();
+      if(Array.isArray(draft.sectionOrder)&&draft.sectionOrder.length)
+        applySectionOrder(draft.sectionOrder);
       for (const key of [...state.dirty]) {
         const node=getWorking(key);
         if (!node||cleanOuter(node)===state.original.get(key)) state.dirty.delete(key);
@@ -233,6 +263,7 @@
     };
     frame.srcdoc=previewMarkup();
     updateOutline();
+    updateSectionList();
   }
 
   function onPreviewClick(event) {
@@ -518,6 +549,7 @@
       if (next.indexOf(before,pos+before.length)>=0) throw new Error("Element "+op.key+" has identical source duplicates. Review this change manually.");
       next=next.slice(0,pos)+after+next.slice(pos+before.length);
     }
+    next=exportSectionOrder(next);
     if (next===state.source) throw new Error("There are no exportable changes.");
     return next;
   }
@@ -624,7 +656,9 @@
     const list=$("reviewChangeList");
     list.replaceChildren();
     const ids=[...state.dirty].sort((a,b)=>Number(a.slice(1))-Number(b.slice(1)));
+    const reordered=state.sectionOrder.some((id,i)=>id!==state.originalSections[i]);
     $("reviewSummary").textContent=ids.length+" edited element"+(ids.length===1?"":"s")+
+      (reordered?" · section order changed":"")+
       " on "+$("pagePicker").selectedOptions[0]?.textContent+".";
     const previewText=(node)=>{
       if (!node) return "";
@@ -658,6 +692,13 @@
         item.appendChild(block);
       }
       list.appendChild(item);
+    }
+    if(reordered){
+      const row=document.createElement("section");row.className="review-change";
+      const heading=document.createElement("h3");heading.textContent="Section order";
+      const p=document.createElement("p");
+      p.textContent="Original "+state.originalSections.join(" → ")+"\nRevised "+state.sectionOrder.join(" → ");
+      p.style.whiteSpace="pre-wrap";row.append(heading,p);list.prepend(row);
     }
     const status=$("reviewExportStatus");
     try {
@@ -695,6 +736,7 @@
     if (!last) return;
     state.doc=new DOMParser().parseFromString(last.html,"text/html");
     state.dirty=new Set(last.dirty);
+    state.sectionOrder=Array.isArray(last.order)?last.order.slice():state.originalSections.slice();
     renderPreview();
     scheduleDraft();
     updateStatus("Previous edit restored · Not published");
