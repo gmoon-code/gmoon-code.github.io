@@ -206,11 +206,12 @@
   }
 
   function onPreviewClick(event) {
+    /* Stop navigation, but keep normal selection behaviour for editable text. */
     if (event.target.closest("a")) event.preventDefault();
     const node=event.target.closest("[data-editor-key]");
     if (!node) return;
-    event.preventDefault();
     selectElement(node);
+    if (TEXT_TAGS.has(node.tagName)) node.focus({preventScroll:true});
   }
 
   function onPreviewFocus(event) {
