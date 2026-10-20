@@ -54,6 +54,20 @@ The editor's browser storage is for draft content only. It is not suitable for s
 
 Combined structural and text changes are covered by the browser smoke test. Moving a section does not automatically revise design-sensitive section colours or page navigation. Review the proposed HTML and responsive appearance before approving any structural change.
 
+## New image uploads
+
+The editor can now stage a single **PNG, JPEG, or WebP image of up to 1.5 MB** for the selected image element. The editor checks its file signature, decodes it locally, checks dimensions, generates a unique \`assets/editor-…\` filename, and renders the selected image immediately from its browser object URL.
+
+The private proposal service independently verifies the image extension, MIME type, file signature, size, SHA-256 checksum, absence of a pre-existing asset with the same filename, and exactly one new reference in the edited HTML. The resulting GitHub draft pull request includes **both the image and the edited page**. It cannot publish directly.
+
+- The owner must update the image's alt description before exporting or proposing the change.
+- The image bytes remain in memory, not in local-storage drafts. After a reload, the editor can restore the HTML but **the user must stage the image again** before exporting or publishing. Do not assume restored drafts contain the original upload bytes.
+- If using manual HTML export, explicitly use **Download staged image** and retain the image under its generated filename in the \`assets/\` folder along with the HTML update.
+- Only one new image is supported per review proposal. New image uploads and media publication are inactive until the private publisher has been configured and authorized.
+- Existing image assets can still be selected through the searchable media library.
+
+The Chromium browser suite tests local image staging, object-URL preview, exact binary download and HTML export. The private publisher suite tests image signature checks, checksums, binary+HTML draft PR creation, and rejection of orphaned image references.
+
 ## Current limitations
 
 - This release edits existing elements. Full structural rearrangement, page creation, component insertion, media uploads, theme-variable editing, and authenticated publication are not yet provided.
