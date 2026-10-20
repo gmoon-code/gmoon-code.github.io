@@ -213,3 +213,30 @@ test("create a two-file draft PR with a new image and updated page",async()=>{
   assert.equal(pr.body.head,puts[1].body.branch);
  });
 });
+
+
+test("reject a second unsubmitted upload on a page already containing older editor images",async()=>{
+ const prior="assets/editor-already-published.png";
+ const extra="assets/editor-new-without-media.png";
+ const current=page.replace("</main>",'<img src="'+prior+'" alt="Earlier upload"></main>');
+ const revised=current.replace("Original title","Updated title").replace("</main>",
+   '<img src="'+extra+'" alt="Missing file"></main>');
+ const sourceHash=await util.digest(current);
+ const session=await util.issueSession(env,"gmoon-code","test-token");
+ const calls=[];
+ await withMockFetch(async(input,options={})=>{
+  const uri=String(input),method=options.method||"GET";
+  calls.push({uri,method});
+  if(uri.endsWith("/git/ref/heads/main"))return json({object:{sha:"a".repeat(40)}});
+  if(uri.includes("/contents/index.html?ref="))
+   return json({type:"file",sha:"b".repeat(40),content:Buffer.from(current).toString("base64")});
+  throw Error("No creation should be attempted");
+ },async()=>{
+  const result=await worker.fetch(request("/proposals",{
+    path:"index.html",sourceHash,content:revised,summary:"Broken upload"
+  },session),env);
+  assert.equal(result.status,400,await result.clone().text());
+  assert.match((await result.json()).error,/matching binary/);
+  assert(!calls.some(x=>x.method==="PUT"||x.uri.endsWith("/git/refs")));
+ });
+});
