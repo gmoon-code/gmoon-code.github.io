@@ -16,6 +16,7 @@ Features currently implemented
 - preview light and dark themes
 - save local drafts (browser storage, not GitHub)
 - undo the most recent edit and revert individual elements
+- review changed elements side by side, with an export-safety check
 - export edited HTML files for review
 
 The editor never asks for or stores GitHub credentials. It cannot publish, edit repository files, or change the public site without a subsequent authenticated step.
@@ -29,6 +30,10 @@ The editor never asks for or stores GitHub credentials. It cannot publish, edit 
 5. Replace the original file only through an authenticated, reviewed GitHub workflow.
 
 The export process patches only uniquely located source blocks. If a block cannot be matched without ambiguity, exporting is stopped instead of risking an unrelated edit. The draft is retained in the browser.
+
+## Browser regression coverage
+
+The draft pull request includes a Chromium smoke test in `tests/editor-smoke.mjs`, run through `.github/workflows/editor-smoke.yml`. The test exercises editing and exporting text, link destinations, and image descriptions; draft reload and reset; before-and-after change review; responsive and dark previews; and loading all 17 portfolio pages. Screenshots are saved as build artifacts for human inspection. Passing these checks does not constitute a complete accessibility or visual regression audit, and it does not enable automated publishing.
 
 ## Security and trust
 
