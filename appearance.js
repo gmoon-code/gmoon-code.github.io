@@ -3,15 +3,15 @@
 (function () {
   "use strict";
   var KEY = "moon-notes-appearance";
-  var choices = ["system", "light", "dark"];
+  var choices = ["light", "dark", "system"];
   var media = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
 
   function read() {
     try {
       var stored = window.localStorage.getItem(KEY);
-      return choices.indexOf(stored) !== -1 ? stored : "system";
+      return choices.indexOf(stored) !== -1 ? stored : "light";
     } catch (e) {
-      return "system";
+      return "light";
     }
   }
 
@@ -43,7 +43,7 @@
     var select = document.createElement("select");
     select.className = "moon-appearance-select";
     select.setAttribute("aria-label", "Appearance theme");
-    select.title = "Choose system, light, or dark appearance";
+    select.title = "Choose light, dark, or system appearance";
     var id = "moon-appearance-choice";
     select.id = id;
     label.htmlFor = id;
