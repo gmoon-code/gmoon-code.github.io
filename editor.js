@@ -61,9 +61,11 @@
   function clearMarkers(clone) {
     clone.removeAttribute("data-editor-key");
     clone.removeAttribute("contenteditable");
-    for (const child of clone.querySelectorAll("[data-editor-key],[contenteditable]")) {
+    clone.removeAttribute("data-editor-selected");
+    for (const child of clone.querySelectorAll("[data-editor-key],[contenteditable],[data-editor-selected]")) {
       child.removeAttribute("data-editor-key");
       child.removeAttribute("contenteditable");
+      child.removeAttribute("data-editor-selected");
     }
     return clone;
   }
@@ -390,9 +392,14 @@
         const originalNode=new DOMParser().parseFromString(op.before,"text/html").body.firstElementChild;
         const editedNode=new DOMParser().parseFromString(op.after,"text/html").body.firstElementChild;
         if (originalNode&&editedNode&&originalNode.innerHTML) {
-          before=originalNode.innerHTML;
-          after=editedNode.innerHTML;
-          pos=next.indexOf(before);
+          /* Inner-content replacement cannot carry attribute edits. */
+          const attributesBefore=[...originalNode.attributes].map(a=>[a.name,a.value]);
+          const attributesAfter=[...editedNode.attributes].map(a=>[a.name,a.value]);
+          if (JSON.stringify(attributesBefore)===JSON.stringify(attributesAfter)) {
+            before=originalNode.innerHTML;
+            after=editedNode.innerHTML;
+            pos=next.indexOf(before);
+          }
         }
       }
       if (pos<0) {
@@ -400,15 +407,33 @@
            when the original image can be identified uniquely by source and alt. */
         const beforeNode=new DOMParser().parseFromString(op.before,"text/html").body.firstElementChild;
         const afterNode=new DOMParser().parseFromString(op.after,"text/html").body.firstElementChild;
-        if (beforeNode?.tagName==="IMG"&&afterNode?.tagName==="IMG") {
-          const candidates=[...next.matchAll(/<img\b[^>]*>/gi)].filter(match=>{
+        if (beforeNode&&afterNode&&beforeNode.tagName===afterNode.tagName&&
+            ["IMG","A"].includes(beforeNode.tagName)) {
+          const tag=beforeNode.tagName.toLowerCase();
+          const re=new RegExp("<"+tag+"\\b[^>]*>","gi");
+          const candidates=[...next.matchAll(re)].filter(match=>{
             const candidate=new DOMParser().parseFromString(match[0],"text/html").body.firstElementChild;
-            return candidate?.getAttribute("src")===beforeNode.getAttribute("src")&&
-              candidate?.getAttribute("alt")===beforeNode.getAttribute("alt");
+            if (!candidate||candidate.tagName!==beforeNode.tagName) return false;
+            return [...beforeNode.attributes].every(attribute=>
+              candidate.getAttribute(attribute.name)===attribute.value
+            )&&[...candidate.attributes].length===[...beforeNode.attributes].length;
           });
           if (candidates.length===1) {
-            const image=candidates[0];
-            next=next.slice(0,image.index)+afterNode.outerHTML+next.slice(image.index+image[0].length);
+            const originalTag=candidates[0];
+            const replacementTag=afterNode.outerHTML.match(/^<[^>]*>/)?.[0];
+            if (!replacementTag) throw new Error("Could not export element "+op.key+".");
+            next=next.slice(0,originalTag.index)+replacementTag+
+              next.slice(originalTag.index+originalTag[0].length);
+            /* Text and inline markup may also have changed. Apply them only
+               if a unique original inner content span follows the raw tag. */
+            if (beforeNode.innerHTML!==afterNode.innerHTML) {
+              const innerAt=originalTag.index+replacementTag.length;
+              if (!next.startsWith(beforeNode.innerHTML,innerAt)) {
+                throw new Error("Cannot safely reconcile nested content in "+op.key+".");
+              }
+              next=next.slice(0,innerAt)+afterNode.innerHTML+
+                next.slice(innerAt+beforeNode.innerHTML.length);
+            }
             continue;
           }
         }
