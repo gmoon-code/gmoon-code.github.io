@@ -447,6 +447,38 @@
         }
       }
       if (pos<0) {
+        /* For uniquely identified source blocks, replace the opening tag
+           alongside the inner content. This supports alignment and other
+           inspector-controlled attributes without rewriting entire pages. */
+        const oldEl=new DOMParser().parseFromString(op.before,"text/html").body.firstElementChild;
+        const newEl=new DOMParser().parseFromString(op.after,"text/html").body.firstElementChild;
+        if(oldEl&&newEl&&oldEl.tagName===newEl.tagName&&oldEl.innerHTML) {
+          const inner=oldEl.innerHTML;
+          const at=next.indexOf(inner);
+          if(at>=0&&next.indexOf(inner,at+inner.length)<0){
+            const tag=oldEl.tagName.toLowerCase();
+            const prefix=next.slice(Math.max(0,at-1500),at);
+            const match=prefix.match(new RegExp("<"+tag+"\\b[^>]*>$","i"));
+            if(match){
+              const oldOpening=match[0];
+              const parsed=new DOMParser().parseFromString(
+                oldOpening+"</"+tag+">","text/html").body.firstElementChild;
+              const equal=parsed&&
+                [...parsed.attributes].length===[...oldEl.attributes].length&&
+                [...oldEl.attributes].every(attribute=>
+                  parsed.getAttribute(attribute.name)===attribute.value);
+              const newOpening=op.after.match(/^<[^>]*>/)?.[0];
+              if(equal&&newOpening){
+                const start=at-oldOpening.length;
+                next=next.slice(0,start)+newOpening+newEl.innerHTML+
+                  next.slice(at+inner.length);
+                continue;
+              }
+            }
+          }
+        }
+      }
+      if (pos<0) {
         /* Images are void elements. Their attributes can be written safely
            when the original image can be identified uniquely by source and alt. */
         const beforeNode=new DOMParser().parseFromString(op.before,"text/html").body.firstElementChild;
