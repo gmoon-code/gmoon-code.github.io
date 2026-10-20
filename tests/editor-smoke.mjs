@@ -108,8 +108,38 @@ try {
   assert(/style="[^"]*max-width:\s*50%/.test(imageHtml),
     "Selected image width must survive source export");
 
+  // The image library lists real assets already referenced by site pages.
+  await page.locator("#chooseExistingImage").click();
+  await page.locator("#mediaDialog").waitFor({state:"visible"});
+  await page.locator("#mediaSearch").fill("pungmul-stage");
+  const replacement=page.locator("#mediaResults .media-option")
+    .filter({hasText:"assets/pungmul-stage.webp"}).first();
+  await replacement.click();
+  assert.equal(await image.getAttribute("src"),"assets/pungmul-stage.webp");
+  assert.equal(await page.locator("#imageSrc").inputValue(),"assets/pungmul-stage.webp");
+
   page.once("dialog",dialog=>dialog.accept());
   await page.locator("#resetBtn").click();
+  const first=page.frameLocator("#pageFrame").locator("main > section").first();
+  assert.match(await first.getAttribute("class"),/home-yellow/);
+  await page.locator("#sectionList .section-order-row").nth(1)
+    .locator("button[aria-label^='Move up']").click();
+  assert.match(await first.getAttribute("class"),/home-green/);
+  const movedHtml=await downloadedHtml();
+  assert(movedHtml.indexOf('home-green home-pathways')<
+    movedHtml.indexOf('home-yellow home-intro'),
+    "Exported sections must follow the new visual order");
+  assert(!movedHtml.includes('data-editor-section'),
+    "Section editor markers must not enter the published HTML");
+  await page.reload();
+  await page.frameLocator("#pageFrame").locator("main > section").first().waitFor();
+  assert.match(await page.frameLocator("#pageFrame")
+    .locator("main > section").first().getAttribute("class"),/home-green/,
+    "The section order should survive a local draft reload");
+  page.once("dialog",dialog=>dialog.accept());
+  await page.locator("#resetBtn").click();
+  assert.match(await page.frameLocator("#pageFrame")
+    .locator("main > section").first().getAttribute("class"),/home-yellow/);
   const pages=[
     "index.html","research.html","projects.html","teaching.html","interests.html",
     "about.html","cv.html","pungmul.html","research-action.html",
