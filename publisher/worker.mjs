@@ -138,11 +138,21 @@ function validateEdit(path,previous,edited) {
   const oldTokens=protectedTokens(previous),newTokens=protectedTokens(edited);
   if(JSON.stringify(oldTokens)!==JSON.stringify(newTokens))
     throw new Error("Scripts, stylesheets, and document metadata must stay unchanged");
-  const forbidden=/(?:\bon[a-z]+\s*=\s*["']|(?:href|src)\s*=\s*["']?\s*(?:javascript|data|vbscript):|<\s*(?:iframe|object|embed|form)\b)/gi;
-  const oldMatches=previous.match(forbidden)||[];
-  const newMatches=edited.match(forbidden)||[];
-  if(JSON.stringify(oldMatches)!==JSON.stringify(newMatches))
-    throw new Error("New executable HTML or active embeds are not permitted");
+  /* Compare full risky attribute values, including unquoted handlers.
+     This also prevents swapping handler code while keeping the same name. */
+  const riskyPatterns=[
+    /\bon[a-z][a-z0-9_-]*\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi,
+    /\b(?:href|src|srcset|action|formaction|xlink:href)\s*=\s*["']?\s*(?:javascript|data|vbscript)\s*:/gi,
+    /\bsrcdoc\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi,
+    /<\s*(?:iframe|object|embed|form|svg|math|template|base)\b[^>]*>/gi,
+    /(?:expression\s*\(|url\s*\(\s*["']?\s*javascript\s*:)/gi
+  ];
+  for(const pattern of riskyPatterns){
+    const oldMatches=previous.match(pattern)||[];
+    const newMatches=edited.match(pattern)||[];
+    if(JSON.stringify(oldMatches)!==JSON.stringify(newMatches))
+      throw new Error("New executable HTML or active embeds are not permitted");
+  }
 }
 function originAllowed(origin,env) {
   return origin===(env.ALLOWED_ORIGIN||"https://gmoon-code.github.io");
