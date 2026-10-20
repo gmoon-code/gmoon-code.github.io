@@ -12,6 +12,8 @@ A draft PR still requires inspection and approval in GitHub. The file itself is 
 
 ## Owner configuration required
 
+**Image proposals.** `POST /proposals` may optionally include `media` as `{path,mime,base64,sha256}`. Only one new image is allowed. The service accepts PNG, JPEG, and WebP files up to 1.5 MB, validates their signatures and checksum, requires a unique `assets/editor-…` filename, and commits the binary and HTML file on the same review branch before opening the draft PR. Images must be referenced in the page. The owner must review the binary file and image description before merging. Browser-local image blobs are not retained after a reload, so a resumed image draft requires re-staging the original file.
+
 The following steps must be performed by the repository owner. **None of them has been carried out automatically.**
 
 1. Register a GitHub App under the owner account. Set its **web application authorization callback** to `https://gmoon-code.github.io/editor.html`. Enable user-to-server authorization. Install it for **only** the `gmoon-code/gmoon-code.github.io` repository. Grant repository **Contents Read & Write**, **Pull requests Read & Write**, and **Metadata Read**. No organization access is needed.
