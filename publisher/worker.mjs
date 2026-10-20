@@ -24,6 +24,8 @@ const ALLOWED_PAGES=new Set([
   "teaching-ap-chemistry.html","teaching-ap-evolution.html","teaching-osmosis-practice.html"
 ]);
 const MAX_CONTENT=250000;
+const MAX_MEDIA_BYTES=1572864;
+const MAX_REQUEST_BYTES=2500000;
 const API="https://api.github.com";
 const enc=new TextEncoder();
 const dec=new TextDecoder();
@@ -167,9 +169,9 @@ function corsHeaders(origin) {
 }
 async function parseJson(request) {
   const length=Number(request.headers.get("Content-Length")||"0");
-  if(length>MAX_CONTENT*2)throw new Error("Request too large");
+  if(length>MAX_REQUEST_BYTES)throw new Error("Request too large");
   const text=await request.text();
-  if(enc.encode(text).length>MAX_CONTENT*2)throw new Error("Request too large");
+  if(enc.encode(text).length>MAX_REQUEST_BYTES)throw new Error("Request too large");
   try{return JSON.parse(text);}catch{throw new Error("Invalid request JSON");}
 }
 async function exchangeOAuth(body,env) {
@@ -192,6 +194,51 @@ async function exchangeOAuth(body,env) {
   const token=await issueSession(env,user.login,auth.access_token);
   return {ok:true,login:user.login,session:token,expiresIn:SESSION_TTL_SECONDS};
 }
+async function validateMedia(candidate,editedHtml){
+  if(candidate===undefined||candidate===null)return null;
+  if(!candidate||typeof candidate!=="object"||Array.isArray(candidate))
+    throw new Error("Invalid image submission");
+  const {path,mime,base64,sha256}=candidate;
+  if(typeof path!=="string"||!/^assets\/editor-[a-z0-9-]{8,64}\.(?:png|jpg|webp)$/.test(path))
+    throw new Error("Invalid new image path");
+  const types={"image/png":".png","image/jpeg":".jpg","image/webp":".webp"};
+  if(typeof mime!=="string"||!types[mime]||!path.endsWith(types[mime]))
+    throw new Error("Image type and filename do not match");
+  if(typeof base64!=="string"||base64.length>2100000||base64.length<8||
+     !/^[A-Za-z0-9+/]+={0,2}$/.test(base64))
+    throw new Error("Invalid image encoding or size");
+  if(typeof sha256!=="string"||!/^[a-f0-9]{64}$/.test(sha256))
+    throw new Error("Image checksum is missing");
+  let bytes;
+  try{
+    const value=base64.replace(/-/g,"+").replace(/_/g,"/");
+    const raw=atob(value);
+    bytes=Uint8Array.from(raw,c=>c.charCodeAt(0));
+  }catch{throw new Error("Unable to decode the image");}
+  if(bytes.length<24||bytes.length>MAX_MEDIA_BYTES)
+    throw new Error("Image exceeds the 1.5 MB limit");
+  const png=[137,80,78,71,13,10,26,10].every((x,i)=>bytes[i]===x)&&
+    String.fromCharCode(...bytes.slice(12,16))==="IHDR";
+  const jpeg=bytes[0]===255&&bytes[1]===216&&bytes[2]===255;
+  const webp=String.fromCharCode(...bytes.slice(0,4))==="RIFF"&&
+    String.fromCharCode(...bytes.slice(8,12))==="WEBP";
+  if((mime==="image/png"&&!png)||(mime==="image/jpeg"&&!jpeg)||
+     (mime==="image/webp"&&!webp))
+    throw new Error("Image signature does not match its declared type");
+  if(png){
+    const view=new DataView(bytes.buffer,bytes.byteOffset,bytes.byteLength);
+    const width=view.getUint32(16),height=view.getUint32(20);
+    if(!width||!height||width>8000||height>8000)
+      throw new Error("Image dimensions are outside the permitted range");
+  }
+  const checksum=Array.from(new Uint8Array(
+    await crypto.subtle.digest("SHA-256",bytes)),x=>x.toString(16).padStart(2,"0")).join("");
+  if(checksum!==sha256)throw new Error("Image checksum mismatch");
+  if(typeof editedHtml!=="string"||!editedHtml.includes(path))
+    throw new Error("Edited page does not reference the uploaded image");
+  return {path,mime,base64,bytes:bytes.length};
+}
+
 async function propose(body,session) {
   const path=body?.path;
   if(typeof path!=="string"||!ALLOWED_PAGES.has(path))
@@ -199,6 +246,7 @@ async function propose(body,session) {
   if(!/^[a-f0-9]{64}$/i.test(body?.sourceHash||""))
     throw new Error("Missing source version checksum");
   const content=body?.content;
+  const media=await validateMedia(body?.media,content);
   const summary=typeof body?.summary==="string"?body.summary.trim():"";
   if(!summary||summary.length>140||/[\u0000-\u001f]/.test(summary))
     throw new Error("Provide a short change summary");
@@ -214,11 +262,32 @@ async function propose(body,session) {
   if(await digest(oldContent)!==body.sourceHash.toLowerCase())
     throw new Error("The live page has changed since this draft was created. Reload and review the differences.");
   validateEdit(path,oldContent,content);
+  if(media){
+    if(oldContent.includes(media.path))
+      throw new Error("Image path is already used by the live page");
+    const references=content.split('src="'+media.path+'"').length-1+
+      content.split("src='"+media.path+"'").length-1;
+    if(references!==1)
+      throw new Error("Uploaded image must be referenced once in the edited page");
+    try{
+      await github("/repos/"+REPO+"/contents/"+media.path+"?ref="+BASE_BRANCH,token);
+      throw new Error("Image filename already exists on the live website");
+    }catch(error){if(error.status!==404)throw error;}
+  } else if(/assets\/editor-[a-z0-9-]+\.(?:png|jpg|webp)/i.test(content)&&
+            !/assets\/editor-[a-z0-9-]+\.(?:png|jpg|webp)/i.test(oldContent)){
+    throw new Error("A new editor image must include its binary file");
+  }
   const branchName="editor/review-"+Date.now().toString(36)+"-"+
     base64url(crypto.getRandomValues(new Uint8Array(5))).toLowerCase();
   await github("/repos/"+REPO+"/git/refs",token,{
     method:"POST",body:{ref:"refs/heads/"+branchName,sha:baseSha}
   });
+  if(media){
+    await github("/repos/"+REPO+"/contents/"+media.path,token,{
+      method:"PUT",body:{message:"Stage review image: "+media.path,
+        content:media.base64,branch:branchName}
+    });
+  }
   await github("/repos/"+REPO+"/contents/"+encodeURIComponent(path),token,{
     method:"PUT",body:{message:"Propose website edit: "+path,
       content:encodeGithubContent(content),sha:current.sha,branch:branchName}
@@ -230,6 +299,7 @@ async function propose(body,session) {
       body:"## Visual editor proposal\n\n"+summary+
         "\n\nEdited page: \`"+path+"\`\n\nCreated by the owner through the visual editor. "+
         "Review the GitHub diff and test the page before merging.\n\n"+
+        (media?"New image: "+media.path+" ("+media.bytes+" bytes)\n\n":"")+ 
         "This pull request does not publish changes automatically."
     }
   });
@@ -285,4 +355,4 @@ export default {
     }
   }
 };
-export const __testing={digest,validateEdit,issueSession,verifySession,encodeGithubContent,decodeGithubContent,ALLOWED_PAGES};
+export const __testing={digest,validateEdit,validateMedia,issueSession,verifySession,encodeGithubContent,decodeGithubContent,ALLOWED_PAGES};
