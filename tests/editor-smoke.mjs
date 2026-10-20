@@ -141,6 +141,38 @@ try {
 
   page.once("dialog",dialog=>dialog.accept());
   await page.locator("#resetBtn").click();
+  // Drag-only changes must export and survive reload, even with zero text edits.
+  const dragRows=page.locator("#sectionList .section-order-row");
+  assert.equal(await dragRows.nth(1).getAttribute("draggable"),"true");
+  await dragRows.nth(1).dragTo(dragRows.nth(0),{targetPosition:{x:30,y:2}});
+  assert.match(await page.frameLocator("#pageFrame")
+    .locator("main > section").first().getAttribute("class"),/home-green/,
+    "Dragging should move the intended section visually");
+  assert.equal(await page.locator("#exportBtn").isEnabled(),true,
+    "A reorder-only draft must remain exportable");
+  await page.locator("#reviewBtn").click();
+  assert.match(await page.locator("#reviewSummary").textContent(),/section order changed/);
+  assert.match(await page.locator("#reviewExportStatus").textContent(),/Source check passed/);
+  await page.locator("#reviewDialog form button").click();
+  const reorderedOnly=await downloadedHtml();
+  assert(reorderedOnly.indexOf('home-green home-pathways')<
+    reorderedOnly.indexOf('home-yellow home-intro'),
+    "Reordering without edited text must survive HTML export");
+  await page.reload({waitUntil:"domcontentloaded"});
+  await page.frameLocator("#pageFrame").locator("main > section").first().waitFor();
+  assert.match(await page.frameLocator("#pageFrame")
+    .locator("main > section").first().getAttribute("class"),/home-green/,
+    "Reorder-only local drafts must survive reload");
+  // A second drag after the first move verifies that the group boundary
+  // tracks its current siblings, not the original final section ID.
+  const dragRowsAgain=page.locator("#sectionList .section-order-row");
+  await dragRowsAgain.nth(1).dragTo(dragRowsAgain.nth(0),{targetPosition:{x:30,y:2}});
+  assert.match(await page.frameLocator("#pageFrame")
+    .locator("main > section").first().getAttribute("class"),/home-yellow/,
+    "The second drag should restore the original first section");
+  page.once("dialog",dialog=>dialog.accept());
+  await page.locator("#resetBtn").click();
+
   const first=page.frameLocator("#pageFrame").locator("main > section").first();
   assert.match(await first.getAttribute("class"),/home-yellow/);
   await page.locator("#sectionList .section-order-row").nth(1)
