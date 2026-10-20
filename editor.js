@@ -205,6 +205,12 @@
       updateStatus("Older local draft exists · Not applied");
       return;
     }
+    const stagedMarkup=draft.items.some(item=>typeof item.markup==="string"&&
+      /assets\/editor-[a-z0-9-]+\.(?:png|jpg|webp)/i.test(item.markup));
+    if(stagedMarkup){
+      $("stagedImageStatus").textContent=
+        "This draft references an uploaded image whose binary file was not retained after reload. Select the image on the page and stage its file again.";
+    }
     try {
       for (const item of draft.items) {
         if (!state.original.has(item.id)||checkDangerousHtml(item.markup)) continue;
@@ -877,6 +883,14 @@
       next=next.slice(0,pos)+after+next.slice(pos+before.length);
     }
     next=exportSectionOrder(next);
+    if(state.stagedMedia&&next.includes(state.stagedMedia.path)){
+      const image=getWorking(state.stagedMedia.key);
+      const original=new DOMParser().parseFromString(
+        state.original.get(state.stagedMedia.key)||"","text/html").body.firstElementChild;
+      const alt=image?.getAttribute("alt")?.trim()||"";
+      if(!alt||alt===original?.getAttribute("alt")?.trim())
+        throw new Error("Describe the newly uploaded image in the Alt text field before exporting or proposing changes.");
+    }
     const references=[...next.matchAll(/\bsrc\s*=\s*["\'](assets\/editor-[a-z0-9-]+\.(?:png|jpg|webp))["\']/gi)]
       .map(match=>match[1]).filter(path=>!state.source.includes(path));
     for(const path of references){
