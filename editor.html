@@ -112,6 +112,17 @@
             <textarea id="selectionText" rows="6" spellcheck="true"></textarea>
             <p id="richTextNote" class="small-note">Type in the preview to keep existing links and emphasis intact.</p>
           </div>
+          <div id="textAppearanceFields" class="inspector-group" hidden>
+            <label for="textAlignment">Text alignment</label>
+            <select id="textAlignment">
+              <option value="">Use site default</option>
+              <option value="left">Left</option>
+              <option value="center">Center</option>
+              <option value="right">Right</option>
+              <option value="justify">Justified</option>
+            </select>
+            <p class="small-note">Only the selected block changes. You can revert it without affecting the rest of the page.</p>
+          </div>
           <div id="linkFields" class="inspector-group" hidden>
             <label for="linkHref">Link destination</label>
             <input id="linkHref" type="text" spellcheck="false" autocomplete="off">
@@ -126,6 +137,14 @@
             <input id="imageSrc" type="text" spellcheck="false" autocomplete="off">
             <label for="imageAlt">Image description (alt text)</label>
             <textarea id="imageAlt" rows="3"></textarea>
+            <label for="imageMaxWidth">Image maximum width</label>
+            <select id="imageMaxWidth">
+              <option value="">Use site default</option>
+              <option value="100%">Full container width</option>
+              <option value="75%">Three-quarter width</option>
+              <option value="50%">Half width</option>
+              <option value="25%">Quarter width</option>
+            </select>
             <p class="small-note">Use an existing uploaded asset or a trusted image URL. Uploading new files will be added in a later editor release.</p>
           </div>
           <div class="inspector-group">
