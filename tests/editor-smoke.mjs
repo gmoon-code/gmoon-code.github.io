@@ -50,13 +50,8 @@ try {
   assert.equal(await page.frameLocator("#pageFrame").locator(".home-kicker").first().textContent(),
     "Editable site heading for a smoke test","Local edits should persist across reloads");
 
+  page.once("dialog",dialog=>dialog.accept());
   await page.locator("#resetBtn").click();
-  await page.once("dialog",dialog=>dialog.accept());
-  // Reset click is followed by a confirmation dialog; submit a second time if needed.
-  if (await page.locator("#resetBtn").isEnabled()) {
-    page.once("dialog",dialog=>dialog.accept());
-    await page.locator("#resetBtn").click();
-  }
   await page.frameLocator("#pageFrame").locator(".home-kicker").first().waitFor();
   assert.notEqual((await page.frameLocator("#pageFrame").locator(".home-kicker").first().textContent()).trim(),
     "Editable site heading for a smoke test","Reset must restore original content");
