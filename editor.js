@@ -33,6 +33,7 @@
     $("editorSaveStatus").textContent=message;
     $("changeCount").textContent=state.dirty.size+" locally edited element"+(state.dirty.size===1?"":"s");
     $("exportBtn").disabled=!state.dirty.size;
+    $("reviewBtn").disabled=!state.dirty.size;
     $("resetBtn").disabled=!state.dirty.size;
     $("undoBtn").disabled=!state.history.length;
   }
@@ -448,6 +449,58 @@
     return next;
   }
 
+  function reviewChanges() {
+    const list=$("reviewChangeList");
+    list.replaceChildren();
+    const ids=[...state.dirty].sort((a,b)=>Number(a.slice(1))-Number(b.slice(1)));
+    $("reviewSummary").textContent=ids.length+" edited element"+(ids.length===1?"":"s")+
+      " on "+$("pagePicker").selectedOptions[0]?.textContent+".";
+    const previewText=(node)=>{
+      if (!node) return "";
+      if (node.tagName==="IMG") return "Image: "+(node.getAttribute("src")||"")+
+        "\nDescription: "+(node.getAttribute("alt")||"");
+      if (node.tagName==="A") return "Link: "+(node.getAttribute("href")||"")+
+        "\nText: "+node.textContent.trim();
+      return node.textContent.trim();
+    };
+    for (const key of ids) {
+      const beforeMarkup=state.original.get(key)||"";
+      const previous=new DOMParser().parseFromString(beforeMarkup,"text/html").body.firstElementChild;
+      const current=getWorking(key);
+      if (!current) continue;
+      const item=document.createElement("section");
+      item.className="review-change";
+      const heading=document.createElement("h3");
+      heading.textContent=current.tagName.toLowerCase()+" · "+key;
+      item.appendChild(heading);
+      for (const [label,value] of [
+        ["Before",previewText(previous)],
+        ["After",previewText(current)]
+      ]) {
+        const block=document.createElement("div");
+        block.className="review-change-part";
+        const title=document.createElement("strong");
+        title.textContent=label;
+        const text=document.createElement("p");
+        text.textContent=value.length>750?value.slice(0,750)+"…":value;
+        block.append(title,text);
+        item.appendChild(block);
+      }
+      list.appendChild(item);
+    }
+    const status=$("reviewExportStatus");
+    try {
+      buildExport();
+      status.textContent="Source check passed. Changes can be exported for review.";
+      status.dataset.tone="ok";
+    } catch(error) {
+      status.textContent="Export requires attention. "+error.message;
+      status.dataset.tone="warning";
+    }
+    const modal=$("reviewDialog");
+    if (typeof modal.showModal==="function") modal.showModal();
+  }
+
   function exportHtml() {
     try {
       const result=buildExport();
@@ -562,6 +615,7 @@
     $("resetBtn").addEventListener("click",resetPage);
     $("revertElementBtn").addEventListener("click",revertSelected);
     $("exportBtn").addEventListener("click",exportHtml);
+    $("reviewBtn").addEventListener("click",reviewChanges);
     window.addEventListener("beforeunload",()=>{if (state.page) saveDraft();});
     loadPage($("pagePicker").value);
   }
