@@ -142,6 +142,14 @@
             <label for="imageSrc">Image path or URL</label>
             <input id="imageSrc" type="text" spellcheck="false" autocomplete="off">
             <button type="button" id="chooseExistingImage" class="secondary">Choose from existing images</button>
+            <fieldset class="editor-media-upload">
+              <legend>Upload a new image</legend>
+              <label for="newImageFile">Select PNG, JPEG, or WebP (up to 1.5 MB)</label>
+              <input type="file" id="newImageFile" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp">
+              <button type="button" id="stageImageBtn" class="secondary" disabled>Stage image in preview</button>
+              <button type="button" id="downloadStagedImage" class="secondary" disabled>Download staged image</button>
+              <p id="stagedImageStatus" class="small-note" role="status" aria-live="polite">New images are local until included in a review PR. If you export HTML manually, download the image too.</p>
+            </fieldset>
             <label for="imageAlt">Image description (alt text)</label>
             <textarea id="imageAlt" rows="3"></textarea>
             <label for="imageMaxWidth">Image maximum width</label>
@@ -152,7 +160,7 @@
               <option value="50%">Half width</option>
               <option value="25%">Quarter width</option>
             </select>
-            <p class="small-note">Use an existing uploaded asset or a trusted image URL. Uploading new files will be added in a later editor release.</p>
+            <p class="small-note">Existing images and staged uploads can be previewed. New files reach the website only after the private publisher is configured and the GitHub review PR is approved.</p>
           </div>
           <div class="inspector-group">
             <button type="button" id="revertElementBtn" class="secondary" disabled>Revert this element</button>
