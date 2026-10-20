@@ -456,8 +456,13 @@
     const main=state.doc.querySelector("main");
     for(const group of state.sectionGroups){
       if(group.length<2)continue;
-      const last=main.querySelector('[data-editor-section="'+group.at(-1)+'"]');
-      const boundary=last.nextElementSibling;
+      // Find the current group's actual final sibling. Its original final ID
+      // may have moved in an earlier edit, so that ID is not a safe boundary.
+      const currentNodes=[...main.children].filter(node=>
+        group.includes(node.getAttribute("data-editor-section")));
+      if(currentNodes.length!==group.length)
+        throw new Error("A section group changed unexpectedly.");
+      const boundary=currentNodes.at(-1).nextElementSibling;
       const wanted=ids.filter(id=>group.includes(id));
       for(const id of wanted) {
         const node=main.querySelector('[data-editor-section="'+id+'"]');
@@ -482,6 +487,32 @@
     if(!validSectionOrder(state.sectionOrder)){
       undo();notice("That section move would cross a protected page boundary.");return;
     }
+    renderPreview();
+    scheduleDraft();
+    updateStatus("Section order changed · Not published");
+  }
+
+  // Dragging uses the same validated, reversible section-order model as
+  // the arrow controls. The arrows remain the keyboard/touch alternative.
+  let sectionDragId=null;
+  function clearSectionDropMarks(){
+    for(const row of document.querySelectorAll(
+      "#sectionList .section-dragging,#sectionList .drop-before,#sectionList .drop-after"))
+      row.classList.remove("section-dragging","drop-before","drop-after");
+  }
+  function reorderSection(fromId,targetId,after){
+    if(fromId===targetId)return;
+    const group=state.sectionGroups.find(g=>g.includes(fromId));
+    if(!group||!group.includes(targetId)||group.length<2)return;
+    const desired=state.sectionOrder.filter(id=>id!==fromId);
+    const targetIndex=desired.indexOf(targetId);
+    if(targetIndex<0)return;
+    desired.splice(targetIndex+(after?1:0),0,fromId);
+    if(!validSectionOrder(desired)||
+       desired.every((id,i)=>id===state.sectionOrder[i]))return;
+    checkpoint();
+    try{applySectionOrder(desired);}
+    catch(error){undo();notice(error.message,"Section move stopped");return;}
     renderPreview();
     scheduleDraft();
     updateStatus("Section order changed · Not published");
@@ -591,11 +622,48 @@
       const title=heading?.textContent.trim()||"Section "+(i+1);
       const row=document.createElement("div");
       row.className="section-order-row";
+      row.dataset.sectionId=id;
+      const group=state.sectionGroups.find(g=>g.includes(id))||[];
+      if(group.length>1){
+        row.draggable=true;
+        row.title="Drag to reorder within this group, or use the arrow buttons.";
+        row.addEventListener("dragstart",event=>{
+          sectionDragId=id;
+          if(event.dataTransfer){
+            event.dataTransfer.effectAllowed="move";
+            event.dataTransfer.setData("text/plain",id);
+          }
+          row.classList.add("section-dragging");
+        });
+        row.addEventListener("dragover",event=>{
+          if(!sectionDragId||sectionDragId===id||
+             !group.includes(sectionDragId))return;
+          event.preventDefault();
+          if(event.dataTransfer)event.dataTransfer.dropEffect="move";
+          clearSectionDropMarks();
+          const halfway=row.getBoundingClientRect().top+row.offsetHeight/2;
+          row.classList.add(event.clientY<halfway?"drop-before":"drop-after");
+        });
+        row.addEventListener("drop",event=>{
+          if(!sectionDragId||sectionDragId===id||
+             !group.includes(sectionDragId))return;
+          event.preventDefault();
+          const source=sectionDragId;
+          const halfway=row.getBoundingClientRect().top+row.offsetHeight/2;
+          const after=event.clientY>=halfway;
+          sectionDragId=null;
+          clearSectionDropMarks();
+          reorderSection(source,id,after);
+        });
+        row.addEventListener("dragend",()=>{
+          sectionDragId=null;
+          clearSectionDropMarks();
+        });
+      }
       const label=document.createElement("span");
       label.textContent=title.slice(0,75);
       label.title=title;
       const buttons=document.createElement("div");buttons.className="section-order-actions";
-      const group=state.sectionGroups.find(g=>g.includes(id))||[];
       for(const direction of [-1,1]){
         const neighbour=direction<0?node.previousElementSibling:node.nextElementSibling;
         const enabled=neighbour?.tagName==="SECTION"&&
@@ -616,7 +684,7 @@
     $("sectionNotice").textContent=!sections.length?
       "No movable sections on this page.":toc?
       "Section moves are locked while this page has a contents menu, to prevent mismatched navigation.":
-      "Move neighbouring sections. Sections separated by other page elements cannot cross them.";
+      "Drag to reorder, or use the arrow buttons. Sections separated by fixed page elements cannot cross them.";
   }
   function rawMainSections(source) {
     const opener=/<main\b[^>]*>/i.exec(source);
