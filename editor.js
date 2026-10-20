@@ -199,6 +199,8 @@
       try {
         state.frameDoc=frame.contentDocument;
         const d=state.frameDoc;
+        d.documentElement.setAttribute("data-moon-theme",$("previewTheme").value);
+        d.documentElement.style.colorScheme=$("previewTheme").value;
         d.addEventListener("click",onPreviewClick,true);
         d.addEventListener("input",onPreviewInput,true);
         d.addEventListener("focusin",onPreviewFocus,true);
@@ -543,9 +545,11 @@
       $("previewContainer").className="preview-frame-container "+event.target.value;
     });
     $("previewTheme").addEventListener("change",event=>{
-      if (state.frameDoc) {
-        state.frameDoc.documentElement.setAttribute("data-moon-theme",event.target.value);
-        state.frameDoc.documentElement.style.colorScheme=event.target.value;
+      const documentInFrame=$("pageFrame").contentDocument;
+      if (documentInFrame) {
+        state.frameDoc=documentInFrame;
+        documentInFrame.documentElement.setAttribute("data-moon-theme",event.target.value);
+        documentInFrame.documentElement.style.colorScheme=event.target.value;
       }
     });
     $("selectionText").addEventListener("focus",checkpoint);
