@@ -44,6 +44,8 @@ try {
   await kicker.click();
   assert.equal(await page.locator("#selectionTag").textContent(),"p");
   await page.locator("#selectionText").fill("Editable site heading for a smoke test");
+  await page.locator("#textAlignment").selectOption("center");
+  assert.equal(await kicker.evaluate(el=>el.style.textAlign),"center");
   assert.equal((await kicker.textContent()).trim(),"Editable site heading for a smoke test");
   assert.equal(await page.locator("#exportBtn").isEnabled(),true);
   await page.locator("#reviewBtn").click();
@@ -53,6 +55,8 @@ try {
   await page.locator("#reviewDialog form button").click();
   const html=await downloadedHtml();
   assert(html.includes("Editable site heading for a smoke test"),"Changed text must be exported");
+  assert(/style="[^"]*text-align:\s*center/.test(html),
+    "Selected text alignment must survive source export");
   assert(!html.includes("javascript:void"),"No scripts should be introduced");
 
   await page.reload({waitUntil:"domcontentloaded"});
@@ -96,9 +100,13 @@ try {
   assert.equal(await page.locator("#imageFields").isVisible(),true);
   await page.locator("#imageAlt").fill("Editor visual test image description");
   await page.locator("#imageAlt").press("Tab");
+  await page.locator("#imageMaxWidth").selectOption("50%");
+  assert.equal(await image.evaluate(el=>el.style.maxWidth),"50%");
   const imageHtml=await downloadedHtml();
   assert(imageHtml.includes('alt="Editor visual test image description"'),
     "Image description must survive source export");
+  assert(/style="[^"]*max-width:\s*50%/.test(imageHtml),
+    "Selected image width must survive source export");
 
   page.once("dialog",dialog=>dialog.accept());
   await page.locator("#resetBtn").click();
