@@ -125,7 +125,14 @@ try {
   await page.locator("#sectionList .section-order-row").nth(1)
     .locator("button[aria-label^='Move up']").click();
   assert.match(await first.getAttribute("class"),/home-green/);
+  // A structural move must safely compose with an ordinary text edit.
+  const movedParagraph=page.frameLocator("#pageFrame")
+    .locator("main > section.home-green p").first();
+  await movedParagraph.click();
+  await page.locator("#selectionText").fill("Combined structural and text edit test");
   const movedHtml=await downloadedHtml();
+  assert(movedHtml.includes("Combined structural and text edit test"),
+    "Reordering must retain edited text inside the moved section");
   assert(movedHtml.indexOf('home-green home-pathways')<
     movedHtml.indexOf('home-yellow home-intro'),
     "Exported sections must follow the new visual order");
@@ -160,6 +167,10 @@ try {
     },file,{timeout:12000});
     assert(await page.locator("#outline button").count()>0,
       "Expected editable outline in "+file);
+    if(file==="teaching.html"||file==="research.html"){
+      assert.equal(await page.locator("#sectionList .section-order-actions button:enabled").count(),0,
+        "In-page section moves must be disabled when contents navigation would become stale");
+    }
   }
   checkNoPageErrors("all 17 portfolio pages");
   console.log("PASS: text, drafts, reset, link/image export, 17 pages, dark/mobile previews");
