@@ -10,8 +10,9 @@ Features currently implemented
 - select headings, paragraphs, list items, captions, links, images, and table cells
 - edit text directly in a script-disabled page preview
 - edit simple text in the inspector
-- edit image paths and alt text
+- edit image paths, alt text, and constrained image width settings
 - edit link destinations and new-tab behaviour
+- adjust text alignment on individual content elements
 - switch between desktop, tablet, and mobile widths
 - preview light and dark themes
 - save local drafts (browser storage, not GitHub)
