@@ -47,6 +47,8 @@ $('openPublisher').onclick=async()=>{
  }
  if(changed.length){
   try{
+   // Never leave a prior transfer staged if the new attempt is cancelled or blocked.
+   sessionStorage.removeItem('moon-fluid-text-handoff-v1');
    const {changes}=await prepareContentChanges();
    if(!confirm('Transfer '+changes.length+' verified text edits to the existing editor? Review them again there before creating a GitHub proposal.'))return;
    sessionStorage.setItem('moon-fluid-text-handoff-v1',JSON.stringify({version:1,page:sourcePage,changes}));
