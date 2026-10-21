@@ -517,3 +517,18 @@ test('standalone layout retains source heading levels', async ({ page }) => {
   expect(html).toMatch(/<h3 class="block heading"/);
   expect(html).toMatch(/<p class="block text"/);
 });
+
+test('website preview audits links, lists, tables and block overlap counts', async ({ page }) => {
+  await page.route('**/about.html', route => route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<html><head></head><body><main><section><p>Paragraph</p><a href="research.html">Research link</a><ul><li>One item</li></ul><table><tr><td>Value</td></tr></table></section></main></body></html>'
+  }));
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  await page.locator('#viewSitePreview').click();
+  await expect(page.locator('#sitePreviewAudit')).toContainText('1 links, 1 list items, 1 tables');
+  await expect(page.locator('#sitePreviewAudit')).toContainText('Possible block overlaps:');
+  const html=await page.locator('#sitePreviewFrame').getAttribute('srcdoc');
+  expect(html).toContain('Text-only imports do not preserve their formatting or interactions');
+});
