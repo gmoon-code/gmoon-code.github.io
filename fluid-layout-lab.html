@@ -156,7 +156,32 @@ async function prepareStyleChanges(){
  return changes;
 }
 
-function reviewPatch(){const panel=$('reviewPanel'),entries=$('reviewEntries');entries.replaceChildren();const changed=changedSourceBlocks();if(!changed.length){$('status').textContent='No changed imported text blocks to review.';panel.hidden=true;return}for(const b of changed){const item=document.createElement('article');item.style.cssText='border-top:1px solid #ddd;padding:10px 0;overflow-wrap:anywhere';const title=document.createElement('strong');title.textContent=b.source.selector;const before=document.createElement('p');before.textContent='Before: '+b.source.originalText;const after=document.createElement('p');after.textContent='After: '+b.text;item.append(title,before,after);entries.append(item)}panel.hidden=false;$('status').textContent='Showing '+changed.length+' proposed text changes. Export checks current source for conflicts.'}
+function reviewPatch(){
+ const panel=$('reviewPanel'),entries=$('reviewEntries');
+ entries.replaceChildren();
+ const texts=changedSourceBlocks(),styles=changedStyleBlocks();
+ if(!texts.length&&!styles.length){
+  $('status').textContent='No imported text or style changes to review.';
+  panel.hidden=true;return;
+ }
+ const add=(selector,heading,details)=>{
+  const item=document.createElement('article');
+  item.style.cssText='border-top:1px solid #ddd;padding:10px 0;overflow-wrap:anywhere';
+  const title=document.createElement('strong');
+  title.textContent=heading+' · '+selector;
+  item.append(title);
+  for(const line of details){const p=document.createElement('p');p.textContent=line;item.append(p)}
+  entries.append(item);
+ };
+ for(const b of texts)add(b.source.selector,'Text',[
+  'Before: '+b.source.originalText,'After: '+b.text
+ ]);
+ for(const b of styles)add(b.source.selector,'Style',[
+  ...b.styleEdits.map(k=>k+': '+(k==='fontSize'?b[k]+'px':b[k]))
+ ]);
+ panel.hidden=false;
+ $('status').textContent='Reviewing '+texts.length+' text edits and '+styles.length+' visual style edits. Source conflicts are checked before transfer.';
+}
 $('reviewPatch').onclick=reviewPatch;
 async function prepareContentChanges(){
  if(sourcePage!==$('sourcePage').value)throw Error('Selected page differs from imported content. Select the imported page or re-import before exporting.');
