@@ -1082,3 +1082,25 @@ test('capture desktop and mobile screenshots of builder and full-site preview', 
   await expect(page.frameLocator('#sitePreviewFrame').locator('main').first()).toBeVisible();
   await page.locator('#sitePreviewDialog').screenshot({path:'test-results/layout-previews/website-freeform-mobile.png'});
 });
+
+test('in-canvas edits autosave locally and survive reload without pressing Save now', async ({ page }) => {
+  await page.locator('#grid .block').first().click();
+  await page.locator('#editCanvasText').click();
+  await page.locator('.inline-editor').fill('Automatically saved heading');
+  await page.locator('.inline-editor').press('ControlOrMeta+Enter');
+  await expect.poll(async()=>page.evaluate(()=>localStorage.getItem('moon-fluid-layout-lab-v1'))).toContain('Automatically saved heading');
+  await page.reload();
+  await expect(page.locator('#grid .block').first()).toContainText('Automatically saved heading');
+  await page.locator('#undo').click();
+  await expect(page.locator('#grid .block').first()).toContainText('Automatically saved heading');
+});
+
+test('flow changes autosave locally across page reloads', async ({ page }) => {
+  await page.locator('#grid .block').nth(1).click();
+  await page.locator('#maxWidthPct').fill('68');
+  await page.locator('#maxWidthPct').dispatchEvent('change');
+  await expect.poll(async()=>page.evaluate(()=>JSON.parse(localStorage.getItem('moon-fluid-layout-lab-v1'))?.blocks?.[1]?.maxWidthPct)).toBe(68);
+  await page.reload();
+  await page.locator('#grid .block').nth(1).click();
+  await expect(page.locator('#maxWidthPct')).toHaveValue('68');
+});
