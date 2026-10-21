@@ -939,3 +939,63 @@ test('saved flow-layout values restore in the inspector', async ({ page }) => {
   await expect(page.locator('#spaceAbove')).toHaveValue('18');
   await expect(page.locator('#spaceBelow')).toHaveValue('12');
 });
+
+test('publishable-edits preview changes the real page in place while preserving links and shell', async ({ page }) => {
+  await page.route('**/about.html', route => route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<!doctype html><html><head><title>About</title><script>window.bad=true</script></head><body><header>Site navigation</header><main><section id="profile"><p>Read <a href="research.html">research</a> here.</p></section></main><footer>Site footer</footer></body></html>'
+  }));
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  await page.locator('#grid .block').first().click();
+  await page.locator('#maxWidthPct').fill('60');
+  await page.locator('#maxWidthPct').dispatchEvent('change');
+  await page.locator('#fontSize').fill('22');
+  await page.locator('#fontSize').dispatchEvent('change');
+  await page.locator('#viewSitePreview').click();
+  await expect(page.locator('#sitePreviewDialog')).toBeVisible();
+  await page.locator('#previewSiteApplied').click();
+  await expect(page.locator('#previewSiteApplied')).toHaveAttribute('aria-pressed','true');
+  const html=await page.locator('#sitePreviewFrame').getAttribute('srcdoc');
+  const state=await page.evaluate(html=>{
+    const doc=new DOMParser().parseFromString(html,'text/html');
+    return {header:doc.querySelector('header')?.textContent,footer:doc.querySelector('footer')?.textContent,
+      link:doc.querySelector('main a')?.getAttribute('href'),
+      maxWidth:doc.querySelector('main section p')?.style.maxWidth,
+      fontSize:doc.querySelector('main section p')?.style.fontSize,
+      iframeCount:doc.querySelectorAll('main iframe').length,
+      scripts:doc.querySelectorAll('script').length};
+  },html);
+  expect(state).toEqual({header:'Site navigation',footer:'Site footer',link:'research.html',
+    maxWidth:'60%',fontSize:'22px',iframeCount:0,scripts:0});
+  await page.locator('#previewSiteOriginal').click();
+  const original=await page.locator('#sitePreviewFrame').getAttribute('srcdoc');
+  expect(original).not.toContain('max-width: 60%');
+  await page.locator('#closeSitePreview').click();
+  const downloadPromise=page.waitForEvent('download');
+  await page.locator('#exportAppliedPreview').click();
+  const download=await downloadPromise;
+  expect(download.suggestedFilename()).toBe('about.applied-review.html');
+  const fs=require('node:fs');
+  const saved=fs.readFileSync(await download.path(),'utf8');
+  expect(saved).toContain('Site footer');
+  expect(saved).toContain('max-width: 60%');
+  expect(saved).toContain('href="research.html"');
+});
+
+test('publishable-edits preview preserves original site markup when content is unchanged', async ({ page }) => {
+  await page.route('**/research.html', route => route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<html><head></head><body><header>Header</header><main><section><h2>Title</h2><blockquote><p>Research note</p></blockquote><ul><li>Item one</li></ul></section></main><footer>Footer</footer></body></html>'
+  }));
+  await page.locator('#sourcePage').selectOption('research.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  await page.locator('#viewSitePreview').click();
+  await page.locator('#previewSiteApplied').click();
+  const html=await page.locator('#sitePreviewFrame').getAttribute('srcdoc');
+  expect(html).toContain('<blockquote>');
+  expect(html).toContain('<li>Item one</li>');
+  expect(html).toContain('Review of 0 publishable text or style edits');
+});
