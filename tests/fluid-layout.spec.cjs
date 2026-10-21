@@ -303,3 +303,21 @@ test('content patch export rejects nested inline markup', async ({ page }) => {
   await page.locator('#exportPatch').click();
   await expect(page.locator('#status')).toContainText('nested HTML');
 });
+
+test('publisher handoff refuses selected page mismatch', async ({ page }) => {
+  await page.route('**/about.html', route => route.fulfill({
+    status: 200, contentType: 'text/html',
+    body: '<main><section><p>Original paragraph</p></section></main>'
+  }));
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  await page.locator('#grid .block').first().click();
+  await page.locator('#text').fill('Changed paragraph');
+  await page.locator('#text').dispatchEvent('change');
+  await page.locator('#sourcePage').selectOption('research.html');
+  await page.locator('#openPublisher').click();
+  await expect(page).toHaveURL(/fluid-layout-lab\.html$/);
+  await expect(page.locator('#status')).toContainText('selected page differs');
+  expect(await page.evaluate(() => sessionStorage.getItem('moon-fluid-text-handoff-v1'))).toBeNull();
+});
