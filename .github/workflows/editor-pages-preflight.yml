@@ -22,18 +22,20 @@ jobs:
       - name: Check out portfolio draft under test
         uses: actions/checkout@v4
 
+      # Pin the exact reviewed cross-repository snapshots. Bump these
+      # commits deliberately whenever one of the other draft PRs changes.
       - name: Check out Research Methods Studio draft
         uses: actions/checkout@v4
         with:
           repository: gmoon-code/research-methods
-          ref: feature/admin-visual-guidance-20261020
+          ref: ac222c2a4f5f20aaa75d66d40ba0076ce29f62b3
           path: .integration/research-methods
 
       - name: Check out Story Method draft
         uses: actions/checkout@v4
         with:
           repository: gmoon-code/memory-palace-u1-8
-          ref: feature/narrative-visual-editor-20261020
+          ref: dda576d1f11d3146c5a335a53115aed4549a44ac
           path: .integration/story-method
 
       - uses: actions/setup-node@v4
