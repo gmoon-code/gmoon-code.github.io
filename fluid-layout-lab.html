@@ -106,7 +106,7 @@ $('openPublisher').onclick=async()=>{
  if(/^[a-z0-9-]+\.html$/.test(selectedPage))url.searchParams.set('page',selectedPage);
  // Discard any abandoned handoff before checking the current selection.
  try{sessionStorage.removeItem('moon-fluid-text-handoff-v1')}catch(error){$('status').textContent='Handoff blocked: Browser storage is unavailable.';return}
- const changed=blocks.filter(b=>b.source&&b.type!=='image'&&b.text!==b.source.originalText);
+ const changed=blocks.filter(b=>b.source&&b.type!=='image'&&(b.text!==b.source.originalText||b.styleEdits?.length));
  if(changed.some(b=>b.source.page!==selectedPage||b.source.page!==sourcePage)){
   $('status').textContent='Handoff blocked: The selected page differs from the source of edited blocks. Re-import the selected page or export your layout draft first.';
   return;
@@ -114,10 +114,11 @@ $('openPublisher').onclick=async()=>{
  if(changed.length){
   const layoutOnly=blocks.some(b=>!b.source)||blocks.some(b=>b.mobile)||blocks.some(b=>b.type==='image');
   try{
-   const {changes}=await prepareContentChanges();
-   const warning=layoutOnly?' Your layout changes, newly added blocks, and images will NOT transfer. Export layout JSON separately if you want to keep a portable copy.':'';
-   if(!confirm('Transfer '+changes.length+' verified text edits to the existing editor?'+warning+' Review them again there before creating a GitHub proposal.'))return;
-   sessionStorage.setItem('moon-fluid-text-handoff-v1',JSON.stringify({version:1,page:sourcePage,changes}));
+   const changes=changedSourceBlocks().length?(await prepareContentChanges()).changes:[];
+   const styleChanges=changedStyleBlocks().length?await prepareStyleChanges():[];
+   const warning=layoutOnly?' Freeform positions, newly added blocks, and images will NOT transfer. Export layout JSON separately if you want to keep a portable copy.':'';
+   if(!confirm('Transfer '+changes.length+' verified text edits and '+styleChanges.length+' visual style edits to the existing editor?'+warning+' Review them again there before creating a GitHub proposal.'))return;
+   sessionStorage.setItem('moon-fluid-text-handoff-v1',JSON.stringify({version:2,page:sourcePage,changes,styleChanges}));
    url.searchParams.set('importFluidText','1');
   }catch(error){$('status').textContent='Handoff blocked: '+error.message;return}
  }
