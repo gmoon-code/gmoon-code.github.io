@@ -736,3 +736,40 @@ test('real About page supports a style-only GitHub-review draft without altering
   expect(html).toContain('A little about me');
   expect(html).toContain('assets/profile-portrait.webp');
 });
+
+test('removing imported blocks cannot silently navigate to a text-only publisher', async ({ page }) => {
+  await page.route('**/about.html', route => route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<main><section><h2>Heading</h2><p>Original paragraph</p></section></main>'
+  }));
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  await page.locator('#grid .block').first().click();
+  await page.locator('#remove').click();
+  await page.locator('#save').click();
+  await page.reload();
+  await page.locator('#openPublisher').click();
+  await expect(page).toHaveURL(/fluid-layout-lab\.html$/);
+  await expect(page.locator('#status')).toContainText('Only structural or freeform layout changes');
+  expect(await page.evaluate(() => sessionStorage.getItem('moon-fluid-text-handoff-v1'))).toBeNull();
+});
+
+test('layout-only modifications are reversible through undo', async ({ page }) => {
+  await page.route('**/about.html', route => route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<main><section><h2>Heading</h2><p>Original paragraph</p></section></main>'
+  }));
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  await page.locator('#grid .block').first().click();
+  await page.locator('#remove').click();
+  await page.locator('#undo').click();
+  await expect(page.locator('#grid .block')).toHaveCount(2);
+  const exported=await page.evaluate(()=>{
+    const el=document.querySelector('#save');el.click();
+    return JSON.parse(localStorage.getItem('moon-fluid-layout-lab-v1'));
+  });
+  expect(exported.structureEdited).toBe(false);
+});
