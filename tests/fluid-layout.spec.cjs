@@ -472,6 +472,11 @@ test('in-context site preview opens with desktop and mobile modes and closes saf
   expect(srcdoc).toContain('Site header');
   expect(srcdoc).toContain('Site footer');
   expect(srcdoc).toContain('Revised paragraph');
+  await page.locator('#previewSiteOriginal').click();
+  await expect(page.locator('#sitePreviewFrame')).toHaveAttribute('srcdoc', /Original paragraph/);
+  await expect(page.locator('#sitePreviewFrame')).not.toHaveAttribute('srcdoc', /Experimental layout review only/);
+  await page.locator('#previewSiteProposal').click();
+  await expect(page.locator('#sitePreviewFrame')).toHaveAttribute('srcdoc', /Revised paragraph/);
   await page.locator('#previewSiteMobile').click();
   await expect(page.locator('#sitePreviewFrame')).toHaveClass(/mobile/);
   await page.locator('#previewSiteDesktop').click();
