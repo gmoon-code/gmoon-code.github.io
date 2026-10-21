@@ -334,10 +334,11 @@ test('handoff confirmation discloses that new layout blocks are excluded', async
   await page.locator('#text').fill('Changed paragraph');
   await page.locator('#text').dispatchEvent('change');
   await page.locator('[data-add="text"]').click();
-  let message='';
-  page.once('dialog', async dialog => { message=dialog.message(); await dialog.dismiss(); });
+  const dialogPromise=page.waitForEvent('dialog');
   await page.locator('#openPublisher').click();
-  expect(message).toContain('will NOT transfer');
-  expect(message).toContain('Export layout JSON separately');
+  const dialog=await dialogPromise;
+  expect(dialog.message()).toContain('will NOT transfer');
+  expect(dialog.message()).toContain('Export layout JSON separately');
+  await dialog.dismiss();
   await expect(page).toHaveURL(/fluid-layout-lab\.html$/);
 });
