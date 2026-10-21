@@ -4,6 +4,8 @@ on:
     paths:
       - 'fluid-layout-lab.html'
       - 'editor.html'
+      - 'editor.js'
+      - 'editor.css'
       - 'tests/fluid-layout.spec.cjs'
       - '.github/workflows/fluid-layout-tests.yml'
   workflow_dispatch:
@@ -24,3 +26,11 @@ jobs:
         run: python3 -m http.server 8765 --bind 127.0.0.1 > /tmp/fluid-layout-http.log 2>&1 &
       - name: Run browser tests
         run: npx playwright test tests/fluid-layout.spec.cjs --browser chromium --reporter=list --workers=1
+      - name: Upload visual review screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fluid-layout-visual-review
+          path: test-results/layout-previews/*.png
+          if-no-files-found: ignore
+          retention-days: 7
