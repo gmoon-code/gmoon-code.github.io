@@ -814,3 +814,19 @@ test('existing local editor drafts are protected from style-only handoffs', asyn
   expect(persisted).toBe(existing);
   await expect(page.locator('#noticeMessage')).toContainText('already has a local draft');
 });
+
+test('changing an imported image cannot be mistaken for a transferable text edit', async ({ page }) => {
+  await page.route('**/about.html', route => route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<main><section><img src="assets/first.webp" alt="Example"></section></main>'
+  }));
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  await page.locator('#grid .block.image').first().click();
+  await page.locator('#text').fill('assets/second.webp');
+  await page.locator('#text').dispatchEvent('change');
+  await page.locator('#openPublisher').click();
+  await expect(page).toHaveURL(/fluid-layout-lab\.html$/);
+  await expect(page.locator('#status')).toContainText('Only structural or freeform layout changes');
+});
