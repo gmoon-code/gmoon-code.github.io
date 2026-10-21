@@ -87,9 +87,6 @@ async function exportPatch(){
 async function exportUpdatedPage(){
  try{
   const {doc,targets,changes,originalHtml}=await prepareContentChanges();
-  // Editing textContent deliberately discards inline markup inside edited elements.
-  // Reject such edits to prevent accidental removal of citations and links.
-  for(const target of targets){if(target.children.length)throw Error('Cannot replace text in an element containing nested HTML. Use the existing editor for rich text.')}
   for(let i=0;i<targets.length;i++)targets[i].textContent=changes[i].after;
   const doctype=doc.doctype?'<!DOCTYPE '+doc.doctype.name+'>\n':'<!doctype html>\n';
   const result=doctype+doc.documentElement.outerHTML;
