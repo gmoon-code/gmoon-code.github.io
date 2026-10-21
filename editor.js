@@ -1202,6 +1202,52 @@
     updateStatus("Element reverted · Not published");
   }
 
+  function consumeFluidTextHandoff(page) {
+    const params=new URLSearchParams(window.location.search);
+    if(params.get("importFluidText")!=="1")return false;
+    params.delete("importFluidText");
+    history.replaceState(null,"",window.location.pathname+(params.size?"?"+params:"")+window.location.hash);
+    let raw;
+    try{raw=sessionStorage.getItem("moon-fluid-text-handoff-v1");sessionStorage.removeItem("moon-fluid-text-handoff-v1");}
+    catch{return false;}
+    if(!raw||raw.length>200000)return false;
+    let payload;
+    try{payload=JSON.parse(raw)}catch{return false;}
+    if(payload.version!==1||payload.page!==page||!Array.isArray(payload.changes)||payload.changes.length>100)return false;
+    const root=state.doc.querySelector("main");
+    if(!root)return false;
+    const prepared=[],used=new Set();
+    for(const change of payload.changes){
+      if(!change||typeof change.selector!=="string"||change.selector.length>500||
+         !/^(h[1-4]|p|blockquote|figcaption)$/.test(change.tag)||
+         typeof change.before!=="string"||typeof change.after!=="string"||
+         change.after.length>4000||used.has(change.selector))return false;
+      used.add(change.selector);
+      let matches;
+      try{matches=[...root.querySelectorAll(change.selector)]}catch{return false;}
+      if(matches.length!==1||matches[0].tagName.toLowerCase()!==change.tag||
+         matches[0].children.length||
+         matches[0].textContent.trim().replace(/\\s+/g," ")!==change.before)return false;
+      const key=matches[0].getAttribute("data-editor-key");
+      if(!key||!state.original.has(key)||prepared.some(p=>p.key===key))return false;
+      prepared.push({key,text:change.after});
+    }
+    if(!prepared.length)return false;
+    if(state.dirty.size||state.staleDraft){
+      notice("The page already has a local draft. Review or export that draft before transferring changes.","Transfer not applied");
+      return false;
+    }
+    if(!confirm("Apply "+prepared.length+" verified text edits to the local editor draft? Nothing will be published."))return false;
+    checkpoint();
+    for(const change of prepared){
+      const node=getWorking(change.key);
+      node.textContent=change.text;
+      updateDirty(change.key);
+    }
+    saveDraft();
+    return true;
+  }
+
   async function loadPage(page) {
     if (!/^[a-z0-9-]+\.html$/.test(page)) return;
     if(state.page&&page!==state.page&&state.stagedMedia&&
@@ -1228,9 +1274,10 @@
       state.staleDraft=false;
       initialIndex();
       restoreDraft();
+      const transferred=consumeFluidTextHandoff(page);
       renderPreview();
       const moved=state.sectionOrder.some((id,i)=>id!==state.originalSections[i]);
-      updateStatus(state.dirty.size||moved?"Draft restored · Not published":state.staleDraft?"Older local draft exists · Not applied":"Ready to edit · Not published");
+      updateStatus(transferred?"Verified text changes transferred · Not published":state.dirty.size||moved?"Draft restored · Not published":state.staleDraft?"Older local draft exists · Not applied":"Ready to edit · Not published");
     } catch(e) {
       notice("Could not load "+page+". "+e.message,"Page load failed");
       if (state.page) $("pagePicker").value=state.page;
