@@ -13,6 +13,14 @@ This is the pre-release checklist for the three separate website editors. The di
 
 The directory is a public static page. The academic and narrative editor interfaces themselves are also public static files, although their work is local to the browser. A `noindex` directive does not create a security boundary. The Research Methods Studio editor must continue to enforce real administrator verification and separate server-side permissions.
 
+## Cross-site integration preflight
+
+The [Cross-site GitHub Pages editor preflight](https://github.com/gmoon-code/gmoon-code.github.io/actions/workflows/editor-pages-preflight.yml) checks out the latest draft branches of all three repositories into **one temporary test server**. It builds the same filtered Memory Palace Pages artifact as the production deployment workflow and serves Research Methods Studio at its planned `/research-methods/` path.
+
+Chromium follows all three links from `/editors.html`. It verifies that the academic editor opens and cannot publish without a configured private publisher, Research Methods Studio stops a signed-out visitor at the existing password page, an isolated simulated teacher session reaches Content Studio, and the Story Method narrative editor loads its released journey JSON. External network requests are blocked during this test, and desktop/mobile directory screenshots are retained as GitHub Actions artifacts.
+
+This workflow uses `contents: read` and contains **no GitHub Pages deployment action**. It never tests a live administrator credential or authorises a production release. When either of the other repositories changes after this workflow has passed, rerun the workflow manually against the current draft branches. Always inspect the three printed checkout commit identifiers to confirm which revisions were tested.
+
 ## Before release approval
 
 1. Confirm all three pull requests remain unmerged during this review.
