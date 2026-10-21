@@ -68,3 +68,23 @@ test('portfolio editor exposes experimental builder', async ({ page }) => {
   await page.goto('http://127.0.0.1:8765/editor.html');
   await expect(page.locator('a[href="fluid-layout-lab.html"]')).toHaveCount(1);
 });
+
+test('page import records original source selectors', async ({ page }) => {
+  await page.route('**/about.html', route => route.fulfill({
+    status: 200,
+    contentType: 'text/html',
+    body: '<main><section id="profile"><h1>About the educator</h1><p>Sample paragraph.</p></section></main>'
+  }));
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  await expect(page.locator('#status')).toContainText('Imported');
+  const downloadPromise = page.waitForEvent('download');
+  await page.locator('#export').click();
+  const fs = require('node:fs');
+  const data = JSON.parse(fs.readFileSync(await (await downloadPromise).path(), 'utf8'));
+  expect(data.blocks[0].source).toEqual({
+    page: 'about.html', selector: '#profile > h1:nth-of-type(1)',
+    tag: 'h1', originalText: 'About the educator'
+  });
+});
