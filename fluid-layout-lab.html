@@ -55,6 +55,22 @@ $('importPage').onclick=async()=>{
   if(!root)throw Error('No main content was found');
   for(const el of root.querySelectorAll('script,style,template,nav,form,iframe,svg,canvas,button,[hidden],[aria-hidden="true"]'))el.remove();
   const imported=[];
+  // Record a stable path to each imported source element so a future
+  // publisher can detect page changes before attempting any replacement.
+  function sourceSelector(el){
+    const parts=[];
+    for(let node=el;node&&node!==root;node=node.parentElement){
+      if(node.id&&/^[A-Za-z][A-Za-z0-9_-]*$/.test(node.id)){
+        parts.unshift('#'+node.id);
+        break;
+      }
+      const tag=node.tagName.toLowerCase();
+      const siblings=[...node.parentElement.children].filter(child=>child.tagName===node.tagName);
+      const index=siblings.indexOf(node)+1;
+      parts.unshift(tag+':nth-of-type('+index+')');
+    }
+    return parts.join(' > ');
+  }
   let row=2,id=1;
   const elements=[...root.querySelectorAll('h1,h2,h3,h4,p,blockquote,figcaption,img')];
   for(const el of elements){
@@ -71,7 +87,7 @@ $('importPage').onclick=async()=>{
    }
    const widthHint=type==='image'?5:el.closest('aside,figure')?6:el.tagName==='H1'?12:10;
    const height=type==='image'?6:type==='heading'?2:Math.max(2,Math.min(8,Math.ceil(value.length/85)));
-   imported.push({id:id++,type,text:value.slice(0,4000),x:1,y:row,w:widthHint,h:height,align:'left',fontSize:type==='heading'?30:18,color:'#191919',background:'#ffffff'});
+   imported.push({id:id++,type,text:value.slice(0,4000),source:{page,selector:sourceSelector(el),tag:el.tagName.toLowerCase(),originalText:type==='image'?null:value.slice(0,4000)},x:1,y:row,w:widthHint,h:height,align:'left',fontSize:type==='heading'?30:18,color:'#191919',background:'#ffffff'});
    row+=height+1;
   }
   if(!imported.length)throw Error('No supported content blocks were found');
