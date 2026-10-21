@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - "editor.html"
+      - "editors.html"
       - "editor.js"
       - "editor.css"
       - "tests/editor-smoke.mjs"
