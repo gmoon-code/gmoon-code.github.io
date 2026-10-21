@@ -110,3 +110,20 @@ test('content changes export verifies source text and blocks conflicts', async (
   await page.locator('#exportPatch').click();
   await expect(page.locator('#status')).toContainText('Content export blocked');
 });
+
+test('review panel displays original and edited content', async ({ page }) => {
+  await page.route('**/about.html', route => route.fulfill({
+    status: 200, contentType: 'text/html',
+    body: '<main><section id="profile"><p>Original paragraph</p></section></main>'
+  }));
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  await page.locator('#grid .block').first().click();
+  await page.locator('#text').fill('Revised paragraph');
+  await page.locator('#text').dispatchEvent('change');
+  await page.locator('#reviewPatch').click();
+  await expect(page.locator('#reviewPanel')).toBeVisible();
+  await expect(page.locator('#reviewEntries')).toContainText('Before: Original paragraph');
+  await expect(page.locator('#reviewEntries')).toContainText('After: Revised paragraph');
+});
