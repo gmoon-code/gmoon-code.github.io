@@ -15,7 +15,7 @@
 <main><aside><h2>Import an existing page</h2><label for="sourcePage">Website page</label><select id="sourcePage"><option value="index.html">Home</option><option value="research.html">Research</option><option value="projects.html">Projects</option><option value="teaching.html">Teaching</option><option value="interests.html">Interests</option><option value="about.html">About</option><option value="cv.html">CV</option><option value="pungmul.html">Pungmul</option></select><button id="importPage" type="button">Import page content</button><p class="hint">Creates an editable layout proposal from the page’s text and images. Original HTML and styles are preserved on the website. Import does not publish or overwrite anything.</p><h2>Add blocks</h2><div class="palette"><button data-add="heading">+ Heading</button><button data-add="text">+ Text</button><button data-add="image">+ Image</button><button data-add="button">+ Button</button></div><p class="hint">Select a block, drag it to move, or drag its bottom-right corner to resize. Use the arrow keys to move the selected block. Shift + arrows resizes it.</p><label for="device">Canvas</label><select id="device"><option value="desktop">Desktop</option><option value="mobile">Mobile</option></select><p id="status" role="status" aria-live="polite"></p><section id="reviewPanel" hidden aria-label="Content change review"><h2>Content changes</h2><div id="reviewEntries"></div><p class="hint">Review only. This does not modify or publish website files.</p></section></aside><section class="workspace" aria-label="Visual canvas"><div id="canvas" class="canvas"><div id="grid" class="grid" aria-label="Editable grid"></div></div></section><aside><h2>Properties</h2><p id="empty">Select a block to edit its properties.</p><div id="properties" hidden><label for="text">Content or image URL</label><textarea id="text" rows="5"></textarea><label for="x">Column (1–12)</label><input id="x" type="number" min="1" max="12"><label for="y">Row</label><input id="y" type="number" min="1" max="100"><label for="w">Width in columns</label><input id="w" type="number" min="1" max="12"><label for="h">Height in rows</label><input id="h" type="number" min="1" max="30"><p id="layoutMode" class="hint">Editing desktop positions</p><button id="resetMobile" type="button" hidden>Reset selected mobile position</button><label for="fontSize">Font size (px)</label><input id="fontSize" type="number" min="12" max="80"><label for="color">Text colour</label><input id="color" type="color"><label for="background">Block background</label><input id="background" type="color"><label for="align">Alignment</label><select id="align"><option value="left">Left</option><option value="center">Centre</option><option value="right">Right</option></select><div class="control-row"><button id="duplicate">Duplicate</button><button id="remove">Delete</button></div></div><p class="hint">This is an isolated prototype. Exported JSON is a layout proposal and is not connected to your live pages or publishing workflow.</p></aside></main>
 <dialog id="sitePreviewDialog" aria-label="In-context website layout preview">
  <div class="review-bar"><div><h2>Website layout review</h2><p>Experimental preview only. The live website remains unchanged.</p></div>
- <div class="actions"><button id="previewSiteDesktop" type="button">Desktop</button><button id="previewSiteMobile" type="button">Mobile</button><button id="closeSitePreview" type="button">Close preview</button></div></div>
+ <div class="actions"><button id="previewSiteOriginal" type="button">Original</button><button id="previewSiteProposal" type="button">Proposal</button><button id="previewSiteDesktop" type="button">Desktop</button><button id="previewSiteMobile" type="button">Mobile</button><button id="closeSitePreview" type="button">Close preview</button></div></div>
  <iframe id="sitePreviewFrame" title="Full website with experimental layout"></iframe>
 </dialog>
 <script>
@@ -148,6 +148,7 @@ async function buildSiteLayoutReviewHtml(){
  const heading=doc.createElement('title');
  heading.textContent='Layout review (not published) | '+(doc.title||sourcePage);
  doc.head.append(heading);
+ const originalHtml='<!doctype html>\n'+doc.documentElement.outerHTML;
  const preview=doc.createElement('iframe');
  preview.title='Experimental page layout preview. Original main content is hidden for this review.';
  preview.setAttribute('sandbox','allow-same-origin');
@@ -158,29 +159,32 @@ async function buildSiteLayoutReviewHtml(){
  notice.textContent='Experimental layout review only. The original main content is preserved on the live site. This downloaded file cannot publish changes.';
  notice.setAttribute('style','font:14px/1.5 system-ui,sans-serif;padding:12px;background:#fff;border:1px solid #888');
  root.prepend(notice);
- return '<!doctype html>\n'+doc.documentElement.outerHTML;
+ return {original:originalHtml,proposed:'<!doctype html>\n'+doc.documentElement.outerHTML};
 }
 async function exportSiteLayoutPreview(){
- const html=await buildSiteLayoutReviewHtml();
- downloadFile(sourcePage.replace(/\.html$/,'.layout-review.html'),html,'text/html');
+ const review=await buildSiteLayoutReviewHtml();
+ downloadFile(sourcePage.replace(/\.html$/,'.layout-review.html'),review.proposed,'text/html');
  $('status').textContent='Downloaded full-site layout review. The live page and publishing draft remain unchanged.';
 }
 $('exportSitePreview').onclick=async()=>{try{await exportSiteLayoutPreview()}catch(error){$('status').textContent='Full-site preview blocked: '+error.message}};
+let sitePreviewVersions=null;
 $('viewSitePreview').onclick=async()=>{
  const button=$('viewSitePreview');button.disabled=true;
  try{
-  const html=await buildSiteLayoutReviewHtml();
-  $('sitePreviewFrame').srcdoc=html;
+  sitePreviewVersions=await buildSiteLayoutReviewHtml();
+  $('sitePreviewFrame').srcdoc=sitePreviewVersions.proposed;
   $('sitePreviewFrame').classList.remove('mobile');
   $('sitePreviewDialog').showModal();
   $('status').textContent='Viewing experimental layout in website shell. Nothing has been published.';
  }catch(error){$('status').textContent='In-context preview blocked: '+error.message}
  finally{button.disabled=false}
 };
+$('previewSiteOriginal').onclick=()=>{if(sitePreviewVersions)$('sitePreviewFrame').srcdoc=sitePreviewVersions.original};
+$('previewSiteProposal').onclick=()=>{if(sitePreviewVersions)$('sitePreviewFrame').srcdoc=sitePreviewVersions.proposed};
 $('previewSiteDesktop').onclick=()=>$('sitePreviewFrame').classList.remove('mobile');
 $('previewSiteMobile').onclick=()=>$('sitePreviewFrame').classList.add('mobile');
 $('closeSitePreview').onclick=()=>$('sitePreviewDialog').close();
-$('sitePreviewDialog').addEventListener('close',()=>{$('sitePreviewFrame').srcdoc='';});
+$('sitePreviewDialog').addEventListener('close',()=>{$('sitePreviewFrame').srcdoc='';sitePreviewVersions=null;});
 $('export').onclick=()=>{const blob=new Blob([JSON.stringify({version:2,sourcePage,blocks},null,2)+'\n'],{type:'application/json'});const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='portfolio-layout-proposal.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)};
 // Import only visible text and safe image paths. Never execute page scripts or inject source markup.
 $('importPage').onclick=async()=>{
