@@ -1112,13 +1112,15 @@ test('keyboard movement of imported block is treated as unpublishable layout cha
   await page.locator('#sourcePage').selectOption('about.html');
   page.once('dialog', dialog => dialog.accept());
   await page.locator('#importPage').click();
+  await expect(page.locator('#grid .block')).toHaveCount(1);
+  await expect.poll(async()=>page.evaluate(()=>JSON.parse(localStorage.getItem('moon-fluid-layout-lab-v1'))?.blocks?.[0]?.source?.page)).toBe('about.html');
   await page.locator('#grid .block').first().focus();
   await page.locator('#grid .block').first().press('ArrowRight');
+  await expect.poll(async()=>page.evaluate(()=>JSON.parse(localStorage.getItem('moon-fluid-layout-lab-v1'))?.blocks?.[0]?.layoutEdited??false)).toBe(true);
   await page.locator('#openPublisher').click();
   await expect(page).toHaveURL(/fluid-layout-lab\.html$/);
   await expect(page.locator('#status')).toContainText('Only structural or freeform layout changes');
   await page.locator('#undo').click();
-  const blocks=await page.evaluate(()=>JSON.parse(localStorage.getItem('moon-fluid-layout-lab-v1'))?.blocks);
   await expect.poll(async()=>page.evaluate(()=>JSON.parse(localStorage.getItem('moon-fluid-layout-lab-v1'))?.blocks?.[0]?.layoutEdited??false)).toBe(false);
 });
 
