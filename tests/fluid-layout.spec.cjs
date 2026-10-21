@@ -454,3 +454,44 @@ test('full-site review refuses changed original text', async ({ page }) => {
   await page.locator('#exportSitePreview').click();
   await expect(page.locator('#status')).toContainText('Original source text changed');
 });
+
+test('in-context site preview opens with desktop and mobile modes and closes safely', async ({ page }) => {
+  await page.route('**/about.html', route => route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<!doctype html><html><head><title>About</title></head><body><header>Site header</header><main><section><p>Original paragraph</p></section></main><footer>Site footer</footer></body></html>'
+  }));
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  await page.locator('#grid .block').first().click();
+  await page.locator('#text').fill('Revised paragraph');
+  await page.locator('#text').dispatchEvent('change');
+  await page.locator('#viewSitePreview').click();
+  await expect(page.locator('#sitePreviewDialog')).toBeVisible();
+  const srcdoc=await page.locator('#sitePreviewFrame').getAttribute('srcdoc');
+  expect(srcdoc).toContain('Site header');
+  expect(srcdoc).toContain('Site footer');
+  expect(srcdoc).toContain('Revised paragraph');
+  await page.locator('#previewSiteMobile').click();
+  await expect(page.locator('#sitePreviewFrame')).toHaveClass(/mobile/);
+  await page.locator('#previewSiteDesktop').click();
+  await expect(page.locator('#sitePreviewFrame')).not.toHaveClass(/mobile/);
+  await page.locator('#closeSitePreview').click();
+  await expect(page.locator('#sitePreviewDialog')).not.toBeVisible();
+  await expect(page.locator('#sitePreviewFrame')).toHaveAttribute('srcdoc','');
+});
+
+test('in-context preview refuses changed source without opening dialog', async ({ page }) => {
+  let modified=false;
+  await page.route('**/about.html', route => route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<html><head></head><body><main><section><p>'+(modified?'Updated elsewhere':'Original paragraph')+'</p></section></main></body></html>'
+  }));
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  modified=true;
+  await page.locator('#viewSitePreview').click();
+  await expect(page.locator('#status')).toContainText('Original source text changed');
+  await expect(page.locator('#sitePreviewDialog')).not.toBeVisible();
+});
