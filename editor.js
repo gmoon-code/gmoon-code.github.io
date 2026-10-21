@@ -1227,7 +1227,7 @@
       try{matches=[...root.querySelectorAll(change.selector)]}catch{return false;}
       if(matches.length!==1||matches[0].tagName.toLowerCase()!==change.tag||
          matches[0].children.length||
-         matches[0].textContent.trim().replace(/\\s+/g," ")!==change.before)return false;
+         matches[0].textContent.trim().replace(/\s+/g," ")!==change.before)return false;
       const key=matches[0].getAttribute("data-editor-key");
       if(!key||!state.original.has(key)||prepared.some(p=>p.key===key))return false;
       prepared.push({key,text:change.after});
