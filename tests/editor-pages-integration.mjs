@@ -1,6 +1,6 @@
 import {chromium} from "playwright";
 import assert from "node:assert/strict";
-import {mkdir} from "node:fs/promises";
+import {mkdir,readFile} from "node:fs/promises";
 
 const origin=process.env.EDITOR_SUITE_TEST_URL||"http://127.0.0.1:8768";
 const expectedPaths=[
@@ -60,6 +60,27 @@ try{
   await page.frameLocator("#pageFrame").locator("main").waitFor();
   assert.equal(await page.locator("#pagePicker").inputValue(),"research.html");
 
+  // Edit and download a real academic HTML draft through the assembled
+  // GitHub Pages origin. Neither the page source nor remote publisher changes.
+  await page.locator("#pagePicker").selectOption("index.html");
+  await page.frameLocator("#pageFrame").locator("main .home-kicker").first().waitFor();
+  const academicText="Pages integration draft · Academic website";
+  const academicSource=await (await page.request.get(origin+"/index.html")).text();
+  const kicker=page.frameLocator("#pageFrame").locator("main .home-kicker").first();
+  await kicker.click();
+  await page.locator("#selectionText").fill(academicText);
+  assert.equal((await kicker.textContent()).trim(),academicText);
+  assert.equal(await page.locator("#publisherPropose").isDisabled(),true);
+  const pendingAcademic=page.waitForEvent("download");
+  await page.locator("#exportBtn").click();
+  const academicFile=await pendingAcademic;
+  assert.equal(academicFile.suggestedFilename(),"index.html");
+  const academicExport=await readFile(await academicFile.path(),"utf8");
+  assert(academicExport.includes(academicText));
+  assert(!academicSource.includes(academicText));
+  assert.equal(await (await page.request.get(origin+"/index.html")).text(),academicSource,
+    "Academic export must never rewrite the served website");
+
   await checkHub(page);
   await page.locator(".editor-card a").nth(1).click();
   await page.waitForURL("**/research-methods/teacher.html#visualGuidanceEditor");
@@ -92,6 +113,31 @@ try{
     .count(),1);
   await signed.screenshot({path:output+"/research-methods-editor.png",fullPage:true});
 
+  // Edit a real research-activity wording field, download a review-only
+  // proposal, and confirm immutable student curriculum field identities.
+  await signed.locator('[data-content-view="activities"]').click();
+  await signed.locator("#activityPreview [data-activity-path='s.0.title']").waitFor();
+  const curriculumBefore=await signed.evaluate(()=>JSON.stringify(window.RMSCurriculum.stages));
+  await signed.locator("#activityPreview [data-activity-path='s.0.title']").click();
+  const rmsText="Pages integration draft · Research activities";
+  await signed.locator("#activityPreview .inline-review-input").fill(rmsText);
+  await signed.locator("#activityPreview .inline-review-save").click();
+  assert.equal(await signed.locator("#activityPreview [data-activity-path='s.0.title']")
+    .textContent(),rmsText);
+  assert.equal(await signed.locator("#activityReviewCount").textContent(),"1 proposed change");
+  const pendingRms=signed.waitForEvent("download");
+  await signed.locator("#activityExport").click();
+  const rmsFile=await pendingRms;
+  assert.equal(rmsFile.suggestedFilename(),"rms-activity-wording-review.json");
+  const rmsProposal=JSON.parse(await readFile(await rmsFile.path(),"utf8"));
+  assert.equal(rmsProposal.schema_version,"rms-activity-wording-proposal-v1");
+  assert.equal(rmsProposal.live_publication,false);
+  assert.equal(rmsProposal.review_required,true);
+  assert(rmsProposal.edits.some(e=>e.path==="s.0.title"&&e.value===rmsText));
+  assert.match(rmsProposal.source_sha256,/^[a-f0-9]{64}$/);
+  assert.equal(await signed.evaluate(()=>JSON.stringify(window.RMSCurriculum.stages)),
+    curriculumBefore,"Review-only edits must not modify the student curriculum");
+
   await checkHub(page);
   await page.locator(".editor-card a").nth(2).click();
   await page.waitForURL("**/memory-palace-u1-8/authoring/visual-editor.html");
@@ -106,6 +152,44 @@ try{
   assert.equal(await page.locator('.other-editors a[href="../../editors.html"]')
     .count(),1);
   await page.screenshot({path:output+"/story-method-editor.png",fullPage:true});
+
+  // Edit a genuine frozen-journey title. JSON export must preserve
+  // checkpoint answers, scene identity and other protected structures.
+  const storySourceUrl=origin+"/memory-palace-u1-8/content/ap-biology/unit-1/journeys/Z1.json";
+  const originalStory=await (await page.request.get(storySourceUrl)).json();
+  const storyText="Pages integration draft · First memory journey";
+  await page.locator('#scenePreview [data-edit-key="0:title"]').click();
+  await page.locator("#editText").fill(storyText);
+  assert.equal((await page.locator('#scenePreview [data-edit-key="0:title"]')
+    .textContent()).trim(),storyText);
+  const pendingStory=page.waitForEvent("download");
+  await page.locator("#export").click();
+  const storyFile=await pendingStory;
+  assert.equal(storyFile.suggestedFilename(),"Z1.json");
+  const storyExport=JSON.parse(await readFile(await storyFile.path(),"utf8"));
+  assert.equal(storyExport.scenes[0].title,storyText);
+  assert.equal(storyExport.scenes.length,originalStory.scenes.length);
+  assert.deepEqual(storyExport.scenes[0].checkpoint,originalStory.scenes[0].checkpoint);
+  assert.deepEqual(storyExport.scenes[0].object_ids,originalStory.scenes[0].object_ids);
+  assert.equal(storyExport.scenes[0].scene_id,originalStory.scenes[0].scene_id);
+  assert.deepEqual(await (await page.request.get(storySourceUrl)).json(),originalStory,
+    "Narrative export must not rewrite released curriculum JSON");
+
+  // Follow the hub and return, observing whether browser-local drafts
+  // remain specific to their editor and site.
+  await checkHub(page);
+  await page.locator(".editor-card a").nth(0).click();
+  await page.frameLocator("#pageFrame").locator("main .home-kicker").first().waitFor();
+  assert.equal((await page.frameLocator("#pageFrame").locator("main .home-kicker")
+    .first().textContent()).trim(),academicText,
+    "Academic browser-local draft should survive visiting a different editor");
+  await checkHub(page);
+  await page.locator(".editor-card a").nth(2).click();
+  await page.waitForURL("**/memory-palace-u1-8/authoring/visual-editor.html");
+  await page.locator('#scenePreview [data-edit-key="0:title"]').waitFor();
+  assert.equal((await page.locator('#scenePreview [data-edit-key="0:title"]')
+    .textContent()).trim(),storyText,
+    "Story Method drafts should remain local after visiting the hub");
 
   await checkHub(page);
   await page.setViewportSize({width:390,height:844});
@@ -126,6 +210,9 @@ try{
   console.log("PASS: signed simulated teacher can reach guarded Content Studio");
   console.log("PASS: Story Method loads original journey JSON on the built Pages path");
   console.log("PASS: editor directory is usable on desktop and mobile");
+  console.log("PASS: academic HTML export is local, safe, and survives cross-site navigation");
+  console.log("PASS: Research Methods review-only JSON export preserves student curriculum");
+  console.log("PASS: Story Method journey JSON export preserves frozen scientific structures");
 }finally{
   await browser.close();
 }
