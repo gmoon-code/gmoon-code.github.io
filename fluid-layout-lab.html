@@ -48,12 +48,11 @@ $('openPublisher').onclick=async()=>{
   return;
  }
  if(changed.length){
-  if(blocks.some(b=>!b.source)){
-   $('status').textContent='Handoff transfers text only. Your newly added layout blocks will stay in this browser draft; export the layout JSON to preserve them separately.';
-  }
+  const layoutOnly=blocks.some(b=>!b.source)||blocks.some(b=>b.mobile)||blocks.some(b=>b.type==='image');
   try{
    const {changes}=await prepareContentChanges();
-   if(!confirm('Transfer '+changes.length+' verified text edits to the existing editor? Review them again there before creating a GitHub proposal.'))return;
+   const warning=layoutOnly?' Your layout changes, newly added blocks, and images will NOT transfer. Export layout JSON separately if you want to keep a portable copy.':'';
+   if(!confirm('Transfer '+changes.length+' verified text edits to the existing editor?'+warning+' Review them again there before creating a GitHub proposal.'))return;
    sessionStorage.setItem('moon-fluid-text-handoff-v1',JSON.stringify({version:1,page:sourcePage,changes}));
    url.searchParams.set('importFluidText','1');
   }catch(error){$('status').textContent='Handoff blocked: '+error.message;return}
