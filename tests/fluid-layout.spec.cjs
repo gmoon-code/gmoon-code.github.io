@@ -408,3 +408,49 @@ test('standalone preview exports semantic headings and paragraphs', async ({ pag
   expect(html).toMatch(/<p class="block text"/);
   expect(html).toContain('<main class="page">');
 });
+
+test('full-site layout review preserves header footer and encloses the proposed layout', async ({ page }) => {
+  await page.route('**/about.html', route => route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<!doctype html><html><head><title>About original</title><script>window.wrong=true</script></head><body><header>Original site header</header><main><section id="profile"><p>Original paragraph</p></section></main><footer>Original site footer</footer></body></html>'
+  }));
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  await page.locator('#grid .block').first().click();
+  await page.locator('#text').fill('Revised paragraph');
+  await page.locator('#text').dispatchEvent('change');
+  const downloadPromise=page.waitForEvent('download');
+  await page.locator('#exportSitePreview').click();
+  const downloaded=await downloadPromise;
+  expect(downloaded.suggestedFilename()).toBe('about.layout-review.html');
+  const fs=require('node:fs');
+  const html=fs.readFileSync(await downloaded.path(),'utf8');
+  expect(html).toContain('Original site header');
+  expect(html).toContain('Original site footer');
+  expect(html).toContain('Experimental layout review only');
+  expect(html).toContain('Revised paragraph');
+  expect(html).toContain('iframe');
+  expect(html).not.toContain('window.wrong=true');
+  const inspected=await page.evaluate(html=>{
+    const doc=new DOMParser().parseFromString(html,'text/html');
+    return {original:doc.querySelector('main section'),embedded:doc.querySelector('main iframe')?.getAttribute('srcdoc'),footer:doc.querySelector('footer')?.textContent};
+  },html);
+  expect(inspected.original).toBeNull();
+  expect(inspected.embedded).toContain('Revised paragraph');
+  expect(inspected.footer).toBe('Original site footer');
+});
+
+test('full-site review refuses changed original text', async ({ page }) => {
+  let modified=false;
+  await page.route('**/about.html', route => route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<html><head></head><body><main><section><p>'+(modified?'Updated elsewhere':'Original paragraph')+'</p></section></main></body></html>'
+  }));
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  modified=true;
+  await page.locator('#exportSitePreview').click();
+  await expect(page.locator('#status')).toContainText('Original source text changed');
+});
