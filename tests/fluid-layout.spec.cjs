@@ -1104,3 +1104,37 @@ test('flow changes autosave locally across page reloads', async ({ page }) => {
   await page.locator('#grid .block').nth(1).click();
   await expect(page.locator('#maxWidthPct')).toHaveValue('68');
 });
+
+test('keyboard movement of imported block is treated as unpublishable layout change', async ({ page }) => {
+  await page.route('**/about.html', route => route.fulfill({
+    status:200,contentType:'text/html',body:'<main><section><p>Original paragraph</p></section></main>'
+  }));
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  await page.locator('#grid .block').first().focus();
+  await page.locator('#grid .block').first().press('ArrowRight');
+  await page.locator('#openPublisher').click();
+  await expect(page).toHaveURL(/fluid-layout-lab\.html$/);
+  await expect(page.locator('#status')).toContainText('Only structural or freeform layout changes');
+  await page.locator('#undo').click();
+  const blocks=await page.evaluate(()=>JSON.parse(localStorage.getItem('moon-fluid-layout-lab-v1'))?.blocks);
+  await expect.poll(async()=>page.evaluate(()=>JSON.parse(localStorage.getItem('moon-fluid-layout-lab-v1'))?.blocks?.[0]?.layoutEdited??false)).toBe(false);
+});
+
+test('dragging imported text is tracked as unpublishable canvas layout', async ({ page }) => {
+  await page.route('**/about.html', route => route.fulfill({
+    status:200,contentType:'text/html',body:'<main><section><p>Original paragraph</p></section></main>'
+  }));
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  const area=await page.locator('#grid .block').first().boundingBox();
+  await page.mouse.move(area.x+25,area.y+25);
+  await page.mouse.down();
+  await page.mouse.move(area.x+175,area.y+25,{steps:6});
+  await page.mouse.up();
+  await expect.poll(async()=>page.evaluate(()=>JSON.parse(localStorage.getItem('moon-fluid-layout-lab-v1'))?.blocks?.[0]?.layoutEdited)).toBe(true);
+  await page.locator('#openPublisher').click();
+  await expect(page.locator('#status')).toContainText('Only structural or freeform layout changes');
+});
