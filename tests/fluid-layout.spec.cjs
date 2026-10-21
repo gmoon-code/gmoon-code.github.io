@@ -897,6 +897,7 @@ test('max width and flow spacing transfer to an existing page without restructur
   await expect(page.locator('#reviewChangeList')).toContainText('Maximum width');
   await expect(page.locator('#reviewChangeList')).toContainText('Space above');
   await expect(page.locator('#reviewExportStatus')).toContainText('Source check passed');
+  await page.locator('#reviewDialog form button').click();
   const downloadPromise=page.waitForEvent('download');
   await page.locator('#exportBtn').click();
   const fs=require('node:fs');
