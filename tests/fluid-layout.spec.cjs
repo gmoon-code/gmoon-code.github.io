@@ -381,3 +381,19 @@ test('JSON import rejects mismatched source metadata without replacing canvas', 
   await expect(page.locator('#status')).toContainText('Invalid source reference');
   await expect(page.locator('#grid .block')).toHaveCount(3);
 });
+
+test('content export refuses a changed page selection', async ({ page }) => {
+  await page.route('**/about.html', route => route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<main><section><p>Original paragraph</p></section></main>'
+  }));
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  await page.locator('#grid .block').first().click();
+  await page.locator('#text').fill('Changed paragraph');
+  await page.locator('#text').dispatchEvent('change');
+  await page.locator('#sourcePage').selectOption('research.html');
+  await page.locator('#exportPatch').click();
+  await expect(page.locator('#status')).toContainText('Selected page differs');
+});
