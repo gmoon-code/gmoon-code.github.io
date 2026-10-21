@@ -10,8 +10,58 @@
 #sitePreviewDialog .review-bar p{font-size:12px;color:#555;margin:3px 0}
 #sitePreviewFrame{display:block;width:100%;height:76vh;margin:auto;border:1px solid #999;background:white}
 #sitePreviewFrame.mobile{width:min(390px,100%);height:72vh}
+
+:root{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#252522;background:#f5f5f2}
+header{padding:15px 20px;gap:14px;background:#fff;align-items:flex-start}
+.editor-ident{min-width:200px;padding-top:5px}
+header h1{font-size:20px;font-weight:700;letter-spacing:-.025em}
+header p{font-size:12px;color:#62625d}
+.actions{flex:1 1 730px;align-items:center;justify-content:flex-end;gap:8px}
+.action-group{display:flex;align-items:center;flex-wrap:wrap;gap:5px;padding-left:9px;border-left:1px solid #e6e6e1}
+.action-group:first-child{border-left:0;padding-left:0}
+button,select,input,textarea{border:1px solid #d2d2cb;border-radius:6px;background:#fff;color:#252522;font-size:13px}
+button{min-height:34px;padding:7px 10px;font-weight:550;transition:background-color .16s,border-color .16s}
+button:hover{background:#f1f1ec;border-color:#a6a69e}
+button:disabled{opacity:.55;cursor:not-allowed}
+.action-primary{background:#252522;color:#fff;border-color:#252522}
+.action-primary:hover{background:#484841;color:#fff}
+.editor-link{font-size:12px;color:#383832;font-weight:650;text-decoration:underline;text-underline-offset:3px;white-space:nowrap}
+.import-label{font-size:12px;color:#585850}
+#jsonImport{max-width:155px}
+main{grid-template-columns:240px minmax(0,1fr) 260px}
+aside{padding:19px;background:#fff;border-color:#e6e6e1}
+aside h2{font-size:16px;letter-spacing:-.01em}
+aside label{font-size:12px;color:#47473f}
+aside .palette button{text-align:left}
+.workspace{padding:28px;background:#f6f6f3}
+.canvas{border:1px solid #dfdfd7;box-shadow:0 12px 32px #00000012;border-radius:3px;overflow:hidden}
+#status{line-height:1.55;min-height:22px;color:#494942}
+.hint{line-height:1.55}
+#sitePreviewDialog{border-radius:10px;box-shadow:0 30px 80px #0005}
+@media(max-width:980px){main{grid-template-columns:1fr}aside,aside:last-child{border:0;border-bottom:1px solid #e6e6e1}.workspace{padding:15px}.actions{justify-content:flex-start}}
 </style>
-<header><div><h1>Fluid layout lab</h1><p>Experimental visual builder · browser-local drafts · no publication</p></div><div class="actions"><a href="editor.html">Existing editor</a><button id="undo">Undo</button><button id="redo">Redo</button><button id="reset">Reset</button><button id="save">Save draft</button><button id="export">Export JSON</button><button id="exportHtml">Export HTML preview</button><button id="exportPatch">Export content changes</button><button id="exportUpdatedPage">Export updated page HTML</button><button id="viewSitePreview" type="button">Preview inside website</button><button id="exportSitePreview" type="button">Export full-site layout preview</button><button id="openPublisher">Open authenticated publisher</button><button id="reviewPatch">Review content changes</button><label for="jsonImport" class="import-label">Import saved JSON</label><input id="jsonImport" type="file" accept=".json,application/json" aria-label="Import saved layout JSON"></div></header>
+<header>
+ <div class="editor-ident"><h1>Fluid layout lab</h1><p>Visual layout drafts · private to this browser · unpublished</p></div>
+ <div class="actions" aria-label="Editor toolbar">
+  <div class="action-group" role="group" aria-label="Edit history">
+   <button id="undo" type="button">Undo</button><button id="redo" type="button">Redo</button><button id="reset" type="button">Reset</button><button id="save" type="button">Save draft</button>
+  </div>
+  <div class="action-group" role="group" aria-label="Review layout">
+   <button id="viewSitePreview" type="button" class="action-primary">Preview inside website</button>
+   <button id="reviewPatch" type="button">Review text edits</button>
+   <button id="exportSitePreview" type="button">Full-site preview file</button>
+  </div>
+  <div class="action-group" role="group" aria-label="Export drafts">
+   <button id="export" type="button">Export JSON</button><button id="exportHtml" type="button">Layout HTML</button>
+   <button id="exportPatch" type="button">Text patch</button><button id="exportUpdatedPage" type="button">Page HTML</button>
+  </div>
+  <div class="action-group" role="group" aria-label="Editor handoff">
+   <button id="openPublisher" type="button">Transfer verified text to editor</button>
+   <a href="editor.html" class="editor-link">Main editor ↗</a>
+  </div>
+  <label for="jsonImport" class="import-label">Import JSON</label><input id="jsonImport" type="file" accept=".json,application/json" aria-label="Import saved layout JSON">
+ </div>
+</header>
 <main><aside><h2>Import an existing page</h2><label for="sourcePage">Website page</label><select id="sourcePage"><option value="index.html">Home</option><option value="research.html">Research</option><option value="projects.html">Projects</option><option value="teaching.html">Teaching</option><option value="interests.html">Interests</option><option value="about.html">About</option><option value="cv.html">CV</option><option value="pungmul.html">Pungmul</option></select><button id="importPage" type="button">Import page content</button><p class="hint">Creates an editable layout proposal from the page’s text and images. Original HTML and styles are preserved on the website. Import does not publish or overwrite anything.</p><h2>Add blocks</h2><div class="palette"><button data-add="heading">+ Heading</button><button data-add="text">+ Text</button><button data-add="image">+ Image</button><button data-add="button">+ Button</button></div><p class="hint">Select a block, drag it to move, or drag its bottom-right corner to resize. Use the arrow keys to move the selected block. Shift + arrows resizes it.</p><label for="device">Canvas</label><select id="device"><option value="desktop">Desktop</option><option value="mobile">Mobile</option></select><p id="status" role="status" aria-live="polite"></p><section id="reviewPanel" hidden aria-label="Content change review"><h2>Content changes</h2><div id="reviewEntries"></div><p class="hint">Review only. This does not modify or publish website files.</p></section></aside><section class="workspace" aria-label="Visual canvas"><div id="canvas" class="canvas"><div id="grid" class="grid" aria-label="Editable grid"></div></div></section><aside><h2>Properties</h2><p id="empty">Select a block to edit its properties.</p><div id="properties" hidden><label for="text">Content or image URL</label><textarea id="text" rows="5"></textarea><label for="x">Column (1–12)</label><input id="x" type="number" min="1" max="12"><label for="y">Row</label><input id="y" type="number" min="1" max="100"><label for="w">Width in columns</label><input id="w" type="number" min="1" max="12"><label for="h">Height in rows</label><input id="h" type="number" min="1" max="30"><p id="layoutMode" class="hint">Editing desktop positions</p><button id="resetMobile" type="button" hidden>Reset selected mobile position</button><label for="fontSize">Font size (px)</label><input id="fontSize" type="number" min="12" max="80"><label for="color">Text colour</label><input id="color" type="color"><label for="background">Block background</label><input id="background" type="color"><label for="align">Alignment</label><select id="align"><option value="left">Left</option><option value="center">Centre</option><option value="right">Right</option></select><div class="control-row"><button id="duplicate">Duplicate</button><button id="remove">Delete</button></div></div><p class="hint">This is an isolated prototype. Exported JSON is a layout proposal and is not connected to your live pages or publishing workflow.</p></aside></main>
 <dialog id="sitePreviewDialog" aria-label="In-context website layout preview">
  <div class="review-bar"><div><h2>Website layout review</h2><p>Experimental preview only. The live website remains unchanged.</p><p id="sitePreviewAudit" role="status"></p></div>
