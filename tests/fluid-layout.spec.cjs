@@ -187,3 +187,10 @@ test('source comparison tolerates equivalent whitespace in original markup', asy
   const patch = JSON.parse(fs.readFileSync(await (await downloadPromise).path(), 'utf8'));
   expect(patch.changes[0].before).toBe('One two three');
 });
+
+test('publisher handoff opens the same selected page', async ({ page }) => {
+  await page.locator('#sourcePage').selectOption('about.html');
+  await page.locator('#openPublisher').click();
+  await expect(page).toHaveURL(/editor\.html\?page=about\.html$/);
+  await expect(page.locator('#pagePicker')).toHaveValue('about.html');
+});
