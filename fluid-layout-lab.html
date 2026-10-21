@@ -124,7 +124,7 @@ async function exportSiteLayoutPreview(){
   let matches;
   try{matches=[...root.querySelectorAll(s.selector)]}catch{throw Error('Invalid source selector in layout block.')}
   if(matches.length!==1||matches[0].tagName.toLowerCase()!==s.tag)throw Error('Source element changed or is missing: '+s.selector);
-  if(s.tag!=='img'&&matches[0].textContent.trim().replace(/\\s+/g,' ')!==s.originalText)throw Error('Original source text changed: '+s.selector);
+  if(s.tag!=='img'&&matches[0].textContent.trim().replace(/\s+/g,' ')!==s.originalText)throw Error('Original source text changed: '+s.selector);
  }
  // This file is a review artifact, never a publishable overwrite of source content.
  doc.querySelectorAll('script,base').forEach(node=>node.remove());
@@ -146,8 +146,8 @@ async function exportSiteLayoutPreview(){
  notice.textContent='Experimental layout review only. The original main content is preserved on the live site. This downloaded file cannot publish changes.';
  notice.setAttribute('style','font:14px/1.5 system-ui,sans-serif;padding:12px;background:#fff;border:1px solid #888');
  root.prepend(notice);
- const result='<!doctype html>\\n'+doc.documentElement.outerHTML;
- downloadFile(sourcePage.replace(/\\.html$/,'.layout-review.html'),result,'text/html');
+ const result='<!doctype html>\n'+doc.documentElement.outerHTML;
+ downloadFile(sourcePage.replace(/\.html$/,'.layout-review.html'),result,'text/html');
  $('status').textContent='Downloaded full-site layout review. The live page and publishing draft remain unchanged.';
 }
 $('exportSitePreview').onclick=async()=>{try{await exportSiteLayoutPreview()}catch(error){$('status').textContent='Full-site preview blocked: '+error.message}};
