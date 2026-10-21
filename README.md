@@ -27,3 +27,16 @@ The site follows the established Moon Notes design family used in the Research M
 - `cv.html`
 
 Research and project overview pages link to dedicated subpages for individual work.
+
+
+## Website editing and review
+
+The portfolio's existing `editor.html` can edit supported page content and export reviewable HTML. Its authenticated GitHub proposal option requires a separately deployed private publisher. Public connection settings in `editor-publisher-config.js` are intentionally blank until that publisher is configured. Never commit OAuth secrets or tokens to the public website.
+
+The experimental `fluid-layout-lab.html` can import portfolio page content into a grid, move and resize blocks for desktop and mobile, and preview proposals inside the surrounding website navigation and footer. It can also compare the original page with the proposed layout and export JSON or standalone HTML review files.
+
+**Verified handoff to the main editor** supports changes to imported plain text and these explicitly adjusted properties: font size, text colour, background colour, and text alignment. The destination editor rechecks the live source, refuses invalid CSS and conflicting browser drafts, and keeps the changes local until review. Existing inline links and emphasis are preserved for style-only edits.
+
+**Not yet publishable through the handoff** are freeform block positions and sizes, newly added or removed blocks, and layout-level image changes. Visual review files are prototypes and must never replace a live page without a separate structural, accessibility, and content review.
+
+The project runs browser tests and publishing-preflight checks for the experimental builder before changes are proposed for merging. The experimental builder is developed on a separate draft pull request; its existence does not imply that it is deployed to GitHub Pages.
