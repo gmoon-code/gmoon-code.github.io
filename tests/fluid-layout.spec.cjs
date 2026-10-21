@@ -275,3 +275,16 @@ test('inline links are preserved by refusing destructive text transfer', async (
   const pending=await page.evaluate(() => sessionStorage.getItem('moon-fluid-text-handoff-v1'));
   expect(pending).toBeNull();
 });
+
+test('oversized source paragraphs are skipped without creating truncated mappings', async ({ page }) => {
+  const longText='A'.repeat(4100);
+  await page.route('**/about.html', route => route.fulfill({
+    status: 200, contentType: 'text/html',
+    body: '<main><section id="profile"><p>'+longText+'</p><p>Short paragraph</p></section></main>'
+  }));
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  await expect(page.locator('#grid .block')).toHaveCount(1);
+  await expect(page.locator('#grid .block').first()).toContainText('Short paragraph');
+});
