@@ -672,3 +672,43 @@ test('publisher confirmation warns when only desktop block positions change', as
   await dialog.dismiss();
   await expect(page).toHaveURL(/fluid-layout-lab\.html$/);
 });
+
+test('style transfer rejects a source change made after validation', async ({ page }) => {
+  let reads=0;
+  await page.route('**/about.html', route => {
+    reads++;
+    return route.fulfill({
+      status:200,contentType:'text/html',
+      body:'<!doctype html><html><body><main><section id="profile"><p>'+
+        (reads>=3?'Edited elsewhere':'Original paragraph')+'</p></section></main></body></html>'
+    });
+  });
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  await page.locator('#grid .block').first().click();
+  await page.locator('#fontSize').fill('26');
+  await page.locator('#fontSize').dispatchEvent('change');
+  page.on('dialog', dialog => dialog.accept());
+  await page.locator('#openPublisher').click();
+  await expect(page).toHaveURL(/editor\.html\?page=about\.html$/);
+  await expect(page.locator('#editorSaveStatus')).not.toContainText('transferred');
+  expect(await page.evaluate(() => localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'))).toBeNull();
+});
+
+test('style transfer rejects forged unsafe CSS values', async ({ page }) => {
+  await page.route('**/about.html', route => route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<!doctype html><html><body><main><section><p>Original paragraph</p></section></main></body></html>'
+  }));
+  const payload={version:2,page:'about.html',changes:[],styleChanges:[{
+    selector:'section:nth-of-type(1) > p:nth-of-type(1)',
+    tag:'p',before:'Original paragraph',
+    styles:{background:'url(javascript:alert(1))'}
+  }]};
+  await page.evaluate(data=>sessionStorage.setItem('moon-fluid-text-handoff-v1',JSON.stringify(data)),payload);
+  await page.goto('http://127.0.0.1:8765/editor.html?page=about.html&importFluidText=1');
+  await expect(page.locator('#editorSaveStatus')).not.toContainText('transferred');
+  expect(await page.evaluate(() => localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'))).toBeNull();
+  expect(await page.evaluate(() => sessionStorage.getItem('moon-fluid-text-handoff-v1'))).toBeNull();
+});
