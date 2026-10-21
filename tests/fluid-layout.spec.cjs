@@ -870,3 +870,71 @@ for (const pageName of ['index.html','research.html','projects.html','teaching.h
     await expect(page.locator('#reviewChangeList')).toContainText('Font size');
   });
 }
+
+test('max width and flow spacing transfer to an existing page without restructuring it', async ({ page }) => {
+  await page.route('**/about.html', route => route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<!doctype html><html><body><header>Keep header</header><main><section id="profile"><p>Read <a href="research.html">research</a> here.</p></section></main><footer>Keep footer</footer></body></html>'
+  }));
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  await page.locator('#grid .block').first().click();
+  await page.locator('#maxWidthPct').fill('75');
+  await page.locator('#maxWidthPct').dispatchEvent('change');
+  await page.locator('#spaceAbove').fill('24');
+  await page.locator('#spaceAbove').dispatchEvent('change');
+  await page.locator('#spaceBelow').fill('16');
+  await page.locator('#spaceBelow').dispatchEvent('change');
+  await page.locator('#reviewPatch').click();
+  await expect(page.locator('#reviewEntries')).toContainText('maxWidthPct: 75%');
+  await expect(page.locator('#reviewEntries')).toContainText('spaceAbove: 24px');
+  page.on('dialog', dialog => dialog.accept());
+  await page.locator('#openPublisher').click();
+  await expect(page).toHaveURL(/editor\.html\?page=about\.html$/);
+  await expect(page.locator('#editorSaveStatus')).toContainText('transferred');
+  await page.locator('#reviewBtn').click();
+  await expect(page.locator('#reviewChangeList')).toContainText('Maximum width');
+  await expect(page.locator('#reviewChangeList')).toContainText('Space above');
+  await expect(page.locator('#reviewExportStatus')).toContainText('Source check passed');
+  const downloadPromise=page.waitForEvent('download');
+  await page.locator('#exportBtn').click();
+  const fs=require('node:fs');
+  const html=fs.readFileSync(await (await downloadPromise).path(),'utf8');
+  expect(html).toContain('max-width: 75%');
+  expect(html).toContain('margin-top: 24px');
+  expect(html).toContain('margin-bottom: 16px');
+  expect(html).toContain('href="research.html"');
+  expect(html).toContain('Keep header');
+  expect(html).toContain('Keep footer');
+});
+
+test('out-of-range flow spacing in a forged handoff cannot create an editor draft', async ({ page }) => {
+  await page.route('**/about.html', route => route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<!doctype html><html><body><main><section><p>Original paragraph</p></section></main></body></html>'
+  }));
+  const payload={version:2,page:'about.html',changes:[],styleChanges:[{
+    selector:'section:nth-of-type(1) > p:nth-of-type(1)',tag:'p',before:'Original paragraph',
+    styles:{spaceAbove:999}
+  }]};
+  await page.evaluate(data=>sessionStorage.setItem('moon-fluid-text-handoff-v1',JSON.stringify(data)),payload);
+  await page.goto('http://127.0.0.1:8765/editor.html?page=about.html&importFluidText=1');
+  await expect(page.locator('#noticeMessage')).toContainText('No edits were applied');
+  expect(await page.evaluate(() => localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'))).toBeNull();
+});
+
+test('saved flow-layout values restore in the inspector', async ({ page }) => {
+  const draft={version:2,sourcePage:'about.html',blocks:[{
+    id:1,type:'text',text:'Original',x:1,y:1,w:8,h:2,
+    maxWidthPct:72,spaceAbove:18,spaceBelow:12,
+    source:{page:'about.html',selector:'p:nth-of-type(1)',tag:'p',originalText:'Original'},
+    styleEdits:['maxWidthPct','spaceAbove','spaceBelow']
+  }]};
+  await page.evaluate(data=>localStorage.setItem('moon-fluid-layout-lab-v1',JSON.stringify(data)),draft);
+  await page.reload();
+  await page.locator('#grid .block').first().click();
+  await expect(page.locator('#maxWidthPct')).toHaveValue('72');
+  await expect(page.locator('#spaceAbove')).toHaveValue('18');
+  await expect(page.locator('#spaceBelow')).toHaveValue('12');
+});
