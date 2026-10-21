@@ -1205,20 +1205,24 @@
   function consumeFluidTextHandoff(page) {
     const params=new URLSearchParams(window.location.search);
     if(params.get("importFluidText")!=="1")return false;
+    function rejectHandoff(){
+      notice("The layout-builder transfer could not be verified against this page. The source may have changed, or the transfer data was invalid. No edits were applied.","Transfer not applied");
+      return false;
+    }
     params.delete("importFluidText");
     history.replaceState(null,"",window.location.pathname+(params.size?"?"+params:"")+window.location.hash);
     let raw;
     try{raw=sessionStorage.getItem("moon-fluid-text-handoff-v1");sessionStorage.removeItem("moon-fluid-text-handoff-v1");}
-    catch{return false;}
-    if(!raw||raw.length>200000)return false;
+    catch{return rejectHandoff();}
+    if(!raw||raw.length>200000)return rejectHandoff();
     let payload;
-    try{payload=JSON.parse(raw)}catch{return false;}
+    try{payload=JSON.parse(raw)}catch{return rejectHandoff();}
     if(![1,2].includes(payload.version)||payload.page!==page||
        !Array.isArray(payload.changes)||payload.changes.length>100||
        (payload.version===2&&(!Array.isArray(payload.styleChanges)||payload.styleChanges.length>100)))
-      return false;
+      return rejectHandoff();
     const root=state.doc.querySelector("main");
-    if(!root)return false;
+    if(!root)return rejectHandoff();
     const preparedText=[],preparedStyles=[],usedText=new Set(),usedStyles=new Set();
     function lookup(change,allowNested){
       if(!change||typeof change.selector!=="string"||change.selector.length>500||
@@ -1235,32 +1239,32 @@
     }
     for(const change of payload.changes){
       if(typeof change?.after!=="string"||change.after.length>4000||
-         usedText.has(change.selector))return false;
+         usedText.has(change.selector))return rejectHandoff();
       usedText.add(change.selector);
       const target=lookup(change,false);
-      if(!target||preparedText.some(p=>p.key===target.key))return false;
+      if(!target||preparedText.some(p=>p.key===target.key))return rejectHandoff();
       preparedText.push({key:target.key,text:change.after});
     }
     if(payload.version===2){
       for(const change of payload.styleChanges){
-        if(usedStyles.has(change?.selector))return false;
+        if(usedStyles.has(change?.selector))return rejectHandoff();
         usedStyles.add(change.selector);
         const target=lookup(change,true);
-        if(!target||preparedStyles.some(p=>p.key===target.key))return false;
+        if(!target||preparedStyles.some(p=>p.key===target.key))return rejectHandoff();
         const styles=change.styles;
-        if(!styles||typeof styles!=="object"||Array.isArray(styles))return false;
+        if(!styles||typeof styles!=="object"||Array.isArray(styles))return rejectHandoff();
         const keys=Object.keys(styles);
-        if(!keys.length||keys.length>4||keys.some(k=>!["align","fontSize","color","background"].includes(k)))return false;
+        if(!keys.length||keys.length>4||keys.some(k=>!["align","fontSize","color","background"].includes(k)))return rejectHandoff();
         for(const k of keys){
           const value=styles[k];
-          if(k==="align"&&!["left","center","right"].includes(value))return false;
-          if(k==="fontSize"&&(!Number.isInteger(value)||value<12||value>80))return false;
-          if((k==="color"||k==="background")&&(typeof value!=="string"||!/^#[0-9a-fA-F]{6}$/.test(value)))return false;
+          if(k==="align"&&!["left","center","right"].includes(value))return rejectHandoff();
+          if(k==="fontSize"&&(!Number.isInteger(value)||value<12||value>80))return rejectHandoff();
+          if((k==="color"||k==="background")&&(typeof value!=="string"||!/^#[0-9a-fA-F]{6}$/.test(value)))return rejectHandoff();
         }
         preparedStyles.push({key:target.key,styles});
       }
     }
-    if(!preparedText.length&&!preparedStyles.length)return false;
+    if(!preparedText.length&&!preparedStyles.length)return rejectHandoff();
     let existingDraft=false;
     try{existingDraft=localStorage.getItem(DRAFT_PREFIX+page)!==null}catch{existingDraft=true}
     if(existingDraft||state.dirty.size||state.staleDraft){
