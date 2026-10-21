@@ -39,7 +39,7 @@ function escapeHtml(value){return String(value).replace(/[&<>"']/g,ch=>({'&':'&a
 function safeImage(value){if(typeof value!=='string'||!value.trim()||value.startsWith('//'))return '';try{const url=new URL(value,location.href);if(url.origin!==location.origin||!/^https?:$/.test(url.protocol))return '';return url.href}catch{return ''}}
 $('openPublisher').onclick=async()=>{
  const url=new URL('editor.html',location.href),selectedPage=$('sourcePage').value;
- if(/^[a-z0-9-]+\\.html$/.test(selectedPage))url.searchParams.set('page',selectedPage);
+ if(/^[a-z0-9-]+\.html$/.test(selectedPage))url.searchParams.set('page',selectedPage);
  if(changedSourceBlocks().length){
   try{
    const {changes}=await prepareContentChanges();
