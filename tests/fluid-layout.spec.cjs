@@ -127,3 +127,27 @@ test('review panel displays original and edited content', async ({ page }) => {
   await expect(page.locator('#reviewEntries')).toContainText('Before: Original paragraph');
   await expect(page.locator('#reviewEntries')).toContainText('After: Revised paragraph');
 });
+
+test('full-page HTML export preserves page shell and rejects nested markup', async ({ page }) => {
+  let rich = false;
+  await page.route('**/about.html', route => route.fulfill({
+    status: 200, contentType: 'text/html',
+    body: '<!doctype html><html><head><title>About</title></head><body><nav>Keep navigation</nav><main><p id="bio">'+(rich?'<a href="/more">Original text</a>':'Original text')+'</p></main><footer>Keep footer</footer></body></html>'
+  }));
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  await page.locator('#grid .block').first().click();
+  await page.locator('#text').fill('Revised text');
+  await page.locator('#text').dispatchEvent('change');
+  const downloadPromise = page.waitForEvent('download');
+  await page.locator('#exportUpdatedPage').click();
+  const fs = require('node:fs');
+  const html = fs.readFileSync(await (await downloadPromise).path(), 'utf8');
+  expect(html).toContain('Keep navigation');
+  expect(html).toContain('Keep footer');
+  expect(html).toContain('Revised text');
+  rich = true;
+  await page.locator('#exportUpdatedPage').click();
+  await expect(page.locator('#status')).toContainText('nested HTML');
+});
