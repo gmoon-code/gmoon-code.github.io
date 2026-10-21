@@ -693,6 +693,8 @@ test('style transfer rejects a source change made after validation', async ({ pa
   await page.locator('#openPublisher').click();
   await expect(page).toHaveURL(/editor\.html\?page=about\.html$/);
   await expect(page.locator('#editorSaveStatus')).not.toContainText('transferred');
+  await expect(page.locator('#noticeDialog')).toBeVisible();
+  await expect(page.locator('#noticeMessage')).toContainText('No edits were applied');
   expect(await page.evaluate(() => localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'))).toBeNull();
 });
 
