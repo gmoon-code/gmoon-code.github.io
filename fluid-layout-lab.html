@@ -40,7 +40,12 @@ function safeImage(value){if(typeof value!=='string'||!value.trim()||value.start
 $('openPublisher').onclick=async()=>{
  const url=new URL('editor.html',location.href),selectedPage=$('sourcePage').value;
  if(/^[a-z0-9-]+\.html$/.test(selectedPage))url.searchParams.set('page',selectedPage);
- if(changedSourceBlocks().length){
+ const changed=blocks.filter(b=>b.source&&b.type!=='image'&&b.text!==b.source.originalText);
+ if(changed.some(b=>b.source.page!==selectedPage||b.source.page!==sourcePage)){
+  $('status').textContent='Handoff blocked: The selected page differs from the source of edited blocks. Re-import the selected page or export your layout draft first.';
+  return;
+ }
+ if(changed.length){
   try{
    const {changes}=await prepareContentChanges();
    if(!confirm('Transfer '+changes.length+' verified text edits to the existing editor? Review them again there before creating a GitHub proposal.'))return;
