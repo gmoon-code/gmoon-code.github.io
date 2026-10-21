@@ -342,3 +342,21 @@ test('handoff confirmation discloses that new layout blocks are excluded', async
   await dialog.dismiss();
   await expect(page).toHaveURL(/fluid-layout-lab\.html$/);
 });
+
+test('blocked page mismatch clears an abandoned transfer', async ({ page }) => {
+  await page.route('**/about.html', route => route.fulfill({
+    status: 200, contentType: 'text/html',
+    body: '<main><section><p>Original paragraph</p></section></main>'
+  }));
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  await page.locator('#grid .block').first().click();
+  await page.locator('#text').fill('Changed paragraph');
+  await page.locator('#text').dispatchEvent('change');
+  await page.evaluate(() => sessionStorage.setItem('moon-fluid-text-handoff-v1', '{"version":1,"page":"about.html","changes":[]}'));
+  await page.locator('#sourcePage').selectOption('research.html');
+  await page.locator('#openPublisher').click();
+  await expect(page.locator('#status')).toContainText('selected page differs');
+  expect(await page.evaluate(() => sessionStorage.getItem('moon-fluid-text-handoff-v1'))).toBeNull();
+});
