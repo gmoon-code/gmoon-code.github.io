@@ -48,6 +48,9 @@ $('openPublisher').onclick=async()=>{
   return;
  }
  if(changed.length){
+  if(blocks.some(b=>!b.source)){
+   $('status').textContent='Handoff transfers text only. Your newly added layout blocks will stay in this browser draft; export the layout JSON to preserve them separately.';
+  }
   try{
    const {changes}=await prepareContentChanges();
    if(!confirm('Transfer '+changes.length+' verified text edits to the existing editor? Review them again there before creating a GitHub proposal.'))return;
