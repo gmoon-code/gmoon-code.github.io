@@ -50,11 +50,11 @@ aside .palette button{text-align:left}
   <div class="action-group" role="group" aria-label="Review layout">
    <button id="viewSitePreview" type="button" class="action-primary">Preview inside website</button>
    <button id="reviewPatch" type="button">Review text edits</button>
-   <button id="exportSitePreview" type="button">Full-site preview file</button>
+   <button id="exportSitePreview" type="button">Full-site preview file</button><button id="exportAppliedPreview" type="button">Publishable-edits review file</button>
   </div>
   <div class="action-group" role="group" aria-label="Export drafts">
    <button id="export" type="button">Export JSON</button><button id="exportHtml" type="button">Layout HTML</button>
-   <button id="exportPatch" type="button">Text patch</button><button id="exportUpdatedPage" type="button">Page HTML</button>
+   <button id="exportPatch" type="button">Text patch</button><button id="exportUpdatedPage" type="button">Text-only page HTML</button>
   </div>
   <div class="action-group" role="group" aria-label="Editor handoff">
    <button id="openPublisher" type="button">Transfer verified text to editor</button>
@@ -66,8 +66,8 @@ aside .palette button{text-align:left}
 <main><aside><h2>Import an existing page</h2><label for="sourcePage">Website page</label><select id="sourcePage"><option value="index.html">Home</option><option value="research.html">Research</option><option value="projects.html">Projects</option><option value="teaching.html">Teaching</option><option value="interests.html">Interests</option><option value="about.html">About</option><option value="cv.html">CV</option><option value="pungmul.html">Pungmul</option></select><button id="importPage" type="button">Import page content</button><p class="hint">Creates an editable layout proposal from the page’s text and images. Original HTML and styles are preserved on the website. Import does not publish or overwrite anything.</p><h2>Add blocks</h2><div class="palette"><button data-add="heading">+ Heading</button><button data-add="text">+ Text</button><button data-add="image">+ Image</button><button data-add="button">+ Button</button></div><p class="hint">Select a block, drag it to move, or drag its bottom-right corner to resize. Use the arrow keys to move the selected block. Shift + arrows resizes it.</p><label for="device">Canvas</label><select id="device"><option value="desktop">Desktop</option><option value="mobile">Mobile</option></select><p id="status" role="status" aria-live="polite"></p><section id="reviewPanel" hidden aria-label="Content change review"><h2>Content changes</h2><div id="reviewEntries"></div><p class="hint">Review only. This does not modify or publish website files.</p></section></aside><section class="workspace" aria-label="Visual canvas"><div id="canvas" class="canvas"><div id="grid" class="grid" aria-label="Editable grid"></div></div></section><aside><h2>Properties</h2><p id="empty">Select a block to edit its properties.</p><div id="properties" hidden><label for="text">Content or image URL</label><textarea id="text" rows="5"></textarea><label for="x">Column (1–12)</label><input id="x" type="number" min="1" max="12"><label for="y">Row</label><input id="y" type="number" min="1" max="100"><label for="w">Width in columns</label><input id="w" type="number" min="1" max="12"><label for="h">Height in rows</label><input id="h" type="number" min="1" max="30"><p id="layoutMode" class="hint">Editing desktop positions</p><button id="resetMobile" type="button" hidden>Reset selected mobile position</button><label for="fontSize">Font size (px)</label><input id="fontSize" type="number" min="12" max="80"><label for="color">Text colour</label><input id="color" type="color"><label for="background">Block background</label><input id="background" type="color"><label for="align">Alignment</label><select id="align"><option value="left">Left</option><option value="center">Centre</option><option value="right">Right</option></select><h3>Flow layout</h3><p class="hint">These settings adjust existing elements without moving them out of the page flow. Imported text blocks can transfer them to the main editor. Canvas column and row positions remain preview-only.</p><label for="maxWidthPct">Maximum element width (%)</label><input id="maxWidthPct" type="number" min="30" max="100" step="1"><label for="spaceAbove">Space above (px)</label><input id="spaceAbove" type="number" min="0" max="80" step="1"><label for="spaceBelow">Space below (px)</label><input id="spaceBelow" type="number" min="0" max="80" step="1"><div class="control-row"><button id="duplicate">Duplicate</button><button id="remove">Delete</button></div></div><p class="hint">Imported text, font size, colours, and text alignment can be transferred to the existing editor for a reviewed GitHub proposal. Freeform positions and newly added blocks remain separate layout drafts. No changes are automatically published.</p></aside></main>
 <dialog id="sitePreviewDialog" aria-label="In-context website layout preview">
  <div class="review-bar"><div><h2>Website layout review</h2><p>Experimental preview only. The live website remains unchanged.</p><p id="sitePreviewAudit" role="status"></p></div>
- <div class="actions"><button id="previewSiteOriginal" type="button">Original</button><button id="previewSiteProposal" type="button">Proposal</button><button id="previewSiteDesktop" type="button">Desktop</button><button id="previewSiteMobile" type="button">Mobile</button><button id="closeSitePreview" type="button">Close preview</button></div></div>
- <iframe id="sitePreviewFrame" title="Full website with experimental layout"></iframe>
+ <div class="actions"><button id="previewSiteOriginal" type="button">Original</button><button id="previewSiteProposal" type="button">Proposal</button><button id="previewSiteApplied" type="button">Publishable edits</button><button id="previewSiteDesktop" type="button">Desktop</button><button id="previewSiteMobile" type="button">Mobile</button><button id="closeSitePreview" type="button">Close preview</button></div></div>
+ <iframe id="sitePreviewFrame" sandbox="" title="Full website with experimental layout"></iframe>
 </dialog>
 <script>
 (()=>{'use strict';
@@ -132,6 +132,21 @@ $('openPublisher').onclick=async()=>{
 };
 function changedSourceBlocks(){return blocks.filter(b=>b.source&&b.source.page===sourcePage&&b.type!=='image'&&b.text!==b.source.originalText)}
 function changedStyleBlocks(){return blocks.filter(b=>b.source&&b.source.page===sourcePage&&b.type!=='image'&&b.styleEdits?.length)}
+function stylesForBlock(b){
+ const styles={};
+ const keys=b.styleEdits||[];
+ if(!Array.isArray(keys)||keys.length>7||new Set(keys).size!==keys.length)
+  throw Error('Invalid style property list');
+ for(const k of keys){
+  if(k==='align'&&['left','center','right'].includes(b.align))styles.align=b.align;
+  else if(k==='fontSize'&&Number.isInteger(b.fontSize)&&b.fontSize>=12&&b.fontSize<=80)styles.fontSize=b.fontSize;
+  else if((k==='color'||k==='background')&&/^#[0-9a-fA-F]{6}$/.test(b[k]))styles[k]=b[k];
+  else if(k==='maxWidthPct'&&Number.isInteger(b[k])&&b[k]>=30&&b[k]<=100)styles[k]=b[k];
+  else if((k==='spaceAbove'||k==='spaceBelow')&&Number.isInteger(b[k])&&b[k]>=0&&b[k]<=80)styles[k]=b[k];
+  else throw Error('Invalid style property: '+k);
+ }
+ return styles;
+}
 async function prepareStyleChanges(){
  const sourced=changedStyleBlocks();
  if(!sourcePage||sourcePage!==$('sourcePage').value||!sourced.length)throw Error('No edited imported styles on the selected page');
@@ -150,15 +165,7 @@ async function prepareStyleChanges(){
   if(matches.length!==1||matches[0].tagName.toLowerCase()!==s.tag||
      matches[0].textContent.trim().replace(/\s+/g,' ')!==s.originalText)
    throw Error('Original styled element changed or is missing: '+s.selector);
-  const styles={};
-  for(const k of b.styleEdits){
-   if(k==='align'&&['left','center','right'].includes(b.align))styles.align=b.align;
-   else if(k==='fontSize'&&Number.isInteger(b.fontSize)&&b.fontSize>=12&&b.fontSize<=80)styles.fontSize=b.fontSize;
-   else if((k==='color'||k==='background')&&/^#[0-9a-fA-F]{6}$/.test(b[k]))styles[k]=b[k];
-   else if(k==='maxWidthPct'&&Number.isInteger(b[k])&&b[k]>=30&&b[k]<=100)styles[k]=b[k];
-   else if((k==='spaceAbove'||k==='spaceBelow')&&Number.isInteger(b[k])&&b[k]>=0&&b[k]<=80)styles[k]=b[k];
-   else throw Error('Invalid style property: '+k);
-  }
+  const styles=stylesForBlock(b);
   changes.push({selector:s.selector,tag:s.tag,before:s.originalText,styles});
  }
  return changes;
