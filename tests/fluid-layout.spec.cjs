@@ -233,5 +233,5 @@ test('transfer refuses source changes after the builder verified them', async ({
   await expect(page).toHaveURL(/editor\.html\?page=about\.html$/);
   await expect(page.locator('#editorSaveStatus')).not.toContainText('transferred');
   const draft = await page.evaluate(() => localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'));
-  expect(draft).not.toContain('Revised paragraph');
+  expect(draft === null || !draft.includes('Revised paragraph')).toBe(true);
 });
