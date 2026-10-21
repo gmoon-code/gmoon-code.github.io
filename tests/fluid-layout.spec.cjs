@@ -495,3 +495,20 @@ test('in-context preview refuses changed source without opening dialog', async (
   await expect(page.locator('#status')).toContainText('Original source text changed');
   await expect(page.locator('#sitePreviewDialog')).not.toBeVisible();
 });
+
+test('standalone layout retains source heading levels', async ({ page }) => {
+  await page.route('**/about.html', route => route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<main><section><h1>Primary title</h1><h3>Subsection title</h3><p>Description.</p></section></main>'
+  }));
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  const downloadPromise=page.waitForEvent('download');
+  await page.locator('#exportHtml').click();
+  const fs=require('node:fs');
+  const html=fs.readFileSync(await (await downloadPromise).path(),'utf8');
+  expect(html).toMatch(/<h1 class="block heading"/);
+  expect(html).toMatch(/<h3 class="block heading"/);
+  expect(html).toMatch(/<p class="block text"/);
+});
