@@ -23,6 +23,7 @@ button,select,input,textarea{border:1px solid #d2d2cb;border-radius:6px;backgrou
 button{min-height:34px;padding:7px 10px;font-weight:550;transition:background-color .16s,border-color .16s}
 button:hover{background:#f1f1ec;border-color:#a6a69e}
 button:disabled{opacity:.55;cursor:not-allowed}
+#sitePreviewDialog button[aria-pressed=true]{background:#e8e8e1;border-color:#75756b;font-weight:700}
 .action-primary{background:#252522;color:#fff;border-color:#252522}
 .action-primary:hover{background:#484841;color:#fff}
 .editor-link{font-size:12px;color:#383832;font-weight:650;text-decoration:underline;text-underline-offset:3px;white-space:nowrap}
@@ -237,17 +238,28 @@ $('viewSitePreview').onclick=async()=>{
  try{
   sitePreviewVersions=await buildSiteLayoutReviewHtml();
   $('sitePreviewAudit').textContent=sitePreviewVersions.audit;
-  $('sitePreviewFrame').srcdoc=sitePreviewVersions.proposed;
-  $('sitePreviewFrame').classList.remove('mobile');
+  setSitePreviewContent('proposed');
+  setSitePreviewDevice('desktop');
   $('sitePreviewDialog').showModal();
   $('status').textContent='Viewing experimental layout in website shell. Nothing has been published.';
  }catch(error){$('status').textContent='In-context preview blocked: '+error.message}
  finally{button.disabled=false}
 };
-$('previewSiteOriginal').onclick=()=>{if(sitePreviewVersions)$('sitePreviewFrame').srcdoc=sitePreviewVersions.original};
-$('previewSiteProposal').onclick=()=>{if(sitePreviewVersions)$('sitePreviewFrame').srcdoc=sitePreviewVersions.proposed};
-$('previewSiteDesktop').onclick=()=>$('sitePreviewFrame').classList.remove('mobile');
-$('previewSiteMobile').onclick=()=>$('sitePreviewFrame').classList.add('mobile');
+function setSitePreviewContent(mode){
+ if(!sitePreviewVersions)return;
+ $('sitePreviewFrame').srcdoc=sitePreviewVersions[mode];
+ $('previewSiteOriginal').setAttribute('aria-pressed',String(mode==='original'));
+ $('previewSiteProposal').setAttribute('aria-pressed',String(mode==='proposed'));
+}
+function setSitePreviewDevice(device){
+ $('sitePreviewFrame').classList.toggle('mobile',device==='mobile');
+ $('previewSiteDesktop').setAttribute('aria-pressed',String(device==='desktop'));
+ $('previewSiteMobile').setAttribute('aria-pressed',String(device==='mobile'));
+}
+$('previewSiteOriginal').onclick=()=>setSitePreviewContent('original');
+$('previewSiteProposal').onclick=()=>setSitePreviewContent('proposed');
+$('previewSiteDesktop').onclick=()=>setSitePreviewDevice('desktop');
+$('previewSiteMobile').onclick=()=>setSitePreviewDevice('mobile');
 $('closeSitePreview').onclick=()=>$('sitePreviewDialog').close();
 $('sitePreviewDialog').addEventListener('close',()=>{$('sitePreviewFrame').srcdoc='';sitePreviewVersions=null;});
 $('export').onclick=()=>{const blob=new Blob([JSON.stringify({version:2,sourcePage,blocks},null,2)+'\n'],{type:'application/json'});const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='portfolio-layout-proposal.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)};
