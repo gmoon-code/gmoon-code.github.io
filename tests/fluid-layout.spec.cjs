@@ -999,3 +999,59 @@ test('publishable-edits preview preserves original site markup when content is u
   expect(html).toContain('<li>Item one</li>');
   expect(html).toContain('Review of 0 publishable text or style edits');
 });
+
+test('in-canvas F2 editing updates text and can be undone', async ({ page }) => {
+  await page.locator('#grid .block').first().click();
+  const block=page.locator('#grid .block').first();
+  await block.focus();
+  await block.press('F2');
+  await expect(page.locator('.inline-editor')).toBeVisible();
+  await page.locator('.inline-editor').fill('Edited in place');
+  await page.locator('.inline-editor').press('ControlOrMeta+Enter');
+  await expect(page.locator('.inline-editor')).toHaveCount(0);
+  await expect(page.locator('#grid .block').first()).toContainText('Edited in place');
+  await page.locator('#undo').click();
+  await expect(page.locator('#grid .block').first()).toContainText('Your page heading');
+});
+
+test('in-canvas Escape cancels changes without changing the block', async ({ page }) => {
+  await page.locator('#grid .block').nth(1).click();
+  await page.locator('#editCanvasText').click();
+  await expect(page.locator('.inline-editor')).toBeVisible();
+  await page.locator('.inline-editor').fill('Discard this change');
+  await page.locator('.inline-editor').press('Escape');
+  await expect(page.locator('#grid .block').nth(1)).toContainText('Click this paragraph');
+  await expect(page.locator('.inline-editor')).toHaveCount(0);
+});
+
+test('in-canvas edits of imported text use the verified handoff', async ({ page }) => {
+  await page.route('**/about.html', route => route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<!doctype html><html><body><main><section><p>Original paragraph</p></section></main></body></html>'
+  }));
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  await page.locator('#grid .block').first().click();
+  await page.locator('#editCanvasText').click();
+  await page.locator('.inline-editor').fill('Edited directly in the canvas');
+  await page.locator('.inline-editor').press('ControlOrMeta+Enter');
+  page.on('dialog', dialog => dialog.accept());
+  await page.locator('#openPublisher').click();
+  await expect(page).toHaveURL(/editor\.html\?page=about\.html$/);
+  await expect(page.locator('#editorSaveStatus')).toContainText('transferred');
+  expect(await page.evaluate(() => localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'))).toContain('Edited directly in the canvas');
+});
+
+test('in-canvas editing keeps HTML pasted as plain text', async ({ page }) => {
+  await page.locator('#grid .block').nth(1).click();
+  await page.locator('#editCanvasText').click();
+  await page.locator('.inline-editor').fill('<img src=x onerror=alert(1)>');
+  await page.locator('.inline-editor').press('ControlOrMeta+Enter');
+  const downloadPromise=page.waitForEvent('download');
+  await page.locator('#exportHtml').click();
+  const fs=require('node:fs');
+  const html=fs.readFileSync(await (await downloadPromise).path(),'utf8');
+  expect(html).toContain('&lt;img src=x onerror=alert(1)&gt;');
+  expect(html).not.toContain('<img src=x onerror=alert(1)>');
+});
