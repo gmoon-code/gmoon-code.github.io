@@ -67,7 +67,7 @@ async function prepareContentChanges(){
  return {doc,targets,changes,originalHtml};
 }
 async function exportPatch(){
- try{const {changes}=await prepareContentChanges();downloadFile('portfolio-content-changes.json',JSON.stringify({version:1,page:sourcePage,changes},null,2)+'\\n','application/json');$('status').textContent='Exported '+changes.length+' verified text changes. No website files were modified.'}
+ try{const {changes}=await prepareContentChanges();downloadFile('portfolio-content-changes.json',JSON.stringify({version:1,page:sourcePage,changes},null,2)+'\n','application/json');$('status').textContent='Exported '+changes.length+' verified text changes. No website files were modified.'}
  catch(err){$('status').textContent='Content export blocked: '+err.message}
 }
 async function exportUpdatedPage(){
