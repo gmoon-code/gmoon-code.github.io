@@ -1217,7 +1217,7 @@
     if(!raw||raw.length>200000)return rejectHandoff();
     let payload;
     try{payload=JSON.parse(raw)}catch{return rejectHandoff();}
-    if(![1,2].includes(payload.version)||payload.page!==page||
+    if(!payload||typeof payload!=="object"||![1,2].includes(payload.version)||payload.page!==page||
        !Array.isArray(payload.changes)||payload.changes.length>100||
        (payload.version===2&&(!Array.isArray(payload.styleChanges)||payload.styleChanges.length>100)))
       return rejectHandoff();
