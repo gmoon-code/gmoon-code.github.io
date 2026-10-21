@@ -1108,6 +1108,29 @@
         block.append(title,text);
         item.appendChild(block);
       }
+      // Surface style-only edits even when the visible text has not changed.
+      const styling=[
+        ["font-size","Font size"],
+        ["color","Text colour"],
+        ["background-color","Background colour"],
+        ["text-align","Text alignment"]
+      ];
+      const styleChanges=styling.flatMap(([prop,name])=>{
+        const before=previous?.style.getPropertyValue(prop)||"";
+        const after=current.style.getPropertyValue(prop)||"";
+        return before===after?[]:[name+": "+(before||"Page stylesheet")+
+          " → "+(after||"Page stylesheet")];
+      });
+      if(styleChanges.length){
+        const change=document.createElement("div");
+        change.className="review-change-part";
+        const title=document.createElement("strong");title.textContent="Visual styling";
+        const values=document.createElement("p");
+        values.textContent=styleChanges.join("\n");
+        values.style.whiteSpace="pre-wrap";
+        change.append(title,values);
+        item.appendChild(change);
+      }
       list.appendChild(item);
     }
     if(state.stagedMedia){
