@@ -288,3 +288,18 @@ test('oversized source paragraphs are skipped without creating truncated mapping
   await expect(page.locator('#grid .block')).toHaveCount(1);
   await expect(page.locator('#grid .block').first()).toContainText('Short paragraph');
 });
+
+test('content patch export rejects nested inline markup', async ({ page }) => {
+  await page.route('**/about.html', route => route.fulfill({
+    status: 200, contentType: 'text/html',
+    body: '<main><section id="profile"><p>Read <strong>carefully</strong>.</p></section></main>'
+  }));
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  await page.locator('#grid .block').first().click();
+  await page.locator('#text').fill('Updated paragraph');
+  await page.locator('#text').dispatchEvent('change');
+  await page.locator('#exportPatch').click();
+  await expect(page.locator('#status')).toContainText('nested HTML');
+});
