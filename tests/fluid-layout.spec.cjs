@@ -773,3 +773,44 @@ test('layout-only modifications are reversible through undo', async ({ page }) =
   });
   expect(exported.structureEdited).toBe(false);
 });
+
+test('verified visual styling can be undone before publication', async ({ page }) => {
+  await page.route('**/about.html', route => route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<!doctype html><html><body><main><section><p>Original paragraph</p></section></main></body></html>'
+  }));
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  await page.locator('#grid .block').first().click();
+  await page.locator('#fontSize').fill('28');
+  await page.locator('#fontSize').dispatchEvent('change');
+  page.on('dialog', dialog => dialog.accept());
+  await page.locator('#openPublisher').click();
+  await expect(page.locator('#editorSaveStatus')).toContainText('transferred');
+  await expect(page.locator('#undoBtn')).toBeEnabled();
+  await page.locator('#undoBtn').click();
+  await expect(page.locator('#exportBtn')).toBeDisabled();
+  await expect.poll(async () => page.evaluate(() => localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'))).toBeNull();
+});
+
+test('existing local editor drafts are protected from style-only handoffs', async ({ page }) => {
+  await page.route('**/about.html', route => route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<!doctype html><html><body><main><section><p>Original paragraph</p></section></main></body></html>'
+  }));
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  await page.locator('#grid .block').first().click();
+  await page.locator('#fontSize').fill('28');
+  await page.locator('#fontSize').dispatchEvent('change');
+  const existing=JSON.stringify({version:1,sourceHash:'outdated',items:[]});
+  await page.evaluate(value=>localStorage.setItem('moon-portfolio-visual-editor-v1:about.html',value),existing);
+  page.on('dialog', dialog => dialog.accept());
+  await page.locator('#openPublisher').click();
+  await expect(page.locator('#editorSaveStatus')).not.toContainText('transferred');
+  const persisted=await page.evaluate(() => localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'));
+  expect(persisted).toBe(existing);
+  await expect(page.locator('#noticeMessage')).toContainText('already has a local draft');
+});
