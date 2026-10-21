@@ -286,6 +286,39 @@ async function buildSiteLayoutReviewHtml(){
  heading.textContent='Layout review (not published) | '+(doc.title||sourcePage);
  doc.head.append(heading);
  const originalHtml='<!doctype html>\n'+doc.documentElement.outerHTML;
+ const appliedDoc=doc.cloneNode(true);
+ const appliedRoot=appliedDoc.querySelector('main');
+ const appliedChanges=blocks.filter(b=>b.source&&b.source.tag!=='img'&&
+  (b.text!==b.source.originalText||b.styleEdits?.length));
+ const usedApplied=new Set();
+ for(const b of appliedChanges){
+  const s=b.source;
+  if(usedApplied.has(s.selector))throw Error('Duplicate edits for '+s.selector);
+  usedApplied.add(s.selector);
+  const matches=[...appliedRoot.querySelectorAll(s.selector)];
+  if(matches.length!==1||matches[0].tagName.toLowerCase()!==s.tag||
+     matches[0].textContent.trim().replace(/\s+/g,' ')!==s.originalText)
+    throw Error('Cannot safely preview changed content: '+s.selector);
+  const el=matches[0];
+  if(b.text!==s.originalText){
+   if(el.children.length)throw Error('Text edit contains inline markup. Use the main editor to preserve links and formatting: '+s.selector);
+   el.textContent=b.text;
+  }
+  for(const [key,value] of Object.entries(stylesForBlock(b))){
+   if(key==='align')el.style.textAlign=value;
+   else if(key==='fontSize')el.style.fontSize=value+'px';
+   else if(key==='color')el.style.color=value;
+   else if(key==='background')el.style.backgroundColor=value;
+   else if(key==='maxWidthPct')el.style.maxWidth=value+'%';
+   else if(key==='spaceAbove')el.style.marginTop=value+'px';
+   else if(key==='spaceBelow')el.style.marginBottom=value+'px';
+  }
+ }
+ const appliedNotice=appliedDoc.createElement('p');
+ appliedNotice.textContent='Review of '+appliedChanges.length+' publishable text or style edits inside the existing website layout. Freeform positions and structural canvas changes are excluded. This is not a published page.';
+ appliedNotice.style.cssText='font:14px/1.5 system-ui,sans-serif;padding:12px;background:#fff;border:1px solid #888';
+ appliedRoot.prepend(appliedNotice);
+ const appliedHtml='<!doctype html>\n'+appliedDoc.documentElement.outerHTML;
  const preview=doc.createElement('iframe');
  preview.title='Experimental page layout preview. Original main content is hidden for this review.';
  preview.setAttribute('sandbox','allow-same-origin');
@@ -296,8 +329,16 @@ async function buildSiteLayoutReviewHtml(){
  notice.textContent='Experimental layout review only. The original main content is preserved on the live site. This downloaded file cannot publish changes. '+auditText;
  notice.setAttribute('style','font:14px/1.5 system-ui,sans-serif;padding:12px;background:#fff;border:1px solid #888');
  root.prepend(notice);
- return {original:originalHtml,proposed:'<!doctype html>\n'+doc.documentElement.outerHTML,audit:auditText};
+ return {original:originalHtml,proposed:'<!doctype html>\n'+doc.documentElement.outerHTML,applied:appliedHtml,audit:auditText};
 }
+async function exportAppliedPageReview(){
+ const review=await buildSiteLayoutReviewHtml();
+ downloadFile(sourcePage.replace(/\.html$/,'.applied-review.html'),review.applied,'text/html');
+ $('status').textContent='Downloaded a full-site review of publishable text and style edits. No website files were modified.';
+}
+$('exportAppliedPreview').onclick=async()=>{
+ try{await exportAppliedPageReview()}catch(error){$('status').textContent='Publishable-edits review blocked: '+error.message}
+};
 async function exportSiteLayoutPreview(){
  const review=await buildSiteLayoutReviewHtml();
  downloadFile(sourcePage.replace(/\.html$/,'.layout-review.html'),review.proposed,'text/html');
@@ -318,10 +359,11 @@ $('viewSitePreview').onclick=async()=>{
  finally{button.disabled=false}
 };
 function setSitePreviewContent(mode){
- if(!sitePreviewVersions)return;
+ if(!sitePreviewVersions||!['original','proposed','applied'].includes(mode))return;
  $('sitePreviewFrame').srcdoc=sitePreviewVersions[mode];
  $('previewSiteOriginal').setAttribute('aria-pressed',String(mode==='original'));
  $('previewSiteProposal').setAttribute('aria-pressed',String(mode==='proposed'));
+ $('previewSiteApplied').setAttribute('aria-pressed',String(mode==='applied'));
 }
 function setSitePreviewDevice(device){
  $('sitePreviewFrame').classList.toggle('mobile',device==='mobile');
@@ -330,6 +372,7 @@ function setSitePreviewDevice(device){
 }
 $('previewSiteOriginal').onclick=()=>setSitePreviewContent('original');
 $('previewSiteProposal').onclick=()=>setSitePreviewContent('proposed');
+$('previewSiteApplied').onclick=()=>setSitePreviewContent('applied');
 $('previewSiteDesktop').onclick=()=>setSitePreviewDevice('desktop');
 $('previewSiteMobile').onclick=()=>setSitePreviewDevice('mobile');
 $('closeSitePreview').onclick=()=>$('sitePreviewDialog').close();
