@@ -14,7 +14,11 @@ const output="/tmp/cross-site-editor-artifacts";
 await mkdir(output,{recursive:true});
 
 async function isolatedContext(viewport={width:1440,height:900}){
-  const context=await browser.newContext({viewport,acceptDownloads:true,serviceWorkers:"block"});
+  // Match a normal browser. Every outgoing request is still intercepted
+  // below, and the isolated context has no pre-existing registrations.
+  // Explicit Playwright serviceWorker blocking can itself cause a sandbox
+  // SecurityError in the protected Research Methods preview iframe.
+  const context=await browser.newContext({viewport,acceptDownloads:true});
   // An assembled static test must never contact real login or publication services.
   await context.route("**/*",route=>{
     try{
