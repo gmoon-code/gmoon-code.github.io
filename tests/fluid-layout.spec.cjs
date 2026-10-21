@@ -360,3 +360,24 @@ test('blocked page mismatch clears an abandoned transfer', async ({ page }) => {
   await expect(page.locator('#status')).toContainText('selected page differs');
   expect(await page.evaluate(() => sessionStorage.getItem('moon-fluid-text-handoff-v1'))).toBeNull();
 });
+
+test('JSON import rejects unsupported source page without replacing canvas', async ({ page }) => {
+  const draft={version:2,sourcePage:'../other.html',blocks:[]};
+  await page.locator('#jsonImport').setInputFiles({
+    name:'invalid.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(draft))
+  });
+  await expect(page.locator('#status')).toContainText('Unsupported source page');
+  await expect(page.locator('#grid .block')).toHaveCount(3);
+});
+
+test('JSON import rejects mismatched source metadata without replacing canvas', async ({ page }) => {
+  const draft={version:2,sourcePage:'about.html',blocks:[{
+    id:1,type:'text',text:'Edited',x:1,y:1,w:8,h:2,
+    source:{page:'research.html',selector:'p:nth-of-type(1)',tag:'p',originalText:'Original'}
+  }]};
+  await page.locator('#jsonImport').setInputFiles({
+    name:'invalid.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(draft))
+  });
+  await expect(page.locator('#status')).toContainText('Invalid source reference');
+  await expect(page.locator('#grid .block')).toHaveCount(3);
+});
