@@ -47,6 +47,11 @@ try {
     "/memory-palace-u1-8/editor.html"
   ]);
   assert.equal(await directory.locator(".editor-card").count(),3);
+  const headingOffsets=await directory.locator(".editor-card h2").evaluateAll(
+    nodes=>nodes.map(node=>node.getBoundingClientRect().top)
+  );
+  assert(Math.max(...headingOffsets)-Math.min(...headingOffsets)<=2,
+    "Desktop editor directory headings should share one visual baseline");
   assert.match(await directory.locator("footer").textContent(),
     /publicly viewable/);
   await directory.screenshot({
