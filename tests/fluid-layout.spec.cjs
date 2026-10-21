@@ -1055,3 +1055,30 @@ test('in-canvas editing keeps HTML pasted as plain text', async ({ page }) => {
   expect(html).toContain('&lt;img src=x onerror=alert(1)&gt;');
   expect(html).not.toContain('<img src=x onerror=alert(1)>');
 });
+
+test('capture desktop and mobile screenshots of builder and full-site preview', async ({ page }) => {
+  const fs=require('node:fs');
+  fs.mkdirSync('test-results/layout-previews',{recursive:true});
+  await page.setViewportSize({width:1366,height:900});
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  await expect(page.locator('#grid .block').first()).toBeVisible();
+  await page.locator('#grid .block').first().click();
+  await page.locator('#fontSize').fill('32');
+  await page.locator('#fontSize').dispatchEvent('change');
+  await page.locator('#canvas').screenshot({path:'test-results/layout-previews/builder-desktop.png'});
+  await page.locator('#device').selectOption('mobile');
+  await page.locator('#canvas').screenshot({path:'test-results/layout-previews/builder-mobile.png'});
+  await page.locator('#viewSitePreview').click();
+  await expect(page.locator('#sitePreviewDialog')).toBeVisible();
+  await page.locator('#previewSiteApplied').click();
+  await expect(page.frameLocator('#sitePreviewFrame').locator('main').first()).toBeVisible();
+  await page.locator('#sitePreviewDialog').screenshot({path:'test-results/layout-previews/website-applied-desktop.png'});
+  await page.locator('#previewSiteMobile').click();
+  await expect(page.frameLocator('#sitePreviewFrame').locator('main').first()).toBeVisible();
+  await page.locator('#sitePreviewDialog').screenshot({path:'test-results/layout-previews/website-applied-mobile.png'});
+  await page.locator('#previewSiteProposal').click();
+  await expect(page.frameLocator('#sitePreviewFrame').locator('main').first()).toBeVisible();
+  await page.locator('#sitePreviewDialog').screenshot({path:'test-results/layout-previews/website-freeform-mobile.png'});
+});
