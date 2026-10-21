@@ -1324,7 +1324,7 @@
       const transferred=consumeFluidTextHandoff(page);
       renderPreview();
       const moved=state.sectionOrder.some((id,i)=>id!==state.originalSections[i]);
-      updateStatus(transferred?"Verified text changes transferred · Not published":state.dirty.size||moved?"Draft restored · Not published":state.staleDraft?"Older local draft exists · Not applied":"Ready to edit · Not published");
+      updateStatus(transferred?"Verified text and/or style changes transferred · Not published":state.dirty.size||moved?"Draft restored · Not published":state.staleDraft?"Older local draft exists · Not applied":"Ready to edit · Not published");
     } catch(e) {
       notice("Could not load "+page+". "+e.message,"Page load failed");
       if (state.page) $("pagePicker").value=state.page;
