@@ -851,3 +851,22 @@ test('main editor review explicitly describes style-only changes', async ({ page
   await expect(page.locator('#reviewChangeList')).toContainText('Font size: Page stylesheet → 26px');
   await expect(page.locator('#reviewExportStatus')).toContainText('Source check passed');
 });
+
+for (const pageName of ['index.html','research.html','projects.html','teaching.html',
+  'interests.html','about.html','cv.html','pungmul.html']) {
+  test('real portfolio page supports reviewable heading styling: '+pageName, async ({ page }) => {
+    await page.locator('#sourcePage').selectOption(pageName);
+    page.once('dialog', dialog => dialog.accept());
+    await page.locator('#importPage').click();
+    await expect(page.locator('#grid .block.heading').first()).toBeVisible();
+    await page.locator('#grid .block.heading').first().click();
+    await page.locator('#fontSize').fill('33');
+    await page.locator('#fontSize').dispatchEvent('change');
+    page.on('dialog', dialog => dialog.accept());
+    await page.locator('#openPublisher').click();
+    await expect(page.locator('#editorSaveStatus')).toContainText('transferred');
+    await page.locator('#reviewBtn').click();
+    await expect(page.locator('#reviewExportStatus')).toContainText('Source check passed');
+    await expect(page.locator('#reviewChangeList')).toContainText('Font size');
+  });
+}
