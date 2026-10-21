@@ -77,10 +77,10 @@ async function exportUpdatedPage(){
   // Reject such edits to prevent accidental removal of citations and links.
   for(const target of targets){if(target.children.length)throw Error('Cannot replace text in an element containing nested HTML. Use the existing editor for rich text.')}
   for(let i=0;i<targets.length;i++)targets[i].textContent=changes[i].after;
-  const doctype=doc.doctype?'<!DOCTYPE '+doc.doctype.name+'>\\n':'<!doctype html>\\n';
+  const doctype=doc.doctype?'<!DOCTYPE '+doc.doctype.name+'>\n':'<!doctype html>\n';
   const result=doctype+doc.documentElement.outerHTML;
   if(result===originalHtml)throw Error('No output change detected');
-  downloadFile(sourcePage.replace(/\\.html$/,'.review.html'),result,'text/html');
+  downloadFile(sourcePage.replace(/\.html$/,'.review.html'),result,'text/html');
   $('status').textContent='Downloaded a full-page HTML review file with '+changes.length+' verified text changes. Review its formatting before any manual replacement.';
  }catch(err){$('status').textContent='Page HTML export blocked: '+err.message}
 }
