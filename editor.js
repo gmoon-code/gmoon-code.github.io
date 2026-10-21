@@ -1286,6 +1286,9 @@
     updatePublishControls();
     processPublisherCallback();
     window.addEventListener("beforeunload",()=>{if (state.page) saveDraft();});
+    const requestedPage=new URLSearchParams(window.location.search).get("page");
+    const pageOptions=[...$("pagePicker").options].map(option=>option.value);
+    if(requestedPage&&pageOptions.includes(requestedPage))$("pagePicker").value=requestedPage;
     loadPage($("pagePicker").value);
   }
 
