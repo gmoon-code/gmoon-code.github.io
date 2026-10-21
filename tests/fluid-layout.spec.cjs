@@ -541,3 +541,28 @@ test('editor toolbar exposes distinct draft, review, export, and handoff groups'
   await expect(page.locator('#viewSitePreview')).toHaveText('Preview inside website');
   await expect(page.locator('#openPublisher')).toHaveText('Transfer verified text to editor');
 });
+
+test('JSON import synchronizes page picker through undo and redo', async ({ page }) => {
+  const draft={version:2,sourcePage:'about.html',blocks:[{
+    id:1,type:'heading',text:'Imported heading',x:1,y:1,w:8,h:2
+  }]};
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#jsonImport').setInputFiles({
+    name:'layout.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(draft))
+  });
+  await expect(page.locator('#sourcePage')).toHaveValue('about.html');
+  await page.locator('#undo').click();
+  await expect(page.locator('#sourcePage')).toHaveValue('index.html');
+  await page.locator('#redo').click();
+  await expect(page.locator('#sourcePage')).toHaveValue('about.html');
+});
+
+test('restoring saved browser draft restores the source page selection', async ({ page }) => {
+  const draft={version:2,sourcePage:'research.html',blocks:[{
+    id:1,type:'heading',text:'Saved heading',x:1,y:1,w:8,h:2
+  }]};
+  await page.evaluate(data=>localStorage.setItem('moon-fluid-layout-lab-v1',JSON.stringify(data)),draft);
+  await page.reload();
+  await expect(page.locator('#sourcePage')).toHaveValue('research.html');
+  await expect(page.locator('#grid .block').first()).toContainText('Saved heading');
+});
