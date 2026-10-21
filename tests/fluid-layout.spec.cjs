@@ -588,7 +588,7 @@ test('visual-only style transfer preserves inline links in the authenticated edi
   await expect(page).toHaveURL(/editor\.html\?page=about\.html$/);
   await expect(page.locator('#editorSaveStatus')).toContainText('transferred');
   const draft=await page.evaluate(() => JSON.parse(localStorage.getItem('moon-portfolio-visual-editor-v1:about.html')));
-  expect(draft.items.some(item=>item.markup.includes('font-size: 24px')&&item.markup.includes('#7b2f2f'))).toBe(true);
+  expect(draft.items.some(item=>/font-size:\s*24px/.test(item.markup)&&/(?:#7b2f2f|rgb\(123,\s*47,\s*47\))/i.test(item.markup))).toBe(true);
   expect(draft.items.some(item=>item.markup.includes('href="research.html"'))).toBe(true);
   const downloadPromise=page.waitForEvent('download');
   await page.locator('#exportBtn').click();
@@ -596,7 +596,7 @@ test('visual-only style transfer preserves inline links in the authenticated edi
   const exported=fs.readFileSync(await (await downloadPromise).path(),'utf8');
   expect(exported).toContain('href="research.html"');
   expect(exported).toContain('font-size: 24px');
-  expect(exported).toContain('#7b2f2f');
+  expect(exported).toMatch(/(?:#7b2f2f|rgb\(123,\s*47,\s*47\))/i);
 });
 
 test('combined text and style edits transfer together into one draft', async ({ page }) => {
