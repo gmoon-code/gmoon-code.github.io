@@ -235,3 +235,25 @@ test('transfer refuses source changes after the builder verified them', async ({
   const draft = await page.evaluate(() => localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'));
   expect(draft === null || !draft.includes('Revised paragraph')).toBe(true);
 });
+
+test('existing local draft prevents incoming text transfer', async ({ page }) => {
+  await page.route('**/about.html', route => route.fulfill({
+    status: 200, contentType: 'text/html',
+    body: '<!doctype html><html><body><main><section id="profile"><p>Original paragraph</p></section></main></body></html>'
+  }));
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  await page.locator('#grid .block').first().click();
+  await page.locator('#text').fill('Incoming edit');
+  await page.locator('#text').dispatchEvent('change');
+  await page.evaluate(() => localStorage.setItem('moon-portfolio-visual-editor-v1:about.html',
+    JSON.stringify({version:1,sourceHash:'outdated',items:[{id:'e0',markup:'<p>Saved edit</p>'}]})));
+  page.on('dialog', dialog => dialog.accept());
+  await page.locator('#openPublisher').click();
+  await expect(page).toHaveURL(/editor\.html\?page=about\.html$/);
+  await expect(page.locator('#editorSaveStatus')).not.toContainText('transferred');
+  const draft=await page.evaluate(() => localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'));
+  expect(draft).toContain('Saved edit');
+  expect(draft).not.toContain('Incoming edit');
+});
