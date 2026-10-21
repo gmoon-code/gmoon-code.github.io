@@ -714,3 +714,25 @@ test('style transfer rejects forged unsafe CSS values', async ({ page }) => {
   expect(await page.evaluate(() => localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'))).toBeNull();
   expect(await page.evaluate(() => sessionStorage.getItem('moon-fluid-text-handoff-v1'))).toBeNull();
 });
+
+test('real About page supports a style-only GitHub-review draft without altering site shell', async ({ page }) => {
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  await expect(page.locator('#grid .block.heading').first()).toBeVisible();
+  await page.locator('#grid .block.heading').first().click();
+  await page.locator('#fontSize').fill('31');
+  await page.locator('#fontSize').dispatchEvent('change');
+  page.on('dialog', dialog => dialog.accept());
+  await page.locator('#openPublisher').click();
+  await expect(page).toHaveURL(/editor\.html\?page=about\.html$/);
+  await expect(page.locator('#editorSaveStatus')).toContainText('transferred');
+  const downloadPromise=page.waitForEvent('download');
+  await page.locator('#exportBtn').click();
+  const fs=require('node:fs');
+  const html=fs.readFileSync(await (await downloadPromise).path(),'utf8');
+  expect(html).toContain('about-page');
+  expect(html).toContain('font-size: 31px');
+  expect(html).toContain('A little about me');
+  expect(html).toContain('assets/profile-portrait.webp');
+});
