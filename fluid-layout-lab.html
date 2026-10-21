@@ -78,6 +78,7 @@ $('importPage').onclick=async()=>{
   $('status').textContent='Imported '+imported.length+' blocks from '+page+'. Layout proposal only.';
  }catch(err){$('status').textContent='Import failed: '+err.message}finally{button.disabled=false}
 };
+const requestedPage=new URLSearchParams(location.search).get('page');if(requestedPage&&[...$('sourcePage').options].some(option=>option.value===requestedPage))$('sourcePage').value=requestedPage;
 try{const saved=JSON.parse(localStorage.getItem(storage));if(saved){validateDocument(saved);blocks=saved.blocks;sourcePage=typeof saved.sourcePage==='string'?saved.sourcePage:null;next=Math.max(4,...blocks.map(b=>b.id+1));$('status').textContent='Restored local draft.'}}catch{}render();
 })();
 </script></html>
