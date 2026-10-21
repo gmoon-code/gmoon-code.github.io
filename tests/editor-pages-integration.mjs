@@ -39,7 +39,7 @@ async function checkHub(page){
 try{
   const context=await isolatedContext();
   const page=await context.newPage();
-  page.on("pageerror",e=>failures.push(e.message));
+  page.on("pageerror",e=>failures.push(page.url()+" :: "+e.stack));
 
   await checkHub(page);
   await page.screenshot({path:output+"/hub-desktop.png",fullPage:true});
@@ -72,7 +72,7 @@ try{
     })
   );
   const signed=await signedContext.newPage();
-  signed.on("pageerror",e=>failures.push(e.message));
+  signed.on("pageerror",e=>failures.push(signed.url()+" :: "+e.stack));
   await signed.goto(origin+"/research-methods/editor.html",
     {waitUntil:"domcontentloaded"});
   await signed.locator("#adminWorkspace:not([hidden])").waitFor();
