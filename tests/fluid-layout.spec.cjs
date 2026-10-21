@@ -633,3 +633,42 @@ test('invalid layout metadata cannot stage unsupported style keys', async ({ pag
   await expect(page.locator('#status')).toContainText('Invalid style edit metadata');
   await expect(page.locator('#grid .block')).toHaveCount(3);
 });
+
+test('style-only changes appear in the review panel', async ({ page }) => {
+  await page.route('**/about.html', route => route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<main><section><p>Original paragraph</p></section></main>'
+  }));
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  await page.locator('#grid .block').first().click();
+  await page.locator('#fontSize').fill('27');
+  await page.locator('#fontSize').dispatchEvent('change');
+  await page.locator('#reviewPatch').click();
+  await expect(page.locator('#reviewPanel')).toBeVisible();
+  await expect(page.locator('#reviewEntries')).toContainText('Style');
+  await expect(page.locator('#reviewEntries')).toContainText('fontSize: 27px');
+  await expect(page.locator('#status')).toContainText('0 text edits and 1 visual style edits');
+});
+
+test('publisher confirmation warns when only desktop block positions change', async ({ page }) => {
+  await page.route('**/about.html', route => route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<main><section><p>Original paragraph</p></section></main>'
+  }));
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  await page.locator('#grid .block').first().click();
+  await page.locator('#x').fill('2');
+  await page.locator('#x').dispatchEvent('change');
+  await page.locator('#fontSize').fill('24');
+  await page.locator('#fontSize').dispatchEvent('change');
+  const dialogPromise=page.waitForEvent('dialog');
+  await page.locator('#openPublisher').click();
+  const dialog=await dialogPromise;
+  expect(dialog.message()).toContain('Freeform positions');
+  await dialog.dismiss();
+  await expect(page).toHaveURL(/fluid-layout-lab\.html$/);
+});
