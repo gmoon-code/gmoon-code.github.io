@@ -321,3 +321,23 @@ test('publisher handoff refuses selected page mismatch', async ({ page }) => {
   await expect(page.locator('#status')).toContainText('selected page differs');
   expect(await page.evaluate(() => sessionStorage.getItem('moon-fluid-text-handoff-v1'))).toBeNull();
 });
+
+test('handoff confirmation discloses that new layout blocks are excluded', async ({ page }) => {
+  await page.route('**/about.html', route => route.fulfill({
+    status: 200, contentType: 'text/html',
+    body: '<main><section><p>Original paragraph</p></section></main>'
+  }));
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  await page.locator('#grid .block').first().click();
+  await page.locator('#text').fill('Changed paragraph');
+  await page.locator('#text').dispatchEvent('change');
+  await page.locator('[data-add="text"]').click();
+  let message='';
+  page.once('dialog', async dialog => { message=dialog.message(); await dialog.dismiss(); });
+  await page.locator('#openPublisher').click();
+  expect(message).toContain('will NOT transfer');
+  expect(message).toContain('Export layout JSON separately');
+  await expect(page).toHaveURL(/fluid-layout-lab\.html$/);
+});
