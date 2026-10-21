@@ -63,6 +63,7 @@ function changedSourceBlocks(){return blocks.filter(b=>b.source&&b.source.page==
 function reviewPatch(){const panel=$('reviewPanel'),entries=$('reviewEntries');entries.replaceChildren();const changed=changedSourceBlocks();if(!changed.length){$('status').textContent='No changed imported text blocks to review.';panel.hidden=true;return}for(const b of changed){const item=document.createElement('article');item.style.cssText='border-top:1px solid #ddd;padding:10px 0;overflow-wrap:anywhere';const title=document.createElement('strong');title.textContent=b.source.selector;const before=document.createElement('p');before.textContent='Before: '+b.source.originalText;const after=document.createElement('p');after.textContent='After: '+b.text;item.append(title,before,after);entries.append(item)}panel.hidden=false;$('status').textContent='Showing '+changed.length+' proposed text changes. Export checks current source for conflicts.'}
 $('reviewPatch').onclick=reviewPatch;
 async function prepareContentChanges(){
+ if(sourcePage!==$('sourcePage').value)throw Error('Selected page differs from imported content. Select the imported page or re-import before exporting.');
  const sourced=changedSourceBlocks();
  if(!sourcePage||!sourced.length)throw Error('No changed imported text blocks to export');
  const response=await fetch(new URL(sourcePage,location.href),{credentials:'omit',cache:'no-store'});
