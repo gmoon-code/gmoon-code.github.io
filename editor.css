@@ -60,6 +60,14 @@ p { line-height:1.5; }
 .small-note { margin:5px 0 0; }
 .muted { color:var(--muted);font-size:13px; }
 .editor-site-link { display:inline-block;margin-top:8px;color:#196352;text-decoration-thickness:1px;text-underline-offset:3px;font-size:14px; }
+.other-editor-links { display:grid;gap:10px; }
+.other-editor-links a {
+  display:block;padding:11px 12px;border:1px solid var(--line);border-radius:4px;
+  color:var(--ink);background:var(--paper);line-height:1.4;text-decoration:none;font-size:13px;
+}
+.other-editor-links a:hover { border-color:var(--green);background:var(--soft); }
+.other-editor-links a:focus-visible { outline:3px solid var(--focus);outline-offset:2px; }
+.other-editor-detail { display:block;margin-top:4px;color:var(--muted);font-size:12px; }
 .outline { display:grid;gap:4px; }
 .outline button { font-size:13px;text-align:left;padding:9px 8px;border:0;border-left:3px solid transparent; background:transparent;line-height:1.35; }
 .outline button:hover { background:#f4f4f0; }
