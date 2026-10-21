@@ -1233,7 +1233,9 @@
       prepared.push({key,text:change.after});
     }
     if(!prepared.length)return false;
-    if(state.dirty.size||state.staleDraft){
+    let existingDraft=false;
+    try{existingDraft=localStorage.getItem(DRAFT_PREFIX+page)!==null}catch{existingDraft=true}
+    if(existingDraft||state.dirty.size||state.staleDraft){
       notice("The page already has a local draft. Review or export that draft before transferring changes.","Transfer not applied");
       return false;
     }
