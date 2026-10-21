@@ -34,6 +34,18 @@ function checkNoPageErrors(where) {
 
 try {
   await ready();
+  // All three editors can be bookmarked under GitHub Pages. Cross-site links
+  // open separately so unfinished portfolio wording remains in this tab.
+  const otherEditors=await page.locator(".other-editor-links a").evaluateAll(links=>
+    links.map(link=>({
+      pathname:new URL(link.href).pathname,
+      target:link.target,
+      noopener:link.rel.split(/\s+/).includes("noopener")
+    })));
+  assert.deepEqual(otherEditors,[
+    {pathname:"/research-methods/editor.html",target:"_blank",noopener:true},
+    {pathname:"/memory-palace-u1-8/editor.html",target:"_blank",noopener:true}
+  ]);
   await page.screenshot({path:"/tmp/editor-test-artifacts/desktop-editor.png",fullPage:true});
   assert.equal(await page.locator("#publisherConnect").isDisabled(),true,
     "Owner sign-in must remain disabled when no private publisher is configured");
