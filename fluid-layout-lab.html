@@ -118,7 +118,9 @@ $('openPublisher').onclick=async()=>{
    const styleChanges=changedStyleBlocks().length?await prepareStyleChanges():[];
    const warning=layoutOnly?' Freeform positions, newly added blocks, and images will NOT transfer. Export layout JSON separately if you want to keep a portable copy.':'';
    if(!confirm('Transfer '+changes.length+' verified text edits and '+styleChanges.length+' visual style edits to the existing editor?'+warning+' Review them again there before creating a GitHub proposal.'))return;
-   sessionStorage.setItem('moon-fluid-text-handoff-v1',JSON.stringify({version:2,page:sourcePage,changes,styleChanges}));
+   const handoff=JSON.stringify({version:2,page:sourcePage,changes,styleChanges});
+   if(handoff.length>200000)throw Error('The verified changes exceed the editor transfer limit. Export smaller sets of edits separately.');
+   sessionStorage.setItem('moon-fluid-text-handoff-v1',handoff);
    url.searchParams.set('importFluidText','1');
   }catch(error){$('status').textContent='Handoff blocked: '+error.message;return}
  }
