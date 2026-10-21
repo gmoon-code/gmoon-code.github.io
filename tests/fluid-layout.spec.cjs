@@ -88,3 +88,25 @@ test('page import records original source selectors', async ({ page }) => {
     tag: 'h1', originalText: 'About the educator'
   });
 });
+
+test('content changes export verifies source text and blocks conflicts', async ({ page }) => {
+  let original = 'Original text';
+  await page.route('**/about.html', route => route.fulfill({
+    status: 200, contentType: 'text/html',
+    body: '<main><section id="profile"><h1>'+original+'</h1></section></main>'
+  }));
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  await page.locator('#grid .block').first().click();
+  await page.locator('#text').fill('Revised text');
+  await page.locator('#text').dispatchEvent('change');
+  const downloadPromise = page.waitForEvent('download');
+  await page.locator('#exportPatch').click();
+  const fs = require('node:fs');
+  const patch = JSON.parse(fs.readFileSync(await (await downloadPromise).path(), 'utf8'));
+  expect(patch.changes).toEqual([{selector:'#profile > h1:nth-of-type(1)',tag:'h1',before:'Original text',after:'Revised text'}]);
+  original = 'Updated elsewhere';
+  await page.locator('#exportPatch').click();
+  await expect(page.locator('#status')).toContainText('Content export blocked');
+});
