@@ -569,3 +569,67 @@ test('restoring saved browser draft restores the source page selection', async (
   await expect(page.locator('#sourcePage')).toHaveValue('research.html');
   await expect(page.locator('#grid .block').first()).toContainText('Saved heading');
 });
+
+test('visual-only style transfer preserves inline links in the authenticated editor', async ({ page }) => {
+  await page.route('**/about.html', route => route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<!doctype html><html><body><main><section id="profile"><h2>Heading</h2><p>Read <a href="research.html">research</a> here.</p></section></main></body></html>'
+  }));
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  await page.locator('#grid .block').nth(1).click();
+  await page.locator('#fontSize').fill('24');
+  await page.locator('#fontSize').dispatchEvent('change');
+  await page.locator('#color').fill('#7b2f2f');
+  await page.locator('#color').dispatchEvent('change');
+  page.on('dialog', dialog => dialog.accept());
+  await page.locator('#openPublisher').click();
+  await expect(page).toHaveURL(/editor\.html\?page=about\.html$/);
+  await expect(page.locator('#editorSaveStatus')).toContainText('transferred');
+  const draft=await page.evaluate(() => JSON.parse(localStorage.getItem('moon-portfolio-visual-editor-v1:about.html')));
+  expect(draft.items.some(item=>item.markup.includes('font-size: 24px')&&item.markup.includes('#7b2f2f'))).toBe(true);
+  expect(draft.items.some(item=>item.markup.includes('href="research.html"'))).toBe(true);
+  const downloadPromise=page.waitForEvent('download');
+  await page.locator('#exportBtn').click();
+  const fs=require('node:fs');
+  const exported=fs.readFileSync(await (await downloadPromise).path(),'utf8');
+  expect(exported).toContain('href="research.html"');
+  expect(exported).toContain('font-size: 24px');
+  expect(exported).toContain('#7b2f2f');
+});
+
+test('combined text and style edits transfer together into one draft', async ({ page }) => {
+  await page.route('**/about.html', route => route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<!doctype html><html><body><main><section><p>Original paragraph</p></section></main></body></html>'
+  }));
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  await page.locator('#grid .block').first().click();
+  await page.locator('#text').fill('Combined content');
+  await page.locator('#text').dispatchEvent('change');
+  await page.locator('#align').selectOption('center');
+  await page.locator('#align').dispatchEvent('change');
+  page.on('dialog', dialog => dialog.accept());
+  await page.locator('#openPublisher').click();
+  await expect(page).toHaveURL(/editor\.html\?page=about\.html$/);
+  await expect(page.locator('#editorSaveStatus')).toContainText('transferred');
+  const raw=await page.evaluate(() => localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'));
+  expect(raw).toContain('Combined content');
+  expect(raw).toContain('text-align: center');
+});
+
+test('invalid layout metadata cannot stage unsupported style keys', async ({ page }) => {
+  const draft={version:2,sourcePage:'about.html',blocks:[{
+    id:1,type:'text',text:'Original',x:1,y:1,w:8,h:2,
+    source:{page:'about.html',selector:'p:nth-of-type(1)',tag:'p',originalText:'Original'},
+    styleEdits:['position']
+  }]};
+  await page.locator('#jsonImport').setInputFiles({
+    name:'invalid-style.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(draft))
+  });
+  await expect(page.locator('#status')).toContainText('Invalid style edit metadata');
+  await expect(page.locator('#grid .block')).toHaveCount(3);
+});
