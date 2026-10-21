@@ -69,8 +69,9 @@ $('importPage').onclick=async()=>{
     if(!value.startsWith(new URL('.',location.href).pathname))continue;
     value=value.slice(new URL('.',location.href).pathname.length);
    }
+   const widthHint=type==='image'?5:el.closest('aside,figure')?6:el.tagName==='H1'?12:10;
    const height=type==='image'?6:type==='heading'?2:Math.max(2,Math.min(8,Math.ceil(value.length/85)));
-   imported.push({id:id++,type,text:value.slice(0,4000),x:1,y:row,w:type==='image'?5:10,h:height,align:'left',fontSize:type==='heading'?30:18,color:'#191919',background:'#ffffff'});
+   imported.push({id:id++,type,text:value.slice(0,4000),x:1,y:row,w:widthHint,h:height,align:'left',fontSize:type==='heading'?30:18,color:'#191919',background:'#ffffff'});
    row+=height+1;
   }
   if(!imported.length)throw Error('No supported content blocks were found');
