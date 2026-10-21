@@ -1213,39 +1213,80 @@
     if(!raw||raw.length>200000)return false;
     let payload;
     try{payload=JSON.parse(raw)}catch{return false;}
-    if(payload.version!==1||payload.page!==page||!Array.isArray(payload.changes)||payload.changes.length>100)return false;
+    if(![1,2].includes(payload.version)||payload.page!==page||
+       !Array.isArray(payload.changes)||payload.changes.length>100||
+       (payload.version===2&&(!Array.isArray(payload.styleChanges)||payload.styleChanges.length>100)))
+      return false;
     const root=state.doc.querySelector("main");
     if(!root)return false;
-    const prepared=[],used=new Set();
-    for(const change of payload.changes){
+    const preparedText=[],preparedStyles=[],usedText=new Set(),usedStyles=new Set();
+    function lookup(change,allowNested){
       if(!change||typeof change.selector!=="string"||change.selector.length>500||
          !/^(h[1-4]|p|blockquote|figcaption)$/.test(change.tag)||
-         typeof change.before!=="string"||typeof change.after!=="string"||
-         change.after.length>4000||used.has(change.selector))return false;
-      used.add(change.selector);
+         typeof change.before!=="string"||change.before.length>4000)return null;
       let matches;
-      try{matches=[...root.querySelectorAll(change.selector)]}catch{return false;}
+      try{matches=[...root.querySelectorAll(change.selector)]}catch{return null;}
       if(matches.length!==1||matches[0].tagName.toLowerCase()!==change.tag||
-         matches[0].children.length||
-         matches[0].textContent.trim().replace(/\s+/g," ")!==change.before)return false;
+         (!allowNested&&matches[0].children.length)||
+         matches[0].textContent.trim().replace(/\s+/g," ")!==change.before)return null;
       const key=matches[0].getAttribute("data-editor-key");
-      if(!key||!state.original.has(key)||prepared.some(p=>p.key===key))return false;
-      prepared.push({key,text:change.after});
+      if(!key||!state.original.has(key))return null;
+      return {key,node:matches[0]};
     }
-    if(!prepared.length)return false;
+    for(const change of payload.changes){
+      if(typeof change?.after!=="string"||change.after.length>4000||
+         usedText.has(change.selector))return false;
+      usedText.add(change.selector);
+      const target=lookup(change,false);
+      if(!target||preparedText.some(p=>p.key===target.key))return false;
+      preparedText.push({key:target.key,text:change.after});
+    }
+    if(payload.version===2){
+      for(const change of payload.styleChanges){
+        if(usedStyles.has(change?.selector))return false;
+        usedStyles.add(change.selector);
+        const target=lookup(change,true);
+        if(!target||preparedStyles.some(p=>p.key===target.key))return false;
+        const styles=change.styles;
+        if(!styles||typeof styles!=="object"||Array.isArray(styles))return false;
+        const keys=Object.keys(styles);
+        if(!keys.length||keys.length>4||keys.some(k=>!["align","fontSize","color","background"].includes(k)))return false;
+        for(const k of keys){
+          const value=styles[k];
+          if(k==="align"&&!["left","center","right"].includes(value))return false;
+          if(k==="fontSize"&&(!Number.isInteger(value)||value<12||value>80))return false;
+          if((k==="color"||k==="background")&&(typeof value!=="string"||!/^#[0-9a-fA-F]{6}$/.test(value)))return false;
+        }
+        preparedStyles.push({key:target.key,styles});
+      }
+    }
+    if(!preparedText.length&&!preparedStyles.length)return false;
     let existingDraft=false;
     try{existingDraft=localStorage.getItem(DRAFT_PREFIX+page)!==null}catch{existingDraft=true}
     if(existingDraft||state.dirty.size||state.staleDraft){
       notice("The page already has a local draft. Review or export that draft before transferring changes.","Transfer not applied");
       return false;
     }
-    if(!confirm("Apply "+prepared.length+" verified text edits to the local editor draft? Nothing will be published."))return false;
+    if(!confirm("Apply "+preparedText.length+" verified text edits and "+preparedStyles.length+
+       " visual style edits to the local editor draft? Freeform positions are not included. Nothing will be published."))return false;
     checkpoint();
-    for(const change of prepared){
+    const touched=new Set();
+    for(const change of preparedText){
       const node=getWorking(change.key);
       node.textContent=change.text;
-      updateDirty(change.key);
+      touched.add(change.key);
     }
+    for(const change of preparedStyles){
+      const node=getWorking(change.key);
+      for(const [key,value] of Object.entries(change.styles)){
+        if(key==="align")node.style.textAlign=value;
+        else if(key==="fontSize")node.style.fontSize=value+"px";
+        else if(key==="color")node.style.color=value;
+        else if(key==="background")node.style.backgroundColor=value;
+      }
+      touched.add(change.key);
+    }
+    for(const key of touched)updateDirty(key);
     saveDraft();
     return true;
   }
