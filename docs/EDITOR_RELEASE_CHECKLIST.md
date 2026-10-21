@@ -15,11 +15,13 @@ The directory is a public static page. The academic and narrative editor interfa
 
 ## Cross-site integration preflight
 
-The [Cross-site GitHub Pages editor preflight](https://github.com/gmoon-code/gmoon-code.github.io/actions/workflows/editor-pages-preflight.yml) checks out the latest draft branches of all three repositories into **one temporary test server**. It builds the same filtered Memory Palace Pages artifact as the production deployment workflow and serves Research Methods Studio at its planned `/research-methods/` path.
+The [Cross-site GitHub Pages editor preflight](https://github.com/gmoon-code/gmoon-code.github.io/actions/workflows/editor-pages-preflight.yml) checks out the academic website branch under test and the **explicitly pinned, reviewed commits** from Research Methods Studio and Story Method into **one temporary test server**. It builds the same filtered Memory Palace Pages artifact as the production deployment workflow and serves Research Methods Studio at its planned `/research-methods/` path.
 
 Chromium follows all three links from `/editors.html`. It verifies that the academic editor opens and cannot publish without a configured private publisher, Research Methods Studio stops a signed-out visitor at the existing password page, an isolated simulated teacher session reaches Content Studio, and the Story Method narrative editor loads its released journey JSON. External network requests are blocked during this test, and desktop/mobile directory screenshots are retained as GitHub Actions artifacts.
 
-This workflow uses `contents: read` and contains **no GitHub Pages deployment action**. It never tests a live administrator credential or authorises a production release. When either of the other repositories changes after this workflow has passed, rerun the workflow manually against the current draft branches. Always inspect the three printed checkout commit identifiers to confirm which revisions were tested.
+This workflow uses `contents: read` and contains **no GitHub Pages deployment action**. It never tests a live administrator credential or authorises a production release. When either of the other repositories changes, **update the corresponding pinned `ref` commit in `.github/workflows/editor-pages-preflight.yml` and rerun the checks**. Merely rerunning without updating a pinned SHA tests the previous version. Inspect the three printed checkout commit identifiers to confirm which revisions were tested.
+
+The currently reviewed cross-repository snapshots are Research Methods Studio `ac222c2a4f5f20aaa75d66d40ba0076ce29f62b3` and Story Method `dda576d1f11d3146c5a335a53115aed4549a44ac`. The academic website revision is the head of the PR triggering each run.
 
 ## Before release approval
 
