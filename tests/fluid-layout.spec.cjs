@@ -397,3 +397,14 @@ test('content export refuses a changed page selection', async ({ page }) => {
   await page.locator('#exportPatch').click();
   await expect(page.locator('#status')).toContainText('Selected page differs');
 });
+
+test('standalone preview exports semantic headings and paragraphs', async ({ page }) => {
+  const downloadPromise=page.waitForEvent('download');
+  await page.locator('#exportHtml').click();
+  const download=await downloadPromise;
+  const fs=require('node:fs');
+  const html=fs.readFileSync(await download.path(),'utf8');
+  expect(html).toMatch(/<h2 class="block heading"/);
+  expect(html).toMatch(/<p class="block text"/);
+  expect(html).toContain('<main class="page">');
+});
