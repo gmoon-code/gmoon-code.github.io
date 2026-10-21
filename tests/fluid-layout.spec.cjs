@@ -532,3 +532,12 @@ test('website preview audits links, lists, tables and block overlap counts', asy
   const html=await page.locator('#sitePreviewFrame').getAttribute('srcdoc');
   expect(html).toContain('Text-only imports do not preserve their formatting or interactions');
 });
+
+test('editor toolbar exposes distinct draft, review, export, and handoff groups', async ({ page }) => {
+  await expect(page.getByRole('group',{name:'Edit history'})).toBeVisible();
+  await expect(page.getByRole('group',{name:'Review layout'})).toBeVisible();
+  await expect(page.getByRole('group',{name:'Export drafts'})).toBeVisible();
+  await expect(page.getByRole('group',{name:'Editor handoff'})).toBeVisible();
+  await expect(page.locator('#viewSitePreview')).toHaveText('Preview inside website');
+  await expect(page.locator('#openPublisher')).toHaveText('Transfer verified text to editor');
+});
