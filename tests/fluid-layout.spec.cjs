@@ -169,3 +169,21 @@ test('source selectors retain positions after excluded hidden siblings', async (
   const patch = JSON.parse(fs.readFileSync(await (await downloadPromise).path(), 'utf8'));
   expect(patch.changes).toEqual([{selector:'#profile > p:nth-of-type(2)',tag:'p',before:'Visible paragraph',after:'Edited visible paragraph'}]);
 });
+
+test('source comparison tolerates equivalent whitespace in original markup', async ({ page }) => {
+  await page.route('**/about.html', route => route.fulfill({
+    status: 200, contentType: 'text/html',
+    body: '<main><section id="profile"><p>One   two\n three</p></section></main>'
+  }));
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  await page.locator('#grid .block').first().click();
+  await page.locator('#text').fill('Updated');
+  await page.locator('#text').dispatchEvent('change');
+  const downloadPromise = page.waitForEvent('download');
+  await page.locator('#exportPatch').click();
+  const fs = require('node:fs');
+  const patch = JSON.parse(fs.readFileSync(await (await downloadPromise).path(), 'utf8'));
+  expect(patch.changes[0].before).toBe('One two three');
+});
