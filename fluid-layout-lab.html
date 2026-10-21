@@ -102,7 +102,7 @@ $('importPage').onclick=async()=>{
   const doc=new DOMParser().parseFromString(html,'text/html');
   const root=doc.querySelector('main');
   if(!root)throw Error('No main content was found');
-  for(const el of root.querySelectorAll('script,style,template,nav,form,iframe,svg,canvas,button,[hidden],[aria-hidden="true"]'))el.remove();
+  const excluded='script,style,template,nav,form,iframe,svg,canvas,button,[hidden],[aria-hidden="true"]';
   const imported=[];
   // Record a stable path to each imported source element so a future
   // publisher can detect page changes before attempting any replacement.
@@ -121,7 +121,7 @@ $('importPage').onclick=async()=>{
     return parts.join(' > ');
   }
   let row=2,id=1;
-  const elements=[...root.querySelectorAll('h1,h2,h3,h4,p,blockquote,figcaption,img')];
+  const elements=[...root.querySelectorAll('h1,h2,h3,h4,p,blockquote,figcaption,img')].filter(el=>!el.closest(excluded));
   for(const el of elements){
    if(imported.length>=100)break;
    const type=el.tagName==='IMG'?'image':/^H[1-4]$/.test(el.tagName)?'heading':'text';
