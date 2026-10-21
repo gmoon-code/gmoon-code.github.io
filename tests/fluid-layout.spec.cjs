@@ -830,3 +830,24 @@ test('changing an imported image cannot be mistaken for a transferable text edit
   await expect(page).toHaveURL(/fluid-layout-lab\.html$/);
   await expect(page.locator('#status')).toContainText('Only structural or freeform layout changes');
 });
+
+test('main editor review explicitly describes style-only changes', async ({ page }) => {
+  await page.route('**/about.html', route => route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<!doctype html><html><body><main><section><p>Original paragraph</p></section></main></body></html>'
+  }));
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  await page.locator('#grid .block').first().click();
+  await page.locator('#fontSize').fill('26');
+  await page.locator('#fontSize').dispatchEvent('change');
+  page.on('dialog', dialog => dialog.accept());
+  await page.locator('#openPublisher').click();
+  await expect(page.locator('#editorSaveStatus')).toContainText('transferred');
+  await page.locator('#reviewBtn').click();
+  await expect(page.locator('#reviewDialog')).toBeVisible();
+  await expect(page.locator('#reviewChangeList')).toContainText('Visual styling');
+  await expect(page.locator('#reviewChangeList')).toContainText('Font size: Page stylesheet → 26px');
+  await expect(page.locator('#reviewExportStatus')).toContainText('Source check passed');
+});
