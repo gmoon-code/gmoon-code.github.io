@@ -140,6 +140,8 @@ $('importPage').onclick=async()=>{
    const type=el.tagName==='IMG'?'image':/^H[1-4]$/.test(el.tagName)?'heading':'text';
    let value=type==='image'?el.getAttribute('src')||'':(el.textContent||'').trim().replace(/\s+/g,' ');
    if(!value)continue;
+   // A truncated source excerpt cannot be verified against the original page.
+   if(type!=='image'&&value.length>4000)continue;
    if(type==='image'){
     // Keep only local relative image URLs. Remote images are omitted by design.
     if(!/^(?!\/)(?!.*\.\.)(?!.*:)[a-zA-Z0-9_./%+-]+$/.test(value))continue;
@@ -149,7 +151,7 @@ $('importPage').onclick=async()=>{
    }
    const widthHint=type==='image'?5:el.closest('aside,figure')?6:el.tagName==='H1'?12:10;
    const height=type==='image'?6:type==='heading'?2:Math.max(2,Math.min(8,Math.ceil(value.length/85)));
-   imported.push({id:id++,type,text:value.slice(0,4000),source:{page,selector:sourceSelector(el),tag:el.tagName.toLowerCase(),originalText:type==='image'?null:value.slice(0,4000)},x:1,y:row,w:widthHint,h:height,align:'left',fontSize:type==='heading'?30:18,color:'#191919',background:'#ffffff'});
+   imported.push({id:id++,type,text:value,source:{page,selector:sourceSelector(el),tag:el.tagName.toLowerCase(),originalText:type==='image'?null:value},x:1,y:row,w:widthHint,h:height,align:'left',fontSize:type==='heading'?30:18,color:'#191919',background:'#ffffff'});
    row+=height+1;
   }
   if(!imported.length)throw Error('No supported content blocks were found');
