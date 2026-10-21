@@ -30,12 +30,16 @@ Research and project overview pages link to dedicated subpages for individual wo
 
 
 ## Website editing and review
+**Editor workflow.** Text can be edited directly on the canvas using F2 (Escape cancels, Ctrl/Cmd+Enter commits). Layout drafts autosave in browser storage. The in-context preview offers **Original**, **Proposal**, and **Publishable edits** views, and the browser workflow archives screenshots for desktop/mobile review.
+
+For manual testing, setup steps, screenshots and publishing limitations, see [the fluid layout testing guide](docs/fluid-layout-testing.md).
+
 
 The portfolio's existing `editor.html` can edit supported page content and export reviewable HTML. Its authenticated GitHub proposal option requires a separately deployed private publisher. Public connection settings in `editor-publisher-config.js` are intentionally blank until that publisher is configured. Never commit OAuth secrets or tokens to the public website.
 
 The experimental `fluid-layout-lab.html` can import portfolio page content into a grid, move and resize blocks for desktop and mobile, and preview proposals inside the surrounding website navigation and footer. It can also compare the original page with the proposed layout and export JSON or standalone HTML review files.
 
-**Verified handoff to the main editor** supports changes to imported plain text and these explicitly adjusted properties: font size, text colour, background colour, and text alignment. The destination editor rechecks the live source, refuses invalid CSS and conflicting browser drafts, and keeps the changes local until review. Existing inline links and emphasis are preserved for style-only edits.
+**Verified handoff to the main editor** supports changes to imported plain text and these explicitly adjusted properties: font size, text colour, background colour, text alignment, maximum width, and spacing above/below an element. The destination editor rechecks the live source, refuses invalid CSS and conflicting browser drafts, and keeps the changes local until review. Existing inline links and emphasis are preserved for style-only edits.
 
 **Not yet publishable through the handoff** are freeform block positions and sizes, newly added or removed blocks, and layout-level image changes. Visual review files are prototypes and must never replace a live page without a separate structural, accessibility, and content review.
 
