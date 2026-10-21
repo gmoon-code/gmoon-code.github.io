@@ -80,6 +80,16 @@ try{
   assert(!academicSource.includes(academicText));
   assert.equal(await (await page.request.get(origin+"/index.html")).text(),academicSource,
     "Academic export must never rewrite the served website");
+  // Cross-site links really open separate tabs and leave the edited page,
+  // inspector selection and local draft untouched.
+  const academicPopupPending=page.waitForEvent("popup");
+  await page.locator('.other-editor-links a[href="./research-methods/editor.html"]').click();
+  const academicPopup=await academicPopupPending;
+  await academicPopup.waitForURL("**/research-methods/teacher.html#visualGuidanceEditor");
+  assert.equal(await academicPopup.locator("#teacherAccessCode").isVisible(),true);
+  await academicPopup.close();
+  assert.equal((await kicker.textContent()).trim(),academicText);
+  assert.equal(new URL(page.url()).pathname,"/editor.html");
 
   await checkHub(page);
   await page.locator(".editor-card a").nth(1).click();
@@ -137,6 +147,15 @@ try{
   assert.match(rmsProposal.source_sha256,/^[a-f0-9]{64}$/);
   assert.equal(await signed.evaluate(()=>JSON.stringify(window.RMSCurriculum.stages)),
     curriculumBefore,"Review-only edits must not modify the student curriculum");
+  const rmsPopupPending=signed.waitForEvent("popup");
+  await signed.locator('.cross-site-editor-switcher nav a[href="../editor.html"]').click();
+  const rmsPopup=await rmsPopupPending;
+  await rmsPopup.waitForURL("**/editor.html");
+  await rmsPopup.frameLocator("#pageFrame").locator("main").waitFor();
+  await rmsPopup.close();
+  assert.equal(await signed.locator("#activityReviewCount").textContent(),"1 proposed change",
+    "Cross-site navigation must leave the Research Methods proposal open");
+  assert.equal(await signed.locator("#activityExport").isEnabled(),true);
 
   await checkHub(page);
   await page.locator(".editor-card a").nth(2).click();
@@ -174,6 +193,15 @@ try{
   assert.equal(storyExport.scenes[0].scene_id,originalStory.scenes[0].scene_id);
   assert.deepEqual(await (await page.request.get(storySourceUrl)).json(),originalStory,
     "Narrative export must not rewrite released curriculum JSON");
+  const storyPopupPending=page.waitForEvent("popup");
+  await page.locator('.other-editors nav a[href="../../research-methods/editor.html"]').click();
+  const storyPopup=await storyPopupPending;
+  await storyPopup.waitForURL("**/research-methods/teacher.html#visualGuidanceEditor");
+  assert.equal(await storyPopup.locator("#teacherAccessCode").isVisible(),true);
+  await storyPopup.close();
+  assert.equal((await page.locator('#scenePreview [data-edit-key="0:title"]')
+    .textContent()).trim(),storyText,
+    "Cross-site links must not disturb local Story Method drafts");
 
   // Follow the hub and return, observing whether browser-local drafts
   // remain specific to their editor and site.
@@ -210,6 +238,7 @@ try{
   console.log("PASS: signed simulated teacher can reach guarded Content Studio");
   console.log("PASS: Story Method loads original journey JSON on the built Pages path");
   console.log("PASS: editor directory is usable on desktop and mobile");
+  console.log("PASS: all three editors open external cross-site links in separate tabs");
   console.log("PASS: academic HTML export is local, safe, and survives cross-site navigation");
   console.log("PASS: Research Methods review-only JSON export preserves student curriculum");
   console.log("PASS: Story Method journey JSON export preserves frozen scientific structures");
