@@ -29,7 +29,7 @@ $('export').onclick=()=>{const blob=new Blob([JSON.stringify({version:2,sourcePa
 // Import only visible text and safe image paths. Never execute page scripts or inject source markup.
 $('importPage').onclick=async()=>{
  const page=$('sourcePage').value;
- if(!/^[a-z0-9-]+\\.html$/.test(page))return;
+ if(!/^[a-z0-9-]+\.html$/.test(page))return;
  if(!confirm('Replace the current experimental canvas with a layout proposal from '+page+'? Save or export your draft first.'))return;
  const button=$('importPage');button.disabled=true;$('status').textContent='Reading '+page+'…';
  try{
@@ -46,11 +46,11 @@ $('importPage').onclick=async()=>{
   for(const el of elements){
    if(imported.length>=100)break;
    const type=el.tagName==='IMG'?'image':/^H[1-4]$/.test(el.tagName)?'heading':'text';
-   let value=type==='image'?el.getAttribute('src')||'':(el.textContent||'').trim().replace(/\\s+/g,' ');
+   let value=type==='image'?el.getAttribute('src')||'':(el.textContent||'').trim().replace(/\s+/g,' ');
    if(!value)continue;
    if(type==='image'){
     // Keep only local relative image URLs. Remote images are omitted by design.
-    if(!/^(?!\\/)(?!.*\\.\\.)(?!.*:)[a-zA-Z0-9_./%+-]+$/.test(value))continue;
+    if(!/^(?!\/)(?!.*\.\.)(?!.*:)[a-zA-Z0-9_./%+-]+$/.test(value))continue;
     value=new URL(value,new URL(page,location.href)).pathname;
     if(!value.startsWith(new URL('.',location.href).pathname))continue;
     value=value.slice(new URL('.',location.href).pathname.length);
