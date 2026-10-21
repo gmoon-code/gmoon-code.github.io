@@ -151,3 +151,21 @@ test('full-page HTML export preserves page shell and rejects nested markup', asy
   await page.locator('#exportUpdatedPage').click();
   await expect(page.locator('#status')).toContainText('nested HTML');
 });
+
+test('source selectors retain positions after excluded hidden siblings', async ({ page }) => {
+  await page.route('**/about.html', route => route.fulfill({
+    status: 200, contentType: 'text/html',
+    body: '<main><section id="profile"><p hidden>Hidden paragraph</p><p>Visible paragraph</p></section></main>'
+  }));
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  await page.locator('#grid .block').first().click();
+  await page.locator('#text').fill('Edited visible paragraph');
+  await page.locator('#text').dispatchEvent('change');
+  const downloadPromise = page.waitForEvent('download');
+  await page.locator('#exportPatch').click();
+  const fs = require('node:fs');
+  const patch = JSON.parse(fs.readFileSync(await (await downloadPromise).path(), 'utf8'));
+  expect(patch.changes).toEqual([{selector:'#profile > p:nth-of-type(2)',tag:'p',before:'Visible paragraph',after:'Edited visible paragraph'}]);
+});
