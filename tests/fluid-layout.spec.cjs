@@ -257,3 +257,21 @@ test('existing local draft prevents incoming text transfer', async ({ page }) =>
   expect(draft).toContain('Saved edit');
   expect(draft).not.toContain('Incoming edit');
 });
+
+test('inline links are preserved by refusing destructive text transfer', async ({ page }) => {
+  await page.route('**/about.html', route => route.fulfill({
+    status: 200, contentType: 'text/html',
+    body: '<!doctype html><html><body><main><section id="profile"><p>Read <a href="research.html">research</a> here.</p></section></main></body></html>'
+  }));
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  await page.locator('#grid .block').first().click();
+  await page.locator('#text').fill('Revised linked paragraph');
+  await page.locator('#text').dispatchEvent('change');
+  await page.locator('#openPublisher').click();
+  await expect(page).toHaveURL(/fluid-layout-lab\.html$/);
+  await expect(page.locator('#status')).toContainText('Handoff blocked');
+  const pending=await page.evaluate(() => sessionStorage.getItem('moon-fluid-text-handoff-v1'));
+  expect(pending).toBeNull();
+});
