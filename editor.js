@@ -1113,7 +1113,10 @@
         ["font-size","Font size"],
         ["color","Text colour"],
         ["background-color","Background colour"],
-        ["text-align","Text alignment"]
+        ["text-align","Text alignment"],
+        ["max-width","Maximum width"],
+        ["margin-top","Space above"],
+        ["margin-bottom","Space below"]
       ];
       const styleChanges=styling.flatMap(([prop,name])=>{
         const before=previous?.style.getPropertyValue(prop)||"";
@@ -1277,12 +1280,14 @@
         const styles=change.styles;
         if(!styles||typeof styles!=="object"||Array.isArray(styles))return rejectHandoff();
         const keys=Object.keys(styles);
-        if(!keys.length||keys.length>4||keys.some(k=>!["align","fontSize","color","background"].includes(k)))return rejectHandoff();
+        if(!keys.length||keys.length>7||keys.some(k=>!["align","fontSize","color","background","maxWidthPct","spaceAbove","spaceBelow"].includes(k)))return rejectHandoff();
         for(const k of keys){
           const value=styles[k];
           if(k==="align"&&!["left","center","right"].includes(value))return rejectHandoff();
           if(k==="fontSize"&&(!Number.isInteger(value)||value<12||value>80))return rejectHandoff();
           if((k==="color"||k==="background")&&(typeof value!=="string"||!/^#[0-9a-fA-F]{6}$/.test(value)))return rejectHandoff();
+          if(k==="maxWidthPct"&&(!Number.isInteger(value)||value<30||value>100))return rejectHandoff();
+          if((k==="spaceAbove"||k==="spaceBelow")&&(!Number.isInteger(value)||value<0||value>80))return rejectHandoff();
         }
         preparedStyles.push({key:target.key,styles});
       }
@@ -1310,6 +1315,9 @@
         else if(key==="fontSize")node.style.fontSize=value+"px";
         else if(key==="color")node.style.color=value;
         else if(key==="background")node.style.backgroundColor=value;
+        else if(key==="maxWidthPct")node.style.maxWidth=value+"%";
+        else if(key==="spaceAbove")node.style.marginTop=value+"px";
+        else if(key==="spaceBelow")node.style.marginBottom=value+"px";
       }
       touched.add(change.key);
     }
