@@ -42,10 +42,11 @@
     .editor-card { display: flex; flex-direction: column; min-width: 0;
       padding: 23px 22px 21px; border: 1px solid var(--line);
       border-radius: 3px; background: var(--paper); }
-    .editor-card .number { font-size: 13px; color: var(--muted); margin: 0 0 18px; }
+    .editor-card .number { font-size: 13px; color: var(--muted); margin: 0 0 18px; flex: 0 0 auto; }
     .editor-card h2 { font-size: 23px; line-height: 1.23; margin: 0 0 12px; }
     .editor-card p { color: var(--muted); font-size: 14px; line-height: 1.6;
-      margin: 0 0 20px; flex: 1; }
+      margin: 0 0 20px; }
+    .editor-card > p:not(.number) { flex: 1; }
     .editor-card a { display: inline-flex; align-items: center; gap: 8px;
       align-self: flex-start; font-size: 15px; font-weight: 700;
       text-decoration-thickness: 1px; text-underline-offset: 4px; }
