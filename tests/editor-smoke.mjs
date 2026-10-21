@@ -34,6 +34,40 @@ function checkNoPageErrors(where) {
 
 try {
   await ready();
+  // An optional single bookmark opens the complete directory without
+  // requiring credentials or enabling editor publication rights.
+  const directory=await context.newPage();
+  await directory.goto(base+"/editors.html",{waitUntil:"domcontentloaded"});
+  assert.equal(await directory.title(),"Website Editors | Ye Eun Moon");
+  const hubLinks=await directory.locator(".editor-card a").evaluateAll(links=>
+    links.map(link=>new URL(link.href).pathname));
+  assert.deepEqual(hubLinks,[
+    "/editor.html",
+    "/research-methods/editor.html",
+    "/memory-palace-u1-8/editor.html"
+  ]);
+  assert.equal(await directory.locator(".editor-card").count(),3);
+  assert.match(await directory.locator("footer").textContent(),
+    /publicly viewable/);
+  await directory.screenshot({
+    path:"/tmp/editor-test-artifacts/all-editors-directory-desktop.png",
+    fullPage:true
+  });
+  await directory.setViewportSize({width:390,height:844});
+  const directoryMobile=await directory.evaluate(()=>({
+    viewport:window.innerWidth,
+    documentWidth:document.documentElement.scrollWidth,
+    columns:getComputedStyle(document.querySelector(".editor-grid"))
+      .gridTemplateColumns.trim().split(/\s+/).length
+  }));
+  assert.equal(directoryMobile.columns,1);
+  assert(directoryMobile.documentWidth<=directoryMobile.viewport+1,
+    "The editor directory must fit mobile screens without horizontal overflow");
+  await directory.screenshot({
+    path:"/tmp/editor-test-artifacts/all-editors-directory-mobile.png",
+    fullPage:true
+  });
+  await directory.close();
   // All three editors can be bookmarked under GitHub Pages. Cross-site links
   // open separately so unfinished portfolio wording remains in this tab.
   const otherEditors=await page.locator(".other-editor-links a").evaluateAll(links=>
@@ -46,6 +80,8 @@ try {
     {pathname:"/research-methods/editor.html",target:"_blank",noopener:true},
     {pathname:"/memory-palace-u1-8/editor.html",target:"_blank",noopener:true}
   ]);
+  assert.equal(await page.locator('.editor-site-link[href="./editors.html"]')
+    .getAttribute("target"),"_blank");
   await page.screenshot({path:"/tmp/editor-test-artifacts/desktop-editor.png",fullPage:true});
   assert.equal(await page.locator("#publisherConnect").isDisabled(),true,
     "Owner sign-in must remain disabled when no private publisher is configured");
