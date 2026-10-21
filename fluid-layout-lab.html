@@ -57,7 +57,7 @@ async function prepareContentChanges(){
   let matches;
   try{matches=[...root.querySelectorAll(s.selector)]}catch{throw Error('Invalid source selector')}
   if(matches.length!==1||matches[0].tagName.toLowerCase()!==s.tag)throw Error('Source element changed or is missing: '+s.selector);
-  const current=matches[0].textContent.trim().replace(/\\s+/g,' ');
+  const current=matches[0].textContent.trim().replace(/\s+/g,' ');
   if(current!==s.originalText)throw Error('Original text has changed on the website: '+s.selector);
   // Never replace a parent and one of its descendants in the same operation.
   if(targets.some(t=>t.contains(matches[0])||matches[0].contains(t)))throw Error('Overlapping source elements');
