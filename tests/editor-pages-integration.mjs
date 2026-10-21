@@ -156,6 +156,19 @@ try{
   assert.equal(await signed.locator("#activityReviewCount").textContent(),"1 proposed change",
     "Cross-site navigation must leave the Research Methods proposal open");
   assert.equal(await signed.locator("#activityExport").isEnabled(),true);
+  await signed.setViewportSize({width:390,height:844});
+  const rmsMobile=await signed.evaluate(()=>({
+    viewport:innerWidth,
+    documentWidth:document.documentElement.scrollWidth,
+    columns:getComputedStyle(document.querySelector("#contentAuthoringNav"))
+      .gridTemplateColumns.trim().split(/\s+/).length
+  }));
+  assert.equal(rmsMobile.columns,2);
+  assert(rmsMobile.documentWidth<=rmsMobile.viewport+1,
+    "Research Methods mobile Admin must fit without horizontal page overflow");
+  assert.equal(await signed.locator("#activityReviewCount").textContent(),"1 proposed change");
+  await signed.screenshot({path:output+"/research-methods-mobile.png",fullPage:true});
+  await signed.setViewportSize({width:1440,height:900});
 
   await checkHub(page);
   await page.locator(".editor-card a").nth(2).click();
@@ -202,6 +215,28 @@ try{
   assert.equal((await page.locator('#scenePreview [data-edit-key="0:title"]')
     .textContent()).trim(),storyText,
     "Cross-site links must not disturb local Story Method drafts");
+
+  // Verify the new mobile-first narrative layout in the composite
+  // GitHub Pages environment with an actual 390px browser viewport.
+  await page.setViewportSize({width:390,height:844});
+  const storyMobile=await page.evaluate(()=>{
+    const position=id=>document.getElementById(id).getBoundingClientRect().top;
+    return {
+      viewport:window.innerWidth,
+      documentWidth:document.documentElement.scrollWidth,
+      navVisible:getComputedStyle(document.querySelector(".editor-jump-nav")).display!=="none",
+      story:position("storyWorkspace"),
+      inspector:position("storyInspector"),
+      curriculum:position("storyCurriculum")
+    };
+  });
+  assert.equal(storyMobile.navVisible,true);
+  assert(storyMobile.story<storyMobile.inspector&&storyMobile.inspector<storyMobile.curriculum,
+    "Mobile Story Method must put reading and text editing before long curriculum navigation");
+  assert(storyMobile.documentWidth<=storyMobile.viewport+1,
+    "Story Method mobile editor must fit within the screen");
+  await page.screenshot({path:output+"/story-method-mobile.png",fullPage:true});
+  await page.setViewportSize({width:1440,height:900});
 
   // Follow the hub and return, observing whether browser-local drafts
   // remain specific to their editor and site.
