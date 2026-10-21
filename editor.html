@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="same-origin">
+  <title>Visual Editor | Ye Eun Moon</title>
+  <link rel="stylesheet" href="editor.css">
+  <script src="editor-publisher-config.js" defer></script>
+  <script src="editor.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#editorPreview">Skip to page preview</a>
+  <div class="editor-shell">
+    <header class="editor-topbar">
+      <div class="editor-brand">
+        <span class="editor-brand-mark" aria-hidden="true"></span>
+        <div>
+          <strong>Visual Editor</strong>
+          <span>Ye Eun Moon website</span>
+        </div>
+      </div>
+      <div class="editor-top-actions">
+        <span id="editorSaveStatus" class="save-status" role="status" aria-live="polite">Local draft · Not published</span>
+        <button type="button" id="undoBtn" class="secondary" disabled>Undo</button>
+        <button type="button" id="resetBtn" class="secondary" disabled>Reset page</button>
+        <button type="button" id="reviewBtn" class="secondary" disabled>Review changes</button>
+        <button type="button" id="exportBtn" class="primary" disabled>Export edited HTML</button>
+      </div>
+    </header>
+
+    <div class="editor-content">
+      <aside class="editor-sidebar" aria-label="Editor navigation">
+        <div class="sidebar-section">
+          <h2>Pages</h2>
+          <label for="pagePicker">Choose a page</label>
+          <select id="pagePicker">
+            <option value="index.html">Home</option>
+            <option value="research.html">Research</option>
+            <option value="projects.html">Projects</option>
+            <option value="teaching.html">Teaching</option>
+            <option value="interests.html">Interests</option>
+            <option value="about.html">About</option>
+            <option value="cv.html">CV</option>
+            <option value="pungmul.html">Pungmul</option>
+            <option value="research-action.html">Classroom action research</option>
+            <option value="research-scoping.html">Multilingual scoping review</option>
+            <option value="writing-biological-classification.html">Biological classification</option>
+            <option value="research-methods-studio.html">Research Methods Studio project</option>
+            <option value="story-method.html">The Story Method project</option>
+            <option value="teaching-ap-biology.html">AP Biology case</option>
+            <option value="teaching-ap-chemistry.html">AP Chemistry case</option>
+            <option value="teaching-ap-evolution.html">Evolution case</option>
+            <option value="teaching-osmosis-practice.html">Osmosis practice</option>
+          </select>
+        </div>
+        <div class="sidebar-section">
+          <h2>On this page</h2>
+          <nav id="outline" class="outline" aria-label="Page section outline">
+            <p class="muted">Select a page to see its sections.</p>
+          </nav>
+          <div class="section-order" aria-label="Section order controls">
+            <h3>Move page sections</h3>
+            <p class="small-note">Drag a section to reorder it, or use the arrow buttons for keyboard and touch. Navigation and fixed page elements stay in place.</p>
+            <div id="sectionList" class="section-list"></div>
+            <p id="sectionNotice" class="small-note" role="status" aria-live="polite"></p>
+          </div>
+        </div>
+        <div class="sidebar-section">
+          <h2>Editing</h2>
+          <p class="sidebar-help">Click a heading, paragraph, image, caption, or link in the preview. Type directly on the selected text. Use the inspector to edit image descriptions and links.</p>
+          <p class="sidebar-help">Edits remain in this browser until you export them. This editor does not publish to GitHub.</p>
+          <a href="index.html" class="editor-site-link">View public website <span aria-hidden="true">↗</span></a>
+        </div>
+        <div class="sidebar-section">
+          <h2>Other website editors</h2>
+          <p class="sidebar-help">Open another editor in a new tab to preserve your current draft. Each website keeps its own changes and publishing rules.</p>
+          <p><a href="./editors.html" class="editor-site-link" target="_blank" rel="noopener noreferrer">View editor directory <span aria-hidden="true">↗</span></a></p>
+          <nav class="other-editor-links" aria-label="Other website editors">
+            <a href="./research-methods/editor.html" target="_blank" rel="noopener noreferrer">Research Methods Studio <span aria-hidden="true">↗</span><span class="other-editor-detail">Administrator sign-in required</span></a>
+            <a href="./memory-palace-u1-8/editor.html" target="_blank" rel="noopener noreferrer">AP Biology Story Method <span aria-hidden="true">↗</span><span class="other-editor-detail">Browser-local narrative drafts</span></a>
+          </nav>
+        </div>
+      </aside>
+
+      <main id="editorPreview" class="editor-workspace" tabindex="-1">
+        <div class="workspace-toolbar">
+          <div class="workspace-title">
+            <h1 id="previewHeading">Home</h1>
+            <span id="changeCount">0 unsaved changes</span>
+          </div>
+          <div class="workspace-tools" aria-label="Preview options">
+            <label for="previewViewport">Viewport</label>
+            <select id="previewViewport" aria-label="Preview width">
+              <option value="desktop">Desktop</option>
+              <option value="tablet">Tablet</option>
+              <option value="mobile">Mobile</option>
+            </select>
+            <label for="previewTheme">Theme</label>
+            <select id="previewTheme" aria-label="Preview colour scheme">
+              <option value="light">Light</option>
+              <option value="dark">Dark</option>
+            </select>
+          </div>
+        </div>
+        <div class="preview-surround">
+          <div id="previewContainer" class="preview-frame-container desktop">
+            <iframe id="pageFrame" title="Editable website preview" sandbox="allow-same-origin"></iframe>
+          </div>
+        </div>
+        <p class="preview-caption">This is an isolated preview. Links do not navigate, and page scripts do not run while editing.</p>
+      </main>
+
+      <aside class="editor-inspector" aria-label="Selected element settings">
+        <div class="inspector-heading">
+          <h2>Inspector</h2>
+          <span id="selectionTag" class="selection-tag">Nothing selected</span>
+        </div>
+        <div id="selectionEmpty" class="selection-empty">
+          <div class="empty-symbol" aria-hidden="true"><span></span><span></span><span></span></div>
+          <p>Choose an element in the page preview to begin editing.</p>
+        </div>
+        <div id="selectionDetails" hidden>
+          <div class="inspector-group">
+            <label for="selectionText">Text</label>
+            <textarea id="selectionText" rows="6" spellcheck="true"></textarea>
+            <p id="richTextNote" class="small-note">Type in the preview to keep existing links and emphasis intact.</p>
+          </div>
+          <div id="textAppearanceFields" class="inspector-group" hidden>
+            <label for="textAlignment">Text alignment</label>
+            <select id="textAlignment">
+              <option value="">Use site default</option>
+              <option value="left">Left</option>
+              <option value="center">Center</option>
+              <option value="right">Right</option>
+              <option value="justify">Justified</option>
+            </select>
+            <p class="small-note">Only the selected block changes. You can revert it without affecting the rest of the page.</p>
+          </div>
+          <div id="linkFields" class="inspector-group" hidden>
+            <label for="linkHref">Link destination</label>
+            <input id="linkHref" type="text" spellcheck="false" autocomplete="off">
+            <label for="linkTarget">Open link</label>
+            <select id="linkTarget">
+              <option value="same">In the same tab</option>
+              <option value="new">In a new tab</option>
+            </select>
+          </div>
+          <div id="imageFields" class="inspector-group" hidden>
+            <label for="imageSrc">Image path or URL</label>
+            <input id="imageSrc" type="text" spellcheck="false" autocomplete="off">
+            <button type="button" id="chooseExistingImage" class="secondary">Choose from existing images</button>
+            <fieldset class="editor-media-upload">
+              <legend>Upload a new image</legend>
+              <label for="newImageFile">Select PNG, JPEG, or WebP (up to 1.5 MB)</label>
+              <input type="file" id="newImageFile" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp">
+              <button type="button" id="stageImageBtn" class="secondary" disabled>Stage image in preview</button>
+              <button type="button" id="downloadStagedImage" class="secondary" disabled>Download staged image</button>
+              <p id="stagedImageStatus" class="small-note" role="status" aria-live="polite">New images are local until included in a review PR. If you export HTML manually, download the image too.</p>
+            </fieldset>
+            <label for="imageAlt">Image description (alt text)</label>
+            <textarea id="imageAlt" rows="3"></textarea>
+            <label for="imageMaxWidth">Image maximum width</label>
+            <select id="imageMaxWidth">
+              <option value="">Use site default</option>
+              <option value="100%">Full container width</option>
+              <option value="75%">Three-quarter width</option>
+              <option value="50%">Half width</option>
+              <option value="25%">Quarter width</option>
+            </select>
+            <p class="small-note">Existing images and staged uploads can be previewed. New files reach the website only after the private publisher is configured and the GitHub review PR is approved.</p>
+          </div>
+          <div class="inspector-group">
+            <button type="button" id="revertElementBtn" class="secondary" disabled>Revert this element</button>
+          </div>
+        </div>
+        <div class="inspector-footer">
+          <h3>Propose changes</h3>
+          <p>Connect your authorized GitHub account to create a draft pull request. Nothing is published automatically.</p>
+          <p id="publisherStatus" role="status" aria-live="polite" class="publisher-status">GitHub publishing is not configured. Export HTML remains available.</p>
+          <div class="inspector-group">
+            <button type="button" id="publisherConnect" class="secondary" disabled>Connect GitHub</button>
+            <label for="publisherSummary">Brief change summary</label>
+            <input id="publisherSummary" type="text" maxlength="140" placeholder="Revise Teaching page introduction" disabled>
+            <button type="button" id="publisherPropose" class="primary" disabled>Create draft pull request</button>
+            <div id="publisherResult" aria-live="polite"></div>
+          </div>
+          <p class="small-note">The editor only submits changes after you review and confirm them. Publishing requires a separately configured private service.</p>
+        </div>
+      </aside>
+    </div>
+  </div>
+  <dialog id="mediaDialog" class="media-dialog" aria-labelledby="mediaTitle">
+    <h2 id="mediaTitle">Choose an existing website image</h2>
+    <p class="small-note">Use images already referenced by the portfolio. New uploads will be handled by a separate media publisher.</p>
+    <label for="mediaSearch">Search images by filename or description</label>
+    <input id="mediaSearch" type="search" placeholder="Search images">
+    <div id="mediaResults" class="media-results" role="list"></div>
+    <p id="mediaStatus" class="small-note" role="status"></p>
+    <form method="dialog"><button type="submit" class="secondary">Close image library</button></form>
+  </dialog>
+  <dialog id="reviewDialog" class="review-dialog" aria-labelledby="reviewTitle">
+    <h2 id="reviewTitle">Review your changes</h2>
+    <p id="reviewSummary" class="small-note"></p>
+    <div id="reviewChangeList" class="review-change-list"></div>
+    <div id="reviewExportStatus" role="status" aria-live="polite"></div>
+    <form method="dialog"><button type="submit" class="primary">Close review</button></form>
+  </dialog>
+  <dialog id="noticeDialog" aria-labelledby="noticeTitle">
+    <h2 id="noticeTitle">Editor notice</h2>
+    <p id="noticeMessage"></p>
+    <form method="dialog"><button type="submit" class="primary">Close</button></form>
+  </dialog>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="no-referrer">
+  <meta name="color-scheme" content="light">
+  <title>Website Editors | Ye Eun Moon</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: "Times New Roman", Times, serif;
+      --page: #f6f6f3;
+      --paper: #fff;
+      --ink: #171717;
+      --muted: #595955;
+      --line: #cecec7;
+    }
+    * { box-sizing: border-box; }
+    html { min-height: 100%; }
+    body { margin: 0; color: var(--ink); background: var(--page); }
+    a { color: inherit; }
+    a:focus-visible { outline: 3px solid #171717; outline-offset: 4px; }
+    .skip { position: absolute; left: -9999px; top: 12px; }
+    .skip:focus { left: 16px; z-index: 2; background: var(--paper); padding: 10px; }
+    .shell { width: min(980px, calc(100% - 40px)); margin: 0 auto; }
+    header { border-bottom: 1px solid var(--line); background: var(--paper); }
+    .header-inner { min-height: 68px; display: flex; flex-wrap: wrap;
+      align-items: center; justify-content: space-between; gap: 12px; }
+    .identity { font-size: 16px; font-weight: 700; text-decoration: none; }
+    .header-inner > a:last-child { color: var(--muted); font-size: 14px;
+      text-decoration-thickness: 1px; text-underline-offset: 4px; }
+    main { padding: clamp(30px, 6vw, 72px) 0 56px; }
+    .eyebrow { font-size: 13px; text-transform: uppercase; letter-spacing: .09em;
+      color: var(--muted); margin: 0 0 12px; }
+    h1 { font-size: clamp(30px, 5vw, 44px); line-height: 1.12;
+      letter-spacing: -.025em; margin: 0 0 15px; font-weight: 700; }
+    .lead { max-width: 670px; line-height: 1.65; font-size: 17px; margin: 0 0 36px; }
+    .editor-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 13px; }
+    .editor-card { display: flex; flex-direction: column; min-width: 0;
+      padding: 23px 22px 21px; border: 1px solid var(--line);
+      border-radius: 3px; background: var(--paper); }
+    .editor-card .number { font-size: 13px; color: var(--muted); margin: 0 0 18px; flex: 0 0 auto; }
+    .editor-card h2 { font-size: 23px; line-height: 1.23; margin: 0 0 12px; }
+    .editor-card p { color: var(--muted); font-size: 14px; line-height: 1.6;
+      margin: 0 0 20px; }
+    .editor-card > p:not(.number) { flex: 1; }
+    .editor-card a { display: inline-flex; align-items: center; gap: 8px;
+      align-self: flex-start; font-size: 15px; font-weight: 700;
+      text-decoration-thickness: 1px; text-underline-offset: 4px; }
+    .editor-card a:hover { text-decoration-thickness: 2px; }
+    .editor-card .access { color: #43433d; border-top: 1px solid var(--line);
+      padding-top: 13px; margin-top: 17px; font-size: 13px; line-height: 1.45; }
+    .notes { border-top: 1px solid var(--line); margin-top: 36px; padding-top: 22px;
+      display: grid; grid-template-columns: minmax(0, 190px) minmax(0, 1fr);
+      gap: 18px; }
+    .notes h2 { margin: 0; font-size: 19px; }
+    .notes p { margin: 0; font-size: 15px; line-height: 1.65;
+      max-width: 680px; color: var(--muted); }
+    footer { margin: 0 0 32px; font-size: 13px; color: var(--muted); }
+    @media(max-width: 760px) {
+      .editor-grid { grid-template-columns: 1fr; }
+      .editor-card { padding: 21px; }
+      .editor-card .number { margin-bottom: 10px; }
+      .notes { grid-template-columns: 1fr; gap: 10px; }
+    }
+    @media(prefers-reduced-motion: reduce) {
+      * { scroll-behavior: auto !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to editors</a>
+  <header>
+    <div class="shell header-inner">
+      <a class="identity" href="./">Ye Eun Moon</a>
+      <a href="./">Return to the website</a>
+    </div>
+  </header>
+  <main class="shell" id="main">
+    <p class="eyebrow">Website administration</p>
+    <h1>Website editors</h1>
+    <p class="lead">Open the editor for the site you want to update. Each website keeps
+      its own drafts and review process, so changes in one editor do not affect the others.</p>
+    <div class="editor-grid" aria-label="Available website editors">
+      <article class="editor-card">
+        <p class="number">01</p>
+        <h2>Ye Eun Moon</h2>
+        <p>Revise pages, text, links, and image descriptions in the academic website preview.</p>
+        <a href="./editor.html">Open academic editor <span aria-hidden="true">↗</span></a>
+        <div class="access">Browser-local drafts · Export HTML for review</div>
+      </article>
+      <article class="editor-card">
+        <p class="number">02</p>
+        <h2>Research Methods Studio</h2>
+        <p>Review research-stage guidance, activities, laboratory instructions, and Student Guide wording.</p>
+        <a href="./research-methods/editor.html">Open Research Methods editor <span aria-hidden="true">↗</span></a>
+        <div class="access">Administrator sign-in · Separate publication controls</div>
+      </article>
+      <article class="editor-card">
+        <p class="number">03</p>
+        <h2>AP Biology Story Method</h2>
+        <p>Edit narrative passages within the existing journey and scene structures.</p>
+        <a href="./memory-palace-u1-8/editor.html">Open narrative editor <span aria-hidden="true">↗</span></a>
+        <div class="access">Browser-local drafts · Export reviewed journey JSON</div>
+      </article>
+    </div>
+    <section class="notes" aria-labelledby="publishingHeading">
+      <h2 id="publishingHeading">Saving and publishing</h2>
+      <p>Opening a page editor does not grant permission to publish. Academic and narrative
+        edits remain local until exported and reviewed. Research Methods Studio uses its own
+        authenticated service for eligible guidance releases, while other instructional wording
+        remains review-only. Keep copies of exported drafts before clearing browser data.</p>
+    </section>
+  </main>
+  <footer class="shell">This editor directory is publicly viewable. Private credentials and publishing rights are managed separately.</footer>
+</body>
+</html>

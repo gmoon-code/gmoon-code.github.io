@@ -1,0 +1,1294 @@
+/* Local-first visual editor for the public academic portfolio.
+   Preview scripts never run. No credentials are collected or stored. */
+(function () {
+  "use strict";
+
+  const EDITABLE = "h1,h2,h3,h4,h5,h6,p,li,figcaption,blockquote,dt,dd,a,img,th,td";
+  const TEXT_TAGS = new Set(["H1","H2","H3","H4","H5","H6","P","LI","FIGCAPTION","BLOCKQUOTE","DT","DD","A","TH","TD"]);
+  const DRAFT_PREFIX = "moon-portfolio-visual-editor-v1:";
+  const PUBLISH_CONFIG=window.MoonEditorPublisherConfig||{};
+  const publisher={session:null,login:"",busy:false};
+  function publisherEndpoint() {
+    try {
+      const base=new URL(String(PUBLISH_CONFIG.apiBase||""));
+      if(base.protocol!=="https:"||base.username||base.password||base.search||base.hash)return "";
+      return base.href.replace(/\/$/,"");
+    } catch{return "";}
+  }
+  function publisherConfigured() {
+    return !!(publisherEndpoint()&&/^[A-Za-z0-9_-]+$/.test(PUBLISH_CONFIG.clientId||""));
+  }
+  function updatePublishControls() {
+    $("publisherConnect").disabled=!publisherConfigured()||publisher.busy;
+    $("publisherSummary").disabled=!publisher.session||publisher.busy;
+    const moved=state.sectionOrder.some((id,i)=>id!==state.originalSections[i]);
+    $("publisherPropose").disabled=!publisher.session||publisher.busy||
+      (!state.dirty.size&&!moved)||!$("publisherSummary").value.trim();
+  }
+  function publishMessage(text) {
+    $("publisherStatus").textContent=text;
+  }
+
+  const $ = id => document.getElementById(id);
+  const state = {
+    page:null,source:"",doc:null,frameDoc:null,original:new Map(),dirty:new Set(),
+    selected:null,history:[],fingerprint:"",loadToken:0,saveTimer:null,staleDraft:false,
+    originalSections:[],sectionGroups:[],sectionOrder:[],mediaAssets:null,mediaPromise:null,
+    stagedMedia:null
+  };
+
+  function hashText(text) {
+    let n=2166136261;
+    for (let i=0;i<text.length;i++) {
+      n^=text.charCodeAt(i);
+      n=Math.imul(n,16777619);
+    }
+    return (n>>>0).toString(16);
+  }
+
+  function notice(message,title) {
+    $("noticeTitle").textContent=title||"Editor notice";
+    $("noticeMessage").textContent=message;
+    const dlg=$("noticeDialog");
+    if (typeof dlg.showModal==="function") dlg.showModal();
+    else alert(message);
+  }
+
+  function updateStatus(message) {
+    $("editorSaveStatus").textContent=message;
+    const moved=state.sectionOrder.filter((id,i)=>id!==state.originalSections[i]).length;
+    const total=state.dirty.size+moved;
+    $("changeCount").textContent=state.dirty.size+" edited element"+(state.dirty.size===1?"":"s")+
+      (moved?" · "+moved+" moved section"+(moved===1?"":"s"):"");
+    $("exportBtn").disabled=!total;
+    $("reviewBtn").disabled=!total;
+    $("resetBtn").disabled=!total;
+    $("undoBtn").disabled=!state.history.length;
+    updatePublishControls();
+  }
+
+  function annotationId(i) {return "e"+i;}
+
+  function initialIndex() {
+    state.original.clear();
+    const nodes=[...state.doc.querySelectorAll("body "+EDITABLE.replaceAll(",",",body "))];
+    nodes.forEach((node,i)=>state.original.set(annotationId(i),node.outerHTML));
+    nodes.forEach((node,i)=>node.setAttribute("data-editor-key",annotationId(i)));
+    const main=state.doc.querySelector("main");
+    const sections=[...main.children].filter(element=>element.tagName==="SECTION");
+    state.originalSections=sections.map((_,i)=>"s"+i);
+    sections.forEach((element,i)=>element.setAttribute("data-editor-section","s"+i));
+    state.sectionOrder=state.originalSections.slice();
+    state.sectionGroups=[];
+    let group=[];
+    for(const child of main.children){
+      if(child.tagName==="SECTION"){
+        group.push(child.getAttribute("data-editor-section"));
+      }else if(group.length){
+        state.sectionGroups.push(group);
+        group=[];
+      }
+    }
+    if(group.length)state.sectionGroups.push(group);
+    /* Section moves on pages with a table of contents would leave its
+       navigational order stale. Lock those pages until the two can be
+       updated as one reviewed operation. */
+    if(main.querySelector('nav a[href^="#"]')){
+      state.sectionGroups=state.originalSections.map(id=>[id]);
+    }
+  }
+
+  function reindex() {
+    const nodes=[...state.doc.querySelectorAll("body "+EDITABLE.replaceAll(",",",body "))];
+    if (nodes.length!==state.original.size) {
+      throw new Error("The edited block changed the number of editable elements. Undo that edit before exporting.");
+    }
+    const seen=new Set(nodes.map(element=>element.getAttribute("data-editor-key")));
+    if(seen.size!==nodes.length||!nodes.every(element=>seen.has(element.getAttribute("data-editor-key"))&&state.original.has(element.getAttribute("data-editor-key")))){
+      throw new Error("The element identifiers changed unexpectedly. Export has been stopped.");
+    }
+  }
+
+  function getWorking(key) {
+    return state.doc?.querySelector('[data-editor-key="'+key+'"]')||null;
+  }
+
+  function clearMarkers(clone) {
+    clone.removeAttribute("data-editor-key");
+    clone.removeAttribute("contenteditable");
+    clone.removeAttribute("data-editor-selected");
+    clone.removeAttribute("data-editor-section");
+    for (const child of clone.querySelectorAll("[data-editor-key],[contenteditable],[data-editor-selected],[data-editor-section]")) {
+      child.removeAttribute("data-editor-key");
+      child.removeAttribute("contenteditable");
+      child.removeAttribute("data-editor-selected");
+      child.removeAttribute("data-editor-section");
+    }
+    return clone;
+  }
+
+  function cleanOuter(element) {
+    return clearMarkers(element.cloneNode(true)).outerHTML;
+  }
+
+  function checkDangerousHtml(html) {
+    return /<\s*(?:script|iframe|object|embed|form)\b|\bon(?:click|error|load|mouseover|focus)\s*=|(?:href|src)\s*=\s*["']?\s*(?:javascript|data):/i.test(html);
+  }
+
+  function updateDirty(key) {
+    const el=getWorking(key);
+    if (!el||!state.original.has(key)) return;
+    const edited=cleanOuter(el);
+    if (edited===state.original.get(key)) state.dirty.delete(key);
+    else state.dirty.add(key);
+    if (checkDangerousHtml(edited)) {
+      updateStatus("Review required · Unsafe markup");
+      return;
+    }
+    updateStatus("Local draft · Not published");
+    scheduleDraft();
+  }
+
+  function snapshot() {
+    return {html:state.doc.documentElement.outerHTML,dirty:[...state.dirty],
+      order:state.sectionOrder.slice()};
+  }
+
+  function checkpoint() {
+    if (!state.doc) return;
+    const current=snapshot();
+    const previous=state.history[state.history.length-1];
+    if (previous&&previous.html===current.html) return;
+    state.history.push(current);
+    if (state.history.length>24) state.history.shift();
+    updateStatus("Local draft · Not published");
+  }
+
+  function saveDraft() {
+    if (!state.page||!state.doc) return;
+    const items=[...state.dirty].map(id=>{
+      const node=getWorking(id);
+      return node?{id,markup:node.outerHTML}:null;
+    }).filter(Boolean);
+    const key=DRAFT_PREFIX+state.page;
+    try {
+      const orderChanged=state.sectionOrder.some((id,i)=>id!==state.originalSections[i]);
+      if (!items.length&&!orderChanged) {
+        if (state.staleDraft) return;
+        localStorage.removeItem(key);
+      } else {
+        localStorage.setItem(key,JSON.stringify({
+          version:1,sourceHash:state.fingerprint,updated:Date.now(),items,
+          sectionOrder:state.sectionOrder.slice()
+        }));
+      }
+      updateStatus(items.length||orderChanged?"Draft saved in this browser · Not published":"No changes · Not published");
+    } catch (e) {
+      updateStatus("Draft storage unavailable · Export your HTML");
+    }
+  }
+
+  function scheduleDraft() {
+    clearTimeout(state.saveTimer);
+    state.saveTimer=setTimeout(saveDraft,650);
+  }
+
+  function restoreDraft() {
+    let raw;
+    try { raw=localStorage.getItem(DRAFT_PREFIX+state.page); } catch(e) {return;}
+    if (!raw) return;
+    let draft;
+    try { draft=JSON.parse(raw); } catch(e) {return;}
+    if (draft.version!==1||!Array.isArray(draft.items)) return;
+    if (draft.sourceHash!==state.fingerprint) {
+      state.staleDraft=true;
+      updateStatus("Older local draft exists · Not applied");
+      return;
+    }
+    const stagedMarkup=draft.items.some(item=>typeof item.markup==="string"&&
+      /assets\/editor-[a-z0-9-]+\.(?:png|jpg|webp)/i.test(item.markup));
+    if(stagedMarkup){
+      $("stagedImageStatus").textContent=
+        "This draft references an uploaded image whose binary file was not retained after reload. Select the image on the page and stage its file again.";
+    }
+    try {
+      for (const item of draft.items) {
+        if (!state.original.has(item.id)||checkDangerousHtml(item.markup)) continue;
+        const destination=getWorking(item.id);
+        if (!destination) continue;
+        const holder=new DOMParser().parseFromString(item.markup,"text/html");
+        const edited=holder.body.firstElementChild;
+        if (!edited||edited.tagName!==destination.tagName) continue;
+        edited.setAttribute("data-editor-key",item.id);
+        destination.replaceWith(state.doc.importNode(edited,true));
+        state.dirty.add(item.id);
+      }
+      reindex();
+      if(Array.isArray(draft.sectionOrder)&&draft.sectionOrder.length)
+        applySectionOrder(draft.sectionOrder);
+      for (const key of [...state.dirty]) {
+        const node=getWorking(key);
+        if (!node||cleanOuter(node)===state.original.get(key)) state.dirty.delete(key);
+      }
+      updateStatus(state.dirty.size?"Draft restored from this browser · Not published":"No changes · Not published");
+    } catch(e) {
+      notice("The saved draft could not be restored safely. The original page has been left available.","Draft mismatch");
+    }
+  }
+
+  function previewMarkup() {
+    const copy=state.doc.cloneNode(true);
+    for (const element of copy.querySelectorAll("script,iframe,object,embed,form,base")) element.remove();
+    const base=copy.createElement("base");
+    base.setAttribute("href",new URL("./",location.href).href);
+    copy.head.prepend(base);
+    const overlay=copy.createElement("style");
+    overlay.textContent=[
+      "[data-editor-key]{cursor:text;outline-offset:3px;}",
+      "[data-editor-key]:hover{outline:1px dashed #8d8d8d;}",
+      '[data-editor-key][data-editor-selected]{outline:2px solid #2b8769!important;outline-offset:4px!important;}',
+      "[data-editor-key][contenteditable=true]{min-height:1em;}",
+      "[data-editor-key][contenteditable=true]:focus{outline:2px solid #2b8769!important;}",
+      "@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}"
+    ].join("\n");
+    copy.head.appendChild(overlay);
+    copy.documentElement.setAttribute("data-moon-theme",$("previewTheme").value);
+    copy.documentElement.style.colorScheme=$("previewTheme").value;
+    return "<!doctype html>\n"+copy.documentElement.outerHTML;
+  }
+
+  function renderPreview() {
+    state.selected=null;
+    $("selectionDetails").hidden=true;
+    $("selectionEmpty").hidden=false;
+    $("selectionTag").textContent="Nothing selected";
+    const frame=$("pageFrame");
+    frame.onload=function () {
+      try {
+        state.frameDoc=frame.contentDocument;
+        const d=state.frameDoc;
+        d.documentElement.setAttribute("data-moon-theme",$("previewTheme").value);
+        d.documentElement.style.colorScheme=$("previewTheme").value;
+        updateStagedPreview();
+        d.addEventListener("click",onPreviewClick,true);
+        d.addEventListener("input",onPreviewInput,true);
+        d.addEventListener("focusin",onPreviewFocus,true);
+        d.addEventListener("paste",onPreviewPaste,true);
+      } catch(e) {notice("The preview did not become editable. Please reload the editor.");}
+    };
+    frame.srcdoc=previewMarkup();
+    updateOutline();
+    updateSectionList();
+  }
+
+  function onPreviewClick(event) {
+    /* Stop navigation, but keep normal selection behaviour for editable text. */
+    if (event.target.closest("a")) event.preventDefault();
+    const node=event.target.closest("[data-editor-key]");
+    if (!node) return;
+    selectElement(node);
+    if (TEXT_TAGS.has(node.tagName)) node.focus({preventScroll:true});
+  }
+
+  function onPreviewFocus(event) {
+    if (!event.target.closest('[data-editor-key][contenteditable="true"]')) return;
+    checkpoint();
+  }
+
+  function onPreviewPaste(event) {
+    const editable=event.target.closest('[data-editor-key][contenteditable="true"]');
+    if (!editable) return;
+    event.preventDefault();
+    const text=event.clipboardData?.getData("text/plain")||"";
+    const selection=state.frameDoc.defaultView.getSelection();
+    if (!selection||!selection.rangeCount) return;
+    const range=selection.getRangeAt(0);
+    range.deleteContents();
+    const newNode=state.frameDoc.createTextNode(text);
+    range.insertNode(newNode);
+    range.setStartAfter(newNode);
+    range.collapse(true);
+    selection.removeAllRanges();
+    selection.addRange(range);
+    onPreviewInput({target:editable});
+  }
+
+  function onPreviewInput(event) {
+    const edit=event.target.closest('[data-editor-key]');
+    if (!edit) return;
+    const key=edit.getAttribute("data-editor-key");
+    const dst=getWorking(key);
+    if (!dst) return;
+    const html=edit.innerHTML;
+    if (checkDangerousHtml(html)) {
+      notice("This edit contains markup that cannot be exported. Paste ordinary text only.");
+      return;
+    }
+    dst.innerHTML=html;
+    updateDirty(key);
+    if (state.selected===key) updateInspector(edit);
+  }
+
+  function selectElement(node) {
+    if (!node) return;
+    const previously=state.frameDoc.querySelector("[data-editor-selected]");
+    if (previously) {
+      previously.removeAttribute("data-editor-selected");
+      previously.removeAttribute("contenteditable");
+    }
+    state.selected=node.getAttribute("data-editor-key");
+    node.setAttribute("data-editor-selected","");
+    if (TEXT_TAGS.has(node.tagName)) node.setAttribute("contenteditable","true");
+    updateInspector(node);
+  }
+
+  function updateInspector(node) {
+    $("selectionDetails").hidden=false;
+    $("selectionEmpty").hidden=true;
+    $("selectionTag").textContent=node.tagName.toLowerCase();
+    const isImage=node.tagName==="IMG";
+    const isLink=node.tagName==="A";
+    $("imageFields").hidden=!isImage;
+    $("linkFields").hidden=!isLink;
+    $("textAppearanceFields").hidden=isImage;
+    $("selectionText").closest(".inspector-group").hidden=isImage;
+    $("revertElementBtn").disabled=!state.dirty.has(state.selected);
+    if (isImage) {
+      $("imageSrc").value=getWorking(state.selected)?.getAttribute("src")||node.getAttribute("src")||"";
+      $("imageAlt").value=node.getAttribute("alt")||"";
+      $("imageMaxWidth").value=["100%","75%","50%","25%"].includes(node.style.maxWidth)?node.style.maxWidth:"";
+    } else {
+      $("selectionText").value=node.textContent;
+      $("textAlignment").value=["left","center","right","justify"].includes(node.style.textAlign)?
+        node.style.textAlign:"";
+      const rich=[...node.children].length>0;
+      $("selectionText").readOnly=rich;
+      $("richTextNote").textContent=rich?
+        "This block contains links or formatting. Edit it directly in the preview to preserve them.":
+        "Edit here or type directly in the selected text on the page.";
+    }
+    if (isLink) {
+      $("linkHref").value=node.getAttribute("href")||"";
+      $("linkTarget").value=node.getAttribute("target")==="_blank"?"new":"same";
+    }
+  }
+
+  function safeUrl(value,kind) {
+    const s=value.trim();
+    if (!s||/[\u0000-\u001f]/.test(s)) return false;
+    if (/^(?:javascript|data|vbscript|file):/i.test(s)) return false;
+    if (s.startsWith("//")) return false;
+    if (/^[a-z][a-z0-9+.-]*:/i.test(s)) {
+      return kind==="image"?/^https:\/\//i.test(s):/^(?:https?:|mailto:)/i.test(s);
+    }
+    return !/[<>"]/.test(s);
+  }
+
+  function updateSelectedAttribute(attribute,value) {
+    if (!state.selected) return;
+    const target=getWorking(state.selected);
+    const preview=state.frameDoc.querySelector('[data-editor-key="'+state.selected+'"]');
+    if (!target||!preview) return;
+    if (attribute==="src"||attribute==="href") {
+      if (!safeUrl(value,attribute==="src"?"image":"link")) {
+        notice("Enter a safe relative address or an HTTPS URL. JavaScript and data URLs are not allowed.","Invalid URL");
+        return;
+      }
+    }
+    checkpoint();
+    if (value) {target.setAttribute(attribute,value);preview.setAttribute(attribute,value);}
+    else {target.removeAttribute(attribute);preview.removeAttribute(attribute);}
+    if (attribute==="target") {
+      if (value==="_blank") {
+        target.setAttribute("rel","noopener noreferrer");
+        preview.setAttribute("rel","noopener noreferrer");
+      } else {
+        target.removeAttribute("rel");
+        preview.removeAttribute("rel");
+      }
+    }
+    updateDirty(state.selected);
+    updateInspector(preview);
+  }
+
+  function updateSelectedStyle(property,value,allowed) {
+    if(!state.selected||!(value===""||allowed.includes(value)))return;
+    const actual=getWorking(state.selected);
+    const rendered=state.frameDoc?.querySelector('[data-editor-key="'+state.selected+'"]');
+    if(!actual||!rendered)return;
+    checkpoint();
+    for(const node of [actual,rendered]) {
+      node.style[property]=value;
+      if(!node.getAttribute("style")?.trim())node.removeAttribute("style");
+    }
+    updateDirty(state.selected);
+    updateInspector(rendered);
+  }
+
+  function onInspectorText() {
+    if (!state.selected) return;
+    const el=state.frameDoc.querySelector('[data-editor-key="'+state.selected+'"]');
+    const work=getWorking(state.selected);
+    if (!el||!work||$("selectionText").readOnly||el.tagName==="IMG") return;
+    el.textContent=$("selectionText").value;
+    work.textContent=$("selectionText").value;
+    updateDirty(state.selected);
+  }
+
+
+  /* Movements are restricted to sibling sections within an uninterrupted
+     run. Any navigation or other element forms a hard boundary. */
+  function validSectionOrder(ids) {
+    if(!Array.isArray(ids)||ids.length!==state.originalSections.length||
+       new Set(ids).size!==ids.length||
+       ids.some(id=>!state.originalSections.includes(id)))return false;
+    let offset=0;
+    for(const group of state.sectionGroups){
+      const segment=ids.slice(offset,offset+group.length);
+      if(segment.length!==group.length||
+         segment.some(id=>!group.includes(id)))return false;
+      offset+=group.length;
+    }
+    return true;
+  }
+  function applySectionOrder(ids) {
+    if(!validSectionOrder(ids))throw new Error("Section order does not match this page.");
+    const main=state.doc.querySelector("main");
+    for(const group of state.sectionGroups){
+      if(group.length<2)continue;
+      // Find the current group's actual final sibling. Its original final ID
+      // may have moved in an earlier edit, so that ID is not a safe boundary.
+      const currentNodes=[...main.children].filter(node=>
+        group.includes(node.getAttribute("data-editor-section")));
+      if(currentNodes.length!==group.length)
+        throw new Error("A section group changed unexpectedly.");
+      const boundary=currentNodes.at(-1).nextElementSibling;
+      const wanted=ids.filter(id=>group.includes(id));
+      for(const id of wanted) {
+        const node=main.querySelector('[data-editor-section="'+id+'"]');
+        main.insertBefore(node,boundary);
+      }
+    }
+    state.sectionOrder=ids.slice();
+  }
+  function moveSection(id,direction) {
+    const current=state.doc.querySelector('[data-editor-section="'+id+'"]');
+    if(!current||![-1,1].includes(direction))return;
+    const neighbour=direction<0?current.previousElementSibling:current.nextElementSibling;
+    if(!neighbour||neighbour.tagName!=="SECTION"||
+       !neighbour.hasAttribute("data-editor-section"))return;
+    const group=state.sectionGroups.find(g=>g.includes(id));
+    if(!group||!group.includes(neighbour.getAttribute("data-editor-section")))return;
+    checkpoint();
+    if(direction<0)neighbour.before(current);
+    else neighbour.after(current);
+    state.sectionOrder=[...state.doc.querySelectorAll("main > section[data-editor-section]")]
+      .map(n=>n.getAttribute("data-editor-section"));
+    if(!validSectionOrder(state.sectionOrder)){
+      undo();notice("That section move would cross a protected page boundary.");return;
+    }
+    renderPreview();
+    scheduleDraft();
+    updateStatus("Section order changed · Not published");
+  }
+
+  // Dragging uses the same validated, reversible section-order model as
+  // the arrow controls. The arrows remain the keyboard/touch alternative.
+  let sectionDragId=null;
+  function clearSectionDropMarks(){
+    for(const row of document.querySelectorAll(
+      "#sectionList .section-dragging,#sectionList .drop-before,#sectionList .drop-after"))
+      row.classList.remove("section-dragging","drop-before","drop-after");
+  }
+  function reorderSection(fromId,targetId,after){
+    if(fromId===targetId)return;
+    const group=state.sectionGroups.find(g=>g.includes(fromId));
+    if(!group||!group.includes(targetId)||group.length<2)return;
+    const desired=state.sectionOrder.filter(id=>id!==fromId);
+    const targetIndex=desired.indexOf(targetId);
+    if(targetIndex<0)return;
+    desired.splice(targetIndex+(after?1:0),0,fromId);
+    if(!validSectionOrder(desired)||
+       desired.every((id,i)=>id===state.sectionOrder[i]))return;
+    checkpoint();
+    try{applySectionOrder(desired);}
+    catch(error){undo();notice(error.message,"Section move stopped");return;}
+    renderPreview();
+    scheduleDraft();
+    updateStatus("Section order changed · Not published");
+  }
+
+  function updateStagedPreview(){
+    if(!state.stagedMedia||!state.frameDoc)return;
+    const node=state.frameDoc.querySelector(
+      '[data-editor-key="'+state.stagedMedia.key+'"]');
+    if(node?.tagName==="IMG"&&
+       getWorking(state.stagedMedia.key)?.getAttribute("src")===state.stagedMedia.path)
+      node.src=state.stagedMedia.objectUrl;
+  }
+  function clearStagedMedia(){
+    if(state.stagedMedia){
+      URL.revokeObjectURL(state.stagedMedia.objectUrl);
+      state.stagedMedia=null;
+    }
+    $("newImageFile").value="";
+    $("stageImageBtn").disabled=true;
+    $("downloadStagedImage").disabled=true;
+    $("stagedImageStatus").textContent="No new image staged.";
+  }
+  function mediaSignature(bytes,mime){
+    if(bytes.length<24||bytes.length>1572864)return false;
+    if(mime==="image/png"){
+      return [137,80,78,71,13,10,26,10].every((v,i)=>bytes[i]===v)&&
+        String.fromCharCode(...bytes.slice(12,16))==="IHDR";
+    }
+    if(mime==="image/jpeg")return bytes[0]===255&&bytes[1]===216&&bytes[2]===255;
+    if(mime==="image/webp")return String.fromCharCode(...bytes.slice(0,4))==="RIFF"&&
+      String.fromCharCode(...bytes.slice(8,12))==="WEBP";
+    return false;
+  }
+  async function stageNewImage(){
+    const file=$("newImageFile").files?.[0];
+    const key=state.selected;
+    const target=key&&getWorking(key);
+    if(!file||target?.tagName!=="IMG")return;
+    if(state.stagedMedia&&state.stagedMedia.key!==key){
+      notice("Only one new image can be staged per review request. Reset or publish the current page before adding another.");
+      return;
+    }
+    if(file.size>1572864||file.size<24){
+      notice("Choose an image smaller than 1.5 MB and larger than 24 bytes.");return;
+    }
+    const ext={"image/png":"png","image/jpeg":"jpg","image/webp":"webp"}[file.type];
+    if(!ext){notice("Choose a PNG, JPEG, or WebP image.");return;}
+    const bytes=new Uint8Array(await file.arrayBuffer());
+    if(!mediaSignature(bytes,file.type)){
+      notice("The file signature does not match its image type.");return;
+    }
+    try {
+      const bitmap=await createImageBitmap(file);
+      if(!bitmap.width||!bitmap.height||bitmap.width>8000||bitmap.height>8000){
+        bitmap.close();throw new Error("The image exceeds the 8000-pixel dimension limit.");
+      }
+      bitmap.close();
+    } catch(e){notice(e.message||"This image could not be decoded.");return;}
+    const random=Array.from(crypto.getRandomValues(new Uint8Array(5)),v=>
+      v.toString(16).padStart(2,"0")).join("");
+    const newPath="assets/editor-"+Date.now().toString(36)+"-"+random+"."+ext;
+    const old=state.stagedMedia;
+    checkpoint();
+    updateSelectedAttribute("src",newPath);
+    if(getWorking(key)?.getAttribute("src")!==newPath)return;
+    const objectUrl=URL.createObjectURL(file);
+    const checksum=new Uint8Array(await crypto.subtle.digest("SHA-256",bytes));
+    const sha256=Array.from(checksum,v=>v.toString(16).padStart(2,"0")).join("");
+    state.stagedMedia={path:newPath,key,file,objectUrl,sha256,mime:file.type};
+    if(old)URL.revokeObjectURL(old.objectUrl);
+    updateStagedPreview();
+    $("downloadStagedImage").disabled=false;
+    $("stagedImageStatus").textContent=file.name+" · "+Math.round(file.size/1024)+
+      " KB staged at "+newPath+". Not published. Keep the image file with exported HTML.";
+    scheduleDraft();
+  }
+  function downloadStagedImage(){
+    const m=state.stagedMedia;
+    if(!m)return;
+    const link=document.createElement("a");
+    link.href=m.objectUrl;
+    link.download=m.path.split("/").at(-1);
+    document.body.appendChild(link);link.click();link.remove();
+  }
+  async function mediaPayload(){
+    const m=state.stagedMedia;
+    if(!m)return undefined;
+    const content=buildExport();
+    if(!content.includes('src="'+m.path+'"')&&!content.includes("src='"+m.path+"'"))
+      return undefined;
+    const bytes=new Uint8Array(await m.file.arrayBuffer());
+    let binary="";
+    for(let i=0;i<bytes.length;i+=16384)
+      binary+=String.fromCharCode(...bytes.subarray(i,i+16384));
+    return {path:m.path,mime:m.mime,sha256:m.sha256,base64:btoa(binary)};
+  }
+
+  function updateSectionList() {
+    const list=$("sectionList");
+    list.replaceChildren();
+    const sections=[...state.doc.querySelectorAll("main > section[data-editor-section]")];
+    for(let i=0;i<sections.length;i++){
+      const node=sections[i];
+      const id=node.getAttribute("data-editor-section");
+      const heading=node.querySelector("h1,h2,h3");
+      const title=heading?.textContent.trim()||"Section "+(i+1);
+      const row=document.createElement("div");
+      row.className="section-order-row";
+      row.dataset.sectionId=id;
+      const group=state.sectionGroups.find(g=>g.includes(id))||[];
+      if(group.length>1){
+        row.draggable=true;
+        row.title="Drag to reorder within this group, or use the arrow buttons.";
+        row.addEventListener("dragstart",event=>{
+          sectionDragId=id;
+          if(event.dataTransfer){
+            event.dataTransfer.effectAllowed="move";
+            event.dataTransfer.setData("text/plain",id);
+          }
+          row.classList.add("section-dragging");
+        });
+        row.addEventListener("dragover",event=>{
+          if(!sectionDragId||sectionDragId===id||
+             !group.includes(sectionDragId))return;
+          event.preventDefault();
+          if(event.dataTransfer)event.dataTransfer.dropEffect="move";
+          clearSectionDropMarks();
+          const halfway=row.getBoundingClientRect().top+row.offsetHeight/2;
+          row.classList.add(event.clientY<halfway?"drop-before":"drop-after");
+        });
+        row.addEventListener("drop",event=>{
+          if(!sectionDragId||sectionDragId===id||
+             !group.includes(sectionDragId))return;
+          event.preventDefault();
+          const source=sectionDragId;
+          const halfway=row.getBoundingClientRect().top+row.offsetHeight/2;
+          const after=event.clientY>=halfway;
+          sectionDragId=null;
+          clearSectionDropMarks();
+          reorderSection(source,id,after);
+        });
+        row.addEventListener("dragend",()=>{
+          sectionDragId=null;
+          clearSectionDropMarks();
+        });
+      }
+      const label=document.createElement("span");
+      label.textContent=title.slice(0,75);
+      label.title=title;
+      const buttons=document.createElement("div");buttons.className="section-order-actions";
+      for(const direction of [-1,1]){
+        const neighbour=direction<0?node.previousElementSibling:node.nextElementSibling;
+        const enabled=neighbour?.tagName==="SECTION"&&
+          group.includes(neighbour.getAttribute("data-editor-section"));
+        const button=document.createElement("button");
+        button.type="button";
+        button.textContent=direction<0?"↑":"↓";
+        button.setAttribute("aria-label",(direction<0?"Move up: ":"Move down: ")+title);
+        button.title=(direction<0?"Move section up":"Move section down");
+        button.disabled=!enabled;
+        button.addEventListener("click",()=>moveSection(id,direction));
+        buttons.appendChild(button);
+      }
+      row.append(label,buttons);
+      list.appendChild(row);
+    }
+    const toc=!!state.doc.querySelector('main nav a[href^="#"]');
+    $("sectionNotice").textContent=!sections.length?
+      "No movable sections on this page.":toc?
+      "Section moves are locked while this page has a contents menu, to prevent mismatched navigation.":
+      "Drag to reorder, or use the arrow buttons. Sections separated by fixed page elements cannot cross them.";
+  }
+  function rawMainSections(source) {
+    const opener=/<main\b[^>]*>/i.exec(source);
+    if(!opener)throw new Error("Main page region cannot be located.");
+    const begin=opener.index+opener[0].length;
+    const close=/<\/main\s*>/gi;
+    close.lastIndex=begin;
+    const last=close.exec(source);
+    if(!last)throw new Error("Main page closing tag was not found.");
+    const content=source.slice(begin,last.index);
+    const tags=/<\/?section\b[^>]*>/gi;
+    let token,depth=0,start=0;
+    const spans=[];
+    while((token=tags.exec(content))){
+      const closing=/^<\//.test(token[0]);
+      if(!closing){
+        if(depth===0)start=begin+token.index;
+        depth++;
+      }else{
+        depth--;
+        if(depth<0)throw new Error("Unbalanced sections in page source.");
+        if(depth===0)spans.push({start,end:begin+tags.lastIndex});
+      }
+    }
+    if(depth||spans.length!==state.originalSections.length)
+      throw new Error("Section boundaries differ from the original page. Reordering is blocked.");
+    return spans;
+  }
+  function exportSectionOrder(html) {
+    if(state.sectionOrder.every((id,i)=>id===state.originalSections[i]))return html;
+    if(!validSectionOrder(state.sectionOrder))
+      throw new Error("The section order crosses a page boundary.");
+    const spans=rawMainSections(html);
+    const changes=[];
+    for(const group of state.sectionGroups){
+      const desired=state.sectionOrder.filter(id=>group.includes(id));
+      if(group.length<2||desired.every((id,i)=>id===group[i]))continue;
+      const first=Number(group[0].slice(1));
+      const last=Number(group.at(-1).slice(1));
+      const fragments=new Map(),gaps=[];
+      for(let i=0;i<group.length;i++){
+        const pos=Number(group[i].slice(1));
+        fragments.set(group[i],html.slice(spans[pos].start,spans[pos].end));
+        if(i+1<group.length){
+          const after=Number(group[i+1].slice(1));
+          const gap=html.slice(spans[pos].end,spans[after].start);
+          if(gap.trim())throw new Error("A non-section element separates these blocks. Move cancelled.");
+          gaps.push(gap);
+        }
+      }
+      let reordered="";
+      for(let i=0;i<desired.length;i++){
+        reordered+=fragments.get(desired[i])+(gaps[i]||"");
+      }
+      changes.push({start:spans[first].start,end:spans[last].end,replacement:reordered});
+    }
+    for(const item of changes.sort((a,b)=>b.start-a.start)){
+      html=html.slice(0,item.start)+item.replacement+html.slice(item.end);
+    }
+    return html;
+  }
+
+  /* The media browser uses image files already referenced on the public site.
+     It never uploads assets or introduces arbitrary third-party sources. */
+  const IMAGE_PATH=/^assets\/[a-z0-9._/-]+\.(?:webp|png|jpg|jpeg|gif|avif)$/i;
+  async function availableImages() {
+    if(state.mediaAssets)return state.mediaAssets;
+    if(state.mediaPromise)return state.mediaPromise;
+    const pages=[...$("pagePicker").options].map(option=>option.value);
+    state.mediaPromise=(async()=>{
+      const found=new Map();
+      const results=await Promise.all(pages.map(async page=>{
+        try{
+          const r=await fetch(page,{cache:"force-cache",credentials:"same-origin"});
+          return r.ok?await r.text():"";
+        }catch{return ""}
+      }));
+      for(const text of results){
+        if(!text)continue;
+        const doc=new DOMParser().parseFromString(text,"text/html");
+        for(const img of doc.querySelectorAll("img[src]")){
+          const src=img.getAttribute("src")||"";
+          if(!IMAGE_PATH.test(src)||src.includes(".."))continue;
+          if(!found.has(src))found.set(src,{
+            path:src,description:img.getAttribute("alt")||src.split("/").at(-1)
+          });
+        }
+      }
+      state.mediaAssets=[...found.values()].sort((a,b)=>a.path.localeCompare(b.path));
+      return state.mediaAssets;
+    })();
+    try{return await state.mediaPromise}
+    finally{state.mediaPromise=null}
+  }
+  function renderMediaResults(items) {
+    const root=$("mediaResults");root.replaceChildren();
+    for(const item of items){
+      const button=document.createElement("button");
+      button.className="media-option";
+      button.type="button";
+      button.setAttribute("role","listitem");
+      button.title="Use "+item.path;
+      const img=document.createElement("img");
+      img.src=item.path;img.alt="";img.loading="lazy";
+      const label=document.createElement("strong");
+      label.textContent=item.description.slice(0,125);
+      const code=document.createElement("small");code.textContent=item.path;
+      button.append(img,label,code);
+      button.addEventListener("click",()=>{
+        const selected=state.frameDoc?.querySelector(
+          '[data-editor-key="'+state.selected+'"]');
+        if(!selected||selected.tagName!=="IMG"){
+          $("mediaStatus").textContent="Select an image in the page preview first.";
+          return;
+        }
+        updateSelectedAttribute("src",item.path);
+        $("mediaDialog").close();
+      });
+      root.appendChild(button);
+    }
+    $("mediaStatus").textContent=items.length+
+      " existing image"+(items.length===1?"":"s")+".";
+  }
+  async function openMediaLibrary(){
+    const selected=state.frameDoc?.querySelector(
+      '[data-editor-key="'+state.selected+'"]');
+    if(!selected||selected.tagName!=="IMG")return;
+    $("mediaSearch").value="";
+    $("mediaResults").replaceChildren();
+    $("mediaStatus").textContent="Finding images already used on the site…";
+    $("mediaDialog").showModal();
+    const images=await availableImages();
+    if(!$("mediaDialog").open)return;
+    renderMediaResults(images);
+  }
+
+  function updateOutline() {
+    const nav=$("outline");
+    nav.replaceChildren();
+    const headings=state.doc.querySelectorAll("main h1,main h2,main h3");
+    for (const h of headings) {
+      const b=document.createElement("button");
+      b.type="button";
+      b.dataset.level=h.tagName.slice(1);
+      b.textContent=(h.textContent||h.tagName).trim().slice(0,100);
+      b.addEventListener("click",()=>{
+        const key=h.getAttribute("data-editor-key");
+        const match=state.frameDoc?.querySelector('[data-editor-key="'+key+'"]');
+        if (match) {match.scrollIntoView({block:"center",behavior:"smooth"});selectElement(match);}
+      });
+      nav.appendChild(b);
+    }
+    if (!nav.children.length) nav.textContent="No section headings found.";
+  }
+
+  function cleanEditedElement(markup) {
+    const parsed=new DOMParser().parseFromString(markup,"text/html");
+    const node=parsed.body.firstElementChild;
+    if (!node||checkDangerousHtml(markup)) throw new Error("Potentially unsafe markup in edited element.");
+    return cleanOuter(node);
+  }
+
+  function buildExport() {
+    let next=state.source;
+    const toExport=[...state.dirty].filter(key=>{
+      const node=getWorking(key);
+      if (!node) return false;
+      const parent=node.parentElement?.closest("[data-editor-key]");
+      return !parent||!state.dirty.has(parent.getAttribute("data-editor-key"));
+    });
+    const ops=toExport.map(key=>({
+      key,before:state.original.get(key),after:cleanEditedElement(getWorking(key).outerHTML)
+    }));
+    for (const op of ops) {
+      if (!op.before) throw new Error("A changed block has lost its original markup.");
+      let before=op.before,after=op.after;
+      let pos=next.indexOf(before);
+      if (pos<0) {
+        /* Browsers normalize whitespace within multiline opening tags.
+           A unique inner-HTML match preserves the original tag verbatim. */
+        const originalNode=new DOMParser().parseFromString(op.before,"text/html").body.firstElementChild;
+        const editedNode=new DOMParser().parseFromString(op.after,"text/html").body.firstElementChild;
+        if (originalNode&&editedNode&&originalNode.innerHTML) {
+          /* Inner-content replacement cannot carry attribute edits. */
+          const attributesBefore=[...originalNode.attributes].map(a=>[a.name,a.value]);
+          const attributesAfter=[...editedNode.attributes].map(a=>[a.name,a.value]);
+          if (JSON.stringify(attributesBefore)===JSON.stringify(attributesAfter)) {
+            before=originalNode.innerHTML;
+            after=editedNode.innerHTML;
+            pos=next.indexOf(before);
+          }
+        }
+      }
+      if (pos<0) {
+        /* For uniquely identified source blocks, replace the opening tag
+           alongside the inner content. This supports alignment and other
+           inspector-controlled attributes without rewriting entire pages. */
+        const oldEl=new DOMParser().parseFromString(op.before,"text/html").body.firstElementChild;
+        const newEl=new DOMParser().parseFromString(op.after,"text/html").body.firstElementChild;
+        if(oldEl&&newEl&&oldEl.tagName===newEl.tagName&&oldEl.innerHTML) {
+          const inner=oldEl.innerHTML;
+          const at=next.indexOf(inner);
+          if(at>=0&&next.indexOf(inner,at+inner.length)<0){
+            const tag=oldEl.tagName.toLowerCase();
+            const prefix=next.slice(Math.max(0,at-1500),at);
+            const match=prefix.match(new RegExp("<"+tag+"\\b[^>]*>$","i"));
+            if(match){
+              const oldOpening=match[0];
+              const parsed=new DOMParser().parseFromString(
+                oldOpening+"</"+tag+">","text/html").body.firstElementChild;
+              const equal=parsed&&
+                [...parsed.attributes].length===[...oldEl.attributes].length&&
+                [...oldEl.attributes].every(attribute=>
+                  parsed.getAttribute(attribute.name)===attribute.value);
+              const newOpening=op.after.match(/^<[^>]*>/)?.[0];
+              if(equal&&newOpening){
+                const start=at-oldOpening.length;
+                next=next.slice(0,start)+newOpening+newEl.innerHTML+
+                  next.slice(at+inner.length);
+                continue;
+              }
+            }
+          }
+        }
+      }
+      if (pos<0) {
+        /* Images are void elements. Their attributes can be written safely
+           when the original image can be identified uniquely by source and alt. */
+        const beforeNode=new DOMParser().parseFromString(op.before,"text/html").body.firstElementChild;
+        const afterNode=new DOMParser().parseFromString(op.after,"text/html").body.firstElementChild;
+        if (beforeNode&&afterNode&&beforeNode.tagName===afterNode.tagName&&
+            ["IMG","A"].includes(beforeNode.tagName)) {
+          const tag=beforeNode.tagName.toLowerCase();
+          const re=new RegExp("<"+tag+"\\b[^>]*>","gi");
+          const candidates=[...next.matchAll(re)].filter(match=>{
+            const candidate=new DOMParser().parseFromString(match[0],"text/html").body.firstElementChild;
+            if (!candidate||candidate.tagName!==beforeNode.tagName) return false;
+            return [...beforeNode.attributes].every(attribute=>
+              candidate.getAttribute(attribute.name)===attribute.value
+            )&&[...candidate.attributes].length===[...beforeNode.attributes].length;
+          });
+          if (candidates.length===1) {
+            const originalTag=candidates[0];
+            const replacementTag=afterNode.outerHTML.match(/^<[^>]*>/)?.[0];
+            if (!replacementTag) throw new Error("Could not export element "+op.key+".");
+            next=next.slice(0,originalTag.index)+replacementTag+
+              next.slice(originalTag.index+originalTag[0].length);
+            /* Text and inline markup may also have changed. Apply them only
+               if a unique original inner content span follows the raw tag. */
+            if (beforeNode.innerHTML!==afterNode.innerHTML) {
+              const innerAt=originalTag.index+replacementTag.length;
+              if (!next.startsWith(beforeNode.innerHTML,innerAt)) {
+                throw new Error("Cannot safely reconcile nested content in "+op.key+".");
+              }
+              next=next.slice(0,innerAt)+afterNode.innerHTML+
+                next.slice(innerAt+beforeNode.innerHTML.length);
+            }
+            continue;
+          }
+        }
+      }
+      if (pos<0) throw new Error("The page source cannot uniquely locate element "+op.key+". No HTML has been exported.");
+      if (next.indexOf(before,pos+before.length)>=0) throw new Error("Element "+op.key+" has identical source duplicates. Review this change manually.");
+      next=next.slice(0,pos)+after+next.slice(pos+before.length);
+    }
+    next=exportSectionOrder(next);
+    if(state.stagedMedia&&next.includes(state.stagedMedia.path)){
+      const image=getWorking(state.stagedMedia.key);
+      const original=new DOMParser().parseFromString(
+        state.original.get(state.stagedMedia.key)||"","text/html").body.firstElementChild;
+      const alt=image?.getAttribute("alt")?.trim()||"";
+      if(!alt||alt===original?.getAttribute("alt")?.trim())
+        throw new Error("Describe the newly uploaded image in the Alt text field before exporting or proposing changes.");
+    }
+    const references=[...next.matchAll(/\bsrc\s*=\s*["\'](assets\/editor-[a-z0-9-]+\.(?:png|jpg|webp))["\']/gi)]
+      .map(match=>match[1]).filter(path=>!state.source.includes(path));
+    for(const path of references){
+      if(!state.stagedMedia||state.stagedMedia.path!==path)
+        throw new Error("This draft uses a new image whose file is unavailable. Re-select and stage that image before exporting.");
+    }
+    if (next===state.source) throw new Error("There are no exportable changes.");
+    return next;
+  }
+
+  async function connectPublisher() {
+    if(!publisherConfigured()) return;
+    const nonce=new Uint8Array(24);
+    crypto.getRandomValues(nonce);
+    const stateValue=Array.from(nonce,n=>n.toString(16).padStart(2,"0")).join("");
+    try{sessionStorage.setItem("moon-publisher-oauth-state",stateValue);}
+    catch{publishMessage("This browser must allow session storage for GitHub sign-in.");return;}
+    const url=new URL("https://github.com/login/oauth/authorize");
+    url.searchParams.set("client_id",PUBLISH_CONFIG.clientId);
+    url.searchParams.set("redirect_uri",
+      PUBLISH_CONFIG.redirectUri||"https://gmoon-code.github.io/editor.html");
+    url.searchParams.set("state",stateValue);
+    window.location.assign(url.toString());
+  }
+
+  async function processPublisherCallback() {
+    const url=new URL(location.href);
+    const code=url.searchParams.get("code");
+    const givenState=url.searchParams.get("state");
+    const oauthError=url.searchParams.get("error");
+    if(!code&&!oauthError)return;
+    url.searchParams.delete("code");
+    url.searchParams.delete("state");
+    url.searchParams.delete("error");
+    url.searchParams.delete("error_description");
+    window.history.replaceState(null,"",url.pathname+url.search+url.hash);
+    let expected="";
+    try{
+      expected=sessionStorage.getItem("moon-publisher-oauth-state")||"";
+      sessionStorage.removeItem("moon-publisher-oauth-state");
+    }catch{}
+    if(oauthError){publishMessage("GitHub connection was cancelled.");return;}
+    if(!publisherConfigured()||!expected||!givenState||
+       expected!==givenState||!code) {
+      publishMessage("GitHub sign-in could not be verified. Try again.");
+      return;
+    }
+    publisher.busy=true;updatePublishControls();
+    publishMessage("Verifying GitHub authorization…");
+    try{
+      const result=await fetch(publisherEndpoint()+"/oauth/exchange",{
+        method:"POST",cache:"no-store",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({code})
+      });
+      const payload=await result.json();
+      if(!result.ok||payload.ok!==true||typeof payload.session!=="string")
+        throw new Error(payload.error||"GitHub sign-in failed");
+      publisher.session=payload.session;
+      publisher.login=payload.login;
+      publishMessage("Connected as "+publisher.login+". Changes create draft pull requests only.");
+    }catch(error){publishMessage("Unable to connect. "+(error.message||"Try again."));}
+    finally{publisher.busy=false;updatePublishControls();}
+  }
+
+  async function createPublisherProposal() {
+    const reordered=state.sectionOrder.some((id,i)=>id!==state.originalSections[i]);
+    if(!publisher.session||(!state.dirty.size&&!reordered)||publisher.busy)return;
+    const summary=$("publisherSummary").value.trim();
+    if(!summary||summary.length>140){publishMessage("Enter a short change summary.");return;}
+    let content;
+    try{content=buildExport();}
+    catch(error){notice(error.message,"Review required before publishing");return;}
+    if(!window.confirm("Create a draft GitHub pull request for "+state.page+
+      "?\n\n"+summary+"\n\nThis will not publish to the website."))return;
+    publisher.busy=true;updatePublishControls();
+    publishMessage("Creating a review-only pull request…");
+    try{
+      const buffer=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(state.source));
+      const sourceHash=Array.from(new Uint8Array(buffer),byte=>
+        byte.toString(16).padStart(2,"0")).join("");
+      const result=await fetch(publisherEndpoint()+"/proposals",{
+        method:"POST",cache:"no-store",
+        headers:{"Content-Type":"application/json",
+          "Authorization":"Bearer "+publisher.session},
+        body:JSON.stringify({path:state.page,sourceHash,content,summary,
+          media:await mediaPayload()})
+      });
+      const payload=await result.json();
+      if(!result.ok||payload.ok!==true)
+        throw new Error(payload.error||"The publishing service rejected the proposal");
+      if(!/^https:\/\/github\.com\/gmoon-code\/gmoon-code\.github\.io\/pull\/\d+$/.test(payload.url))
+        throw new Error("Publisher did not return an expected GitHub review link");
+      const region=$("publisherResult");
+      region.replaceChildren();
+      const link=document.createElement("a");
+      link.href=payload.url;
+      link.target="_blank";
+      link.rel="noopener noreferrer";
+      link.textContent="Review draft pull request #"+payload.number+" on GitHub ↗";
+      region.appendChild(link);
+      publishMessage("Review request created. The live website is unchanged.");
+    }catch(error){
+      publishMessage("Proposal not created. "+(error.message||"Try again."));
+      if(/Session expired|401/.test(error.message||"")) {
+        publisher.session=null;publisher.login="";
+      }
+    }finally{publisher.busy=false;updatePublishControls();}
+  }
+
+  function reviewChanges() {
+    const list=$("reviewChangeList");
+    list.replaceChildren();
+    const ids=[...state.dirty].sort((a,b)=>Number(a.slice(1))-Number(b.slice(1)));
+    const reordered=state.sectionOrder.some((id,i)=>id!==state.originalSections[i]);
+    $("reviewSummary").textContent=ids.length+" edited element"+(ids.length===1?"":"s")+
+      (reordered?" · section order changed":"")+
+      " on "+$("pagePicker").selectedOptions[0]?.textContent+".";
+    const previewText=(node)=>{
+      if (!node) return "";
+      if (node.tagName==="IMG") return "Image: "+(node.getAttribute("src")||"")+
+        "\nDescription: "+(node.getAttribute("alt")||"");
+      if (node.tagName==="A") return "Link: "+(node.getAttribute("href")||"")+
+        "\nText: "+node.textContent.trim();
+      return node.textContent.trim();
+    };
+    for (const key of ids) {
+      const beforeMarkup=state.original.get(key)||"";
+      const previous=new DOMParser().parseFromString(beforeMarkup,"text/html").body.firstElementChild;
+      const current=getWorking(key);
+      if (!current) continue;
+      const item=document.createElement("section");
+      item.className="review-change";
+      const heading=document.createElement("h3");
+      heading.textContent=current.tagName.toLowerCase()+" · "+key;
+      item.appendChild(heading);
+      for (const [label,value] of [
+        ["Before",previewText(previous)],
+        ["After",previewText(current)]
+      ]) {
+        const block=document.createElement("div");
+        block.className="review-change-part";
+        const title=document.createElement("strong");
+        title.textContent=label;
+        const text=document.createElement("p");
+        text.textContent=value.length>750?value.slice(0,750)+"…":value;
+        block.append(title,text);
+        item.appendChild(block);
+      }
+      list.appendChild(item);
+    }
+    if(state.stagedMedia){
+      const node=document.createElement("p");
+      node.textContent="Staged image · "+state.stagedMedia.path+
+        ". The binary file must accompany this HTML in the review PR.";
+      list.appendChild(node);
+    }
+    if(reordered){
+      const row=document.createElement("section");row.className="review-change";
+      const heading=document.createElement("h3");heading.textContent="Section order";
+      const p=document.createElement("p");
+      p.textContent="Original "+state.originalSections.join(" → ")+"\nRevised "+state.sectionOrder.join(" → ");
+      p.style.whiteSpace="pre-wrap";row.append(heading,p);list.prepend(row);
+    }
+    const status=$("reviewExportStatus");
+    try {
+      buildExport();
+      status.textContent="Source check passed. Changes can be exported for review.";
+      status.dataset.tone="ok";
+    } catch(error) {
+      status.textContent="Export requires attention. "+error.message;
+      status.dataset.tone="warning";
+    }
+    const modal=$("reviewDialog");
+    if (typeof modal.showModal==="function") modal.showModal();
+  }
+
+  function exportHtml() {
+    try {
+      const result=buildExport();
+      const blob=new Blob([result],{type:"text/html;charset=utf-8"});
+      const url=URL.createObjectURL(blob);
+      const link=document.createElement("a");
+      link.href=url;
+      link.download=state.page;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(()=>URL.revokeObjectURL(url),10000);
+      updateStatus(state.stagedMedia?
+        "HTML exported. Download the staged image separately · Not published":
+        "Edited HTML exported · Not published");
+    } catch(e) {
+      notice(e.message||"Could not export this page safely.","Export stopped");
+    }
+  }
+
+  function undo() {
+    const last=state.history.pop();
+    if (!last) return;
+    state.doc=new DOMParser().parseFromString(last.html,"text/html");
+    state.dirty=new Set(last.dirty);
+    state.sectionOrder=Array.isArray(last.order)?last.order.slice():state.originalSections.slice();
+    renderPreview();
+    scheduleDraft();
+    updateStatus("Previous edit restored · Not published");
+  }
+
+  function resetPage() {
+    if (!state.doc||!confirm("Discard all local changes to this page?")) return;
+    clearStagedMedia();
+    state.doc=new DOMParser().parseFromString(state.source,"text/html");
+    initialIndex();
+    state.dirty.clear();
+    state.history.length=0;
+    state.staleDraft=false;
+    renderPreview();
+    saveDraft();
+  }
+
+  function revertSelected() {
+    const key=state.selected;
+    if (!key||!state.dirty.has(key)) return;
+    const node=getWorking(key);
+    const sourceMarkup=state.original.get(key);
+    if (!node||!sourceMarkup) return;
+    checkpoint();
+    const parsed=new DOMParser().parseFromString(sourceMarkup,"text/html");
+    const replacement=parsed.body.firstElementChild;
+    if (!replacement||node.tagName!==replacement.tagName) return;
+    replacement.setAttribute("data-editor-key",key);
+    node.replaceWith(state.doc.importNode(replacement,true));
+    try {reindex();} catch(e) {undo();notice(e.message,"Revert stopped");return;}
+    state.dirty.delete(key);
+    for (const id of [...state.dirty]) {
+      const edited=getWorking(id);
+      if (!edited||cleanOuter(edited)===state.original.get(id)) state.dirty.delete(id);
+    }
+    renderPreview();
+    scheduleDraft();
+    updateStatus("Element reverted · Not published");
+  }
+
+  async function loadPage(page) {
+    if (!/^[a-z0-9-]+\.html$/.test(page)) return;
+    if(state.page&&page!==state.page&&state.stagedMedia&&
+       !confirm("The new image is only staged in this browser. Switching pages will discard its file. Continue?")){
+      $("pagePicker").value=state.page;return;
+    }
+    if (state.doc) saveDraft();
+    if(page!==state.page)clearStagedMedia();
+    const token=++state.loadToken;
+    updateStatus("Loading page…");
+    $("previewHeading").textContent=$("pagePicker").selectedOptions[0]?.textContent||page;
+    try {
+      const response=await fetch(page,{cache:"no-store",credentials:"same-origin"});
+      if (!response.ok) throw new Error("HTTP "+response.status);
+      const source=await response.text();
+      if (token!==state.loadToken) return;
+      if (!/<main\b/i.test(source)) throw new Error("The requested page has no main region.");
+      state.page=page;
+      state.source=source;
+      state.fingerprint=hashText(source);
+      state.doc=new DOMParser().parseFromString(source,"text/html");
+      state.dirty.clear();
+      state.history.length=0;
+      state.staleDraft=false;
+      initialIndex();
+      restoreDraft();
+      renderPreview();
+      const moved=state.sectionOrder.some((id,i)=>id!==state.originalSections[i]);
+      updateStatus(state.dirty.size||moved?"Draft restored · Not published":state.staleDraft?"Older local draft exists · Not applied":"Ready to edit · Not published");
+    } catch(e) {
+      notice("Could not load "+page+". "+e.message,"Page load failed");
+      if (state.page) $("pagePicker").value=state.page;
+      updateStatus("Unable to load page");
+    }
+  }
+
+  function init() {
+    $("pagePicker").addEventListener("change",event=>loadPage(event.target.value));
+    $("previewViewport").addEventListener("change",event=>{
+      $("previewContainer").className="preview-frame-container "+event.target.value;
+    });
+    $("previewTheme").addEventListener("change",event=>{
+      const documentInFrame=$("pageFrame").contentDocument;
+      if (documentInFrame) {
+        state.frameDoc=documentInFrame;
+        documentInFrame.documentElement.setAttribute("data-moon-theme",event.target.value);
+        documentInFrame.documentElement.style.colorScheme=event.target.value;
+      }
+    });
+    $("selectionText").addEventListener("focus",checkpoint);
+    $("selectionText").addEventListener("input",onInspectorText);
+    $("imageSrc").addEventListener("change",event=>updateSelectedAttribute("src",event.target.value));
+    $("imageAlt").addEventListener("change",event=>updateSelectedAttribute("alt",event.target.value));
+    $("imageMaxWidth").addEventListener("change",event=>
+      updateSelectedStyle("maxWidth",event.target.value,["100%","75%","50%","25%"]));
+    $("textAlignment").addEventListener("change",event=>
+      updateSelectedStyle("textAlign",event.target.value,["left","center","right","justify"]));
+    $("linkHref").addEventListener("change",event=>updateSelectedAttribute("href",event.target.value));
+    $("linkTarget").addEventListener("change",event=>updateSelectedAttribute("target",event.target.value==="new"?"_blank":""));
+    $("undoBtn").addEventListener("click",undo);
+    $("resetBtn").addEventListener("click",resetPage);
+    $("revertElementBtn").addEventListener("click",revertSelected);
+    $("exportBtn").addEventListener("click",exportHtml);
+    $("newImageFile").addEventListener("change",()=>{
+      $("stageImageBtn").disabled=!$("newImageFile").files?.length;
+    });
+    $("stageImageBtn").addEventListener("click",stageNewImage);
+    $("downloadStagedImage").addEventListener("click",downloadStagedImage);
+    $("reviewBtn").addEventListener("click",reviewChanges);
+    $("chooseExistingImage").addEventListener("click",openMediaLibrary);
+    $("mediaSearch").addEventListener("input",event=>{
+      const query=event.target.value.trim().toLowerCase();
+      renderMediaResults((state.mediaAssets||[]).filter(item=>
+        (item.path+" "+item.description).toLowerCase().includes(query)));
+    });
+    $("publisherConnect").addEventListener("click",connectPublisher);
+    $("publisherPropose").addEventListener("click",createPublisherProposal);
+    $("publisherSummary").addEventListener("input",updatePublishControls);
+    publishMessage(publisherConfigured()?
+      "Not connected. Sign in with your authorized GitHub account.":
+      "GitHub publishing is not configured. Export HTML remains available.");
+    updatePublishControls();
+    processPublisherCallback();
+    window.addEventListener("beforeunload",()=>{if (state.page) saveDraft();});
+    loadPage($("pagePicker").value);
+  }
+
+  if (document.readyState==="loading") document.addEventListener("DOMContentLoaded",init);
+  else init();
+})();

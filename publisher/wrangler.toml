@@ -1,0 +1,12 @@
+name = "moon-portfolio-editor-publisher"
+main = "worker.mjs"
+compatibility_date = "2026-10-20"
+workers_dev = true
+
+[vars]
+ALLOWED_ORIGIN = "https://gmoon-code.github.io"
+OAUTH_REDIRECT_URI = "https://gmoon-code.github.io/editor.html"
+ALLOWED_GITHUB_LOGIN = "gmoon-code"
+
+# Configure GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, SESSION_KEY_B64
+# as private Worker secrets. Do not commit their actual values.

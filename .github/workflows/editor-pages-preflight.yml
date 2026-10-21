@@ -1,0 +1,111 @@
+name: Cross-site GitHub Pages editor preflight
+
+on:
+  pull_request:
+    paths:
+      - "editor.html"
+      - "editors.html"
+      - "editor.js"
+      - "editor.css"
+      - "tests/editor-pages-integration.mjs"
+      - ".github/workflows/editor-pages-preflight.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  combined-editor-preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out portfolio draft under test
+        uses: actions/checkout@v4
+
+      # Pin the exact reviewed cross-repository snapshots. Bump these
+      # commits deliberately whenever one of the other draft PRs changes.
+      - name: Check out Research Methods Studio draft
+        uses: actions/checkout@v4
+        with:
+          repository: gmoon-code/research-methods
+          ref: ac222c2a4f5f20aaa75d66d40ba0076ce29f62b3
+          path: .integration/research-methods
+
+      - name: Check out Story Method draft
+        uses: actions/checkout@v4
+        with:
+          repository: gmoon-code/memory-palace-u1-8
+          ref: dda576d1f11d3146c5a335a53115aed4549a44ac
+          path: .integration/story-method
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Chromium
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+
+      - name: Assemble GitHub Pages-style static previews without deploying
+        env:
+          EDITOR_SITE_ROOT: ${{ runner.temp }}/editor-pages-integration
+        run: |
+          set -euo pipefail
+          mkdir -p "$EDITOR_SITE_ROOT"
+          rsync -a --exclude='.git' --exclude='.integration' --exclude='node_modules' ./ "$EDITOR_SITE_ROOT/"
+          # Research Methods Studio is a static GitHub Pages site. Copy only
+          # the public client assets needed for the editor and login route.
+          mkdir -p "$EDITOR_SITE_ROOT/research-methods"
+          cp .integration/research-methods/editor.html "$EDITOR_SITE_ROOT/research-methods/"
+          cp .integration/research-methods/teacher.html "$EDITOR_SITE_ROOT/research-methods/"
+          cp .integration/research-methods/admin-workspace.html "$EDITOR_SITE_ROOT/research-methods/"
+          cp .integration/research-methods/index.html "$EDITOR_SITE_ROOT/research-methods/"
+          cp -a .integration/research-methods/assets "$EDITOR_SITE_ROOT/research-methods/assets"
+          # Build precisely the same filtered Story Method Pages artifact
+          # used by its guarded deployment workflow.
+          python .integration/story-method/scripts/build_github_pages.py \
+            --output "$EDITOR_SITE_ROOT/memory-palace-u1-8"
+          PAGES_SITE_ROOT="$EDITOR_SITE_ROOT/memory-palace-u1-8" \
+            node .integration/story-method/scripts/qa_github_pages_static.mjs
+          for file in editors.html editor.html research-methods/editor.html \
+            research-methods/teacher.html research-methods/admin-workspace.html \
+            memory-palace-u1-8/editor.html \
+            memory-palace-u1-8/authoring/visual-editor.html; do
+            test -f "$EDITOR_SITE_ROOT/$file"
+          done
+          printf '%s\n' 'All three editor routes are present in the assembled static preview.'
+          printf '%s\n' 'Academic draft:' && git rev-parse HEAD
+          printf '%s\n' 'Research Methods draft:' && git -C .integration/research-methods rev-parse HEAD
+          printf '%s\n' 'Story Method draft:' && git -C .integration/story-method rev-parse HEAD
+
+      - name: Serve offline Pages-style static preview
+        env:
+          EDITOR_SITE_ROOT: ${{ runner.temp }}/editor-pages-integration
+        run: |
+          python -m http.server 8768 --bind 127.0.0.1 \
+            --directory "$EDITOR_SITE_ROOT" >/tmp/editor-pages-integration.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl --silent --fail http://127.0.0.1:8768/editors.html >/dev/null; then
+              break
+            fi
+            sleep 1
+          done
+          curl --silent --fail http://127.0.0.1:8768/editors.html >/dev/null
+
+      - name: Test all three editor links and authentication boundaries
+        env:
+          EDITOR_SUITE_TEST_URL: http://127.0.0.1:8768
+        run: node tests/editor-pages-integration.mjs
+
+      - name: Upload integration screenshots for review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cross-site-editor-pages-preflight
+          path: /tmp/cross-site-editor-artifacts/
+          if-no-files-found: ignore
