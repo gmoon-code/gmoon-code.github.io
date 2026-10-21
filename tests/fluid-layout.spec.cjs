@@ -1131,6 +1131,7 @@ test('dragging imported text is tracked as unpublishable canvas layout', async (
   await page.locator('#sourcePage').selectOption('about.html');
   page.once('dialog', dialog => dialog.accept());
   await page.locator('#importPage').click();
+  await expect(page.locator('#grid .block')).toHaveCount(1);
   const area=await page.locator('#grid .block').first().boundingBox();
   await page.mouse.move(area.x+25,area.y+25);
   await page.mouse.down();
