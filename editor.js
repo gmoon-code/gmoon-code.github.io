@@ -1294,6 +1294,104 @@
       (/^https:\/\//i.test(item.href)?" rel=\"noopener noreferrer\"":"")+">"+text+"</a></p>";
     return "<p>"+text+"</p>";
   }
+
+  // Removal proposals retain the original source in the working document.
+  // Only the isolated preview and the verified exported HTML omit a block.
+  function rawRemovalSpan(html,key){
+    const before=state.original.get(key);
+    if(!before)throw Error("The source block cannot be verified");
+    const old=new DOMParser().parseFromString(before,"text/html").body.firstElementChild;
+    if(!old||!["P","H2","H3","IMG"].includes(old.tagName))
+      throw Error("This source block cannot be removed safely");
+    const direct=html.indexOf(before);
+    if(direct>=0&&html.indexOf(before,direct+before.length)<0)
+      return {start:direct,end:direct+before.length};
+    if(old.tagName!=="IMG")throw Error("The source markup is ambiguous or has changed");
+    // Source images can differ in harmless whitespace, quote style and
+    // self-closing syntax. Check every original attribute before removal.
+    const possible=[...html.matchAll(/<img\b[^>]*>/gi)].filter(match=>{
+      const parsed=new DOMParser().parseFromString(match[0],"text/html").body.firstElementChild;
+      return parsed?.tagName==="IMG"&&
+        [...parsed.attributes].length===[...old.attributes].length&&
+        [...old.attributes].every(attr=>parsed.getAttribute(attr.name)===attr.value);
+    });
+    if(possible.length!==1)throw Error("The original image cannot be identified uniquely");
+    return {start:possible[0].index,end:possible[0].index+possible[0][0].length};
+  }
+  function sourceRemovalCandidate(key){
+    if(!key||!state.page||!state.doc||!state.original.has(key)||
+       state.removals.some(item=>item.key===key))return null;
+    const root=state.doc.querySelector("main"),node=getWorking(key);
+    if(!root||!node||!root.contains(node)||
+       !["P","H2","H3","IMG"].includes(node.tagName))return null;
+    if(node.closest("nav,header,footer,aside,form,dialog,a,[hidden],[aria-hidden='true']"))
+      return null;
+    if(node.hasAttribute("id")||node.hasAttribute("name")||
+       node.querySelector("[id],[name],script,button,form,iframe"))return null;
+    if(state.stagedMedia?.key===key)return null;
+    if(["H2","H3"].includes(node.tagName)&&node.parentElement?.querySelectorAll("h2,h3").length===1)
+      return null;
+    if([...state.dirty].some(dirtyKey=>{
+      const dirty=getWorking(dirtyKey);
+      return dirty&&(dirty===node||node.contains(dirty)||dirty.contains(node));
+    }))return null;
+    if(layoutGroups().some(group=>{
+      const parent=root.querySelector(group.parentSelector);
+      return !parent||parent.contains(node)||node.contains(parent);
+    }))return null;
+    if(state.additions.some(item=>{
+      const anchor=root.querySelector(item.selector);
+      return !anchor||anchor===node||node.contains(anchor);
+    }))return null;
+    try{rawRemovalSpan(state.source,key)}catch{return null}
+    return {key,tag:node.tagName.toLowerCase(),before:state.original.get(key)};
+  }
+  function validateSourceRemovals(items){
+    if(!Array.isArray(items)||items.length>12)throw Error("Too many removed blocks");
+    const seen=new Set(),validated=[];
+    for(const item of items){
+      if(!item||typeof item!=="object"||typeof item.key!=="string"||
+         !/^e\d+$/.test(item.key)||seen.has(item.key))
+        throw Error("Duplicate or invalid removed block");
+      const verified=sourceRemovalCandidate(item.key);
+      if(!verified||item.tag!==verified.tag||item.before!==verified.before)
+        throw Error("The removed source block has changed or conflicts with another edit");
+      seen.add(item.key);
+      validated.push(verified);
+    }
+    return validated;
+  }
+  function exportSourceRemovals(html){
+    const removals=validateSourceRemovals(state.removals);
+    for(const item of removals){
+      const span=rawRemovalSpan(html,item.key);
+      html=html.slice(0,span.start)+html.slice(span.end);
+    }
+    return html;
+  }
+  function removeSelectedSource(){
+    const candidate=sourceRemovalCandidate(state.selected);
+    if(!candidate)return;
+    if(!confirm("Remove this "+candidate.tag+" block from the page draft? The original content can be restored with Undo or from Review changes. Nothing is published."))return;
+    checkpoint();
+    state.removals.push(candidate);
+    renderPreview();
+    saveDraft();
+    updateStatus("Original block removed from draft · Not published");
+  }
+  function restoreReviewedSource(index){
+    if(index<0||index>=state.removals.length)return;
+    checkpoint();
+    state.removals.splice(index,1);
+    renderPreview();
+    saveDraft();
+    updateStatus("Removed source block restored · Not published");
+    const modal=$("reviewDialog");
+    if(modal.open)modal.close();
+    if(state.dirty.size||state.additions.length||layoutGroups().length||state.removals.length||
+       state.sectionOrder.some((id,i)=>id!==state.originalSections[i]))reviewChanges();
+  }
+
   function exportParagraphs(html){
     const original=new DOMParser().parseFromString(state.source,"text/html");
     const root=original.querySelector("main"),anchors=validateParagraphAdditions(state.additions);
