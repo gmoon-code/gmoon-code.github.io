@@ -34,7 +34,7 @@
     page:null,source:"",doc:null,frameDoc:null,original:new Map(),dirty:new Set(),
     selected:null,history:[],fingerprint:"",loadToken:0,saveTimer:null,staleDraft:false,
     originalSections:[],sectionGroups:[],sectionOrder:[],mediaAssets:null,mediaPromise:null,
-    stagedMedia:null
+    stagedMedia:null,responsiveGroup:null
   };
 
   function hashText(text) {
@@ -57,9 +57,10 @@
   function updateStatus(message) {
     $("editorSaveStatus").textContent=message;
     const moved=state.sectionOrder.filter((id,i)=>id!==state.originalSections[i]).length;
-    const total=state.dirty.size+moved;
+    const total=state.dirty.size+moved+(state.responsiveGroup?1:0);
     $("changeCount").textContent=state.dirty.size+" edited element"+(state.dirty.size===1?"":"s")+
-      (moved?" · "+moved+" moved section"+(moved===1?"":"s"):"");
+      (moved?" · "+moved+" moved section"+(moved===1?"":"s"):"")+
+      (state.responsiveGroup?" · responsive layout group":"");
     $("exportBtn").disabled=!total;
     $("reviewBtn").disabled=!total;
     $("resetBtn").disabled=!total;
@@ -151,7 +152,7 @@
 
   function snapshot() {
     return {html:state.doc.documentElement.outerHTML,dirty:[...state.dirty],
-      order:state.sectionOrder.slice()};
+      order:state.sectionOrder.slice(),responsiveGroup:state.responsiveGroup};
   }
 
   function checkpoint() {
@@ -173,16 +174,16 @@
     const key=DRAFT_PREFIX+state.page;
     try {
       const orderChanged=state.sectionOrder.some((id,i)=>id!==state.originalSections[i]);
-      if (!items.length&&!orderChanged) {
+      if (!items.length&&!orderChanged&&!state.responsiveGroup) {
         if (state.staleDraft) return;
         localStorage.removeItem(key);
       } else {
         localStorage.setItem(key,JSON.stringify({
           version:1,sourceHash:state.fingerprint,updated:Date.now(),items,
-          sectionOrder:state.sectionOrder.slice()
+          sectionOrder:state.sectionOrder.slice(),responsiveGroup:state.responsiveGroup
         }));
       }
-      updateStatus(items.length||orderChanged?"Draft saved in this browser · Not published":"No changes · Not published");
+      updateStatus(items.length||orderChanged||state.responsiveGroup?"Draft saved in this browser · Not published":"No changes · Not published");
     } catch (e) {
       updateStatus("Draft storage unavailable · Export your HTML");
     }
@@ -212,6 +213,11 @@
         "This draft references an uploaded image whose binary file was not retained after reload. Select the image on the page and stage its file again.";
     }
     try {
+      if(draft.responsiveGroup){
+        if(!window.MoonResponsiveLayout)throw Error('Responsive layout validator missing');
+        MoonResponsiveLayout.verify(new DOMParser().parseFromString(state.source,'text/html'),draft.responsiveGroup);
+        state.responsiveGroup=draft.responsiveGroup;
+      }
       for (const item of draft.items) {
         if (!state.original.has(item.id)||checkDangerousHtml(item.markup)) continue;
         const destination=getWorking(item.id);
@@ -242,6 +248,12 @@
     const base=copy.createElement("base");
     base.setAttribute("href",new URL("./",location.href).href);
     copy.head.prepend(base);
+    if(state.responsiveGroup){
+      const original=new DOMParser().parseFromString(state.source,'text/html');
+      const css=MoonResponsiveLayout.cssFor(original,state.responsiveGroup);
+      const style=copy.createElement('style');style.id='moon-responsive-group-layout';
+      style.textContent=css;copy.head.append(style);
+    }
     const overlay=copy.createElement("style");
     overlay.textContent=[
       "[data-editor-key]{cursor:text;outline-offset:3px;}",
@@ -951,6 +963,13 @@
       next=next.slice(0,pos)+after+next.slice(pos+before.length);
     }
     next=exportSectionOrder(next);
+    if(state.responsiveGroup){
+      const original=new DOMParser().parseFromString(state.source,'text/html');
+      const css=MoonResponsiveLayout.cssFor(original,state.responsiveGroup);
+      if(!/<\\/head>/i.test(next)||next.includes('id="moon-responsive-group-layout"'))
+        throw Error('Cannot insert the responsive group into this page safely');
+      next=next.replace(/<\\/head>/i,'<style id="moon-responsive-group-layout">\\n'+css+'\\n</style>\\n</head>');
+    }
     if(state.stagedMedia&&next.includes(state.stagedMedia.path)){
       const image=getWorking(state.stagedMedia.key);
       const original=new DOMParser().parseFromString(
@@ -1188,6 +1207,7 @@
     state.doc=new DOMParser().parseFromString(last.html,"text/html");
     state.dirty=new Set(last.dirty);
     state.sectionOrder=Array.isArray(last.order)?last.order.slice():state.originalSections.slice();
+    state.responsiveGroup=last.responsiveGroup||null;
     renderPreview();
     scheduleDraft();
     updateStatus("Previous edit restored · Not published");
@@ -1201,6 +1221,7 @@
     state.dirty.clear();
     state.history.length=0;
     state.staleDraft=false;
+    state.responsiveGroup=null;
     renderPreview();
     saveDraft();
   }
@@ -1347,6 +1368,7 @@
       state.source=source;
       state.fingerprint=hashText(source);
       state.doc=new DOMParser().parseFromString(source,"text/html");
+      state.responsiveGroup=null;
       state.dirty.clear();
       state.history.length=0;
       state.staleDraft=false;
@@ -1355,7 +1377,7 @@
       const transferred=consumeFluidTextHandoff(page);
       renderPreview();
       const moved=state.sectionOrder.some((id,i)=>id!==state.originalSections[i]);
-      updateStatus(transferred?"Verified text and/or style changes transferred · Not published":state.dirty.size||moved?"Draft restored · Not published":state.staleDraft?"Older local draft exists · Not applied":"Ready to edit · Not published");
+      updateStatus(transferred?"Verified content, style and/or responsive layout transferred · Not published":state.dirty.size||moved||state.responsiveGroup?"Draft restored · Not published":state.staleDraft?"Older local draft exists · Not applied":"Ready to edit · Not published");
     } catch(e) {
       notice("Could not load "+page+". "+e.message,"Page load failed");
       if (state.page) $("pagePicker").value=state.page;
