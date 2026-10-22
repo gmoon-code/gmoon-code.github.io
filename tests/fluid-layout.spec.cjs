@@ -3559,3 +3559,45 @@ test('forged reordered content drafts are rejected and leave protected source in
  await expect(page.frameLocator('#pageFrame').locator('main section > p').first()).toHaveText('Alpha content.');
  await expect(page.locator('#exportBtn')).toBeDisabled();
 });
+
+test('original block preview drag handle reorders source paragraphs without rewriting inline markup',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+  body:'<!doctype html><html><head></head><body><main><section><h2>Teaching sequence</h2>'+
+   '<p>Question one.</p><p><em>Evidence two.</em></p>'+
+   '<p>Interpretation three.</p><p>Conclusion four.</p></section></main></body></html>'}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ const blocks=page.frameLocator('#pageFrame').locator('main section > p');
+ await blocks.first().click();
+ const handle=page.frameLocator('#pageFrame').locator('#moon-block-move-handle');
+ await expect(handle).toBeVisible();
+ await expect(handle).toHaveAttribute('draggable','true');
+ const target=blocks.last();
+ await handle.dragTo(target,{targetPosition:{x:20,y:25}});
+ await expect.poll(async()=>blocks.allTextContents()).toEqual([
+  'Evidence two.','Interpretation three.','Conclusion four.','Question one.'
+ ]);
+ await expect(page.locator('#changeCount')).toContainText('1 rearranged content group');
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).toContain('<p><em>Evidence two.</em></p><p>Interpretation three.</p>'+
+  '<p>Conclusion four.</p><p>Question one.</p>');
+ expect(html).not.toContain('moon-block-move-handle');
+ await page.locator('#undoBtn').click();
+ await expect.poll(async()=>blocks.allTextContents()).toEqual([
+  'Question one.','Evidence two.','Interpretation three.','Conclusion four.'
+ ]);
+});
+
+test('protected or ambiguous original blocks never display a drag handle',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+  body:'<!doctype html><html><head></head><body><main><section><h2>Protected</h2>'+
+   '<p>Duplicate.</p><p>Duplicate.</p><p id="fixed">Named block.</p>'+
+   '</section></main></body></html>'}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ await page.frameLocator('#pageFrame').locator('main section > p').first().click();
+ await expect(page.frameLocator('#pageFrame').locator('#moon-block-move-handle')).toHaveCount(0);
+ await page.frameLocator('#pageFrame').locator('#fixed').click();
+ await expect(page.frameLocator('#pageFrame').locator('#moon-block-move-handle')).toHaveCount(0);
+ await expect(page.locator('#moveOriginalBlockFields')).toBeHidden();
+});
