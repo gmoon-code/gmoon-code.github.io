@@ -3025,3 +3025,38 @@ test('find-in-page survives preview regeneration and continues with reviewed con
  await expect(page.frameLocator('#pageFrame').locator('[data-editor-find-match]')).toHaveCount(2);
  await expect(page.locator('#changeCount')).toContainText('1 added content block');
 });
+test('duplicate selected plain paragraphs and headings through source-verified content drafts',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({
+  status:200,contentType:'text/html',
+  body:'<!doctype html><html><head></head><body><main><section>'+
+    '<h2>Classroom evidence</h2><p>Carefully reviewed paragraph.</p>'+
+    '<p>Visit <a href="research.html">research</a> for details.</p>'+
+    '</section></main></body></html>'
+ }));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ await page.frameLocator('#pageFrame').locator('main h2').click();
+ await expect(page.locator('#duplicateSourceBtn')).toBeEnabled();
+ await page.locator('#duplicateSourceBtn').click();
+ await expect(page.locator('#changeCount')).toContainText('1 added content block');
+ await expect(page.frameLocator('#pageFrame').locator('main h2')).toHaveCount(2);
+ await page.frameLocator('#pageFrame').locator('main section > p').first().click();
+ await page.locator('#insertContentText').fill('Keep this unfinished input');
+ await page.locator('#duplicateSourceBtn').click();
+ await expect(page.locator('#changeCount')).toContainText('2 added content blocks');
+ await expect(page.locator('#insertContentText')).toHaveValue('Keep this unfinished input');
+ const paragraphs=await page.frameLocator('#pageFrame').locator('main section > p').allTextContents();
+ expect(paragraphs.slice(0,2)).toEqual(['Carefully reviewed paragraph.','Carefully reviewed paragraph.']);
+ await page.frameLocator('#pageFrame').locator('main section > p').filter({hasText:'Visit research'}).click();
+ await expect(page.locator('#duplicateSourceBtn')).toBeDisabled();
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).toContain('<h2>Classroom evidence</h2>\n<h2>Classroom evidence</h2>');
+ expect(html).toContain('<p>Carefully reviewed paragraph.</p>\n<p>Carefully reviewed paragraph.</p>');
+ expect(html).toContain('<a href="research.html">research</a>');
+ expect(html).not.toContain('Keep this unfinished input');
+ await page.locator('#undoBtn').click();
+ await expect(page.locator('#changeCount')).toContainText('1 added content block');
+ await page.locator('#redoBtn').click();
+ await expect(page.locator('#changeCount')).toContainText('2 added content blocks');
+});
