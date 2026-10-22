@@ -393,6 +393,15 @@
     $("textAppearanceFields").hidden=isImage;
     $("selectionText").closest(".inspector-group").hidden=isImage;
     $("revertElementBtn").disabled=!state.dirty.has(state.selected);
+    const compatible=directLayoutSelection();
+    $("directLayoutFields").hidden=!compatible;
+    if(compatible){
+      const active=layoutGroups().some(group=>group.parentSelector===compatible.spec.parentSelector);
+      $("directLayoutRemove").disabled=!active;
+      $("directLayoutStatus").textContent=(compatible.spec.version===2?"Card or row group":"Text group")+
+        " · "+compatible.spec.children.length+" blocks"+(active?" · Layout active":" · Original layout")+
+        ". Mobile stays in reading order.";
+    }
     const canInsert=["H2","H3","H4","P"].includes(node.tagName)&&
       !!state.original.get(state.selected);
     $("insertContentFields").hidden=!canInsert;
@@ -582,6 +591,84 @@
     handle.addEventListener("pointercancel",finish);
     doc.body.appendChild(handle);
     positionImageResizeHandle();
+  }
+
+
+  function directLayoutSelection(){
+    if(!state.selected||!state.source||!window.MoonResponsiveLayout)return null;
+    const selected=getWorking(state.selected),workMain=state.doc.querySelector("main");
+    if(!selected||!workMain?.contains(selected))return null;
+    const original=new DOMParser().parseFromString(state.source,"text/html");
+    const originalMain=original.querySelector("main");
+    if(!originalMain)return null;
+    let selector;
+    try{selector=MoonResponsiveLayout.sourceSelector(selected,workMain);}
+    catch{return null;}
+    const matches=[...originalMain.querySelectorAll(selector)];
+    if(matches.length!==1)return null;
+    const textTags=new Set(["h1","h2","h3","h4","p","blockquote","figcaption"]);
+    const containerTags=new Set(["div","article","figure","section","aside"]);
+    for(let parent=matches[0].parentElement;parent&&parent!==originalMain;parent=parent.parentElement){
+      const children=[...parent.children];
+      if(children.length<2||children.length>12)continue;
+      const kinds=children.map(node=>node.tagName.toLowerCase());
+      const version=kinds.every(tag=>textTags.has(tag))?1:
+        kinds.every(tag=>containerTags.has(tag))?2:0;
+      if(!version)continue;
+      let spec;
+      try{
+        const parentSelector=MoonResponsiveLayout.sourceSelector(parent,originalMain);
+        spec={version,parentSelector,children:children.map((child,index)=>{
+          const tag=child.tagName.toLowerCase();
+          const before=child.textContent.trim().replace(/\s+/g," ");
+          const position={x:1,y:index+1,w:12,h:1};
+          return {selector:MoonResponsiveLayout.sourceSelector(child,originalMain),
+            tag,before,...(version===2?{markup:child.outerHTML}:{}),
+            desktop:{...position},mobile:{...position}};
+        })};
+        MoonResponsiveLayout.verify(original,spec);
+        return {original,spec};
+      }catch{continue;}
+    }
+    return null;
+  }
+  function arrangedDirectSpec(spec,preset){
+    const lead=spec.version===1&&/^h[1-4]$/.test(spec.children[0].tag)?1:0;
+    let columns=1,widths=[12];
+    if(preset==="two"){columns=2;widths=[6,6];}
+    else if(preset==="first-wide"){columns=2;widths=[8,4];}
+    else if(preset==="second-wide"){columns=2;widths=[4,8];}
+    else if(preset==="three"){columns=3;widths=[4,4,4];}
+    else if(preset!=="stack")throw Error("Unknown layout preset");
+    return {...spec,children:spec.children.map((child,index)=>{
+      const j=index-lead;
+      const position=index<lead?{x:1,y:1,w:12,h:1}:{
+        x:1+widths.slice(0,j%columns).reduce((total,w)=>total+w,0),
+        y:1+lead+Math.floor(j/columns),w:widths[j%columns],h:1};
+      return {...child,desktop:position,mobile:{x:1,y:index+1,w:12,h:1}};
+    })};
+  }
+  function updateDirectLayout(remove=false){
+    const choice=directLayoutSelection();
+    if(!choice){notice("Select a heading, paragraph, or card inside a compatible complete section.","Layout unavailable");return;}
+    const original=choice.original,parent=choice.spec.parentSelector;
+    const existing=layoutGroups();
+    const without=existing.filter(group=>group.parentSelector!==parent);
+    if(remove&&!existing.some(group=>group.parentSelector===parent))return;
+    try{
+      const target=remove?null:arrangedDirectSpec(choice.spec,$("directLayoutPreset").value);
+      const proposal=target?[...without,target]:without;
+      if(target&&state.additions.some(item=>
+        original.querySelector("main "+parent)?.contains(original.querySelector("main "+item.selector))))
+        throw Error("New content inside this group must be reviewed separately before arranging it");
+      if(proposal.length)MoonResponsiveLayout.cssForGroups(original,proposal);
+      checkpoint();
+      state.responsiveGroups=proposal;
+      state.responsiveGroup=proposal.length===1?proposal[0]:null;
+      renderPreview();scheduleDraft();
+      updateStatus(remove?"Responsive arrangement removed · Not published":
+        "Responsive arrangement applied · Preview desktop and mobile before export");
+    }catch(error){notice("Cannot arrange this group. "+error.message,"Layout not applied");}
   }
 
   function onInspectorText() {
@@ -1823,6 +1910,8 @@
     $("undoBtn").addEventListener("click",undo);
     $("resetBtn").addEventListener("click",resetPage);
     $("revertElementBtn").addEventListener("click",revertSelected);
+    $("directLayoutApply").addEventListener("click",()=>updateDirectLayout());
+    $("directLayoutRemove").addEventListener("click",()=>updateDirectLayout(true));
     $("insertContentKind").addEventListener("change",updateInsertKind);
     $("insertContentBtn").addEventListener("click",addContentFromInspector);
     updateInsertKind();
