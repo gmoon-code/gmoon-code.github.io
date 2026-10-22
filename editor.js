@@ -966,9 +966,9 @@
     if(state.responsiveGroup){
       const original=new DOMParser().parseFromString(state.source,'text/html');
       const css=MoonResponsiveLayout.cssFor(original,state.responsiveGroup);
-      if(!/<\\/head>/i.test(next)||next.includes('id="moon-responsive-group-layout"'))
+      if(!/<\/head>/i.test(next)||next.includes('id="moon-responsive-group-layout"'))
         throw Error('Cannot insert the responsive group into this page safely');
-      next=next.replace(/<\\/head>/i,'<style id="moon-responsive-group-layout">\\n'+css+'\\n</style>\\n</head>');
+      next=next.replace(/<\/head>/i,'<style id="moon-responsive-group-layout">\\n'+css+'\\n</style>\\n</head>');
     }
     if(state.stagedMedia&&next.includes(state.stagedMedia.path)){
       const image=getWorking(state.stagedMedia.key);
