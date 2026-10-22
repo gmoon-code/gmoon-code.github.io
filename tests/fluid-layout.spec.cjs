@@ -3542,6 +3542,122 @@ test('moving a new block refuses a duplicate raw HTML source destination',async(
  expect((html.match(/<p>Repeated destination.<\/p>/g)||[]).length).toBe(2);
 });
 
+test('floating page toolbar aligns original paragraphs with reversible, source-safe HTML',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+  body:'<!doctype html><html><head></head><body><main><section>'+
+   '<h2>Student research</h2><p>Original scientific explanation.</p>'+
+   '</section></main></body></html>'}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ const paragraph=page.frameLocator('#pageFrame').locator('main p');
+ await paragraph.click();
+ const toolbar=page.frameLocator('#pageFrame').locator('#moon-quick-toolbar');
+ await expect(toolbar).toBeVisible();
+ await expect(toolbar).toHaveAttribute('role','toolbar');
+ await expect(toolbar).toHaveAttribute('aria-label','Selected block quick actions');
+ await expect(toolbar.getByRole('button',{name:'Align selected block left'}))
+  .toHaveAttribute('aria-pressed','true');
+ const centre=toolbar.getByRole('button',{name:'Align selected block centre'});
+ await centre.focus();
+ await centre.press('Enter');
+ await expect(paragraph).toHaveAttribute('style',/text-align:\s*center/);
+ await expect(page.locator('#textAlignment')).toHaveValue('center');
+ await expect(toolbar.getByRole('button',{name:'Align selected block centre'}))
+  .toHaveAttribute('aria-pressed','true');
+ await expect(page.locator('#changeCount')).toContainText('1 edited element');
+ await page.locator('#undoBtn').click();
+ await expect(paragraph).not.toHaveAttribute('style',/text-align:\s*center/);
+ await page.locator('#redoBtn').click();
+ await expect(paragraph).toHaveAttribute('style',/text-align:\s*center/);
+ await paragraph.click();
+ await expect(toolbar.getByRole('button',{name:'Duplicate selected new block'})).toHaveCount(0);
+ await toolbar.getByRole('button',{name:'Focus selected block details in inspector'}).click();
+ await expect(page.locator('#selectionText')).toBeFocused();
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).toContain('text-align: center');
+ expect(html).toContain('Original scientific explanation.');
+ expect(html).not.toContain('moon-quick-toolbar');
+ expect(html).not.toContain('aria-pressed');
+});
+
+test('new block floating toolbar aligns, duplicates and focuses duplicate inspector',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+  body:'<!doctype html><html><head></head><body><main><section>'+
+   '<h2>Methods</h2><p>Preserve this original paragraph.</p>'+
+   '</section></main></body></html>'}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ await page.frameLocator('#pageFrame').locator('main h2').click();
+ await page.locator('#insertContentText').fill('A new methods paragraph');
+ await page.locator('#insertContentBtn').click();
+ const added=page.frameLocator('#pageFrame').locator('[data-editor-added-index]');
+ await added.first().click();
+ const toolbar=page.frameLocator('#pageFrame').locator('#moon-quick-toolbar');
+ await expect(toolbar).toBeVisible();
+ await toolbar.getByRole('button',{name:'Align selected block right'}).click();
+ await expect(added.first()).toHaveAttribute('style',/text-align:\s*right/);
+ await expect(page.locator('#addedBlockAlign')).toHaveValue('right');
+ await toolbar.getByRole('button',{name:'Duplicate selected new block'}).click();
+ await expect(added).toHaveCount(2);
+ await expect(added.nth(1)).toHaveAttribute('data-editor-added-selected','');
+ await expect(added.nth(1)).toHaveAttribute('style',/text-align:\s*right/);
+ await expect(page.locator('#addedBlockText')).toHaveValue('A new methods paragraph');
+ await expect(toolbar).toBeVisible();
+ await toolbar.getByRole('button',{name:'Focus selected block details in inspector'}).click();
+ await expect(page.locator('#addedBlockText')).toBeFocused();
+ await page.locator('#undoBtn').click();
+ await expect(added).toHaveCount(1);
+ await page.locator('#redoBtn').click();
+ await expect(added).toHaveCount(2);
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect((html.match(/A new methods paragraph/g)||[]).length).toBe(2);
+ expect(html).toContain('<p>Preserve this original paragraph.</p>');
+ expect(html).not.toContain('moon-quick-toolbar');
+ expect(html).not.toContain('data-editor-added-selected');
+ await page.reload();
+ await expect(added).toHaveCount(2);
+ await added.first().click();
+ await expect(toolbar.getByRole('button',{name:'Align selected block right'}))
+  .toHaveAttribute('aria-pressed','true');
+});
+
+test('floating toolbar stays inside narrow viewport and follows light/dark preview theme',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+  body:'<!doctype html><html><head></head><body><main><section>'+
+   '<h2>Responsive layout</h2><p>Read on smaller screens.</p>'+
+   '</section></main></body></html>'}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ await page.locator('#previewViewport').selectOption('mobile');
+ const paragraph=page.frameLocator('#pageFrame').locator('main p');
+ await paragraph.click();
+ const toolbar=page.frameLocator('#pageFrame').locator('#moon-quick-toolbar');
+ await expect(toolbar).toBeVisible();
+ const geometry=await toolbar.evaluate(el=>{
+  const r=el.getBoundingClientRect();
+  return {x:r.x,y:r.y,right:r.right,bottom:r.bottom,
+    width:el.ownerDocument.defaultView.innerWidth,height:el.ownerDocument.defaultView.innerHeight};
+ });
+ expect(geometry.x).toBeGreaterThanOrEqual(0);
+ expect(geometry.y).toBeGreaterThanOrEqual(0);
+ expect(geometry.right).toBeLessThanOrEqual(geometry.width+1);
+ expect(geometry.bottom).toBeLessThanOrEqual(geometry.height+1);
+ await page.locator('#previewTheme').selectOption('dark');
+ await expect(toolbar).toBeVisible();
+ await expect.poll(async()=>toolbar.evaluate(el=>getComputedStyle(el).backgroundColor))
+  .toBe('rgb(26, 28, 26)');
+ await page.locator('#previewTheme').selectOption('light');
+ await expect.poll(async()=>toolbar.evaluate(el=>getComputedStyle(el).backgroundColor))
+  .toBe('rgb(255, 255, 255)');
+ await toolbar.getByRole('button',{name:'Align selected block right'}).click();
+ await expect(paragraph).toHaveAttribute('style',/text-align:\s*right/);
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).not.toContain('moon-quick-toolbar');
+ expect(html).toContain('<p>Read on smaller screens.</p>');
+});
 test('new paragraph uses responsive width, centre alignment and exact spacing in reviewed export',async({page})=>{
  await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
   body:'<!doctype html><html><head></head><body><main><section>'+
