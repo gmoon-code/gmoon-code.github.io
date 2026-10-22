@@ -1405,7 +1405,15 @@
     }
     let preparedAdditions=[];
     if(payload.version===5){
-      try{preparedAdditions=validateParagraphAdditions(payload.additions)}catch{return rejectHandoff()}
+      try{
+        preparedAdditions=validateParagraphAdditions(payload.additions);
+        const sourceRoot=state.doc.querySelector('main');
+        for(const addition of preparedAdditions){
+          const anchor=sourceRoot.querySelector(addition.selector);
+          if(preparedGroups.some(group=>sourceRoot.querySelector(group.parentSelector)?.contains(anchor)))
+            throw Error('Paragraph insertion conflicts with a responsive layout group');
+        }
+      }catch{return rejectHandoff()}
     }
     if(!preparedText.length&&!preparedStyles.length&&!preparedGroups.length&&!preparedAdditions.length)return rejectHandoff();
     let existingDraft=false;
