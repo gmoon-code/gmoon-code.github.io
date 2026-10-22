@@ -3542,6 +3542,170 @@ test('moving a new block refuses a duplicate raw HTML source destination',async(
  expect((html.match(/<p>Repeated destination.<\/p>/g)||[]).length).toBe(2);
 });
 
+test('new paragraph uses responsive width, centre alignment and exact spacing in reviewed export',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+  body:'<!doctype html><html><head></head><body><main><section>'+
+   '<h2>Student inquiry</h2><p>Unmodified source paragraph.</p>'+
+   '</section></main></body></html>'}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ await page.frameLocator('#pageFrame').locator('main h2').click();
+ await page.locator('#insertContentText').fill('A new, carefully placed paragraph.');
+ await page.locator('#insertContentBtn').click();
+ const newBlock=page.frameLocator('#pageFrame').locator('[data-editor-added-index]');
+ await newBlock.click();
+ await expect(page.locator('#addedBlockLayoutFields')).toBeVisible();
+ await expect(page.locator('#addedBlockWidth')).toHaveValue('100');
+ await expect(page.locator('#addedBlockAlign')).toHaveValue('left');
+ await expect(page.frameLocator('#pageFrame').locator('#moon-added-block-width-handle'))
+   .toBeVisible();
+ await page.locator('#addedBlockAlign').selectOption('center');
+ await page.locator('#addedBlockWidth').evaluate(el=>{
+  el.value='65';el.dispatchEvent(new Event('input',{bubbles:true}));
+  el.dispatchEvent(new Event('change',{bubbles:true}));
+ });
+ await page.locator('#addedBlockSpaceAbove').fill('15');
+ await page.locator('#addedBlockSpaceBelow').fill('20');
+ await page.locator('#addedBlockSpaceAbove').dispatchEvent('change');
+ await page.locator('#addedBlockSpaceBelow').dispatchEvent('change');
+ await expect(newBlock).toHaveAttribute('style',/width:\s*65%/);
+ await expect(newBlock).toHaveAttribute('style',/text-align:\s*center/);
+ await expect(newBlock).toHaveAttribute('style',/margin-top:\s*15px/);
+ await expect(newBlock).toHaveAttribute('style',/margin-bottom:\s*20px/);
+ await expect(page.locator('#addedBlockWidthValue')).toHaveText('65%');
+ await expect.poll(async()=>page.evaluate(()=>
+  JSON.parse(localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'))
+   ?.additions?.[0]?.layout?.spaceBelow)).toBe(20);
+ await page.locator('#undoBtn').click();
+ await expect(newBlock).not.toHaveAttribute('style',/margin-bottom:\s*20px/);
+ await page.locator('#redoBtn').click();
+ await expect(newBlock).toHaveAttribute('style',/margin-bottom:\s*20px/);
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).toContain('<h2>Student inquiry</h2>\n<p style="width:65%;max-width:100%;box-sizing:border-box;text-align:center;margin-left:auto;margin-right:auto;margin-top:15px;margin-bottom:20px">A new, carefully placed paragraph.</p>');
+ expect(html).toContain('<p>Unmodified source paragraph.</p>');
+ expect(html).not.toContain('data-editor-added-index');
+ expect(html).not.toContain('moon-added-block-width-handle');
+ await page.reload();
+ const restored=page.frameLocator('#pageFrame').locator('[data-editor-added-index]');
+ await expect(restored).toHaveAttribute('style',/width:\s*65%/);
+ await restored.click();
+ await expect(page.locator('#addedBlockSpaceBelow')).toHaveValue('20');
+ await page.locator('#resetAddedBlockLayout').click();
+ await expect(restored).not.toHaveAttribute('style',/width:\s*65%/);
+ await expect(page.locator('#resetAddedBlockLayout')).toBeDisabled();
+ await page.locator('#undoBtn').click();
+ await expect(restored).toHaveAttribute('style',/width:\s*65%/);
+});
+
+test('new heading width handle adjusts text block without changing reading order',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+  body:'<!doctype html><html><head></head><body><main><section>'+
+   '<h2>Science education</h2><p>Original content stays intact.</p>'+
+   '</section></main></body></html>'}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ await page.frameLocator('#pageFrame').locator('main h2').click();
+ await page.locator('#insertContentKind').selectOption('heading');
+ await page.locator('#insertHeadingLevel').selectOption('h3');
+ await page.locator('#insertContentText').fill('New subsection');
+ await page.locator('#insertContentBtn').click();
+ const added=page.frameLocator('#pageFrame').locator('[data-editor-added-index]');
+ await added.click();
+ const handle=page.frameLocator('#pageFrame').locator('#moon-added-block-width-handle');
+ await expect(handle).toBeVisible();
+ const bounds=await handle.boundingBox();
+ expect(bounds).toBeTruthy();
+ await page.mouse.move(bounds.x+bounds.width/2,bounds.y+bounds.height/2);
+ await page.mouse.down();
+ await page.mouse.move(bounds.x+bounds.width/2-180,bounds.y+bounds.height/2,{steps:8});
+ await page.mouse.up();
+ const value=Number(await page.locator('#addedBlockWidth').inputValue());
+ expect(value).toBeGreaterThanOrEqual(30);
+ expect(value).toBeLessThan(100);
+ expect(value%5).toBe(0);
+ await expect(added).toHaveAttribute('style',new RegExp('width:\\s*'+value+'%'));
+ await page.locator('#addedBlockAlign').selectOption('right');
+ await expect(added).toHaveAttribute('style',/margin-left:\s*auto/);
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).toContain('<h3 style="width:'+value+'%;max-width:100%;box-sizing:border-box;text-align:right;margin-left:auto;margin-right:0">New subsection</h3>');
+ expect(html).toContain('<p>Original content stays intact.</p>');
+ await page.locator('#undoBtn').click();
+ await expect(added).not.toHaveAttribute('style',/text-align:\s*right/);
+ await page.locator('#redoBtn').click();
+ await expect(added).toHaveAttribute('style',/text-align:\s*right/);
+});
+
+test('new image has independent container placement and image size in export',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+  body:'<!doctype html><html><head></head><body><main><section>'+
+   '<h2>Exhibition</h2><p>Permanent introduction.</p>'+
+   '<img src="assets/example-photograph.webp" alt="Original image">'+
+   '</section></main></body></html>'}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ await page.frameLocator('#pageFrame').locator('main h2').click();
+ await page.locator('#insertContentKind').selectOption('image');
+ await page.locator('#insertImageSrc').fill('assets/example-photograph.webp');
+ await page.locator('#insertContentText').fill('A student model');
+ await page.locator('#insertContentBtn').click();
+ await page.frameLocator('#pageFrame').locator('[data-editor-added-index] img').click();
+ await page.locator('#addedBlockAlign').selectOption('right');
+ await page.locator('#addedBlockWidth').evaluate(el=>{
+  el.value='75';el.dispatchEvent(new Event('input',{bubbles:true}));
+  el.dispatchEvent(new Event('change',{bubbles:true}));
+ });
+ await page.locator('#addedImageWidthPercent').evaluate(el=>{
+  el.value='55';el.dispatchEvent(new Event('input',{bubbles:true}));
+  el.dispatchEvent(new Event('change',{bubbles:true}));
+ });
+ const block=page.frameLocator('#pageFrame').locator('[data-editor-added-index]');
+ await expect(block).toHaveAttribute('style',/width:\s*75%/);
+ await expect(block.locator('img')).toHaveAttribute('style',/width:\s*55%/);
+ await expect(block).toHaveAttribute('style',/text-align:\s*right/);
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).toContain('<p style="width:75%;max-width:100%;box-sizing:border-box;text-align:right;margin-left:auto;margin-right:0"><img src="assets/example-photograph.webp" alt="A student model" loading="lazy" style="max-width:100%;height:auto;width:55%"></p>');
+ expect(html).toContain('<p>Permanent introduction.</p>');
+ await page.reload();
+ await page.frameLocator('#pageFrame').locator('[data-editor-added-index] img').click();
+ await expect(page.locator('#addedBlockWidth')).toHaveValue('75');
+ await expect(page.locator('#addedImageWidthPercent')).toHaveValue('55');
+});
+
+test('malformed inserted block layout is rejected on browser draft restoration',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+  body:'<!doctype html><html><head></head><body><main><section>'+
+   '<h2>Research</h2><p>Permanent source text.</p>'+
+   '</section></main></body></html>'}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ await page.frameLocator('#pageFrame').locator('main h2').click();
+ await page.locator('#insertContentText').fill('Untrusted layout test');
+ await page.locator('#insertContentBtn').click();
+ await expect.poll(async()=>page.evaluate(()=>
+  JSON.parse(localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'))
+    ?.additions?.length)).toBe(1);
+ await page.addInitScript(()=>{
+  if(window.top!==window)return;
+  const key='moon-portfolio-visual-editor-v1:about.html';
+  const raw=localStorage.getItem(key);
+  if(!raw)return;
+  const draft=JSON.parse(raw);
+  if(draft.additions?.length){
+   draft.additions[0].layout={
+    align:'center',widthPercent:60,spaceAbove:0,spaceBelow:0,
+    extra:'position:fixed;inset:0'
+   };
+   localStorage.setItem(key,JSON.stringify(draft));
+  }
+ });
+ await page.reload();
+ await expect(page.locator('#noticeMessage')).toContainText('could not be restored safely');
+ await page.locator('#noticeDialog form button').click();
+ await expect(page.frameLocator('#pageFrame').locator('[data-editor-added-index]')).toHaveCount(0);
+ await expect(page.locator('#exportBtn')).toBeDisabled();
+});
 test('new block inspector validates updated link targets and preserves source content',async({page})=>{
  await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
   body:'<!doctype html><html><head></head><body><main><section><h2>Research links</h2>'+
