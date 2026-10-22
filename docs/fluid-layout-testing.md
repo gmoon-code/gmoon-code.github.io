@@ -65,3 +65,6 @@ The [fluid-layout test workflow](../.github/workflows/fluid-layout-tests.yml) ru
 ## Release checklist
 
 Review the actual content and headings on each site page, check readability in light and dark colour themes, inspect internal links, compare original and proposed mobile layouts, verify keyboard operation, and confirm that no source pages or publisher endpoints are changed unexpectedly. Full freeform publishing requires a separate structural layout pipeline and further accessibility review.
+
+**Create content directly in the main editor.** Open `editor.html` on the draft branch, select an existing paragraph or section heading in the preview, and use **Add content below this element** in the Inspector. Choose a paragraph, a level-two or level-three heading, or a link. Enter the text and a destination for links, then choose **Add to local draft**. The editor validates the original source element, rejects unsafe link destinations and ambiguous anchors, and previews the new content within the existing page. The header count and Review changes dialog include your addition. You may edit or remove individual additions from Review changes, and Undo/Reset remains available. This direct workflow does not require opening the fluid-layout canvas.
+
