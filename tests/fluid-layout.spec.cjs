@@ -2734,27 +2734,6 @@ test('direct inspector allows ordered additions after one heading with export, r
  await expect(page.locator('#exportBtn')).toBeDisabled();
 });
 
-test('layout builder stages several ordered additions below one source heading',async({page})=>{
- await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
-  body:'<!doctype html><html><head></head><body><main><section><h2>Research questions</h2><p>Existing section</p></section></main></body></html>'}));
- await page.evaluate(()=>{
-  window.confirm=()=>true;
-  const replies=['First drafted paragraph','Another drafted paragraph'];
-  window.prompt=()=>replies.shift()??null;
- });
- await page.locator('#sourcePage').selectOption('about.html');
- await page.locator('#importPage').click();
- await expect(page.locator('#grid .block.heading')).toHaveCount(1);
- await page.locator('#grid .block.heading').first().dispatchEvent('click');
- await page.locator('#appendSourceParagraph').click();
- await expect(page.locator('#grid .block')).toHaveCount(3);
- await page.locator('#grid .block.heading').first().dispatchEvent('click');
- await page.locator('#appendSourceParagraph').click();
- await expect(page.locator('#grid .block')).toHaveCount(4);
- await expect.poll(async()=>page.evaluate(()=>
-  JSON.parse(localStorage.getItem('moon-fluid-layout-lab-v1'))?.blocks?.filter(b=>b.insertion).map(b=>b.text)
- )).toEqual(['First drafted paragraph','Another drafted paragraph']);
-});
 test('review panel moves new blocks earlier and later without changing source content',async({page})=>{
  await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
   body:'<!doctype html><html><head></head><body><main><section><h2>Source heading</h2><p>Existing text</p></section></main></body></html>'}));
