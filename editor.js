@@ -165,7 +165,7 @@
     if (!state.doc) return;
     const current=snapshot();
     const previous=state.history[state.history.length-1];
-    if (previous&&previous.html===current.html) return;
+    if (previous&&JSON.stringify(previous)===JSON.stringify(current)) return;
     state.history.push(current);
     if (state.history.length>24) state.history.shift();
     updateStatus("Local draft · Not published");
