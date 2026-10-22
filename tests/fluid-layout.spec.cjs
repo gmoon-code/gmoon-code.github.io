@@ -2898,3 +2898,67 @@ test('image can be resized by a direct drag handle and keyboard-accessible inspe
  expect(html).toContain('alt="Sample portrait"');
  expect(dragWidth).not.toBe('60%');
 });
+
+test('main inspector applies and removes responsive text columns without the experimental canvas',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+  body:'<!doctype html><html><head></head><body><main><section id="text-group"><h2>Research</h2>'+
+   '<p>First question</p><p>Second question</p></section></main></body></html>'}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ await page.frameLocator('#pageFrame').locator('#text-group h2').click();
+ await expect(page.locator('#directLayoutFields')).toBeVisible();
+ await expect(page.locator('#directLayoutStatus')).toContainText('3 blocks');
+ await page.locator('#directLayoutPreset').selectOption('two');
+ await page.locator('#directLayoutApply').click();
+ await expect(page.locator('#editorSaveStatus')).toContainText('arrangement applied');
+ const css=await page.frameLocator('#pageFrame').locator('#moon-responsive-group-layout').textContent();
+ expect(css).toContain('grid-column:7 / span 6');
+ expect(css).toContain('@media(max-width:700px)');
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).toContain('id="moon-responsive-group-layout"');
+ expect(html).toContain('<p>First question</p><p>Second question</p>');
+ await expect.poll(async()=>page.evaluate(()=>JSON.parse(localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'))?.responsiveGroups?.length)).toBe(1);
+ await page.reload();
+ await page.frameLocator('#pageFrame').locator('#text-group h2').click();
+ await expect(page.locator('#directLayoutRemove')).toBeEnabled();
+ await page.locator('#directLayoutRemove').click();
+ await expect(page.locator('#exportBtn')).toBeDisabled();
+});
+
+test('main inspector arranges intact nested cards while preserving linked markup',async({page})=>{
+ await page.route('**/index.html',route=>route.fulfill({status:200,contentType:'text/html',
+  body:'<!doctype html><html><head></head><body><main><div id="cards">'+
+   '<article><h2>First card</h2><p>Overview <a href="research.html">Research</a></p></article>'+
+   '<article><h2>Second card</h2><p>Teaching <strong>case studies</strong></p></article>'+
+   '</div></main></body></html>'}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=index.html');
+ await page.frameLocator('#pageFrame').locator('#cards article:first-child h2').click();
+ await expect(page.locator('#directLayoutStatus')).toContainText('Card or row group');
+ await page.locator('#directLayoutPreset').selectOption('first-wide');
+ await page.locator('#directLayoutApply').click();
+ await expect(page.frameLocator('#pageFrame').locator('#moon-responsive-group-layout')).toContainText('grid-column:9 / span 4');
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).toContain('<a href="research.html">Research</a>');
+ expect(html).toContain('<strong>case studies</strong>');
+ expect(html).toContain('grid-column:9 / span 4');
+});
+
+test('main inspector refuses a new responsive section that contains staged additions',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+  body:'<!doctype html><html><head></head><body><main><section id="group"><h2>Scope</h2>'+
+   '<p>One point</p><p>Another point</p></section></main></body></html>'}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ await page.frameLocator('#pageFrame').locator('#group h2').click();
+ await page.locator('#insertContentText').fill('An additional paragraph');
+ await page.locator('#insertContentBtn').click();
+ await page.frameLocator('#pageFrame').locator('#group h2').click();
+ await page.locator('#directLayoutApply').click();
+ await expect(page.locator('#noticeMessage')).toContainText('New content inside this group');
+ await page.locator('#noticeDialog form button').click();
+ await expect(page.locator('#changeCount')).toContainText('1 added content block');
+ const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('moon-portfolio-visual-editor-v1:about.html')));
+ expect(saved.responsiveGroups||[]).toHaveLength(0);
+});
