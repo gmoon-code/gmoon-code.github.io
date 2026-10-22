@@ -608,6 +608,7 @@
     if(matches.length!==1)return null;
     const textTags=new Set(["h1","h2","h3","h4","p","blockquote","figcaption"]);
     const containerTags=new Set(["div","article","figure","section","aside"]);
+    let textFallback=null;
     for(let parent=matches[0].parentElement;parent&&parent!==originalMain;parent=parent.parentElement){
       const children=[...parent.children];
       if(children.length<2||children.length>12)continue;
@@ -627,10 +628,11 @@
             desktop:{...position},mobile:{...position}};
         })};
         MoonResponsiveLayout.verify(original,spec);
-        return {original,spec};
+        if(version===2)return {original,spec};
+        if(!textFallback)textFallback={original,spec};
       }catch{continue;}
     }
-    return null;
+    return textFallback;
   }
   function arrangedDirectSpec(spec,preset){
     const lead=spec.version===1&&/^h[1-4]$/.test(spec.children[0].tag)?1:0;
