@@ -144,7 +144,7 @@ $('duplicate').onclick=()=>{const b=blocks.find(v=>v.id===selected);if(!b)return
 $('remove').onclick=()=>{snapshot();structureEdited=true;blocks=blocks.filter(b=>b.id!==selected);selected=null;render()};
 $('undo').onclick=()=>{if(!history.length)return;future.push(JSON.stringify({blocks,sourcePage,structureEdited,responsiveGroup}));const previous=JSON.parse(history.pop());blocks=previous.blocks;sourcePage=previous.sourcePage;structureEdited=previous.structureEdited===true;responsiveGroup=previous.responsiveGroup||null;syncSourcePicker();selected=null;next=Math.max(4,...blocks.map(b=>Number(b.id)+1));render()};
 $('redo').onclick=()=>{if(!future.length)return;history.push(JSON.stringify({blocks,sourcePage,structureEdited,responsiveGroup}));const nextState=JSON.parse(future.pop());blocks=nextState.blocks;sourcePage=nextState.sourcePage;structureEdited=nextState.structureEdited===true;responsiveGroup=nextState.responsiveGroup||null;syncSourcePicker();selected=null;next=Math.max(4,...blocks.map(b=>Number(b.id)+1));render()};
-$('reset').onclick=()=>{if(!confirm('Reset this experimental layout?'))return;snapshot();blocks=structuredClone(initial);sourcePage=null;structureEdited=false;responsiveGroup=null;syncSourcePicker();next=4;selected=null;render()};
+$('reset').onclick=()=>{if(!confirm('Reset this experimental layout?'))return;snapshot();clearResponsiveChoices();blocks=structuredClone(initial);sourcePage=null;structureEdited=false;responsiveGroup=null;syncSourcePicker();next=4;selected=null;render()};
 $('device').onchange=()=>{$('canvas').className='canvas '+$('device').value;render()};
 $('resetMobile').onclick=()=>{const b=blocks.find(v=>v.id===selected);if(!b||!isMobile())return;snapshot();delete b.mobile;render()};
 $('jsonImport').addEventListener('change',async e=>{const file=e.target.files?.[0];if(!file)return;try{if(file.size>300000)throw Error('File exceeds 300 KB');const data=validateDocument(JSON.parse(await file.text()));if(!confirm('Replace the current canvas with this saved layout?'))return;snapshot();blocks=data.blocks;structureEdited=data.structureEdited===true;responsiveGroup=data.responsiveGroup||null;sourcePage=typeof data.sourcePage==='string'?data.sourcePage:null;syncSourcePicker();next=Math.max(4,...blocks.map(b=>b.id+1));selected=null;render();$('status').textContent='Imported '+blocks.length+' saved blocks. Not published.'}catch(err){$('status').textContent='JSON import failed: '+err.message}finally{e.target.value=''}});
@@ -190,12 +190,12 @@ async function freshSourceDocument(){
  if(!response.ok)throw Error('Source page HTTP '+response.status);
  return new DOMParser().parseFromString(await response.text(),'text/html');
 }
-function responsiveGroupSpec(doc,group=responsiveGroup){
+function responsiveGroupSpec(doc,group=responsiveGroup,items=blocks){
  if(!group)return null;
  const main=doc.querySelector('main');
  if(!main||!window.MoonResponsiveLayout)throw Error('Responsive layout validation is unavailable');
  const mapped=group.selectors.map(selector=>{
-  const b=blocks.find(item=>item.source?.page===sourcePage&&item.source.selector===selector);
+  const b=items.find(item=>item.source?.page===sourcePage&&item.source.selector===selector);
   if(!b||b.type==='image')throw Error('The responsive group has deleted or unsupported blocks');
   return b;
  });
@@ -210,6 +210,120 @@ function responsiveGroupSpec(doc,group=responsiveGroup){
  const spec={version:1,parentSelector:group.parentSelector,children};
  MoonResponsiveLayout.verify(doc,spec);
  return spec;
+}
+function clearResponsiveChoices(){
+ discoveredGroups=[];
+ $('responsiveGroupPicker').replaceChildren(new Option('Find sections to choose one',''));
+}
+$('sourcePage').addEventListener('change',clearResponsiveChoices);
+async function findCompatibleGroups(){
+ const doc=await freshSourceDocument(),main=doc.querySelector('main');
+ const grouped=new Map();
+ for(const b of blocks){
+  if(!b.source||b.source.page!==sourcePage||b.type==='image')continue;
+  let matches;
+  try{matches=[...main.querySelectorAll(b.source.selector)]}catch{continue}
+  if(matches.length!==1||matches[0].textContent.trim().replace(/\s+/g,' ')!==b.source.originalText)continue;
+  const parent=matches[0].parentElement;
+  if(!parent||parent===main||!main.contains(parent)||parent.children.length<2||parent.children.length>12)continue;
+  grouped.set(parent,true);
+ }
+ const choices=[];
+ for(const parent of grouped.keys()){
+  try{
+   const children=[...parent.children];
+   const selectors=children.map(child=>MoonResponsiveLayout.sourceSelector(child,main));
+   if(selectors.some(selector=>!blocks.some(b=>b.source?.page===sourcePage&&b.source.selector===selector)))continue;
+   const spec={version:1,parentSelector:MoonResponsiveLayout.sourceSelector(parent,main),
+    children:children.map((child,i)=>({
+     selector:selectors[i],tag:child.tagName.toLowerCase(),
+     before:child.textContent.trim().replace(/\s+/g,' '),
+     desktop:{x:1,y:i*2+1,w:12,h:1},mobile:{x:1,y:i*2+1,w:12,h:1}
+    }))};
+   MoonResponsiveLayout.verify(doc,spec);
+   const heading=children[0].textContent.trim().replace(/\s+/g,' ').slice(0,55);
+   choices.push({parentSelector:spec.parentSelector,selectors,
+    label:children.length+' blocks · '+(heading||spec.parentSelector)});
+  }catch{/* The section cannot be mapped safely, so omit it from suggestions. */}
+  if(choices.length>=30)break;
+ }
+ return choices;
+}
+$('findResponsiveGroups').onclick=async()=>{
+ const button=$('findResponsiveGroups');button.disabled=true;
+ try{
+  const choices=await findCompatibleGroups();
+  clearResponsiveChoices();
+  discoveredGroups=choices;
+  const picker=$('responsiveGroupPicker');
+  for(let i=0;i<choices.length;i++)picker.add(new Option(choices[i].label,String(i)));
+  if(choices.length)picker.value='0';
+  $('status').textContent=choices.length?
+   'Found '+choices.length+' complete text sections. Choose one and arrange it for desktop and mobile.':
+   'No compatible sections found in this page. A section must contain 2–12 imported text blocks and no unmapped children.';
+ }catch(error){clearResponsiveChoices();$('status').textContent='Group discovery blocked: '+error.message}
+ finally{button.disabled=false}
+};
+function presetPositions(entries,mode){
+ const results=[];
+ let y=1;
+ for(let i=0;i<entries.length;i+=(mode==='columns'?2:1)){
+  const row=entries.slice(i,i+(mode==='columns'?2:1));
+  const heights=row.map(b=>clamp(Math.round(Number(b.h)||2),1,6));
+  for(let j=0;j<row.length;j++)results.push({
+   x:mode==='columns'?(j===0?1:7):1,y,w:mode==='columns'?6:12,h:heights[j]
+  });
+  y+=Math.max(...heights)+1;
+ }
+ return results;
+}
+function placePreset(rects,entries,mobile){
+ const members=new Set(entries.map(b=>b.id));
+ const outside=blocks.filter(b=>!members.has(b.id)).map(b=>mobile?(b.mobile||defaultMobile(b)):b);
+ const last=Math.max(...rects.map(p=>p.y+p.h));
+ const limit=102-last;
+ if(limit<1)throw Error('The group needs more than the supported 100 layout rows');
+ const preferred=Math.min(...entries.map(b=>(mobile?(b.mobile||defaultMobile(b)):b).y));
+ const starts=Array.from({length:limit},(_,i)=>i+1)
+  .sort((a,b)=>Math.abs(a-preferred)-Math.abs(b-preferred)||a-b);
+ for(const start of starts){
+  const placed=rects.map(p=>({...p,y:p.y+start-1}));
+  if(placed.every(p=>!outside.some(other=>overlap(p,other))))return placed;
+ }
+ throw Error('No free canvas area can hold this section without overlapping unrelated blocks');
+}
+async function arrangeResponsiveGroup(group,mode){
+ const doc=await freshSourceDocument();
+ const entries=group.selectors.map(selector=>blocks.find(b=>b.source?.page===sourcePage&&b.source.selector===selector));
+ if(entries.some(b=>!b||b.type==='image'))throw Error('The selected group contains missing or unsupported blocks');
+ const desktop=placePreset(presetPositions(entries,mode),entries,false);
+ const mobile=placePreset(presetPositions(entries,'stack'),entries,true);
+ const mapping=new Map(entries.map((b,i)=>[b.id,{...b,...desktop[i],mobile:mobile[i],layoutEdited:true}]));
+ const nextBlocks=blocks.map(b=>mapping.get(b.id)||b);
+ responsiveGroupSpec(doc,group,nextBlocks);
+ snapshot();
+ blocks=nextBlocks;responsiveGroup={parentSelector:group.parentSelector,selectors:group.selectors.slice()};
+ selected=entries[0].id;
+ render();
+ $('status').textContent='Arranged '+entries.length+' responsive text blocks. Desktop '+(mode==='columns'?'uses two columns':'is stacked')+'; mobile is stacked. Review Publishable edits before transfer.';
+}
+$('applyResponsiveGroup').onclick=async()=>{
+ const index=Number($('responsiveGroupPicker').value);
+ const chosen=$('responsiveGroupPicker').value!==''?discoveredGroups[index]:null;
+ if(!chosen){$('status').textContent='Find and select a compatible section first.';return}
+ const button=$('applyResponsiveGroup');button.disabled=true;
+ try{await arrangeResponsiveGroup(chosen,'columns')}
+ catch(error){$('status').textContent='Arrangement blocked: '+error.message}
+ finally{button.disabled=false}
+};
+for(const [id,mode] of [['stackResponsiveGroup','stack'],['columnsResponsiveGroup','columns']]){
+ $(id).onclick=async()=>{
+  if(!responsiveGroup){$('status').textContent='Select a responsive group before arranging it.';return}
+  const button=$(id);button.disabled=true;
+  try{await arrangeResponsiveGroup(responsiveGroup,mode)}
+  catch(error){$('status').textContent='Arrangement blocked: '+error.message}
+  finally{button.disabled=false}
+ };
 }
 $('useResponsiveGroup').onclick=async()=>{
  const chosen=blocks.find(b=>b.id===selected);
@@ -554,7 +668,7 @@ $('importPage').onclick=async()=>{
    row+=height+1;
   }
   if(!imported.length)throw Error('No supported content blocks were found');
-  snapshot();blocks=imported;sourcePage=page;structureEdited=false;responsiveGroup=null;next=id;selected=null;render();
+  snapshot();clearResponsiveChoices();blocks=imported;sourcePage=page;structureEdited=false;responsiveGroup=null;next=id;selected=null;render();
   $('status').textContent='Imported '+imported.length+' blocks from '+page+'. Layout proposal only.';
  }catch(err){$('status').textContent='Import failed: '+err.message}finally{button.disabled=false}
 };
