@@ -3633,3 +3633,63 @@ test('real research page exposes a source-safe movable content group with review
  expect(html).toContain('<main');
  expect(html).not.toContain('data-editor-key');
 });
+
+test('on-canvas divider resizes two responsive columns and preserves source, mobile order and undo',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+  body:'<!doctype html><html><head></head><body><main><section id="grid-area" style="max-width:900px">'+
+   '<h2>Responsive inquiry</h2><p>First investigation</p><p>Second investigation</p>'+
+   '<p>Third investigation</p><p>Fourth investigation</p></section></main></body></html>'}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ await page.frameLocator('#pageFrame').locator('#grid-area h2').click();
+ await page.locator('#directLayoutPreset').selectOption('two');
+ await page.locator('#directLayoutApply').click();
+ const handle=page.frameLocator('#pageFrame').locator('#moon-column-resize-handle');
+ await expect(handle).toBeVisible();
+ await expect(handle).toHaveAttribute('title',/6 \/ 6/);
+ const parent=await page.frameLocator('#pageFrame').locator('#grid-area').boundingBox();
+ const box=await handle.boundingBox();
+ expect(parent&&box).toBeTruthy();
+ await page.mouse.move(box.x+box.width/2,box.y+box.height/2);
+ await page.mouse.down();
+ await page.mouse.move(parent.x+parent.width*0.76,box.y+box.height/2,{steps:7});
+ await page.mouse.up();
+ await expect.poll(async()=>page.frameLocator('#pageFrame')
+  .locator('#moon-responsive-group-layout').textContent()).toContain('grid-column:10 / span 3');
+ await expect(page.locator('#directLayoutCustomValue')).toHaveText('9 / 3 columns');
+ await expect(page.locator('#editorSaveStatus')).toContainText('columns resized');
+ let css=await page.frameLocator('#pageFrame').locator('#moon-responsive-group-layout').textContent();
+ expect(css).toContain('@media(max-width:700px)');
+ expect(css).toContain('grid-column:1 / span 12');
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).toContain('grid-column:10 / span 3');
+ expect(html).toContain('<p>First investigation</p><p>Second investigation</p>');
+ expect(html).not.toContain('moon-column-resize-handle');
+ await page.locator('#undoBtn').click();
+ css=await page.frameLocator('#pageFrame').locator('#moon-responsive-group-layout').textContent();
+ expect(css).toContain('grid-column:7 / span 6');
+ await page.locator('#redoBtn').click();
+ css=await page.frameLocator('#pageFrame').locator('#moon-responsive-group-layout').textContent();
+ expect(css).toContain('grid-column:10 / span 3');
+ await expect.poll(async()=>page.evaluate(()=>
+  JSON.parse(localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'))?.responsiveGroups?.[0]?.children?.[2]?.desktop?.w
+ )).toBe(3);
+});
+
+test('responsive divider does not appear for three columns or original unarranged blocks',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+  body:'<!doctype html><html><head></head><body><main><section id="grid-area">'+
+   '<h2>Research</h2><p>First</p><p>Second</p><p>Third</p></section></main></body></html>'}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ await page.frameLocator('#pageFrame').locator('#grid-area h2').click();
+ await expect(page.frameLocator('#pageFrame').locator('#moon-column-resize-handle')).toHaveCount(0);
+ await page.locator('#directLayoutPreset').selectOption('three');
+ await page.locator('#directLayoutApply').click();
+ await expect(page.frameLocator('#pageFrame').locator('#moon-column-resize-handle')).toHaveCount(0);
+ await page.locator('#directLayoutPreset').selectOption('custom');
+ await page.locator('#directLayoutApply').click();
+ await expect(page.frameLocator('#pageFrame').locator('#moon-column-resize-handle')).toBeVisible();
+ await page.locator('#directLayoutRemove').click();
+ await expect(page.frameLocator('#pageFrame').locator('#moon-column-resize-handle')).toHaveCount(0);
+});
