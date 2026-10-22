@@ -10,7 +10,7 @@ Open draft [pull request #2](https://github.com/gmoon-code/gmoon-code.github.io/
 - `website-applied-desktop.png` and `website-applied-mobile.png` show transferable edits inside the existing page design.
 - `website-freeform-mobile.png` shows the experimental layout proposal.
 
-The artifact expires after seven days. The screenshots are snapshots of the draft code, not a live hosted preview.
+The artifact expires after seven days. It also includes `compatible-sections.json`, a machine-readable audit of which of the eight portfolio pages contain groups eligible for the current responsive-grid workflow. The screenshots are snapshots of the draft code, not a live hosted preview.
 
 ## Option 2. Test interactively without publishing
 
@@ -41,6 +41,10 @@ Switch between **Desktop** and **Mobile** to examine responsiveness. The review 
 Click **Transfer verified text to editor** after changing imported text or supported styling. The main editor checks the source again, protects any existing local draft, and asks for confirmation. Changes transfer into `editor.html` locally.
 
 Supported changes include imported plain text, font size, foreground/background colours, text alignment, maximum element width, and spacing above/below an element. Text edits within elements that contain links or inline formatting are intentionally blocked in the prototype. Use the main editor for those rich-text changes.
+
+**Find and arrange groups quickly.** After importing a page, choose **Find compatible sections** in the responsive group panel. A dropdown lists only source-verified complete groups of two to twelve text blocks. Choose a group and click **Arrange selected section** for two desktop columns and a mobile stack. **Stack both layouts** provides a single-column alternative. Undo restores the previous arrangement. The builder highlights the group's blocks, checks collisions with other canvas blocks, and checks the source again before transfer.
+
+The compatibility report generated on 22 October 2026 identified **31 compatible sections on six of eight pages**, including Research, Projects, Teaching, Interests, About, and Pungmul. Home and CV currently have no complete groups that satisfy the strict original-DOM requirements. Their text, typography, and supported spacing can still be edited and transferred using the existing workflow. These are test-branch observations and may change as the sites evolve.
 
 **Responsive sibling groups** are supported for a narrow, verifiable case. Import the page, select a heading or paragraph, then click **Use selected sibling group**. The builder checks that all direct children of its parent are imported text blocks, that the original text still matches, and that neither desktop nor mobile blocks overlap. If approved, the group's desktop/mobile coordinates can transfer as generated CSS Grid rules. Review these rules in the main editor before exporting or proposing anything. The original elements and their reading order are not replaced. Press **Clear responsive group** to remove the group from your builder draft.
 
