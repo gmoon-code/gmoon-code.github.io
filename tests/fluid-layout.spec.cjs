@@ -2186,3 +2186,65 @@ test('actual Home and CV pages support two independent published card groups eac
     await page.reload();
   }
 });
+
+test('new paragraph transfers into reviewed HTML, preserving site links and escaping markup',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+ body:'<!doctype html><html><head></head><body><main><section id="content"><h2>Original heading</h2><p>Existing paragraph</p><a href="research.html">Research</a></section></main></body></html>'}));
+ await page.locator('#sourcePage').selectOption('about.html');
+ page.once('dialog',dialog=>dialog.accept());
+ await page.locator('#importPage').click();
+ await page.locator('#grid .block.heading').first().click();
+ page.once('dialog',dialog=>dialog.accept('New paragraph with <script>alert(1)</script>'));
+ await page.locator('#appendSourceParagraph').click();
+ await expect(page.locator('#grid .block')).toHaveCount(3);
+ await page.locator('#viewSitePreview').click();
+ await page.locator('#previewSiteApplied').click();
+ const preview=await page.locator('#sitePreviewFrame').getAttribute('srcdoc');
+ expect(preview).toContain('New paragraph with &lt;script&gt;alert(1)&lt;/script&gt;');
+ expect(preview).toContain('href="research.html"');
+ await page.locator('#closeSitePreview').click();
+ page.on('dialog',dialog=>dialog.accept());
+ await page.locator('#openPublisher').click();
+ await expect(page).toHaveURL(/editor\.html\?page=about\.html$/);
+ await expect(page.locator('#editorSaveStatus')).toContainText('transferred');
+ await page.locator('#reviewBtn').click();
+ await expect(page.locator('#reviewChangeList')).toContainText('New paragraph');
+ await page.locator('#reviewDialog form button').click();
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).toContain('<p>New paragraph with &lt;script&gt;alert(1)&lt;/script&gt;</p>');
+ expect(html).toContain('href="research.html"');
+ expect(html).not.toContain('<script>alert(1)</script>');
+});
+
+test('new paragraph survives local draft reload and can be reset',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+ body:'<!doctype html><html><head></head><body><main><section><h2>Original heading</h2><p>Existing text</p></section></main></body></html>'}));
+ await page.locator('#sourcePage').selectOption('about.html');
+ page.once('dialog',dialog=>dialog.accept());
+ await page.locator('#importPage').click();
+ await page.locator('#grid .block.heading').first().click();
+ page.once('dialog',dialog=>dialog.accept('Extra note'));
+ await page.locator('#appendSourceParagraph').click();
+ page.on('dialog',dialog=>dialog.accept());
+ await page.locator('#openPublisher').click();
+ await expect(page.locator('#editorSaveStatus')).toContainText('transferred');
+ await page.reload();
+ await expect(page.locator('#exportBtn')).toBeEnabled();
+ await page.locator('#resetBtn').click();
+ await expect(page.locator('#exportBtn')).toBeDisabled();
+});
+
+test('added paragraph cannot be inserted inside approved responsive group',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+ body:'<!doctype html><html><head></head><body><main><section id="part"><h2>Heading</h2><p>Paragraph</p></section></main></body></html>'}));
+ await page.locator('#sourcePage').selectOption('about.html');
+ page.once('dialog',dialog=>dialog.accept());
+ await page.locator('#importPage').click();
+ await page.locator('#grid .block.heading').first().click();
+ await page.locator('#useResponsiveGroup').click();
+ await page.locator('#appendSourceParagraph').click();
+ await expect(page.locator('#status')).toContainText('Clear the selected responsive group');
+ await expect(page.locator('#grid .block')).toHaveCount(2);
+});
