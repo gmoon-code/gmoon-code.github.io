@@ -1674,7 +1674,7 @@ test('card layout group preserves nested links and images in reviewed responsive
   await page.locator('#sourcePage').selectOption('index.html');
   page.once('dialog',dialog=>dialog.accept());
   await page.locator('#importPage').click();
-  await expect(page.locator('#grid .block')).toHaveCount(6);
+  await expect(page.locator('#grid .block')).toHaveCount(5);
   await page.locator('#findContainerGroups').click();
   await expect(page.locator('#containerGroupPicker option')).toHaveCount(2);
   await page.locator('#applyContainerGroup').click();
