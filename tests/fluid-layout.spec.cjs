@@ -2136,10 +2136,11 @@ test('actual Home and CV pages support two independent published card groups eac
     await page.locator('#sourcePage').selectOption(filename);
     page.once('dialog', dialog=>dialog.accept());
     await page.locator('#importPage').click();
+    await expect.poll(async()=>page.evaluate(()=>JSON.parse(localStorage.getItem('moon-fluid-layout-lab-v1'))?.sourcePage)).toBe(filename);
     await expect(page.locator('#status')).toContainText('Imported');
     await page.locator('#findContainerGroups').click();
+    await expect.poll(async()=>page.locator('#containerGroupPicker option').count()).toBeGreaterThan(2);
     const options=await page.locator('#containerGroupPicker option').count();
-    expect(options).toBeGreaterThan(2);
     await page.locator('#applyContainerGroup').click();
     await expect(page.locator('#responsiveGroupCount')).toContainText('1 responsive group');
     let selected=false;
