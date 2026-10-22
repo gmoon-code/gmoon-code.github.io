@@ -57,6 +57,18 @@
             <option value="teaching-osmosis-practice.html">Osmosis practice</option>
           </select>
         </div>
+        <div class="sidebar-section" aria-label="Find content on the selected page">
+          <h2>Find an element</h2>
+          <label for="pageFindQuery">Search page text</label>
+          <input type="search" id="pageFindQuery" autocomplete="off" spellcheck="false" placeholder="Type text to locate">
+          <div class="page-find-controls">
+            <button type="button" id="pageFindPrev" class="secondary" disabled>Previous</button>
+            <button type="button" id="pageFindNext" class="secondary" disabled>Next</button>
+            <button type="button" id="pageFindClear" class="secondary" disabled>Clear</button>
+          </div>
+          <p id="pageFindStatus" class="small-note" role="status" aria-live="polite">Find headings, paragraphs, links and image descriptions within the page.</p>
+          <div id="pageFindResults" class="page-find-results" aria-label="Matching editable elements"></div>
+        </div>
         <div class="sidebar-section">
           <h2>On this page</h2>
           <nav id="outline" class="outline" aria-label="Page section outline">
