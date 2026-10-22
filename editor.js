@@ -382,6 +382,14 @@
     $("textAppearanceFields").hidden=isImage;
     $("selectionText").closest(".inspector-group").hidden=isImage;
     $("revertElementBtn").disabled=!state.dirty.has(state.selected);
+    const canInsert=["H2","H3","H4","P"].includes(node.tagName)&&
+      !!state.original.get(state.selected);
+    $("insertContentFields").hidden=!canInsert;
+    if(canInsert){
+      const kind=$("insertContentKind").value;
+      $("insertHeadingField").hidden=kind!=="heading";
+      $("insertLinkField").hidden=kind!=="link";
+    }
     if (isImage) {
       $("imageSrc").value=getWorking(state.selected)?.getAttribute("src")||node.getAttribute("src")||"";
       $("imageAlt").value=node.getAttribute("alt")||"";
@@ -1198,6 +1206,45 @@
     }finally{publisher.busy=false;updatePublishControls();}
   }
 
+  function updateInsertKind(){
+    const kind=$("insertContentKind").value;
+    $("insertHeadingField").hidden=kind!=="heading";
+    $("insertLinkField").hidden=kind!=="link";
+    $("insertContentText").maxLength=kind==="paragraph"?2000:140;
+  }
+  function addContentFromInspector(){
+    if(!state.selected||!state.doc||!window.MoonResponsiveLayout)return;
+    const node=getWorking(state.selected);
+    if(!node||!["H2","H3","H4","P"].includes(node.tagName))return;
+    const kind=$("insertContentKind").value,text=$("insertContentText").value.trim();
+    const original=new DOMParser().parseFromString(state.source,"text/html");
+    const sourceRoot=original.querySelector("main");
+    if(!sourceRoot)return;
+    let selector;
+    try{selector=MoonResponsiveLayout.sourceSelector(node,state.doc.querySelector("main"))}
+    catch(error){notice(error.message,"Cannot add content");return}
+    const matches=[...sourceRoot.querySelectorAll(selector)];
+    if(matches.length!==1||matches[0].tagName!==node.tagName){
+      notice("The selected element no longer has a unique source position. Review the page structure first.","Cannot add content");return;
+    }
+    const sourceNode=matches[0];
+    const proposed={page:state.page,selector,tag:node.tagName.toLowerCase(),
+      before:sourceNode.textContent.trim().replace(/\s+/g," "),kind,text};
+    if(kind==="heading")proposed.headingTag=$("insertHeadingLevel").value;
+    if(kind==="link")proposed.href=$("insertLinkHref").value.trim();
+    try{
+      const additions=validateParagraphAdditions([...state.additions,proposed]);
+      if(layoutGroups().some(group=>sourceRoot.querySelector(group.parentSelector)?.contains(sourceNode)))
+        throw Error("Additions inside active responsive groups are not supported");
+      checkpoint();
+      state.additions=additions;
+      $("insertContentText").value="";
+      if(kind==="link")$("insertLinkHref").value="";
+      renderPreview();
+      scheduleDraft();
+      updateStatus("New "+kind+" added to local draft · Not published");
+    }catch(error){notice("The content could not be added. "+error.message,"Insertion not applied")}
+  }
   function modifyReviewedAddition(index,remove=false){
     const previous=state.additions[index];
     if(!previous)return;
@@ -1610,6 +1657,9 @@
     $("undoBtn").addEventListener("click",undo);
     $("resetBtn").addEventListener("click",resetPage);
     $("revertElementBtn").addEventListener("click",revertSelected);
+    $("insertContentKind").addEventListener("change",updateInsertKind);
+    $("insertContentBtn").addEventListener("click",addContentFromInspector);
+    updateInsertKind();
     $("exportBtn").addEventListener("click",exportHtml);
     $("newImageFile").addEventListener("change",()=>{
       $("stageImageBtn").disabled=!$("newImageFile").files?.length;
