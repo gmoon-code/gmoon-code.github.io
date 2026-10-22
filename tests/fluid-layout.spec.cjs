@@ -2143,11 +2143,13 @@ test('actual Home and CV pages support two independent published card groups eac
     await expect.poll(async()=>page.locator('#containerGroupPicker option').count()).toBeGreaterThan(2);
     const options=await page.locator('#containerGroupPicker option').count();
     await page.locator('#applyContainerGroup').click();
+    await expect(page.locator('#applyContainerGroup')).toBeEnabled();
     await expect(page.locator('#responsiveGroupCount')).toContainText('1 responsive group');
     let selected=false;
     for(let i=1;i<options-1;i++){
       await page.locator('#containerGroupPicker').selectOption(String(i));
       await page.locator('#applyContainerGroup').click();
+      await expect(page.locator('#applyContainerGroup')).toBeEnabled();
       if((await page.locator('#responsiveGroupCount').textContent()).includes('2 responsive groups')){selected=true;break}
     }
     expect(selected).toBe(true);
