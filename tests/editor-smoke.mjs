@@ -219,13 +219,16 @@ try {
   assert.match(await page.frameLocator("#pageFrame")
     .locator("main > section").first().getAttribute("class"),/home-green/,
     "Reorder-only local drafts must survive reload");
-  // A second drag after the first move verifies that the group boundary
-  // tracks its current siblings, not the original final section ID.
-  const dragRowsAgain=page.locator("#sectionList .section-order-row");
-  await dragRowsAgain.nth(1).dragTo(dragRowsAgain.nth(0),{targetPosition:{x:30,y:2}});
+  // After restoring the draft, the accessible Move up action must use the
+  // current sibling order. A separate drag test above covers pointer sorting.
+  await page.locator("#sectionList .section-order-row").nth(1)
+    .locator("button[aria-label^='Move up']").click();
+  await page.waitForFunction(()=>document.querySelector("#sectionList .section-order-row")
+    ?.textContent.includes("yellow")||document.querySelector("#sectionList .section-order-row")
+    ?.textContent.includes("Yellow"));
   assert.match(await page.frameLocator("#pageFrame")
     .locator("main > section").first().getAttribute("class"),/home-yellow/,
-    "The second drag should restore the original first section");
+    "Moving up after reload should restore the original first section");
   assert.equal(await page.locator("#resetBtn").isDisabled(),true,
     "Reversing every section move should clear all local changes");
 
