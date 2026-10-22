@@ -223,9 +223,8 @@ try {
   // current sibling order. A separate drag test above covers pointer sorting.
   await page.locator("#sectionList .section-order-row").nth(1)
     .locator("button[aria-label^='Move up']").click();
-  await page.waitForFunction(()=>document.querySelector("#sectionList .section-order-row")
-    ?.textContent.includes("yellow")||document.querySelector("#sectionList .section-order-row")
-    ?.textContent.includes("Yellow"));
+  await page.waitForFunction(()=>document.querySelector("#pageFrame")?.contentDocument
+    ?.querySelector("main > section")?.classList.contains("home-yellow"));
   assert.match(await page.frameLocator("#pageFrame")
     .locator("main > section").first().getAttribute("class"),/home-yellow/,
     "Moving up after reload should restore the original first section");
