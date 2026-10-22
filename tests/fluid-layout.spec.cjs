@@ -1298,3 +1298,39 @@ test('accepted responsive grid group survives editor reload and can be undone', 
   await expect(page.locator('#exportBtn')).toBeDisabled();
   await expect.poll(async()=>page.evaluate(()=>localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'))).toBeNull();
 });
+
+test('responsive grid rejects visual reordering that diverges from keyboard and screen-reader order', async ({ page }) => {
+  await page.route('**/about.html', route => route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<!doctype html><html><head></head><body><main><section id="layout"><h2>First</h2><p>Second</p></section></main></body></html>'
+  }));
+  const payload={version:3,page:'about.html',changes:[],styleChanges:[],layoutGroup:{
+    version:1,parentSelector:'#layout',children:[
+      {selector:'#layout > h2:nth-of-type(1)',tag:'h2',before:'First',
+        desktop:{x:1,y:4,w:6,h:1},mobile:{x:1,y:1,w:12,h:1}},
+      {selector:'#layout > p:nth-of-type(1)',tag:'p',before:'Second',
+        desktop:{x:7,y:1,w:5,h:1},mobile:{x:1,y:3,w:12,h:1}}
+    ]
+  }};
+  await page.evaluate(data=>sessionStorage.setItem('moon-fluid-text-handoff-v1',JSON.stringify(data)),payload);
+  await page.goto('http://127.0.0.1:8765/editor.html?page=about.html&importFluidText=1');
+  await expect(page.locator('#noticeMessage')).toContainText('No edits were applied');
+  expect(await page.evaluate(()=>localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'))).toBeNull();
+});
+
+test('builder blocks responsive section whose canvas order no longer matches source reading order', async ({ page }) => {
+  await page.route('**/about.html', route => route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<!doctype html><html><head></head><body><main><section id="layout"><h2>First</h2><p>Second</p></section></main></body></html>'
+  }));
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  await expect(page.locator('#grid .block')).toHaveCount(2);
+  await page.locator('#grid .block').first().click();
+  await page.locator('#y').fill('12');
+  await page.locator('#y').dispatchEvent('change');
+  await page.locator('#useResponsiveGroup').click();
+  await expect(page.locator('#status')).toContainText('reading order');
+  await expect(page.locator('#responsiveGroupStatus')).toContainText('No responsive group selected');
+});
