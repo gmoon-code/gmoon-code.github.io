@@ -1141,3 +1141,96 @@ test('dragging imported text is tracked as unpublishable canvas layout', async (
   await page.locator('#openPublisher').click();
   await expect(page.locator('#status')).toContainText('Only structural or freeform layout changes');
 });
+
+test('responsive sibling group transfers as source-preserving CSS with separate mobile rules', async ({ page }) => {
+  await page.route('**/about.html', route => route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<!doctype html><html><head><title>About</title></head><body><header>Site navigation</header><main><section id="layout"><h2>Section heading</h2><p>Read <a href="research.html">research</a> here.</p></section></main><footer>Site footer</footer></body></html>'
+  }));
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  await expect(page.locator('#grid .block')).toHaveCount(2);
+  await page.locator('#grid .block').first().click();
+  await page.locator('#useResponsiveGroup').click();
+  await expect(page.locator('#responsiveGroupStatus')).toContainText('2 blocks');
+  await page.locator('#reviewPatch').click();
+  await expect(page.locator('#reviewEntries')).toContainText('Responsive group');
+  await page.locator('#viewSitePreview').click();
+  await page.locator('#previewSiteApplied').click();
+  const proposed=await page.locator('#sitePreviewFrame').getAttribute('srcdoc');
+  expect(proposed).toContain('id="moon-responsive-group-layout"');
+  expect(proposed).toContain('@media(max-width:700px)');
+  expect(proposed).toContain('href="research.html"');
+  await page.locator('#closeSitePreview').click();
+  page.on('dialog', dialog => dialog.accept());
+  await page.locator('#openPublisher').click();
+  await expect(page).toHaveURL(/editor\.html\?page=about\.html$/);
+  await expect(page.locator('#editorSaveStatus')).toContainText('transferred');
+  await page.locator('#reviewBtn').click();
+  await expect(page.locator('#reviewChangeList')).toContainText('Responsive group');
+  await expect(page.locator('#reviewExportStatus')).toContainText('Source check passed');
+  await page.locator('#reviewDialog form button').click();
+  const downloadPromise=page.waitForEvent('download');
+  await page.locator('#exportBtn').click();
+  const html=require('node:fs').readFileSync(await (await downloadPromise).path(),'utf8');
+  expect(html).toContain('<style id="moon-responsive-group-layout">');
+  expect(html).toContain('grid-template-columns:repeat(12,minmax(0,1fr))');
+  expect(html).toContain('@media(max-width:700px)');
+  expect(html).toContain('Site footer');
+  expect(html).toContain('href="research.html"');
+});
+
+test('responsive sibling group rejects incomplete source groups with unrelated child content', async ({ page }) => {
+  await page.route('**/about.html', route => route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<html><head></head><body><main><section id="layout"><h2>Heading</h2><a href="research.html">Unmapped link</a><p>Paragraph</p></section></main></body></html>'
+  }));
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  await expect(page.locator('#grid .block')).toHaveCount(2);
+  await page.locator('#grid .block').first().click();
+  await page.locator('#useResponsiveGroup').click();
+  await expect(page.locator('#status')).toContainText('Responsive group blocked');
+  await expect(page.locator('#responsiveGroupStatus')).toContainText('No responsive group selected');
+});
+
+test('responsive group retains draft and can be cleared with undo support', async ({ page }) => {
+  await page.route('**/about.html', route => route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<html><head></head><body><main><section id="layout"><h2>Title</h2><p>Paragraph</p></section></main></body></html>'
+  }));
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  await page.locator('#grid .block').first().click();
+  await page.locator('#useResponsiveGroup').click();
+  await expect.poll(async()=>page.evaluate(()=>JSON.parse(localStorage.getItem('moon-fluid-layout-lab-v1'))?.responsiveGroup?.selectors?.length)).toBe(2);
+  await page.reload();
+  await expect(page.locator('#responsiveGroupStatus')).toContainText('2 blocks');
+  await page.locator('#clearResponsiveGroup').click();
+  await expect(page.locator('#responsiveGroupStatus')).toContainText('No responsive group selected');
+  await page.locator('#undo').click();
+  await expect(page.locator('#responsiveGroupStatus')).toContainText('2 blocks');
+});
+
+test('real About page responsive group preserves complete page markup in editor export', async ({ page }) => {
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  await page.locator('#grid .block.heading').first().click();
+  await page.locator('#useResponsiveGroup').click();
+  await expect(page.locator('#responsiveGroupStatus')).toContainText('blocks');
+  page.on('dialog', dialog => dialog.accept());
+  await page.locator('#openPublisher').click();
+  await expect(page).toHaveURL(/editor\.html\?page=about\.html$/);
+  await expect(page.locator('#editorSaveStatus')).toContainText('transferred');
+  const downloadPromise=page.waitForEvent('download');
+  await page.locator('#exportBtn').click();
+  const html=require('node:fs').readFileSync(await (await downloadPromise).path(),'utf8');
+  expect(html).toContain('id="moon-responsive-group-layout"');
+  expect(html).toContain('about-page');
+  expect(html).toContain('assets/profile-portrait.webp');
+  expect(html).toContain('A little about me');
+});
