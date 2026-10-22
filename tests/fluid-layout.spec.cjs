@@ -3739,6 +3739,106 @@ test('inline composer cancels with Escape, stays within mobile preview, and neve
  await expect(page.frameLocator('#pageFrame').locator('[data-editor-added-index]')).toHaveCount(0);
  await expect(page.locator('#exportBtn')).toBeDisabled();
 });
+test('section layout can be chosen directly on page with original mobile reading order intact',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+  body:'<!doctype html><html><head></head><body><main>'+
+   '<section id="project-section"><h2>Collaborative investigations</h2>'+
+   '<p>First reasoning step.</p><p>Second reasoning step.</p>'+
+   '<p>Third reasoning step.</p></section></main></body></html>'}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ const heading=page.frameLocator('#pageFrame').locator('#project-section h2');
+ await heading.click();
+ const toolbar=page.frameLocator('#pageFrame').locator('#moon-quick-toolbar');
+ await expect(toolbar.getByRole('button',{
+  name:'Arrange selected section into responsive columns'
+ })).toBeVisible();
+ await toolbar.getByRole('button',{
+  name:'Arrange selected section into responsive columns'
+ }).click();
+ let dialog=page.frameLocator('#pageFrame').getByRole('dialog',{name:'Arrange selected section'});
+ await expect(dialog).toContainText('Mobile keeps the original reading order');
+ await expect(dialog.getByRole('button',{name:'Remove layout'})).toBeDisabled();
+ await dialog.getByRole('button',{name:'Set selected section layout to two equal'}).click();
+ await expect(dialog).toHaveCount(0);
+ await expect(page.locator('#directLayoutPreset')).toHaveValue('two');
+ let css=await page.frameLocator('#pageFrame').locator('#moon-responsive-group-layout').textContent();
+ expect(css).toContain('grid-column:7 / span 6');
+ expect(css).toContain('@media(max-width:700px)');
+ await expect(page.locator('#changeCount')).toContainText('1 responsive layout group');
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).toContain('@media(max-width:700px)');
+ expect(html).toContain('<p>First reasoning step.</p><p>Second reasoning step.</p>');
+ expect(html.indexOf('First reasoning step.')).toBeLessThan(html.indexOf('Third reasoning step.'));
+ expect(html).not.toContain('moon-quick-layout');
+ await page.locator('#previewViewport').selectOption('mobile');
+ await expect.poll(async()=>page.frameLocator('#pageFrame')
+  .locator('#project-section p').allTextContents()).toEqual([
+    'First reasoning step.','Second reasoning step.','Third reasoning step.'
+  ]);
+ await page.locator('#undoBtn').click();
+ await expect(page.locator('#changeCount')).not.toContainText('responsive layout group');
+ await page.locator('#redoBtn').click();
+ await expect(page.locator('#changeCount')).toContainText('1 responsive layout group');
+ await page.frameLocator('#pageFrame').locator('#project-section h2').click();
+ await toolbar.getByRole('button',{
+  name:'Arrange selected section into responsive columns'
+ }).click();
+ dialog=page.frameLocator('#pageFrame').getByRole('dialog',{name:'Arrange selected section'});
+ await expect(dialog.getByRole('button',{name:'Remove layout'})).toBeEnabled();
+ await dialog.getByRole('button',{name:'Remove layout'}).click();
+ await expect(page.locator('#changeCount')).not.toContainText('responsive layout group');
+ await expect(page.locator('#exportBtn')).toBeDisabled();
+});
+
+test('on-page section arrangement works with narrow preview and Escape does not modify draft',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+  body:'<!doctype html><html><head></head><body><main>'+
+    '<section><h2>Teaching resources</h2><p>Biology inquiry.</p>'+
+    '<p>Chemistry inquiry.</p><p>Research guidance.</p></section>'+
+    '</main></body></html>'}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ await page.locator('#previewViewport').selectOption('mobile');
+ await page.locator('#previewTheme').selectOption('dark');
+ await page.frameLocator('#pageFrame').locator('main h2').click();
+ const toolbar=page.frameLocator('#pageFrame').locator('#moon-quick-toolbar');
+ await toolbar.getByRole('button',{
+  name:'Arrange selected section into responsive columns'
+ }).click();
+ const dialog=page.frameLocator('#pageFrame').getByRole('dialog',{name:'Arrange selected section'});
+ await expect(dialog).toBeVisible();
+ const bounds=await dialog.evaluate(el=>{
+  const rect=el.getBoundingClientRect();
+  return {left:rect.left,top:rect.top,right:rect.right,bottom:rect.bottom,
+    width:el.ownerDocument.defaultView.innerWidth,
+    height:el.ownerDocument.defaultView.innerHeight};
+ });
+ expect(bounds.left).toBeGreaterThanOrEqual(0);
+ expect(bounds.top).toBeGreaterThanOrEqual(0);
+ expect(bounds.right).toBeLessThanOrEqual(bounds.width+1);
+ expect(bounds.bottom).toBeLessThanOrEqual(bounds.height+1);
+ await dialog.getByRole('button',{name:'Set selected section layout to three columns'})
+  .press('Escape');
+ await expect(dialog).toHaveCount(0);
+ await expect(toolbar.getByRole('button',{
+  name:'Arrange selected section into responsive columns'
+ })).toBeFocused();
+ await expect(page.locator('#exportBtn')).toBeDisabled();
+ await toolbar.getByRole('button',{
+  name:'Arrange selected section into responsive columns'
+ }).click();
+ await dialog.getByRole('button',{name:'Set selected section layout to wide left'}).click();
+ await expect(page.locator('#directLayoutPreset')).toHaveValue('first-wide');
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).toContain('grid-column:9 / span 4');
+ expect(html).toContain('@media(max-width:700px)');
+ expect(html).not.toContain('moon-quick-layout');
+ await page.reload();
+ await expect(page.locator('#changeCount')).toContainText('1 responsive layout group');
+});
 test('floating page toolbar aligns original paragraphs with reversible, source-safe HTML',async({page})=>{
  await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
   body:'<!doctype html><html><head></head><body><main><section>'+
