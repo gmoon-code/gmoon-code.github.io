@@ -316,7 +316,9 @@ try {
   await inline.route("**/about.html",route=>route.fulfill({
     status:200,contentType:"text/html",
     body:'<!doctype html><html><head></head><body><main><section>'+
-      '<h2>Source heading</h2><p>Unchanged original.</p></section></main></body></html>'
+      '<h2>Source heading</h2><p>Unchanged original.</p>'+
+      '<img src="assets/editor-existing-example.webp" alt="Existing classroom materials">'+
+      '</section></main></body></html>'
   }));
   await inline.goto(base+"/editor.html?page=about.html",{waitUntil:"domcontentloaded"});
   await inline.frameLocator("#pageFrame").locator("main h2").click();
@@ -372,7 +374,29 @@ try {
   await nextComposer.getByLabel("Link destination").fill("https://example.org/resource");
   await nextComposer.getByRole("button",{name:"Add to page"}).click();
   await inline.frameLocator("#pageFrame").locator("[data-editor-added-index]").nth(1).waitFor({timeout:6000});
-  console.log("PASS: inline page composer adds validated content, rejects unsafe URL, reloads and edits again");
+  console.log("INLINE: select existing image from quick Add gallery");
+  await inline.frameLocator("#pageFrame").locator("[data-editor-added-index]").nth(1).click();
+  await inline.frameLocator("#pageFrame").locator("#moon-quick-toolbar")
+    .getByRole("button",{name:"Add new content after this block"}).click();
+  const imageComposer=inline.frameLocator("#pageFrame")
+    .getByRole("dialog",{name:"Add content to the page"});
+  await imageComposer.getByLabel("Content type").selectOption("image");
+  await imageComposer.getByRole("button",{
+    name:"Choose an existing website image from the image gallery"
+  }).click();
+  await inline.locator("#mediaDialog").waitFor();
+  await inline.locator("#mediaResults .media-option")
+    .filter({hasText:"assets/editor-existing-example.webp"}).click();
+  assert.equal(await imageComposer.getByLabel("Existing image path").inputValue(),
+    "assets/editor-existing-example.webp");
+  assert.equal(await imageComposer.getByLabel("Image description (alt text)").inputValue(),
+    "Existing classroom materials");
+  assert.equal(await imageComposer.locator("img").getAttribute("src"),
+    "assets/editor-existing-example.webp");
+  await imageComposer.getByRole("button",{name:"Add to page"}).click();
+  await inline.frameLocator("#pageFrame").locator("[data-editor-added-index]").nth(2)
+    .locator("img").waitFor({timeout:6000});
+  console.log("PASS: inline page composer supports valid image selection, safe links, reload and edits");
   await inline.close();
   console.log("PASS: text, drafts, reset, link/image export, 17 pages, dark/mobile previews");
 } finally {
