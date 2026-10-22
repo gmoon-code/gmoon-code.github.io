@@ -346,7 +346,9 @@
         d.addEventListener("scroll",positionAddedMoveHandle,true);
         d.addEventListener("scroll",positionAddedWidthHandle,true);
         d.addEventListener("scroll",positionQuickToolbar,true);
-        d.addEventListener("scroll",positionQuickComposer,true);
+        // Only viewport scrolls move the composer. Internal form scrolling
+        // must not reposition the form under the user's pointer.
+        d.defaultView.addEventListener("scroll",positionQuickComposer);
         d.addEventListener("scroll",positionColumnResizeHandle,true);
         d.defaultView.addEventListener("resize",positionImageResizeHandle);
         d.defaultView.addEventListener("resize",positionBlockMoveHandle);
@@ -763,7 +765,8 @@
     status.setAttribute("aria-live","polite");
     status.style.cssText="margin:0;font-size:12px";
     const row=doc.createElement("div");
-    row.style.cssText="display:flex;gap:7px;justify-content:flex-end";
+    row.style.cssText="display:flex;gap:7px;justify-content:flex-end;"+
+      "position:sticky;bottom:0;padding-top:5px;background:inherit";
     const cancel=doc.createElement("button");
     cancel.type="button";cancel.textContent="Cancel";
     const submit=doc.createElement("button");
@@ -778,9 +781,14 @@
     }
     const refresh=()=>{
       const selection=kind.value;
+      // Inline display:block overrides the browser's [hidden] styling.
+      // Explicitly hide inactive fields so the Add action fits small previews.
       levelField.hidden=selection!=="heading";
       hrefField.hidden=selection!=="link";
       imageField.hidden=selection!=="image";
+      levelField.style.display=levelField.hidden?"none":"block";
+      hrefField.style.display=hrefField.hidden?"none":"block";
+      imageField.style.display=imageField.hidden?"none":"block";
       textField.firstChild.textContent=selection==="image"?"Image description (alt text)":"Text";
       description.maxLength=selection==="paragraph"?2000:selection==="image"?200:140;
       status.textContent="";
