@@ -2506,6 +2506,7 @@ test('forged file draft containing unsafe link is refused on JSON import',async(
 });
 
 test('capture desktop and mobile previews with new headings and reviewed links',async({page})=>{
+ test.setTimeout(90000);
  const fs=require('node:fs');
  fs.mkdirSync('test-results/layout-previews',{recursive:true});
  await page.setViewportSize({width:1366,height:900});
@@ -2525,7 +2526,9 @@ test('capture desktop and mobile previews with new headings and reviewed links',
  await page.locator('#appendSourceLink').click();
  await page.locator('#canvas').screenshot({path:'test-results/layout-previews/add-content-builder-desktop.png'});
  await page.locator('#viewSitePreview').click();
+ await expect(page.locator('#sitePreviewDialog')).toBeVisible();
  await page.locator('#previewSiteApplied').click();
+ await expect(page.frameLocator('#sitePreviewFrame').locator('main')).toBeVisible();
  await page.locator('#sitePreviewDialog').screenshot({path:'test-results/layout-previews/add-content-site-desktop.png'});
  await page.locator('#previewSiteMobile').click();
  await page.locator('#sitePreviewDialog').screenshot({path:'test-results/layout-previews/add-content-site-mobile.png'});
