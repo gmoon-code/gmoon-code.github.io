@@ -142,7 +142,19 @@
               <option value="right">Right</option>
               <option value="justify">Justified</option>
             </select>
-            <p class="small-note">Only the selected block changes. You can revert it without affecting the rest of the page.</p>
+            <label for="textFontSize">Font size in pixels</label>
+            <input id="textFontSize" type="number" min="12" max="80" step="1" placeholder="Page default">
+            <label for="textMaxWidth">Maximum text width (%)</label>
+            <input id="textMaxWidth" type="number" min="30" max="100" step="1" placeholder="Page default">
+            <label for="textSpaceAbove">Space above (px)</label>
+            <input id="textSpaceAbove" type="number" min="0" max="80" step="1" placeholder="Page default">
+            <label for="textSpaceBelow">Space below (px)</label>
+            <input id="textSpaceBelow" type="number" min="0" max="80" step="1" placeholder="Page default">
+            <label for="textColour">Text colour (hex)</label>
+            <input id="textColour" type="text" maxlength="7" placeholder="Page default, or #191919" spellcheck="false">
+            <label for="textBackgroundColour">Background colour (hex)</label>
+            <input id="textBackgroundColour" type="text" maxlength="7" placeholder="Page default, or #ffffff" spellcheck="false">
+            <p class="small-note">Leave a field blank to use the original page style. These changes apply to the selected block, and can be undone or reverted.</p>
           </div>
           <div id="linkFields" class="inspector-group" hidden>
             <label for="linkHref">Link destination</label>
@@ -167,14 +179,10 @@
             </fieldset>
             <label for="imageAlt">Image description (alt text)</label>
             <textarea id="imageAlt" rows="3"></textarea>
-            <label for="imageMaxWidth">Image maximum width</label>
-            <select id="imageMaxWidth">
-              <option value="">Use site default</option>
-              <option value="100%">Full container width</option>
-              <option value="75%">Three-quarter width</option>
-              <option value="50%">Half width</option>
-              <option value="25%">Quarter width</option>
-            </select>
+            <label for="imageWidthPercent">Image width within its container</label>
+            <input type="range" id="imageWidthPercent" min="20" max="100" step="5" value="100">
+            <output id="imageWidthValue" for="imageWidthPercent">100%</output>
+            <p class="small-note">Drag the bottom-right handle on the selected image to resize it directly, or use this slider with a mouse or keyboard. Revert this element to restore its original dimensions.</p>
             <p class="small-note">Existing images and staged uploads can be previewed. New files reach the website only after the private publisher is configured and the GitHub review PR is approved.</p>
           </div>
           <div id="insertContentFields" class="inspector-group" hidden>
