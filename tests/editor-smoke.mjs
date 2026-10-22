@@ -153,12 +153,13 @@ try {
   assert.equal(await page.locator("#imageFields").isVisible(),true);
   await page.locator("#imageAlt").fill("Editor visual test image description");
   await page.locator("#imageAlt").press("Tab");
-  await page.locator("#imageMaxWidth").selectOption("50%");
-  assert.equal(await image.evaluate(el=>el.style.maxWidth),"50%");
+  await page.locator("#imageWidthPercent").fill("50");
+  await page.locator("#imageWidthPercent").dispatchEvent("change");
+  assert.equal(await image.evaluate(el=>el.style.width),"50%");
   const imageHtml=await downloadedHtml();
   assert(imageHtml.includes('alt="Editor visual test image description"'),
     "Image description must survive source export");
-  assert(/style="[^"]*max-width:\s*50%/.test(imageHtml),
+  assert(/style="[^"]*width:\s*50%/.test(imageHtml),
     "Selected image width must survive source export");
 
   // The image library lists real assets already referenced by site pages.
