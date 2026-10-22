@@ -254,7 +254,7 @@ test("accept only exact, bounded responsive grid CSS while protecting existing s
  const section=page.replace("<h1>Original title</h1>",
    '<section id="layout"><h2>Heading</h2><p>Paragraph</p></section>');
  const container='main #layout{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));'+
-   'grid-auto-rows:minmax(40px,auto);column-gap:12px;row-gap:8px;align-items:start;}';
+   'grid-auto-rows:minmax(0,auto);column-gap:12px;row-gap:8px;align-items:start;}';
  const child=(selector,x,y,w,h)=>'main '+selector+
    '{grid-column:'+x+' / span '+w+';grid-row:'+y+' / span '+h+';min-width:0;}';
  const selectors=['#layout > h2:nth-of-type(1)','#layout > p:nth-of-type(1)'];
