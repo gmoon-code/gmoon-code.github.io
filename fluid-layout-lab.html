@@ -262,7 +262,7 @@ $('openPublisher').onclick=async()=>{
    const additions=insertionBlocks().length?validateInsertions(await freshSourceDocument()).map(b=>({...b.insertion,text:b.text})):[];
    const warning=layoutOnly?' Freeform positions, newly added blocks, and images will NOT transfer. Export layout JSON separately if you want to keep a portable copy.':'';
    if(!confirm('Transfer '+changes.length+' verified text edits, '+styleChanges.length+' visual style edits, and '+layoutGroups.reduce((total,g)=>total+g.children.length,0)+' blocks across '+layoutGroups.length+' responsive groups and '+additions.length+' new paragraphs to the existing editor?'+warning+' Review them again there before creating a GitHub proposal.'))return;
-   const handoff=JSON.stringify({version:5,page:sourcePage,changes,styleChanges,additions,...(layoutGroups.length?{layoutGroups}:{})});
+   const handoff=JSON.stringify({version:additions.length?5:layoutGroups.length?4:2,page:sourcePage,changes,styleChanges,...(additions.length?{additions}:{}),...(layoutGroups.length?{layoutGroups}:{})});
    if(handoff.length>200000)throw Error('The verified changes exceed the editor transfer limit. Export smaller sets of edits separately.');
    sessionStorage.setItem('moon-fluid-text-handoff-v1',handoff);
    url.searchParams.set('importFluidText','1');
