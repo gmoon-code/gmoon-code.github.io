@@ -757,6 +757,42 @@
     const textField=field("text","Text",description);
     const hrefField=field("href","Link destination",href);
     const imageField=field("image","Existing image path",imagePath);
+    const browseImages=doc.createElement("button");
+    browseImages.type="button";
+    browseImages.textContent="Browse website images";
+    browseImages.setAttribute("aria-label","Choose an existing website image from the image gallery");
+    browseImages.style.cssText="display:block;width:100%;margin-top:6px;"+
+      "padding:8px;border:1px solid "+(dark?"#9bad9e":"#9cb0a6")+
+      ";border-radius:6px;background:"+(dark?"#303d33":"#e8f2eb")+
+      ";color:inherit;font:600 13px system-ui;cursor:pointer";
+    imageField.append(browseImages);
+    browseImages.addEventListener("click",()=>{
+      if(kind.value==="image")openMediaLibrary("quick");
+    });
+    const imagePreview=doc.createElement("div");
+    imagePreview.setAttribute("aria-live","polite");
+    imagePreview.style.cssText="display:none;gap:8px;align-items:center;margin-top:6px";
+    const thumbnail=doc.createElement("img");
+    thumbnail.alt="";
+    thumbnail.style.cssText="display:block;width:68px;height:54px;object-fit:contain;"+
+      "border:1px solid "+(dark?"#9bad9e":"#a9c1b2")+";border-radius:4px";
+    const imageNote=doc.createElement("small");
+    imageNote.style.cssText="overflow-wrap:anywhere;font-size:11px";
+    imagePreview.append(thumbnail,imageNote);
+    imageField.append(imagePreview);
+    const updateImagePreview=()=>{
+      const path=imagePath.value.trim();
+      const valid=path&&safeExistingImagePath(path);
+      imagePreview.style.display=valid?"flex":"none";
+      if(valid){
+        if(thumbnail.getAttribute("src")!==path)thumbnail.setAttribute("src",path);
+        imageNote.textContent="Selected image · "+path;
+      }else{
+        thumbnail.removeAttribute("src");
+        imageNote.textContent="";
+      }
+    };
+    imagePath.addEventListener("input",updateImagePreview);
     const help=doc.createElement("p");
     help.textContent="Images must already exist on this website. Your additions remain a local draft until reviewed.";
     help.style.cssText="margin:0;font-size:12px;line-height:1.35;opacity:.85";
@@ -789,6 +825,7 @@
       levelField.style.display=levelField.hidden?"none":"block";
       hrefField.style.display=hrefField.hidden?"none":"block";
       imageField.style.display=imageField.hidden?"none":"block";
+      updateImagePreview();
       textField.firstChild.textContent=selection==="image"?"Image description (alt text)":"Text";
       description.maxLength=selection==="paragraph"?2000:selection==="image"?200:140;
       status.textContent="";
@@ -2241,6 +2278,21 @@
       const code=document.createElement("small");code.textContent=item.path;
       button.append(img,label,code);
       button.addEventListener("click",()=>{
+        if(state.mediaChooseInsert==="quick"){
+          const form=state.frameDoc?.getElementById("moon-quick-composer");
+          const path=form?.querySelector("#moon-quick-new-image");
+          const text=form?.querySelector("#moon-quick-new-text");
+          if(!form||!path||!text||!safeExistingImagePath(item.path)){
+            $("mediaStatus").textContent="The inline image editor is no longer available.";
+            return;
+          }
+          path.value=item.path;
+          path.dispatchEvent(new Event("input",{bubbles:true}));
+          if(!text.value.trim())text.value=item.description.slice(0,200);
+          $("mediaDialog").close();
+          path.focus({preventScroll:true});
+          return;
+        }
         if(state.mediaChooseInsert==="added"){
           $("addedBlockSrc").value=item.path;
           if(!$("addedBlockText").value.trim())$("addedBlockText").value=item.description;
@@ -2270,7 +2322,10 @@
   async function openMediaLibrary(forInsertion=false){
     const selected=state.frameDoc?.querySelector(
       '[data-editor-key="'+state.selected+'"]');
-    if(forInsertion==="added"){
+    if(forInsertion==="quick"){
+      const form=state.frameDoc?.getElementById("moon-quick-composer");
+      if(!form||form.querySelector("#moon-quick-new-kind")?.value!=="image")return;
+    }else if(forInsertion==="added"){
       if(insertionKind(state.additions[state.selectedAddition])!=="image")return;
     }else if(forInsertion){
       if(!selected||!["P","H2","H3","H4"].includes(selected.tagName))return;
