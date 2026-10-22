@@ -2783,6 +2783,8 @@ test('review panel moves new blocks earlier and later without changing source co
  await page.getByRole('button',{name:'Move added paragraph 1 later'}).click();
  order=await page.frameLocator('#pageFrame').locator('main section > h2,main section > p').allTextContents();
  expect(order).toEqual(['Source heading','First','Second','Existing text']);
+ await page.locator('#reviewDialog form button').click();
+ await expect(page.locator('#reviewDialog')).not.toBeVisible();
  const download=page.waitForEvent('download');
  await page.locator('#exportBtn').click();
  const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
