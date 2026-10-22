@@ -45,6 +45,8 @@ The experimental `fluid-layout-lab.html` can import portfolio page content into 
 
 **Constrained responsive text groups.** After importing a page, select a heading or paragraph and choose **Use selected sibling group**. If the selected parent contains only two to twelve fully mapped, neighbouring text elements, the shared validator can translate their desktop and mobile grid positions into scoped CSS. The receiving editor independently verifies all source elements, rejects overlaps or unsafe selectors, previews the result, and includes the generated CSS in its reviewable HTML and draft PR proposal. Original HTML, links, and DOM reading order stay intact.
 
+**Multiple independent sections.** Up to six non-overlapping, non-nested responsive groups can be combined on the same page. The **Selected group for editing** picker switches between them without discarding the others, and **Clear responsive group** removes only the selected group. Browser drafts, undo/redo and exported JSON retain all groups. The main editor reviews one combined stylesheet and the private publisher independently checks every group before creating a proposed change.
+
 **Not yet publishable through the handoff** are unrestricted freeform positions outside a verified text or card group, newly added or removed blocks, and layout-level image changes. Visual review files are prototypes and must never replace a live page without a separate structural, accessibility, and content review.
 
 The project runs browser tests and publishing-preflight checks for the experimental builder before changes are proposed for merging. The experimental builder is developed on a separate draft pull request; its existence does not imply that it is deployed to GitHub Pages.
