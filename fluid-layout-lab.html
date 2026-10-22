@@ -774,7 +774,7 @@ $('previewSiteDesktop').onclick=()=>setSitePreviewDevice('desktop');
 $('previewSiteMobile').onclick=()=>setSitePreviewDevice('mobile');
 $('closeSitePreview').onclick=()=>$('sitePreviewDialog').close();
 $('sitePreviewDialog').addEventListener('close',()=>{$('sitePreviewFrame').srcdoc='';sitePreviewVersions=null;});
-$('export').onclick=()=>{const blob=new Blob([JSON.stringify({version:2,sourcePage,blocks,structureEdited,responsiveGroup},null,2)+'\n'],{type:'application/json'});const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='portfolio-layout-proposal.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)};
+$('export').onclick=()=>{const blob=new Blob([JSON.stringify({version:2,sourcePage,blocks,structureEdited,responsiveGroup,responsiveGroups},null,2)+'\n'],{type:'application/json'});const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='portfolio-layout-proposal.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)};
 // Import only visible text and safe image paths. Never execute page scripts or inject source markup.
 $('importPage').onclick=async()=>{
  const page=$('sourcePage').value;
