@@ -2074,11 +2074,12 @@ test('independent groups survive autosave, reload, picker changes and removal', 
   await page.locator('#export').click();
   const data=JSON.parse(require('node:fs').readFileSync(await (await download).path(),'utf8'));
   expect(data.responsiveGroups).toHaveLength(1);
-  page.once('dialog',dialog=>dialog.accept());
+  page.on('dialog',dialog=>dialog.accept().catch(()=>{}));
   await page.locator('#jsonImport').setInputFiles({
     name:'multi-groups.json',mimeType:'application/json',
     buffer:Buffer.from(JSON.stringify(data))
   });
+  await expect(page.locator('#status')).toContainText('Imported');
   await expect(page.locator('#responsiveGroupCount')).toContainText('2 responsive groups');
 });
 
@@ -2153,7 +2154,8 @@ test('actual Home and CV pages support two independent published card groups eac
     await page.locator('#viewSitePreview').click();
     await page.locator('#previewSiteApplied').click();
     const html=await page.locator('#sitePreviewFrame').getAttribute('srcdoc');
-    expect((html.match(/Reviewed responsive group/g)||[])).toHaveLength(2);
+    const sheet=await page.evaluate(markup=>new DOMParser().parseFromString(markup,'text/html').getElementById('moon-responsive-group-layout')?.textContent||'',html);
+    expect((sheet.match(/\/\* Reviewed responsive group/g)||[])).toHaveLength(2);
     await page.locator('#sitePreviewDialog').screenshot({
       path:'test-results/layout-previews/'+filename.replace('.html','')+'-two-groups-desktop.png'
     });
