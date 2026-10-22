@@ -153,8 +153,10 @@ try {
   assert.equal(await page.locator("#imageFields").isVisible(),true);
   await page.locator("#imageAlt").fill("Editor visual test image description");
   await page.locator("#imageAlt").press("Tab");
-  await page.locator("#imageWidthPercent").fill("50");
-  await page.locator("#imageWidthPercent").dispatchEvent("change");
+  await page.locator("#imageWidthPercent").evaluate(element=>{
+    element.value="50";
+    element.dispatchEvent(new Event("change",{bubbles:true}));
+  });
   assert.equal(await image.evaluate(el=>el.style.width),"50%");
   const imageHtml=await downloadedHtml();
   assert(imageHtml.includes('alt="Editor visual test image description"'),
