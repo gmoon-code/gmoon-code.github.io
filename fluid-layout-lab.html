@@ -138,7 +138,7 @@ $('grid').addEventListener('dblclick',e=>{
  selected=Number(block.dataset.id);
  beginInlineEdit();
 });
-function renderInspector(){const b=blocks.find(v=>v.id===selected);$('properties').hidden=!b;$('empty').hidden=!!b;$('responsiveGroupStatus').textContent=responsiveGroup?'Responsive group selected · '+responsiveGroup.selectors.length+' blocks':'No responsive group selected';if(!b)return;$('editCanvasText').hidden=b.type==='image';for(const k of ['text','x','y','w','h','align','fontSize','color','background','maxWidthPct','spaceAbove','spaceBelow'])$(k).value=['x','y','w','h'].includes(k)?position(b)[k]:(b[k]??({maxWidthPct:100,spaceAbove:0,spaceBelow:0}[k]??''));$('layoutMode').textContent=isMobile()?'Editing mobile positions independently':'Editing desktop positions';$('resetMobile').hidden=!isMobile()}
+function renderInspector(){const b=blocks.find(v=>v.id===selected);$('properties').hidden=!b;$('empty').hidden=!!b;$('responsiveGroupStatus').textContent=responsiveGroup?(responsiveGroup.containerChildren?'Card or CV row group selected · ':'Responsive group selected · ')+responsiveGroup.selectors.length+' blocks':'No responsive group selected';if(!b)return;$('editCanvasText').hidden=b.type==='image';for(const k of ['text','x','y','w','h','align','fontSize','color','background','maxWidthPct','spaceAbove','spaceBelow'])$(k).value=['x','y','w','h'].includes(k)?position(b)[k]:(b[k]??({maxWidthPct:100,spaceAbove:0,spaceBelow:0}[k]??''));$('layoutMode').textContent=isMobile()?'Editing mobile positions independently':'Editing desktop positions';$('resetMobile').hidden=!isMobile()}
 for(const k of ['text','x','y','w','h','align','fontSize','color','background','maxWidthPct','spaceAbove','spaceBelow'])$(k).addEventListener('change',()=>{const b=blocks.find(v=>v.id===selected);if(!b)return;snapshot();const target=['x','y','w','h'].includes(k)?editPosition(b):b;target[k]=$(k).value;if(['align','fontSize','color','background','maxWidthPct','spaceAbove','spaceBelow'].includes(k)&&b.source){b.styleEdits=[...new Set([...(b.styleEdits||[]),k])]};if((['x','y','w','h'].includes(k)||b.type==='image')&&b.source)b.layoutEdited=true;valid(target);if(['x','y','w','h'].includes(k))settle(b);render()});
 document.querySelectorAll('[data-add]').forEach(btn=>btn.addEventListener('click',()=>{snapshot();structureEdited=true;const type=btn.dataset.add,id=next++;blocks.push({id,type,fontSize:type==='heading'?30:18,color:'#191919',background:'#ffffff',text:{heading:'New heading',text:'New paragraph',image:'',button:'Button label'}[type],x:1,y:Math.max(1,...blocks.map(b=>b.y+b.h)),w:6,h:type==='image'?5:2,align:'left'});selected=id;settle(blocks[blocks.length-1]);render()}));
 $('duplicate').onclick=()=>{const b=blocks.find(v=>v.id===selected);if(!b)return;snapshot();structureEdited=true;const copy={...b,id:next++,source:undefined,styleEdits:undefined,layoutEdited:undefined,y:b.y+b.h,mobile:b.mobile?{...b.mobile,y:b.mobile.y+b.mobile.h}:undefined};blocks.push(copy);selected=copy.id;settle(copy);render()};
@@ -226,6 +226,96 @@ function clearContainerChoices(){
  $('containerGroupPicker').replaceChildren(new Option('Find card groups to choose one',''));
 }
 $('sourcePage').addEventListener('change',()=>{clearResponsiveChoices();clearContainerChoices()});
+function containerPositions(children,mode){
+ let y=1;
+ const layouts=[];
+ for(let i=0;i<children.length;i++){
+  const column=mode==='columns'&&i%2===1;
+  const x=mode==='columns'?(column?7:1):1;
+  const w=mode==='columns'?6:12;
+  layouts.push({x,y,w,h:1});
+  if(mode==='stack'||column||i===children.length-1)y+=2;
+ }
+ return layouts;
+}
+function containerSpec(doc,parent,mode='columns'){
+ const main=doc.querySelector('main');
+ if(!main||!parent||parent===main||!main.contains(parent))throw Error('Invalid card layout section');
+ const allowed=new Set(['div','article','figure','section','aside']);
+ const children=[...parent.children];
+ if(children.length<2||children.length>12||children.some(el=>!allowed.has(el.tagName.toLowerCase())))
+  throw Error('The group must contain 2–12 complete cards or CV rows');
+ const desktop=containerPositions(children,mode);
+ const mobile=containerPositions(children,'stack');
+ const spec={version:2,parentSelector:MoonResponsiveLayout.sourceSelector(parent,main),
+  children:children.map((el,i)=>({
+   selector:MoonResponsiveLayout.sourceSelector(el,main),
+   tag:el.tagName.toLowerCase(),
+   before:el.textContent.trim().replace(/\s+/g,' '),
+   markup:el.outerHTML,desktop:desktop[i],mobile:mobile[i]
+  }))};
+ MoonResponsiveLayout.verify(doc,spec);
+ return spec;
+}
+async function findContainerGroups(){
+ const doc=await freshSourceDocument(),main=doc.querySelector('main');
+ const choices=[];
+ for(const parent of main.querySelectorAll('section,div,article,figure')){
+  try{
+   const spec=containerSpec(doc,parent);
+   const first=spec.children[0].before.slice(0,45)||'Images and content';
+   choices.push({parentSelector:spec.parentSelector,
+    selectors:spec.children.map(child=>child.selector),
+    label:spec.children.length+' cards · '+first});
+  }catch{continue}
+  if(choices.length>=40)break;
+ }
+ return choices;
+}
+$('findContainerGroups').onclick=async()=>{
+ const button=$('findContainerGroups');button.disabled=true;
+ try{
+  const choices=await findContainerGroups();
+  clearContainerChoices();discoveredContainerGroups=choices;
+  const picker=$('containerGroupPicker');
+  choices.forEach((group,i)=>picker.add(new Option(group.label,String(i))));
+  if(choices.length)picker.value='0';
+  $('status').textContent=choices.length?
+    'Found '+choices.length+' complete card or row groups. Choose one to arrange it without replacing its text, images, or links.':
+    'No complete card or row groups are compatible with the current source page.';
+ }catch(error){clearContainerChoices();$('status').textContent='Card group discovery blocked: '+error.message}
+ finally{button.disabled=false}
+};
+async function arrangeContainerGroup(group,mode='columns'){
+ const doc=await freshSourceDocument(),main=doc.querySelector('main');
+ const matches=[...main.querySelectorAll(group.parentSelector)];
+ if(matches.length!==1)throw Error('The selected card group is missing or ambiguous');
+ const spec=containerSpec(doc,matches[0],mode);
+ if(spec.children.length!==group.selectors.length||
+  spec.children.some((child,i)=>child.selector!==group.selectors[i]))
+  throw Error('The selected card group has changed; discover it again');
+ if(group.containerChildren){
+  for(let i=0;i<spec.children.length;i++){
+   if(spec.children[i].markup!==group.containerChildren[i].markup)
+    throw Error('The card group content changed; discover it again');
+  }
+ }
+ snapshot();
+ responsiveGroup={parentSelector:spec.parentSelector,
+  selectors:spec.children.map(child=>child.selector),
+  containerChildren:spec.children};
+ render();
+ $('status').textContent=spec.children.length+' cards or CV rows arranged for desktop and mobile. Review Publishable edits before transferring the responsive CSS.';
+}
+$('applyContainerGroup').onclick=async()=>{
+ const index=Number($('containerGroupPicker').value);
+ const chosen=$('containerGroupPicker').value!==''?discoveredContainerGroups[index]:null;
+ if(!chosen){$('status').textContent='Find and select a card or CV row group first.';return}
+ const button=$('applyContainerGroup');button.disabled=true;
+ try{await arrangeContainerGroup(chosen)}
+ catch(error){$('status').textContent='Card layout blocked: '+error.message}
+ finally{button.disabled=false}
+};
 async function findCompatibleGroups(){
  const doc=await freshSourceDocument(),main=doc.querySelector('main');
  const grouped=new Map();
@@ -330,8 +420,10 @@ for(const [id,mode] of [['stackResponsiveGroup','stack'],['columnsResponsiveGrou
  $(id).onclick=async()=>{
   if(!responsiveGroup){$('status').textContent='Select a responsive group before arranging it.';return}
   const button=$(id);button.disabled=true;
-  try{await arrangeResponsiveGroup(responsiveGroup,mode)}
-  catch(error){$('status').textContent='Arrangement blocked: '+error.message}
+  try{
+   if(responsiveGroup.containerChildren)await arrangeContainerGroup(responsiveGroup,mode);
+   else await arrangeResponsiveGroup(responsiveGroup,mode);
+  }catch(error){$('status').textContent='Arrangement blocked: '+error.message}
   finally{button.disabled=false}
  };
 }
