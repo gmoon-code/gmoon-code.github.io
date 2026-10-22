@@ -227,8 +227,9 @@
               <option value="paragraph">Paragraph</option>
               <option value="heading">Heading</option>
               <option value="link">Link</option>
+              <option value="image">Existing website image</option>
             </select>
-            <label for="insertContentText">New text</label>
+            <label id="insertContentLabel" for="insertContentText">New text</label>
             <textarea id="insertContentText" rows="3" spellcheck="true" maxlength="2000"></textarea>
             <div id="insertHeadingField" hidden>
               <label for="insertHeadingLevel">Heading level</label>
@@ -237,6 +238,12 @@
             <div id="insertLinkField" hidden>
               <label for="insertLinkHref">Link destination</label>
               <input id="insertLinkHref" type="url" placeholder="research.html or https://example.org" autocomplete="off">
+            </div>
+            <div id="insertImageField" hidden>
+              <label for="insertImageSrc">Existing image path</label>
+              <input id="insertImageSrc" type="text" placeholder="assets/example.webp" autocomplete="off" spellcheck="false">
+              <button type="button" id="chooseInsertImageBtn" class="secondary">Browse existing site images</button>
+              <p class="small-note">Choose an image already referenced by the website. A meaningful image description is required.</p>
             </div>
             <button type="button" id="insertContentBtn" class="secondary">Add to local draft</button>
             <button type="button" id="duplicateSourceBtn" class="secondary" disabled>Duplicate selected plain-text block</button>
