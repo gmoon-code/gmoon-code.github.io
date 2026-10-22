@@ -770,6 +770,12 @@
       if(target&&state.additions.some(item=>
         original.querySelector("main "+parent)?.contains(original.querySelector("main "+item.selector))))
         throw Error("New content inside this group must be reviewed separately before arranging it");
+      if(target&&state.removals.some(item=>{
+        const root=state.doc.querySelector("main");
+        const group=root?.querySelector(parent);
+        const removed=getWorking(item.key);
+        return group&&removed&&group.contains(removed);
+      }))throw Error("Restore removed blocks in this section before arranging it");
       if(proposal.length)MoonResponsiveLayout.cssForGroups(original,proposal);
       checkpoint();
       state.responsiveGroups=proposal;
@@ -788,6 +794,7 @@
     el.textContent=$("selectionText").value;
     work.textContent=$("selectionText").value;
     updateDirty(state.selected);
+    $("removeSourceBtn").disabled=!sourceRemovalCandidate(state.selected);
   }
 
 
@@ -1190,6 +1197,7 @@
     nav.replaceChildren();
     const headings=state.doc.querySelectorAll("main h1,main h2,main h3");
     for (const h of headings) {
+      if(state.removals.some(item=>item.key===h.getAttribute("data-editor-key")))continue;
       const b=document.createElement("button");
       b.type="button";
       b.dataset.level=h.tagName.slice(1);
@@ -2108,7 +2116,7 @@
     if(!preparedText.length&&!preparedStyles.length&&!preparedGroups.length&&!preparedAdditions.length)return rejectHandoff();
     let existingDraft=false;
     try{existingDraft=localStorage.getItem(DRAFT_PREFIX+page)!==null}catch{existingDraft=true}
-    if(existingDraft||state.dirty.size||state.staleDraft||layoutGroups().length||state.additions.length){
+    if(existingDraft||state.dirty.size||state.staleDraft||layoutGroups().length||state.additions.length||state.removals.length){
       notice("The page already has a local draft. Review or export that draft before transferring changes.","Transfer not applied");
       return false;
     }
