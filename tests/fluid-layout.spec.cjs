@@ -3572,7 +3572,8 @@ test('original block preview drag handle reorders source paragraphs without rewr
  await expect(handle).toBeVisible();
  await expect(handle).toHaveAttribute('draggable','true');
  const target=blocks.last();
- await handle.dragTo(target,{targetPosition:{x:20,y:25}});
+ const rect=await target.boundingBox();
+ await handle.dragTo(target,{targetPosition:{x:Math.min(12,rect.width/2),y:Math.max(1,rect.height-3)}});
  await expect.poll(async()=>blocks.allTextContents()).toEqual([
   'Evidence two.','Interpretation three.','Conclusion four.','Question one.'
  ]);
