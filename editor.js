@@ -268,8 +268,8 @@
     }
     for(const addition of state.additions){
       const matches=[...copy.querySelectorAll('main '+addition.selector)];
-      if(matches.length!==1)throw Error('Paragraph insertion source is missing');
-      const node=copy.createElement('p');node.textContent=addition.text;matches[0].after(node);
+      if(matches.length!==1)throw Error('Content insertion source is missing');
+      matches[0].after(createAdditionElement(copy,addition));
     }
     const overlay=copy.createElement("style");
     overlay.textContent=[
@@ -876,43 +876,82 @@
     return cleanOuter(node);
   }
 
+  function safeNewLink(href){
+    if(typeof href!=="string"||href.length>500||href.trim()!==href||/[\s\x00-\x1f<>"'\\]/.test(href))return false;
+    if(/^[a-z0-9-]+\.html(?:#[A-Za-z0-9_-]+)?$/.test(href))return true;
+    if(!/^https:\/\/[^/]+/i.test(href))return false;
+    try{
+      const url=new URL(href);
+      return url.protocol==="https:"&&!url.username&&!url.password&&!!url.hostname&&
+        !url.hostname.endsWith(".")&&!url.hostname.includes("..")&&(url.port===""||url.port==="443");
+    }catch{return false}
+  }
+  function insertionKind(s){return s?.kind||"paragraph"}
   function validateParagraphAdditions(incoming){
-    if(!Array.isArray(incoming)||incoming.length>10)throw Error('Invalid paragraph additions');
-    const root=state.doc.querySelector('main'),seen=new Set(),out=[];
+    if(!Array.isArray(incoming)||incoming.length>10)throw Error("Invalid content additions");
+    const root=state.doc.querySelector("main"),seen=new Set(),out=[];
     for(const item of incoming){
-      if(!item||typeof item!=='object'||!['p','h2','h3','h4'].includes(item.tag)||
-        typeof item.selector!=='string'||item.selector.length>500||
-        typeof item.before!=='string'||item.before.length>4000||
-        typeof item.text!=='string'||!item.text.trim()||item.text.length>2000||
-        item.page!==state.page||seen.has(item.selector))throw Error('Invalid paragraph insertion');
+      const kind=insertionKind(item);
+      if(!item||typeof item!=="object"||!["p","h2","h3","h4"].includes(item.tag)||
+        typeof item.selector!=="string"||item.selector.length>500||
+        typeof item.before!=="string"||item.before.length>4000||
+        typeof item.text!=="string"||!item.text.trim()||
+        !["paragraph","heading","link"].includes(kind)||
+        item.text.length>(kind==="paragraph"?2000:140)||
+        (kind==="heading"?!["h2","h3"].includes(item.headingTag):item.headingTag!==undefined)||
+        (kind==="link"?!safeNewLink(item.href):item.href!==undefined)||
+        item.page!==state.page||seen.has(item.selector))
+        throw Error("Invalid "+kind+" insertion");
       seen.add(item.selector);
       let matches;
-      try{matches=[...root.querySelectorAll(item.selector)]}catch{throw Error('Invalid paragraph anchor')}
+      try{matches=[...root.querySelectorAll(item.selector)]}catch{throw Error("Invalid content anchor")}
       if(matches.length!==1||matches[0].tagName.toLowerCase()!==item.tag||
-        matches[0].textContent.trim().replace(/\s+/g,' ')!==item.before)
-        throw Error('Paragraph insertion source changed');
+        matches[0].textContent.trim().replace(/\s+/g," ")!==item.before)
+        throw Error("Content insertion source changed");
       for(const group of layoutGroups()){
         const parent=root.querySelector(group.parentSelector);
-        if(parent?.contains(matches[0]))throw Error('Paragraph cannot be inserted inside a responsive group');
+        if(parent?.contains(matches[0]))throw Error("New content cannot be inserted inside a responsive group");
       }
-      out.push({page:item.page,selector:item.selector,tag:item.tag,before:item.before,text:item.text});
+      out.push({page:item.page,selector:item.selector,tag:item.tag,before:item.before,text:item.text,
+        kind,...(kind==="heading"?{headingTag:item.headingTag}:{}),...(kind==="link"?{href:item.href}:{})});
     }
     return out;
   }
   function escapePlainText(text){
-    return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    return text.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  }
+  function createAdditionElement(doc,item){
+    const kind=insertionKind(item);
+    if(kind==="heading"){
+      const node=doc.createElement(item.headingTag);node.textContent=item.text;return node;
+    }
+    const node=doc.createElement("p");
+    if(kind==="link"){
+      const link=doc.createElement("a");
+      link.setAttribute("href",item.href);link.textContent=item.text;
+      if(/^https:\/\//i.test(item.href))link.setAttribute("rel","noopener noreferrer");
+      node.append(link);
+    }else node.textContent=item.text;
+    return node;
+  }
+  function additionHtml(item){
+    const text=escapePlainText(item.text);
+    if(insertionKind(item)==="heading")return "<"+item.headingTag+">"+text+"</"+item.headingTag+">";
+    if(insertionKind(item)==="link")return "<p><a href=\""+escapePlainText(item.href)+"\""+
+      (/^https:\/\//i.test(item.href)?" rel=\"noopener noreferrer\"":"")+">"+text+"</a></p>";
+    return "<p>"+text+"</p>";
   }
   function exportParagraphs(html){
-    const original=new DOMParser().parseFromString(state.source,'text/html');
-    const root=original.querySelector('main'),anchors=validateParagraphAdditions(state.additions);
+    const original=new DOMParser().parseFromString(state.source,"text/html");
+    const root=original.querySelector("main"),anchors=validateParagraphAdditions(state.additions);
     for(const item of anchors){
       const matches=[...root.querySelectorAll(item.selector)];
       const anchor=matches[0],markup=anchor.outerHTML;
       const at=html.indexOf(markup);
       if(at<0||html.indexOf(markup,at+markup.length)!==-1)
-        throw Error('Cannot uniquely locate the paragraph insertion in source HTML');
+        throw Error("Cannot uniquely locate the content insertion in source HTML");
       const offset=at+markup.length;
-      html=html.slice(0,offset)+'\n<p>'+escapePlainText(item.text)+'</p>'+html.slice(offset);
+      html=html.slice(0,offset)+"\n"+additionHtml(item)+html.slice(offset);
     }
     return html;
   }
@@ -1154,7 +1193,7 @@
     $("reviewSummary").textContent=ids.length+" edited element"+(ids.length===1?"":"s")+
       (reordered?" · section order changed":"")+
       (layoutGroups().length?" · "+layoutGroups().length+" responsive layout group"+(layoutGroups().length===1?"":"s"):"")+
-      (state.additions.length?" · "+state.additions.length+" added paragraph"+(state.additions.length===1?"":"s"):"")+
+      (state.additions.length?" · "+state.additions.length+" added content block"+(state.additions.length===1?"":"s"):"")+
       " on "+$("pagePicker").selectedOptions[0]?.textContent+".";
     const previewText=(node)=>{
       if (!node) return "";
@@ -1217,8 +1256,9 @@
     }
     for(const item of state.additions){
       const el=document.createElement('section');el.className='review-change';
-      const title=document.createElement('h3');title.textContent='New paragraph after '+item.selector;
+      const title=document.createElement('h3');title.textContent='New '+insertionKind(item)+' after '+item.selector;
       const text=document.createElement('p');text.textContent=item.text;
+      if(insertionKind(item)==='link')text.textContent+=' · '+item.href;
       el.append(title,text);list.append(el);
     }
     if(layoutGroups().length){
@@ -1423,7 +1463,7 @@
       return false;
     }
     if(!confirm("Apply "+preparedText.length+" verified text edits and "+preparedStyles.length+
-       " visual style edits and "+preparedGroups.reduce((n,g)=>n+g.children.length,0)+" responsive block placements across "+preparedGroups.length+" groups and "+preparedAdditions.length+" added paragraphs to the local editor draft? Unapproved freeform positions are not included. Nothing will be published."))return false;
+       " visual style edits and "+preparedGroups.reduce((n,g)=>n+g.children.length,0)+" responsive block placements across "+preparedGroups.length+" groups and "+preparedAdditions.length+" new content blocks to the local editor draft? Unapproved freeform positions are not included. Nothing will be published."))return false;
     checkpoint();
     const touched=new Set();
     for(const change of preparedText){
