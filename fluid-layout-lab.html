@@ -180,12 +180,10 @@ function createInsertionElement(doc,b){
  return p;
 }
 function validateInsertions(doc){
- const root=doc.querySelector('main'),seen=new Set(),inserts=insertionBlocks();
+ const root=doc.querySelector('main'),inserts=insertionBlocks();
  if(!root||inserts.length>10)throw Error('Invalid content insertion count');
  for(const b of inserts){
   const s=b.insertion;validateInsertionItem(b);
-  if(seen.has(s.selector))throw Error('Only one insertion is allowed per source anchor');
-  seen.add(s.selector);
   let nodes;
   try{nodes=[...root.querySelectorAll(s.selector)]}catch{throw Error('Invalid insertion source selector')}
   if(nodes.length!==1||nodes[0].tagName.toLowerCase()!==s.tag||
@@ -208,8 +206,8 @@ function stageInsertion(kind){
  })){
   $('status').textContent='Clear the selected responsive group before inserting new content.';return;
  }
- if(insertionBlocks().some(item=>item.insertion.selector===b.source.selector)||insertionBlocks().length>=10){
-  $('status').textContent='A maximum of ten additions and one per source element is supported.';return;
+ if(insertionBlocks().length>=10){
+  $('status').textContent='A maximum of ten additions per page is supported.';return;
  }
  const answer=prompt(kind==='heading'?'New section heading text':kind==='link'?'New link label':'Plain-text paragraph to insert after this source element');
  if(answer===null)return;
@@ -226,8 +224,9 @@ function stageInsertion(kind){
  if(kind==='heading')insertion.headingTag='h3';
  if(kind==='link')insertion.href=href;
  snapshot();
+ const afterSameAnchor=insertionBlocks().filter(item=>item.insertion.selector===b.source.selector).length;
  const fresh={id:next++,type:kind==='heading'?'heading':'text',text,x:b.x,
-  y:Math.min(100,b.y+b.h+1),w:b.w,h:Math.max(2,b.h),align:'left',insertion};
+  y:Math.min(100,b.y+(afterSameAnchor+1)*(Math.max(2,b.h)+1)),w:b.w,h:Math.max(2,b.h),align:'left',insertion};
  blocks.push(fresh);selected=fresh.id;render();
  $('status').textContent='New '+kind+' staged. Review Publishable edits and transfer it to the main editor.';
 }
@@ -818,11 +817,16 @@ async function buildSiteLayoutReviewHtml(){
   appliedDoc.head.append(style);
   responsiveCount=approvedSpecs.reduce((n,s)=>n+s.children.length,0);
  }
- const added=validateInsertions(doc);
+ const added=validateInsertions(doc),additionsByAnchor=new Map();
  for(const b of added){
-  const match=appliedRoot.querySelector(b.insertion.selector);
+  const selector=b.insertion.selector;
+  if(!additionsByAnchor.has(selector))additionsByAnchor.set(selector,[]);
+  additionsByAnchor.get(selector).push(createInsertionElement(appliedDoc,b));
+ }
+ for(const [selector,elements] of additionsByAnchor){
+  const match=appliedRoot.querySelector(selector);
   if(!match)throw Error('Content insertion source changed');
-  match.after(createInsertionElement(appliedDoc,b));
+  match.after(...elements);
  }
  const appliedNotice=appliedDoc.createElement('p');
  appliedNotice.textContent='Review of '+appliedChanges.length+' publishable text or style edits and '+responsiveCount+' '+'responsive blocks in '+approvedSpecs.length+' independent groups. Original page markup is retained. Nothing has been published.';
