@@ -346,6 +346,7 @@
         d.defaultView.addEventListener("resize",positionColumnResizeHandle);
 
         refreshPageFind();
+        updateBrowseControls();
         if(reselectKey){
           const target=d.querySelector('[data-editor-key="'+reselectKey+'"]');
           if(target){selectElement(target);target.scrollIntoView({block:"center"});}
@@ -436,6 +437,7 @@
   }
 
   function onPreviewKeydown(event){
+    if(handleEditorShortcuts(event))return;
     if(!["Enter"," "].includes(event.key))return;
     const added=event.target.closest?.("[data-editor-added-index]");
     if(!added||!state.frameDoc)return;
@@ -498,6 +500,60 @@
     if($("pageFindQuery").value.trim())refreshPageFind();
   }
 
+  // Navigation remains preview-only and creates no editable source markers.
+  // Sequential controls avoid hundreds of extra stops in the Tab order.
+  function browsableElements(){
+    if(!state.frameDoc)return [];
+    return [...state.frameDoc.querySelectorAll("main [data-editor-key]")]
+      .filter(node=>!node.closest("nav")&&node.getClientRects().length);
+  }
+  function updateBrowseControls(){
+    const nodes=browsableElements(),selected=nodes.findIndex(node=>
+      node.getAttribute("data-editor-key")===state.selected);
+    $("browsePrevElement").disabled=!nodes.length;
+    $("browseNextElement").disabled=!nodes.length;
+    $("browseElementStatus").textContent=!nodes.length?
+      "No editable content available on this page.":
+      selected<0?"Use Previous or Next to select one of "+nodes.length+" original elements.":
+      "Element "+(selected+1)+" of "+nodes.length+
+        " · "+nodes[selected].tagName.toLowerCase()+
+        " · Selection is in the page preview.";
+  }
+  function browseElement(direction){
+    const nodes=browsableElements();
+    if(!nodes.length||![-1,1].includes(direction))return;
+    const current=nodes.findIndex(node=>
+      node.getAttribute("data-editor-key")===state.selected);
+    const next=current<0?(direction===1?0:nodes.length-1):
+      (current+direction+nodes.length)%nodes.length;
+    const target=nodes[next];
+    selectElement(target);
+    target.setAttribute("tabindex","-1");
+    target.focus({preventScroll:true});
+    target.scrollIntoView({block:"center"});
+    updateBrowseControls();
+  }
+  function handleEditorShortcuts(event){
+    if(!state.doc||event.defaultPrevented)return false;
+    if(!(event.ctrlKey||event.metaKey)||event.altKey)return false;
+    const key=event.key.toLowerCase();
+    if(key==="s"&&!event.shiftKey){
+      event.preventDefault();
+      saveDraft();
+      return true;
+    }
+    // Browser-native undo should remain available while writing in a field.
+    if(event.target?.closest?.("input,textarea,select,[contenteditable='true'],[role='textbox']"))
+      return false;
+    if(key==="z"||(key==="y"&&!event.shiftKey)){
+      event.preventDefault();
+      if((key==="z"&&event.shiftKey)||key==="y")redo();
+      else undo();
+      return true;
+    }
+    return false;
+  }
+
   function selectElement(node) {
     if (!node) return;
     const previously=state.frameDoc.querySelector("[data-editor-selected]");
@@ -517,6 +573,7 @@
     node.setAttribute("data-editor-selected","");
     if (TEXT_TAGS.has(node.tagName)) node.setAttribute("contenteditable","true");
     updateInspector(node);
+    updateBrowseControls();
   }
 
 
@@ -557,6 +614,7 @@
     $("duplicateAddedBlockBtn").disabled=state.additions.length>=10;
     $("addedBlockStatus").textContent="New "+kind+" · block "+(index+1)+
       " of "+state.additions.length+" · Local draft";
+    updateBrowseControls();
   }
   function applyAddedBlock(){
     const index=state.selectedAddition,original=state.additions[index];
@@ -2814,6 +2872,9 @@
         refreshPageFind(true);
       }
     });
+    $("browsePrevElement").addEventListener("click",()=>browseElement(-1));
+    $("browseNextElement").addEventListener("click",()=>browseElement(1));
+    window.addEventListener("keydown",handleEditorShortcuts);
     $("pageFindNext").addEventListener("click",()=>navigatePageFind(1));
     $("pageFindPrev").addEventListener("click",()=>navigatePageFind(-1));
     $("pageFindClear").addEventListener("click",()=>{
