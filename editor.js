@@ -490,6 +490,10 @@
     const canInsert=["H2","H3","H4","P"].includes(node.tagName)&&
       !!state.original.get(state.selected);
     $("insertContentFields").hidden=!canInsert;
+    const sourceText=node.textContent.trim();
+    $("duplicateSourceBtn").disabled=!canInsert||!["P","H2","H3"].includes(node.tagName)||
+      !!node.children.length||!sourceText||
+      sourceText.length>(node.tagName==="P"?2000:140)||state.additions.length>=10;
     if(canInsert){
       const kind=$("insertContentKind").value;
       $("insertHeadingField").hidden=kind!=="heading";
@@ -1546,6 +1550,30 @@
       updateStatus("New "+kind+" added to local draft · Not published");
     }catch(error){notice("The content could not be added. "+error.message,"Insertion not applied")}
   }
+  function duplicateSelectedSource(){
+    if($("duplicateSourceBtn").disabled||!state.selected)return;
+    const node=getWorking(state.selected);
+    if(!node||node.children.length||!["P","H2","H3"].includes(node.tagName))return;
+    const text=node.textContent.trim();
+    const kind=node.tagName==="P"?"paragraph":"heading";
+    if(!text)return;
+    const saved={
+      kind:$("insertContentKind").value,text:$("insertContentText").value,
+      heading:$("insertHeadingLevel").value,href:$("insertLinkHref").value
+    };
+    try{
+      $("insertContentKind").value=kind;
+      $("insertContentText").value=text;
+      if(kind==="heading")$("insertHeadingLevel").value=node.tagName.toLowerCase();
+      addContentFromInspector();
+    }finally{
+      $("insertContentKind").value=saved.kind;
+      $("insertContentText").value=saved.text;
+      $("insertHeadingLevel").value=saved.heading;
+      $("insertLinkHref").value=saved.href;
+      updateInsertKind();
+    }
+  }
   function moveReviewedAddition(index,direction){
     const item=state.additions[index];
     if(!item||![-1,1].includes(direction))return;
@@ -2035,6 +2063,7 @@
     $("directLayoutRemove").addEventListener("click",()=>updateDirectLayout(true));
     $("insertContentKind").addEventListener("change",updateInsertKind);
     $("insertContentBtn").addEventListener("click",addContentFromInspector);
+    $("duplicateSourceBtn").addEventListener("click",duplicateSelectedSource);
     updateInsertKind();
     $("exportBtn").addEventListener("click",exportHtml);
     $("newImageFile").addEventListener("change",()=>{
