@@ -3401,6 +3401,98 @@ test('added image can reopen local media library for source and description chan
  expect(html).not.toContain('data-editor-added-index');
 });
 
+test('new image width uses slider and on-image handle, with undo, reload and validated export',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+  body:'<!doctype html><html><head></head><body><main><section><h2>Fieldwork photos</h2>'+
+   '<p>Original content stays intact.</p>'+
+   '<img src="assets/example-photograph.webp" alt="Original image">'+
+   '</section></main></body></html>'}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ await page.frameLocator('#pageFrame').locator('main h2').click();
+ await page.locator('#insertContentKind').selectOption('image');
+ await page.locator('#insertImageSrc').fill('assets/example-photograph.webp');
+ await page.locator('#insertContentText').fill('Students collaborating on fieldwork');
+ await page.locator('#insertContentBtn').click();
+ const inserted=page.frameLocator('#pageFrame').locator('[data-editor-added-index] img');
+ await inserted.click();
+ await expect(page.locator('#addedImageWidthPercent')).toBeVisible();
+ await expect(page.locator('#addedImageWidthPercent')).toHaveValue('100');
+ const handle=page.frameLocator('#pageFrame').locator('#moon-image-resize-handle');
+ await expect(handle).toBeVisible();
+ await page.locator('#addedImageWidthPercent').evaluate(el=>{
+  el.value='60';
+  el.dispatchEvent(new Event('input',{bubbles:true}));
+  el.dispatchEvent(new Event('change',{bubbles:true}));
+ });
+ await expect(inserted).toHaveAttribute('style',/width:\s*60%/);
+ await expect(page.locator('#addedImageWidthValue')).toHaveText('60%');
+ await expect.poll(async()=>page.evaluate(()=>
+  JSON.parse(localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'))
+   ?.additions?.[0]?.widthPercent)).toBe(60);
+ // The image size is one reversible draft operation, including the keyboard
+ // slider, rather than a collection of unsaved DOM-only changes.
+ await page.locator('#undoBtn').click();
+ await expect(inserted).not.toHaveAttribute('style',/width:\s*60%/);
+ await page.locator('#redoBtn').click();
+ await expect(inserted).toHaveAttribute('style',/width:\s*60%/);
+ await inserted.click();
+ await expect(handle).toBeVisible();
+ const box=await handle.boundingBox();
+ expect(box).toBeTruthy();
+ await page.mouse.move(box.x+box.width/2,box.y+box.height/2);
+ await page.mouse.down();
+ await page.mouse.move(box.x+box.width/2+140,box.y+box.height/2,{steps:6});
+ await page.mouse.up();
+ await expect.poll(async()=>Number(await page.locator('#addedImageWidthPercent').inputValue()))
+  .not.toBe(60);
+ const pct=Number(await page.locator('#addedImageWidthPercent').inputValue());
+ expect(pct).toBeGreaterThanOrEqual(20);
+ expect(pct).toBeLessThanOrEqual(100);
+ expect(pct%5).toBe(0);
+ await expect(inserted).toHaveAttribute('style',new RegExp('width:\\s*'+pct+'%'));
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).toContain('style="max-width:100%;height:auto;width:'+pct+'%"');
+ expect(html).toContain('<p>Original content stays intact.</p>');
+ expect(html).not.toContain('data-editor-added-index');
+ expect(html).not.toContain('moon-image-resize-handle');
+ await page.reload();
+ await expect(page.frameLocator('#pageFrame').locator('[data-editor-added-index] img'))
+  .toHaveAttribute('style',new RegExp('width:\\s*'+pct+'%'));
+ await page.frameLocator('#pageFrame').locator('[data-editor-added-index] img').click();
+ await expect(page.locator('#addedImageWidthPercent')).toHaveValue(String(pct));
+ await page.locator('#reviewBtn').click();
+ await expect(page.locator('#reviewExportStatus')).toContainText('Source check passed');
+});
+
+test('unsafe inserted image widths in local drafts fail source validation',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+  body:'<!doctype html><html><head></head><body><main><section><h2>Image collection</h2>'+
+   '<p>Original unchanged paragraph.</p></section></main></body></html>'}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ await page.frameLocator('#pageFrame').locator('main h2').click();
+ await page.locator('#insertContentKind').selectOption('image');
+ await page.locator('#insertImageSrc').fill('assets/example-photograph.webp');
+ await page.locator('#insertContentText').fill('An example photograph');
+ await page.locator('#insertContentBtn').click();
+ await expect(page.locator('#changeCount')).toContainText('1 added content block');
+ await expect.poll(async()=>page.evaluate(()=>
+  JSON.parse(localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'))?.additions?.length
+ )).toBe(1);
+ await page.evaluate(()=>{
+  const key='moon-portfolio-visual-editor-v1:about.html';
+  const draft=JSON.parse(localStorage.getItem(key));
+  draft.additions[0].widthPercent='75%;position:fixed';
+  localStorage.setItem(key,JSON.stringify(draft));
+ });
+ await page.reload();
+ await expect(page.locator('#noticeMessage')).toContainText('could not be restored safely');
+ await page.locator('#noticeDialog form button').click();
+ await expect(page.frameLocator('#pageFrame').locator('[data-editor-added-index]')).toHaveCount(0);
+ await expect(page.locator('#exportBtn')).toBeDisabled();
+});
+
 test('keyboard users can select newly inserted blocks without persisting preview-only attributes',async({page})=>{
  await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
   body:'<!doctype html><html><head></head><body><main><section><h2>Accessible additions</h2>'+
