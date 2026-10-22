@@ -1337,6 +1337,9 @@
     if(node.hasAttribute("id")||node.hasAttribute("name")||
        node.querySelector("[id],[name],script,button,form,iframe"))return null;
     if(state.stagedMedia?.key===key)return null;
+    // Check the working markup independently of the dirty bookkeeping so a
+    // just-typed inspector change cannot be silently discarded by removal.
+    if(cleanOuter(node)!==state.original.get(key))return null;
     if(["H2","H3"].includes(node.tagName)&&node.parentElement?.querySelectorAll("h2,h3").length===1)
       return null;
     if([...state.dirty].some(dirtyKey=>{
