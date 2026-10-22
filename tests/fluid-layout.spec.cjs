@@ -3514,6 +3514,34 @@ test('new block drag grip relocates a paragraph onto a different original source
  expect(html).not.toContain('moon-added-block-move-handle');
 });
 
+test('moving a new block refuses a duplicate raw HTML source destination',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+  body:'<!doctype html><html><head></head><body><main><section>'+
+   '<h2>Unique origin heading</h2><p>Repeated destination.</p>'+
+   '<p>Repeated destination.</p><p>Keep the original text.</p>'+
+   '</section></main></body></html>'}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ await page.frameLocator('#pageFrame').locator('h2').click();
+ await page.locator('#insertContentText').fill('New location proposal');
+ await page.locator('#insertContentBtn').click();
+ await page.frameLocator('#pageFrame').locator('[data-editor-added-index]').click();
+ const options=page.locator('#moveAddedAnchorPicker option').filter({
+  hasText:'Repeated destination.'
+ });
+ await expect(options).toHaveCount(2);
+ await page.locator('#moveAddedAnchorPicker').selectOption(await options.first().getAttribute('value'));
+ await page.locator('#moveAddedAnchorBtn').click();
+ await expect(page.locator('#noticeMessage')).toContainText('cannot accept');
+ await page.locator('#noticeDialog form button').click();
+ await expect(page.frameLocator('#pageFrame').locator('h2')
+  .locator('xpath=following-sibling::*[1]')).toHaveText('New location proposal');
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).toContain('<h2>Unique origin heading</h2>\n<p>New location proposal</p>');
+ expect((html.match(/<p>Repeated destination.<\/p>/g)||[]).length).toBe(2);
+});
+
 test('new block inspector validates updated link targets and preserves source content',async({page})=>{
  await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
   body:'<!doctype html><html><head></head><body><main><section><h2>Research links</h2>'+
