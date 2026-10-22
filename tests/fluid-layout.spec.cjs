@@ -1991,3 +1991,139 @@ test('custom card split slider adjusts widths while preserving the mobile stack'
   await page.locator('#openPublisher').click();
   await expect(page.locator('#editorSaveStatus')).toContainText('transferred');
 });
+
+test('two independent card groups transfer together without rewriting either section', async ({ page }) => {
+  await page.route('**/index.html', route => route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<!doctype html><html><head><title>Home</title></head><body><header>Navigation</header><main>'+
+      '<section id="a"><div id="alpha"><article><h2>Alpha research</h2><a href="research.html">Read research</a></article>'+
+      '<article><h2>Alpha teaching</h2><a href="teaching.html">Read teaching</a></article></div></section>'+
+      '<section id="b"><div id="beta"><article><h2>Beta journal</h2><p>Learning project</p></article>'+
+      '<article><h2>Beta picture</h2><img src="assets/profile-portrait.webp" alt="Portrait"></article></div></section>'+
+      '</main><footer>Footer</footer></body></html>'
+  }));
+  await page.locator('#sourcePage').selectOption('index.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  await expect(page.locator('#grid .block')).toHaveCount(5);
+  await page.locator('#findContainerGroups').click();
+  await expect(page.locator('#containerGroupPicker option')).toHaveCount(3);
+  await page.locator('#containerGroupPicker').selectOption('0');
+  await page.locator('#containerColumns').selectOption('first-wide');
+  await page.locator('#applyContainerGroup').click();
+  await expect(page.locator('#responsiveGroupCount')).toContainText('1 responsive group');
+  await page.locator('#containerGroupPicker').selectOption('1');
+  await page.locator('#containerColumns').selectOption('last-wide');
+  await page.locator('#applyContainerGroup').click();
+  await expect(page.locator('#responsiveGroupCount')).toContainText('2 responsive groups');
+  await expect(page.locator('#activeGroupPicker option')).toHaveCount(3);
+  await page.locator('#viewSitePreview').click();
+  await page.locator('#previewSiteApplied').click();
+  const preview=await page.locator('#sitePreviewFrame').getAttribute('srcdoc');
+  expect(preview.match(/Reviewed responsive group/g)).toHaveLength(2);
+  expect(preview).toContain('grid-column:9 / span 4');
+  expect(preview).toContain('grid-column:5 / span 8');
+  expect(preview).toContain('href="research.html"');
+  expect(preview).toContain('alt="Portrait"');
+  await page.locator('#closeSitePreview').click();
+  page.on('dialog', dialog => dialog.accept());
+  await page.locator('#openPublisher').click();
+  await expect(page).toHaveURL(/editor\.html\?page=index\.html$/);
+  await expect(page.locator('#editorSaveStatus')).toContainText('transferred');
+  await page.locator('#reviewBtn').click();
+  await expect(page.locator('#reviewChangeList')).toContainText('2 sections');
+  await page.locator('#reviewDialog form button').click();
+  const download=page.waitForEvent('download');
+  await page.locator('#exportBtn').click();
+  const html=require('node:fs').readFileSync(await (await download).path(),'utf8');
+  expect(html.match(/Reviewed responsive group/g)).toHaveLength(2);
+  expect(html).toContain('Read research');
+  expect(html).toContain('alt="Portrait"');
+  expect(html).toContain('Footer');
+});
+
+test('independent groups survive autosave, reload, picker changes and removal', async ({ page }) => {
+  await page.route('**/cv.html', route => route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<!doctype html><html><head></head><body><main>'+
+      '<section><div id="degrees"><div><p>2026 MEd</p></div><div><p>2020 BSc</p></div></div></section>'+
+      '<section><div id="teaching"><div><p>2024 School</p></div><div><p>2022 School</p></div></div></section>'+
+      '</main></body></html>'
+  }));
+  await page.locator('#sourcePage').selectOption('cv.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  await page.locator('#findContainerGroups').click();
+  await expect(page.locator('#containerGroupPicker option')).toHaveCount(3);
+  await page.locator('#applyContainerGroup').click();
+  await page.locator('#containerGroupPicker').selectOption('1');
+  await page.locator('#applyContainerGroup').click();
+  await expect(page.locator('#responsiveGroupCount')).toContainText('2 responsive groups');
+  await expect.poll(async()=>page.evaluate(()=>{
+    const saved=JSON.parse(localStorage.getItem('moon-fluid-layout-lab-v1'));
+    return saved.responsiveGroups?.length===1 && !!saved.responsiveGroup;
+  })).toBe(true);
+  await page.reload();
+  await expect(page.locator('#responsiveGroupCount')).toContainText('2 responsive groups');
+  await page.locator('#activeGroupPicker').selectOption('0');
+  await page.locator('#clearResponsiveGroup').click();
+  await expect(page.locator('#responsiveGroupCount')).toContainText('1 responsive group');
+  await page.locator('#undo').click();
+  await expect(page.locator('#responsiveGroupCount')).toContainText('2 responsive groups');
+  const download=page.waitForEvent('download');
+  await page.locator('#export').click();
+  const data=JSON.parse(require('node:fs').readFileSync(await (await download).path(),'utf8'));
+  expect(data.responsiveGroups).toHaveLength(1);
+  page.once('dialog',dialog=>dialog.accept());
+  await page.locator('#jsonImport').setInputFiles({
+    name:'multi-groups.json',mimeType:'application/json',
+    buffer:Buffer.from(JSON.stringify(data))
+  });
+  await expect(page.locator('#responsiveGroupCount')).toContainText('2 responsive groups');
+});
+
+test('nested and duplicate responsive groups are refused as one publishing set', async ({ page }) => {
+  await page.route('**/index.html',route=>route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<!doctype html><html><head></head><body><main><div id="outer">'+
+      '<article><h2>First</h2><p>Paragraph</p></article>'+
+      '<article><h2>Second</h2><p>Paragraph</p></article>'+
+      '</div></main></body></html>'
+  }));
+  await page.locator('#sourcePage').selectOption('index.html');
+  page.once('dialog',dialog=>dialog.accept());
+  await page.locator('#importPage').click();
+  await page.locator('#findContainerGroups').click();
+  await page.locator('#applyContainerGroup').click();
+  await expect(page.locator('#responsiveGroupCount')).toContainText('1 responsive group');
+  await page.locator('#findResponsiveGroups').click();
+  const options=await page.locator('#responsiveGroupPicker option').count();
+  if(options>1){
+    await page.locator('#responsiveGroupPicker').selectOption('0');
+    await page.locator('#applyResponsiveGroup').click();
+    await expect(page.locator('#status')).toContainText('Nested responsive groups');
+    await expect(page.locator('#responsiveGroupCount')).toContainText('1 responsive group');
+  }
+});
+
+test('forged overlapping multi-group payload is refused atomically by the main editor', async ({ page }) => {
+  await page.route('**/about.html',route=>route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<!doctype html><html><head></head><body><main>'+
+      '<div id="g"><h2>Heading</h2><p>Paragraph</p></div></main></body></html>'
+  }));
+  const make=(width)=>({
+    version:1,parentSelector:'#g',children:[
+      {selector:'#g > h2:nth-of-type(1)',tag:'h2',before:'Heading',
+        desktop:{x:1,y:1,w:width,h:1},mobile:{x:1,y:1,w:12,h:1}},
+      {selector:'#g > p:nth-of-type(1)',tag:'p',before:'Paragraph',
+        desktop:{x:1,y:3,w:12,h:1},mobile:{x:1,y:3,w:12,h:1}}
+    ]
+  });
+  const payload={version:4,page:'about.html',changes:[],styleChanges:[],
+    layoutGroups:[make(6),make(7)]};
+  await page.evaluate(v=>sessionStorage.setItem('moon-fluid-text-handoff-v1',JSON.stringify(v)),payload);
+  await page.goto('http://127.0.0.1:8765/editor.html?page=about.html&importFluidText=1');
+  await expect(page.locator('#noticeMessage')).toContainText('No edits were applied');
+  expect(await page.evaluate(()=>localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'))).toBeNull();
+});
