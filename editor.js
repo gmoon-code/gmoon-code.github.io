@@ -35,7 +35,7 @@
     selected:null,history:[],redo:[],fingerprint:"",loadToken:0,saveTimer:null,staleDraft:false,
     originalSections:[],sectionGroups:[],sectionOrder:[],mediaAssets:null,mediaPromise:null,
     stagedMedia:null,responsiveGroup:null,responsiveGroups:[],additions:[],resizeStart:null,imageSliderActive:false,
-    pageFindKeys:[],pageFindIndex:-1,mediaChooseInsert:false,removals:[],selectedAddition:null,blockOrders:[],blockDragKey:null
+    pageFindKeys:[],pageFindIndex:-1,mediaChooseInsert:false,removals:[],selectedAddition:null,blockOrders:[],blockDragKey:null,blockDragKeys:[]
   };
 
   function hashText(text) {
@@ -1003,8 +1003,10 @@
     handle.style.cssText="position:fixed;z-index:2147483646;display:grid;place-items:center;width:30px;height:30px;border:2px solid #27654f;border-radius:5px;background:#fff;color:#174932;cursor:grab;font:700 21px/1 system-ui;box-shadow:0 1px 6px #0004";
     handle.addEventListener("click",event=>event.stopPropagation());
     handle.addEventListener("dragstart",event=>{
-      if(!blockMoveCandidate(state.selected)){event.preventDefault();return;}
+      const candidate=blockMoveCandidate(state.selected);
+      if(!candidate){event.preventDefault();return;}
       state.blockDragKey=state.selected;
+      state.blockDragKeys=candidate.keys.slice();
       if(event.dataTransfer){
         event.dataTransfer.effectAllowed="move";
         event.dataTransfer.setData("text/plain","moon-existing-block");
@@ -1015,11 +1017,11 @@
   }
   function blockDragTarget(event){
     if(!state.blockDragKey)return null;
-    const group=blockMoveCandidate(state.blockDragKey);
-    if(!group)return null;
+    const keys=state.blockDragKeys;
+    if(!keys.length)return null;
     for(let node=event.target;node&&node!==state.frameDoc.body;node=node.parentElement){
       const key=node.getAttribute?.("data-editor-key");
-      if(key&&key!==state.blockDragKey&&group.keys.includes(key))return node;
+      if(key&&key!==state.blockDragKey&&keys.includes(key))return node;
     }
     return null;
   }
@@ -1027,6 +1029,7 @@
     if(state.frameDoc)for(const node of state.frameDoc.querySelectorAll("[data-editor-drag-target]"))
       node.removeAttribute("data-editor-drag-target");
     state.blockDragKey=null;
+    state.blockDragKeys=[];
   }
   function onPreviewBlockDragOver(event){
     if(!state.blockDragKey)return;
@@ -1048,7 +1051,9 @@
     const after=event.clientY>=r.top+r.height/2;
     const key=target.getAttribute("data-editor-key");
     clearPreviewBlockDrag();
-    reorderOriginalRelative(from,key,after);
+    // Defer the iframe's re-render until after the browser has finished the
+    // native drop event. Replacing srcdoc during pointer dispatch stalls DnD.
+    setTimeout(()=>reorderOriginalRelative(from,key,after),0);
   }
 
   function restoreReviewedBlockOrder(index){
