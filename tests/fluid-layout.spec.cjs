@@ -2520,7 +2520,9 @@ test('capture desktop and mobile previews with new headings and reviewed links',
  page.once('dialog',dialog=>dialog.accept('Current research'));
  await page.locator('#appendSourceHeading').click();
  await page.locator('#insertionHeadingTag').selectOption('h2');
- await page.locator('#grid .block').nth(1).click();
+ // A new floating heading can cover the source paragraph on the experimental canvas.
+ // Select the source block programmatically while testing the applied-site preview.
+ await page.locator('#grid .block').nth(1).dispatchEvent('click');
  const replies=['See current research','research.html'];
  page.on('dialog',dialog=>dialog.accept(replies.shift()||''));
  await page.locator('#appendSourceLink').click();
