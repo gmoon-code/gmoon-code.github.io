@@ -35,7 +35,7 @@
     selected:null,history:[],redo:[],fingerprint:"",loadToken:0,saveTimer:null,staleDraft:false,
     originalSections:[],sectionGroups:[],sectionOrder:[],mediaAssets:null,mediaPromise:null,
     stagedMedia:null,responsiveGroup:null,responsiveGroups:[],additions:[],resizeStart:null,imageSliderActive:false,
-    pageFindKeys:[],pageFindIndex:-1,mediaChooseInsert:false,removals:[]
+    pageFindKeys:[],pageFindIndex:-1,mediaChooseInsert:false,removals:[],selectedAddition:null
   };
 
   function hashText(text) {
@@ -274,10 +274,12 @@
       style.textContent=css;copy.head.append(style);
     }
     const additionsByAnchor=new Map();
-    for(const addition of state.additions){
+    state.additions.forEach((addition,index)=>{
       if(!additionsByAnchor.has(addition.selector))additionsByAnchor.set(addition.selector,[]);
-      additionsByAnchor.get(addition.selector).push(createAdditionElement(copy,addition));
-    }
+      const inserted=createAdditionElement(copy,addition);
+      inserted.setAttribute("data-editor-added-index",String(index));
+      additionsByAnchor.get(addition.selector).push(inserted);
+    });
     for(const [selector,elements] of additionsByAnchor){
       const matches=[...copy.querySelectorAll('main '+selector)];
       if(matches.length!==1)throw Error('Content insertion source is missing');
@@ -291,6 +293,9 @@
     const overlay=copy.createElement("style");
     overlay.textContent=[
       "[data-editor-key]{cursor:text;outline-offset:3px;}",
+      '[data-editor-added-index]{cursor:pointer;outline-offset:3px;}',
+      '[data-editor-added-index]:hover{outline:1px dashed #8d8d8d;}',
+      '[data-editor-added-index][data-editor-added-selected]{outline:2px solid #35745c!important;outline-offset:4px!important;}',
       "[data-editor-key]:hover{outline:1px dashed #8d8d8d;}",
       '[data-editor-key][data-editor-selected]{outline:2px solid #2b8769!important;outline-offset:4px!important;}',
       '[data-editor-key][data-editor-find-match]{box-shadow:inset 0 -3px #f7c85e!important;}',
@@ -307,6 +312,8 @@
 
   function renderPreview() {
     state.selected=null;
+    state.selectedAddition=null;
+    $("addedBlockDetails").hidden=true;
     $("selectionDetails").hidden=true;
     $("selectionEmpty").hidden=false;
     $("selectionTag").textContent="Nothing selected";
@@ -413,6 +420,11 @@
   function onPreviewClick(event) {
     /* Stop navigation, but keep normal selection behaviour for editable text. */
     if (event.target.closest("a")) event.preventDefault();
+    const added=event.target.closest("[data-editor-added-index]");
+    if(added){
+      selectAddedBlock(Number(added.getAttribute("data-editor-added-index")));
+      return;
+    }
     const node=event.target.closest("[data-editor-key]");
     if (!node) return;
     selectElement(node);
@@ -467,12 +479,99 @@
       previously.removeAttribute("contenteditable");
     }
     state.selected=node.getAttribute("data-editor-key");
+    state.selectedAddition=null;
+    $("addedBlockDetails").hidden=true;
     state.imageSliderActive=false;
     if(state.frameDoc.getElementById("moon-image-resize-handle"))
       state.frameDoc.getElementById("moon-image-resize-handle").remove();
     node.setAttribute("data-editor-selected","");
     if (TEXT_TAGS.has(node.tagName)) node.setAttribute("contenteditable","true");
     updateInspector(node);
+  }
+
+
+  function selectAddedBlock(index){
+    const addition=state.additions[index];
+    if(!addition||!state.frameDoc)return;
+    const previous=state.frameDoc.querySelector("[data-editor-selected]");
+    if(previous){previous.removeAttribute("data-editor-selected");previous.removeAttribute("contenteditable");}
+    for(const marked of state.frameDoc.querySelectorAll("[data-editor-added-selected]"))
+      marked.removeAttribute("data-editor-added-selected");
+    const node=state.frameDoc.querySelector('[data-editor-added-index="'+index+'"]');
+    if(!node)return;
+    node.setAttribute("data-editor-added-selected","");
+    state.selected=null;
+    state.selectedAddition=index;
+    $("selectionDetails").hidden=true;
+    $("selectionEmpty").hidden=true;
+    $("selectionTag").textContent="New "+insertionKind(addition);
+    $("addedBlockDetails").hidden=false;
+    const kind=insertionKind(addition);
+    $("addedBlockKind").textContent=kind==="image"?"Existing website image":kind;
+    $("addedBlockTextLabel").textContent=kind==="image"?"Image description (alt text)":"Block text";
+    $("addedBlockText").maxLength=kind==="paragraph"?2000:kind==="image"?200:140;
+    $("addedBlockText").value=addition.text;
+    $("addedBlockHeadingField").hidden=kind!=="heading";
+    $("addedBlockLinkField").hidden=kind!=="link";
+    $("addedBlockImageField").hidden=kind!=="image";
+    if(kind==="heading")$("addedBlockHeadingLevel").value=addition.headingTag;
+    if(kind==="link")$("addedBlockHref").value=addition.href;
+    if(kind==="image")$("addedBlockSrc").value=addition.src;
+    const siblings=state.additions.map((entry,i)=>entry.selector===addition.selector?i:-1).filter(i=>i>=0);
+    const position=siblings.indexOf(index);
+    $("moveAddedEarlierBtn").disabled=position<=0;
+    $("moveAddedLaterBtn").disabled=position>=siblings.length-1;
+    $("duplicateAddedBlockBtn").disabled=state.additions.length>=10;
+    $("addedBlockStatus").textContent="New "+kind+" · block "+(index+1)+
+      " of "+state.additions.length+" · Local draft";
+  }
+  function applyAddedBlock(){
+    const index=state.selectedAddition,original=state.additions[index];
+    if(!original)return;
+    const revised={...original,text:$("addedBlockText").value.trim()};
+    const kind=insertionKind(original);
+    if(kind==="heading")revised.headingTag=$("addedBlockHeadingLevel").value;
+    if(kind==="link")revised.href=$("addedBlockHref").value.trim();
+    if(kind==="image")revised.src=$("addedBlockSrc").value.trim();
+    const proposed=state.additions.map((item,i)=>i===index?revised:item);
+    try{validateParagraphAdditions(proposed)}
+    catch(error){
+      $("addedBlockStatus").textContent="Change not applied. "+error.message;
+      return;
+    }
+    if(JSON.stringify(revised)===JSON.stringify(original)){
+      $("addedBlockStatus").textContent="No changes to this new block.";
+      return;
+    }
+    checkpoint();
+    state.additions=proposed;
+    renderPreview();
+    saveDraft();
+    updateStatus("New block edited · Not published");
+  }
+  function removeAddedBlock(){
+    const index=state.selectedAddition;
+    if(index===null||!state.additions[index])return;
+    checkpoint();
+    state.additions.splice(index,1);
+    renderPreview();
+    saveDraft();
+    updateStatus("New block removed from draft · Not published");
+  }
+  function duplicateAddedBlock(){
+    const index=state.selectedAddition,item=state.additions[index];
+    if(!item||state.additions.length>=10)return;
+    const next=state.additions.slice();
+    next.splice(index+1,0,{...item});
+    try{validateParagraphAdditions(next)}catch(error){
+      $("addedBlockStatus").textContent="Duplicate not applied. "+error.message;
+      return;
+    }
+    checkpoint();
+    state.additions=next;
+    renderPreview();
+    saveDraft();
+    updateStatus("New block duplicated · Not published");
   }
 
   function updateInspector(node) {
@@ -2269,6 +2368,16 @@
     $("directLayoutApply").addEventListener("click",()=>updateDirectLayout());
     $("directLayoutRemove").addEventListener("click",()=>updateDirectLayout(true));
     $("insertContentKind").addEventListener("change",updateInsertKind);
+    $("addedBlockText").addEventListener("keydown",event=>{
+      if((event.ctrlKey||event.metaKey)&&event.key==="Enter"){
+        event.preventDefault();applyAddedBlock();
+      }
+    });
+    $("applyAddedBlockBtn").addEventListener("click",applyAddedBlock);
+    $("removeAddedBlockBtn").addEventListener("click",removeAddedBlock);
+    $("duplicateAddedBlockBtn").addEventListener("click",duplicateAddedBlock);
+    $("moveAddedEarlierBtn").addEventListener("click",()=>moveReviewedAddition(state.selectedAddition,-1));
+    $("moveAddedLaterBtn").addEventListener("click",()=>moveReviewedAddition(state.selectedAddition,1));
     $("insertContentBtn").addEventListener("click",addContentFromInspector);
     $("duplicateSourceBtn").addEventListener("click",duplicateSelectedSource);
     updateInsertKind();
