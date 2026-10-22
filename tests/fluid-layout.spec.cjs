@@ -3151,8 +3151,9 @@ test('forged image addition cannot point to external assets or include active ma
   text:'<img src=x onerror=alert(1)>',src:'https://evil.example/photo.png'
  }]};
  await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
- await page.evaluate(payload=>sessionStorage.setItem('moon-portfolio-fluid-handoff-v1',JSON.stringify(payload)),invalid);
- await page.reload();
+ await page.evaluate(payload=>sessionStorage.setItem('moon-fluid-text-handoff-v1',JSON.stringify(payload)),invalid);
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html&importFluidText=1');
+ await expect(page.locator('#noticeMessage')).toContainText('could not be verified');
  await expect(page.locator('#exportBtn')).toBeDisabled();
  await expect(page.frameLocator('#pageFrame').locator('main img')).toHaveCount(0);
 });
