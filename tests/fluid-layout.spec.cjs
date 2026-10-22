@@ -3608,3 +3608,30 @@ test('protected or ambiguous original blocks never display a drag handle',async(
  await expect(page.frameLocator('#pageFrame').locator('#moon-block-move-handle')).toHaveCount(0);
  await expect(page.locator('#moveOriginalBlockFields')).toBeHidden();
 });
+
+test('real research page exposes a source-safe movable content group with reviewable HTML',async({page})=>{
+ await page.goto('http://127.0.0.1:8765/editor.html?page=research.html');
+ const paragraphs=page.frameLocator('#pageFrame').locator('main p[data-editor-key]');
+ await expect(paragraphs.first()).toBeVisible();
+ let found=false;
+ for(let i=0;i<Math.min(await paragraphs.count(),65);i++){
+  await paragraphs.nth(i).dispatchEvent('click');
+  if(await page.locator('#moveOriginalBlockFields').isVisible()){
+   found=true;
+   break;
+  }
+ }
+ expect(found,'At least one actual Research page paragraph group should be movable').toBe(true);
+ const up=page.locator('#moveOriginalUp'),down=page.locator('#moveOriginalDown');
+ if(await down.isEnabled())await down.click();
+ else await up.click();
+ await expect(page.locator('#changeCount')).toContainText('1 rearranged content group');
+ await page.locator('#reviewBtn').click();
+ await expect(page.locator('#reviewExportStatus')).toContainText('Source check passed');
+ await page.locator('#reviewDialog form button').click();
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).toContain('<main');
+ expect(html).not.toContain('data-editor-key');
+});
