@@ -23,7 +23,7 @@
     $("publisherSummary").disabled=!publisher.session||publisher.busy;
     const moved=state.sectionOrder.some((id,i)=>id!==state.originalSections[i]);
     $("publisherPropose").disabled=!publisher.session||publisher.busy||
-      (!state.dirty.size&&!moved&&!state.responsiveGroup)||!$("publisherSummary").value.trim();
+      (!state.dirty.size&&!moved&&!layoutGroups().length)||!$("publisherSummary").value.trim();
   }
   function publishMessage(text) {
     $("publisherStatus").textContent=text;
@@ -34,7 +34,7 @@
     page:null,source:"",doc:null,frameDoc:null,original:new Map(),dirty:new Set(),
     selected:null,history:[],fingerprint:"",loadToken:0,saveTimer:null,staleDraft:false,
     originalSections:[],sectionGroups:[],sectionOrder:[],mediaAssets:null,mediaPromise:null,
-    stagedMedia:null,responsiveGroup:null
+    stagedMedia:null,responsiveGroup:null,responsiveGroups:[]
   };
 
   function hashText(text) {
@@ -54,13 +54,19 @@
     else alert(message);
   }
 
+  function layoutGroups(){
+    return state.responsiveGroups.length?state.responsiveGroups:(state.responsiveGroup?[state.responsiveGroup]:[]);
+  }
+  function layoutCss(doc){
+    return MoonResponsiveLayout.cssForGroups(doc,layoutGroups());
+  }
   function updateStatus(message) {
     $("editorSaveStatus").textContent=message;
     const moved=state.sectionOrder.filter((id,i)=>id!==state.originalSections[i]).length;
-    const total=state.dirty.size+moved+(state.responsiveGroup?1:0);
+    const total=state.dirty.size+moved+layoutGroups().length;
     $("changeCount").textContent=state.dirty.size+" edited element"+(state.dirty.size===1?"":"s")+
       (moved?" · "+moved+" moved section"+(moved===1?"":"s"):"")+
-      (state.responsiveGroup?" · responsive layout group":"");
+      (layoutGroups().length?" · "+layoutGroups().length+" responsive layout group"+(layoutGroups().length===1?"":"s"):"");
     $("exportBtn").disabled=!total;
     $("reviewBtn").disabled=!total;
     $("resetBtn").disabled=!total;
@@ -152,7 +158,7 @@
 
   function snapshot() {
     return {html:state.doc.documentElement.outerHTML,dirty:[...state.dirty],
-      order:state.sectionOrder.slice(),responsiveGroup:state.responsiveGroup};
+      order:state.sectionOrder.slice(),responsiveGroup:state.responsiveGroup,responsiveGroups:state.responsiveGroups.slice()};
   }
 
   function checkpoint() {
@@ -174,16 +180,16 @@
     const key=DRAFT_PREFIX+state.page;
     try {
       const orderChanged=state.sectionOrder.some((id,i)=>id!==state.originalSections[i]);
-      if (!items.length&&!orderChanged&&!state.responsiveGroup) {
+      if (!items.length&&!orderChanged&&!layoutGroups().length) {
         if (state.staleDraft) return;
         localStorage.removeItem(key);
       } else {
         localStorage.setItem(key,JSON.stringify({
           version:1,sourceHash:state.fingerprint,updated:Date.now(),items,
-          sectionOrder:state.sectionOrder.slice(),responsiveGroup:state.responsiveGroup
+          sectionOrder:state.sectionOrder.slice(),responsiveGroup:state.responsiveGroup,responsiveGroups:state.responsiveGroups
         }));
       }
-      updateStatus(items.length||orderChanged||state.responsiveGroup?"Draft saved in this browser · Not published":"No changes · Not published");
+      updateStatus(items.length||orderChanged||layoutGroups().length?"Draft saved in this browser · Not published":"No changes · Not published");
     } catch (e) {
       updateStatus("Draft storage unavailable · Export your HTML");
     }
@@ -213,10 +219,13 @@
         "This draft references an uploaded image whose binary file was not retained after reload. Select the image on the page and stage its file again.";
     }
     try {
-      if(draft.responsiveGroup){
+      const incoming=Array.isArray(draft.responsiveGroups)&&draft.responsiveGroups.length?
+        draft.responsiveGroups:(draft.responsiveGroup?[draft.responsiveGroup]:[]);
+      if(incoming.length){
         if(!window.MoonResponsiveLayout)throw Error('Responsive layout validator missing');
-        MoonResponsiveLayout.verify(new DOMParser().parseFromString(state.source,'text/html'),draft.responsiveGroup);
-        state.responsiveGroup=draft.responsiveGroup;
+        MoonResponsiveLayout.verifyGroups(new DOMParser().parseFromString(state.source,'text/html'),incoming);
+        state.responsiveGroups=incoming.slice();
+        state.responsiveGroup=incoming.length===1?incoming[0]:null;
       }
       for (const item of draft.items) {
         if (!state.original.has(item.id)||checkDangerousHtml(item.markup)) continue;
@@ -248,9 +257,9 @@
     const base=copy.createElement("base");
     base.setAttribute("href",new URL("./",location.href).href);
     copy.head.prepend(base);
-    if(state.responsiveGroup){
+    if(layoutGroups().length){
       const original=new DOMParser().parseFromString(state.source,'text/html');
-      const css=MoonResponsiveLayout.cssFor(original,state.responsiveGroup);
+      const css=layoutCss(original);
       const style=copy.createElement('style');style.id='moon-responsive-group-layout';
       style.textContent=css;copy.head.append(style);
     }
@@ -963,9 +972,9 @@
       next=next.slice(0,pos)+after+next.slice(pos+before.length);
     }
     next=exportSectionOrder(next);
-    if(state.responsiveGroup){
+    if(layoutGroups().length){
       const original=new DOMParser().parseFromString(state.source,'text/html');
-      const css=MoonResponsiveLayout.cssFor(original,state.responsiveGroup);
+      const css=layoutCss(original);
       if(!/<\/head>/i.test(next)||next.includes('id="moon-responsive-group-layout"'))
         throw Error('Cannot insert the responsive group into this page safely');
       next=next.replace(/<\/head>/i,'<style id="moon-responsive-group-layout">\\n'+css+'\\n</style>\\n</head>');
@@ -1095,7 +1104,7 @@
     const reordered=state.sectionOrder.some((id,i)=>id!==state.originalSections[i]);
     $("reviewSummary").textContent=ids.length+" edited element"+(ids.length===1?"":"s")+
       (reordered?" · section order changed":"")+
-      (state.responsiveGroup?" · responsive layout group":"")+
+      (layoutGroups().length?" · "+layoutGroups().length+" responsive layout group"+(layoutGroups().length===1?"":"s"):"")+
       " on "+$("pagePicker").selectedOptions[0]?.textContent+".";
     const previewText=(node)=>{
       if (!node) return "";
@@ -1156,15 +1165,15 @@
       }
       list.appendChild(item);
     }
-    if(state.responsiveGroup){
+    if(layoutGroups().length){
       const layout=document.createElement("section");
       layout.className="review-change";
       const heading=document.createElement("h3");
-      heading.textContent="Responsive group · "+state.responsiveGroup.children.length+" text blocks";
+      heading.textContent="Responsive groups · "+layoutGroups().length+" sections · "+layoutGroups().reduce((n,g)=>n+g.children.length,0)+" blocks";
       const info=document.createElement("p");
       info.textContent="A source-preserving 12-column grid with independent desktop and mobile positions. DOM reading order, links, and surrounding page markup remain unchanged.";
       const pre=document.createElement("pre");
-      pre.textContent=MoonResponsiveLayout.cssFor(new DOMParser().parseFromString(state.source,'text/html'),state.responsiveGroup);
+      pre.textContent=layoutCss(new DOMParser().parseFromString(state.source,'text/html'));
       pre.style.cssText="white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px;max-height:200px;overflow:auto";
       layout.append(heading,info,pre);
       list.append(layout);
@@ -1222,6 +1231,7 @@
     state.dirty=new Set(last.dirty);
     state.sectionOrder=Array.isArray(last.order)?last.order.slice():state.originalSections.slice();
     state.responsiveGroup=last.responsiveGroup||null;
+    state.responsiveGroups=last.responsiveGroups||[];
     renderPreview();
     scheduleDraft();
     updateStatus("Previous edit restored · Not published");
@@ -1235,7 +1245,7 @@
     state.dirty.clear();
     state.history.length=0;
     state.staleDraft=false;
-    state.responsiveGroup=null;
+    state.responsiveGroup=null;state.responsiveGroups=[];
     renderPreview();
     saveDraft();
   }
@@ -1390,7 +1400,7 @@
       state.source=source;
       state.fingerprint=hashText(source);
       state.doc=new DOMParser().parseFromString(source,"text/html");
-      state.responsiveGroup=null;
+      state.responsiveGroup=null;state.responsiveGroups=[];
       state.dirty.clear();
       state.history.length=0;
       state.staleDraft=false;
