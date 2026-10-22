@@ -1660,3 +1660,121 @@ test('imported portrait images fit their resizable canvas blocks without clippin
   expect(dimensions.naturalWidth).toBeGreaterThan(0);
   expect(dimensions.naturalHeight).toBeGreaterThan(0);
 });
+
+test('card layout group preserves nested links and images in reviewed responsive HTML', async ({ page }) => {
+  await page.route('**/index.html',route=>route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<!doctype html><html><head><title>Home</title></head><body><header>Site navigation</header>'+
+      '<main><section id="teaching-research"><div id="cards">'+
+      '<article><h2>Research</h2><p>Explore <a href="research.html">research</a></p></article>'+
+      '<article><h2>Teaching</h2><figure><img src="assets/profile-portrait.webp" alt="Portrait"></figure>'+
+      '<p>Read <a href="teaching.html">teaching</a></p></article>'+
+      '</div></section></main><footer>Site footer</footer></body></html>'
+  }));
+  await page.locator('#sourcePage').selectOption('index.html');
+  page.once('dialog',dialog=>dialog.accept());
+  await page.locator('#importPage').click();
+  await expect(page.locator('#grid .block')).toHaveCount(6);
+  await page.locator('#findContainerGroups').click();
+  await expect(page.locator('#containerGroupPicker option')).toHaveCount(2);
+  await page.locator('#applyContainerGroup').click();
+  await expect(page.locator('#responsiveGroupStatus')).toContainText('Card or CV row group selected · 2 blocks');
+  await page.locator('#viewSitePreview').click();
+  await page.locator('#previewSiteApplied').click();
+  const html=await page.locator('#sitePreviewFrame').getAttribute('srcdoc');
+  const details=await page.evaluate(raw=>{
+    const doc=new DOMParser().parseFromString(raw,'text/html');
+    return {
+      cards:doc.querySelectorAll('#cards > article').length,
+      links:[...doc.querySelectorAll('#cards a')].map(a=>a.getAttribute('href')),
+      alt:doc.querySelector('#cards img')?.getAttribute('alt'),
+      css:doc.querySelector('#moon-responsive-group-layout')?.textContent,
+      footer:doc.querySelector('footer')?.textContent
+    };
+  },html);
+  expect(details.cards).toBe(2);
+  expect(details.links).toEqual(['research.html','teaching.html']);
+  expect(details.alt).toBe('Portrait');
+  expect(details.footer).toBe('Site footer');
+  expect(details.css).toContain('grid-column:7 / span 6');
+  await page.locator('#closeSitePreview').click();
+  page.on('dialog',dialog=>dialog.accept());
+  await page.locator('#openPublisher').click();
+  await expect(page).toHaveURL(/editor\.html\?page=index\.html$/);
+  await expect(page.locator('#editorSaveStatus')).toContainText('transferred');
+  await page.locator('#reviewBtn').click();
+  await expect(page.locator('#reviewChangeList')).toContainText('Responsive group');
+  await page.locator('#reviewDialog form button').click();
+  const downloadPromise=page.waitForEvent('download');
+  await page.locator('#exportBtn').click();
+  const exported=require('node:fs').readFileSync(await (await downloadPromise).path(),'utf8');
+  expect(exported).toContain('<style id="moon-responsive-group-layout">');
+  expect(exported).toContain('href="research.html"');
+  expect(exported).toContain('href="teaching.html"');
+  expect(exported).toContain('alt="Portrait"');
+});
+
+test('card group revalidation rejects changed image markup even when text stays identical', async ({ page }) => {
+  let changed=false;
+  await page.route('**/index.html',route=>route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<!doctype html><html><head></head><body><main><section id="cards">'+
+      '<article><h2>Research</h2><img src="assets/'+(changed?'second':'profile-portrait')+'.webp" alt="Portrait"></article>'+
+      '<article><h2>Teaching</h2><p>Classroom inquiry</p></article>'+
+      '</section></main></body></html>'
+  }));
+  await page.locator('#sourcePage').selectOption('index.html');
+  page.once('dialog',dialog=>dialog.accept());
+  await page.locator('#importPage').click();
+  await page.locator('#findContainerGroups').click();
+  await page.locator('#applyContainerGroup').click();
+  await expect(page.locator('#responsiveGroupStatus')).toContainText('2 blocks');
+  changed=true;
+  await page.locator('#viewSitePreview').click();
+  await expect(page.locator('#status')).toContainText('Source');
+  await expect(page.locator('#sitePreviewDialog')).not.toBeVisible();
+  await page.locator('#openPublisher').click();
+  await expect(page).toHaveURL(/fluid-layout-lab\.html$/);
+  await expect(page.locator('#status')).toContainText('blocked');
+});
+
+test('CV row container group retains nested emphasis and hyperlinks', async ({ page }) => {
+  await page.route('**/cv.html',route=>route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<!doctype html><html><head></head><body><main><section>'+
+      '<div id="records"><div class="list-row"><div>2026</div><p><strong>MEd</strong> · <a href="about.html">About</a></p></div>'+
+      '<div class="list-row"><div>2020</div><p><strong>BSc</strong> · University of British Columbia</p></div></div>'+
+      '</section></main></body></html>'
+  }));
+  await page.locator('#sourcePage').selectOption('cv.html');
+  page.once('dialog',dialog=>dialog.accept());
+  await page.locator('#importPage').click();
+  await page.locator('#findContainerGroups').click();
+  await page.locator('#applyContainerGroup').click();
+  await expect(page.locator('#responsiveGroupStatus')).toContainText('Card or CV row group selected');
+  await page.locator('#viewSitePreview').click();
+  await page.locator('#previewSiteApplied').click();
+  const html=await page.locator('#sitePreviewFrame').getAttribute('srcdoc');
+  expect(html).toContain('<strong>MEd</strong>');
+  expect(html).toContain('href="about.html"');
+  expect(html).toContain('id="moon-responsive-group-layout"');
+});
+
+test('container groups are discoverable in actual Home and CV pages', async ({ page }) => {
+  for(const filename of ['index.html','cv.html']){
+    await page.locator('#sourcePage').selectOption(filename);
+    page.once('dialog',dialog=>dialog.accept());
+    await page.locator('#importPage').click();
+    await expect(page.locator('#status')).toContainText('Imported');
+    await page.locator('#findContainerGroups').click();
+    await expect(page.locator('#status')).toContainText('Found');
+    expect(await page.locator('#containerGroupPicker option').count()).toBeGreaterThan(1);
+    await page.locator('#applyContainerGroup').click();
+    await expect(page.locator('#responsiveGroupStatus')).toContainText('Card or CV row group selected');
+    await page.locator('#viewSitePreview').click();
+    await page.locator('#previewSiteApplied').click();
+    const html=await page.locator('#sitePreviewFrame').getAttribute('srcdoc');
+    expect(html).toContain('id="moon-responsive-group-layout"');
+    await page.locator('#closeSitePreview').click();
+  }
+});
