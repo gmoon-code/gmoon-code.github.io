@@ -1391,3 +1391,118 @@ test('undo discards incoming responsive grid CSS without affecting original mark
   await expect(page.locator('#exportBtn')).toBeDisabled();
   await expect.poll(async()=>page.evaluate(()=>localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'))).toBeNull();
 });
+
+test('find compatible sections and arrange selected group in two desktop columns', async ({ page }) => {
+  await page.route('**/about.html', route => route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<!doctype html><html><head></head><body><main>'+
+      '<section id="alpha"><h2>Alpha</h2><p>First paragraph</p></section>'+
+      '<section id="beta"><h2>Beta</h2><p>Second paragraph</p><p>Third paragraph</p></section>'+
+      '</main></body></html>'
+  }));
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  await expect(page.locator('#grid .block')).toHaveCount(5);
+  await page.locator('#findResponsiveGroups').click();
+  await expect(page.locator('#responsiveGroupPicker option')).toHaveCount(3);
+  await page.locator('#responsiveGroupPicker').selectOption('1');
+  await page.locator('#applyResponsiveGroup').click();
+  await expect(page.locator('#responsiveGroupStatus')).toContainText('3 blocks');
+  await expect(page.locator('#grid .responsive-member')).toHaveCount(3);
+  const draft=await page.evaluate(()=>JSON.parse(localStorage.getItem('moon-fluid-layout-lab-v1')));
+  await expect.poll(async()=>page.evaluate(()=>JSON.parse(localStorage.getItem('moon-fluid-layout-lab-v1'))?.responsiveGroup?.selectors?.length)).toBe(3);
+  const layout=await page.evaluate(()=>{
+    const b=JSON.parse(localStorage.getItem('moon-fluid-layout-lab-v1')).blocks.filter(b=>b.source?.selector.includes('#beta'));
+    return b.map(({x,y,w,mobile})=>({x,y,w,mobile}));
+  });
+  expect(layout).toHaveLength(3);
+  expect(layout[0].x).toBe(1);
+  expect(layout[1].x).toBe(7);
+  expect(layout[0].y).toBe(layout[1].y);
+  expect(layout.every(b=>b.mobile.x===1&&b.mobile.w===12)).toBe(true);
+  await page.locator('#viewSitePreview').click();
+  await page.locator('#previewSiteApplied').click();
+  const review=await page.locator('#sitePreviewFrame').getAttribute('srcdoc');
+  expect(review).toContain('id="moon-responsive-group-layout"');
+  expect(review).toContain('grid-column:7 / span 6');
+  await page.locator('#closeSitePreview').click();
+});
+
+test('preset buttons switch between stacked and two-column layouts and undo restores layout', async ({ page }) => {
+  await page.route('**/about.html', route => route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<!doctype html><html><head></head><body><main><section id="layout">'+
+      '<h2>Heading</h2><p>Paragraph with <a href="research.html">research link</a>.</p>'+
+      '</section></main></body></html>'
+  }));
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  await expect(page.locator('#grid .block')).toHaveCount(2);
+  await page.locator('#findResponsiveGroups').click();
+  await page.locator('#applyResponsiveGroup').click();
+  await expect(page.locator('#responsiveGroupStatus')).toContainText('2 blocks');
+  await page.locator('#stackResponsiveGroup').click();
+  await expect.poll(async()=>page.evaluate(()=>{
+    const b=JSON.parse(localStorage.getItem('moon-fluid-layout-lab-v1'))?.blocks;
+    return b?.[0]?.w===12&&b?.[1]?.w===12;
+  })).toBe(true);
+  await page.locator('#columnsResponsiveGroup').click();
+  await expect.poll(async()=>page.evaluate(()=>{
+    const b=JSON.parse(localStorage.getItem('moon-fluid-layout-lab-v1'))?.blocks;
+    return b?.[0]?.w===6&&b?.[1]?.x===7;
+  })).toBe(true);
+  await page.locator('#undo').click();
+  await expect(page.locator('#responsiveGroupStatus')).toContainText('2 blocks');
+  await expect.poll(async()=>page.evaluate(()=>{
+    const b=JSON.parse(localStorage.getItem('moon-fluid-layout-lab-v1'))?.blocks;
+    return b?.[0]?.w===12&&b?.[1]?.w===12;
+  })).toBe(true);
+  page.on('dialog', dialog => dialog.accept());
+  await page.locator('#openPublisher').click();
+  await expect(page).toHaveURL(/editor\.html\?page=about\.html$/);
+  await expect(page.locator('#editorSaveStatus')).toContainText('transferred');
+  const downloadPromise=page.waitForEvent('download');
+  await page.locator('#exportBtn').click();
+  const html=require('node:fs').readFileSync(await (await downloadPromise).path(),'utf8');
+  expect(html).toContain('href="research.html"');
+  expect(html).toContain('grid-column:1 / span 12');
+});
+
+test('section discovery ignores incomplete groups and reports no compatible sections', async ({ page }) => {
+  await page.route('**/research.html', route => route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<!doctype html><html><head></head><body><main><section id="layout">'+
+      '<h2>Heading</h2><a href="about.html">Direct link</a><p>Paragraph</p>'+
+      '</section></main></body></html>'
+  }));
+  await page.locator('#sourcePage').selectOption('research.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  await expect(page.locator('#grid .block')).toHaveCount(2);
+  await page.locator('#findResponsiveGroups').click();
+  await expect(page.locator('#responsiveGroupPicker option')).toHaveCount(1);
+  await expect(page.locator('#status')).toContainText('No compatible sections');
+  await page.locator('#applyResponsiveGroup').click();
+  await expect(page.locator('#status')).toContainText('Find and select a compatible section');
+});
+
+test('responsive group arrangement rejects source changes after discovery', async ({ page }) => {
+  let altered=false;
+  await page.route('**/about.html', route => route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<!doctype html><html><head></head><body><main><section id="layout">'+
+      '<h2>Heading</h2><p>'+(altered?'Updated elsewhere':'Original paragraph')+'</p>'+
+      '</section></main></body></html>'
+  }));
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  await page.locator('#findResponsiveGroups').click();
+  await expect(page.locator('#responsiveGroupPicker option')).toHaveCount(2);
+  altered=true;
+  await page.locator('#applyResponsiveGroup').click();
+  await expect(page.locator('#status')).toContainText('Arrangement blocked');
+  await expect(page.locator('#responsiveGroupStatus')).toContainText('No responsive group selected');
+});
