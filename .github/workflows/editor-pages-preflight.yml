@@ -32,7 +32,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: gmoon-code/research-methods
-          ref: 5629ea17a9990fd4821e09a7905a1055e57db809
+          ref: c36d23d54c4dfd4413998888c5e45bc3de11fc4d
           path: .integration/research-methods
 
       - name: Check out Story Method draft
