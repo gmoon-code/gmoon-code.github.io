@@ -2534,3 +2534,20 @@ test('capture desktop and mobile previews with new headings and reviewed links',
  expect(raw).toContain('href="research.html"');
  expect(raw).toContain('Site footer');
 });
+
+test('new content controls require a source anchor and source deletions stay canvas-only',async({page})=>{
+ await expect(page.locator('#appendSourceParagraph')).toBeDisabled();
+ await expect(page.locator('#appendSourceHeading')).toBeDisabled();
+ await expect(page.locator('#appendSourceLink')).toBeDisabled();
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+ body:'<!doctype html><html><head></head><body><main><section><h2>Source heading</h2><p>Existing text</p></section></main></body></html>'}));
+ await page.locator('#sourcePage').selectOption('about.html');
+ page.once('dialog',dialog=>dialog.accept());
+ await page.locator('#importPage').click();
+ await page.locator('#grid .block.heading').first().click();
+ await expect(page.locator('#appendSourceHeading')).toBeEnabled();
+ await page.locator('#remove').click();
+ await expect(page.locator('#status')).toContainText('original website element has not been deleted');
+ await page.locator('#undo').click();
+ await expect(page.locator('#grid .block')).toHaveCount(2);
+});
