@@ -966,7 +966,9 @@
     if(!group)return;
     checkpoint();
     const nodes=group.originalKeys.map(key=>getWorking(key));
-    nodes[0].before(...nodes);
+    const parent=nodes[0]?.parentElement;
+    const first=[...parent.children].find(node=>group.originalKeys.includes(node.getAttribute("data-editor-key")));
+    first.before(...nodes);
     state.blockOrders.splice(index,1);
     renderPreview();
     saveDraft();
