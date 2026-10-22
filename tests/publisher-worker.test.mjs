@@ -320,3 +320,18 @@ test("approved plain-text paragraph insertion preserves protected publisher reso
    updated.replace("</main>","<iframe src=\"https://example.org\"></iframe></main>")),
    /executable/i);
 });
+
+test("safe inserted headings and links pass the private proposal security checks",()=>{
+ const current=page.replace("<h1>Original title</h1>","<h1>Original title</h1><p>Existing paragraph</p>");
+ const updated=current.replace("<p>Existing paragraph</p>",
+  '<p>Existing paragraph</p>\n<h2>New section</h2>\n'+
+  '<p><a href="research.html">Read research</a></p>\n'+
+  '<p><a href="https://example.org/a?one=1&amp;two=2" rel="noopener noreferrer">External source</a></p>');
+ assert.doesNotThrow(()=>util.validateEdit("about.html",current,updated));
+ assert.throws(()=>util.validateEdit("about.html",current,
+  updated.replace('href="research.html"','href="javascript:alert(1)"')),/executable/i);
+ assert.throws(()=>util.validateEdit("about.html",current,
+  updated.replace('rel="noopener noreferrer"','onclick="alert(1)"')),/executable/i);
+ assert.throws(()=>util.validateEdit("about.html",current,
+  updated.replace('<h2>New section</h2>','<script>alert(1)</script>')),/Scripts|executable/i);
+});
