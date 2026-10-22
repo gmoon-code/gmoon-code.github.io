@@ -2965,3 +2965,63 @@ test('main editor redo restores text changes and clears after a new edit',async(
  expect(html).toContain('Completely different heading');
  expect(html).not.toContain('Revised heading');
 });
+
+test('find-in-page highlights, navigates and selects editable results without saving changes',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({
+  status:200,contentType:'text/html',
+  body:'<!doctype html><html><head></head><body><main><section>'+
+   '<h2>Research programme</h2>'+
+   '<p>Algae grow in sunlight.</p>'+
+   '<p>Algae support many ecosystems.</p>'+
+   '<p>Read <a href="research.html">more biology research</a>.</p>'+
+   '<img alt="Algae image" src="assets/algae-test.jpg">'+
+   '</section></main></body></html>'
+ }));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ const query=page.locator('#pageFindQuery');
+ await query.fill('algae');
+ await expect(page.locator('#pageFindStatus')).toContainText('3 matching elements');
+ await expect(page.locator('#pageFindResults button')).toHaveCount(3);
+ await expect(page.frameLocator('#pageFrame').locator('[data-editor-find-match]')).toHaveCount(3);
+ await page.locator('#pageFindNext').click();
+ await expect(page.locator('#pageFindStatus')).toContainText('selected 2 of 3');
+ await expect(page.locator('#selectionText')).toHaveValue('Algae support many ecosystems.');
+ await query.focus();
+ await query.press('Shift+Enter');
+ await expect(page.locator('#selectionText')).toHaveValue('Algae grow in sunlight.');
+ await query.fill('biology research');
+ await expect(page.locator('#pageFindResults button')).toHaveCount(1);
+ await page.locator('#pageFindResults button').first().click();
+ await expect(page.locator('#linkHref')).toHaveValue('research.html');
+ await expect(page.locator('#exportBtn')).toBeDisabled();
+ await query.fill('never present anywhere');
+ await expect(page.locator('#pageFindStatus')).toContainText('No matching editable elements');
+ await expect(page.locator('#pageFindNext')).toBeDisabled();
+ await query.press('Escape');
+ await expect(query).toHaveValue('');
+ await expect(page.frameLocator('#pageFrame').locator('[data-editor-find-match]')).toHaveCount(0);
+ await expect(page.locator('#exportBtn')).toBeDisabled();
+ await expect.poll(async()=>page.evaluate(()=>
+  localStorage.getItem('moon-portfolio-visual-editor-v1:about.html')
+ )).toBeNull();
+});
+
+test('find-in-page survives preview regeneration and continues with reviewed content',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({
+  status:200,contentType:'text/html',
+  body:'<!doctype html><html><head></head><body><main><section><h2>Research notes</h2>'+
+   '<p>Evidence from the classroom.</p><p>Further classroom evidence.</p>'+
+   '</section></main></body></html>'
+ }));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ await page.locator('#pageFindQuery').fill('classroom');
+ await expect(page.locator('#pageFindResults button')).toHaveCount(2);
+ await page.locator('#pageFindNext').click();
+ await page.frameLocator('#pageFrame').locator('main h2').click();
+ await page.locator('#insertContentText').fill('Another researched question');
+ await page.locator('#insertContentBtn').click();
+ await expect(page.locator('#pageFindResults button')).toHaveCount(2);
+ await expect(page.locator('#pageFindStatus')).toContainText('2 matching elements');
+ await expect(page.frameLocator('#pageFrame').locator('[data-editor-find-match]')).toHaveCount(2);
+ await expect(page.locator('#changeCount')).toContainText('1 added content block');
+});
