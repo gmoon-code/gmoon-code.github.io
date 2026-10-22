@@ -610,9 +610,22 @@
     const width=bar.getBoundingClientRect().width||290;
     const height=bar.getBoundingClientRect().height||38;
     const maxLeft=Math.max(4,view.innerWidth-width-4);
-    bar.style.left=Math.max(4,Math.min(maxLeft,rect.left))+"px";
-    bar.style.top=Math.max(4,Math.min(view.innerHeight-height-4,
-      rect.top>=height+10?rect.top-height-7:rect.bottom+8))+"px";
+    const maxTop=Math.max(4,view.innerHeight-height-4);
+    // Keep the controls outside the selected text where there is enough
+    // room. A toolbar below a page-top heading can cover the next paragraph
+    // and prevent its selection, so use a bottom-corner fallback.
+    let left,top;
+    if(rect.right+width+9<=view.innerWidth-4){
+      left=rect.right+8;top=rect.top;
+    }else if(rect.left-width-9>=4){
+      left=rect.left-width-8;top=rect.top;
+    }else if(rect.top>=height+10){
+      left=rect.left;top=rect.top-height-7;
+    }else{
+      left=maxLeft;top=maxTop;
+    }
+    bar.style.left=Math.max(4,Math.min(maxLeft,left))+"px";
+    bar.style.top=Math.max(4,Math.min(maxTop,top))+"px";
   }
   function createQuickToolbar(){
     const doc=state.frameDoc;
@@ -914,6 +927,9 @@
         thumbnail.removeAttribute("src");
         imageNote.textContent="";
       }
+      // A newly visible thumbnail changes the panel height. Reposition the
+      // fixed composer before the browser tries to scroll its action row.
+      if(form.isConnected)positionQuickComposer();
     };
     imagePath.addEventListener("input",updateImagePreview);
     const help=doc.createElement("p");
@@ -952,6 +968,7 @@
       textField.firstChild.textContent=selection==="image"?"Image description (alt text)":"Text";
       description.maxLength=selection==="paragraph"?2000:selection==="image"?200:140;
       status.textContent="";
+      if(form.isConnected)positionQuickComposer();
     };
     kind.addEventListener("change",refresh);
     const close=()=>{
