@@ -3675,6 +3675,12 @@ test('on-canvas divider resizes two responsive columns and preserves source, mob
  await expect.poll(async()=>page.evaluate(()=>
   JSON.parse(localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'))?.responsiveGroups?.[0]?.children?.[2]?.desktop?.w
  )).toBe(3);
+ await page.reload();
+ await page.frameLocator('#pageFrame').locator('#grid-area h2').click();
+ await expect(page.locator('#directLayoutPreset')).toHaveValue('custom');
+ await expect(page.locator('#directLayoutCustomColumns')).toHaveValue('9');
+ await expect(page.locator('#directLayoutCustomValue')).toHaveText('9 / 3 columns');
+ await expect(page.frameLocator('#pageFrame').locator('#moon-column-resize-handle')).toBeVisible();
 });
 
 test('responsive divider does not appear for three columns or original unarranged blocks',async({page})=>{
