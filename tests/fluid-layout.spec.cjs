@@ -3665,6 +3665,52 @@ test('inline composer rejects unsafe link or image sources, preserves valid exis
  expect(html).not.toContain('moon-quick-composer');
 });
 
+test('inline image gallery selects a site asset, provides preview and exports image description',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+  body:'<!doctype html><html><head></head><body><main><section>'+
+   '<h2>Student project gallery</h2><p>Preserved original context.</p>'+
+   '<img src="assets/editor-existing-example.webp" alt="Student investigation materials">'+
+   '</section></main></body></html>'}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ await page.frameLocator('#pageFrame').locator('main h2').click();
+ const toolbar=page.frameLocator('#pageFrame').locator('#moon-quick-toolbar');
+ await toolbar.getByRole('button',{name:'Add new content after this block'}).click();
+ const composer=page.frameLocator('#pageFrame').getByRole('dialog',{name:'Add content to the page'});
+ await composer.getByLabel('Content type').selectOption('image');
+ const browse=composer.getByRole('button',{name:'Choose an existing website image from the image gallery'});
+ await expect(browse).toBeVisible();
+ await expect(composer.getByLabel('Link destination')).toBeHidden();
+ await browse.click();
+ await expect(page.locator('#mediaDialog')).toBeVisible();
+ const result=page.locator('#mediaResults .media-option').filter({
+   hasText:'assets/editor-existing-example.webp'
+ });
+ await expect(result).toHaveCount(1);
+ await result.click();
+ await expect(page.locator('#mediaDialog')).not.toBeVisible();
+ await expect(composer.getByLabel('Existing image path')).toHaveValue('assets/editor-existing-example.webp');
+ await expect(composer.getByLabel('Image description (alt text)')).toHaveValue('Student investigation materials');
+ const thumb=composer.locator('img');
+ await expect(thumb).toBeVisible();
+ await expect(thumb).toHaveAttribute('src','assets/editor-existing-example.webp');
+ await composer.getByLabel('Image description (alt text)').fill(
+   'Student-created model during a classroom investigation');
+ await composer.getByRole('button',{name:'Add to page'}).click();
+ const added=page.frameLocator('#pageFrame').locator('[data-editor-added-index]');
+ await expect(added).toHaveCount(1);
+ await expect(added.locator('img')).toHaveAttribute('alt',
+   'Student-created model during a classroom investigation');
+ await expect(added.locator('img')).toHaveAttribute('src','assets/editor-existing-example.webp');
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).toContain('alt="Student-created model during a classroom investigation"');
+ expect(html).toContain('<p>Preserved original context.</p>');
+ expect(html).not.toContain('moon-quick-composer');
+ await page.reload();
+ await expect(added.locator('img')).toHaveAttribute('src','assets/editor-existing-example.webp');
+});
+
 test('inline composer cancels with Escape, stays within mobile preview, and never changes HTML',async({page})=>{
  await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
   body:'<!doctype html><html><head></head><body><main><section>'+
