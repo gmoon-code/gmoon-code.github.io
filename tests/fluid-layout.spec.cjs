@@ -1934,7 +1934,7 @@ test('Home nested card layout and headline text edits transfer together without 
   expect(html).toContain('Another description');
 });
 
-test('card group layout persists through editor reload and is reversible', async ({ page }) => {
+test('card group layout persists through editor reload and can be reset', async ({ page }) => {
   await page.route('**/cv.html',route=>route.fulfill({
     status:200,contentType:'text/html',
     body:'<!doctype html><html><head></head><body><main><div id="records">'+
@@ -1956,7 +1956,7 @@ test('card group layout persists through editor reload and is reversible', async
   await page.locator('#reviewBtn').click();
   await expect(page.locator('#reviewChangeList')).toContainText('Responsive group');
   await page.locator('#reviewDialog form button').click();
-  await page.locator('#undoBtn').click();
+  await page.locator('#resetBtn').click();
   await expect(page.locator('#exportBtn')).toBeDisabled();
   await expect.poll(async()=>page.evaluate(()=>localStorage.getItem('moon-portfolio-visual-editor-v1:cv.html'))).toBeNull();
 });
