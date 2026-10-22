@@ -42,7 +42,9 @@ Click **Transfer verified text to editor** after changing imported text or suppo
 
 Supported changes include imported plain text, font size, foreground/background colours, text alignment, maximum element width, and spacing above/below an element. Text edits within elements that contain links or inline formatting are intentionally blocked in the prototype. Use the main editor for those rich-text changes.
 
-Freeform block x/y coordinates, canvas resizing, changes to image sources, and additions/deletions of blocks cannot pass through this transfer. Keep a JSON copy to preserve those proposals.
+**Responsive sibling groups** are supported for a narrow, verifiable case. Import the page, select a heading or paragraph, then click **Use selected sibling group**. The builder checks that all direct children of its parent are imported text blocks, that the original text still matches, and that neither desktop nor mobile blocks overlap. If approved, the group's desktop/mobile coordinates can transfer as generated CSS Grid rules. Review these rules in the main editor before exporting or proposing anything. The original elements and their reading order are not replaced. Press **Clear responsive group** to remove the group from your builder draft.
+
+Freeform block x/y coordinates outside an approved sibling group, changes to image sources, and additions/deletions of blocks cannot pass through this transfer. Keep a JSON copy to preserve those proposals.
 
 The main editor can export reviewed HTML. Its optional **Create draft pull request** feature requires separately configured private publisher API and GitHub OAuth settings. The public `editor-publisher-config.js` currently has empty connection values. Local review cannot activate GitHub publication.
 
