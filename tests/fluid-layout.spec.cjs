@@ -2504,3 +2504,33 @@ test('forged file draft containing unsafe link is refused on JSON import',async(
  await expect(page.locator('#status')).toContainText('Invalid new link source or content');
  await expect(page.locator('#grid .block')).toHaveCount(3);
 });
+
+test('capture desktop and mobile previews with new headings and reviewed links',async({page})=>{
+ const fs=require('node:fs');
+ fs.mkdirSync('test-results/layout-previews',{recursive:true});
+ await page.setViewportSize({width:1366,height:900});
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+ body:'<!doctype html><html><head><title>About</title></head><body><header>Site navigation</header><main><section class="section"><h2>My work</h2><p>I investigate scientific inquiry.</p><p>My teaching practice continues to shape these questions.</p></section></main><footer>Site footer</footer></body></html>'}));
+ await page.locator('#sourcePage').selectOption('about.html');
+ page.once('dialog',dialog=>dialog.accept());
+ await page.locator('#importPage').click();
+ await expect(page.locator('#grid .block')).toHaveCount(3);
+ await page.locator('#grid .block.heading').first().click();
+ page.once('dialog',dialog=>dialog.accept('Current research'));
+ await page.locator('#appendSourceHeading').click();
+ await page.locator('#insertionHeadingTag').selectOption('h2');
+ await page.locator('#grid .block').nth(1).click();
+ const replies=['See current research','research.html'];
+ page.on('dialog',dialog=>dialog.accept(replies.shift()||''));
+ await page.locator('#appendSourceLink').click();
+ await page.locator('#canvas').screenshot({path:'test-results/layout-previews/add-content-builder-desktop.png'});
+ await page.locator('#viewSitePreview').click();
+ await page.locator('#previewSiteApplied').click();
+ await page.locator('#sitePreviewDialog').screenshot({path:'test-results/layout-previews/add-content-site-desktop.png'});
+ await page.locator('#previewSiteMobile').click();
+ await page.locator('#sitePreviewDialog').screenshot({path:'test-results/layout-previews/add-content-site-mobile.png'});
+ const raw=await page.locator('#sitePreviewFrame').getAttribute('srcdoc');
+ expect(raw).toContain('<h2>Current research</h2>');
+ expect(raw).toContain('href="research.html"');
+ expect(raw).toContain('Site footer');
+});
