@@ -298,6 +298,24 @@
             <output id="addedImageWidthValue" for="addedImageWidthPercent">100%</output>
             <p class="small-note">Resize using the handle on the image or this slider. The size stays in your local draft and is included in review and export. Undo restores the previous width.</p>
           </div>
+          <fieldset id="addedBlockLayoutFields" class="inspector-group">
+            <legend>Size and position in this section</legend>
+            <label for="addedBlockAlign">Block alignment</label>
+            <select id="addedBlockAlign">
+              <option value="left">Left</option>
+              <option value="center">Centre</option>
+              <option value="right">Right</option>
+            </select>
+            <label for="addedBlockWidth">Block width within its container</label>
+            <input type="range" id="addedBlockWidth" min="30" max="100" step="5" value="100">
+            <output id="addedBlockWidthValue" for="addedBlockWidth">100%</output>
+            <label for="addedBlockSpaceAbove">Space above (px)</label>
+            <input type="number" id="addedBlockSpaceAbove" min="0" max="80" step="5" value="0">
+            <label for="addedBlockSpaceBelow">Space below (px)</label>
+            <input type="number" id="addedBlockSpaceBelow" min="0" max="80" step="5" value="0">
+            <button type="button" id="resetAddedBlockLayout" class="secondary">Restore default size and position</button>
+            <p class="small-note">Drag the corner handle of a new text block to adjust width, or use the slider. Select Left, Centre or Right to place it within the section. These settings retain document reading order on smaller screens.</p>
+          </fieldset>
           <button type="button" id="applyAddedBlockBtn" class="primary">Apply block edits</button>
           <button type="button" id="duplicateAddedBlockBtn" class="secondary">Duplicate this new block</button>
           <div id="moveAddedAnchorFields">
