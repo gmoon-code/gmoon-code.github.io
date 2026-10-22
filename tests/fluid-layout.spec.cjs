@@ -3533,11 +3533,9 @@ test('existing content move conflicts with staged additions and source removals'
  await expect(page.locator('#moveOriginalUp')).toBeEnabled();
  await page.locator('#moveOriginalUp').click();
  await expect(page.locator('#removeSourceBtn')).toBeDisabled();
- await expect(page.locator('#insertContentFields')).toBeVisible();
- await page.locator('#insertContentText').fill('Conflicting addition');
- await page.locator('#insertContentBtn').click();
- await expect(page.locator('#noticeMessage')).toContainText('Restore the original order');
- await page.locator('#noticeDialog form button').click();
+ await expect(page.locator('#insertContentFields')).toBeHidden();
+ await expect(page.locator('#directLayoutFields')).toBeHidden();
+ await expect(page.locator('#moveOriginalStatus')).toContainText('Restore this group');
  await expect(page.locator('#changeCount')).toContainText('1 rearranged content group');
 });
 
