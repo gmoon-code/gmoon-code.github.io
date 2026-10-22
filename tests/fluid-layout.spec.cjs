@@ -2248,3 +2248,34 @@ test('added paragraph cannot be inserted inside approved responsive group',async
  await expect(page.locator('#status')).toContainText('Clear the selected responsive group');
  await expect(page.locator('#grid .block')).toHaveCount(2);
 });
+
+test('forged paragraph insertion source mismatch is rejected without a draft',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+ body:'<!doctype html><html><head></head><body><main><section><h2>Original heading</h2><p>Existing text</p></section></main></body></html>'}));
+ const payload={version:5,page:'about.html',changes:[],styleChanges:[],additions:[
+  {page:'about.html',selector:'section:nth-of-type(1) > h2:nth-of-type(1)',
+   tag:'h2',before:'Forged original',text:'Inserted'}
+ ]};
+ await page.evaluate(data=>sessionStorage.setItem('moon-fluid-text-handoff-v1',JSON.stringify(data)),payload);
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html&importFluidText=1');
+ await expect(page.locator('#noticeMessage')).toContainText('No edits were applied');
+ expect(await page.evaluate(()=>localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'))).toBeNull();
+});
+
+test('added paragraphs cannot smuggle invalid script or HTML markup into output',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+ body:'<!doctype html><html><head></head><body><main><section><h2>Heading</h2><p>Existing</p></section></main></body></html>'}));
+ const payload={version:5,page:'about.html',changes:[],styleChanges:[],additions:[
+  {page:'about.html',selector:'section:nth-of-type(1) > h2:nth-of-type(1)',
+   tag:'h2',before:'Heading',text:'<img src=x onerror=alert(1)>'}
+ ]};
+ await page.evaluate(data=>sessionStorage.setItem('moon-fluid-text-handoff-v1',JSON.stringify(data)),payload);
+ page.on('dialog',dialog=>dialog.accept());
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html&importFluidText=1');
+ await expect(page.locator('#editorSaveStatus')).toContainText('transferred');
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).toContain('&lt;img src=x onerror=alert(1)&gt;');
+ expect(html).not.toContain('<img src=x onerror=alert(1)>');
+});
