@@ -3401,6 +3401,7 @@
         state.frameDoc=documentInFrame;
         documentInFrame.documentElement.setAttribute("data-moon-theme",event.target.value);
         documentInFrame.documentElement.style.colorScheme=event.target.value;
+        createQuickToolbar();
       }
     });
     $("pageFindQuery").addEventListener("input",()=>refreshPageFind(true));
