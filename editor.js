@@ -622,7 +622,10 @@
     }else if(rect.top>=height+10){
       left=rect.left;top=rect.top-height-7;
     }else{
-      left=maxLeft;top=maxTop;
+      // The bottom of the preview iframe may extend beyond the editor's
+      // visible browser viewport. Keep the compact fallback at the top edge
+      // and away from the centre of the next original paragraph.
+      left=maxLeft;top=4;
     }
     bar.style.left=Math.max(4,Math.min(maxLeft,left))+"px";
     bar.style.top=Math.max(4,Math.min(maxTop,top))+"px";
@@ -641,7 +644,8 @@
     bar.setAttribute("role","toolbar");
     bar.setAttribute("aria-label","Selected block quick actions");
     bar.setAttribute("aria-orientation","horizontal");
-    bar.style.cssText="position:fixed;z-index:2147483644;display:flex;align-items:center;flex-wrap:wrap;gap:4px;padding:5px;border:1px solid "+
+    bar.style.cssText="position:fixed;z-index:2147483644;display:flex;align-items:center;flex-wrap:wrap;gap:4px;padding:5px;"+
+      "width:min(260px,calc(100vw - 8px));box-sizing:border-box;border:1px solid "+
       (dark?"#a7baa9":"#9cb7a9")+";border-radius:9px;background:"+
       (dark?"#1a1c1a":"#fff")+";color:"+(dark?"#f5f7f5":"#183e30")+
       ";box-shadow:0 4px 16px #0003;font:600 12px/1.25 system-ui,sans-serif;max-width:calc(100vw - 8px)";
