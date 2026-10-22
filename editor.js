@@ -34,7 +34,7 @@
     page:null,source:"",doc:null,frameDoc:null,original:new Map(),dirty:new Set(),
     selected:null,history:[],fingerprint:"",loadToken:0,saveTimer:null,staleDraft:false,
     originalSections:[],sectionGroups:[],sectionOrder:[],mediaAssets:null,mediaPromise:null,
-    stagedMedia:null,responsiveGroup:null,responsiveGroups:[],additions:[],resizeStart:null
+    stagedMedia:null,responsiveGroup:null,responsiveGroups:[],additions:[],resizeStart:null,imageSliderActive:false
   };
 
   function hashText(text) {
@@ -374,6 +374,7 @@
       previously.removeAttribute("contenteditable");
     }
     state.selected=node.getAttribute("data-editor-key");
+    state.imageSliderActive=false;
     if(state.frameDoc.getElementById("moon-image-resize-handle"))
       state.frameDoc.getElementById("moon-image-resize-handle").remove();
     node.setAttribute("data-editor-selected","");
@@ -1797,8 +1798,15 @@
     $("selectionText").addEventListener("input",onInspectorText);
     $("imageSrc").addEventListener("change",event=>updateSelectedAttribute("src",event.target.value));
     $("imageAlt").addEventListener("change",event=>updateSelectedAttribute("alt",event.target.value));
-    $("imageWidthPercent").addEventListener("change",event=>
-      resizeImage(Number(event.target.value),true));
+    $("imageWidthPercent").addEventListener("input",event=>{
+      if(!state.imageSliderActive){checkpoint();state.imageSliderActive=true;}
+      resizeImage(Number(event.target.value));
+    });
+    $("imageWidthPercent").addEventListener("change",event=>{
+      if(!state.imageSliderActive)checkpoint();
+      resizeImage(Number(event.target.value));
+      state.imageSliderActive=false;
+    });
     $("textAlignment").addEventListener("change",event=>
       updateSelectedStyle("textAlign",event.target.value,["left","center","right","justify"]));
     for(const [id,property,unit,min,max] of [
