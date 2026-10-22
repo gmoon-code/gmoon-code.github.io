@@ -35,7 +35,7 @@
     selected:null,history:[],redo:[],fingerprint:"",loadToken:0,saveTimer:null,staleDraft:false,
     originalSections:[],sectionGroups:[],sectionOrder:[],mediaAssets:null,mediaPromise:null,
     stagedMedia:null,responsiveGroup:null,responsiveGroups:[],additions:[],resizeStart:null,imageSliderActive:false,
-    pageFindKeys:[],pageFindIndex:-1,mediaChooseInsert:false,removals:[],selectedAddition:null,blockOrders:[],blockPointer:null
+    pageFindKeys:[],pageFindIndex:-1,mediaChooseInsert:false,removals:[],selectedAddition:null,blockOrders:[],columnPointer:null,blockPointer:null
   };
 
   function hashText(text) {
@@ -340,8 +340,10 @@
         d.addEventListener("paste",onPreviewPaste,true);
         d.addEventListener("scroll",positionImageResizeHandle,true);
         d.addEventListener("scroll",positionBlockMoveHandle,true);
+        d.addEventListener("scroll",positionColumnResizeHandle,true);
         d.defaultView.addEventListener("resize",positionImageResizeHandle);
         d.defaultView.addEventListener("resize",positionBlockMoveHandle);
+        d.defaultView.addEventListener("resize",positionColumnResizeHandle);
 
         refreshPageFind();
         if(reselectKey){
@@ -511,6 +513,7 @@
     state.imageSliderActive=false;
     if(state.frameDoc.getElementById("moon-image-resize-handle"))
       state.frameDoc.getElementById("moon-image-resize-handle").remove();
+    state.frameDoc.getElementById("moon-column-resize-handle")?.remove();
     node.setAttribute("data-editor-selected","");
     if (TEXT_TAGS.has(node.tagName)) node.setAttribute("contenteditable","true");
     updateInspector(node);
@@ -531,6 +534,7 @@
     state.selectedAddition=index;
     state.frameDoc.getElementById("moon-image-resize-handle")?.remove();
     state.frameDoc.getElementById("moon-block-move-handle")?.remove();
+    state.frameDoc.getElementById("moon-column-resize-handle")?.remove();
     $("selectionDetails").hidden=true;
     $("selectionEmpty").hidden=true;
     $("selectionTag").textContent="New "+insertionKind(addition);
@@ -638,6 +642,8 @@
       $("directLayoutStatus").textContent=(compatible.spec.version===2?"Card or row group":"Text group")+
         " · "+compatible.spec.children.length+" blocks"+(active?" · Layout active":" · Original layout")+
         ". Mobile stays in reading order.";
+      if(active)createColumnResizeHandle();
+      else state.frameDoc?.getElementById("moon-column-resize-handle")?.remove();
     }
     const canInsert=["H2","H3","H4","P"].includes(node.tagName)&&
       !!state.original.get(state.selected)&&!movedSource;
@@ -1167,6 +1173,132 @@
       return {...child,desktop:position,mobile:{x:1,y:index+1,w:12,h:1}};
     })};
   }
+
+  // The visible divider applies only to source-verified 12-column groups
+  // created with two stable columns. It never changes mobile positions.
+  function activeTwoColumnLayout(){
+    const choice=directLayoutSelection();
+    if(!choice)return null;
+    const index=layoutGroups().findIndex(group=>
+      group.parentSelector===choice.spec.parentSelector);
+    if(index<0)return null;
+    const group=layoutGroups()[index];
+    const placed=group.children.filter(child=>child.desktop.w!==12);
+    if(placed.length<2)return null;
+    const right=placed.filter(child=>child.desktop.x>1);
+    const left=placed.filter(child=>child.desktop.x===1);
+    if(!left.length||!right.length)return null;
+    const split=right[0].desktop.x-1;
+    if(split<2||split>10||left.some(c=>c.desktop.w!==split)||
+       right.some(c=>c.desktop.x!==split+1||c.desktop.w!==12-split))
+      return null;
+    // A full-width heading is allowed, but partial-width spanning cards
+    // would be distorted by a blanket left/right width adjustment.
+    if(placed.length!==left.length+right.length)return null;
+    return {group,index,split,parentSelector:group.parentSelector,
+      rightSelector:right[0].selector};
+  }
+  function resizeTwoColumnLayout(width){
+    const current=activeTwoColumnLayout();
+    if(!current||!Number.isInteger(width)||width<2||width>10)return null;
+    const amended={...current.group,children:current.group.children.map(child=>{
+      const position={...child.desktop};
+      if(position.w!==12){
+        if(position.x===1)position.w=width;
+        else {position.x=width+1;position.w=12-width;}
+      }
+      return {...child,desktop:position};
+    })};
+    const proposed=layoutGroups().map((g,i)=>i===current.index?amended:g);
+    const original=new DOMParser().parseFromString(state.source,"text/html");
+    const css=MoonResponsiveLayout.cssForGroups(original,proposed);
+    return {css,proposed,current};
+  }
+  function positionColumnResizeHandle(){
+    const doc=state.frameDoc,handle=doc?.getElementById("moon-column-resize-handle");
+    if(!handle||state.columnPointer)return;
+    const current=activeTwoColumnLayout();
+    if(!current){handle.remove();return;}
+    const parent=doc.querySelector("main "+current.parentSelector);
+    const right=doc.querySelector("main "+current.rightSelector);
+    if(!parent||!right){handle.remove();return;}
+    const pr=parent.getBoundingClientRect(),rr=right.getBoundingClientRect(),view=doc.defaultView;
+    if(pr.bottom<0||pr.top>view.innerHeight||rr.left<0||rr.left>view.innerWidth){
+      handle.hidden=true;return;
+    }
+    handle.hidden=false;
+    handle.style.left=Math.max(0,Math.min(view.innerWidth-30,rr.left-21))+"px";
+    handle.style.top=Math.max(0,Math.min(view.innerHeight-42,Math.max(0,rr.top+8)))+"px";
+    handle.title="Drag to resize two columns · "+current.split+" / "+(12-current.split);
+    handle.setAttribute("aria-label","Resize column divider. Use the custom split slider for keyboard editing.");
+  }
+  function createColumnResizeHandle(){
+    const doc=state.frameDoc;
+    if(!doc||doc.getElementById("moon-column-resize-handle")||!activeTwoColumnLayout())return;
+    const handle=doc.createElement("button");
+    handle.id="moon-column-resize-handle";handle.type="button";
+    handle.textContent="↔";
+    handle.style.cssText="position:fixed;z-index:2147483645;display:grid;place-items:center;width:30px;height:42px;border:2px solid #27654f;border-radius:5px;background:#fff;color:#174932;cursor:ew-resize;touch-action:none;font:700 21px/1 system-ui;box-shadow:0 1px 6px #0004";
+    handle.addEventListener("click",event=>event.stopPropagation());
+    handle.addEventListener("pointerdown",event=>{
+      if(event.button!==0||state.columnPointer)return;
+      const current=activeTwoColumnLayout();
+      const parent=current&&doc.querySelector("main "+current.parentSelector);
+      const rect=parent?.getBoundingClientRect();
+      if(!current||!rect||rect.width<=0)return;
+      event.preventDefault();event.stopPropagation();
+      state.columnPointer={id:event.pointerId,rect,width:current.split,
+        selected:state.selected,initial:current.split};
+      handle.setPointerCapture(event.pointerId);
+      handle.style.cursor="grabbing";
+    });
+    handle.addEventListener("pointermove",event=>{
+      const drag=state.columnPointer;
+      if(!drag||drag.id!==event.pointerId)return;
+      event.preventDefault();
+      const desired=Math.max(2,Math.min(10,
+        Math.round(12*(event.clientX-drag.rect.left)/drag.rect.width)));
+      if(desired===drag.width)return;
+      const candidate=resizeTwoColumnLayout(desired);
+      if(!candidate)return;
+      drag.width=desired;
+      const style=doc.getElementById("moon-responsive-group-layout");
+      if(style)style.textContent=candidate.css;
+      handle.title="Column widths "+desired+" / "+(12-desired);
+      $("directLayoutCustomValue").textContent=desired+" / "+(12-desired)+" columns";
+    });
+    const finish=event=>{
+      const drag=state.columnPointer;
+      if(!drag||drag.id!==event.pointerId)return;
+      event.preventDefault();event.stopPropagation();
+      state.columnPointer=null;
+      if(handle.hasPointerCapture(event.pointerId))handle.releasePointerCapture(event.pointerId);
+      handle.style.cursor="ew-resize";
+      if(event.type==="pointercancel"||drag.width===drag.initial){
+        const style=doc.getElementById("moon-responsive-group-layout");
+        const original=new DOMParser().parseFromString(state.source,"text/html");
+        if(style)style.textContent=layoutCss(original);
+        positionColumnResizeHandle();return;
+      }
+      const candidate=resizeTwoColumnLayout(drag.width);
+      if(!candidate){positionColumnResizeHandle();return;}
+      checkpoint();
+      state.responsiveGroups=candidate.proposed;
+      state.responsiveGroup=candidate.proposed.length===1?candidate.proposed[0]:null;
+      $("directLayoutPreset").value="custom";
+      $("directLayoutCustomField").hidden=false;
+      $("directLayoutCustomColumns").value=String(drag.width);
+      $("directLayoutCustomValue").textContent=drag.width+" / "+(12-drag.width)+" columns";
+      renderPreview(drag.selected);
+      scheduleDraft();
+      updateStatus("Responsive columns resized · Not published");
+    };
+    handle.addEventListener("pointerup",finish);
+    handle.addEventListener("pointercancel",finish);
+    doc.body.appendChild(handle);
+    positionColumnResizeHandle();
+  }
+
   function updateDirectLayout(remove=false){
     const choice=directLayoutSelection();
     if(!choice){notice("Select a heading, paragraph, or card inside a compatible complete section.","Layout unavailable");return;}
@@ -1195,7 +1327,7 @@
       checkpoint();
       state.responsiveGroups=proposal;
       state.responsiveGroup=proposal.length===1?proposal[0]:null;
-      renderPreview();scheduleDraft();
+      renderPreview(state.selected);scheduleDraft();
       updateStatus(remove?"Responsive arrangement removed · Not published":
         "Responsive arrangement applied · Preview desktop and mobile before export");
     }catch(error){notice("Cannot arrange this group. "+error.message,"Layout not applied");}
