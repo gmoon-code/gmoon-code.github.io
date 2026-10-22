@@ -84,7 +84,7 @@
     const build=mode=>{
       const rules=["main "+spec.parentSelector+
         "{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));"+
-        "grid-auto-rows:minmax(40px,auto);column-gap:12px;row-gap:8px;align-items:start;}"];
+        "grid-auto-rows:minmax(0,auto);column-gap:12px;row-gap:8px;align-items:start;}"];
       for(const s of spec.children){
         const p=s[mode];
         rules.push("main "+s.selector+"{grid-column:"+p.x+" / span "+p.w+
