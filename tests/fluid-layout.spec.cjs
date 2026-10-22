@@ -2554,3 +2554,72 @@ test('new content controls require a source anchor and source deletions stay can
  await page.locator('#undo').click();
  await expect(page.locator('#grid .block')).toHaveCount(2);
 });
+
+test('main editor can edit a staged link and undo its reviewed changes',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+ body:'<!doctype html><html><head></head><body><main><section><h2>Links</h2><p>Background</p></section></main></body></html>'}));
+ const payload={version:5,page:'about.html',changes:[],styleChanges:[],additions:[
+  {page:'about.html',selector:'section:nth-of-type(1) > h2:nth-of-type(1)',
+   tag:'h2',before:'Links',kind:'link',text:'Research page',href:'research.html'}
+ ]};
+ await page.evaluate(data=>sessionStorage.setItem('moon-fluid-text-handoff-v1',JSON.stringify(data)),payload);
+ const responses=['','Updated resources','teaching.html'];
+ page.on('dialog',dialog=>dialog.accept(responses.shift()||''));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html&importFluidText=1');
+ await expect(page.locator('#editorSaveStatus')).toContainText('transferred');
+ await page.locator('#reviewBtn').click();
+ await page.getByRole('button',{name:'Edit added link 1'}).click();
+ await expect(page.locator('#reviewChangeList')).toContainText('Updated resources');
+ await expect(page.locator('#reviewChangeList')).toContainText('teaching.html');
+ const download=page.waitForEvent('download');
+ await page.locator('#reviewDialog form button').click();
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).toContain('<p><a href="teaching.html">Updated resources</a></p>');
+ await page.locator('#undoBtn').click();
+ const again=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const earlier=require('node:fs').readFileSync(await(await again).path(),'utf8');
+ expect(earlier).toContain('<p><a href="research.html">Research page</a></p>');
+});
+
+test('main editor can remove an added heading and restore it with undo',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+ body:'<!doctype html><html><head></head><body><main><section><h2>Old title</h2></section></main></body></html>'}));
+ const payload={version:5,page:'about.html',changes:[],styleChanges:[],additions:[
+  {page:'about.html',selector:'section:nth-of-type(1) > h2:nth-of-type(1)',
+   tag:'h2',before:'Old title',kind:'heading',headingTag:'h3',text:'New subheading'}
+ ]};
+ await page.evaluate(data=>sessionStorage.setItem('moon-fluid-text-handoff-v1',JSON.stringify(data)),payload);
+ page.on('dialog',dialog=>dialog.accept());
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html&importFluidText=1');
+ await expect(page.locator('#exportBtn')).toBeEnabled();
+ await page.locator('#reviewBtn').click();
+ await page.getByRole('button',{name:'Remove added heading 1'}).click();
+ await expect(page.locator('#exportBtn')).toBeDisabled();
+ await page.locator('#undoBtn').click();
+ await expect(page.locator('#exportBtn')).toBeEnabled();
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).toContain('<h3>New subheading</h3>');
+});
+
+test('invalid new link edits in main editor leave the last safe URL unchanged',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+ body:'<!doctype html><html><head></head><body><main><section><h2>Old title</h2></section></main></body></html>'}));
+ const payload={version:5,page:'about.html',changes:[],styleChanges:[],additions:[
+  {page:'about.html',selector:'section:nth-of-type(1) > h2:nth-of-type(1)',
+   tag:'h2',before:'Old title',kind:'link',text:'Valid label',href:'research.html'}
+ ]};
+ await page.evaluate(data=>sessionStorage.setItem('moon-fluid-text-handoff-v1',JSON.stringify(data)),payload);
+ const responses=['','Different label','javascript:alert(1)'];
+ page.on('dialog',dialog=>dialog.accept(responses.shift()||''));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html&importFluidText=1');
+ await page.locator('#reviewBtn').click();
+ await page.getByRole('button',{name:'Edit added link 1'}).click();
+ await expect(page.locator('#noticeMessage')).toContainText('Invalid link insertion');
+ const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('moon-portfolio-visual-editor-v1:about.html')));
+ expect(saved.additions[0].href).toBe('research.html');
+ expect(saved.additions[0].text).toBe('Valid label');
+});
