@@ -173,6 +173,62 @@ $('openPublisher').onclick=async()=>{
  }
  location.assign(url.href);
 };
+async function freshSourceDocument(){
+ if(!sourcePage||sourcePage!==$('sourcePage').value)
+  throw Error('Import and keep the selected source page before editing a responsive group');
+ const response=await fetch(new URL(sourcePage,location.href),{cache:'no-store',credentials:'omit'});
+ if(!response.ok)throw Error('Source page HTTP '+response.status);
+ return new DOMParser().parseFromString(await response.text(),'text/html');
+}
+function responsiveGroupSpec(doc,group=responsiveGroup){
+ if(!group)return null;
+ const main=doc.querySelector('main');
+ if(!main||!window.MoonResponsiveLayout)throw Error('Responsive layout validation is unavailable');
+ const mapped=group.selectors.map(selector=>{
+  const b=blocks.find(item=>item.source?.page===sourcePage&&item.source.selector===selector);
+  if(!b||b.type==='image')throw Error('The responsive group has deleted or unsupported blocks');
+  return b;
+ });
+ const desktopMin=Math.min(...mapped.map(b=>b.y));
+ const mobileMin=Math.min(...mapped.map(b=>(b.mobile||defaultMobile(b)).y));
+ const children=mapped.map(b=>{
+  const desktop={x:b.x,y:b.y-desktopMin+1,w:b.w,h:b.h};
+  const rawMobile=b.mobile||defaultMobile(b);
+  const mobile={x:rawMobile.x,y:rawMobile.y-mobileMin+1,w:rawMobile.w,h:rawMobile.h};
+  return {selector:b.source.selector,tag:b.source.tag,before:b.source.originalText,desktop,mobile};
+ });
+ const spec={version:1,parentSelector:group.parentSelector,children};
+ MoonResponsiveLayout.verify(doc,spec);
+ return spec;
+}
+$('useResponsiveGroup').onclick=async()=>{
+ const chosen=blocks.find(b=>b.id===selected);
+ if(!chosen?.source||chosen.type==='image'){
+  $('status').textContent='Select an imported heading or paragraph in an existing page first.';return;
+ }
+ const button=$('useResponsiveGroup');button.disabled=true;
+ try{
+  const doc=await freshSourceDocument(),main=doc.querySelector('main');
+  const source=[...main.querySelectorAll(chosen.source.selector)];
+  if(source.length!==1||source[0].tagName.toLowerCase()!==chosen.source.tag)
+   throw Error('The selected source element is no longer unique');
+  const parent=source[0].parentElement;
+  if(parent===main)throw Error('Choose a group nested within a page section');
+  const selectors=[...parent.children].map(node=>MoonResponsiveLayout.sourceSelector(node,main));
+  const candidate={parentSelector:MoonResponsiveLayout.sourceSelector(parent,main),selectors};
+  responsiveGroupSpec(doc,candidate);
+  snapshot();
+  responsiveGroup=candidate;
+  render();
+  $('status').textContent='Responsive group selected with '+selectors.length+' neighbouring text blocks. Review it in Publishable edits, then transfer the group through the main editor.';
+ }catch(error){$('status').textContent='Responsive group blocked: '+error.message}
+ finally{button.disabled=false}
+};
+$('clearResponsiveGroup').onclick=()=>{
+ if(!responsiveGroup)return;
+ snapshot();responsiveGroup=null;render();
+ $('status').textContent='Responsive group removed from the draft. Original page content remains untouched.';
+};
 function changedSourceBlocks(){return blocks.filter(b=>b.source&&b.source.page===sourcePage&&b.type!=='image'&&b.text!==b.source.originalText)}
 function changedStyleBlocks(){return blocks.filter(b=>b.source&&b.source.page===sourcePage&&b.type!=='image'&&b.styleEdits?.length)}
 function stylesForBlock(b){
