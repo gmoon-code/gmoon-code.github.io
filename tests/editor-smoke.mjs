@@ -357,7 +357,22 @@ try {
   console.log("INLINE: undo/redo works");
   await inline.reload();
   await inline.frameLocator("#pageFrame").locator("[data-editor-added-index]").waitFor({timeout:6000});
-  console.log("PASS: inline page composer adds validated paragraph with persistence, export, and undo/redo");
+  console.log("INLINE: select restored addition to add another");
+  await inline.frameLocator("#pageFrame").locator("[data-editor-added-index]").click();
+  await inline.frameLocator("#pageFrame").locator("#moon-quick-toolbar")
+    .getByRole("button",{name:"Add new content after this block"}).click();
+  const nextComposer=inline.frameLocator("#pageFrame")
+    .getByRole("dialog",{name:"Add content to the page"});
+  await nextComposer.getByLabel("Content type").selectOption("link");
+  await nextComposer.getByLabel("Text",{exact:true}).fill("Follow-up resource");
+  await nextComposer.getByLabel("Link destination").fill("javascript:alert(1)");
+  await nextComposer.getByRole("button",{name:"Add to page"}).click();
+  assert.match(await nextComposer.getByRole("status").textContent(),/Cannot add this content/);
+  console.log("INLINE: unsafe link rejected");
+  await nextComposer.getByLabel("Link destination").fill("https://example.org/resource");
+  await nextComposer.getByRole("button",{name:"Add to page"}).click();
+  await inline.frameLocator("#pageFrame").locator("[data-editor-added-index]").nth(1).waitFor({timeout:6000});
+  console.log("PASS: inline page composer adds validated content, rejects unsafe URL, reloads and edits again");
   await inline.close();
   console.log("PASS: text, drafts, reset, link/image export, 17 pages, dark/mobile previews");
 } finally {
