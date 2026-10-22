@@ -293,6 +293,10 @@
             <label for="addedBlockSrc">Existing image path</label>
             <input id="addedBlockSrc" type="text" spellcheck="false" autocomplete="off">
             <button type="button" id="chooseAddedImageBtn" class="secondary">Browse existing images</button>
+            <label for="addedImageWidthPercent">Image width within its container</label>
+            <input type="range" id="addedImageWidthPercent" min="20" max="100" step="5" value="100">
+            <output id="addedImageWidthValue" for="addedImageWidthPercent">100%</output>
+            <p class="small-note">Resize using the handle on the image or this slider. The size stays in your local draft and is included in review and export. Undo restores the previous width.</p>
           </div>
           <button type="button" id="applyAddedBlockBtn" class="primary">Apply block edits</button>
           <button type="button" id="duplicateAddedBlockBtn" class="secondary">Duplicate this new block</button>
