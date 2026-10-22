@@ -335,3 +335,15 @@ test("safe inserted headings and links pass the private proposal security checks
  assert.throws(()=>util.validateEdit("about.html",current,
   updated.replace('<h2>New section</h2>','<script>alert(1)</script>')),/Scripts|executable/i);
 });
+
+test("event handler validation distinguishes real attributes from URL query strings",()=>{
+ const updated=page.replace("</main>",
+  '<p><a href="https://example.org/learn?one=1&amp;onboarding=ok">Read documentation</a></p></main>');
+ assert.doesNotThrow(()=>util.validateEdit("about.html",page,updated));
+ assert.throws(()=>util.validateEdit("about.html",page,
+  updated.replace("<p><a",'<p><a onclick="alert(1)"')),/executable/i);
+ assert.throws(()=>util.validateEdit("about.html",page,
+  updated.replace("<p><a",'<p><img/onerror="alert(1)"><a')),/executable/i);
+ assert.throws(()=>util.validateEdit("about.html",page,
+  updated.replace("</main>",'<img src="x" onload=alert(1)></main>')),/executable/i);
+});
