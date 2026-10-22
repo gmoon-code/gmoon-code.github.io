@@ -3095,3 +3095,64 @@ test('main editor custom two-column split resizes an intact section without alte
  css=await page.frameLocator('#pageFrame').locator('#moon-responsive-group-layout').textContent();
  expect(css).toContain('grid-column:8 / span 5');
 });
+
+test('main editor inserts existing website imagery with alt text and rejects unsafe image paths',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({
+  status:200,contentType:'text/html',
+  body:'<!doctype html><html><head></head><body><main><section><h2>Classroom photographs</h2>'+
+   '<p>Existing written introduction.</p>'+
+   '<img src="assets/editor-existing-example.webp" alt="Student investigation materials">'+
+   '</section></main></body></html>'
+ }));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ await page.frameLocator('#pageFrame').locator('main h2').click();
+ await page.locator('#insertContentKind').selectOption('image');
+ await expect(page.locator('#insertImageField')).toBeVisible();
+ await expect(page.locator('#insertContentLabel')).toHaveText('Image description (alt text)');
+ await page.locator('#insertImageSrc').fill('https://example.org/unsafe.svg');
+ await page.locator('#insertContentText').fill('Diagram of student investigation materials');
+ await page.locator('#insertContentBtn').click();
+ await expect(page.locator('#noticeMessage')).toContainText('Invalid image insertion');
+ await page.locator('#noticeDialog form button').click();
+ await expect(page.locator('#exportBtn')).toBeDisabled();
+ await page.locator('#chooseInsertImageBtn').click();
+ await expect(page.locator('#mediaDialog')).toBeVisible();
+ const candidate=page.locator('#mediaResults .media-option').filter({
+   hasText:'assets/editor-existing-example.webp'
+ });
+ await expect(candidate).toHaveCount(1);
+ await candidate.click();
+ await expect(page.locator('#insertImageSrc')).toHaveValue('assets/editor-existing-example.webp');
+ await expect(page.locator('#insertContentText')).toHaveValue('Diagram of student investigation materials');
+ await page.locator('#insertContentBtn').click();
+ await expect(page.locator('#changeCount')).toContainText('1 added content block');
+ const image=page.frameLocator('#pageFrame').locator('main section > p > img').first();
+ await expect(image).toHaveAttribute('src','assets/editor-existing-example.webp');
+ await expect(image).toHaveAttribute('alt','Diagram of student investigation materials');
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).toContain('<img src="assets/editor-existing-example.webp" alt="Diagram of student investigation materials"');
+ expect(html).toContain('<p>Existing written introduction.</p>');
+ await page.reload();
+ await expect(page.locator('#changeCount')).toContainText('1 added content block');
+ await page.locator('#reviewBtn').click();
+ await expect(page.locator('#reviewChangeList')).toContainText('Diagram of student investigation materials');
+});
+
+test('forged image addition cannot point to external assets or include active markup',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({
+  status:200,contentType:'text/html',
+  body:'<!doctype html><html><head></head><body><main><section><h2>Heading</h2><p>Paragraph</p></section></main></body></html>'
+ }));
+ const invalid={version:5,page:'about.html',changes:[],styleChanges:[],additions:[{
+  page:'about.html',selector:'section:nth-of-type(1) > h2:nth-of-type(1)',
+  tag:'h2',before:'Heading',kind:'image',
+  text:'<img src=x onerror=alert(1)>',src:'https://evil.example/photo.png'
+ }]};
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ await page.evaluate(payload=>sessionStorage.setItem('moon-portfolio-fluid-handoff-v1',JSON.stringify(payload)),invalid);
+ await page.reload();
+ await expect(page.locator('#exportBtn')).toBeDisabled();
+ await expect(page.frameLocator('#pageFrame').locator('main img')).toHaveCount(0);
+});
