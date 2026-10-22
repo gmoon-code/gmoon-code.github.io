@@ -310,6 +310,31 @@ try {
     }
   }
   checkNoPageErrors("all 17 portfolio pages");
+  // A fast smoke check exercises the preview-only composer using the same
+  // sandbox restrictions as the full browser regression suite.
+  const inline=await context.newPage();
+  await inline.route("**/about.html",route=>route.fulfill({
+    status:200,contentType:"text/html",
+    body:'<!doctype html><html><head></head><body><main><section>'+
+      '<h2>Source heading</h2><p>Unchanged original.</p></section></main></body></html>'
+  }));
+  await inline.goto(base+"/editor.html?page=about.html",{waitUntil:"domcontentloaded"});
+  await inline.frameLocator("#pageFrame").locator("main h2").click();
+  console.log("INLINE: selected source heading");
+  const toolbar=inline.frameLocator("#pageFrame").locator("#moon-quick-toolbar");
+  await toolbar.getByRole("button",{name:"Add new content after this block"}).click();
+  console.log("INLINE: opened composer");
+  const composer=inline.frameLocator("#pageFrame").getByRole("dialog",{name:"Add content to the page"});
+  await composer.getByLabel("Text",{exact:true}).fill("Inline test paragraph");
+  console.log("INLINE: filled text");
+  await composer.getByRole("button",{name:"Add to page"}).click();
+  console.log("INLINE: clicked Add");
+  await inline.frameLocator("#pageFrame").locator("[data-editor-added-index]").waitFor({timeout:6000});
+  assert.equal(await inline.frameLocator("#pageFrame").locator("[data-editor-added-index]").textContent(),
+    "Inline test paragraph");
+  assert.equal(await composer.count(),0);
+  console.log("PASS: inline page composer adds validated paragraph within sandbox");
+  await inline.close();
   console.log("PASS: text, drafts, reset, link/image export, 17 pages, dark/mobile previews");
 } finally {
   await page.screenshot({path:"/tmp/editor-test-artifacts/editor-last.png",fullPage:true}).catch(()=>{});
