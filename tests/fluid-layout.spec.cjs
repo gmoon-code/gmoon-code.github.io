@@ -1731,7 +1731,7 @@ test('card group revalidation rejects changed image markup even when text stays 
   await expect(page.locator('#responsiveGroupStatus')).toContainText('2 blocks');
   changed=true;
   await page.locator('#viewSitePreview').click();
-  await expect(page.locator('#status')).toContainText('Source');
+  await expect(page.locator('#status')).toContainText('responsive section source has changed');
   await expect(page.locator('#sitePreviewDialog')).not.toBeVisible();
   await page.locator('#openPublisher').click();
   await expect(page).toHaveURL(/fluid-layout-lab\.html$/);
