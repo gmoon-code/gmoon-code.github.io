@@ -3646,7 +3646,7 @@ test('inline composer rejects unsafe link or image sources, preserves valid exis
  await composer.getByLabel('Content type').selectOption('image');
  await expect(composer.getByLabel('Link destination')).toBeHidden();
  await expect(composer.getByLabel('Existing image path')).toBeVisible();
- await composer.getByLabel('Text',{exact:true}).fill('Existing fieldwork photograph');
+ await composer.getByLabel('Image description (alt text)').fill('Existing fieldwork photograph');
  await composer.getByLabel('Existing image path').fill('../unsafe.svg');
  await composer.getByRole('button',{name:'Add to page'}).click();
  await expect(composer.getByRole('status')).toContainText('Cannot add this content');
