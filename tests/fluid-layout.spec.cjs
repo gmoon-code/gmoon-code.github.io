@@ -3324,10 +3324,10 @@ test('newly added paragraph is selectable in preview, editable, duplicable and r
  expect(await added.allTextContents()).toEqual(['First revised block','First revised block','Second new block']);
  await added.nth(1).click();
  await page.locator('#moveAddedLaterBtn').click();
- expect(await added.allTextContents()).toEqual(['First revised block','Second new block','First revised block']);
+ await expect.poll(async()=>added.allTextContents()).toEqual(['First revised block','Second new block','First revised block']);
  await added.last().click();
  await page.locator('#removeAddedBlockBtn').click();
- expect(await added.allTextContents()).toEqual(['First revised block','Second new block']);
+ await expect.poll(async()=>added.allTextContents()).toEqual(['First revised block','Second new block']);
  await expect(page.locator('#changeCount')).toContainText('2 added content blocks');
  const download=page.waitForEvent('download');
  await page.locator('#exportBtn').click();
