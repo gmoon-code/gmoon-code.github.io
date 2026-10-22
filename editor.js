@@ -278,6 +278,8 @@
       if(!additionsByAnchor.has(addition.selector))additionsByAnchor.set(addition.selector,[]);
       const inserted=createAdditionElement(copy,addition);
       inserted.setAttribute("data-editor-added-index",String(index));
+      inserted.setAttribute("tabindex","0");
+      inserted.setAttribute("title","Press Enter to edit this newly added block");
       additionsByAnchor.get(addition.selector).push(inserted);
     });
     for(const [selector,elements] of additionsByAnchor){
@@ -326,6 +328,7 @@
         d.documentElement.style.colorScheme=$("previewTheme").value;
         updateStagedPreview();
         d.addEventListener("click",onPreviewClick,true);
+        d.addEventListener("keydown",onPreviewKeydown,true);
         d.addEventListener("input",onPreviewInput,true);
         d.addEventListener("focusin",onPreviewFocus,true);
         d.addEventListener("paste",onPreviewPaste,true);
@@ -415,6 +418,15 @@
     if(!state.pageFindKeys.length)return;
     const next=(state.pageFindIndex+direction+state.pageFindKeys.length)%state.pageFindKeys.length;
     choosePageFind(next);
+  }
+
+  function onPreviewKeydown(event){
+    if(!["Enter"," "].includes(event.key))return;
+    const added=event.target.closest?.("[data-editor-added-index]");
+    if(!added||!state.frameDoc)return;
+    if(event.key===" "&&event.target.tagName==="A")return;
+    event.preventDefault();
+    selectAddedBlock(Number(added.getAttribute("data-editor-added-index")));
   }
 
   function onPreviewClick(event) {
