@@ -578,7 +578,7 @@ function reviewPatch(){
  for(const b of styles)add(b.source.selector,'Style',[
   ...b.styleEdits.map(k=>k+': '+(['fontSize','spaceAbove','spaceBelow'].includes(k)?b[k]+'px':k==='maxWidthPct'?b[k]+'%':b[k]))
  ]);
- for(const group of allResponsiveGroups())add(group.parentSelector,group.containerChildren?'Responsive cards or CV rows':'Responsive text group',[
+ for(const group of allResponsiveGroups())add(group.parentSelector,group.containerChildren?'Responsive cards or CV rows':'Responsive group',[
    group.selectors.length+' complete content elements with independent desktop and mobile grid positions',
    'This group retains its original HTML, links, and reading order'
  ]);
