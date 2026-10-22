@@ -2148,7 +2148,7 @@
   function additionHtml(item){
     const text=escapePlainText(item.text),css=addedBlockStyle(item);
     const style=css?' style="'+css+'"':"";
-    if(insertionKind(item)==="image")return '<p><img src="'+item.src+
+    if(insertionKind(item)==="image")return '<p'+style+'><img src="'+item.src+
       '" alt="'+text.replace(/"/g,"&quot;").replace(/'/g,"&#39;")+
       '" loading="lazy" style="max-width:100%;height:auto'+
         (item.widthPercent===undefined?"":";width:"+item.widthPercent+"%")+'"></p>';
