@@ -3417,6 +3417,103 @@ test('new content blocks can be dragged within an anchor but not across source a
  ]);
 });
 
+test('new image can move between verified page anchors using accessible location selector',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+  body:'<!doctype html><html><head></head><body><main>'+
+   '<section><h2>Section A</h2><p>Permanent A.</p>'+
+   '<h2>Section B</h2><p>Permanent B.</p>'+
+   '<img src="assets/example-photograph.webp" alt="Original photograph">'+
+   '</section></main></body></html>'}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ await page.frameLocator('#pageFrame').locator('main h2').first().click();
+ await page.locator('#insertContentKind').selectOption('image');
+ await page.locator('#insertImageSrc').fill('assets/example-photograph.webp');
+ await page.locator('#insertContentText').fill('New illustration with saved dimensions');
+ await page.locator('#insertContentBtn').click();
+ const added=page.frameLocator('#pageFrame').locator('[data-editor-added-index]');
+ await added.locator('img').click();
+ await page.locator('#addedImageWidthPercent').evaluate(el=>{
+  el.value='45';el.dispatchEvent(new Event('input',{bubbles:true}));
+  el.dispatchEvent(new Event('change',{bubbles:true}));
+ });
+ await expect(added.locator('img')).toHaveAttribute('style',/width:\s*45%/);
+ await expect(page.locator('#moveAddedAnchorFields')).toBeVisible();
+ const options=page.locator('#moveAddedAnchorPicker option');
+ const destination=options.filter({hasText:'Section B'});
+ await expect(destination).toHaveCount(1);
+ await page.locator('#moveAddedAnchorPicker').selectOption(await destination.getAttribute('value'));
+ await expect(page.locator('#moveAddedAnchorBtn')).toBeEnabled();
+ await page.locator('#moveAddedAnchorBtn').click();
+ await expect(page.frameLocator('#pageFrame').locator('main h2').nth(1)
+  .locator('xpath=following-sibling::*[1]')).toHaveAttribute('data-editor-added-index','0');
+ await expect(added.locator('img')).toHaveAttribute('style',/width:\s*45%/);
+ await page.locator('#undoBtn').click();
+ await expect(page.frameLocator('#pageFrame').locator('main h2').first()
+  .locator('xpath=following-sibling::*[1]')).toHaveAttribute('data-editor-added-index','0');
+ await page.locator('#redoBtn').click();
+ await expect(page.frameLocator('#pageFrame').locator('main h2').nth(1)
+  .locator('xpath=following-sibling::*[1]')).toHaveAttribute('data-editor-added-index','0');
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).toContain('<h2>Section B</h2>\n<p><img src="assets/example-photograph.webp"');
+ expect(html).toContain('width:45%');
+ expect(html).toContain('<p>Permanent A.</p>');
+ expect(html).toContain('<p>Permanent B.</p>');
+ expect(html).not.toContain('data-editor-added-anchor-target');
+ await expect.poll(async()=>page.evaluate(()=>
+  JSON.parse(localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'))
+   ?.additions?.[0]?.before)).toBe('Section B');
+ await page.reload();
+ await expect(page.frameLocator('#pageFrame').locator('main h2').nth(1)
+  .locator('xpath=following-sibling::*[1]')).toHaveAttribute('data-editor-added-index','0');
+ await added.locator('img').click();
+ await expect(page.locator('#addedImageWidthPercent')).toHaveValue('45');
+ await page.locator('#reviewBtn').click();
+ await expect(page.locator('#reviewExportStatus')).toContainText('Source check passed');
+});
+
+test('new block drag grip relocates a paragraph onto a different original source anchor',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+  body:'<!doctype html><html><head></head><body><main><section>'+
+   '<h2>Origin</h2><p>Keep the first paragraph.</p>'+
+   '<h2>Destination</h2><p>Keep the second paragraph.</p>'+
+   '</section></main></body></html>'}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ const heading=page.frameLocator('#pageFrame').locator('h2');
+ await heading.first().click();
+ await page.locator('#insertContentText').fill('A movable new paragraph');
+ await page.locator('#insertContentBtn').click();
+ const added=page.frameLocator('#pageFrame').locator('[data-editor-added-index]');
+ await added.click();
+ const grip=page.frameLocator('#pageFrame').locator('#moon-added-block-move-handle');
+ await expect(grip).toBeVisible();
+ const handle=await grip.boundingBox();
+ const target=await heading.last().boundingBox();
+ expect(handle&&target).toBeTruthy();
+ await page.mouse.move(handle.x+handle.width/2,handle.y+handle.height/2);
+ await page.mouse.down();
+ await page.mouse.move(target.x+Math.min(target.width/2,70),
+   target.y+target.height/2,{steps:8});
+ await page.mouse.up();
+ await expect(heading.last().locator('xpath=following-sibling::*[1]'))
+  .toHaveText('A movable new paragraph');
+ await expect.poll(async()=>page.evaluate(()=>
+  JSON.parse(localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'))
+   ?.additions?.[0]?.before)).toBe('Destination');
+ await page.locator('#undoBtn').click();
+ await expect(heading.first().locator('xpath=following-sibling::*[1]'))
+  .toHaveText('A movable new paragraph');
+ await page.locator('#redoBtn').click();
+ await expect(heading.last().locator('xpath=following-sibling::*[1]'))
+  .toHaveText('A movable new paragraph');
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).toContain('<h2>Destination</h2>\n<p>A movable new paragraph</p>');
+ expect(html).not.toContain('moon-added-block-move-handle');
+});
+
 test('new block inspector validates updated link targets and preserves source content',async({page})=>{
  await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
   body:'<!doctype html><html><head></head><body><main><section><h2>Research links</h2>'+
