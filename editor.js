@@ -617,12 +617,14 @@
     $("selectionText").closest(".inspector-group").hidden=isImage;
     $("revertElementBtn").disabled=!state.dirty.has(state.selected);
     const move=blockMoveCandidate(state.selected);
+    const movedSource=state.blockOrders.some(group=>group.originalKeys.includes(state.selected));
     $("moveOriginalBlockFields").hidden=!move;
     $("moveOriginalUp").disabled=!move||move.index===0;
     $("moveOriginalDown").disabled=!move||move.index===move.keys.length-1;
     if(move){
       $("moveOriginalStatus").textContent="Block "+(move.index+1)+" of "+move.keys.length+
-        " · Drag the handle in the preview or use the arrow buttons. Mobile reading order follows the new sequence.";
+        " · Drag the handle in the preview or use the arrow buttons. Mobile reading order follows the new sequence."+
+      (movedSource?" Restore this group to its original order before adding or removing its blocks.":"");
       createBlockMoveHandle();
     }else state.frameDoc?.getElementById("moon-block-move-handle")?.remove();
     const removable=sourceRemovalCandidate(state.selected);
@@ -630,7 +632,7 @@
     $("removeSourceHelp").textContent=removable?
       "Remove this original block from the reviewed draft. Undo and Review changes can restore it.":
       "Removal is available for uniquely verified standalone paragraphs, supported headings and images without conflicting edits or layouts.";
-    const compatible=directLayoutSelection();
+    const compatible=movedSource?null:directLayoutSelection();
     $("directLayoutFields").hidden=!compatible;
     if(compatible){
       const active=layoutGroups().some(group=>group.parentSelector===compatible.spec.parentSelector);
@@ -640,7 +642,7 @@
         ". Mobile stays in reading order.";
     }
     const canInsert=["H2","H3","H4","P"].includes(node.tagName)&&
-      !!state.original.get(state.selected);
+      !!state.original.get(state.selected)&&!movedSource;
     $("insertContentFields").hidden=!canInsert;
     const sourceText=node.textContent.trim();
     $("duplicateSourceBtn").disabled=!canInsert||!["P","H2","H3"].includes(node.tagName)||
