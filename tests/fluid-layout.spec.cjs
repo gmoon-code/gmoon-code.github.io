@@ -3060,3 +3060,38 @@ test('duplicate selected plain paragraphs and headings through source-verified c
  await page.locator('#redoBtn').click();
  await expect(page.locator('#changeCount')).toContainText('2 added content blocks');
 });
+
+test('main editor custom two-column split resizes an intact section without altering mobile order',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({
+  status:200,contentType:'text/html',
+  body:'<!doctype html><html><head></head><body><main><section id="custom-split">'+
+    '<h2>Inquiry decisions</h2><p>First scientific explanation</p>'+
+    '<p>Second scientific explanation</p></section></main></body></html>'
+ }));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ await page.frameLocator('#pageFrame').locator('#custom-split h2').click();
+ await page.locator('#directLayoutPreset').selectOption('custom');
+ await expect(page.locator('#directLayoutCustomField')).toBeVisible();
+ await expect(page.locator('#directLayoutCustomValue')).toHaveText('7 / 5 columns');
+ await page.locator('#directLayoutApply').click();
+ let css=await page.frameLocator('#pageFrame').locator('#moon-responsive-group-layout').textContent();
+ expect(css).toContain('grid-column:8 / span 5');
+ expect(css).toContain('@media(max-width:700px)');
+ await page.frameLocator('#pageFrame').locator('#custom-split h2').click();
+ await page.locator('#directLayoutCustomColumns').evaluate(element=>{
+  element.value='9';
+  element.dispatchEvent(new Event('input',{bubbles:true}));
+  element.dispatchEvent(new Event('change',{bubbles:true}));
+ });
+ await expect(page.locator('#directLayoutCustomValue')).toHaveText('9 / 3 columns');
+ await expect.poll(async()=>page.frameLocator('#pageFrame')
+  .locator('#moon-responsive-group-layout').textContent()).toContain('grid-column:10 / span 3');
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).toContain('grid-column:10 / span 3');
+ expect(html).toContain('<p>First scientific explanation</p><p>Second scientific explanation</p>');
+ await page.locator('#undoBtn').click();
+ css=await page.frameLocator('#pageFrame').locator('#moon-responsive-group-layout').textContent();
+ expect(css).toContain('grid-column:8 / span 5');
+});
