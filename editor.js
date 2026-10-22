@@ -730,6 +730,11 @@
     else if(preset==="first-wide"){columns=2;widths=[8,4];}
     else if(preset==="second-wide"){columns=2;widths=[4,8];}
     else if(preset==="three"){columns=3;widths=[4,4,4];}
+    else if(preset==="custom"){
+      const first=Number($("directLayoutCustomColumns").value);
+      if(!Number.isInteger(first)||first<2||first>10)throw Error("Custom column widths must be between 2 and 10");
+      columns=2;widths=[first,12-first];
+    }
     else if(preset!=="stack")throw Error("Unknown layout preset");
     return {...spec,children:spec.children.map((child,index)=>{
       const j=index-lead;
@@ -2071,6 +2076,19 @@
     $("redoBtn").addEventListener("click",redo);
     $("resetBtn").addEventListener("click",resetPage);
     $("revertElementBtn").addEventListener("click",revertSelected);
+    $("directLayoutPreset").addEventListener("change",()=>{
+      $("directLayoutCustomField").hidden=$("directLayoutPreset").value!=="custom";
+    });
+    $("directLayoutCustomColumns").addEventListener("input",event=>{
+      const first=Number(event.target.value);
+      $("directLayoutCustomValue").textContent=first+" / "+(12-first)+" columns";
+    });
+    $("directLayoutCustomColumns").addEventListener("change",()=>{
+      if($("directLayoutPreset").value!=="custom")return;
+      const chosen=directLayoutSelection();
+      if(chosen&&layoutGroups().some(group=>group.parentSelector===chosen.spec.parentSelector))
+        updateDirectLayout();
+    });
     $("directLayoutApply").addEventListener("click",()=>updateDirectLayout());
     $("directLayoutRemove").addEventListener("click",()=>updateDirectLayout(true));
     $("insertContentKind").addEventListener("change",updateInsertKind);
