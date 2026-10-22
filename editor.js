@@ -267,10 +267,15 @@
       const style=copy.createElement('style');style.id='moon-responsive-group-layout';
       style.textContent=css;copy.head.append(style);
     }
+    const additionsByAnchor=new Map();
     for(const addition of state.additions){
-      const matches=[...copy.querySelectorAll('main '+addition.selector)];
+      if(!additionsByAnchor.has(addition.selector))additionsByAnchor.set(addition.selector,[]);
+      additionsByAnchor.get(addition.selector).push(createAdditionElement(copy,addition));
+    }
+    for(const [selector,elements] of additionsByAnchor){
+      const matches=[...copy.querySelectorAll('main '+selector)];
       if(matches.length!==1)throw Error('Content insertion source is missing');
-      matches[0].after(createAdditionElement(copy,addition));
+      matches[0].after(...elements);
     }
     const overlay=copy.createElement("style");
     overlay.textContent=[
@@ -899,7 +904,7 @@
   function validateParagraphAdditions(incoming){
     if(!Array.isArray(incoming)||incoming.length>10)throw Error("Invalid content additions");
     const original=new DOMParser().parseFromString(state.source,"text/html");
-    const root=original.querySelector("main"),seen=new Set(),out=[];
+    const root=original.querySelector("main"),out=[];
     for(const item of incoming){
       const kind=insertionKind(item);
       if(!item||typeof item!=="object"||!["p","h2","h3","h4"].includes(item.tag)||
@@ -910,9 +915,8 @@
         item.text.length>(kind==="paragraph"?2000:140)||
         (kind==="heading"?!["h2","h3"].includes(item.headingTag):item.headingTag!==undefined)||
         (kind==="link"?!safeNewLink(item.href):item.href!==undefined)||
-        item.page!==state.page||seen.has(item.selector))
+        item.page!==state.page)
         throw Error("Invalid "+kind+" insertion");
-      seen.add(item.selector);
       let matches;
       try{matches=[...root.querySelectorAll(item.selector)]}catch{throw Error("Invalid content anchor")}
       if(matches.length!==1||matches[0].tagName.toLowerCase()!==item.tag||
@@ -954,8 +958,14 @@
   function exportParagraphs(html){
     const original=new DOMParser().parseFromString(state.source,"text/html");
     const root=original.querySelector("main"),anchors=validateParagraphAdditions(state.additions);
+    const grouped=new Map();
     for(const item of anchors){
-      const matches=[...root.querySelectorAll(item.selector)];
+      if(!grouped.has(item.selector))grouped.set(item.selector,[]);
+      grouped.get(item.selector).push(item);
+    }
+    for(const [selector,items] of grouped){
+      const item=items[0];
+      const matches=[...root.querySelectorAll(selector)];
       const anchor=matches[0],originalMarkup=anchor.outerHTML;
       const candidates=[originalMarkup];
       const edited=state.doc.querySelector("main "+item.selector);
@@ -973,7 +983,7 @@
       }
       if(at<0)throw Error("Cannot uniquely locate the content insertion in source HTML");
       const offset=at+markup.length;
-      html=html.slice(0,offset)+"\n"+additionHtml(item)+html.slice(offset);
+      html=html.slice(0,offset)+"\n"+items.map(additionHtml).join("\n")+html.slice(offset);
     }
     return html;
   }
@@ -1164,7 +1174,7 @@
 
   async function createPublisherProposal() {
     const reordered=state.sectionOrder.some((id,i)=>id!==state.originalSections[i]);
-    if(!publisher.session||(!state.dirty.size&&!reordered)||publisher.busy)return;
+    if(!publisher.session||(!state.dirty.size&&!reordered&&!layoutGroups().length&&!state.additions.length)||publisher.busy)return;
     const summary=$("publisherSummary").value.trim();
     if(!summary||summary.length>140){publishMessage("Enter a short change summary.");return;}
     let content;
