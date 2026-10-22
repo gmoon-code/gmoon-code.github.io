@@ -1606,3 +1606,35 @@ test('report compatible responsive sections across all eight portfolio pages', a
   expect(report).toHaveLength(8);
   expect(report.every(row=>row.importedBlocks>0)).toBe(true);
 });
+
+test('responsive grid does not introduce excessive vertical gaps on either device', async ({ page }) => {
+  await page.route('**/about.html', route => route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<!doctype html><html><head></head><body><main><section id="layout">'+
+      '<h2>Heading</h2><p>Two lines of paragraph text for an ordinary responsive section.</p>'+
+      '</section></main></body></html>'
+  }));
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog=>dialog.accept());
+  await page.locator('#importPage').click();
+  await expect(page.locator('#grid .block')).toHaveCount(2);
+  await page.locator('#findResponsiveGroups').click();
+  await page.locator('#stackResponsiveGroup').click();
+  await expect(page.locator('#status')).toContainText('Select a responsive group');
+  await page.locator('#applyResponsiveGroup').click();
+  await expect(page.locator('#responsiveGroupStatus')).toContainText('2 blocks');
+  await page.locator('#stackResponsiveGroup').click();
+  await page.locator('#viewSitePreview').click();
+  await page.locator('#previewSiteApplied').click();
+  const frame=page.frameLocator('#sitePreviewFrame');
+  for(const device of ['previewSiteDesktop','previewSiteMobile']){
+    await page.locator('#'+device).click();
+    const heading=await frame.locator('#layout h2').boundingBox();
+    const paragraph=await frame.locator('#layout p').boundingBox();
+    expect(heading).not.toBeNull();
+    expect(paragraph).not.toBeNull();
+    const gap=paragraph.y-(heading.y+heading.height);
+    expect(gap).toBeGreaterThanOrEqual(-2);
+    expect(gap).toBeLessThan(90);
+  }
+});
