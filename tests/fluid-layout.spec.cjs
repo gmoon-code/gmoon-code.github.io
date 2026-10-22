@@ -2708,7 +2708,7 @@ test('direct inspector additions can coexist with edited source text and remain 
  await expect(page.locator('#reviewChangeList')).toContainText('Additional explanation');
 });
 
-test('direct inspector allows ordered additions after one heading with export, reload and undo',async({page})=>{
+test('direct inspector allows ordered additions after one heading with export, reload and reset',async({page})=>{
  await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
  body:'<!doctype html><html><head></head><body><main><section><h2>Title</h2><p>Body</p></section></main></body></html>'}));
  await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
