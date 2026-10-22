@@ -23,7 +23,7 @@
     $("publisherSummary").disabled=!publisher.session||publisher.busy;
     const moved=state.sectionOrder.some((id,i)=>id!==state.originalSections[i]);
     $("publisherPropose").disabled=!publisher.session||publisher.busy||
-      (!state.dirty.size&&!moved&&!layoutGroups().length&&!state.additions.length&&!state.removals.length)||!$("publisherSummary").value.trim();
+      (!state.dirty.size&&!moved&&!layoutGroups().length&&!state.additions.length&&!state.removals.length&&!state.blockOrders.length)||!$("publisherSummary").value.trim();
   }
   function publishMessage(text) {
     $("publisherStatus").textContent=text;
@@ -35,7 +35,7 @@
     selected:null,history:[],redo:[],fingerprint:"",loadToken:0,saveTimer:null,staleDraft:false,
     originalSections:[],sectionGroups:[],sectionOrder:[],mediaAssets:null,mediaPromise:null,
     stagedMedia:null,responsiveGroup:null,responsiveGroups:[],additions:[],resizeStart:null,imageSliderActive:false,
-    pageFindKeys:[],pageFindIndex:-1,mediaChooseInsert:false,removals:[],selectedAddition:null
+    pageFindKeys:[],pageFindIndex:-1,mediaChooseInsert:false,removals:[],selectedAddition:null,blockOrders:[]
   };
 
   function hashText(text) {
@@ -64,12 +64,13 @@
   function updateStatus(message) {
     $("editorSaveStatus").textContent=message;
     const moved=state.sectionOrder.filter((id,i)=>id!==state.originalSections[i]).length;
-    const total=state.dirty.size+moved+layoutGroups().length+state.additions.length+state.removals.length;
+    const total=state.dirty.size+moved+layoutGroups().length+state.additions.length+state.removals.length+state.blockOrders.length;
     $("changeCount").textContent=state.dirty.size+" edited element"+(state.dirty.size===1?"":"s")+
       (moved?" · "+moved+" moved section"+(moved===1?"":"s"):"")+
       (layoutGroups().length?" · "+layoutGroups().length+" responsive layout group"+(layoutGroups().length===1?"":"s"):"")+
       (state.additions.length?" · "+state.additions.length+" added content block"+(state.additions.length===1?"":"s"):"")+
-      (state.removals.length?" · "+state.removals.length+" removed block"+(state.removals.length===1?"":"s"):"");
+      (state.removals.length?" · "+state.removals.length+" removed block"+(state.removals.length===1?"":"s"):"")+
+      (state.blockOrders.length?" · "+state.blockOrders.length+" rearranged content group"+(state.blockOrders.length===1?"":"s"):"");
     $("exportBtn").disabled=!total;
     $("reviewBtn").disabled=!total;
     $("resetBtn").disabled=!total;
@@ -162,7 +163,7 @@
 
   function snapshot() {
     return {html:state.doc.documentElement.outerHTML,dirty:[...state.dirty],
-      order:state.sectionOrder.slice(),responsiveGroup:state.responsiveGroup,responsiveGroups:state.responsiveGroups.slice(),additions:state.additions.map(x=>({...x})),removals:state.removals.map(x=>({...x}))};
+      order:state.sectionOrder.slice(),responsiveGroup:state.responsiveGroup,responsiveGroups:state.responsiveGroups.slice(),additions:state.additions.map(x=>({...x})),removals:state.removals.map(x=>({...x})),blockOrders:state.blockOrders.map(x=>({originalKeys:x.originalKeys.slice(),keys:x.keys.slice()}))};
   }
 
   function checkpoint() {
@@ -185,16 +186,16 @@
     const key=DRAFT_PREFIX+state.page;
     try {
       const orderChanged=state.sectionOrder.some((id,i)=>id!==state.originalSections[i]);
-      if (!items.length&&!orderChanged&&!layoutGroups().length&&!state.additions.length&&!state.removals.length) {
+      if (!items.length&&!orderChanged&&!layoutGroups().length&&!state.additions.length&&!state.removals.length&&!state.blockOrders.length) {
         if (state.staleDraft) return;
         localStorage.removeItem(key);
       } else {
         localStorage.setItem(key,JSON.stringify({
           version:1,sourceHash:state.fingerprint,updated:Date.now(),items,
-          sectionOrder:state.sectionOrder.slice(),responsiveGroup:state.responsiveGroup,responsiveGroups:state.responsiveGroups,additions:state.additions,removals:state.removals
+          sectionOrder:state.sectionOrder.slice(),responsiveGroup:state.responsiveGroup,responsiveGroups:state.responsiveGroups,additions:state.additions,removals:state.removals,blockOrders:state.blockOrders
         }));
       }
-      updateStatus(items.length||orderChanged||layoutGroups().length||state.additions.length||state.removals.length?"Draft saved in this browser · Not published":"No changes · Not published");
+      updateStatus(items.length||orderChanged||layoutGroups().length||state.additions.length||state.removals.length||state.blockOrders.length?"Draft saved in this browser · Not published":"No changes · Not published");
     } catch (e) {
       updateStatus("Draft storage unavailable · Export your HTML");
     }
@@ -255,6 +256,10 @@
       }
       if(Array.isArray(draft.removals)&&draft.removals.length)
         state.removals=validateSourceRemovals(draft.removals);
+      if(Array.isArray(draft.blockOrders)&&draft.blockOrders.length){
+        state.blockOrders=validateBlockOrders(draft.blockOrders);
+        applyBlockOrdersToWorking(state.blockOrders);
+      }
       updateStatus(state.dirty.size||state.removals.length?"Draft restored from this browser · Not published":"No changes · Not published");
     } catch(e) {
       notice("The saved draft could not be restored safely. The original page has been left available.","Draft mismatch");
@@ -600,6 +605,12 @@
     $("textAppearanceFields").hidden=isImage;
     $("selectionText").closest(".inspector-group").hidden=isImage;
     $("revertElementBtn").disabled=!state.dirty.has(state.selected);
+    const move=blockMoveCandidate(state.selected);
+    $("moveOriginalBlockFields").hidden=!move;
+    $("moveOriginalUp").disabled=!move||move.index===0;
+    $("moveOriginalDown").disabled=!move||move.index===move.keys.length-1;
+    if(move)$("moveOriginalStatus").textContent="Block "+(move.index+1)+" of "+move.keys.length+
+      " · Only neighbouring content is rearranged; mobile reading order follows the new sequence.";
     const removable=sourceRemovalCandidate(state.selected);
     $("removeSourceBtn").disabled=!removable;
     $("removeSourceHelp").textContent=removable?
@@ -1661,6 +1672,7 @@
       next=next.slice(0,pos)+after+next.slice(pos+before.length);
     }
     next=exportSectionOrder(next);
+    if(state.blockOrders.length)next=exportBlockOrders(next);
     if(state.additions.length)next=exportParagraphs(next);
     if(state.removals.length)next=exportSourceRemovals(next);
     if(layoutGroups().length){
@@ -1745,7 +1757,7 @@
 
   async function createPublisherProposal() {
     const reordered=state.sectionOrder.some((id,i)=>id!==state.originalSections[i]);
-    if(!publisher.session||(!state.dirty.size&&!reordered&&!layoutGroups().length&&!state.additions.length&&!state.removals.length)||publisher.busy)return;
+    if(!publisher.session||(!state.dirty.size&&!reordered&&!layoutGroups().length&&!state.additions.length&&!state.removals.length&&!state.blockOrders.length)||publisher.busy)return;
     const summary=$("publisherSummary").value.trim();
     if(!summary||summary.length>140){publishMessage("Enter a short change summary.");return;}
     let content;
@@ -2084,6 +2096,7 @@
     state.responsiveGroups=last.responsiveGroups||[];
     state.additions=last.additions||[];
     state.removals=last.removals||[];
+    state.blockOrders=last.blockOrders||[];
     renderPreview();
     scheduleDraft();
   }
@@ -2125,7 +2138,7 @@
     state.history.length=0;
     state.redo.length=0;
     state.staleDraft=false;
-    state.responsiveGroup=null;state.responsiveGroups=[];state.additions=[];state.removals=[];
+    state.responsiveGroup=null;state.responsiveGroups=[];state.additions=[];state.removals=[];state.blockOrders=[];
     renderPreview();
     saveDraft();
   }
@@ -2296,7 +2309,7 @@
       state.source=source;
       state.fingerprint=hashText(source);
       state.doc=new DOMParser().parseFromString(source,"text/html");
-      state.responsiveGroup=null;state.responsiveGroups=[];state.additions=[];state.removals=[];
+      state.responsiveGroup=null;state.responsiveGroups=[];state.additions=[];state.removals=[];state.blockOrders=[];
       state.dirty.clear();
       state.history.length=0;
       state.redo.length=0;
@@ -2306,7 +2319,7 @@
       const transferred=consumeFluidTextHandoff(page);
       renderPreview();
       const moved=state.sectionOrder.some((id,i)=>id!==state.originalSections[i]);
-      updateStatus(transferred?"Verified content, style and/or responsive layout transferred · Not published":state.dirty.size||moved||layoutGroups().length||state.additions.length||state.removals.length?"Draft restored · Not published":state.staleDraft?"Older local draft exists · Not applied":"Ready to edit · Not published");
+      updateStatus(transferred?"Verified content, style and/or responsive layout transferred · Not published":state.dirty.size||moved||layoutGroups().length||state.additions.length||state.removals.length||state.blockOrders.length?"Draft restored · Not published":state.staleDraft?"Older local draft exists · Not applied":"Ready to edit · Not published");
     } catch(e) {
       notice("Could not load "+page+". "+e.message,"Page load failed");
       if (state.page) $("pagePicker").value=state.page;
@@ -2375,6 +2388,8 @@
     $("resetBtn").addEventListener("click",resetPage);
     $("revertElementBtn").addEventListener("click",revertSelected);
     $("removeSourceBtn").addEventListener("click",removeSelectedSource);
+    $("moveOriginalUp").addEventListener("click",()=>moveOriginalBlock(-1));
+    $("moveOriginalDown").addEventListener("click",()=>moveOriginalBlock(1));
     $("directLayoutPreset").addEventListener("change",()=>{
       $("directLayoutCustomField").hidden=$("directLayoutPreset").value!=="custom";
     });
