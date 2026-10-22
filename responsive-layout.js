@@ -43,6 +43,10 @@
     if(parents.length!==1||parents[0]===main)
       throw Error("The responsive group parent is missing or ambiguous");
     const parent=parents[0];
+    if(spec.version===2&&parent.tagName==="SECTION"&&
+       ![...parent.children].some(node=>node.tagName==="FIGURE")&&
+       ![...parent.children].every(node=>node.tagName==="ARTICLE"))
+      throw Error("A section heading and its content must remain in their original reading flow");
     if(parent.closest("nav,form,footer,header,aside,script,style")||
        parent.querySelector("script,iframe,form,button,svg,canvas,[contenteditable]"))
       throw Error("This section has controls or embedded content that cannot be rearranged");
