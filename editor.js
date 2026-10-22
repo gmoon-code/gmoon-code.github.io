@@ -437,7 +437,7 @@
   function colorAsHex(value){
     if(!value)return "";
     if(/^#[0-9a-f]{6}$/i.test(value))return value.toLowerCase();
-    const rgb=/^rgb\\(\\s*(\\d{1,3})\\s*,\\s*(\\d{1,3})\\s*,\\s*(\\d{1,3})\\s*\\)$/i.exec(value);
+    const rgb=/^rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)$/i.exec(value);
     if(!rgb||rgb.slice(1).some(n=>Number(n)>255))return "";
     return "#"+rgb.slice(1).map(n=>Number(n).toString(16).padStart(2,"0")).join("");
   }
