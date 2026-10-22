@@ -1900,3 +1900,63 @@ test('capture original-site desktop and mobile card and CV row previews', async 
     await page.locator('#closeSitePreview').click();
   }
 });
+
+test('Home nested card layout and headline text edits transfer together without losing links', async ({ page }) => {
+  await page.route('**/index.html',route=>route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<!doctype html><html><head></head><body><main><div id="cards">'+
+      '<article><h2>Research</h2><p>Original description</p><a href="research.html">Research details</a></article>'+
+      '<article><h2>Teaching</h2><p>Another description</p><a href="teaching.html">Teaching details</a></article>'+
+      '</div></main></body></html>'
+  }));
+  await page.locator('#sourcePage').selectOption('index.html');
+  page.once('dialog',dialog=>dialog.accept());
+  await page.locator('#importPage').click();
+  await expect(page.locator('#grid .block')).toHaveCount(4);
+  await page.locator('#grid .block.heading').first().click();
+  await page.locator('#text').fill('Scientific inquiry');
+  await page.locator('#text').dispatchEvent('change');
+  await page.locator('#findContainerGroups').click();
+  await page.locator('#containerColumns').selectOption('first-wide');
+  await page.locator('#applyContainerGroup').click();
+  await expect(page.locator('#responsiveGroupStatus')).toContainText('Card or CV row group selected');
+  page.on('dialog',dialog=>dialog.accept());
+  await page.locator('#openPublisher').click();
+  await expect(page).toHaveURL(/editor\.html\?page=index\.html$/);
+  await expect(page.locator('#editorSaveStatus')).toContainText('transferred');
+  const downloadPromise=page.waitForEvent('download');
+  await page.locator('#exportBtn').click();
+  const html=require('node:fs').readFileSync(await (await downloadPromise).path(),'utf8');
+  expect(html).toContain('Scientific inquiry');
+  expect(html).toContain('grid-column:9 / span 4');
+  expect(html).toContain('href="research.html"');
+  expect(html).toContain('href="teaching.html"');
+  expect(html).toContain('Another description');
+});
+
+test('card group layout persists through editor reload and is reversible', async ({ page }) => {
+  await page.route('**/cv.html',route=>route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<!doctype html><html><head></head><body><main><div id="records">'+
+      '<div><strong>2026</strong><p>Graduate degree</p></div>'+
+      '<div><strong>2020</strong><p>Undergraduate degree</p></div>'+
+      '</div></main></body></html>'
+  }));
+  await page.locator('#sourcePage').selectOption('cv.html');
+  page.once('dialog',dialog=>dialog.accept());
+  await page.locator('#importPage').click();
+  await page.locator('#findContainerGroups').click();
+  await page.locator('#applyContainerGroup').click();
+  page.on('dialog',dialog=>dialog.accept());
+  await page.locator('#openPublisher').click();
+  await expect(page.locator('#editorSaveStatus')).toContainText('transferred');
+  await expect.poll(async()=>page.evaluate(()=>JSON.parse(localStorage.getItem('moon-portfolio-visual-editor-v1:cv.html'))?.responsiveGroup?.version)).toBe(2);
+  await page.reload();
+  await expect(page.locator('#reviewBtn')).toBeEnabled();
+  await page.locator('#reviewBtn').click();
+  await expect(page.locator('#reviewChangeList')).toContainText('Responsive group');
+  await page.locator('#reviewDialog form button').click();
+  await page.locator('#undoBtn').click();
+  await expect(page.locator('#exportBtn')).toBeDisabled();
+  await expect.poll(async()=>page.evaluate(()=>localStorage.getItem('moon-portfolio-visual-editor-v1:cv.html'))).toBeNull();
+});
