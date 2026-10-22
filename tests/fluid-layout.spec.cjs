@@ -2279,3 +2279,149 @@ test('added paragraphs cannot smuggle invalid script or HTML markup into output'
  expect(html).toContain('&lt;img src=x onerror=alert(1)&gt;');
  expect(html).not.toContain('<img src=x onerror=alert(1)>');
 });
+
+test('new heading transfers through site preview, reviewed editor and HTML export',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+ body:'<!doctype html><html><head></head><body><main><section id="content"><h2>Introduction</h2><p>Earlier content</p></section></main></body></html>'}));
+ await page.locator('#sourcePage').selectOption('about.html');
+ page.once('dialog',dialog=>dialog.accept());
+ await page.locator('#importPage').click();
+ await expect(page.locator('#grid .block.heading')).toHaveCount(1);
+ await page.locator('#grid .block.heading').first().click();
+ page.once('dialog',dialog=>dialog.accept('Additional findings'));
+ await page.locator('#appendSourceHeading').click();
+ await expect(page.locator('#grid .block.heading')).toHaveCount(2);
+ await page.locator('#reviewPatch').click();
+ await expect(page.locator('#reviewEntries')).toContainText('New heading');
+ await page.locator('#viewSitePreview').click();
+ await page.locator('#previewSiteApplied').click();
+ const markup=await page.locator('#sitePreviewFrame').getAttribute('srcdoc');
+ expect(markup).toContain('<h3>Additional findings</h3>');
+ expect(markup).toContain('Earlier content');
+ await page.locator('#closeSitePreview').click();
+ page.on('dialog',dialog=>dialog.accept());
+ await page.locator('#openPublisher').click();
+ await expect(page).toHaveURL(/editor\.html\?page=about\.html$/);
+ await expect(page.locator('#editorSaveStatus')).toContainText('transferred');
+ await page.locator('#reviewBtn').click();
+ await expect(page.locator('#reviewChangeList')).toContainText('New heading');
+ await page.locator('#reviewDialog form button').click();
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).toContain('<h3>Additional findings</h3>');
+ expect(html).toContain('<p>Earlier content</p>');
+});
+
+test('new internal link can update its label and destination before review',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+ body:'<!doctype html><html><head></head><body><main><section><h2>Resources</h2><p>Background</p></section></main></body></html>'}));
+ await page.locator('#sourcePage').selectOption('about.html');
+ page.once('dialog',dialog=>dialog.accept());
+ await page.locator('#importPage').click();
+ await page.locator('#grid .block.heading').first().click();
+ const prompts=['Read research','research.html'];
+ page.on('dialog',dialog=>dialog.accept(prompts.shift()||''));
+ await page.locator('#appendSourceLink').click();
+ await expect(page.locator('#insertionLinkUrl')).toHaveValue('research.html');
+ await page.locator('#insertionLinkUrl').fill('teaching.html#biology');
+ await page.locator('#insertionLinkUrl').dispatchEvent('change');
+ await page.locator('#text').fill('Biology resources');
+ await page.locator('#text').dispatchEvent('change');
+ await page.locator('#viewSitePreview').click();
+ await page.locator('#previewSiteApplied').click();
+ const markup=await page.locator('#sitePreviewFrame').getAttribute('srcdoc');
+ expect(markup).toContain('href="teaching.html#biology"');
+ expect(markup).toContain('Biology resources');
+ await page.locator('#closeSitePreview').click();
+ await page.locator('#openPublisher').click();
+ await expect(page).toHaveURL(/editor\.html\?page=about\.html$/);
+ await expect(page.locator('#editorSaveStatus')).toContainText('transferred');
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).toContain('<p><a href="teaching.html#biology">Biology resources</a></p>');
+ expect(html).toContain('<p>Background</p>');
+});
+
+test('external link uses HTTPS and is escaped safely in reviewed HTML',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+ body:'<!doctype html><html><head></head><body><main><section><h2>References</h2><p>Sources</p></section></main></body></html>'}));
+ await page.locator('#sourcePage').selectOption('about.html');
+ page.once('dialog',dialog=>dialog.accept());
+ await page.locator('#importPage').click();
+ await page.locator('#grid .block.heading').first().click();
+ const prompts=['Example & reference','https://example.org/learn?a=1&b=2'];
+ page.on('dialog',dialog=>dialog.accept(prompts.shift()||''));
+ await page.locator('#appendSourceLink').click();
+ await page.locator('#openPublisher').click();
+ await expect(page.locator('#editorSaveStatus')).toContainText('transferred');
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).toContain('href="https://example.org/learn?a=1&amp;b=2"');
+ expect(html).toContain('rel="noopener noreferrer"');
+ expect(html).toContain('Example &amp; reference</a>');
+});
+
+test('unsafe URL schemes and credentialed HTTPS are blocked before a new link is staged',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+ body:'<!doctype html><html><head></head><body><main><h2>Heading</h2><p>Body</p></main></body></html>'}));
+ await page.locator('#sourcePage').selectOption('about.html');
+ page.once('dialog',dialog=>dialog.accept());
+ await page.locator('#importPage').click();
+ await page.locator('#grid .block.heading').first().click();
+ for(const url of ['javascript:alert(1)','data:text/html,hello','https://user:password@example.org/','http://example.org/']){
+   const prompts=['Unsafe link',url];
+   const handler=dialog=>dialog.accept(prompts.shift()||'');
+   page.on('dialog',handler);
+   await page.locator('#appendSourceLink').click();
+   page.off('dialog',handler);
+   await expect(page.locator('#status')).toContainText('secure HTTPS link');
+   await expect(page.locator('#grid .block')).toHaveCount(2);
+ }
+});
+
+test('forged addition with javascript URL cannot create a main editor draft',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+ body:'<!doctype html><html><head></head><body><main><section><h2>Heading</h2><p>Body</p></section></main></body></html>'}));
+ const payload={version:5,page:'about.html',changes:[],styleChanges:[],additions:[
+   {page:'about.html',selector:'section:nth-of-type(1) > h2:nth-of-type(1)',
+    tag:'h2',before:'Heading',kind:'link',text:'Bad',href:'javascript:alert(1)'}
+ ]};
+ await page.evaluate(data=>sessionStorage.setItem('moon-fluid-text-handoff-v1',JSON.stringify(data)),payload);
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html&importFluidText=1');
+ await expect(page.locator('#noticeMessage')).toContainText('No edits were applied');
+ expect(await page.evaluate(()=>localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'))).toBeNull();
+});
+
+test('forged heading tag cannot create a main editor draft',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+ body:'<!doctype html><html><head></head><body><main><section><h2>Heading</h2><p>Body</p></section></main></body></html>'}));
+ const payload={version:5,page:'about.html',changes:[],styleChanges:[],additions:[
+  {page:'about.html',selector:'section:nth-of-type(1) > h2:nth-of-type(1)',
+   tag:'h2',before:'Heading',kind:'heading',headingTag:'script',text:'Unsafe heading'}
+ ]};
+ await page.evaluate(data=>sessionStorage.setItem('moon-fluid-text-handoff-v1',JSON.stringify(data)),payload);
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html&importFluidText=1');
+ await expect(page.locator('#noticeMessage')).toContainText('No edits were applied');
+ expect(await page.evaluate(()=>localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'))).toBeNull();
+});
+
+test('new heading and link can be removed from the builder before transfer',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+ body:'<!doctype html><html><head></head><body><main><section><h2>Heading</h2><p>Body</p></section></main></body></html>'}));
+ await page.locator('#sourcePage').selectOption('about.html');
+ page.once('dialog',dialog=>dialog.accept());
+ await page.locator('#importPage').click();
+ await page.locator('#grid .block.heading').first().click();
+ page.once('dialog',dialog=>dialog.accept('Temporary heading'));
+ await page.locator('#appendSourceHeading').click();
+ await expect(page.locator('#grid .block')).toHaveCount(3);
+ await page.locator('#remove').click();
+ await expect(page.locator('#grid .block')).toHaveCount(2);
+ await page.locator('#undo').click();
+ await expect(page.locator('#grid .block')).toHaveCount(3);
+ await page.locator('#undo').click();
+ await expect(page.locator('#grid .block')).toHaveCount(2);
+});
