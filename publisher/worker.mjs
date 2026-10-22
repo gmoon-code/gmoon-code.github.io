@@ -129,6 +129,66 @@ function protectedTokens(text) {
     [...text.matchAll(/<meta\b[^>]*>/gi)].map(m=>m[0])
   ];
 }
+/* The editor may append exactly one generated responsive-grid stylesheet.
+   This parser independently validates every permitted CSS rule before treating
+   that new style tag as an approved editorial resource. All other stylesheets,
+   metadata and scripts remain immutable. */
+function validateResponsiveGridCss(css){
+ if(typeof css!=="string"||css.length>15000)return false;
+ const wrapper=css.trim().match(/^\/\* Reviewed responsive group\. Existing page markup remains unchanged\. \*\/\n@media\(min-width:701px\)\{\n([\s\S]*?)\n\}\n@media\(max-width:700px\)\{\n([\s\S]*?)\n\}$/);
+ if(!wrapper)return false;
+ const selector=/^(?:#[A-Za-z][A-Za-z0-9_-]*|[a-z][a-z0-9-]*:nth-of-type\([1-9][0-9]*\))(?: > [a-z][a-z0-9-]*:nth-of-type\([1-9][0-9]*\))*$/;
+ const parentRule=/^main (.+)\{display:grid;grid-template-columns:repeat\(12,minmax\(0,1fr\)\);grid-auto-rows:minmax\(40px,auto\);column-gap:12px;row-gap:8px;align-items:start;\}$/;
+ const childRule=/^main (.+)\{grid-column:(\d{1,2}) \/ span (\d{1,2});grid-row:(\d{1,3}) \/ span (\d{1,2});min-width:0;\}$/;
+ const parse=content=>{
+  const lines=content.split("\n");
+  if(lines.length<3||lines.length>13)return null;
+  const parent=lines[0].match(parentRule)?.[1];
+  if(!parent||parent.length>500||!selector.test(parent))return null;
+  const children=[],seen=new Set();
+  for(const line of lines.slice(1)){
+   const match=line.match(childRule);
+   if(!match)return null;
+   const [,target,xText,wText,yText,hText]=match;
+   const x=Number(xText),w=Number(wText),y=Number(yText),h=Number(hText);
+   if(target.length>500||!selector.test(target)||seen.has(target)||
+      x<1||x>12||w<1||w>12||x+w>13||y<1||y>100||h<1||h>30)
+      return null;
+   seen.add(target);
+   children.push({target,x,y,w,h});
+  }
+  for(let i=0;i<children.length;i++){
+   const current=children[i];
+   if(i){
+    const prior=children[i-1];
+    if(current.y<prior.y||(current.y===prior.y&&current.x<prior.x))return null;
+   }
+   for(let j=i+1;j<children.length;j++){
+    const other=children[j];
+    if(current.x<other.x+other.w&&current.x+current.w>other.x&&
+       current.y<other.y+other.h&&current.y+current.h>other.y)return null;
+   }
+  }
+  return {parent,children};
+ };
+ const desktop=parse(wrapper[1]),mobile=parse(wrapper[2]);
+ return !!desktop&&!!mobile&&desktop.parent===mobile.parent&&
+   desktop.children.length===mobile.children.length&&
+   desktop.children.every((item,i)=>item.target===mobile.children[i].target);
+}
+function stripApprovedGridStyle(previous,edited){
+ const marker='<style id="moon-responsive-group-layout">';
+ if(!edited.includes("moon-responsive-group-layout"))return edited;
+ if(previous.includes("moon-responsive-group-layout"))
+  throw Error("Existing responsive styles must remain unchanged");
+ const start=edited.indexOf(marker);
+ if(start<0||edited.indexOf(marker,start+marker.length)!==-1)
+  throw Error("Invalid responsive layout stylesheet");
+ const end=edited.indexOf("</style>",start+marker.length);
+ if(end<0||!validateResponsiveGridCss(edited.slice(start+marker.length,end)))
+  throw Error("Responsive layout CSS failed the publisher safety checks");
+ return edited.slice(0,start)+edited.slice(end+"</style>".length);
+}
 function validateEdit(path,previous,edited) {
   if(!ALLOWED_PAGES.has(path))throw new Error("This page is not an approved editorial target");
   if(typeof edited!=="string"||edited.length<100||enc.encode(edited).length>MAX_CONTENT)
@@ -137,7 +197,7 @@ function validateEdit(path,previous,edited) {
   if(!/^<!doctype html>/i.test(edited.trimStart())||
     !/<main\b/i.test(edited)||!/<\/main>/i.test(edited))
     throw new Error("The edited HTML must preserve the page structure");
-  const oldTokens=protectedTokens(previous),newTokens=protectedTokens(edited);
+  const oldTokens=protectedTokens(previous),newTokens=protectedTokens(stripApprovedGridStyle(previous,edited));
   if(JSON.stringify(oldTokens)!==JSON.stringify(newTokens))
     throw new Error("Scripts, stylesheets, and document metadata must stay unchanged");
   /* Compare full risky attribute values, including unquoted handlers.
