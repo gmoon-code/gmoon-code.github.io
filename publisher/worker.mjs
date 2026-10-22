@@ -213,6 +213,55 @@ function stripApprovedGridStyle(previous,edited){
   throw Error("Responsive layout CSS failed the publisher safety checks");
  return edited.slice(0,start)+edited.slice(end+"</style>".length);
 }
+/* Inspect actual opening-tag attribute names, outside quoted attribute values.
+   URL query terms such as ?one=1 must not be mistaken for event handlers. */
+function eventHandlerAttributes(html){
+  const found=[];
+  let cursor=0;
+  while(cursor<html.length){
+    const start=html.indexOf("<",cursor);
+    if(start<0)break;
+    if(!/[a-z]/i.test(html[start+1]||"")){cursor=start+1;continue}
+    let end=start+1,quote="";
+    for(;end<html.length;end++){
+      const char=html[end];
+      if(quote){if(char===quote)quote="";}
+      else if(char==='"'||char==="'")quote=char;
+      else if(char===">")break;
+    }
+    if(end>=html.length)break;
+    const tag=html.slice(start+1,end);
+    let pos=0;
+    while(pos<tag.length&&!/[\s/>]/.test(tag[pos]))pos++;
+    while(pos<tag.length){
+      while(pos<tag.length&&/[\s/]/.test(tag[pos]))pos++;
+      const begin=pos;
+      while(pos<tag.length&&!/[\s=/>]/.test(tag[pos]))pos++;
+      if(pos===begin){pos++;continue}
+      const name=tag.slice(begin,pos).toLowerCase();
+      while(pos<tag.length&&/\s/.test(tag[pos]))pos++;
+      let value="";
+      if(tag[pos]==="="){
+        pos++;
+        while(pos<tag.length&&/\s/.test(tag[pos]))pos++;
+        const quoteMark=tag[pos];
+        if(quoteMark==='"'||quoteMark==="'"){
+          pos++;const valueStart=pos;
+          while(pos<tag.length&&tag[pos]!==quoteMark)pos++;
+          value=tag.slice(valueStart,pos);
+          if(pos<tag.length)pos++;
+        }else{
+          const valueStart=pos;
+          while(pos<tag.length&&!/\s/.test(tag[pos]))pos++;
+          value=tag.slice(valueStart,pos);
+        }
+      }
+      if(/^on[a-z][a-z0-9_-]*$/i.test(name))found.push(name+"="+value);
+    }
+    cursor=end+1;
+  }
+  return found;
+}
 function validateEdit(path,previous,edited) {
   if(!ALLOWED_PAGES.has(path))throw new Error("This page is not an approved editorial target");
   if(typeof edited!=="string"||edited.length<100||enc.encode(edited).length>MAX_CONTENT)
@@ -224,10 +273,12 @@ function validateEdit(path,previous,edited) {
   const oldTokens=protectedTokens(previous),newTokens=protectedTokens(stripApprovedGridStyle(previous,edited));
   if(JSON.stringify(oldTokens)!==JSON.stringify(newTokens))
     throw new Error("Scripts, stylesheets, and document metadata must stay unchanged");
-  /* Compare full risky attribute values, including unquoted handlers.
-     This also prevents swapping handler code while keeping the same name. */
+  /* Compare real executable HTML attribute names and values; never parse
+     strings inside href or src attributes as event handlers. */
+  if(JSON.stringify(eventHandlerAttributes(previous))!==JSON.stringify(eventHandlerAttributes(edited)))
+    throw new Error("New executable HTML or active embeds are not permitted");
+  /* Compare other risky constructs, including unquoted active URLs. */
   const riskyPatterns=[
-    /\bon[a-z][a-z0-9_-]*\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi,
     /\b(?:href|src|srcset|action|formaction|xlink:href)\s*=\s*["']?\s*(?:javascript|data|vbscript)\s*:/gi,
     /\bsrcdoc\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi,
     /<\s*(?:iframe|object|embed|form|svg|math|template|base)\b[^>]*>/gi,
