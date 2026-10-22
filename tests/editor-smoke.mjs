@@ -409,6 +409,33 @@ try {
     .locator("img").waitFor({timeout:6000});
   console.log("PASS: inline page composer supports valid image selection, safe links, reload and edits");
   await inline.close();
+  // Exercise the contextual Layout menu through the original responsive
+  // group validator, then verify that Undo removes the draft-only layout.
+  const sections=await context.newPage();
+  await sections.route("**/about.html",route=>route.fulfill({
+    status:200,contentType:"text/html",
+    body:'<!doctype html><html><head></head><body><main>'+
+      '<section><h2>Section arrangement</h2>'+
+      '<p>First research summary.</p><p>Second research summary.</p>'+
+      '<p>Third research summary.</p></section></main></body></html>'
+  }));
+  await sections.goto(base+"/editor.html?page=about.html");
+  await sections.frameLocator("#pageFrame").locator("main h2").click();
+  await sections.frameLocator("#pageFrame").locator("#moon-quick-toolbar")
+    .getByRole("button",{name:"Arrange selected section into responsive columns"}).click();
+  const arrangement=sections.frameLocator("#pageFrame")
+    .getByRole("dialog",{name:"Arrange selected section"});
+  await arrangement.getByRole("button",{
+    name:"Set selected section layout to two equal"
+  }).click();
+  assert.equal(await sections.locator("#directLayoutPreset").inputValue(),"two");
+  assert.match(await sections.frameLocator("#pageFrame")
+    .locator("#moon-responsive-group-layout").textContent(),/grid-column:7 \/ span 6/);
+  assert.match(await sections.locator("#changeCount").textContent(),/1 responsive layout group/);
+  await sections.locator("#undoBtn").click();
+  assert(!/responsive layout group/.test(await sections.locator("#changeCount").textContent()));
+  console.log("PASS: inline source-verified section layout, original HTML and undo");
+  await sections.close();
   console.log("PASS: text, drafts, reset, link/image export, 17 pages, dark/mobile previews");
 } finally {
   await page.screenshot({path:"/tmp/editor-test-artifacts/editor-last.png",fullPage:true}).catch(()=>{});
