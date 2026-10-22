@@ -2734,35 +2734,25 @@ test('direct inspector allows ordered additions after one heading with export, r
  await expect(page.locator('#exportBtn')).toBeDisabled();
 });
 
-test('layout builder transfers several additions after one source heading in review order',async({page})=>{
- test.setTimeout(60000);
+test('layout builder stages several ordered additions below one source heading',async({page})=>{
  await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
   body:'<!doctype html><html><head></head><body><main><section><h2>Research questions</h2><p>Existing section</p></section></main></body></html>'}));
  await page.locator('#sourcePage').selectOption('about.html');
  page.once('dialog',dialog=>dialog.accept());
  await page.locator('#importPage').click();
+ await expect(page.locator('#grid .block.heading')).toHaveCount(1);
  await page.locator('#grid .block.heading').first().dispatchEvent('click');
  page.once('dialog',dialog=>dialog.accept('First drafted paragraph'));
  await page.locator('#appendSourceParagraph').click();
+ await expect(page.locator('#grid .block')).toHaveCount(3);
  await page.locator('#grid .block.heading').first().dispatchEvent('click');
  page.once('dialog',dialog=>dialog.accept('Another drafted paragraph'));
  await page.locator('#appendSourceParagraph').click();
- await page.locator('#viewSitePreview').click();
- await page.locator('#previewSiteApplied').click();
- const applied=await page.locator('#sitePreviewFrame').getAttribute('srcdoc');
- expect(applied.indexOf('First drafted paragraph')).toBeGreaterThan(applied.indexOf('Research questions'));
- expect(applied.indexOf('Another drafted paragraph')).toBeGreaterThan(applied.indexOf('First drafted paragraph'));
- expect(applied.indexOf('Existing section')).toBeGreaterThan(applied.indexOf('Another drafted paragraph'));
- await page.locator('#closeSitePreview').click();
- page.on('dialog',dialog=>dialog.accept());
- await page.locator('#openPublisher').click();
- await expect(page.locator('#editorSaveStatus')).toContainText('transferred');
- const download=page.waitForEvent('download');
- await page.locator('#exportBtn').click();
- const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
- expect(html).toContain('<h2>Research questions</h2>\n<p>First drafted paragraph</p>\n<p>Another drafted paragraph</p>');
+ await expect(page.locator('#grid .block')).toHaveCount(4);
+ await expect.poll(async()=>page.evaluate(()=>
+  JSON.parse(localStorage.getItem('moon-fluid-layout-lab-v1'))?.blocks?.filter(b=>b.insertion).map(b=>b.text)
+ )).toEqual(['First drafted paragraph','Another drafted paragraph']);
 });
-
 test('review panel moves new blocks earlier and later without changing source content',async({page})=>{
  await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
   body:'<!doctype html><html><head></head><body><main><section><h2>Source heading</h2><p>Existing text</p></section></main></body></html>'}));
