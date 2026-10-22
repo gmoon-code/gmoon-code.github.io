@@ -1081,6 +1081,17 @@ test('capture desktop and mobile screenshots of builder and full-site preview', 
   await page.locator('#previewSiteProposal').click();
   await expect(page.frameLocator('#sitePreviewFrame').locator('main').first()).toBeVisible();
   await page.locator('#sitePreviewDialog').screenshot({path:'test-results/layout-previews/website-freeform-mobile.png'});
+  await page.locator('#closeSitePreview').click();
+  await page.locator('#device').selectOption('desktop');
+  await page.locator('#grid .block.heading').first().click();
+  await page.locator('#useResponsiveGroup').click();
+  await expect(page.locator('#responsiveGroupStatus')).toContainText('blocks');
+  await page.locator('#viewSitePreview').click();
+  await page.locator('#previewSiteApplied').click();
+  await expect(page.frameLocator('#sitePreviewFrame').locator('#moon-responsive-group-layout')).toHaveCount(1);
+  await page.locator('#sitePreviewDialog').screenshot({path:'test-results/layout-previews/responsive-group-desktop.png'});
+  await page.locator('#previewSiteMobile').click();
+  await page.locator('#sitePreviewDialog').screenshot({path:'test-results/layout-previews/responsive-group-mobile.png'});
 });
 
 test('in-canvas edits autosave locally and survive reload without pressing Save now', async ({ page }) => {
