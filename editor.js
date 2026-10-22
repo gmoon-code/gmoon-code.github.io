@@ -642,8 +642,23 @@
       $("directLayoutStatus").textContent=(compatible.spec.version===2?"Card or row group":"Text group")+
         " · "+compatible.spec.children.length+" blocks"+(active?" · Layout active":" · Original layout")+
         ". Mobile stays in reading order.";
-      if(active)createColumnResizeHandle();
-      else state.frameDoc?.getElementById("moon-column-resize-handle")?.remove();
+      if(active){
+        const two=activeTwoColumnLayout();
+        const activeGroup=layoutGroups().find(g=>g.parentSelector===compatible.spec.parentSelector);
+        if(two){
+          const split=two.split;
+          $("directLayoutPreset").value=split===6?"two":split===8?"first-wide":
+            split===4?"second-wide":"custom";
+          $("directLayoutCustomColumns").value=String(split);
+          $("directLayoutCustomValue").textContent=split+" / "+(12-split)+" columns";
+        }else if(activeGroup?.children.every(c=>c.desktop.w===12)){
+          $("directLayoutPreset").value="stack";
+        }else if(activeGroup?.children.some(c=>c.desktop.x===9&&c.desktop.w===4)){
+          $("directLayoutPreset").value="three";
+        }
+        $("directLayoutCustomField").hidden=$("directLayoutPreset").value!=="custom";
+        createColumnResizeHandle();
+      }else state.frameDoc?.getElementById("moon-column-resize-handle")?.remove();
     }
     const canInsert=["H2","H3","H4","P"].includes(node.tagName)&&
       !!state.original.get(state.selected)&&!movedSource;
