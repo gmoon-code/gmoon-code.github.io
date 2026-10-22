@@ -198,6 +198,15 @@
             <p class="small-note">Drag the bottom-right handle on the selected image to resize it directly, or use this slider with a mouse or keyboard. Revert this element to restore its original dimensions.</p>
             <p class="small-note">Existing images and staged uploads can be previewed. New files reach the website only after the private publisher is configured and the GitHub review PR is approved.</p>
           </div>
+          <div id="moveOriginalBlockFields" class="inspector-group" hidden>
+            <h3>Move existing content</h3>
+            <p class="small-note">Reorder neighbouring paragraphs, illustrations or list items within the same verified content group. Links and embedded formatting stay intact.</p>
+            <div class="page-find-controls">
+              <button type="button" id="moveOriginalUp" class="secondary" disabled>Move block up</button>
+              <button type="button" id="moveOriginalDown" class="secondary" disabled>Move block down</button>
+            </div>
+            <p id="moveOriginalStatus" class="small-note" role="status">Select a standalone content block to arrange it.</p>
+          </div>
           <div id="directLayoutFields" class="inspector-group" hidden>
             <h3>Arrange this section</h3>
             <p class="small-note">Arrange a complete group of nearby text blocks or cards into responsive columns. Existing links, images, and reading order are preserved.</p>
