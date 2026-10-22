@@ -32,7 +32,7 @@
   const $ = id => document.getElementById(id);
   const state = {
     page:null,source:"",doc:null,frameDoc:null,original:new Map(),dirty:new Set(),
-    selected:null,history:[],fingerprint:"",loadToken:0,saveTimer:null,staleDraft:false,
+    selected:null,history:[],redo:[],fingerprint:"",loadToken:0,saveTimer:null,staleDraft:false,
     originalSections:[],sectionGroups:[],sectionOrder:[],mediaAssets:null,mediaPromise:null,
     stagedMedia:null,responsiveGroup:null,responsiveGroups:[],additions:[],resizeStart:null,imageSliderActive:false
   };
@@ -72,6 +72,7 @@
     $("reviewBtn").disabled=!total;
     $("resetBtn").disabled=!total;
     $("undoBtn").disabled=!state.history.length;
+    $("redoBtn").disabled=!state.redo.length;
     updatePublishControls();
   }
 
@@ -167,6 +168,7 @@
     const current=snapshot();
     const previous=state.history[state.history.length-1];
     if (previous&&JSON.stringify(previous)===JSON.stringify(current)) return;
+    state.redo.length=0;
     state.history.push(current);
     if (state.history.length>24) state.history.shift();
     updateStatus("Local draft · Not published");
@@ -1661,9 +1663,7 @@
     }
   }
 
-  function undo() {
-    const last=state.history.pop();
-    if (!last) return;
+  function restoreHistorySnapshot(last){
     state.doc=new DOMParser().parseFromString(last.html,"text/html");
     state.dirty=new Set(last.dirty);
     state.sectionOrder=Array.isArray(last.order)?last.order.slice():state.originalSections.slice();
@@ -1672,7 +1672,22 @@
     state.additions=last.additions||[];
     renderPreview();
     scheduleDraft();
+  }
+  function undo() {
+    const last=state.history.pop();
+    if (!last) return;
+    state.redo.push(snapshot());
+    if(state.redo.length>24)state.redo.shift();
+    restoreHistorySnapshot(last);
     updateStatus("Previous edit restored · Not published");
+  }
+  function redo() {
+    const next=state.redo.pop();
+    if(!next)return;
+    state.history.push(snapshot());
+    if(state.history.length>24)state.history.shift();
+    restoreHistorySnapshot(next);
+    updateStatus("Undone edit reapplied · Not published");
   }
 
   function resetPage() {
@@ -1682,6 +1697,7 @@
     initialIndex();
     state.dirty.clear();
     state.history.length=0;
+    state.redo.length=0;
     state.staleDraft=false;
     state.responsiveGroup=null;state.responsiveGroups=[];state.additions=[];
     renderPreview();
@@ -1857,6 +1873,7 @@
       state.responsiveGroup=null;state.responsiveGroups=[];state.additions=[];
       state.dirty.clear();
       state.history.length=0;
+      state.redo.length=0;
       state.staleDraft=false;
       initialIndex();
       restoreDraft();
@@ -1910,6 +1927,7 @@
     $("linkHref").addEventListener("change",event=>updateSelectedAttribute("href",event.target.value));
     $("linkTarget").addEventListener("change",event=>updateSelectedAttribute("target",event.target.value==="new"?"_blank":""));
     $("undoBtn").addEventListener("click",undo);
+    $("redoBtn").addEventListener("click",redo);
     $("resetBtn").addEventListener("click",resetPage);
     $("revertElementBtn").addEventListener("click",revertSelected);
     $("directLayoutApply").addEventListener("click",()=>updateDirectLayout());
