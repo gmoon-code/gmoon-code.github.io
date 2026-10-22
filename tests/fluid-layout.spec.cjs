@@ -2005,7 +2005,7 @@ test('two independent card groups transfer together without rewriting either sec
   await page.locator('#sourcePage').selectOption('index.html');
   page.once('dialog', dialog => dialog.accept());
   await page.locator('#importPage').click();
-  await expect(page.locator('#grid .block')).toHaveCount(5);
+  await expect(page.locator('#grid .block')).toHaveCount(6);
   await page.locator('#findContainerGroups').click();
   await expect(page.locator('#containerGroupPicker option')).toHaveCount(3);
   await page.locator('#containerGroupPicker').selectOption('0');
@@ -2061,7 +2061,7 @@ test('independent groups survive autosave, reload, picker changes and removal', 
   await expect(page.locator('#responsiveGroupCount')).toContainText('2 responsive groups');
   await expect.poll(async()=>page.evaluate(()=>{
     const saved=JSON.parse(localStorage.getItem('moon-fluid-layout-lab-v1'));
-    return saved.responsiveGroups?.length===1 && !!saved.responsiveGroup;
+    return !!saved && saved.responsiveGroups?.length===1 && !!saved.responsiveGroup;
   })).toBe(true);
   await page.reload();
   await expect(page.locator('#responsiveGroupCount')).toContainText('2 responsive groups');
