@@ -1785,17 +1785,29 @@
     scheduleDraft();
   }
   function undo() {
-    const last=state.history.pop();
-    if (!last) return;
-    state.redo.push(snapshot());
+    const before=snapshot();
+    let last=null;
+    // Focusing an editable element can record a checkpoint without changing
+    // the document. Never consume an Undo step on an identical snapshot.
+    while(state.history.length){
+      const candidate=state.history.pop();
+      if(JSON.stringify(candidate)!==JSON.stringify(before)){last=candidate;break;}
+    }
+    if(!last){updateStatus("No earlier content change · Not published");return;}
+    state.redo.push(before);
     if(state.redo.length>24)state.redo.shift();
     restoreHistorySnapshot(last);
     updateStatus("Previous edit restored · Not published");
   }
   function redo() {
-    const next=state.redo.pop();
-    if(!next)return;
-    state.history.push(snapshot());
+    const before=snapshot();
+    let next=null;
+    while(state.redo.length){
+      const candidate=state.redo.pop();
+      if(JSON.stringify(candidate)!==JSON.stringify(before)){next=candidate;break;}
+    }
+    if(!next){updateStatus("No further content change · Not published");return;}
+    state.history.push(before);
     if(state.history.length>24)state.history.shift();
     restoreHistorySnapshot(next);
     updateStatus("Undone edit reapplied · Not published");
