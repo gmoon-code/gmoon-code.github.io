@@ -64,11 +64,19 @@
         throw Error("The responsive section source has changed");
       resolved.push(matches[0]);
     }
-    for(const mode of ["desktop","mobile"])
-      for(let i=0;i<spec.children.length;i++)
+    for(const mode of ["desktop","mobile"]){
+      for(let i=0;i<spec.children.length;i++){
+        const current=spec.children[i][mode];
+        if(i>0){
+          const previous=spec.children[i-1][mode];
+          if(current.y<previous.y||(current.y===previous.y&&current.x<previous.x))
+            throw Error("Visual block order differs from the document reading order on "+mode);
+        }
         for(let j=i+1;j<spec.children.length;j++)
-          if(overlap(spec.children[i][mode],spec.children[j][mode]))
+          if(overlap(current,spec.children[j][mode]))
             throw Error("Blocks overlap in the "+mode+" responsive layout");
+      }
+    }
     return {main,parent,resolved};
   }
   function cssFor(doc,spec){
