@@ -2761,3 +2761,30 @@ test('layout builder transfers several additions after one source heading in rev
  const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
  expect(html).toContain('<h2>Research questions</h2>\n<p>First drafted paragraph</p>\n<p>Another drafted paragraph</p>');
 });
+
+test('review panel moves new blocks earlier and later without changing source content',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+  body:'<!doctype html><html><head></head><body><main><section><h2>Source heading</h2><p>Existing text</p></section></main></body></html>'}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ await page.frameLocator('#pageFrame').locator('main h2').click();
+ await page.locator('#insertContentText').fill('First');
+ await page.locator('#insertContentBtn').click();
+ await page.frameLocator('#pageFrame').locator('main h2').click();
+ await page.locator('#insertContentText').fill('Second');
+ await page.locator('#insertContentBtn').click();
+ await page.locator('#reviewBtn').click();
+ await expect(page.getByRole('button',{name:'Move added paragraph 1 earlier'})).toBeDisabled();
+ await page.getByRole('button',{name:'Move added paragraph 2 earlier'}).click();
+ let order=await page.frameLocator('#pageFrame').locator('main section > h2,main section > p').allTextContents();
+ expect(order).toEqual(['Source heading','Second','First','Existing text']);
+ await page.reload();
+ await expect(page.locator('#changeCount')).toContainText('2 added content blocks');
+ await page.locator('#reviewBtn').click();
+ await page.getByRole('button',{name:'Move added paragraph 1 later'}).click();
+ order=await page.frameLocator('#pageFrame').locator('main section > h2,main section > p').allTextContents();
+ expect(order).toEqual(['Source heading','First','Second','Existing text']);
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).toContain('<h2>Source heading</h2>\n<p>First</p>\n<p>Second</p><p>Existing text</p>');
+});
