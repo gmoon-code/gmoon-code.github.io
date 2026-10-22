@@ -23,7 +23,7 @@
     $("publisherSummary").disabled=!publisher.session||publisher.busy;
     const moved=state.sectionOrder.some((id,i)=>id!==state.originalSections[i]);
     $("publisherPropose").disabled=!publisher.session||publisher.busy||
-      (!state.dirty.size&&!moved)||!$("publisherSummary").value.trim();
+      (!state.dirty.size&&!moved&&!state.responsiveGroup)||!$("publisherSummary").value.trim();
   }
   function publishMessage(text) {
     $("publisherStatus").textContent=text;
@@ -1095,6 +1095,7 @@
     const reordered=state.sectionOrder.some((id,i)=>id!==state.originalSections[i]);
     $("reviewSummary").textContent=ids.length+" edited element"+(ids.length===1?"":"s")+
       (reordered?" · section order changed":"")+
+      (state.responsiveGroup?" · responsive layout group":"")+
       " on "+$("pagePicker").selectedOptions[0]?.textContent+".";
     const previewText=(node)=>{
       if (!node) return "";
@@ -1154,6 +1155,19 @@
         item.appendChild(change);
       }
       list.appendChild(item);
+    }
+    if(state.responsiveGroup){
+      const layout=document.createElement("section");
+      layout.className="review-change";
+      const heading=document.createElement("h3");
+      heading.textContent="Responsive group · "+state.responsiveGroup.children.length+" text blocks";
+      const info=document.createElement("p");
+      info.textContent="A source-preserving 12-column grid with independent desktop and mobile positions. DOM reading order, links, and surrounding page markup remain unchanged.";
+      const pre=document.createElement("pre");
+      pre.textContent=MoonResponsiveLayout.cssFor(new DOMParser().parseFromString(state.source,'text/html'),state.responsiveGroup);
+      pre.style.cssText="white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px;max-height:200px;overflow:auto";
+      layout.append(heading,info,pre);
+      list.append(layout);
     }
     if(state.stagedMedia){
       const node=document.createElement("p");
@@ -1264,9 +1278,9 @@
     if(!raw||raw.length>200000)return rejectHandoff();
     let payload;
     try{payload=JSON.parse(raw)}catch{return rejectHandoff();}
-    if(!payload||typeof payload!=="object"||![1,2].includes(payload.version)||payload.page!==page||
+    if(!payload||typeof payload!=="object"||![1,2,3].includes(payload.version)||payload.page!==page||
        !Array.isArray(payload.changes)||payload.changes.length>100||
-       (payload.version===2&&(!Array.isArray(payload.styleChanges)||payload.styleChanges.length>100)))
+       (payload.version>=2&&(!Array.isArray(payload.styleChanges)||payload.styleChanges.length>100)))
       return rejectHandoff();
     const root=state.doc.querySelector("main");
     if(!root)return rejectHandoff();
@@ -1292,7 +1306,7 @@
       if(!target||preparedText.some(p=>p.key===target.key))return rejectHandoff();
       preparedText.push({key:target.key,text:change.after});
     }
-    if(payload.version===2){
+    if(payload.version>=2){
       for(const change of payload.styleChanges){
         if(usedStyles.has(change?.selector))return rejectHandoff();
         usedStyles.add(change.selector);
@@ -1313,15 +1327,22 @@
         preparedStyles.push({key:target.key,styles});
       }
     }
-    if(!preparedText.length&&!preparedStyles.length)return rejectHandoff();
+    let preparedGroup=null;
+    if(payload.version===3){
+      if(!payload.layoutGroup||!window.MoonResponsiveLayout)return rejectHandoff();
+      try{MoonResponsiveLayout.cssFor(new DOMParser().parseFromString(state.source,'text/html'),payload.layoutGroup);
+        preparedGroup=payload.layoutGroup;
+      }catch{return rejectHandoff()}
+    }
+    if(!preparedText.length&&!preparedStyles.length&&!preparedGroup)return rejectHandoff();
     let existingDraft=false;
     try{existingDraft=localStorage.getItem(DRAFT_PREFIX+page)!==null}catch{existingDraft=true}
-    if(existingDraft||state.dirty.size||state.staleDraft){
+    if(existingDraft||state.dirty.size||state.staleDraft||state.responsiveGroup){
       notice("The page already has a local draft. Review or export that draft before transferring changes.","Transfer not applied");
       return false;
     }
     if(!confirm("Apply "+preparedText.length+" verified text edits and "+preparedStyles.length+
-       " visual style edits to the local editor draft? Freeform positions are not included. Nothing will be published."))return false;
+       " visual style edits and "+(preparedGroup?preparedGroup.children.length:0)+" responsive block placements to the local editor draft? Unapproved freeform positions are not included. Nothing will be published."))return false;
     checkpoint();
     const touched=new Set();
     for(const change of preparedText){
@@ -1343,6 +1364,7 @@
       touched.add(change.key);
     }
     for(const key of touched)updateDirty(key);
+    state.responsiveGroup=preparedGroup;
     saveDraft();
     return true;
   }
