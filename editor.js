@@ -889,7 +889,8 @@
   function insertionKind(s){return s?.kind||"paragraph"}
   function validateParagraphAdditions(incoming){
     if(!Array.isArray(incoming)||incoming.length>10)throw Error("Invalid content additions");
-    const root=state.doc.querySelector("main"),seen=new Set(),out=[];
+    const original=new DOMParser().parseFromString(state.source,"text/html");
+    const root=original.querySelector("main"),seen=new Set(),out=[];
     for(const item of incoming){
       const kind=insertionKind(item);
       if(!item||typeof item!=="object"||!["p","h2","h3","h4"].includes(item.tag)||
@@ -946,10 +947,22 @@
     const root=original.querySelector("main"),anchors=validateParagraphAdditions(state.additions);
     for(const item of anchors){
       const matches=[...root.querySelectorAll(item.selector)];
-      const anchor=matches[0],markup=anchor.outerHTML;
-      const at=html.indexOf(markup);
-      if(at<0||html.indexOf(markup,at+markup.length)!==-1)
-        throw Error("Cannot uniquely locate the content insertion in source HTML");
+      const anchor=matches[0],originalMarkup=anchor.outerHTML;
+      const candidates=[originalMarkup];
+      const edited=state.doc.querySelector("main "+item.selector);
+      if(edited&&edited.tagName.toLowerCase()===item.tag){
+        const revised=cleanOuter(edited);
+        if(!candidates.includes(revised))candidates.push(revised);
+      }
+      let at=-1,markup="";
+      for(const candidate of candidates){
+        const pos=html.indexOf(candidate);
+        if(pos>=0&&html.indexOf(candidate,pos+candidate.length)===-1){
+          if(at>=0)throw Error("Ambiguous content insertion anchor");
+          at=pos;markup=candidate;
+        }
+      }
+      if(at<0)throw Error("Cannot uniquely locate the content insertion in source HTML");
       const offset=at+markup.length;
       html=html.slice(0,offset)+"\n"+additionHtml(item)+html.slice(offset);
     }
