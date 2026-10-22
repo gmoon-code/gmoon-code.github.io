@@ -34,7 +34,7 @@
     page:null,source:"",doc:null,frameDoc:null,original:new Map(),dirty:new Set(),
     selected:null,history:[],fingerprint:"",loadToken:0,saveTimer:null,staleDraft:false,
     originalSections:[],sectionGroups:[],sectionOrder:[],mediaAssets:null,mediaPromise:null,
-    stagedMedia:null,responsiveGroup:null,responsiveGroups:[],additions:[]
+    stagedMedia:null,responsiveGroup:null,responsiveGroups:[],additions:[],resizeStart:null
   };
 
   function hashText(text) {
@@ -309,6 +309,8 @@
         d.addEventListener("input",onPreviewInput,true);
         d.addEventListener("focusin",onPreviewFocus,true);
         d.addEventListener("paste",onPreviewPaste,true);
+        d.addEventListener("scroll",positionImageResizeHandle,true);
+        d.defaultView.addEventListener("resize",positionImageResizeHandle);
       } catch(e) {notice("The preview did not become editable. Please reload the editor.");}
     };
     frame.srcdoc=previewMarkup();
@@ -372,6 +374,8 @@
       previously.removeAttribute("contenteditable");
     }
     state.selected=node.getAttribute("data-editor-key");
+    if(state.frameDoc.getElementById("moon-image-resize-handle"))
+      state.frameDoc.getElementById("moon-image-resize-handle").remove();
     node.setAttribute("data-editor-selected","");
     if (TEXT_TAGS.has(node.tagName)) node.setAttribute("contenteditable","true");
     updateInspector(node);
@@ -399,11 +403,25 @@
     if (isImage) {
       $("imageSrc").value=getWorking(state.selected)?.getAttribute("src")||node.getAttribute("src")||"";
       $("imageAlt").value=node.getAttribute("alt")||"";
-      $("imageMaxWidth").value=["100%","75%","50%","25%"].includes(node.style.maxWidth)?node.style.maxWidth:"";
+      const width=Number.parseInt(node.style.width||node.style.maxWidth,10);
+      const pct=Number.isFinite(width)&&width>=20&&width<=100?Math.round(width/5)*5:100;
+      $("imageWidthPercent").value=String(pct);
+      $("imageWidthValue").textContent=pct+"%";
+      createImageResizeHandle();
     } else {
       $("selectionText").value=node.textContent;
       $("textAlignment").value=["left","center","right","justify"].includes(node.style.textAlign)?
         node.style.textAlign:"";
+      const numberValue=(style,units,min,max)=>{
+        const match=new RegExp("^(\\d+)"+units+"$").exec(style);
+        return match&&Number(match[1])>=min&&Number(match[1])<=max?match[1]:"";
+      };
+      $("textFontSize").value=numberValue(node.style.fontSize,"px",12,80);
+      $("textMaxWidth").value=numberValue(node.style.maxWidth,"%",30,100);
+      $("textSpaceAbove").value=numberValue(node.style.marginTop,"px",0,80);
+      $("textSpaceBelow").value=numberValue(node.style.marginBottom,"px",0,80);
+      $("textColour").value=colorAsHex(node.style.color);
+      $("textBackgroundColour").value=colorAsHex(node.style.backgroundColor);
       const rich=[...node.children].length>0;
       $("selectionText").readOnly=rich;
       $("richTextNote").textContent=rich?
@@ -414,6 +432,14 @@
       $("linkHref").value=node.getAttribute("href")||"";
       $("linkTarget").value=node.getAttribute("target")==="_blank"?"new":"same";
     }
+  }
+
+  function colorAsHex(value){
+    if(!value)return "";
+    if(/^#[0-9a-f]{6}$/i.test(value))return value.toLowerCase();
+    const rgb=/^rgb\\(\\s*(\\d{1,3})\\s*,\\s*(\\d{1,3})\\s*,\\s*(\\d{1,3})\\s*\\)$/i.exec(value);
+    if(!rgb||rgb.slice(1).some(n=>Number(n)>255))return "";
+    return "#"+rgb.slice(1).map(n=>Number(n).toString(16).padStart(2,"0")).join("");
   }
 
   function safeUrl(value,kind) {
@@ -466,6 +492,94 @@
     }
     updateDirty(state.selected);
     updateInspector(rendered);
+  }
+
+  function updateNumericInspectorStyle(property,field,unit,min,max){
+    const value=$(field).value.trim();
+    if(value!==""&&(!/^\\d+$/.test(value)||Number(value)<min||Number(value)>max)){
+      notice("Enter a whole number between "+min+" and "+max+", or leave the field blank to use the page style.","Invalid style");
+      const selected=state.frameDoc?.querySelector('[data-editor-key="'+state.selected+'"]');
+      if(selected)updateInspector(selected);
+      return;
+    }
+    updateSelectedStyle(property,value?value+unit:"",[value?value+unit:""]);
+  }
+  function updateColorInspectorStyle(property,field){
+    const value=$(field).value.trim();
+    if(value&&!/^#[0-9a-fA-F]{6}$/.test(value)){
+      notice("Enter a six-digit hex colour such as #296c56, or leave the field blank.","Invalid colour");
+      const selected=state.frameDoc?.querySelector('[data-editor-key="'+state.selected+'"]');
+      if(selected)updateInspector(selected);
+      return;
+    }
+    updateSelectedStyle(property,value,[value]);
+  }
+  function resizeImage(percent,makeCheckpoint=false){
+    if(!state.selected||!Number.isInteger(percent)||percent<20||percent>100||percent%5)return;
+    const work=getWorking(state.selected);
+    const preview=state.frameDoc?.querySelector('[data-editor-key="'+state.selected+'"]');
+    if(work?.tagName!=="IMG"||preview?.tagName!=="IMG")return;
+    if(makeCheckpoint)checkpoint();
+    for(const img of [work,preview]){
+      img.style.width=percent+"%";
+      img.style.maxWidth="100%";
+      img.style.height="auto";
+    }
+    $("imageWidthPercent").value=String(percent);
+    $("imageWidthValue").textContent=percent+"%";
+    updateDirty(state.selected);
+    positionImageResizeHandle();
+  }
+  function positionImageResizeHandle(){
+    const doc=state.frameDoc,handle=doc?.getElementById("moon-image-resize-handle");
+    if(!handle)return;
+    const img=doc.querySelector('[data-editor-key="'+state.selected+'"]');
+    if(img?.tagName!=="IMG"){handle.remove();return;}
+    const rect=img.getBoundingClientRect(),view=doc.defaultView;
+    if(rect.bottom<0||rect.right<0||rect.top>view.innerHeight||rect.left>view.innerWidth){
+      handle.hidden=true;return;
+    }
+    handle.hidden=false;
+    handle.style.left=Math.max(0,Math.min(view.innerWidth-28,rect.right-12))+"px";
+    handle.style.top=Math.max(0,Math.min(view.innerHeight-28,rect.bottom-12))+"px";
+  }
+  function createImageResizeHandle(){
+    const doc=state.frameDoc;
+    if(!doc||doc.getElementById("moon-image-resize-handle"))return;
+    const handle=doc.createElement("button");
+    handle.id="moon-image-resize-handle";handle.type="button";
+    handle.textContent="↘";handle.title="Drag to resize image";
+    handle.setAttribute("aria-label","Drag to resize selected image. The width slider is keyboard accessible.");
+    handle.style.cssText="position:fixed;z-index:2147483647;width:28px;height:28px;border:2px solid #27654f;border-radius:5px;background:#fff;color:#174932;cursor:nwse-resize;font:700 20px/20px system-ui;touch-action:none;box-shadow:0 1px 6px #0004";
+    handle.addEventListener("click",event=>event.stopPropagation());
+    handle.addEventListener("pointerdown",event=>{
+      if(event.button!==0||state.resizeStart)return;
+      const img=doc.querySelector('[data-editor-key="'+state.selected+'"]');
+      const parent=img?.parentElement;
+      if(!img||!parent)return;
+      const parentWidth=parent.getBoundingClientRect().width;
+      if(parentWidth<=0)return;
+      event.preventDefault();event.stopPropagation();
+      checkpoint();
+      state.resizeStart={pointerId:event.pointerId,startX:event.clientX,
+        startPercent:img.getBoundingClientRect().width/parentWidth*100,parentWidth};
+      handle.setPointerCapture(event.pointerId);
+    });
+    handle.addEventListener("pointermove",event=>{
+      const drag=state.resizeStart;
+      if(!drag||drag.pointerId!==event.pointerId)return;
+      const desired=Math.round((drag.startPercent+100*(event.clientX-drag.startX)/drag.parentWidth)/5)*5;
+      resizeImage(Math.max(20,Math.min(100,desired)));
+    });
+    const finish=event=>{
+      if(state.resizeStart?.pointerId!==event.pointerId)return;
+      state.resizeStart=null;
+      scheduleDraft();
+    };
+    handle.addEventListener("pointerup",finish);
+    handle.addEventListener("pointercancel",finish);
+    doc.body.appendChild(handle);
+    positionImageResizeHandle();
   }
 
   function onInspectorText() {
@@ -1683,10 +1797,18 @@
     $("selectionText").addEventListener("input",onInspectorText);
     $("imageSrc").addEventListener("change",event=>updateSelectedAttribute("src",event.target.value));
     $("imageAlt").addEventListener("change",event=>updateSelectedAttribute("alt",event.target.value));
-    $("imageMaxWidth").addEventListener("change",event=>
-      updateSelectedStyle("maxWidth",event.target.value,["100%","75%","50%","25%"]));
+    $("imageWidthPercent").addEventListener("change",event=>
+      resizeImage(Number(event.target.value),true));
     $("textAlignment").addEventListener("change",event=>
       updateSelectedStyle("textAlign",event.target.value,["left","center","right","justify"]));
+    for(const [id,property,unit,min,max] of [
+      ["textFontSize","fontSize","px",12,80],
+      ["textMaxWidth","maxWidth","%",30,100],
+      ["textSpaceAbove","marginTop","px",0,80],
+      ["textSpaceBelow","marginBottom","px",0,80]
+    ])$(id).addEventListener("change",()=>updateNumericInspectorStyle(property,id,unit,min,max));
+    $("textColour").addEventListener("change",()=>updateColorInspectorStyle("color","textColour"));
+    $("textBackgroundColour").addEventListener("change",()=>updateColorInspectorStyle("backgroundColor","textBackgroundColour"));
     $("linkHref").addEventListener("change",event=>updateSelectedAttribute("href",event.target.value));
     $("linkTarget").addEventListener("change",event=>updateSelectedAttribute("target",event.target.value==="new"?"_blank":""));
     $("undoBtn").addEventListener("click",undo);
