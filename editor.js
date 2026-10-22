@@ -1318,9 +1318,9 @@
     if(possible.length!==1)throw Error("The original image cannot be identified uniquely");
     return {start:possible[0].index,end:possible[0].index+possible[0][0].length};
   }
-  function sourceRemovalCandidate(key){
+  function sourceRemovalCandidate(key,allowExisting=false){
     if(!key||!state.page||!state.doc||!state.original.has(key)||
-       state.removals.some(item=>item.key===key))return null;
+       (!allowExisting&&state.removals.some(item=>item.key===key)))return null;
     const root=state.doc.querySelector("main"),node=getWorking(key);
     if(!root||!node||!root.contains(node)||
        !["P","H2","H3","IMG"].includes(node.tagName))return null;
@@ -1353,7 +1353,7 @@
       if(!item||typeof item!=="object"||typeof item.key!=="string"||
          !/^e\d+$/.test(item.key)||seen.has(item.key))
         throw Error("Duplicate or invalid removed block");
-      const verified=sourceRemovalCandidate(item.key);
+      const verified=sourceRemovalCandidate(item.key,true);
       if(!verified||item.tag!==verified.tag||item.before!==verified.before)
         throw Error("The removed source block has changed or conflicts with another edit");
       seen.add(item.key);
@@ -1783,6 +1783,7 @@
       (reordered?" · section order changed":"")+
       (layoutGroups().length?" · "+layoutGroups().length+" responsive layout group"+(layoutGroups().length===1?"":"s"):"")+
       (state.additions.length?" · "+state.additions.length+" added content block"+(state.additions.length===1?"":"s"):"")+
+      (state.removals.length?" · "+state.removals.length+" removed source block"+(state.removals.length===1?"":"s"):"")+
       " on "+$("pagePicker").selectedOptions[0]?.textContent+".";
     const previewText=(node)=>{
       if (!node) return "";
@@ -1843,6 +1844,21 @@
       }
       list.appendChild(item);
     }
+    state.removals.forEach((removal,index)=>{
+      const section=document.createElement("section");section.className="review-change";
+      const heading=document.createElement("h3");
+      heading.textContent="Removed existing "+removal.tag+" · "+removal.key;
+      const content=document.createElement("p");
+      const before=new DOMParser().parseFromString(removal.before,"text/html").body.firstElementChild;
+      content.textContent=removal.tag==="img"?
+        "Image · "+(before?.getAttribute("alt")||before?.getAttribute("src")||""):
+        (before?.textContent.trim().slice(0,280)||"");
+      const restore=document.createElement("button");restore.type="button";
+      restore.textContent="Restore original block";
+      restore.setAttribute("aria-label","Restore removed source block "+(index+1));
+      restore.addEventListener("click",()=>restoreReviewedSource(index));
+      section.append(heading,content,restore);list.append(section);
+    });
     state.additions.forEach((item,index)=>{
       const el=document.createElement('section');el.className='review-change';
       const title=document.createElement('h3');title.textContent='New '+insertionKind(item)+' after '+item.selector;
