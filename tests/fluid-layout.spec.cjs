@@ -2903,6 +2903,10 @@ test('main inspector applies and removes responsive text columns without the exp
  await page.locator('#directLayoutPreset').selectOption('two');
  await page.locator('#directLayoutApply').click();
  await expect(page.locator('#editorSaveStatus')).toContainText('arrangement applied');
+ await page.locator('#undoBtn').click();
+ await expect(page.frameLocator('#pageFrame').locator('#moon-responsive-group-layout')).toHaveCount(0);
+ await page.locator('#redoBtn').click();
+ await expect(page.frameLocator('#pageFrame').locator('#moon-responsive-group-layout')).toHaveCount(1);
  const css=await page.frameLocator('#pageFrame').locator('#moon-responsive-group-layout').textContent();
  expect(css).toContain('grid-column:7 / span 6');
  expect(css).toContain('@media(max-width:700px)');
@@ -2957,4 +2961,28 @@ test('main inspector refuses a new responsive section that contains staged addit
   JSON.parse(localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'))?.additions?.length)).toBe(1);
  const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('moon-portfolio-visual-editor-v1:about.html')));
  expect(saved.responsiveGroups||[]).toHaveLength(0);
+});
+
+test('main editor redo restores text changes and clears after a new edit',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+  body:'<!doctype html><html><head></head><body><main><section><h2>Original heading</h2><p>Original paragraph</p></section></main></body></html>'}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ await page.frameLocator('#pageFrame').locator('main h2').click();
+ await page.locator('#selectionText').fill('Revised heading');
+ await expect(page.locator('#redoBtn')).toBeDisabled();
+ await page.locator('#undoBtn').click();
+ await expect(page.frameLocator('#pageFrame').locator('main h2')).toHaveText('Original heading');
+ await expect(page.locator('#redoBtn')).toBeEnabled();
+ await page.locator('#redoBtn').click();
+ await expect(page.frameLocator('#pageFrame').locator('main h2')).toHaveText('Revised heading');
+ await expect(page.locator('#redoBtn')).toBeDisabled();
+ await page.locator('#undoBtn').click();
+ await page.frameLocator('#pageFrame').locator('main h2').click();
+ await page.locator('#selectionText').fill('Completely different heading');
+ await expect(page.locator('#redoBtn')).toBeDisabled();
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).toContain('Completely different heading');
+ expect(html).not.toContain('Revised heading');
 });
