@@ -2719,7 +2719,7 @@ test('direct inspector refuses multiple insertions after the same source element
  await page.locator('#insertContentText').fill('Second addition');
  await page.locator('#insertContentBtn').click();
  await expect(page.locator('#noticeMessage')).toContainText('Invalid paragraph insertion');
+ await expect.poll(async()=>page.evaluate(()=>JSON.parse(localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'))?.additions?.length)).toBe(1);
  const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'))?.additions);
- expect(saved).toHaveLength(1);
  expect(saved[0].text).toBe('First addition');
 });
