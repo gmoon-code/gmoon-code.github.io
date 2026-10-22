@@ -3157,3 +3157,110 @@ test('forged image addition cannot point to external assets or include active ma
  await expect(page.locator('#exportBtn')).toBeDisabled();
  await expect(page.frameLocator('#pageFrame').locator('main img')).toHaveCount(0);
 });
+
+test('remove source paragraph in the preview with undo, redo, persistence and reviewed restoration',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+  body:'<!doctype html><html><head></head><body><main><section><h2>Preserved heading</h2>'+
+   '<p>Remove this original explanation.</p><p>Keep this original explanation.</p></section></main></body></html>'}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ await page.frameLocator('#pageFrame').locator('main section > p').first().click();
+ await expect(page.locator('#removeSourceBtn')).toBeEnabled();
+ page.once('dialog',dialog=>dialog.accept());
+ await page.locator('#removeSourceBtn').click();
+ await expect(page.frameLocator('#pageFrame').locator('main section > p')).toHaveCount(1);
+ await expect(page.locator('#changeCount')).toContainText('1 removed block');
+ await expect(page.locator('#exportBtn')).toBeEnabled();
+ await page.locator('#undoBtn').click();
+ await expect(page.frameLocator('#pageFrame').locator('main section > p')).toHaveCount(2);
+ await expect(page.locator('#exportBtn')).toBeDisabled();
+ await page.locator('#redoBtn').click();
+ await expect(page.frameLocator('#pageFrame').locator('main section > p')).toHaveCount(1);
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).not.toContain('Remove this original explanation.');
+ expect(html).toContain('<h2>Preserved heading</h2>');
+ expect(html).toContain('<p>Keep this original explanation.</p>');
+ await expect.poll(async()=>page.evaluate(()=>
+  JSON.parse(localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'))?.removals?.length
+ )).toBe(1);
+ await page.reload();
+ await expect(page.locator('#changeCount')).toContainText('1 removed block');
+ await expect(page.frameLocator('#pageFrame').locator('main section > p')).toHaveCount(1);
+ await page.locator('#reviewBtn').click();
+ await expect(page.locator('#reviewChangeList')).toContainText('Remove this original explanation.');
+ await expect(page.locator('#reviewExportStatus')).toContainText('Source check passed');
+ await page.getByRole('button',{name:'Restore removed source block 1'}).click();
+ await expect(page.frameLocator('#pageFrame').locator('main section > p')).toHaveCount(2);
+ await expect(page.locator('#exportBtn')).toBeDisabled();
+ await expect.poll(async()=>page.evaluate(()=>
+  localStorage.getItem('moon-portfolio-visual-editor-v1:about.html')
+ )).toBeNull();
+});
+
+test('source removal refuses protected headings, duplicate markup, dirty blocks and insertion anchors',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+  body:'<!doctype html><html><head></head><body><main>'+
+   '<section><h2 id="important">Unique section</h2><p>Repeated description.</p><p>Repeated description.</p></section>'+
+   '<section><h2>Other section</h2><p>Editable explanation.</p><p>Safe insertion anchor.</p></section>'+
+   '</main></body></html>'}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ await page.frameLocator('#pageFrame').locator('#important').click();
+ await expect(page.locator('#removeSourceBtn')).toBeDisabled();
+ await page.frameLocator('#pageFrame').locator('main section:first-child > p').first().click();
+ await expect(page.locator('#removeSourceBtn')).toBeDisabled();
+ await page.frameLocator('#pageFrame').locator('main section:nth-of-type(2) p').first().click();
+ await expect(page.locator('#removeSourceBtn')).toBeEnabled();
+ await page.locator('#selectionText').fill('Edited explanation, retained');
+ await expect(page.locator('#removeSourceBtn')).toBeDisabled();
+ await page.frameLocator('#pageFrame').locator('main section:nth-of-type(2) p').nth(1).click();
+ await page.locator('#insertContentText').fill('A safely added paragraph.');
+ await page.locator('#insertContentBtn').click();
+ await page.frameLocator('#pageFrame').locator('main section:nth-of-type(2) p').last().click();
+ // The original insertion anchor is the second original paragraph, not the new
+ // paragraph which has no data-editor-key.
+ await page.frameLocator('#pageFrame').locator('main section:nth-of-type(2) p[data-editor-key]').last().click();
+ await expect(page.locator('#removeSourceBtn')).toBeDisabled();
+ await expect(page.locator('#changeCount')).toContainText('1 added content block');
+});
+
+test('source removal safely identifies an image with normalized source attributes',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+  body:'<!doctype html><html><head></head><body><main><section><h2>Illustrations</h2>'+
+   "<img  alt='Diagram of variation' src='assets/variation.jpg' />"+
+   '<p>Keep the related explanation.</p></section></main></body></html>'}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ await page.frameLocator('#pageFrame').locator('main img').click();
+ await expect(page.locator('#removeSourceBtn')).toBeEnabled();
+ page.once('dialog',dialog=>dialog.accept());
+ await page.locator('#removeSourceBtn').click();
+ await expect(page.frameLocator('#pageFrame').locator('main img')).toHaveCount(0);
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).not.toContain('Diagram of variation');
+ expect(html).toContain('<p>Keep the related explanation.</p>');
+ await expect(page.locator('#changeCount')).toContainText('1 removed block');
+});
+
+test('forged local removal draft fails closed without deleting original source',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+  body:'<!doctype html><html><head></head><body><main><section><h2 id="fixed">Keep heading</h2>'+
+    '<p>Important original paragraph.</p></section></main></body></html>'}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ await page.evaluate(()=>{
+  const key='moon-portfolio-visual-editor-v1:about.html';
+  // Use the real current fingerprint but try to delete a protected heading.
+  const originalSource='<!doctype html><html><head></head><body><main><section><h2 id="fixed">Keep heading</h2><p>Important original paragraph.</p></section></main></body></html>';
+  let hash=2166136261;
+  for(let i=0;i<originalSource.length;i++){hash^=originalSource.charCodeAt(i);hash=Math.imul(hash,16777619);}
+  localStorage.setItem(key,JSON.stringify({
+    version:1,sourceHash:(hash>>>0).toString(16),updated:Date.now(),items:[],
+    removals:[{key:'e0',tag:'h2',before:'<h2 id="fixed">Keep heading</h2>'}]
+  }));
+ });
+ await page.reload();
+ await expect(page.frameLocator('#pageFrame').locator('#fixed')).toHaveCount(1);
+ await expect(page.locator('#exportBtn')).toBeDisabled();
+ await expect(page.locator('#removeSourceBtn')).toBeDisabled();
+});
