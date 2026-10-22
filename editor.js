@@ -34,7 +34,8 @@
     page:null,source:"",doc:null,frameDoc:null,original:new Map(),dirty:new Set(),
     selected:null,history:[],redo:[],fingerprint:"",loadToken:0,saveTimer:null,staleDraft:false,
     originalSections:[],sectionGroups:[],sectionOrder:[],mediaAssets:null,mediaPromise:null,
-    stagedMedia:null,responsiveGroup:null,responsiveGroups:[],additions:[],resizeStart:null,imageSliderActive:false
+    stagedMedia:null,responsiveGroup:null,responsiveGroups:[],additions:[],resizeStart:null,imageSliderActive:false,
+    pageFindKeys:[],pageFindIndex:-1
   };
 
   function hashText(text) {
@@ -284,6 +285,8 @@
       "[data-editor-key]{cursor:text;outline-offset:3px;}",
       "[data-editor-key]:hover{outline:1px dashed #8d8d8d;}",
       '[data-editor-key][data-editor-selected]{outline:2px solid #2b8769!important;outline-offset:4px!important;}',
+      '[data-editor-key][data-editor-find-match]{box-shadow:inset 0 -3px #f7c85e!important;}',
+      '[data-editor-key][data-editor-find-active]{outline:3px solid #b15b16!important;outline-offset:5px!important;}',
       "[data-editor-key][contenteditable=true]{min-height:1em;}",
       "[data-editor-key][contenteditable=true]:focus{outline:2px solid #2b8769!important;}",
       "@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}"
@@ -313,11 +316,90 @@
         d.addEventListener("paste",onPreviewPaste,true);
         d.addEventListener("scroll",positionImageResizeHandle,true);
         d.defaultView.addEventListener("resize",positionImageResizeHandle);
+        refreshPageFind();
       } catch(e) {notice("The preview did not become editable. Please reload the editor.");}
     };
     frame.srcdoc=previewMarkup();
     updateOutline();
     updateSectionList();
+  }
+
+
+  // Search never touches state.doc. Result highlights and selection markers
+  // exist only in the sandboxed, script-disabled iframe preview.
+  function refreshPageFind(reset=false){
+    const query=$("pageFindQuery").value.trim().toLocaleLowerCase();
+    const list=$("pageFindResults");
+    list.replaceChildren();
+    const doc=state.frameDoc;
+    const former=state.pageFindKeys[state.pageFindIndex];
+    state.pageFindKeys=[];
+    if(reset)state.pageFindIndex=-1;
+    if(!doc||!doc.querySelector("main")){
+      $("pageFindStatus").textContent="Load a page to search its editable elements.";
+      for(const id of ["pageFindNext","pageFindPrev","pageFindClear"])$(id).disabled=true;
+      return;
+    }
+    for(const node of doc.querySelectorAll("[data-editor-find-match],[data-editor-find-active]")){
+      node.removeAttribute("data-editor-find-match");
+      node.removeAttribute("data-editor-find-active");
+    }
+    const all=[...doc.querySelectorAll("main [data-editor-key]")];
+    const hits=!query?[]:all.filter(node=>{
+      const value=node.tagName==="IMG"?(node.getAttribute("alt")||""):node.textContent||"";
+      if(!value.toLocaleLowerCase().includes(query))return false;
+      return ![...node.querySelectorAll("[data-editor-key]")].some(child=>
+        (child.tagName==="IMG"?(child.getAttribute("alt")||""):child.textContent||"")
+          .toLocaleLowerCase().includes(query));
+    });
+    const limited=hits.slice(0,80);
+    state.pageFindKeys=limited.map(node=>node.getAttribute("data-editor-key"));
+    state.pageFindIndex=!limited.length?-1:!reset&&state.pageFindKeys.includes(former)?
+      state.pageFindKeys.indexOf(former):0;
+    limited.forEach((node,index)=>{
+      node.setAttribute("data-editor-find-match","");
+      const button=document.createElement("button");
+      button.type="button";
+      const content=(node.tagName==="IMG"?node.getAttribute("alt")||"Image":node.textContent||"")
+        .trim().replace(/\\s+/g," ");
+      button.textContent=node.tagName.toLowerCase()+" · "+(content.slice(0,98)||"Untitled")+
+        (content.length>98?"…":"");
+      button.setAttribute("aria-current",String(index===state.pageFindIndex));
+      button.addEventListener("click",()=>choosePageFind(index));
+      if(index<30)list.append(button);
+    });
+    const count=hits.length;
+    $("pageFindStatus").textContent=!query?"Find headings, paragraphs, links and image descriptions within the page.":
+      count?count+" matching element"+(count===1?"":"s")+
+        (count>80?" · first 80 available":"")+" · "+(state.pageFindIndex+1)+" of "+limited.length:
+        "No matching editable elements on this page.";
+    $("pageFindNext").disabled=limited.length<2;
+    $("pageFindPrev").disabled=limited.length<2;
+    $("pageFindClear").disabled=!query;
+    const active=doc.querySelector('[data-editor-key="'+state.pageFindKeys[state.pageFindIndex]+'"]');
+    if(active)active.setAttribute("data-editor-find-active","");
+  }
+  function choosePageFind(index){
+    const keys=state.pageFindKeys;
+    if(!keys.length||index<0||index>=keys.length||!state.frameDoc)return;
+    state.pageFindIndex=index;
+    const node=state.frameDoc.querySelector('[data-editor-key="'+keys[index]+'"]');
+    if(!node)return;
+    for(const marked of state.frameDoc.querySelectorAll("[data-editor-find-active]"))
+      marked.removeAttribute("data-editor-find-active");
+    node.setAttribute("data-editor-find-active","");
+    selectElement(node);
+    node.scrollIntoView({block:"center",inline:"nearest"});
+    for(const [i,button] of [...$("pageFindResults").children].entries())
+      button.setAttribute("aria-current",String(i===index));
+    const q=$("pageFindQuery").value.trim();
+    $("pageFindStatus").textContent=keys.length+" results · selected "+(index+1)+" of "+keys.length+
+      " for “"+q.slice(0,80)+"”";
+  }
+  function navigatePageFind(direction){
+    if(!state.pageFindKeys.length)return;
+    const next=(state.pageFindIndex+direction+state.pageFindKeys.length)%state.pageFindKeys.length;
+    choosePageFind(next);
   }
 
   function onPreviewClick(event) {
@@ -366,6 +448,7 @@
     dst.innerHTML=html;
     updateDirty(key);
     if (state.selected===key) updateInspector(edit);
+    if($("pageFindQuery").value.trim())refreshPageFind();
   }
 
   function selectElement(node) {
@@ -1900,6 +1983,24 @@
         documentInFrame.documentElement.setAttribute("data-moon-theme",event.target.value);
         documentInFrame.documentElement.style.colorScheme=event.target.value;
       }
+    });
+    $("pageFindQuery").addEventListener("input",()=>refreshPageFind(true));
+    $("pageFindQuery").addEventListener("keydown",event=>{
+      if(event.key==="Enter"){
+        event.preventDefault();
+        navigatePageFind(event.shiftKey?-1:1);
+      } else if(event.key==="Escape"&&event.target.value){
+        event.preventDefault();
+        event.target.value="";
+        refreshPageFind(true);
+      }
+    });
+    $("pageFindNext").addEventListener("click",()=>navigatePageFind(1));
+    $("pageFindPrev").addEventListener("click",()=>navigatePageFind(-1));
+    $("pageFindClear").addEventListener("click",()=>{
+      $("pageFindQuery").value="";
+      refreshPageFind(true);
+      $("pageFindQuery").focus();
     });
     $("selectionText").addEventListener("focus",checkpoint);
     $("selectionText").addEventListener("input",onInspectorText);
