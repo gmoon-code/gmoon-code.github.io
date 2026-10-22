@@ -3295,3 +3295,106 @@ test('removal-only drafts enable a publishing proposal after mocked authorised s
  await page.locator('#reviewBtn').click();
  await expect(page.locator('#reviewExportStatus')).toContainText('Source check passed');
 });
+
+test('newly added paragraph is selectable in preview, editable, duplicable and reorderable',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+  body:'<!doctype html><html><head></head><body><main><section><h2>Inquiry</h2>'+
+   '<p>Original source statement.</p></section></main></body></html>'}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ const heading=page.frameLocator('#pageFrame').locator('main h2');
+ await heading.click();
+ await page.locator('#insertContentText').fill('First new block');
+ await page.locator('#insertContentBtn').click();
+ await heading.click();
+ await page.locator('#insertContentText').fill('Second new block');
+ await page.locator('#insertContentBtn').click();
+ const added=page.frameLocator('#pageFrame').locator('[data-editor-added-index]');
+ await expect(added).toHaveCount(2);
+ await added.first().click();
+ await expect(page.locator('#addedBlockDetails')).toBeVisible();
+ await expect(page.locator('#addedBlockText')).toHaveValue('First new block');
+ await expect(page.locator('#moveAddedEarlierBtn')).toBeDisabled();
+ await expect(page.locator('#moveAddedLaterBtn')).toBeEnabled();
+ await page.locator('#addedBlockText').fill('First revised block');
+ await page.locator('#applyAddedBlockBtn').click();
+ await expect(added.first()).toContainText('First revised block');
+ await added.first().click();
+ await page.locator('#duplicateAddedBlockBtn').click();
+ await expect(added).toHaveCount(3);
+ expect(await added.allTextContents()).toEqual(['First revised block','First revised block','Second new block']);
+ await added.nth(1).click();
+ await page.locator('#moveAddedLaterBtn').click();
+ expect(await added.allTextContents()).toEqual(['First revised block','Second new block','First revised block']);
+ await added.last().click();
+ await page.locator('#removeAddedBlockBtn').click();
+ expect(await added.allTextContents()).toEqual(['First revised block','Second new block']);
+ await expect(page.locator('#changeCount')).toContainText('2 added content blocks');
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).toContain('<h2>Inquiry</h2>\n<p>First revised block</p>\n<p>Second new block</p>');
+ expect(html).toContain('<p>Original source statement.</p>');
+ expect(html).not.toContain('data-editor-added-index');
+ await expect.poll(async()=>page.evaluate(()=>
+  JSON.parse(localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'))?.additions?.length
+ )).toBe(2);
+ await page.reload();
+ await expect(page.frameLocator('#pageFrame').locator('[data-editor-added-index]')).toHaveCount(2);
+ await page.locator('#undoBtn').click();
+});
+
+test('new block inspector validates updated link targets and preserves source content',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+  body:'<!doctype html><html><head></head><body><main><section><h2>Research links</h2>'+
+   '<p>Original content.</p></section></main></body></html>'}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ await page.frameLocator('#pageFrame').locator('main h2').click();
+ await page.locator('#insertContentKind').selectOption('link');
+ await page.locator('#insertContentText').fill('Read the paper');
+ await page.locator('#insertLinkHref').fill('research.html');
+ await page.locator('#insertContentBtn').click();
+ await page.frameLocator('#pageFrame').locator('[data-editor-added-index] a').click();
+ await expect(page.locator('#addedBlockKind')).toHaveText('link');
+ await page.locator('#addedBlockHref').fill('javascript:alert(1)');
+ await page.locator('#applyAddedBlockBtn').click();
+ await expect(page.locator('#addedBlockStatus')).toContainText('Change not applied');
+ await expect(page.frameLocator('#pageFrame').locator('[data-editor-added-index] a')).toHaveAttribute('href','research.html');
+ await page.locator('#addedBlockHref').fill('https://example.org/research');
+ await page.locator('#addedBlockText').fill('Read the full study');
+ await page.locator('#applyAddedBlockBtn').click();
+ await expect(page.frameLocator('#pageFrame').locator('[data-editor-added-index] a')).toHaveAttribute('href','https://example.org/research');
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).toContain('href="https://example.org/research" rel="noopener noreferrer"');
+ expect(html).toContain('Read the full study');
+ expect(html).toContain('<p>Original content.</p>');
+});
+
+test('added image can reopen local media library for source and description changes',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+  body:'<!doctype html><html><head></head><body><main><section><h2>Images</h2>'+
+   '<p>Original text.</p><img src="assets/example-photograph.webp" alt="Source photograph">'+
+   '</section></main></body></html>'}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ await page.frameLocator('#pageFrame').locator('main h2').click();
+ await page.locator('#insertContentKind').selectOption('image');
+ await page.locator('#insertImageSrc').fill('assets/example-photograph.webp');
+ await page.locator('#insertContentText').fill('Original inserted photo');
+ await page.locator('#insertContentBtn').click();
+ await page.frameLocator('#pageFrame').locator('[data-editor-added-index] img').click();
+ await expect(page.locator('#addedBlockImageField')).toBeVisible();
+ await page.locator('#chooseAddedImageBtn').click();
+ await expect(page.locator('#mediaDialog')).toBeVisible();
+ await page.locator('#mediaResults .media-option').filter({hasText:'assets/example-photograph.webp'}).click();
+ await expect(page.locator('#addedBlockSrc')).toHaveValue('assets/example-photograph.webp');
+ await page.locator('#addedBlockText').fill('Accessible updated photo description');
+ await page.locator('#applyAddedBlockBtn').click();
+ await expect(page.frameLocator('#pageFrame').locator('[data-editor-added-index] img'))
+  .toHaveAttribute('alt','Accessible updated photo description');
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).toContain('alt="Accessible updated photo description"');
+ expect(html).not.toContain('data-editor-added-index');
+});
