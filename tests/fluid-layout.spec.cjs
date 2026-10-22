@@ -649,7 +649,7 @@ test('style-only changes appear in the review panel', async ({ page }) => {
   await expect(page.locator('#reviewPanel')).toBeVisible();
   await expect(page.locator('#reviewEntries')).toContainText('Style');
   await expect(page.locator('#reviewEntries')).toContainText('fontSize: 27px');
-  await expect(page.locator('#status')).toContainText('0 text edits and 1 visual style edits');
+  await expect(page.locator('#status')).toContainText('0 text edits, 1 visual style edits, and 0 responsive group');
 });
 
 test('publisher confirmation warns when only desktop block positions change', async ({ page }) => {
