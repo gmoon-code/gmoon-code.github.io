@@ -3,6 +3,7 @@
 (function(root){
   "use strict";
   const tags=new Set(["h1","h2","h3","h4","p","blockquote","figcaption"]);
+  const containerTags=new Set(["div","article","figure","section","aside"]);
   const selectorPattern=/^(?:#[A-Za-z][A-Za-z0-9_-]*|[a-z][a-z0-9-]*:nth-of-type\([1-9][0-9]*\))(?: > [a-z][a-z0-9-]*:nth-of-type\([1-9][0-9]*\))*$/;
   const textOf=element=>element.textContent.trim().replace(/\s+/g," ");
   function sourceSelector(element,main){
@@ -32,7 +33,7 @@
     return a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y;
   }
   function verify(doc,spec){
-    if(!spec||spec.version!==1||typeof spec.parentSelector!=="string"||
+    if(!spec||![1,2].includes(spec.version)||typeof spec.parentSelector!=="string"||
        !selectorPattern.test(spec.parentSelector)||spec.parentSelector.length>500||
        !Array.isArray(spec.children)||spec.children.length<2||spec.children.length>12)
       throw Error("Invalid responsive group");
@@ -52,15 +53,17 @@
     for(let i=0;i<spec.children.length;i++){
       const s=spec.children[i];
       if(!s||typeof s.selector!=="string"||!selectorPattern.test(s.selector)||
-         s.selector.length>500||!tags.has(s.tag)||
-         typeof s.before!=="string"||s.before.length>4000||
+         s.selector.length>500||!(spec.version===2?containerTags:tags).has(s.tag)||
+         typeof s.before!=="string"||s.before.length>(spec.version===2?12000:4000)||
+         (spec.version===2&&(typeof s.markup!=="string"||s.markup.length>20000))||
          !positionValid(s.desktop)||!positionValid(s.mobile)||seen.has(s.selector))
         throw Error("Invalid responsive child source or position");
       seen.add(s.selector);
       const matches=[...main.querySelectorAll(s.selector)];
       if(matches.length!==1||matches[0]!==parent.children[i]||
          matches[0].tagName.toLowerCase()!==s.tag||
-         textOf(matches[0])!==s.before)
+         textOf(matches[0])!==s.before||
+         (spec.version===2&&matches[0].outerHTML!==s.markup))
         throw Error("The responsive section source has changed");
       resolved.push(matches[0]);
     }
