@@ -189,7 +189,7 @@ function validateResponsiveStylesheet(css){
    if(parent.startsWith(existing+" > ")||existing.startsWith(parent+" > "))return false;
   }
   parents.add(parent);
-  const lines=block.split("\n").filter(line=>line.startsWith("main "));
+  const lines=block.split("@media(max-width:700px)")[0].split("\n").filter(line=>line.startsWith("main "));
   for(const rule of lines){
    const child=rule.match(/^main (.+)\{grid-column:/)?.[1];
    if(child){
