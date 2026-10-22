@@ -2819,3 +2819,77 @@ test('addition-only drafts enable a review PR proposal after authorized publishe
  await page.locator('#reviewBtn').click();
  await expect(page.locator('#reviewExportStatus')).toContainText('Source check passed');
 });
+
+test('main inspector applies precise text styling, saves drafts and rejects unsafe colour values',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+  body:'<!doctype html><html><head></head><body><main><section><h2>Style this heading</h2><p>Original copy</p></section></main></body></html>'}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ const heading=page.frameLocator('#pageFrame').locator('main h2');
+ await heading.click();
+ for(const [id,value] of [
+  ['textFontSize','30'],['textMaxWidth','65'],['textSpaceAbove','24'],
+  ['textSpaceBelow','12'],['textColour','#296c56'],['textBackgroundColour','#eeeeaa']
+ ]){
+  await page.locator('#'+id).fill(value);
+  await page.locator('#'+id).dispatchEvent('change');
+ }
+ expect(await heading.evaluate(el=>el.style.fontSize)).toBe('30px');
+ expect(await heading.evaluate(el=>el.style.maxWidth)).toBe('65%');
+ expect(await heading.evaluate(el=>el.style.marginTop)).toBe('24px');
+ expect(await heading.evaluate(el=>el.style.marginBottom)).toBe('12px');
+ await expect(page.locator('#textColour')).toHaveValue('#296c56');
+ await expect(page.locator('#textBackgroundColour')).toHaveValue('#eeeeaa');
+ await page.locator('#textColour').fill('javascript:alert(1)');
+ await page.locator('#textColour').dispatchEvent('change');
+ await expect(page.locator('#noticeMessage')).toContainText('six-digit hex colour');
+ await page.locator('#noticeDialog form button').click();
+ await expect(page.locator('#textColour')).toHaveValue('#296c56');
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).toContain('font-size: 30px');
+ expect(html).toContain('max-width: 65%');
+ expect(html).toContain('margin-top: 24px');
+ expect(html).toContain('margin-bottom: 12px');
+ expect(html).toContain('rgb(41, 108, 86)');
+ expect(html).toContain('rgb(238, 238, 170)');
+ expect(html).toContain('<p>Original copy</p>');
+ await expect.poll(async()=>page.evaluate(()=>JSON.parse(localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'))?.items?.length)).toBe(1);
+ await page.reload();
+ await page.frameLocator('#pageFrame').locator('main h2').click();
+ await expect(page.locator('#textFontSize')).toHaveValue('30');
+ await expect(page.locator('#textColour')).toHaveValue('#296c56');
+});
+
+test('image can be resized by a direct drag handle and keyboard-accessible inspector slider',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+  body:'<!doctype html><html><head></head><body><main><section style="width:400px">'+
+   '<h2>Portraits</h2><img src="assets/editor-test-image.png" alt="Sample portrait" style="width:60%;height:auto"></section></main></body></html>'}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ const image=page.frameLocator('#pageFrame').locator('main img');
+ await image.click();
+ const handle=page.frameLocator('#pageFrame').locator('#moon-image-resize-handle');
+ await expect(handle).toBeVisible();
+ const before=await image.evaluate(el=>el.style.width);
+ expect(before).toBe('60%');
+ const box=await handle.boundingBox();
+ await page.mouse.move(box.x+box.width/2,box.y+box.height/2);
+ await page.mouse.down();
+ await page.mouse.move(box.x+box.width/2+80,box.y+box.height/2,{steps:6});
+ await page.mouse.up();
+ await expect.poll(async()=>image.evaluate(el=>Number.parseInt(el.style.width,10))).toBeGreaterThan(60);
+ const dragWidth=await image.evaluate(el=>el.style.width);
+ await page.locator('#undoBtn').click();
+ await expect.poll(async()=>image.evaluate(el=>el.style.width)).toBe('60%');
+ await image.click();
+ await page.locator('#imageWidthPercent').fill('45');
+ await page.locator('#imageWidthPercent').dispatchEvent('change');
+ await expect(page.locator('#imageWidthValue')).toHaveText('45%');
+ await expect.poll(async()=>image.evaluate(el=>el.style.width)).toBe('45%');
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).toContain('width: 45%');
+ expect(html).toContain('alt="Sample portrait"');
+ expect(dragWidth).not.toBe('60%');
+});
