@@ -1198,6 +1198,39 @@
     }finally{publisher.busy=false;updatePublishControls();}
   }
 
+  function modifyReviewedAddition(index,remove=false){
+    const previous=state.additions[index];
+    if(!previous)return;
+    let nextItem={...previous};
+    if(!remove){
+      const label=prompt("Edit "+insertionKind(previous)+" text",previous.text);
+      if(label===null)return;
+      nextItem.text=label.trim();
+      if(insertionKind(previous)==="heading"){
+        const level=prompt("Heading level (h2 or h3)",previous.headingTag);
+        if(level===null)return;
+        nextItem.headingTag=level.trim().toLowerCase();
+      }
+      if(insertionKind(previous)==="link"){
+        const href=prompt("Link destination (.html or HTTPS)",previous.href);
+        if(href===null)return;
+        nextItem.href=href.trim();
+      }
+    }
+    const proposed=remove?state.additions.filter((_,i)=>i!==index):
+      state.additions.map((item,i)=>i===index?nextItem:item);
+    try{validateParagraphAdditions(proposed)}
+    catch(error){notice("The addition could not be changed. "+error.message,"Content review");return}
+    checkpoint();
+    state.additions=proposed;
+    renderPreview();
+    saveDraft();
+    updateStatus(remove?"Staged addition removed · Not published":"Staged addition updated · Not published");
+    const modal=$("reviewDialog");
+    if(modal.open)modal.close();
+    if(state.dirty.size||state.additions.length||layoutGroups().length||
+       state.sectionOrder.some((id,i)=>id!==state.originalSections[i]))reviewChanges();
+  }
   function reviewChanges() {
     const list=$("reviewChangeList");
     list.replaceChildren();
@@ -1267,13 +1300,21 @@
       }
       list.appendChild(item);
     }
-    for(const item of state.additions){
+    state.additions.forEach((item,index)=>{
       const el=document.createElement('section');el.className='review-change';
       const title=document.createElement('h3');title.textContent='New '+insertionKind(item)+' after '+item.selector;
       const text=document.createElement('p');text.textContent=item.text;
       if(insertionKind(item)==='link')text.textContent+=' · '+item.href;
-      el.append(title,text);list.append(el);
-    }
+      const edit=document.createElement('button');
+      edit.type='button';edit.textContent='Edit added content';
+      edit.setAttribute('aria-label','Edit added '+insertionKind(item)+' '+(index+1));
+      edit.addEventListener('click',()=>modifyReviewedAddition(index));
+      const remove=document.createElement('button');
+      remove.type='button';remove.textContent='Remove addition';
+      remove.setAttribute('aria-label','Remove added '+insertionKind(item)+' '+(index+1));
+      remove.addEventListener('click',()=>modifyReviewedAddition(index,true));
+      el.append(title,text,edit,remove);list.append(el);
+    });
     if(layoutGroups().length){
       const layout=document.createElement("section");
       layout.className="review-change";
