@@ -23,7 +23,7 @@
     $("publisherSummary").disabled=!publisher.session||publisher.busy;
     const moved=state.sectionOrder.some((id,i)=>id!==state.originalSections[i]);
     $("publisherPropose").disabled=!publisher.session||publisher.busy||
-      (!state.dirty.size&&!moved&&!layoutGroups().length)||!$("publisherSummary").value.trim();
+      (!state.dirty.size&&!moved&&!layoutGroups().length&&!state.additions.length)||!$("publisherSummary").value.trim();
   }
   function publishMessage(text) {
     $("publisherStatus").textContent=text;
@@ -34,7 +34,7 @@
     page:null,source:"",doc:null,frameDoc:null,original:new Map(),dirty:new Set(),
     selected:null,history:[],fingerprint:"",loadToken:0,saveTimer:null,staleDraft:false,
     originalSections:[],sectionGroups:[],sectionOrder:[],mediaAssets:null,mediaPromise:null,
-    stagedMedia:null,responsiveGroup:null,responsiveGroups:[]
+    stagedMedia:null,responsiveGroup:null,responsiveGroups:[],additions:[]
   };
 
   function hashText(text) {
@@ -63,7 +63,7 @@
   function updateStatus(message) {
     $("editorSaveStatus").textContent=message;
     const moved=state.sectionOrder.filter((id,i)=>id!==state.originalSections[i]).length;
-    const total=state.dirty.size+moved+layoutGroups().length;
+    const total=state.dirty.size+moved+layoutGroups().length+state.additions.length;
     $("changeCount").textContent=state.dirty.size+" edited element"+(state.dirty.size===1?"":"s")+
       (moved?" · "+moved+" moved section"+(moved===1?"":"s"):"")+
       (layoutGroups().length?" · "+layoutGroups().length+" responsive layout group"+(layoutGroups().length===1?"":"s"):"");
@@ -158,7 +158,7 @@
 
   function snapshot() {
     return {html:state.doc.documentElement.outerHTML,dirty:[...state.dirty],
-      order:state.sectionOrder.slice(),responsiveGroup:state.responsiveGroup,responsiveGroups:state.responsiveGroups.slice()};
+      order:state.sectionOrder.slice(),responsiveGroup:state.responsiveGroup,responsiveGroups:state.responsiveGroups.slice(),additions:state.additions.map(x=>({...x}))};
   }
 
   function checkpoint() {
@@ -180,16 +180,16 @@
     const key=DRAFT_PREFIX+state.page;
     try {
       const orderChanged=state.sectionOrder.some((id,i)=>id!==state.originalSections[i]);
-      if (!items.length&&!orderChanged&&!layoutGroups().length) {
+      if (!items.length&&!orderChanged&&!layoutGroups().length&&!state.additions.length) {
         if (state.staleDraft) return;
         localStorage.removeItem(key);
       } else {
         localStorage.setItem(key,JSON.stringify({
           version:1,sourceHash:state.fingerprint,updated:Date.now(),items,
-          sectionOrder:state.sectionOrder.slice(),responsiveGroup:state.responsiveGroup,responsiveGroups:state.responsiveGroups
+          sectionOrder:state.sectionOrder.slice(),responsiveGroup:state.responsiveGroup,responsiveGroups:state.responsiveGroups,additions:state.additions
         }));
       }
-      updateStatus(items.length||orderChanged||layoutGroups().length?"Draft saved in this browser · Not published":"No changes · Not published");
+      updateStatus(items.length||orderChanged||layoutGroups().length||state.additions.length?"Draft saved in this browser · Not published":"No changes · Not published");
     } catch (e) {
       updateStatus("Draft storage unavailable · Export your HTML");
     }
@@ -227,6 +227,9 @@
         state.responsiveGroups=incoming.slice();
         state.responsiveGroup=incoming.length===1?incoming[0]:null;
       }
+      if(Array.isArray(draft.additions)&&draft.additions.length){
+        state.additions=validateParagraphAdditions(draft.additions);
+      }
       for (const item of draft.items) {
         if (!state.original.has(item.id)||checkDangerousHtml(item.markup)) continue;
         const destination=getWorking(item.id);
@@ -262,6 +265,11 @@
       const css=layoutCss(original);
       const style=copy.createElement('style');style.id='moon-responsive-group-layout';
       style.textContent=css;copy.head.append(style);
+    }
+    for(const addition of state.additions){
+      const matches=[...copy.querySelectorAll('main '+addition.selector)];
+      if(matches.length!==1)throw Error('Paragraph insertion source is missing');
+      const node=copy.createElement('p');node.textContent=addition.text;matches[0].after(node);
     }
     const overlay=copy.createElement("style");
     overlay.textContent=[
@@ -868,6 +876,46 @@
     return cleanOuter(node);
   }
 
+  function validateParagraphAdditions(incoming){
+    if(!Array.isArray(incoming)||incoming.length>10)throw Error('Invalid paragraph additions');
+    const root=state.doc.querySelector('main'),seen=new Set(),out=[];
+    for(const item of incoming){
+      if(!item||typeof item!=='object'||!['p','h2','h3','h4'].includes(item.tag)||
+        typeof item.selector!=='string'||item.selector.length>500||
+        typeof item.before!=='string'||item.before.length>4000||
+        typeof item.text!=='string'||!item.text.trim()||item.text.length>2000||
+        item.page!==state.page||seen.has(item.selector))throw Error('Invalid paragraph insertion');
+      seen.add(item.selector);
+      let matches;
+      try{matches=[...root.querySelectorAll(item.selector)]}catch{throw Error('Invalid paragraph anchor')}
+      if(matches.length!==1||matches[0].tagName.toLowerCase()!==item.tag||
+        matches[0].textContent.trim().replace(/\s+/g,' ')!==item.before)
+        throw Error('Paragraph insertion source changed');
+      for(const group of layoutGroups()){
+        const parent=root.querySelector(group.parentSelector);
+        if(parent?.contains(matches[0]))throw Error('Paragraph cannot be inserted inside a responsive group');
+      }
+      out.push({page:item.page,selector:item.selector,tag:item.tag,before:item.before,text:item.text});
+    }
+    return out;
+  }
+  function escapePlainText(text){
+    return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+  function exportParagraphs(html){
+    const original=new DOMParser().parseFromString(state.source,'text/html');
+    const root=original.querySelector('main'),anchors=validateParagraphAdditions(state.additions);
+    for(const item of anchors){
+      const matches=[...root.querySelectorAll(item.selector)];
+      const anchor=matches[0],markup=anchor.outerHTML;
+      const at=html.indexOf(markup);
+      if(at<0||html.indexOf(markup,at+markup.length)!==-1)
+        throw Error('Cannot uniquely locate the paragraph insertion in source HTML');
+      const offset=at+markup.length;
+      html=html.slice(0,offset)+'\n<p>'+escapePlainText(item.text)+'</p>'+html.slice(offset);
+    }
+    return html;
+  }
   function buildExport() {
     let next=state.source;
     const toExport=[...state.dirty].filter(key=>{
@@ -972,6 +1020,7 @@
       next=next.slice(0,pos)+after+next.slice(pos+before.length);
     }
     next=exportSectionOrder(next);
+    if(state.additions.length)next=exportParagraphs(next);
     if(layoutGroups().length){
       const original=new DOMParser().parseFromString(state.source,'text/html');
       const css=layoutCss(original);
@@ -1105,6 +1154,7 @@
     $("reviewSummary").textContent=ids.length+" edited element"+(ids.length===1?"":"s")+
       (reordered?" · section order changed":"")+
       (layoutGroups().length?" · "+layoutGroups().length+" responsive layout group"+(layoutGroups().length===1?"":"s"):"")+
+      (state.additions.length?" · "+state.additions.length+" added paragraph"+(state.additions.length===1?"":"s"):"")+
       " on "+$("pagePicker").selectedOptions[0]?.textContent+".";
     const previewText=(node)=>{
       if (!node) return "";
@@ -1164,6 +1214,12 @@
         item.appendChild(change);
       }
       list.appendChild(item);
+    }
+    for(const item of state.additions){
+      const el=document.createElement('section');el.className='review-change';
+      const title=document.createElement('h3');title.textContent='New paragraph after '+item.selector;
+      const text=document.createElement('p');text.textContent=item.text;
+      el.append(title,text);list.append(el);
     }
     if(layoutGroups().length){
       const layout=document.createElement("section");
@@ -1232,6 +1288,7 @@
     state.sectionOrder=Array.isArray(last.order)?last.order.slice():state.originalSections.slice();
     state.responsiveGroup=last.responsiveGroup||null;
     state.responsiveGroups=last.responsiveGroups||[];
+    state.additions=last.additions||[];
     renderPreview();
     scheduleDraft();
     updateStatus("Previous edit restored · Not published");
@@ -1245,7 +1302,7 @@
     state.dirty.clear();
     state.history.length=0;
     state.staleDraft=false;
-    state.responsiveGroup=null;state.responsiveGroups=[];
+    state.responsiveGroup=null;state.responsiveGroups=[];state.additions=[];
     renderPreview();
     saveDraft();
   }
@@ -1288,7 +1345,7 @@
     if(!raw||raw.length>200000)return rejectHandoff();
     let payload;
     try{payload=JSON.parse(raw)}catch{return rejectHandoff();}
-    if(!payload||typeof payload!=="object"||![1,2,3,4].includes(payload.version)||payload.page!==page||
+    if(!payload||typeof payload!=="object"||![1,2,3,4,5].includes(payload.version)||payload.page!==page||
        !Array.isArray(payload.changes)||payload.changes.length>100||
        (payload.version>=2&&(!Array.isArray(payload.styleChanges)||payload.styleChanges.length>100)))
       return rejectHandoff();
@@ -1338,23 +1395,27 @@
       }
     }
     let preparedGroups=[];
-    if(payload.version===3||payload.version===4){
+    if(payload.version===3||payload.version===4||payload.version===5){
       if(!window.MoonResponsiveLayout)return rejectHandoff();
-      const received=payload.version===3?[payload.layoutGroup]:payload.layoutGroups;
+      const received=payload.version===3?[payload.layoutGroup]:payload.layoutGroups||[];
       try{
         MoonResponsiveLayout.cssForGroups(new DOMParser().parseFromString(state.source,'text/html'),received);
         preparedGroups=received;
       }catch{return rejectHandoff()}
     }
-    if(!preparedText.length&&!preparedStyles.length&&!preparedGroups.length)return rejectHandoff();
+    let preparedAdditions=[];
+    if(payload.version===5){
+      try{preparedAdditions=validateParagraphAdditions(payload.additions)}catch{return rejectHandoff()}
+    }
+    if(!preparedText.length&&!preparedStyles.length&&!preparedGroups.length&&!preparedAdditions.length)return rejectHandoff();
     let existingDraft=false;
     try{existingDraft=localStorage.getItem(DRAFT_PREFIX+page)!==null}catch{existingDraft=true}
-    if(existingDraft||state.dirty.size||state.staleDraft||layoutGroups().length){
+    if(existingDraft||state.dirty.size||state.staleDraft||layoutGroups().length||state.additions.length){
       notice("The page already has a local draft. Review or export that draft before transferring changes.","Transfer not applied");
       return false;
     }
     if(!confirm("Apply "+preparedText.length+" verified text edits and "+preparedStyles.length+
-       " visual style edits and "+preparedGroups.reduce((n,g)=>n+g.children.length,0)+" responsive block placements across "+preparedGroups.length+" groups to the local editor draft? Unapproved freeform positions are not included. Nothing will be published."))return false;
+       " visual style edits and "+preparedGroups.reduce((n,g)=>n+g.children.length,0)+" responsive block placements across "+preparedGroups.length+" groups and "+preparedAdditions.length+" added paragraphs to the local editor draft? Unapproved freeform positions are not included. Nothing will be published."))return false;
     checkpoint();
     const touched=new Set();
     for(const change of preparedText){
@@ -1378,6 +1439,7 @@
     for(const key of touched)updateDirty(key);
     state.responsiveGroup=preparedGroups.length===1?preparedGroups[0]:null;
     state.responsiveGroups=preparedGroups;
+    state.additions=preparedAdditions;
     saveDraft();
     return true;
   }
