@@ -3568,7 +3568,7 @@ test('original block preview drag handle reorders source paragraphs without rewr
  await blocks.first().click();
  const handle=page.frameLocator('#pageFrame').locator('#moon-block-move-handle');
  await expect(handle).toBeVisible();
- await expect(handle).toHaveAttribute('draggable','true');
+ await expect(handle).toHaveCSS('touch-action','none');
  const target=blocks.last();
  const start=await handle.boundingBox();
  const rect=await target.boundingBox();
