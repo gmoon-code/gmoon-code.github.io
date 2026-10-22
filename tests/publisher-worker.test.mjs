@@ -275,7 +275,7 @@ test("accept only exact, bounded responsive grid CSS while protecting existing s
  assert.throws(()=>util.validateEdit("about.html",section,withCss(css.replace(
    'grid-row:1 / span 2;', 'grid-row:7 / span 2;'))),/Responsive layout CSS/);
  assert.throws(()=>util.validateEdit("about.html",section,withCss(css).replace(
-   "site-theme.css","malicious.css"))),/Scripts, stylesheets/);
+   "site-theme.css","malicious.css")) ,/Scripts, stylesheets/);
  assert.throws(()=>util.validateEdit("about.html",section,
    withCss(css).replace("</head>","<style>body{display:none}</style></head>")),/Scripts, stylesheets/);
  assert.throws(()=>util.validateEdit("about.html",section,withCss(css).replace(
