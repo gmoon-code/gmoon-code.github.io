@@ -3542,6 +3542,151 @@ test('moving a new block refuses a duplicate raw HTML source destination',async(
  expect((html.match(/<p>Repeated destination.<\/p>/g)||[]).length).toBe(2);
 });
 
+test('inline page composer adds a paragraph without inspector navigation and exports clean HTML',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+  body:'<!doctype html><html><head></head><body><main><section>'+
+   '<h2>Classroom investigations</h2><p>Permanent original paragraph.</p>'+
+   '</section></main></body></html>'}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ const first=page.frameLocator('#pageFrame').locator('main h2');
+ await first.click();
+ const toolbar=page.frameLocator('#pageFrame').locator('#moon-quick-toolbar');
+ await toolbar.getByRole('button',{name:'Add new content after this block'}).click();
+ const composer=page.frameLocator('#pageFrame').getByRole('dialog',{name:'Add content to the page'});
+ await expect(composer).toBeVisible();
+ await expect(composer.getByLabel('Content type')).toBeFocused();
+ await composer.getByLabel('Text',{exact:true}).fill('A new student-led inquiry.');
+ await composer.getByRole('button',{name:'Add to page'}).click();
+ const added=page.frameLocator('#pageFrame').locator('[data-editor-added-index]');
+ await expect(added).toHaveCount(1);
+ await expect(added).toHaveText('A new student-led inquiry.');
+ await expect(added).toHaveAttribute('data-editor-added-selected','');
+ await expect(composer).toHaveCount(0);
+ await expect(page.locator('#changeCount')).toContainText('1 added content block');
+ await expect.poll(async()=>page.evaluate(()=>
+  JSON.parse(localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'))
+    ?.additions?.[0]?.text)).toBe('A new student-led inquiry.');
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).toContain('<h2>Classroom investigations</h2>\n<p>A new student-led inquiry.</p>');
+ expect(html).toContain('<p>Permanent original paragraph.</p>');
+ expect(html).not.toContain('moon-quick-composer');
+ expect(html).not.toContain('moon-quick-toolbar');
+ await page.locator('#undoBtn').click();
+ await expect(added).toHaveCount(0);
+ await page.locator('#redoBtn').click();
+ await expect(added).toHaveCount(1);
+ await page.reload();
+ await expect(added).toHaveCount(1);
+ await added.click();
+ await expect(toolbar.getByRole('button',{name:'Add new content after this block'})).toBeVisible();
+});
+
+test('inline composer supports headings and links from newly inserted blocks with bounded source position',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+  body:'<!doctype html><html><head></head><body><main><section>'+
+   '<h2>Methods</h2><p>Keep the original text.</p>'+
+   '</section></main></body></html>'}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ await page.frameLocator('#pageFrame').locator('main h2').click();
+ const toolbar=page.frameLocator('#pageFrame').locator('#moon-quick-toolbar');
+ await toolbar.getByRole('button',{name:'Add new content after this block'}).click();
+ let dialog=page.frameLocator('#pageFrame').getByRole('dialog',{name:'Add content to the page'});
+ await dialog.getByLabel('Content type').selectOption('heading');
+ await expect(dialog.getByLabel('Heading level')).toBeVisible();
+ await dialog.getByLabel('Heading level').selectOption('h3');
+ await dialog.getByLabel('Text',{exact:true}).fill('Student-designed investigations');
+ await dialog.getByRole('button',{name:'Add to page'}).click();
+ const added=page.frameLocator('#pageFrame').locator('[data-editor-added-index]');
+ await expect(added).toHaveCount(1);
+ await expect(added.first()).toHaveJSProperty('tagName','H3');
+ await added.first().click();
+ await toolbar.getByRole('button',{name:'Add new content after this block'}).click();
+ dialog=page.frameLocator('#pageFrame').getByRole('dialog',{name:'Add content to the page'});
+ await dialog.getByLabel('Content type').selectOption('link');
+ await dialog.getByLabel('Text',{exact:true}).fill('View research resources');
+ await dialog.getByLabel('Link destination').fill('https://example.org/resources');
+ await dialog.getByRole('button',{name:'Add to page'}).click();
+ await expect(added).toHaveCount(2);
+ await expect(added.nth(1).locator('a')).toHaveAttribute('href','https://example.org/resources');
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).toContain('<h3>Student-designed investigations</h3>');
+ expect(html).toContain('<a href="https://example.org/resources" rel="noopener noreferrer">View research resources</a>');
+ expect(html).toContain('<p>Keep the original text.</p>');
+ expect(html.indexOf('<h3>Student-designed investigations</h3>'))
+   .toBeLessThan(html.indexOf('View research resources'));
+ await page.reload();
+ await expect(added).toHaveCount(2);
+});
+
+test('inline composer rejects unsafe link or image sources, preserves valid existing images',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+  body:'<!doctype html><html><head></head><body><main><section>'+
+   '<h2>Gallery</h2><p>Original gallery introduction.</p>'+
+   '<img src="assets/example-photograph.webp" alt="Existing image">'+
+   '</section></main></body></html>'}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ await page.frameLocator('#pageFrame').locator('main h2').click();
+ const toolbar=page.frameLocator('#pageFrame').locator('#moon-quick-toolbar');
+ await toolbar.getByRole('button',{name:'Add new content after this block'}).click();
+ let composer=page.frameLocator('#pageFrame').getByRole('dialog',{name:'Add content to the page'});
+ await composer.getByLabel('Content type').selectOption('link');
+ await composer.getByLabel('Text',{exact:true}).fill('Untrusted destination');
+ await composer.getByLabel('Link destination').fill('javascript:alert(1)');
+ await composer.getByRole('button',{name:'Add to page'}).click();
+ await expect(composer.getByRole('status')).toContainText('Cannot add this content');
+ await expect(page.frameLocator('#pageFrame').locator('[data-editor-added-index]')).toHaveCount(0);
+ await composer.getByLabel('Content type').selectOption('image');
+ await composer.getByLabel('Text',{exact:true}).fill('Existing fieldwork photograph');
+ await composer.getByLabel('Existing image path').fill('../unsafe.svg');
+ await composer.getByRole('button',{name:'Add to page'}).click();
+ await expect(composer.getByRole('status')).toContainText('Cannot add this content');
+ await composer.getByLabel('Existing image path').fill('assets/example-photograph.webp');
+ await composer.getByRole('button',{name:'Add to page'}).click();
+ const added=page.frameLocator('#pageFrame').locator('[data-editor-added-index]');
+ await expect(added).toHaveCount(1);
+ await expect(added.locator('img')).toHaveAttribute('alt','Existing fieldwork photograph');
+ await expect(added.locator('img')).toHaveAttribute('src','assets/example-photograph.webp');
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).toContain('alt="Existing fieldwork photograph"');
+ expect(html).not.toContain('javascript:alert');
+ expect(html).not.toContain('unsafe.svg');
+ expect(html).not.toContain('moon-quick-composer');
+});
+
+test('inline composer cancels with Escape, stays within mobile preview, and never changes HTML',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+  body:'<!doctype html><html><head></head><body><main><section>'+
+   '<h2>Teaching practice</h2><p>Unchanged original source.</p>'+
+   '</section></main></body></html>'}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ await page.locator('#previewViewport').selectOption('mobile');
+ await page.locator('#previewTheme').selectOption('dark');
+ await page.frameLocator('#pageFrame').locator('main h2').click();
+ const toolbar=page.frameLocator('#pageFrame').locator('#moon-quick-toolbar');
+ await toolbar.getByRole('button',{name:'Add new content after this block'}).click();
+ const composer=page.frameLocator('#pageFrame').getByRole('dialog',{name:'Add content to the page'});
+ await expect(composer).toBeVisible();
+ const bounds=await composer.evaluate(el=>{
+  const rect=el.getBoundingClientRect();
+  return {left:rect.left,top:rect.top,right:rect.right,bottom:rect.bottom,
+    width:el.ownerDocument.defaultView.innerWidth,height:el.ownerDocument.defaultView.innerHeight};
+ });
+ expect(bounds.left).toBeGreaterThanOrEqual(0);
+ expect(bounds.top).toBeGreaterThanOrEqual(0);
+ expect(bounds.right).toBeLessThanOrEqual(bounds.width+1);
+ expect(bounds.bottom).toBeLessThanOrEqual(bounds.height+1);
+ await composer.getByLabel('Content type').press('Escape');
+ await expect(composer).toHaveCount(0);
+ await expect(toolbar.getByRole('button',{name:'Add new content after this block'})).toBeFocused();
+ await expect(page.frameLocator('#pageFrame').locator('[data-editor-added-index]')).toHaveCount(0);
+ await expect(page.locator('#exportBtn')).toBeDisabled();
+});
 test('floating page toolbar aligns original paragraphs with reversible, source-safe HTML',async({page})=>{
  await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
   body:'<!doctype html><html><head></head><body><main><section>'+
