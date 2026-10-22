@@ -72,7 +72,7 @@ aside .palette button{text-align:left}
   <label for="jsonImport" class="import-label">Import JSON</label><input id="jsonImport" type="file" accept=".json,application/json" aria-label="Import saved layout JSON">
  </div>
 </header>
-<main><aside><h2>Import an existing page</h2><label for="sourcePage">Website page</label><select id="sourcePage"><option value="index.html">Home</option><option value="research.html">Research</option><option value="projects.html">Projects</option><option value="teaching.html">Teaching</option><option value="interests.html">Interests</option><option value="about.html">About</option><option value="cv.html">CV</option><option value="pungmul.html">Pungmul</option></select><button id="importPage" type="button">Import page content</button><p class="hint">Creates an editable layout proposal from the page’s text and images. Original HTML and styles are preserved on the website. Import does not publish or overwrite anything.</p><h2>Add blocks</h2><div class="palette"><button data-add="heading">+ Heading</button><button data-add="text">+ Text</button><button data-add="image">+ Image</button><button data-add="button">+ Button</button></div><p class="hint">Select a block, drag to move, or resize using its bottom-right corner. Press F2 or choose Edit text on canvas for in-place editing. Arrow keys move the block; Shift + arrows resize.</p><label for="device">Canvas</label><select id="device"><option value="desktop">Desktop</option><option value="mobile">Mobile</option></select><p id="status" role="status" aria-live="polite"></p><section id="reviewPanel" hidden aria-label="Content change review"><h2>Content changes</h2><div id="reviewEntries"></div><p class="hint">Review only. This does not modify or publish website files.</p></section></aside><section class="workspace" aria-label="Visual canvas"><div id="canvas" class="canvas"><div id="grid" class="grid" aria-label="Editable grid"></div></div></section><aside><h2>Properties</h2><p id="empty">Select a block to edit its properties.</p><div id="properties" hidden><label for="text">Content or image URL</label><textarea id="text" rows="5"></textarea><button id="editCanvasText" type="button">Edit text on canvas (F2)</button><button id="appendSourceParagraph" type="button">Add paragraph after selected text</button><label for="x">Column (1–12)</label><input id="x" type="number" min="1" max="12"><label for="y">Row</label><input id="y" type="number" min="1" max="100"><label for="w">Width in columns</label><input id="w" type="number" min="1" max="12"><label for="h">Height in rows</label><input id="h" type="number" min="1" max="30"><p id="layoutMode" class="hint">Editing desktop positions</p><button id="resetMobile" type="button" hidden>Reset selected mobile position</button><label for="fontSize">Font size (px)</label><input id="fontSize" type="number" min="12" max="80"><label for="color">Text colour</label><input id="color" type="color"><label for="background">Block background</label><input id="background" type="color"><label for="align">Alignment</label><select id="align"><option value="left">Left</option><option value="center">Centre</option><option value="right">Right</option></select><h3>Flow layout</h3><p class="hint">These settings adjust existing elements without moving them out of the page flow. Imported text blocks can transfer them to the main editor. Canvas column and row positions remain preview-only.</p><label for="maxWidthPct">Maximum element width (%)</label><input id="maxWidthPct" type="number" min="30" max="100" step="1"><label for="spaceAbove">Space above (px)</label><input id="spaceAbove" type="number" min="0" max="80" step="1"><label for="spaceBelow">Space below (px)</label><input id="spaceBelow" type="number" min="0" max="80" step="1"><div class="control-row"><button id="duplicate">Duplicate</button><button id="remove">Delete</button></div></div><section aria-label="Responsive group controls" class="responsive-controls"><h3>Responsive groups</h3><label for="activeGroupPicker">Selected group for editing</label><select id="activeGroupPicker" aria-label="Current responsive group"><option value="">No responsive groups</option></select><p id="responsiveGroupCount" class="hint" role="status">0 responsive groups selected</p><p class="hint">Apply desktop and mobile grid positions to a complete group of neighbouring text blocks, keeping their HTML links and content intact. Only eligible groups can transfer for review.</p><button id="findResponsiveGroups" type="button">Find compatible sections</button><button id="findContainerGroups" type="button">Find card and CV row groups</button><label for="containerGroupPicker">Card and row groups</label><select id="containerGroupPicker" aria-label="Card and CV row groups"><option value="">Find card groups to choose one</option></select><label for="containerColumns">Desktop arrangement</label><select id="containerColumns" aria-label="Desktop arrangement"><option value="columns">Equal columns</option><option value="first-wide">First card wider (8 / 4)</option><option value="last-wide">Second card wider (4 / 8)</option><option value="thirds">Three equal columns</option><option value="stack">Single column</option><option value="custom">Custom two-column split</option></select><label for="containerFirstWidth">First card width in a custom split</label><input id="containerFirstWidth" type="range" min="2" max="10" step="1" value="8"><output id="containerRatioValue" for="containerFirstWidth">8 / 4 columns</output><button id="applyContainerGroup" type="button">Arrange cards in desktop columns</button><p id="containerGroupHint" class="hint">Card and CV row arrangements are shown in Preview inside website → Publishable edits. The original nested markup is preserved.</p><label for="responsiveGroupPicker">Compatible sections</label><select id="responsiveGroupPicker" aria-label="Compatible sections"><option value="">Find sections to choose one</option></select><button id="applyResponsiveGroup" type="button">Arrange selected section</button><button id="useResponsiveGroup" type="button">Use selected block's group as arranged</button><div class="responsive-presets"><button id="stackResponsiveGroup" type="button">Stack both layouts</button><button id="columnsResponsiveGroup" type="button">Two columns on desktop</button></div><button id="clearResponsiveGroup" type="button">Clear responsive group</button><p id="responsiveGroupStatus" class="hint" role="status">No responsive group selected</p></section><p class="hint">Layout drafts autosave in this browser. Use Export JSON to keep a portable backup.</p><p class="hint">Imported text and safe styling can transfer to the main editor. A complete responsive sibling group can transfer its desktop/mobile grid positions as reviewed CSS. Other freeform positions and newly added blocks remain separate layout drafts. No changes are automatically published.</p></aside></main>
+<main><aside><h2>Import an existing page</h2><label for="sourcePage">Website page</label><select id="sourcePage"><option value="index.html">Home</option><option value="research.html">Research</option><option value="projects.html">Projects</option><option value="teaching.html">Teaching</option><option value="interests.html">Interests</option><option value="about.html">About</option><option value="cv.html">CV</option><option value="pungmul.html">Pungmul</option></select><button id="importPage" type="button">Import page content</button><p class="hint">Creates an editable layout proposal from the page’s text and images. Original HTML and styles are preserved on the website. Import does not publish or overwrite anything.</p><h2>Add blocks</h2><div class="palette"><button data-add="heading">+ Heading</button><button data-add="text">+ Text</button><button data-add="image">+ Image</button><button data-add="button">+ Button</button></div><p class="hint">Select a block, drag to move, or resize using its bottom-right corner. Press F2 or choose Edit text on canvas for in-place editing. Arrow keys move the block; Shift + arrows resize.</p><label for="device">Canvas</label><select id="device"><option value="desktop">Desktop</option><option value="mobile">Mobile</option></select><p id="status" role="status" aria-live="polite"></p><section id="reviewPanel" hidden aria-label="Content change review"><h2>Content changes</h2><div id="reviewEntries"></div><p class="hint">Review only. This does not modify or publish website files.</p></section></aside><section class="workspace" aria-label="Visual canvas"><div id="canvas" class="canvas"><div id="grid" class="grid" aria-label="Editable grid"></div></div></section><aside><h2>Properties</h2><p id="empty">Select a block to edit its properties.</p><div id="properties" hidden><label for="text">Content or image URL</label><textarea id="text" rows="5"></textarea><button id="editCanvasText" type="button">Edit text on canvas (F2)</button><div class="insertion-actions"><button id="appendSourceParagraph" type="button">Add paragraph</button><button id="appendSourceHeading" type="button">Add heading</button><button id="appendSourceLink" type="button">Add link</button></div><label for="insertionLinkUrl" id="insertionLinkLabel" hidden>New link destination</label><input id="insertionLinkUrl" type="url" placeholder="research.html or https://example.org" hidden><label for="x">Column (1–12)</label><input id="x" type="number" min="1" max="12"><label for="y">Row</label><input id="y" type="number" min="1" max="100"><label for="w">Width in columns</label><input id="w" type="number" min="1" max="12"><label for="h">Height in rows</label><input id="h" type="number" min="1" max="30"><p id="layoutMode" class="hint">Editing desktop positions</p><button id="resetMobile" type="button" hidden>Reset selected mobile position</button><label for="fontSize">Font size (px)</label><input id="fontSize" type="number" min="12" max="80"><label for="color">Text colour</label><input id="color" type="color"><label for="background">Block background</label><input id="background" type="color"><label for="align">Alignment</label><select id="align"><option value="left">Left</option><option value="center">Centre</option><option value="right">Right</option></select><h3>Flow layout</h3><p class="hint">These settings adjust existing elements without moving them out of the page flow. Imported text blocks can transfer them to the main editor. Canvas column and row positions remain preview-only.</p><label for="maxWidthPct">Maximum element width (%)</label><input id="maxWidthPct" type="number" min="30" max="100" step="1"><label for="spaceAbove">Space above (px)</label><input id="spaceAbove" type="number" min="0" max="80" step="1"><label for="spaceBelow">Space below (px)</label><input id="spaceBelow" type="number" min="0" max="80" step="1"><div class="control-row"><button id="duplicate">Duplicate</button><button id="remove">Delete</button></div></div><section aria-label="Responsive group controls" class="responsive-controls"><h3>Responsive groups</h3><label for="activeGroupPicker">Selected group for editing</label><select id="activeGroupPicker" aria-label="Current responsive group"><option value="">No responsive groups</option></select><p id="responsiveGroupCount" class="hint" role="status">0 responsive groups selected</p><p class="hint">Apply desktop and mobile grid positions to a complete group of neighbouring text blocks, keeping their HTML links and content intact. Only eligible groups can transfer for review.</p><button id="findResponsiveGroups" type="button">Find compatible sections</button><button id="findContainerGroups" type="button">Find card and CV row groups</button><label for="containerGroupPicker">Card and row groups</label><select id="containerGroupPicker" aria-label="Card and CV row groups"><option value="">Find card groups to choose one</option></select><label for="containerColumns">Desktop arrangement</label><select id="containerColumns" aria-label="Desktop arrangement"><option value="columns">Equal columns</option><option value="first-wide">First card wider (8 / 4)</option><option value="last-wide">Second card wider (4 / 8)</option><option value="thirds">Three equal columns</option><option value="stack">Single column</option><option value="custom">Custom two-column split</option></select><label for="containerFirstWidth">First card width in a custom split</label><input id="containerFirstWidth" type="range" min="2" max="10" step="1" value="8"><output id="containerRatioValue" for="containerFirstWidth">8 / 4 columns</output><button id="applyContainerGroup" type="button">Arrange cards in desktop columns</button><p id="containerGroupHint" class="hint">Card and CV row arrangements are shown in Preview inside website → Publishable edits. The original nested markup is preserved.</p><label for="responsiveGroupPicker">Compatible sections</label><select id="responsiveGroupPicker" aria-label="Compatible sections"><option value="">Find sections to choose one</option></select><button id="applyResponsiveGroup" type="button">Arrange selected section</button><button id="useResponsiveGroup" type="button">Use selected block's group as arranged</button><div class="responsive-presets"><button id="stackResponsiveGroup" type="button">Stack both layouts</button><button id="columnsResponsiveGroup" type="button">Two columns on desktop</button></div><button id="clearResponsiveGroup" type="button">Clear responsive group</button><p id="responsiveGroupStatus" class="hint" role="status">No responsive group selected</p></section><p class="hint">Layout drafts autosave in this browser. Use Export JSON to keep a portable backup.</p><p class="hint">Imported text and safe styling can transfer to the main editor. A complete responsive sibling group can transfer its desktop/mobile grid positions as reviewed CSS. Other freeform positions and newly added blocks remain separate layout drafts. No changes are automatically published.</p></aside></main>
 <dialog id="sitePreviewDialog" aria-label="In-context website layout preview">
  <div class="review-bar"><div><h2>Website layout review</h2><p>Experimental preview only. The live website remains unchanged.</p><p id="sitePreviewAudit" role="status"></p></div>
  <div class="actions"><button id="previewSiteOriginal" type="button">Original</button><button id="previewSiteProposal" type="button">Proposal</button><button id="previewSiteApplied" type="button">Publishable edits</button><button id="previewSiteDesktop" type="button">Desktop</button><button id="previewSiteMobile" type="button">Mobile</button><button id="closeSitePreview" type="button">Close preview</button></div></div>
@@ -138,49 +138,109 @@ function settle(b){const active=editPosition(b);valid(active);const peers=blocks
 function syncSourcePicker(){$('sourcePage').value=sourcePage||'index.html'}
 function snapshot(){history.push(JSON.stringify({blocks,sourcePage,structureEdited,responsiveGroup,responsiveGroups}));if(history.length>60)history.shift();future=[]}
 function render(){const grid=$('grid');grid.replaceChildren();grid.style.height=Math.max(620,...blocks.map(b=>{const p=position(b);return (p.y+p.h)*40+40}))+'px';for(const b of blocks){valid(b);const p=position(b);const el=document.createElement('div');el.className='block '+b.type;if(allResponsiveGroups().some(g=>g.selectors.includes(b.source?.selector)))el.classList.add('responsive-member');el.dataset.id=b.id;el.tabIndex=0;el.setAttribute('role','button');el.setAttribute('aria-label',b.type+' block, '+b.text.slice(0,45)+(allResponsiveGroups().some(g=>g.selectors.includes(b.source?.selector))?', responsive group member':''));el.setAttribute('aria-selected',String(selected===b.id));el.style.left=((p.x-1)/12*100)+'%';el.style.top=((p.y-1)*40)+'px';el.style.width=(p.w/12*100)+'%';el.style.height=(p.h*40)+'px';el.style.color=b.color;el.style.background=b.background;const c=document.createElement('div');c.className='content';c.style.textAlign=b.align;c.style.fontSize=b.fontSize+'px';if(b.maxWidthPct!==undefined)c.style.maxWidth=b.maxWidthPct+'%';if(b.spaceAbove!==undefined)c.style.marginTop=b.spaceAbove+'px';if(b.spaceBelow!==undefined)c.style.marginBottom=b.spaceBelow+'px';if(b.type==='image'){if(safeImage(b.text)){const img=document.createElement('img');img.src=safeImage(b.text);img.alt='Layout preview';c.append(img)}else c.textContent='Image placeholder'}else c.textContent=b.text;el.append(c);const handle=document.createElement('span');handle.className='handle';handle.setAttribute('aria-hidden','true');el.append(handle);el.addEventListener('pointerdown',e=>{if(e.target.closest('.inline-editor')||e.button!==0)return;selected=b.id;const resize=e.target===handle;gesture={id:b.id,resize,startX:e.clientX,startY:e.clientY,original:{...p},changed:false};el.setPointerCapture(e.pointerId);renderInspector();el.setAttribute('aria-selected','true');});el.addEventListener('pointermove',e=>{if(!gesture||gesture.id!==b.id)return;const colWidth=grid.clientWidth/12;const dx=snap((e.clientX-gesture.startX)/colWidth),dy=snap((e.clientY-gesture.startY)/40);if(!dx&&!dy)return;if(!gesture.changed){snapshot();gesture.changed=true;if(b.source)b.layoutEdited=true}const active=editPosition(b);if(gesture.resize){active.w=gesture.original.w+dx;active.h=gesture.original.h+dy}else{active.x=gesture.original.x+dx;active.y=gesture.original.y+dy}valid(active);el.style.left=((active.x-1)/12*100)+'%';el.style.top=((active.y-1)*40)+'px';el.style.width=(active.w/12*100)+'%';el.style.height=(active.h*40)+'px';renderInspector()});el.addEventListener('pointerup',()=>{if(!gesture||gesture.id!==b.id)return;if(gesture.changed){const resolved=settle(b);if(!resolved){const original=gesture.original,target=editPosition(b);Object.assign(target,original)}$('status').textContent=resolved?'Block snapped to an available grid position.':'Move cancelled because no free grid position was available.'}gesture=null;render()});el.addEventListener('pointercancel',()=>{gesture=null;render()});el.addEventListener('click',e=>{if(e.target.closest('.inline-editor'))return;selected=b.id;render()});el.addEventListener('keydown',e=>{if(e.target.closest('.inline-editor'))return;if(e.key==='F2'&&b.type!=='image'){e.preventDefault();selected=b.id;beginInlineEdit();return}if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key))return;e.preventDefault();snapshot();if(b.source)b.layoutEdited=true;const k=e.shiftKey?(e.key==='ArrowRight'?'w':e.key==='ArrowDown'?'h':e.key==='ArrowLeft'?'w':'h'):(e.key==='ArrowRight'||e.key==='ArrowLeft'?'x':'y');editPosition(b)[k]+=(e.key==='ArrowLeft'||e.key==='ArrowUp'?-1:1);settle(b);selected=b.id;render();grid.querySelector('[data-id="'+b.id+'"]')?.focus()});grid.append(el)}renderInspector();queueAutoSave()}
+
 function insertionBlocks(){return blocks.filter(b=>b.insertion)}
+function safeNewLink(href){
+ if(typeof href!=='string'||href.length>500||href.trim()!==href||/[\s\x00-\x1f<>"'\\]/.test(href))return false;
+ if(/^[a-z0-9-]+\.html(?:#[A-Za-z0-9_-]+)?$/.test(href))return true;
+ if(!/^https:\/\/[^/]+/i.test(href))return false;
+ try{
+  const url=new URL(href);
+  return url.protocol==='https:'&&!url.username&&!url.password&&!!url.hostname&&
+   !url.hostname.endsWith('.')&&!url.hostname.includes('..')&&(url.port===''||url.port==='443');
+ }catch{return false}
+}
+function insertionKind(s){return s?.kind||'paragraph'}
+function validateInsertionItem(b,page=sourcePage){
+ const s=b?.insertion,kind=insertionKind(s);
+ if(!s||s.page!==page||!['p','h2','h3','h4'].includes(s.tag)||
+  typeof s.selector!=='string'||s.selector.length>500||
+  typeof s.before!=='string'||s.before.length>4000||
+  !['paragraph','heading','link'].includes(kind)||
+  typeof b.text!=='string'||!b.text.trim()||
+  b.text.length>(kind==='paragraph'?2000:140)||
+  (kind==='heading'?!['h2','h3'].includes(s.headingTag):s.headingTag!==undefined)||
+  (kind==='link'?!safeNewLink(s.href):s.href!==undefined)||
+  ((kind==='heading')!==(b.type==='heading')))
+  throw Error('Invalid new '+kind+' source or content');
+ return kind;
+}
+function createInsertionElement(doc,b){
+ const s=b.insertion,kind=validateInsertionItem(b);
+ if(kind==='heading'){
+  const node=doc.createElement(s.headingTag);node.textContent=b.text;return node;
+ }
+ const p=doc.createElement('p');
+ if(kind==='link'){
+  const link=doc.createElement('a');link.setAttribute('href',s.href);link.textContent=b.text;
+  if(/^https:\/\//i.test(s.href))link.setAttribute('rel','noopener noreferrer');
+  p.append(link);
+ }else p.textContent=b.text;
+ return p;
+}
 function validateInsertions(doc){
  const root=doc.querySelector('main'),seen=new Set(),inserts=insertionBlocks();
- if(!root||inserts.length>10)throw Error('Invalid paragraph insertion count');
+ if(!root||inserts.length>10)throw Error('Invalid content insertion count');
  for(const b of inserts){
-  const s=b.insertion;
-  if(!s||s.page!==sourcePage||!['p','h2','h3','h4'].includes(s.tag)||
-   typeof s.selector!=='string'||s.selector.length>500||typeof s.before!=='string'||
-   s.before.length>4000||seen.has(s.selector)||typeof b.text!=='string'||
-   !b.text.trim()||b.text.length>2000)throw Error('Invalid new paragraph');
+  const s=b.insertion;validateInsertionItem(b);
+  if(seen.has(s.selector))throw Error('Only one insertion is allowed per source anchor');
   seen.add(s.selector);
   let nodes;
   try{nodes=[...root.querySelectorAll(s.selector)]}catch{throw Error('Invalid insertion source selector')}
   if(nodes.length!==1||nodes[0].tagName.toLowerCase()!==s.tag||
    nodes[0].textContent.trim().replace(/\s+/g,' ')!==s.before)
-   throw Error('New paragraph source has changed');
+   throw Error('New content source has changed');
   if(allResponsiveGroups().some(g=>{
    const parent=root.querySelector(g.parentSelector);return parent?.contains(nodes[0]);
   }))throw Error('Insertions inside responsive groups are not supported');
  }
  return inserts;
 }
-$('appendSourceParagraph').onclick=()=>{
+function stageInsertion(kind){
  const b=blocks.find(item=>item.id===selected);
  if(!b?.source||!sourcePage||!['p','h2','h3','h4'].includes(b.source.tag)){
   $('status').textContent='Select an imported paragraph or section heading.';return;
  }
- if(allResponsiveGroups().some(g=>g.selectors.includes(b.source.selector))){
-  $('status').textContent='Clear the selected responsive group before inserting a paragraph.';return;
+ if(allResponsiveGroups().some(g=>{
+  const rootSelector=b.source.selector;
+  return g.selectors.includes(rootSelector)||g.containerChildren?.some(item=>rootSelector.startsWith(item.selector+' > '));
+ })){
+  $('status').textContent='Clear the selected responsive group before inserting new content.';return;
  }
  if(insertionBlocks().some(item=>item.insertion.selector===b.source.selector)||insertionBlocks().length>=10){
-  $('status').textContent='A maximum of ten paragraphs and one per source element is supported.';return;
+  $('status').textContent='A maximum of ten additions and one per source element is supported.';return;
  }
- const answer=prompt('Plain-text paragraph to insert after this source element');
+ const answer=prompt(kind==='heading'?'New section heading text':kind==='link'?'New link label':'Plain-text paragraph to insert after this source element');
  if(answer===null)return;
- const text=answer.trim();
- if(!text||text.length>2000){$('status').textContent='Enter 1–2000 characters.';return}
+ const text=answer.trim(),limit=kind==='paragraph'?2000:140;
+ if(!text||text.length>limit){$('status').textContent='Enter 1–'+limit+' characters.';return}
+ let href;
+ if(kind==='link'){
+  const input=prompt('Link URL (research.html or https://example.org)');
+  if(input===null)return;
+  href=input.trim();
+  if(!safeNewLink(href)){$('status').textContent='Use an approved .html page or secure HTTPS link.';return}
+ }
+ const insertion={page:sourcePage,selector:b.source.selector,tag:b.source.tag,before:b.source.originalText,kind};
+ if(kind==='heading')insertion.headingTag='h3';
+ if(kind==='link')insertion.href=href;
  snapshot();
- const fresh={id:next++,type:'text',text,x:b.x,y:Math.min(100,b.y+b.h+1),w:b.w,h:Math.max(2,b.h),
-  align:'left',insertion:{page:sourcePage,selector:b.source.selector,tag:b.source.tag,before:b.source.originalText}};
+ const fresh={id:next++,type:kind==='heading'?'heading':'text',text,x:b.x,
+  y:Math.min(100,b.y+b.h+1),w:b.w,h:Math.max(2,b.h),align:'left',insertion};
  blocks.push(fresh);selected=fresh.id;render();
- $('status').textContent='New paragraph staged. Inspect Publishable edits and transfer it to the main editor for review.';
-};
+ $('status').textContent='New '+kind+' staged. Review Publishable edits and transfer it to the main editor.';
+}
+$('appendSourceParagraph').onclick=()=>stageInsertion('paragraph');
+$('appendSourceHeading').onclick=()=>stageInsertion('heading');
+$('appendSourceLink').onclick=()=>stageInsertion('link');
+$('insertionLinkUrl').addEventListener('change',()=>{
+ const b=blocks.find(item=>item.id===selected);
+ if(!b||insertionKind(b.insertion)!=='link')return;
+ const href=$('insertionLinkUrl').value.trim();
+ if(!safeNewLink(href)){$('status').textContent='Invalid destination. Use a local .html page or secure HTTPS URL.';return}
+ snapshot();b.insertion.href=href;render();
+ $('status').textContent='Staged link destination updated for review.';
+});
 function beginInlineEdit(){
  const b=blocks.find(item=>item.id===selected);
  if(!b||b.type==='image')return;
