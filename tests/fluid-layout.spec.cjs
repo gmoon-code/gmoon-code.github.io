@@ -1638,3 +1638,25 @@ test('responsive grid does not introduce excessive vertical gaps on either devic
     expect(gap).toBeLessThan(90);
   }
 });
+
+test('imported portrait images fit their resizable canvas blocks without clipping', async ({ page }) => {
+  await page.route('**/about.html', route => route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<!doctype html><html><head></head><body><main><section>'+
+      '<img src="assets/profile-portrait.webp" alt="Portrait"></section></main></body></html>'
+  }));
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog',dialog=>dialog.accept());
+  await page.locator('#importPage').click();
+  await expect(page.locator('#grid .block.image img')).toBeVisible();
+  const dimensions=await page.locator('#grid .block.image').evaluate(block=>{
+    const image=block.querySelector('img'),container=block.querySelector('.content');
+    const ir=image.getBoundingClientRect(),cr=container.getBoundingClientRect();
+    return {fit:getComputedStyle(image).objectFit,within:ir.width<=cr.width+1&&ir.height<=cr.height+1,
+      naturalWidth:image.naturalWidth,naturalHeight:image.naturalHeight};
+  });
+  expect(dimensions.fit).toBe('contain');
+  expect(dimensions.within).toBe(true);
+  expect(dimensions.naturalWidth).toBeGreaterThan(0);
+  expect(dimensions.naturalHeight).toBeGreaterThan(0);
+});
