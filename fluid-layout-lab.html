@@ -612,7 +612,7 @@ async function buildSiteLayoutReviewHtml(){
  };
  const auditText=blocks.filter(b=>b.source).length+' imported blocks; original main contains '+
   preservedLinks+' links, '+preservedItems+' list items, '+preservedTables+' tables. Text-only imports do not preserve their formatting or interactions. '+
-  'Possible block overlaps: '+overlapCount(false)+' desktop and '+overlapCount(true)+' mobile.';
+  'Canvas proposal overlaps (excluded from publishable edits): '+overlapCount(false)+' desktop and '+overlapCount(true)+' mobile. Approved responsive groups are separately checked for overlaps.';
  // This file is a review artifact, never a publishable overwrite of source content.
  doc.querySelectorAll('script,base').forEach(node=>node.remove());
  const base=doc.createElement('base');
@@ -663,7 +663,7 @@ async function buildSiteLayoutReviewHtml(){
   responsiveCount=spec.children.length;
  }
  const appliedNotice=appliedDoc.createElement('p');
- appliedNotice.textContent='Review of '+appliedChanges.length+' publishable text or style edits and '+responsiveCount+' responsive sibling blocks inside the existing website layout. Unapproved freeform positions and structural canvas changes are excluded. This is not a published page.';
+ appliedNotice.textContent='Review of '+appliedChanges.length+' publishable text or style edits and '+responsiveCount+' '+(responsiveGroup?.containerChildren?'responsive cards or CV rows':'responsive sibling blocks')+'. Original page markup is retained. Nothing has been published.';
  appliedNotice.style.cssText='font:14px/1.5 system-ui,sans-serif;padding:12px;background:#fff;border:1px solid #888';
  appliedRoot.prepend(appliedNotice);
  const appliedHtml='<!doctype html>\n'+appliedDoc.documentElement.outerHTML;
