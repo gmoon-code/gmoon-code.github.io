@@ -66,7 +66,8 @@
     const total=state.dirty.size+moved+layoutGroups().length+state.additions.length;
     $("changeCount").textContent=state.dirty.size+" edited element"+(state.dirty.size===1?"":"s")+
       (moved?" · "+moved+" moved section"+(moved===1?"":"s"):"")+
-      (layoutGroups().length?" · "+layoutGroups().length+" responsive layout group"+(layoutGroups().length===1?"":"s"):"");
+      (layoutGroups().length?" · "+layoutGroups().length+" responsive layout group"+(layoutGroups().length===1?"":"s"):"")+
+      (state.additions.length?" · "+state.additions.length+" added content block"+(state.additions.length===1?"":"s"):"");
     $("exportBtn").disabled=!total;
     $("reviewBtn").disabled=!total;
     $("resetBtn").disabled=!total;
