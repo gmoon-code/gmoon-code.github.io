@@ -2162,9 +2162,10 @@ test('actual Home and CV pages support two independent published card groups eac
       };
     },html);
     const markerCount=(inspected.sheet.match(/\/\* Reviewed responsive group/g)||[]).length;
-    expect({filename,markerCount,note:inspected.note,selected:await page.locator('#responsiveGroupCount').textContent(),
+    if(markerCount!==2)throw Error('Unexpected group stylesheet '+JSON.stringify({
+      filename,markerCount,note:inspected.note,selected:await page.locator('#responsiveGroupCount').textContent(),
       headings:inspected.sheet.split('/* Reviewed responsive group').slice(1).map(piece=>piece.match(/main ([^\n{]+)/)?.[1]||'unknown')
-    }).toMatchObject({markerCount:2});
+    }));
     await page.locator('#sitePreviewDialog').screenshot({
       path:'test-results/layout-previews/'+filename.replace('.html','')+'-two-groups-desktop.png'
     });
