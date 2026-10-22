@@ -208,7 +208,13 @@
               <option value="first-wide">First column wider (8 / 4)</option>
               <option value="second-wide">Second column wider (4 / 8)</option>
               <option value="three">Three equal columns</option>
+              <option value="custom">Custom two-column split</option>
             </select>
+            <div id="directLayoutCustomField" hidden>
+              <label for="directLayoutCustomColumns">First column width (of 12 grid columns)</label>
+              <input id="directLayoutCustomColumns" type="range" min="2" max="10" step="1" value="7">
+              <output id="directLayoutCustomValue" for="directLayoutCustomColumns">7 / 5 columns</output>
+            </div>
             <button id="directLayoutApply" type="button" class="secondary">Apply responsive arrangement</button>
             <button id="directLayoutRemove" type="button" class="secondary" disabled>Remove this arrangement</button>
             <p id="directLayoutStatus" role="status" class="small-note">Select a heading, paragraph or card to arrange its immediate section.</p>
