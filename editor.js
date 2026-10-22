@@ -960,6 +960,23 @@
       notice("This content cannot be rearranged safely. "+error.message,"Move stopped");
     }
   }
+
+  function restoreReviewedBlockOrder(index){
+    const group=state.blockOrders[index];
+    if(!group)return;
+    checkpoint();
+    const nodes=group.originalKeys.map(key=>getWorking(key));
+    nodes[0].before(...nodes);
+    state.blockOrders.splice(index,1);
+    renderPreview();
+    saveDraft();
+    updateStatus("Original content order restored · Not published");
+    const modal=$("reviewDialog");
+    if(modal.open)modal.close();
+    if(state.dirty.size||state.additions.length||layoutGroups().length||
+       state.removals.length||state.blockOrders.length||
+       state.sectionOrder.some((id,i)=>id!==state.originalSections[i]))reviewChanges();
+  }
   function exportBlockOrders(html){
     const groups=validateBlockOrders(state.blockOrders);
     const edits=[];
@@ -1054,6 +1071,11 @@
       if(target&&state.additions.some(item=>
         original.querySelector("main "+parent)?.contains(original.querySelector("main "+item.selector))))
         throw Error("New content inside this group must be reviewed separately before arranging it");
+      if(target&&state.blockOrders.some(group=>{
+        const root=state.doc.querySelector("main");
+        const container=root?.querySelector(parent);
+        return group.originalKeys.some(key=>container?.contains(getWorking(key)));
+      }))throw Error("Undo block rearrangements in this section before applying a responsive grid");
       if(target&&state.removals.some(item=>{
         const root=state.doc.querySelector("main");
         const group=root?.querySelector(parent);
@@ -1628,7 +1650,7 @@
       return null;
     if(node.hasAttribute("id")||node.hasAttribute("name")||
        node.querySelector("[id],[name],script,button,form,iframe"))return null;
-    if(state.stagedMedia?.key===key)return null;
+    if(state.stagedMedia?.key===key||state.blockOrders.some(group=>group.originalKeys.includes(key)))return null;
     // Check the working markup independently of the dirty bookkeeping so a
     // just-typed inspector change cannot be silently discarded by removal.
     if(cleanOuter(node)!==state.original.get(key))return null;
@@ -1983,6 +2005,10 @@
       notice("The selected element no longer has a unique source position. Review the page structure first.","Cannot add content");return;
     }
     const sourceNode=matches[0];
+    if(state.blockOrders.some(group=>group.originalKeys.includes(state.selected))){
+      notice("Restore the original order of these blocks before attaching new content to one of them.","Insertion unavailable");
+      return;
+    }
     const proposed={page:state.page,selector,tag:node.tagName.toLowerCase(),
       before:sourceNode.textContent.trim().replace(/\s+/g," "),kind,text};
     if(kind==="heading")proposed.headingTag=$("insertHeadingLevel").value;
@@ -2088,6 +2114,7 @@
       (layoutGroups().length?" · "+layoutGroups().length+" responsive layout group"+(layoutGroups().length===1?"":"s"):"")+
       (state.additions.length?" · "+state.additions.length+" added content block"+(state.additions.length===1?"":"s"):"")+
       (state.removals.length?" · "+state.removals.length+" removed source block"+(state.removals.length===1?"":"s"):"")+
+      (state.blockOrders.length?" · "+state.blockOrders.length+" rearranged content group"+(state.blockOrders.length===1?"":"s"):"")+
       " on "+$("pagePicker").selectedOptions[0]?.textContent+".";
     const previewText=(node)=>{
       if (!node) return "";
@@ -2148,6 +2175,27 @@
       }
       list.appendChild(item);
     }
+    state.blockOrders.forEach((group,index)=>{
+      const section=document.createElement("section");
+      section.className="review-change";
+      const h=document.createElement("h3");
+      h.textContent="Rearranged existing content group "+(index+1);
+      const detail=document.createElement("p");
+      const describe=key=>{
+        const node=getWorking(key);
+        const value=node?.tagName==="IMG"?(node.getAttribute("alt")||"Image"):
+          (node?.textContent||"").trim().replace(/\s+/g," ");
+        return value.length>72?value.slice(0,72)+"…":value;
+      };
+      detail.textContent="Original order\n"+group.originalKeys.map(describe).join(" → ")+
+        "\nCurrent order\n"+group.keys.map(describe).join(" → ");
+      detail.style.whiteSpace="pre-wrap";
+      const restore=document.createElement("button");
+      restore.type="button";restore.textContent="Restore original block order";
+      restore.setAttribute("aria-label","Restore reordered content group "+(index+1));
+      restore.addEventListener("click",()=>restoreReviewedBlockOrder(index));
+      section.append(h,detail,restore);list.append(section);
+    });
     state.removals.forEach((removal,index)=>{
       const section=document.createElement("section");section.className="review-change";
       const heading=document.createElement("h3");
@@ -2413,7 +2461,7 @@
     if(!preparedText.length&&!preparedStyles.length&&!preparedGroups.length&&!preparedAdditions.length)return rejectHandoff();
     let existingDraft=false;
     try{existingDraft=localStorage.getItem(DRAFT_PREFIX+page)!==null}catch{existingDraft=true}
-    if(existingDraft||state.dirty.size||state.staleDraft||layoutGroups().length||state.additions.length||state.removals.length){
+    if(existingDraft||state.dirty.size||state.staleDraft||layoutGroups().length||state.additions.length||state.removals.length||state.blockOrders.length){
       notice("The page already has a local draft. Review or export that draft before transferring changes.","Transfer not applied");
       return false;
     }
