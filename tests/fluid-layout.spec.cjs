@@ -531,7 +531,7 @@ test('website preview audits links, lists, tables and block overlap counts', asy
   await page.locator('#importPage').click();
   await page.locator('#viewSitePreview').click();
   await expect(page.locator('#sitePreviewAudit')).toContainText('1 links, 1 list items, 1 tables');
-  await expect(page.locator('#sitePreviewAudit')).toContainText('Possible block overlaps:');
+  await expect(page.locator('#sitePreviewAudit')).toContainText('Canvas proposal overlaps (excluded from publishable edits):');
   const html=await page.locator('#sitePreviewFrame').getAttribute('srcdoc');
   expect(html).toContain('Text-only imports do not preserve their formatting or interactions');
 });
