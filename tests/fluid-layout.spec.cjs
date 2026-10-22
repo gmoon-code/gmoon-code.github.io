@@ -2882,8 +2882,13 @@ test('image can be resized by a direct drag handle and keyboard-accessible inspe
  await page.locator('#undoBtn').click();
  await expect.poll(async()=>image.evaluate(el=>el.style.width)).toBe('60%');
  await image.click();
- await page.locator('#imageWidthPercent').fill('45');
- await page.locator('#imageWidthPercent').dispatchEvent('change');
+ await page.locator('#imageWidthPercent').focus();
+ await page.locator('#imageWidthPercent').press('Home');
+ await expect(page.locator('#imageWidthValue')).toHaveText('20%');
+ await page.locator('#imageWidthPercent').evaluate(element=>{
+  element.value='45';
+  element.dispatchEvent(new Event('change',{bubbles:true}));
+ });
  await expect(page.locator('#imageWidthValue')).toHaveText('45%');
  await expect.poll(async()=>image.evaluate(el=>el.style.width)).toBe('45%');
  const download=page.waitForEvent('download');
