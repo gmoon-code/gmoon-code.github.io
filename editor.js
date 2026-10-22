@@ -1256,6 +1256,20 @@
       updateStatus("New "+kind+" added to local draft · Not published");
     }catch(error){notice("The content could not be added. "+error.message,"Insertion not applied")}
   }
+  function moveReviewedAddition(index,direction){
+    const item=state.additions[index];
+    if(!item||![-1,1].includes(direction))return;
+    const siblings=state.additions.map((entry,i)=>entry.selector===item.selector?i:-1).filter(i=>i>=0);
+    const adjacent=siblings[siblings.indexOf(index)+direction];
+    if(adjacent===undefined)return;
+    checkpoint();
+    [state.additions[index],state.additions[adjacent]]=[state.additions[adjacent],state.additions[index]];
+    renderPreview();
+    saveDraft();
+    updateStatus("New content order updated · Not published");
+    const modal=$("reviewDialog");
+    if(modal.open){modal.close();reviewChanges();}
+  }
   function modifyReviewedAddition(index,remove=false){
     const previous=state.additions[index];
     if(!previous)return;
@@ -1371,7 +1385,17 @@
       remove.type='button';remove.textContent='Remove addition';
       remove.setAttribute('aria-label','Remove added '+insertionKind(item)+' '+(index+1));
       remove.addEventListener('click',()=>modifyReviewedAddition(index,true));
-      el.append(title,text,edit,remove);list.append(el);
+      const siblings=state.additions.map((entry,i)=>entry.selector===item.selector?i:-1).filter(i=>i>=0);
+      const position=siblings.indexOf(index);
+      const up=document.createElement('button');
+      up.type='button';up.textContent='Move earlier';up.disabled=position===0;
+      up.setAttribute('aria-label','Move added '+insertionKind(item)+' '+(index+1)+' earlier');
+      up.addEventListener('click',()=>moveReviewedAddition(index,-1));
+      const down=document.createElement('button');
+      down.type='button';down.textContent='Move later';down.disabled=position===siblings.length-1;
+      down.setAttribute('aria-label','Move added '+insertionKind(item)+' '+(index+1)+' later');
+      down.addEventListener('click',()=>moveReviewedAddition(index,1));
+      el.append(title,text,up,down,edit,remove);list.append(el);
     });
     if(layoutGroups().length){
       const layout=document.createElement("section");
