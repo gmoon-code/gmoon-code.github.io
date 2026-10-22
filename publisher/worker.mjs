@@ -176,6 +176,30 @@ function validateResponsiveGridCss(css){
    desktop.children.length===mobile.children.length&&
    desktop.children.every((item,i)=>item.target===mobile.children[i].target);
 }
+function validateResponsiveStylesheet(css){
+ if(typeof css!=="string"||css.length>50000)return false;
+ const blocks=css.trim().split(/\n(?=\/\* Reviewed responsive group\. Existing page markup remains unchanged\. \*\/)/);
+ if(!blocks.length||blocks.length>6)return false;
+ const parents=new Set(),allChildren=new Set();
+ for(const block of blocks){
+  if(!validateResponsiveGridCss(block))return false;
+  const parent=block.match(/@media\(min-width:701px\)\{\nmain ([^\n{]+)\{/)[1];
+  if(parents.has(parent))return false;
+  for(const existing of parents){
+   if(parent.startsWith(existing+" > ")||existing.startsWith(parent+" > "))return false;
+  }
+  parents.add(parent);
+  const lines=block.split("\n").filter(line=>line.startsWith("main "));
+  for(const rule of lines){
+   const child=rule.match(/^main (.+)\{grid-column:/)?.[1];
+   if(child){
+    if(allChildren.has(child))return false;
+    allChildren.add(child);
+   }
+  }
+ }
+ return true;
+}
 function stripApprovedGridStyle(previous,edited){
  const marker='<style id="moon-responsive-group-layout">';
  if(!edited.includes("moon-responsive-group-layout"))return edited;
@@ -185,7 +209,7 @@ function stripApprovedGridStyle(previous,edited){
  if(start<0||edited.indexOf(marker,start+marker.length)!==-1)
   throw Error("Invalid responsive layout stylesheet");
  const end=edited.indexOf("</style>",start+marker.length);
- if(end<0||!validateResponsiveGridCss(edited.slice(start+marker.length,end)))
+ if(end<0||!validateResponsiveStylesheet(edited.slice(start+marker.length,end)))
   throw Error("Responsive layout CSS failed the publisher safety checks");
  return edited.slice(0,start)+edited.slice(end+"</style>".length);
 }
