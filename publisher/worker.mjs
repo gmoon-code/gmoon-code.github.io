@@ -138,7 +138,7 @@ function validateResponsiveGridCss(css){
  const wrapper=css.trim().match(/^\/\* Reviewed responsive group\. Existing page markup remains unchanged\. \*\/\n@media\(min-width:701px\)\{\n([\s\S]*?)\n\}\n@media\(max-width:700px\)\{\n([\s\S]*?)\n\}$/);
  if(!wrapper)return false;
  const selector=/^(?:#[A-Za-z][A-Za-z0-9_-]*|[a-z][a-z0-9-]*:nth-of-type\([1-9][0-9]*\))(?: > [a-z][a-z0-9-]*:nth-of-type\([1-9][0-9]*\))*$/;
- const parentRule=/^main (.+)\{display:grid;grid-template-columns:repeat\(12,minmax\(0,1fr\)\);grid-auto-rows:minmax\(40px,auto\);column-gap:12px;row-gap:8px;align-items:start;\}$/;
+ const parentRule=/^main (.+)\{display:grid;grid-template-columns:repeat\(12,minmax\(0,1fr\)\);grid-auto-rows:minmax\(0,auto\);column-gap:12px;row-gap:8px;align-items:start;\}$/;
  const childRule=/^main (.+)\{grid-column:(\d{1,2}) \/ span (\d{1,2});grid-row:(\d{1,3}) \/ span (\d{1,2});min-width:0;\}$/;
  const parse=content=>{
   const lines=content.split("\n");
