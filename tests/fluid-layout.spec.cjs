@@ -2127,3 +2127,48 @@ test('forged overlapping multi-group payload is refused atomically by the main e
   await expect(page.locator('#noticeMessage')).toContainText('No edits were applied');
   expect(await page.evaluate(()=>localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'))).toBeNull();
 });
+
+test('actual Home and CV pages support two independent published card groups each', async ({ page }) => {
+  test.setTimeout(120000);
+  const fs=require('node:fs');
+  fs.mkdirSync('test-results/layout-previews',{recursive:true});
+  for(const filename of ['index.html','cv.html']){
+    await page.locator('#sourcePage').selectOption(filename);
+    page.once('dialog', dialog=>dialog.accept());
+    await page.locator('#importPage').click();
+    await expect(page.locator('#status')).toContainText('Imported');
+    await page.locator('#findContainerGroups').click();
+    const options=await page.locator('#containerGroupPicker option').count();
+    expect(options).toBeGreaterThan(2);
+    await page.locator('#applyContainerGroup').click();
+    await expect(page.locator('#responsiveGroupCount')).toContainText('1 responsive group');
+    let selected=false;
+    for(let i=1;i<options-1;i++){
+      await page.locator('#containerGroupPicker').selectOption(String(i));
+      await page.locator('#applyContainerGroup').click();
+      if((await page.locator('#responsiveGroupCount').textContent()).includes('2 responsive groups')){selected=true;break}
+    }
+    expect(selected).toBe(true);
+    await page.locator('#viewSitePreview').click();
+    await page.locator('#previewSiteApplied').click();
+    const html=await page.locator('#sitePreviewFrame').getAttribute('srcdoc');
+    expect((html.match(/Reviewed responsive group/g)||[])).toHaveLength(2);
+    await page.locator('#sitePreviewDialog').screenshot({
+      path:'test-results/layout-previews/'+filename.replace('.html','')+'-two-groups-desktop.png'
+    });
+    await page.locator('#previewSiteMobile').click();
+    await page.locator('#sitePreviewDialog').screenshot({
+      path:'test-results/layout-previews/'+filename.replace('.html','')+'-two-groups-mobile.png'
+    });
+    await page.locator('#closeSitePreview').click();
+    page.on('dialog',dialog=>dialog.accept());
+    await page.locator('#openPublisher').click();
+    await expect(page.locator('#editorSaveStatus')).toContainText('transferred');
+    await page.locator('#reviewBtn').click();
+    await expect(page.locator('#reviewChangeList')).toContainText('2 sections');
+    await page.locator('#reviewDialog form button').click();
+    await page.goto('http://127.0.0.1:8765/fluid-layout-lab.html');
+    await page.evaluate(()=>localStorage.clear());
+    await page.reload();
+  }
+});
