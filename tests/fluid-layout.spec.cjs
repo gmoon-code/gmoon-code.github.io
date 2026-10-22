@@ -3656,7 +3656,7 @@ test('floating toolbar stays inside narrow viewport and follows light/dark previ
  await page.locator('#exportBtn').click();
  const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
  expect(html).not.toContain('moon-quick-toolbar');
- expect(html).toContain('<p>Read on smaller screens.</p>');
+ expect(html).toContain('<p style="text-align: right;">Read on smaller screens.</p>');
 });
 test('new paragraph uses responsive width, centre alignment and exact spacing in reviewed export',async({page})=>{
  await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
