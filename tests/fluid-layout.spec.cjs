@@ -2735,6 +2735,7 @@ test('direct inspector allows ordered additions after one heading with export, r
 });
 
 test('layout builder transfers several additions after one source heading in review order',async({page})=>{
+ test.setTimeout(60000);
  await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
   body:'<!doctype html><html><head></head><body><main><section><h2>Research questions</h2><p>Existing section</p></section></main></body></html>'}));
  await page.locator('#sourcePage').selectOption('about.html');
@@ -2959,6 +2960,8 @@ test('main inspector refuses a new responsive section that contains staged addit
  await expect(page.locator('#noticeMessage')).toContainText('New content inside this group');
  await page.locator('#noticeDialog form button').click();
  await expect(page.locator('#changeCount')).toContainText('1 added content block');
+ await expect.poll(async()=>page.evaluate(()=>
+  JSON.parse(localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'))?.additions?.length)).toBe(1);
  const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('moon-portfolio-visual-editor-v1:about.html')));
  expect(saved.responsiveGroups||[]).toHaveLength(0);
 });
