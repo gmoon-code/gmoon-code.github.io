@@ -497,7 +497,7 @@
 
   function updateNumericInspectorStyle(property,field,unit,min,max){
     const value=$(field).value.trim();
-    if(value!==""&&(!/^\\d+$/.test(value)||Number(value)<min||Number(value)>max)){
+    if(value!==""&&(!/^\d+$/.test(value)||Number(value)<min||Number(value)>max)){
       notice("Enter a whole number between "+min+" and "+max+", or leave the field blank to use the page style.","Invalid style");
       const selected=state.frameDoc?.querySelector('[data-editor-key="'+state.selected+'"]');
       if(selected)updateInspector(selected);
@@ -563,7 +563,8 @@
       event.preventDefault();event.stopPropagation();
       checkpoint();
       state.resizeStart={pointerId:event.pointerId,startX:event.clientX,
-        startPercent:img.getBoundingClientRect().width/parentWidth*100,parentWidth};
+        startPercent:/^\d+%$/.test(img.style.width)?Number.parseInt(img.style.width,10):
+          img.getBoundingClientRect().width/parentWidth*100,parentWidth};
       handle.setPointerCapture(event.pointerId);
     });
     handle.addEventListener("pointermove",event=>{
