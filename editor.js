@@ -35,7 +35,7 @@
     selected:null,history:[],redo:[],fingerprint:"",loadToken:0,saveTimer:null,staleDraft:false,
     originalSections:[],sectionGroups:[],sectionOrder:[],mediaAssets:null,mediaPromise:null,
     stagedMedia:null,responsiveGroup:null,responsiveGroups:[],additions:[],resizeStart:null,imageSliderActive:false,
-    pageFindKeys:[],pageFindIndex:-1,mediaChooseInsert:false,removals:[],selectedAddition:null,blockOrders:[],columnPointer:null,blockPointer:null,addedPointer:null
+    pageFindKeys:[],pageFindIndex:-1,mediaChooseInsert:false,removals:[],selectedAddition:null,blockOrders:[],columnPointer:null,blockPointer:null,addedPointer:null,addedWidthPointer:null,addedBlockSliderActive:false
   };
 
   function hashText(text) {
@@ -323,6 +323,7 @@
   function renderPreview(reselectKey=null,reselectAddition=null) {
     state.selected=null;
     state.selectedAddition=null;
+    state.addedBlockSliderActive=false;
     $("addedBlockDetails").hidden=true;
     $("selectionDetails").hidden=true;
     $("selectionEmpty").hidden=false;
@@ -343,10 +344,12 @@
         d.addEventListener("scroll",positionImageResizeHandle,true);
         d.addEventListener("scroll",positionBlockMoveHandle,true);
         d.addEventListener("scroll",positionAddedMoveHandle,true);
+        d.addEventListener("scroll",positionAddedWidthHandle,true);
         d.addEventListener("scroll",positionColumnResizeHandle,true);
         d.defaultView.addEventListener("resize",positionImageResizeHandle);
         d.defaultView.addEventListener("resize",positionBlockMoveHandle);
         d.defaultView.addEventListener("resize",positionAddedMoveHandle);
+        d.defaultView.addEventListener("resize",positionAddedWidthHandle);
         d.defaultView.addEventListener("resize",positionColumnResizeHandle);
 
         refreshPageFind();
@@ -580,6 +583,7 @@
       state.frameDoc.getElementById("moon-image-resize-handle").remove();
     state.frameDoc.getElementById("moon-column-resize-handle")?.remove();
     state.frameDoc.getElementById("moon-added-block-move-handle")?.remove();
+    state.frameDoc.getElementById("moon-added-block-width-handle")?.remove();
     node.setAttribute("data-editor-selected","");
     if (TEXT_TAGS.has(node.tagName)) node.setAttribute("contenteditable","true");
     updateInspector(node);
@@ -603,11 +607,20 @@
     state.frameDoc.getElementById("moon-block-move-handle")?.remove();
     state.frameDoc.getElementById("moon-column-resize-handle")?.remove();
     state.frameDoc.getElementById("moon-added-block-move-handle")?.remove();
+    state.frameDoc.getElementById("moon-added-block-width-handle")?.remove();
     $("selectionDetails").hidden=true;
     $("selectionEmpty").hidden=true;
     $("selectionTag").textContent="New "+insertionKind(addition);
     $("addedBlockDetails").hidden=false;
     state.imageSliderActive=false;
+    state.addedBlockSliderActive=false;
+    const layout=addedBlockLayout(addition);
+    $("addedBlockAlign").value=layout.align;
+    $("addedBlockWidth").value=String(layout.widthPercent);
+    $("addedBlockWidthValue").textContent=layout.widthPercent+"%";
+    $("addedBlockSpaceAbove").value=String(layout.spaceAbove);
+    $("addedBlockSpaceBelow").value=String(layout.spaceBelow);
+    $("resetAddedBlockLayout").disabled=!addition.layout;
     const kind=insertionKind(addition);
     $("addedBlockKind").textContent=kind==="image"?"Existing website image":kind;
     $("addedBlockTextLabel").textContent=kind==="image"?"Image description (alt text)":"Block text";
@@ -648,6 +661,7 @@
     updateAddedAnchorButton();
     if(siblings.length>1||anchors.some(a=>a.selector!==addition.selector))
       createAddedMoveHandle();
+    if(kind!=="image")createAddedWidthHandle();
   }
   function applyAddedBlock(){
     const index=state.selectedAddition,original=state.additions[index];
@@ -1929,6 +1943,36 @@
     }catch{return false}
   }
   function insertionKind(s){return s?.kind||"paragraph"}
+  const ADDED_LAYOUT_DEFAULT={align:"left",widthPercent:100,spaceAbove:0,spaceBelow:0};
+  function addedBlockLayout(item){return {...ADDED_LAYOUT_DEFAULT,...(item?.layout||{})};}
+  function isDefaultAddedLayout(layout){
+    return Object.keys(ADDED_LAYOUT_DEFAULT).every(k=>layout[k]===ADDED_LAYOUT_DEFAULT[k]);
+  }
+  function validateAddedLayout(value){
+    if(value===undefined)return;
+    if(!value||typeof value!=="object"||Array.isArray(value)||
+      Object.keys(value).length!==4||
+      Object.keys(ADDED_LAYOUT_DEFAULT).some(k=>!Object.hasOwn(value,k))||
+      !["left","center","right"].includes(value.align)||
+      !Number.isInteger(value.widthPercent)||value.widthPercent<30||
+      value.widthPercent>100||value.widthPercent%5!==0||
+      !Number.isInteger(value.spaceAbove)||value.spaceAbove<0||
+      value.spaceAbove>80||value.spaceAbove%5!==0||
+      !Number.isInteger(value.spaceBelow)||value.spaceBelow<0||
+      value.spaceBelow>80||value.spaceBelow%5!==0)
+      throw Error("Invalid added block layout");
+  }
+  function addedBlockStyle(item){
+    if(!item?.layout)return "";
+    const layout=addedBlockLayout(item),rules=[];
+    if(layout.widthPercent!==100)rules.push("width:"+layout.widthPercent+"%","max-width:100%","box-sizing:border-box");
+    if(layout.align==="center")rules.push("text-align:center","margin-left:auto","margin-right:auto");
+    else if(layout.align==="right")rules.push("text-align:right","margin-left:auto","margin-right:0");
+    else if(layout.widthPercent!==100)rules.push("margin-left:0","margin-right:auto");
+    if(layout.spaceAbove)rules.push("margin-top:"+layout.spaceAbove+"px");
+    if(layout.spaceBelow)rules.push("margin-bottom:"+layout.spaceBelow+"px");
+    return rules.join(";");
+  }
   function safeExistingImagePath(path){
     return typeof path==="string"&&path.length<=220&&IMAGE_PATH.test(path)&&
       !path.includes("..")&&!path.includes("//");
@@ -1953,6 +1997,7 @@
           item.widthPercent!==undefined)||
         item.page!==state.page)
         throw Error("Invalid "+kind+" insertion");
+      validateAddedLayout(item.layout);
       let matches;
       try{matches=[...root.querySelectorAll(item.selector)]}catch{throw Error("Invalid content anchor")}
       if(matches.length!==1||matches[0].tagName.toLowerCase()!==item.tag||
@@ -1965,7 +2010,8 @@
       out.push({page:item.page,selector:item.selector,tag:item.tag,before:item.before,text:item.text,
         kind,...(kind==="heading"?{headingTag:item.headingTag}:{}),...(kind==="link"?{href:item.href}:{}),
         ...(kind==="image"?{src:item.src,...(item.widthPercent!==undefined?
-          {widthPercent:item.widthPercent}:{})}:{})});
+          {widthPercent:item.widthPercent}:{})}:{}),
+        ...(item.layout!==undefined?{layout:{...item.layout}}:{})});
     }
     return out;
   }
@@ -1975,9 +2021,12 @@
   function createAdditionElement(doc,item){
     const kind=insertionKind(item);
     if(kind==="heading"){
-      const node=doc.createElement(item.headingTag);node.textContent=item.text;return node;
+      const node=doc.createElement(item.headingTag);node.textContent=item.text;
+      if(addedBlockStyle(item))node.setAttribute("style",addedBlockStyle(item));
+      return node;
     }
     const node=doc.createElement("p");
+    if(addedBlockStyle(item))node.setAttribute("style",addedBlockStyle(item));
     if(kind==="image"){
       const img=doc.createElement("img");
       img.setAttribute("src",item.src);
@@ -1997,15 +2046,16 @@
     return node;
   }
   function additionHtml(item){
-    const text=escapePlainText(item.text);
+    const text=escapePlainText(item.text),css=addedBlockStyle(item);
+    const style=css?' style="'+css+'"':"";
     if(insertionKind(item)==="image")return '<p><img src="'+item.src+
       '" alt="'+text.replace(/"/g,"&quot;").replace(/'/g,"&#39;")+
       '" loading="lazy" style="max-width:100%;height:auto'+
         (item.widthPercent===undefined?"":";width:"+item.widthPercent+"%")+'"></p>';
-    if(insertionKind(item)==="heading")return "<"+item.headingTag+">"+text+"</"+item.headingTag+">";
-    if(insertionKind(item)==="link")return "<p><a href=\""+escapePlainText(item.href)+"\""+
+    if(insertionKind(item)==="heading")return "<"+item.headingTag+style+">"+text+"</"+item.headingTag+">";
+    if(insertionKind(item)==="link")return "<p"+style+"><a href=\""+escapePlainText(item.href)+"\""+
       (/^https:\/\//i.test(item.href)?" rel=\"noopener noreferrer\"":"")+">"+text+"</a></p>";
-    return "<p>"+text+"</p>";
+    return "<p"+style+">"+text+"</p>";
   }
 
   // Removal proposals retain the original source in the working document.
