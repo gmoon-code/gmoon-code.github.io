@@ -1883,7 +1883,7 @@ test('capture original-site desktop and mobile card and CV row previews', async 
     await page.locator('#importPage').click();
     await expect(page.locator('#status')).toContainText('Imported');
     await page.locator('#findContainerGroups').click();
-    await expect(page.locator('#containerGroupPicker option').nth(1)).toBeVisible();
+    await expect.poll(async()=>page.locator('#containerGroupPicker option').count()).toBeGreaterThan(1);
     await page.locator('#containerColumns').selectOption(preset);
     await page.locator('#applyContainerGroup').click();
     await expect(page.locator('#responsiveGroupStatus')).toContainText('Card or CV row group selected');
