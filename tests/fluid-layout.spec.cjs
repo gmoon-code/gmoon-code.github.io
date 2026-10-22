@@ -2625,3 +2625,60 @@ test('invalid new link edits in main editor leave the last safe URL unchanged',a
  expect(saved.additions[0].href).toBe('research.html');
  expect(saved.additions[0].text).toBe('Valid label');
 });
+
+test('main editor adds a paragraph directly after a selected heading and exports the source safely',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+ body:'<!doctype html><html><head></head><body><main><section id="study"><h2>About research</h2><p>Earlier text</p><a href="research.html">Research link</a></section></main></body></html>'}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ await page.frameLocator('#pageFrame').locator('#study h2').click();
+ await expect(page.locator('#insertContentFields')).toBeVisible();
+ await page.locator('#insertContentText').fill('A new <strong>plain</strong> paragraph.');
+ await page.locator('#insertContentBtn').click();
+ await expect(page.locator('#editorSaveStatus')).toContainText('New paragraph added');
+ await expect(page.locator('#exportBtn')).toBeEnabled();
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).toContain('<p>A new &lt;strong&gt;plain&lt;/strong&gt; paragraph.</p>');
+ expect(html).toContain('href="research.html"');
+ expect(html).toContain('Earlier text');
+ await page.locator('#undoBtn').click();
+ await expect(page.locator('#exportBtn')).toBeDisabled();
+});
+
+test('main editor adds a secure link from the inspector and blocks invalid URLs',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+ body:'<!doctype html><html><head></head><body><main><section><h2>Resources</h2><p>Earlier text</p></section></main></body></html>'}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ await page.frameLocator('#pageFrame').locator('main h2').click();
+ await page.locator('#insertContentKind').selectOption('link');
+ await page.locator('#insertContentText').fill('Related work');
+ await page.locator('#insertLinkHref').fill('javascript:alert(1)');
+ await page.locator('#insertContentBtn').click();
+ await expect(page.locator('#noticeMessage')).toContainText('Invalid link insertion');
+ await page.locator('#noticeDialog').getByRole('button').last().click();
+ await page.locator('#insertLinkHref').fill('research.html');
+ await page.locator('#insertContentBtn').click();
+ await expect(page.locator('#editorSaveStatus')).toContainText('New link added');
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).toContain('<p><a href="research.html">Related work</a></p>');
+});
+
+test('main editor creates a heading and preserves its addition after a reload',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+ body:'<!doctype html><html><head></head><body><main><section><h2>Existing heading</h2><p>Existing paragraph</p></section></main></body></html>'}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ await page.frameLocator('#pageFrame').locator('main h2').click();
+ await page.locator('#insertContentKind').selectOption('heading');
+ await page.locator('#insertHeadingLevel').selectOption('h3');
+ await page.locator('#insertContentText').fill('New subsection');
+ await page.locator('#insertContentBtn').click();
+ await expect(page.locator('#editorSaveStatus')).toContainText('New heading added');
+ await expect.poll(async()=>page.evaluate(()=>JSON.parse(localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'))?.additions?.length||0)).toBe(1);
+ await page.reload();
+ await expect(page.locator('#exportBtn')).toBeEnabled();
+ await page.locator('#reviewBtn').click();
+ await expect(page.locator('#reviewChangeList')).toContainText('New heading');
+});
