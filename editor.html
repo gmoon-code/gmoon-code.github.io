@@ -256,6 +256,37 @@
             <p id="removeSourceHelp" class="small-note" role="status">Select an eligible paragraph, heading or image to remove it. Removed source can be restored in Review changes or through Undo.</p>
           </div>
         </div>
+        <div id="addedBlockDetails" class="inspector-group added-block-editor" hidden>
+          <h3>Edit newly added block</h3>
+          <p class="small-note">This block is part of your local draft. Edit its content here, or remove it without changing the original page.</p>
+          <p id="addedBlockKind" class="selection-tag">Paragraph</p>
+          <label id="addedBlockTextLabel" for="addedBlockText">Block text</label>
+          <textarea id="addedBlockText" rows="5" maxlength="2000" spellcheck="true"></textarea>
+          <div id="addedBlockHeadingField" hidden>
+            <label for="addedBlockHeadingLevel">Heading level</label>
+            <select id="addedBlockHeadingLevel">
+              <option value="h2">Section heading</option>
+              <option value="h3">Subheading</option>
+            </select>
+          </div>
+          <div id="addedBlockLinkField" hidden>
+            <label for="addedBlockHref">Link destination</label>
+            <input id="addedBlockHref" type="text" spellcheck="false" autocomplete="off">
+          </div>
+          <div id="addedBlockImageField" hidden>
+            <label for="addedBlockSrc">Existing image path</label>
+            <input id="addedBlockSrc" type="text" spellcheck="false" autocomplete="off">
+            <button type="button" id="chooseAddedImageBtn" class="secondary">Browse existing images</button>
+          </div>
+          <button type="button" id="applyAddedBlockBtn" class="primary">Apply block edits</button>
+          <button type="button" id="duplicateAddedBlockBtn" class="secondary">Duplicate this new block</button>
+          <div class="page-find-controls">
+            <button type="button" id="moveAddedEarlierBtn" class="secondary">Move earlier</button>
+            <button type="button" id="moveAddedLaterBtn" class="secondary">Move later</button>
+          </div>
+          <button type="button" id="removeAddedBlockBtn" class="secondary">Remove new block</button>
+          <p id="addedBlockStatus" class="small-note" role="status" aria-live="polite">These changes remain in the browser until exported or reviewed.</p>
+        </div>
         <div class="inspector-footer">
           <h3>Propose changes</h3>
           <p>Connect your authorized GitHub account to create a draft pull request. Nothing is published automatically.</p>
