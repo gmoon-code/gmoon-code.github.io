@@ -1580,3 +1580,29 @@ test('compatible section discovery works on the actual About page source', async
     await expect(page.locator('#responsiveGroupStatus')).toContainText('blocks');
   }
 });
+
+test('report compatible responsive sections across all eight portfolio pages', async ({ page }) => {
+  test.setTimeout(120000);
+  const fs=require('node:fs');
+  const pages=['index.html','research.html','projects.html','teaching.html',
+    'interests.html','about.html','cv.html','pungmul.html'];
+  const report=[];
+  for(const filename of pages){
+    await page.locator('#sourcePage').selectOption(filename);
+    page.once('dialog', dialog=>dialog.accept());
+    await page.locator('#importPage').click();
+    await expect(page.locator('#status')).toContainText('Imported');
+    const imported=await page.locator('#grid .block').count();
+    await page.locator('#findResponsiveGroups').click();
+    await expect(page.locator('#status')).toContainText(/Found \d+ complete text sections|No compatible sections found/);
+    const options=await page.locator('#responsiveGroupPicker option').allTextContents();
+    report.push({page:filename,importedBlocks:imported,compatibleSections:options.length-1,
+      examples:options.slice(1,4)});
+  }
+  fs.mkdirSync('test-results/layout-previews',{recursive:true});
+  fs.writeFileSync('test-results/layout-previews/compatible-sections.json',
+    JSON.stringify({description:'Draft-only responsive group compatibility. No live pages modified.',
+      generatedFrom:'Portfolio source pages in the test branch',pages:report},null,2));
+  expect(report).toHaveLength(8);
+  expect(report.every(row=>row.importedBlocks>0)).toBe(true);
+});
