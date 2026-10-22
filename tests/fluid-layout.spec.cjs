@@ -2154,8 +2154,17 @@ test('actual Home and CV pages support two independent published card groups eac
     await page.locator('#viewSitePreview').click();
     await page.locator('#previewSiteApplied').click();
     const html=await page.locator('#sitePreviewFrame').getAttribute('srcdoc');
-    const sheet=await page.evaluate(markup=>new DOMParser().parseFromString(markup,'text/html').getElementById('moon-responsive-group-layout')?.textContent||'',html);
-    expect((sheet.match(/\/\* Reviewed responsive group/g)||[])).toHaveLength(2);
+    const inspected=await page.evaluate(markup=>{
+      const doc=new DOMParser().parseFromString(markup,'text/html');
+      return {
+        sheet:doc.getElementById('moon-responsive-group-layout')?.textContent||'',
+        note:doc.querySelector('main > p')?.textContent||''
+      };
+    },html);
+    const markerCount=(inspected.sheet.match(/\/\* Reviewed responsive group/g)||[]).length;
+    expect({filename,markerCount,note:inspected.note,selected:await page.locator('#responsiveGroupCount').textContent(),
+      headings:inspected.sheet.split('/* Reviewed responsive group').slice(1).map(piece=>piece.match(/main ([^\n{]+)/)?.[1]||'unknown')
+    }).toMatchObject({markerCount:2});
     await page.locator('#sitePreviewDialog').screenshot({
       path:'test-results/layout-previews/'+filename.replace('.html','')+'-two-groups-desktop.png'
     });
