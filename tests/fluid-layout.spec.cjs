@@ -2729,7 +2729,8 @@ test('direct inspector allows ordered additions after one heading with export, r
  expect(html).toContain('<h2>Title</h2>\n<p>First addition</p>\n<h3>Second addition</h3><p>Body</p>');
  await page.reload();
  await expect(page.locator('#changeCount')).toContainText('2 added content blocks');
- await page.locator('#undoBtn').click();
+ page.once('dialog',dialog=>dialog.accept());
+ await page.locator('#resetBtn').click();
  await expect(page.locator('#exportBtn')).toBeDisabled();
 });
 
