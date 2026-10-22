@@ -185,6 +185,21 @@
             <p class="small-note">Drag the bottom-right handle on the selected image to resize it directly, or use this slider with a mouse or keyboard. Revert this element to restore its original dimensions.</p>
             <p class="small-note">Existing images and staged uploads can be previewed. New files reach the website only after the private publisher is configured and the GitHub review PR is approved.</p>
           </div>
+          <div id="directLayoutFields" class="inspector-group" hidden>
+            <h3>Arrange this section</h3>
+            <p class="small-note">Arrange a complete group of nearby text blocks or cards into responsive columns. Existing links, images, and reading order are preserved.</p>
+            <label for="directLayoutPreset">Desktop arrangement</label>
+            <select id="directLayoutPreset">
+              <option value="stack">One column</option>
+              <option value="two" selected>Two equal columns</option>
+              <option value="first-wide">First column wider (8 / 4)</option>
+              <option value="second-wide">Second column wider (4 / 8)</option>
+              <option value="three">Three equal columns</option>
+            </select>
+            <button id="directLayoutApply" type="button" class="secondary">Apply responsive arrangement</button>
+            <button id="directLayoutRemove" type="button" class="secondary" disabled>Remove this arrangement</button>
+            <p id="directLayoutStatus" role="status" class="small-note">Select a heading, paragraph or card to arrange its immediate section.</p>
+          </div>
           <div id="insertContentFields" class="inspector-group" hidden>
             <h3>Add content below this element</h3>
             <p class="small-note">Add one or several paragraphs, headings, or links after this element. New blocks appear in the order you add them, and the original content stays intact.</p>
