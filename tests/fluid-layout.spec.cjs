@@ -3216,9 +3216,8 @@ test('source removal refuses protected headings, duplicate markup, dirty blocks 
  await page.frameLocator('#pageFrame').locator('main section:nth-of-type(2) p').nth(1).click();
  await page.locator('#insertContentText').fill('A safely added paragraph.');
  await page.locator('#insertContentBtn').click();
- await page.frameLocator('#pageFrame').locator('main section:nth-of-type(2) p').last().click();
- // The original insertion anchor is the second original paragraph, not the new
- // paragraph which has no data-editor-key.
+ // Directly select the verified original anchor without clicking new content
+ // first. That avoids overlapping contextual controls during the assertion.
  await page.frameLocator('#pageFrame').locator('main section:nth-of-type(2) p[data-editor-key]').last().click();
  await expect(page.locator('#removeSourceBtn')).toBeDisabled();
  await expect(page.locator('#changeCount')).toContainText('1 added content block');
@@ -3555,6 +3554,9 @@ test('inline page composer adds a paragraph without inspector navigation and exp
  const composer=page.frameLocator('#pageFrame').getByRole('dialog',{name:'Add content to the page'});
  await expect(composer).toBeVisible();
  await expect(composer.getByLabel('Content type')).toBeFocused();
+ await expect(composer.getByLabel('Heading level')).toBeHidden();
+ await expect(composer.getByLabel('Link destination')).toBeHidden();
+ await expect(composer.getByLabel('Existing image path')).toBeHidden();
  await composer.getByLabel('Text',{exact:true}).fill('A new student-led inquiry.');
  await composer.getByRole('button',{name:'Add to page'}).click();
  const added=page.frameLocator('#pageFrame').locator('[data-editor-added-index]');
@@ -3595,6 +3597,8 @@ test('inline composer supports headings and links from newly inserted blocks wit
  let dialog=page.frameLocator('#pageFrame').getByRole('dialog',{name:'Add content to the page'});
  await dialog.getByLabel('Content type').selectOption('heading');
  await expect(dialog.getByLabel('Heading level')).toBeVisible();
+ await expect(dialog.getByLabel('Link destination')).toBeHidden();
+ await expect(dialog.getByLabel('Existing image path')).toBeHidden();
  await dialog.getByLabel('Heading level').selectOption('h3');
  await dialog.getByLabel('Text',{exact:true}).fill('Student-designed investigations');
  await dialog.getByRole('button',{name:'Add to page'}).click();
@@ -3640,6 +3644,8 @@ test('inline composer rejects unsafe link or image sources, preserves valid exis
  await expect(composer.getByRole('status')).toContainText('Cannot add this content');
  await expect(page.frameLocator('#pageFrame').locator('[data-editor-added-index]')).toHaveCount(0);
  await composer.getByLabel('Content type').selectOption('image');
+ await expect(composer.getByLabel('Link destination')).toBeHidden();
+ await expect(composer.getByLabel('Existing image path')).toBeVisible();
  await composer.getByLabel('Text',{exact:true}).fill('Existing fieldwork photograph');
  await composer.getByLabel('Existing image path').fill('../unsafe.svg');
  await composer.getByRole('button',{name:'Add to page'}).click();
