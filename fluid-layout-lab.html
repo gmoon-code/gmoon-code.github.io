@@ -205,20 +205,20 @@ $('openPublisher').onclick=async()=>{
   $('status').textContent='Handoff blocked: The selected page differs from the source of edited blocks. Re-import the selected page or export your layout draft first.';
   return;
  }
- if(!changed.length&&!responsiveGroup&&sourcePage&&(structureEdited||blocks.some(b=>b.layoutEdited||b.mobile))){
+ if(!changed.length&&!allResponsiveGroups().length&&sourcePage&&(structureEdited||blocks.some(b=>b.layoutEdited||b.mobile))){
   $('status').textContent='Handoff blocked: Only structural or freeform layout changes are present. These cannot transfer to the authenticated editor. Export layout JSON or use the in-context preview to review them.';
   return;
  }
- if(changed.length||responsiveGroup){
-  const approved=new Set(responsiveGroup?.selectors||[]);
+ if(changed.length||allResponsiveGroups().length){
+  const approved=new Set(allResponsiveGroups().flatMap(g=>g.selectors));
   const layoutOnly=structureEdited||blocks.some(b=>!b.source||b.type==='image'||((b.mobile||b.layoutEdited)&&!approved.has(b.source?.selector)));
   try{
    const changes=changedSourceBlocks().length?(await prepareContentChanges()).changes:[];
    const styleChanges=changedStyleBlocks().length?await prepareStyleChanges():[];
-   const layoutGroup=responsiveGroup?responsiveGroupSpec(await freshSourceDocument()):null;
+   const layoutGroups=allResponsiveGroups().length?groupSpecs(await freshSourceDocument()):[];
    const warning=layoutOnly?' Freeform positions, newly added blocks, and images will NOT transfer. Export layout JSON separately if you want to keep a portable copy.':'';
-   if(!confirm('Transfer '+changes.length+' verified text edits, '+styleChanges.length+' visual style edits, and '+(layoutGroup?layoutGroup.children.length:0)+' responsive group blocks to the existing editor?'+warning+' Review them again there before creating a GitHub proposal.'))return;
-   const handoff=JSON.stringify({version:layoutGroup?3:2,page:sourcePage,changes,styleChanges,...(layoutGroup?{layoutGroup}:{})});
+   if(!confirm('Transfer '+changes.length+' verified text edits, '+styleChanges.length+' visual style edits, and '+layoutGroups.reduce((total,g)=>total+g.children.length,0)+' blocks across '+layoutGroups.length+' responsive groups to the existing editor?'+warning+' Review them again there before creating a GitHub proposal.'))return;
+   const handoff=JSON.stringify({version:layoutGroups.length?4:2,page:sourcePage,changes,styleChanges,...(layoutGroups.length?{layoutGroups}:{})});
    if(handoff.length>200000)throw Error('The verified changes exceed the editor transfer limit. Export smaller sets of edits separately.');
    sessionStorage.setItem('moon-fluid-text-handoff-v1',handoff);
    url.searchParams.set('importFluidText','1');
@@ -559,7 +559,7 @@ function reviewPatch(){
  const panel=$('reviewPanel'),entries=$('reviewEntries');
  entries.replaceChildren();
  const texts=changedSourceBlocks(),styles=changedStyleBlocks();
- if(!texts.length&&!styles.length&&!responsiveGroup){
+ if(!texts.length&&!styles.length&&!allResponsiveGroups().length){
   $('status').textContent='No imported text or style changes to review.';
   panel.hidden=true;return;
  }
@@ -578,12 +578,12 @@ function reviewPatch(){
  for(const b of styles)add(b.source.selector,'Style',[
   ...b.styleEdits.map(k=>k+': '+(['fontSize','spaceAbove','spaceBelow'].includes(k)?b[k]+'px':k==='maxWidthPct'?b[k]+'%':b[k]))
  ]);
- if(responsiveGroup)add(responsiveGroup.parentSelector,'Responsive group',[
-   responsiveGroup.selectors.length+' neighbouring text blocks with independent desktop and mobile grid positions',
-   'This group retains its original HTML, links, and accessibility order'
+ for(const group of allResponsiveGroups())add(group.parentSelector,group.containerChildren?'Responsive cards or CV rows':'Responsive text group',[
+   group.selectors.length+' complete content elements with independent desktop and mobile grid positions',
+   'This group retains its original HTML, links, and reading order'
  ]);
  panel.hidden=false;
- $('status').textContent='Reviewing '+texts.length+' text edits, '+styles.length+' visual style edits, and '+(responsiveGroup?1:0)+' responsive group. Source conflicts are checked before transfer.';
+ $('status').textContent='Reviewing '+texts.length+' text edits, '+styles.length+' visual style edits, and '+allResponsiveGroups().length+' responsive groups. Source conflicts are checked before transfer.';
 }
 $('reviewPatch').onclick=reviewPatch;
 async function prepareContentChanges(){
@@ -703,17 +703,16 @@ async function buildSiteLayoutReviewHtml(){
   }
  }
  let responsiveCount=0;
- if(responsiveGroup){
-  const spec=responsiveGroupSpec(doc);
-  const css=MoonResponsiveLayout.cssFor(doc,spec);
+ const approvedSpecs=allResponsiveGroups().length?groupSpecs(doc):[];
+ if(approvedSpecs.length){
   const style=appliedDoc.createElement('style');
   style.id='moon-responsive-group-layout';
-  style.textContent=css;
+  style.textContent=MoonResponsiveLayout.cssForGroups(doc,approvedSpecs);
   appliedDoc.head.append(style);
-  responsiveCount=spec.children.length;
+  responsiveCount=approvedSpecs.reduce((n,s)=>n+s.children.length,0);
  }
  const appliedNotice=appliedDoc.createElement('p');
- appliedNotice.textContent='Review of '+appliedChanges.length+' publishable text or style edits and '+responsiveCount+' '+(responsiveGroup?.containerChildren?'responsive cards or CV rows':'responsive sibling blocks')+'. Original page markup is retained. Nothing has been published.';
+ appliedNotice.textContent='Review of '+appliedChanges.length+' publishable text or style edits and '+responsiveCount+' '+'responsive blocks in '+approvedSpecs.length+' independent groups. Original page markup is retained. Nothing has been published.';
  appliedNotice.style.cssText='font:14px/1.5 system-ui,sans-serif;padding:12px;background:#fff;border:1px solid #888';
  appliedRoot.prepend(appliedNotice);
  const appliedHtml='<!doctype html>\n'+appliedDoc.documentElement.outerHTML;
