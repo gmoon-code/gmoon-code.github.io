@@ -1395,7 +1395,7 @@
       }
     }
     let preparedGroups=[];
-    if(payload.version===3||payload.version===4||payload.version===5){
+    if(payload.version===3||payload.version===4||(payload.version===5&&Array.isArray(payload.layoutGroups)&&payload.layoutGroups.length)){
       if(!window.MoonResponsiveLayout)return rejectHandoff();
       const received=payload.version===3?[payload.layoutGroup]:payload.layoutGroups||[];
       try{
