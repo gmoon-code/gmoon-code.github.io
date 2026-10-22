@@ -35,7 +35,7 @@
     selected:null,history:[],redo:[],fingerprint:"",loadToken:0,saveTimer:null,staleDraft:false,
     originalSections:[],sectionGroups:[],sectionOrder:[],mediaAssets:null,mediaPromise:null,
     stagedMedia:null,responsiveGroup:null,responsiveGroups:[],additions:[],resizeStart:null,imageSliderActive:false,
-    pageFindKeys:[],pageFindIndex:-1,mediaChooseInsert:false,removals:[],selectedAddition:null,blockOrders:[],blockDragKey:null,blockDragKeys:[]
+    pageFindKeys:[],pageFindIndex:-1,mediaChooseInsert:false,removals:[],selectedAddition:null,blockOrders:[],blockPointer:null
   };
 
   function hashText(text) {
@@ -342,9 +342,7 @@
         d.addEventListener("scroll",positionBlockMoveHandle,true);
         d.defaultView.addEventListener("resize",positionImageResizeHandle);
         d.defaultView.addEventListener("resize",positionBlockMoveHandle);
-        d.addEventListener("dragover",onPreviewBlockDragOver,true);
-        d.addEventListener("drop",onPreviewBlockDrop,true);
-        d.addEventListener("dragend",clearPreviewBlockDrag,true);
+
         refreshPageFind();
         if(reselectKey){
           const target=d.querySelector('[data-editor-key="'+reselectKey+'"]');
@@ -981,7 +979,7 @@
   }
   function positionBlockMoveHandle(){
     const doc=state.frameDoc,handle=doc?.getElementById("moon-block-move-handle");
-    if(!handle)return;
+    if(!handle||state.blockPointer)return;
     const node=doc.querySelector('[data-editor-key="'+state.selected+'"]');
     if(!node||!blockMoveCandidate(state.selected)){handle.remove();return;}
     const r=node.getBoundingClientRect(),w=doc.defaultView;
@@ -992,68 +990,82 @@
     handle.style.left=Math.max(0,Math.min(w.innerWidth-32,r.left-27))+"px";
     handle.style.top=Math.max(0,Math.min(w.innerHeight-32,r.top))+"px";
   }
+
+  function pointerBlockTarget(doc,x,y,keys,from,handle){
+    // The grip follows the pointer, so temporarily remove it from hit tests.
+    const former=handle.style.pointerEvents;
+    handle.style.pointerEvents="none";
+    const hit=doc.elementFromPoint(x,y);
+    handle.style.pointerEvents=former;
+    for(let node=hit;node&&node!==doc.body;node=node.parentElement){
+      const key=node.getAttribute?.("data-editor-key");
+      if(key&&key!==from&&keys.includes(key))return node;
+    }
+    return null;
+  }
+  function clearPointerBlockMarks(){
+    const doc=state.frameDoc;
+    if(!doc)return;
+    for(const marked of doc.querySelectorAll("[data-editor-drag-target]"))
+      marked.removeAttribute("data-editor-drag-target");
+  }
   function createBlockMoveHandle(){
     const doc=state.frameDoc;
     if(!doc||doc.getElementById("moon-block-move-handle"))return;
     const handle=doc.createElement("button");
-    handle.id="moon-block-move-handle";handle.type="button";handle.draggable=true;
+    handle.id="moon-block-move-handle";handle.type="button";
     handle.textContent="⠿";
     handle.title="Drag this original content block to a neighbouring position";
     handle.setAttribute("aria-label","Drag selected content block. Keyboard users can use Move block up or Move block down in the inspector.");
-    handle.style.cssText="position:fixed;z-index:2147483646;display:grid;place-items:center;width:30px;height:30px;border:2px solid #27654f;border-radius:5px;background:#fff;color:#174932;cursor:grab;font:700 21px/1 system-ui;box-shadow:0 1px 6px #0004";
+    handle.style.cssText="position:fixed;z-index:2147483646;display:grid;place-items:center;width:30px;height:30px;border:2px solid #27654f;border-radius:5px;background:#fff;color:#174932;cursor:grab;touch-action:none;font:700 21px/1 system-ui;box-shadow:0 1px 6px #0004";
     handle.addEventListener("click",event=>event.stopPropagation());
-    handle.addEventListener("dragstart",event=>{
-      const candidate=blockMoveCandidate(state.selected);
-      if(!candidate){event.preventDefault();return;}
-      state.blockDragKey=state.selected;
-      state.blockDragKeys=candidate.keys.slice();
-      if(event.dataTransfer){
-        event.dataTransfer.effectAllowed="move";
-        event.dataTransfer.setData("text/plain","moon-existing-block");
+    handle.addEventListener("pointerdown",event=>{
+      if(event.button!==0||state.blockPointer)return;
+      const group=blockMoveCandidate(state.selected);
+      if(!group)return;
+      event.preventDefault();event.stopPropagation();
+      const box=handle.getBoundingClientRect();
+      state.blockPointer={id:event.pointerId,from:state.selected,
+        keys:group.keys.slice(),x:event.clientX,y:event.clientY,
+        left:box.left,top:box.top};
+      handle.setPointerCapture(event.pointerId);
+      handle.style.cursor="grabbing";
+    });
+    handle.addEventListener("pointermove",event=>{
+      const drag=state.blockPointer;
+      if(!drag||drag.id!==event.pointerId)return;
+      event.preventDefault();
+      handle.style.left=(drag.left+event.clientX-drag.x)+"px";
+      handle.style.top=(drag.top+event.clientY-drag.y)+"px";
+      clearPointerBlockMarks();
+      const target=pointerBlockTarget(doc,event.clientX,event.clientY,drag.keys,drag.from,handle);
+      if(target){
+        const rect=target.getBoundingClientRect();
+        target.setAttribute("data-editor-drag-target",
+          event.clientY>=rect.top+rect.height/2?"after":"before");
       }
     });
+    const endDrag=event=>{
+      const drag=state.blockPointer;
+      if(!drag||drag.id!==event.pointerId)return;
+      event.preventDefault();
+      const target=event.type==="pointerup"?
+        pointerBlockTarget(doc,event.clientX,event.clientY,drag.keys,drag.from,handle):null;
+      const rect=target?.getBoundingClientRect();
+      const key=target?.getAttribute("data-editor-key");
+      const after=!!rect&&event.clientY>=rect.top+rect.height/2;
+      state.blockPointer=null;
+      if(handle.hasPointerCapture(event.pointerId))
+        handle.releasePointerCapture(event.pointerId);
+      handle.style.cursor="grab";
+      clearPointerBlockMarks();
+      positionBlockMoveHandle();
+      if(key)setTimeout(()=>reorderOriginalRelative(drag.from,key,after),0);
+    };
+    handle.addEventListener("pointerup",endDrag);
+    handle.addEventListener("pointercancel",endDrag);
     doc.body.appendChild(handle);
     positionBlockMoveHandle();
-  }
-  function blockDragTarget(event){
-    if(!state.blockDragKey)return null;
-    const keys=state.blockDragKeys;
-    if(!keys.length)return null;
-    for(let node=event.target;node&&node!==state.frameDoc.body;node=node.parentElement){
-      const key=node.getAttribute?.("data-editor-key");
-      if(key&&key!==state.blockDragKey&&keys.includes(key))return node;
-    }
-    return null;
-  }
-  function clearPreviewBlockDrag(){
-    if(state.frameDoc)for(const node of state.frameDoc.querySelectorAll("[data-editor-drag-target]"))
-      node.removeAttribute("data-editor-drag-target");
-    state.blockDragKey=null;
-    state.blockDragKeys=[];
-  }
-  function onPreviewBlockDragOver(event){
-    if(!state.blockDragKey)return;
-    const target=blockDragTarget(event);
-    for(const marked of state.frameDoc.querySelectorAll("[data-editor-drag-target]"))
-      marked.removeAttribute("data-editor-drag-target");
-    if(!target)return;
-    event.preventDefault();
-    if(event.dataTransfer)event.dataTransfer.dropEffect="move";
-    const r=target.getBoundingClientRect();
-    target.setAttribute("data-editor-drag-target",event.clientY>=r.top+r.height/2?"after":"before");
-  }
-  function onPreviewBlockDrop(event){
-    if(!state.blockDragKey)return;
-    const from=state.blockDragKey,target=blockDragTarget(event);
-    if(!target){clearPreviewBlockDrag();return;}
-    event.preventDefault();
-    const r=target.getBoundingClientRect();
-    const after=event.clientY>=r.top+r.height/2;
-    const key=target.getAttribute("data-editor-key");
-    clearPreviewBlockDrag();
-    // Defer the iframe's re-render until after the browser has finished the
-    // native drop event. Replacing srcdoc during pointer dispatch stalls DnD.
-    setTimeout(()=>reorderOriginalRelative(from,key,after),0);
   }
 
   function restoreReviewedBlockOrder(index){
