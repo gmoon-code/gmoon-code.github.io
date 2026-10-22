@@ -249,3 +249,35 @@ test("reject a second unsubmitted upload on a page already containing older edit
   assert(!calls.some(x=>x.method==="PUT"||x.uri.endsWith("/git/refs")));
  });
 });
+
+test("accept only exact, bounded responsive grid CSS while protecting existing styles",()=>{
+ const section=page.replace("<h1>Original title</h1>",
+   '<section id="layout"><h2>Heading</h2><p>Paragraph</p></section>');
+ const container='main #layout{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));'+
+   'grid-auto-rows:minmax(40px,auto);column-gap:12px;row-gap:8px;align-items:start;}';
+ const child=(selector,x,y,w,h)=>'main '+selector+
+   '{grid-column:'+x+' / span '+w+';grid-row:'+y+' / span '+h+';min-width:0;}';
+ const selectors=['#layout > h2:nth-of-type(1)','#layout > p:nth-of-type(1)'];
+ const css='/* Reviewed responsive group. Existing page markup remains unchanged. */\n'+
+   '@media(min-width:701px){\n'+container+'\n'+
+   child(selectors[0],1,1,11,2)+'\n'+child(selectors[1],1,4,9,3)+'\n}\n'+
+   '@media(max-width:700px){\n'+container+'\n'+
+   child(selectors[0],1,1,12,2)+'\n'+child(selectors[1],1,4,12,3)+'\n}';
+ const withCss=value=>section.replace("</head>",
+   '<style id="moon-responsive-group-layout">\n'+value+'\n</style>\n</head>');
+ assert.doesNotThrow(()=>util.validateEdit("about.html",section,withCss(css)));
+ assert.throws(()=>util.validateEdit("about.html",section,withCss(css.replace(
+   'min-width:0;', 'position:fixed;min-width:0;'))),/Responsive layout CSS/);
+ assert.throws(()=>util.validateEdit("about.html",section,withCss(css.replace(
+   'grid-column:1 / span 11;', 'grid-column:1 / span 99;'))),/Responsive layout CSS/);
+ assert.throws(()=>util.validateEdit("about.html",section,withCss(css.replace(
+   'grid-row:4 / span 3;', 'grid-row:1 / span 3;'))),/Responsive layout CSS/);
+ assert.throws(()=>util.validateEdit("about.html",section,withCss(css.replace(
+   'grid-row:1 / span 2;', 'grid-row:7 / span 2;'))),/Responsive layout CSS/);
+ assert.throws(()=>util.validateEdit("about.html",section,withCss(css).replace(
+   "site-theme.css","malicious.css"))),/Scripts, stylesheets/);
+ assert.throws(()=>util.validateEdit("about.html",section,
+   withCss(css).replace("</head>","<style>body{display:none}</style></head>")),/Scripts, stylesheets/);
+ assert.throws(()=>util.validateEdit("about.html",section,withCss(css).replace(
+   'id="moon-responsive-group-layout"', 'id="moon-responsive-group-layout" onload="alert(1)"')),/responsive layout stylesheet/i);
+});
