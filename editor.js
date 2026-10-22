@@ -2492,8 +2492,16 @@
     if(!anchor||anchor.selector===item.selector)return false;
     const proposed=state.additions.filter((_,i)=>i!==from);
     proposed.push({...item,selector:anchor.selector,tag:anchor.tag,before:anchor.before});
-    try{validateParagraphAdditions(proposed)}
-    catch(error){
+    // Validate both the structured addition and the exact source-preserving
+    // export before recording a move. Some pages contain duplicate raw HTML
+    // fragments even when a CSS selector is unique.
+    const previous=state.additions;
+    try{
+      validateParagraphAdditions(proposed);
+      state.additions=proposed;
+      try{buildExport()}finally{state.additions=previous;}
+    }catch(error){
+      state.additions=previous;
       notice("This destination cannot accept the new block. "+error.message,"Move stopped");
       return false;
     }
