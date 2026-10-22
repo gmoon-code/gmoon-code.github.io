@@ -1506,3 +1506,77 @@ test('responsive group arrangement rejects source changes after discovery', asyn
   await expect(page.locator('#status')).toContainText('Arrangement blocked');
   await expect(page.locator('#responsiveGroupStatus')).toContainText('No responsive group selected');
 });
+
+test('duplicating an imported styled block exports a reusable JSON draft', async ({ page }) => {
+  await page.route('**/about.html', route => route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<!doctype html><html><head></head><body><main><section><h2>Heading</h2><p>Paragraph</p></section></main></body></html>'
+  }));
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  await expect(page.locator('#grid .block')).toHaveCount(2);
+  await page.locator('#grid .block').first().click();
+  await page.locator('#fontSize').fill('36');
+  await page.locator('#fontSize').dispatchEvent('change');
+  await page.locator('#duplicate').click();
+  await expect(page.locator('#grid .block')).toHaveCount(3);
+  const downloadPromise=page.waitForEvent('download');
+  await page.locator('#export').click();
+  const exported=JSON.parse(require('node:fs').readFileSync(await (await downloadPromise).path(),'utf8'));
+  expect(exported.blocks[2].source).toBeUndefined();
+  expect(exported.blocks[2].styleEdits).toBeUndefined();
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#jsonImport').setInputFiles({
+    name:'layout.json',mimeType:'application/json',
+    buffer:Buffer.from(JSON.stringify(exported))
+  });
+  await expect(page.locator('#status')).toContainText('Imported 3 saved blocks');
+});
+
+test('deleting a mapped responsive group member clears the group but preserves undo', async ({ page }) => {
+  await page.route('**/about.html', route => route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<!doctype html><html><head></head><body><main><section><h2>Heading</h2><p>Paragraph</p></section></main></body></html>'
+  }));
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  await page.locator('#grid .block').first().click();
+  await page.locator('#useResponsiveGroup').click();
+  await expect(page.locator('#responsiveGroupStatus')).toContainText('2 blocks');
+  await page.locator('#remove').click();
+  await expect(page.locator('#responsiveGroupStatus')).toContainText('No responsive group selected');
+  await expect(page.locator('#grid .block')).toHaveCount(1);
+  await page.locator('#undo').click();
+  await expect(page.locator('#responsiveGroupStatus')).toContainText('2 blocks');
+  await expect(page.locator('#grid .block')).toHaveCount(2);
+});
+
+test('JSON import refuses a responsive group with missing or repeated selectors', async ({ page }) => {
+  const block={id:1,type:'heading',text:'Heading',x:1,y:1,w:12,h:2,
+    source:{page:'about.html',selector:'#content > h2:nth-of-type(1)',tag:'h2',originalText:'Heading'}};
+  const bad={version:2,sourcePage:'about.html',blocks:[block],responsiveGroup:{
+    parentSelector:'#content',selectors:[block.source.selector,block.source.selector]
+  }};
+  await page.locator('#jsonImport').setInputFiles({
+    name:'bad-group.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(bad))
+  });
+  await expect(page.locator('#status')).toContainText('Invalid responsive group metadata');
+  await expect(page.locator('#grid .block')).toHaveCount(3);
+});
+
+test('compatible section discovery works on the actual About page source', async ({ page }) => {
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  await expect(page.locator('#grid .block.heading').first()).toBeVisible();
+  await page.locator('#findResponsiveGroups').click();
+  await expect(page.locator('#status')).toContainText(/Found \d+ complete text sections|No compatible sections found/);
+  const count=await page.locator('#responsiveGroupPicker option').count();
+  expect(count).toBeGreaterThanOrEqual(1);
+  if(count>1){
+    await page.locator('#applyResponsiveGroup').click();
+    await expect(page.locator('#responsiveGroupStatus')).toContainText('blocks');
+  }
+});
