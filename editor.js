@@ -345,11 +345,13 @@
         d.addEventListener("scroll",positionBlockMoveHandle,true);
         d.addEventListener("scroll",positionAddedMoveHandle,true);
         d.addEventListener("scroll",positionAddedWidthHandle,true);
+        d.addEventListener("scroll",positionQuickToolbar,true);
         d.addEventListener("scroll",positionColumnResizeHandle,true);
         d.defaultView.addEventListener("resize",positionImageResizeHandle);
         d.defaultView.addEventListener("resize",positionBlockMoveHandle);
         d.defaultView.addEventListener("resize",positionAddedMoveHandle);
         d.defaultView.addEventListener("resize",positionAddedWidthHandle);
+        d.defaultView.addEventListener("resize",positionQuickToolbar);
         d.defaultView.addEventListener("resize",positionColumnResizeHandle);
 
         refreshPageFind();
@@ -459,6 +461,8 @@
   }
 
   function onPreviewClick(event) {
+    // In-preview controls must never be interpreted as selected page content.
+    if(event.target.closest("#moon-quick-toolbar"))return;
     /* Stop navigation, but keep normal selection behaviour for editable text. */
     if (event.target.closest("a")) event.preventDefault();
     const added=event.target.closest("[data-editor-added-index]");
@@ -566,6 +570,100 @@
     return false;
   }
 
+  // All contextual controls live only in the script-disabled preview iframe.
+  // Source documents, draft HTML and exported pages never receive this toolbar.
+  const QUICK_SOURCE_TAGS=new Set(["P","H1","H2","H3","H4","BLOCKQUOTE","LI"]);
+  function quickSelection(){
+    const doc=state.frameDoc;
+    if(!doc)return null;
+    if(state.selectedAddition!==null&&state.additions[state.selectedAddition]){
+      const node=doc.querySelector('[data-editor-added-index="'+state.selectedAddition+'"]');
+      return node?{node,added:true}:null;
+    }
+    if(state.selected){
+      const node=doc.querySelector('[data-editor-key="'+state.selected+'"]');
+      if(node&&QUICK_SOURCE_TAGS.has(node.tagName))return {node,added:false};
+    }
+    return null;
+  }
+  function quickAlignment(){
+    if(state.selectedAddition!==null)return addedBlockLayout(state.additions[state.selectedAddition]).align;
+    const source=getWorking(state.selected);
+    return ["center","right"].includes(source?.style.textAlign)?source.style.textAlign:"left";
+  }
+  function positionQuickToolbar(){
+    const doc=state.frameDoc,bar=doc?.getElementById("moon-quick-toolbar");
+    if(!bar)return;
+    const selected=quickSelection();
+    if(!selected){bar.remove();return;}
+    const view=doc.defaultView,rect=selected.node.getBoundingClientRect();
+    if(rect.bottom<0||rect.right<0||rect.top>view.innerHeight||rect.left>view.innerWidth){
+      bar.hidden=true;return;
+    }
+    bar.hidden=false;
+    const width=bar.getBoundingClientRect().width||290;
+    const height=bar.getBoundingClientRect().height||38;
+    const maxLeft=Math.max(4,view.innerWidth-width-4);
+    bar.style.left=Math.max(4,Math.min(maxLeft,rect.left))+"px";
+    bar.style.top=Math.max(4,Math.min(view.innerHeight-height-4,
+      rect.top>=height+10?rect.top-height-7:rect.bottom+8))+"px";
+  }
+  function createQuickToolbar(){
+    const doc=state.frameDoc;
+    if(!doc)return;
+    doc.getElementById("moon-quick-toolbar")?.remove();
+    const selected=quickSelection();
+    if(!selected)return;
+    const dark=$("previewTheme").value==="dark";
+    const bar=doc.createElement("div");
+    bar.id="moon-quick-toolbar";
+    bar.setAttribute("role","toolbar");
+    bar.setAttribute("aria-label","Selected block quick actions");
+    bar.setAttribute("aria-orientation","horizontal");
+    bar.style.cssText="position:fixed;z-index:2147483644;display:flex;align-items:center;gap:4px;padding:5px;border:1px solid "+
+      (dark?"#a7baa9":"#9cb7a9")+";border-radius:9px;background:"+
+      (dark?"#1a1c1a":"#fff")+";color:"+(dark?"#f5f7f5":"#183e30")+
+      ";box-shadow:0 4px 16px #0003;font:600 12px/1.25 system-ui,sans-serif;max-width:calc(100vw - 8px)";
+    const make=(label,action,selectedState,description)=>{
+      const button=doc.createElement("button");
+      button.type="button";button.textContent=label;
+      button.setAttribute("aria-label",description);
+      if(selectedState!==null)button.setAttribute("aria-pressed",String(selectedState));
+      button.style.cssText="padding:6px 7px;min-height:30px;border:1px solid "+
+        (dark?"#78887d":"#b8cac0")+";border-radius:5px;background:"+
+        (selectedState===true?(dark?"#365c46":"#dceee1"):"transparent")+
+        ";color:inherit;font:inherit;cursor:pointer;white-space:nowrap";
+      button.addEventListener("click",event=>{
+        event.preventDefault();event.stopPropagation();action();
+      });
+      return button;
+    };
+    const current=quickAlignment();
+    for(const [label,value] of [["Left","left"],["Centre","center"],["Right","right"]]){
+      bar.append(make(label,()=>{
+        if(state.selectedAddition!==null)setAddedBlockLayout({align:value},true);
+        else updateSelectedStyle("textAlign",value,["left","center","right"]);
+        createQuickToolbar();
+      },current===value,"Align selected block "+label.toLowerCase()));
+    }
+    if(selected.added){
+      const divider=doc.createElement("span");
+      divider.setAttribute("aria-hidden","true");
+      divider.style.cssText="height:22px;border-left:1px solid "+(dark?"#78887d":"#b8cac0");
+      bar.append(divider);
+      const duplicate=make("Copy",()=>duplicateAddedBlock(),null,"Duplicate selected new block");
+      duplicate.disabled=state.additions.length>=10;
+      if(duplicate.disabled)duplicate.style.opacity=".45";
+      bar.append(duplicate);
+    }
+    bar.append(make("Details",()=>{
+      if(selected.added)$("addedBlockText").focus();
+      else $("selectionText").focus();
+    },null,"Focus selected block details in inspector"));
+    doc.body.append(bar);
+    positionQuickToolbar();
+  }
+
   function selectElement(node) {
     if (!node) return;
     const previously=state.frameDoc.querySelector("[data-editor-selected]");
@@ -588,6 +686,7 @@
     if (TEXT_TAGS.has(node.tagName)) node.setAttribute("contenteditable","true");
     updateInspector(node);
     updateBrowseControls();
+    createQuickToolbar();
   }
 
 
@@ -662,6 +761,7 @@
     if(siblings.length>1||anchors.some(a=>a.selector!==addition.selector))
       createAddedMoveHandle();
     if(kind!=="image")createAddedWidthHandle();
+    createQuickToolbar();
   }
   function applyAddedBlock(){
     const index=state.selectedAddition,original=state.additions[index];
@@ -707,7 +807,7 @@
     }
     checkpoint();
     state.additions=next;
-    renderPreview();
+    renderPreview(null,index+1);
     saveDraft();
     updateStatus("New block duplicated · Not published");
   }
@@ -869,6 +969,7 @@
     }
     updateDirty(state.selected);
     updateInspector(rendered);
+    createQuickToolbar();
   }
 
   function updateNumericInspectorStyle(property,field,unit,min,max){
@@ -947,6 +1048,7 @@
     positionAddedWidthHandle();
     positionImageResizeHandle();
     positionAddedMoveHandle();
+    createQuickToolbar();
     scheduleDraft();
     return true;
   }
