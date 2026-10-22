@@ -3340,7 +3340,9 @@ test('newly added paragraph is selectable in preview, editable, duplicable and r
  )).toBe(2);
  await page.reload();
  await expect(page.frameLocator('#pageFrame').locator('[data-editor-added-index]')).toHaveCount(2);
- await page.locator('#undoBtn').click();
+ await expect(page.locator('#undoBtn')).toBeDisabled();
+ await page.frameLocator('#pageFrame').locator('[data-editor-added-index]').first().click();
+ await expect(page.locator('#addedBlockText')).toHaveValue('First revised block');
 });
 
 test('new block inspector validates updated link targets and preserves source content',async({page})=>{
