@@ -1960,3 +1960,34 @@ test('card group layout persists through editor reload and can be reset', async 
   await expect(page.locator('#exportBtn')).toBeDisabled();
   await expect.poll(async()=>page.evaluate(()=>localStorage.getItem('moon-portfolio-visual-editor-v1:cv.html'))).toBeNull();
 });
+
+test('custom card split slider adjusts widths while preserving the mobile stack', async ({ page }) => {
+  await page.route('**/index.html',route=>route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<!doctype html><html><head></head><body><main><div id="cards">'+
+      '<article><h2>Content</h2><a href="research.html">Research</a></article>'+
+      '<figure><img src="assets/profile-portrait.webp" alt="Profile photo"></figure>'+
+      '</div></main></body></html>'
+  }));
+  await page.locator('#sourcePage').selectOption('index.html');
+  page.once('dialog',dialog=>dialog.accept());
+  await page.locator('#importPage').click();
+  await page.locator('#findContainerGroups').click();
+  await page.locator('#containerColumns').selectOption('custom');
+  await page.locator('#containerFirstWidth').fill('7');
+  await expect(page.locator('#containerRatioValue')).toHaveText('7 / 5 columns');
+  await page.locator('#applyContainerGroup').click();
+  await expect(page.locator('#responsiveGroupStatus')).toContainText('Card or CV row group selected');
+  await page.locator('#viewSitePreview').click();
+  await page.locator('#previewSiteApplied').click();
+  const markup=await page.locator('#sitePreviewFrame').getAttribute('srcdoc');
+  expect(markup).toContain('grid-column:1 / span 7');
+  expect(markup).toContain('grid-column:8 / span 5');
+  expect(markup).toContain('href="research.html"');
+  expect(markup).toContain('alt="Profile photo"');
+  expect(markup).toContain('@media(max-width:700px)');
+  await page.locator('#closeSitePreview').click();
+  page.on('dialog',dialog=>dialog.accept());
+  await page.locator('#openPublisher').click();
+  await expect(page.locator('#editorSaveStatus')).toContainText('transferred');
+});
