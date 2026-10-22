@@ -3345,6 +3345,78 @@ test('newly added paragraph is selectable in preview, editable, duplicable and r
  await expect(page.locator('#addedBlockText')).toHaveValue('First revised block');
 });
 
+test('new content blocks can be dragged within an anchor but not across source anchors',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+  body:'<!doctype html><html><head></head><body><main><section>'+
+   '<h2>Section A</h2><p>Permanent paragraph A.</p>'+
+   '<h2>Section B</h2><p>Permanent paragraph B.</p>'+
+   '</section></main></body></html>'}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ const headings=page.frameLocator('#pageFrame').locator('main h2');
+ for(const text of ['New first','New second','New third']){
+  await headings.first().click();
+  await page.locator('#insertContentText').fill(text);
+  await page.locator('#insertContentBtn').click();
+ }
+ await headings.last().click();
+ await page.locator('#insertContentText').fill('At a separate anchor');
+ await page.locator('#insertContentBtn').click();
+ const added=page.frameLocator('#pageFrame').locator('[data-editor-added-index]');
+ await expect(added).toHaveCount(4);
+ expect(await added.allTextContents()).toEqual([
+  'New first','New second','New third','At a separate anchor'
+ ]);
+ await added.first().click();
+ const grip=page.frameLocator('#pageFrame').locator('#moon-added-block-move-handle');
+ await expect(grip).toBeVisible();
+ const sourceBox=await grip.boundingBox(),targetBox=await added.nth(2).boundingBox();
+ expect(sourceBox&&targetBox).toBeTruthy();
+ await page.mouse.move(sourceBox.x+sourceBox.width/2,sourceBox.y+sourceBox.height/2);
+ await page.mouse.down();
+ await page.mouse.move(targetBox.x+Math.min(targetBox.width/2,55),
+  targetBox.y+targetBox.height*0.8,{steps:8});
+ await page.mouse.up();
+ await expect.poll(async()=>added.allTextContents()).toEqual([
+  'New second','New third','New first','At a separate anchor'
+ ]);
+ await expect(page.locator('#undoBtn')).toBeEnabled();
+ await page.locator('#undoBtn').click();
+ await expect.poll(async()=>added.allTextContents()).toEqual([
+  'New first','New second','New third','At a separate anchor'
+ ]);
+ await page.locator('#redoBtn').click();
+ await expect.poll(async()=>added.allTextContents()).toEqual([
+  'New second','New third','New first','At a separate anchor'
+ ]);
+ // Re-select a new block from A and attempt to drag it over B.
+ await added.first().click();
+ await expect(grip).toBeVisible();
+ const from=await grip.boundingBox(),other=await added.last().boundingBox();
+ await page.mouse.move(from.x+from.width/2,from.y+from.height/2);
+ await page.mouse.down();
+ await page.mouse.move(other.x+Math.min(other.width/2,55),
+  other.y+other.height*0.7,{steps:8});
+ await page.mouse.up();
+ expect(await added.allTextContents()).toEqual([
+  'New second','New third','New first','At a separate anchor'
+ ]);
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html.indexOf('<p>New second</p>')).toBeLessThan(html.indexOf('<p>New third</p>'));
+ expect(html.indexOf('<p>New third</p>')).toBeLessThan(html.indexOf('<p>New first</p>'));
+ expect(html).toContain('<p>At a separate anchor</p>');
+ expect(html).toContain('<p>Permanent paragraph A.</p>');
+ expect(html).toContain('<p>Permanent paragraph B.</p>');
+ expect(html).not.toContain('moon-added-block-move-handle');
+ expect(html).not.toContain('data-editor-added-drop-target');
+ await page.reload();
+ await expect.poll(async()=>page.frameLocator('#pageFrame')
+  .locator('[data-editor-added-index]').allTextContents()).toEqual([
+  'New second','New third','New first','At a separate anchor'
+ ]);
+});
+
 test('new block inspector validates updated link targets and preserves source content',async({page})=>{
  await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
   body:'<!doctype html><html><head></head><body><main><section><h2>Research links</h2>'+
