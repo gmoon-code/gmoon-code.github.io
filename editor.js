@@ -828,7 +828,13 @@
     if(!toolbar||toolbar.hidden){composer.hidden=true;return;}
     composer.hidden=false;
     const bounds=toolbar.getBoundingClientRect();
-    const width=composer.getBoundingClientRect().width||320;
+    // Preview frames may be narrower than the main editor viewport. Give
+    // the grid a definite frame-relative width before measuring and placing
+    // it, so its intrinsic form controls cannot stretch past the right edge.
+    const available=Math.max(0,view.innerWidth-10);
+    composer.style.width=Math.min(330,available)+"px";
+    composer.style.maxWidth=available+"px";
+    const width=composer.getBoundingClientRect().width||Math.min(320,available);
     const height=composer.getBoundingClientRect().height||280;
     const left=Math.max(5,Math.min(view.innerWidth-width-5,bounds.left));
     const below=bounds.bottom+7;
@@ -849,6 +855,7 @@
     form.setAttribute("aria-label","Add content to the page");
     form.noValidate=true;
     form.style.cssText="position:fixed;z-index:2147483646;display:grid;gap:8px;"+
+      "grid-template-columns:minmax(0,1fr);min-width:0;"+
       "width:min(330px,calc(100vw - 10px));max-width:calc(100vw - 10px);"+
       "max-height:calc(100vh - 10px);overflow:auto;padding:13px;box-sizing:border-box;"+
       "border:1px solid "+(dark?"#9bad9e":"#a9c1b2")+";border-radius:11px;"+
