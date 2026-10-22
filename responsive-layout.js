@@ -103,6 +103,29 @@
       "@media(min-width:701px){\n"+build("desktop")+"\n}\n"+
       "@media(max-width:700px){\n"+build("mobile")+"\n}";
   }
+  function verifyGroups(doc,specs){
+    if(!Array.isArray(specs)||specs.length<1||specs.length>6)
+      throw Error("Select between one and six responsive groups");
+    const selectors=new Set(),parents=[];
+    for(const spec of specs){
+      const result=verify(doc,spec);
+      if(selectors.has(spec.parentSelector))
+        throw Error("The same section cannot have multiple responsive layouts");
+      selectors.add(spec.parentSelector);
+      for(const previous of parents){
+        if(previous.contains(result.parent)||result.parent.contains(previous))
+          throw Error("Nested responsive groups cannot be published together");
+      }
+      parents.push(result.parent);
+    }
+    return parents;
+  }
+  function cssForGroups(doc,specs){
+    verifyGroups(doc,specs);
+    const css=specs.map(spec=>cssFor(doc,spec)).join("\n");
+    if(css.length>50000)throw Error("Responsive stylesheet exceeds the review limit");
+    return css;
+  }
   function apply(doc,spec){
     if(doc.querySelector("#moon-responsive-group-layout"))
       throw Error("The page already contains a responsive layout group");
@@ -113,5 +136,5 @@
     doc.head.append(style);
     return css;
   }
-  root.MoonResponsiveLayout=Object.freeze({sourceSelector,verify,cssFor,apply});
+  root.MoonResponsiveLayout=Object.freeze({sourceSelector,verify,verifyGroups,cssFor,cssForGroups,apply});
 })(typeof window!=="undefined"?window:globalThis);
