@@ -333,7 +333,31 @@ try {
   assert.equal(await inline.frameLocator("#pageFrame").locator("[data-editor-added-index]").textContent(),
     "Inline test paragraph");
   assert.equal(await composer.count(),0);
-  console.log("PASS: inline page composer adds validated paragraph within sandbox");
+  console.log("INLINE: composer closed; verify changed count");
+  assert.match(await inline.locator("#changeCount").textContent(),/1 added content block/);
+  await inline.waitForFunction(()=>{
+    try{
+      const draft=JSON.parse(localStorage.getItem("moon-portfolio-visual-editor-v1:about.html"));
+      return draft?.additions?.[0]?.text==="Inline test paragraph";
+    }catch{return false;}
+  },null,{timeout:6000});
+  console.log("INLINE: local draft persisted");
+  const exportPromise=inline.waitForEvent("download");
+  await inline.locator("#exportBtn").click();
+  const exported=await exportPromise;
+  const markup=await readFile(await exported.path(),"utf8");
+  assert(markup.includes("<p>Inline test paragraph</p>"));
+  assert(markup.includes("<p>Unchanged original.</p>"));
+  assert(!markup.includes("moon-quick-composer"));
+  console.log("INLINE: clean source-preserving export");
+  await inline.locator("#undoBtn").click();
+  assert.equal(await inline.frameLocator("#pageFrame").locator("[data-editor-added-index]").count(),0);
+  await inline.locator("#redoBtn").click();
+  await inline.frameLocator("#pageFrame").locator("[data-editor-added-index]").waitFor();
+  console.log("INLINE: undo/redo works");
+  await inline.reload();
+  await inline.frameLocator("#pageFrame").locator("[data-editor-added-index]").waitFor({timeout:6000});
+  console.log("PASS: inline page composer adds validated paragraph with persistence, export, and undo/redo");
   await inline.close();
   console.log("PASS: text, drafts, reset, link/image export, 17 pages, dark/mobile previews");
 } finally {
