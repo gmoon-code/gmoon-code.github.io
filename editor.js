@@ -502,6 +502,7 @@
     node.setAttribute("data-editor-added-selected","");
     state.selected=null;
     state.selectedAddition=index;
+    state.frameDoc.getElementById("moon-image-resize-handle")?.remove();
     $("selectionDetails").hidden=true;
     $("selectionEmpty").hidden=true;
     $("selectionTag").textContent="New "+insertionKind(addition);
@@ -1255,6 +1256,12 @@
       const code=document.createElement("small");code.textContent=item.path;
       button.append(img,label,code);
       button.addEventListener("click",()=>{
+        if(state.mediaChooseInsert==="added"){
+          $("addedBlockSrc").value=item.path;
+          if(!$("addedBlockText").value.trim())$("addedBlockText").value=item.description;
+          $("mediaDialog").close();
+          return;
+        }
         if(state.mediaChooseInsert){
           $("insertImageSrc").value=item.path;
           if(!$("insertContentText").value.trim())$("insertContentText").value=item.description;
@@ -1278,7 +1285,9 @@
   async function openMediaLibrary(forInsertion=false){
     const selected=state.frameDoc?.querySelector(
       '[data-editor-key="'+state.selected+'"]');
-    if(forInsertion){
+    if(forInsertion==="added"){
+      if(insertionKind(state.additions[state.selectedAddition])!=="image")return;
+    }else if(forInsertion){
       if(!selected||!["P","H2","H3","H4"].includes(selected.tagName))return;
     }else if(!selected||selected.tagName!=="IMG")return;
     state.mediaChooseInsert=forInsertion;
@@ -2390,6 +2399,7 @@
     $("reviewBtn").addEventListener("click",reviewChanges);
     $("chooseExistingImage").addEventListener("click",()=>openMediaLibrary(false));
     $("chooseInsertImageBtn").addEventListener("click",()=>openMediaLibrary(true));
+    $("chooseAddedImageBtn").addEventListener("click",()=>openMediaLibrary("added"));
     $("mediaSearch").addEventListener("input",event=>{
       const query=event.target.value.trim().toLowerCase();
       renderMediaResults((state.mediaAssets||[]).filter(item=>
