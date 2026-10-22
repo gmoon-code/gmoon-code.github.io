@@ -349,6 +349,7 @@
         // Only viewport scrolls move the composer. Internal form scrolling
         // must not reposition the form under the user's pointer.
         d.defaultView.addEventListener("scroll",positionQuickComposer);
+        d.defaultView.addEventListener("scroll",positionQuickLayout);
         d.addEventListener("scroll",positionColumnResizeHandle,true);
         d.defaultView.addEventListener("resize",positionImageResizeHandle);
         d.defaultView.addEventListener("resize",positionBlockMoveHandle);
@@ -356,6 +357,7 @@
         d.defaultView.addEventListener("resize",positionAddedWidthHandle);
         d.defaultView.addEventListener("resize",positionQuickToolbar);
         d.defaultView.addEventListener("resize",positionQuickComposer);
+        d.defaultView.addEventListener("resize",positionQuickLayout);
         d.defaultView.addEventListener("resize",positionColumnResizeHandle);
 
         refreshPageFind();
@@ -466,7 +468,7 @@
 
   function onPreviewClick(event) {
     // In-preview controls must never be interpreted as selected page content.
-    if(event.target.closest("#moon-quick-toolbar,#moon-quick-composer"))return;
+    if(event.target.closest("#moon-quick-toolbar,#moon-quick-composer,#moon-quick-layout"))return;
     /* Stop navigation, but keep normal selection behaviour for editable text. */
     if (event.target.closest("a")) event.preventDefault();
     const added=event.target.closest("[data-editor-added-index]");
@@ -616,6 +618,7 @@
     const doc=state.frameDoc;
     if(!doc)return;
     doc.getElementById("moon-quick-composer")?.remove();
+    doc.getElementById("moon-quick-layout")?.remove();
     doc.getElementById("moon-quick-toolbar")?.remove();
     const selected=quickSelection();
     if(!selected)return;
@@ -625,7 +628,7 @@
     bar.setAttribute("role","toolbar");
     bar.setAttribute("aria-label","Selected block quick actions");
     bar.setAttribute("aria-orientation","horizontal");
-    bar.style.cssText="position:fixed;z-index:2147483644;display:flex;align-items:center;gap:4px;padding:5px;border:1px solid "+
+    bar.style.cssText="position:fixed;z-index:2147483644;display:flex;align-items:center;flex-wrap:wrap;gap:4px;padding:5px;border:1px solid "+
       (dark?"#a7baa9":"#9cb7a9")+";border-radius:9px;background:"+
       (dark?"#1a1c1a":"#fff")+";color:"+(dark?"#f5f7f5":"#183e30")+
       ";box-shadow:0 4px 16px #0003;font:600 12px/1.25 system-ui,sans-serif;max-width:calc(100vw - 8px)";
@@ -651,6 +654,13 @@
         createQuickToolbar();
       },current===value,"Align selected block "+label.toLowerCase()));
     }
+    if(!selected.added){
+      const section=directLayoutSelection();
+      if(section){
+        bar.append(make("Layout",()=>openQuickLayout(section.spec.parentSelector),null,
+          "Arrange selected section into responsive columns"));
+      }
+    }
     const addAnchor=quickInsertAnchor();
     if(addAnchor&&state.additions.length<10){
       bar.append(make("+ Add",()=>openQuickComposer(addAnchor),null,
@@ -672,6 +682,116 @@
     },null,"Focus selected block details in inspector"));
     doc.body.append(bar);
     positionQuickToolbar();
+  }
+
+  // A compact visual launcher for the existing source-verified layout
+  // engine. Column definitions remain 12-column responsive groups, with
+  // source order preserved and mobile always stacked.
+  function positionQuickLayout(){
+    const doc=state.frameDoc,panel=doc?.getElementById("moon-quick-layout");
+    if(!panel)return;
+    const bar=doc.getElementById("moon-quick-toolbar"),view=doc.defaultView;
+    if(!bar||bar.hidden){panel.hidden=true;return;}
+    panel.hidden=false;
+    const b=bar.getBoundingClientRect();
+    const width=panel.getBoundingClientRect().width||310;
+    const height=panel.getBoundingClientRect().height||280;
+    panel.style.left=Math.max(4,Math.min(view.innerWidth-width-4,b.left))+"px";
+    const below=b.bottom+7,above=b.top-height-7;
+    const top=below+height<=view.innerHeight-4?below:
+      above>=4?above:Math.max(4,view.innerHeight-height-4);
+    panel.style.top=Math.max(4,top)+"px";
+  }
+  function openQuickLayout(parentSelector){
+    const doc=state.frameDoc;
+    if(!doc)return;
+    const selected=directLayoutSelection();
+    if(!selected||selected.spec.parentSelector!==parentSelector)return;
+    doc.getElementById("moon-quick-layout")?.remove();
+    const dark=$("previewTheme").value==="dark";
+    const panel=doc.createElement("section");
+    panel.id="moon-quick-layout";
+    panel.setAttribute("role","dialog");
+    panel.setAttribute("aria-label","Arrange selected section");
+    panel.setAttribute("aria-modal","false");
+    panel.style.cssText="position:fixed;z-index:2147483646;"+
+      "display:grid;gap:8px;width:min(316px,calc(100vw - 8px));"+
+      "max-height:calc(100vh - 8px);overflow:auto;box-sizing:border-box;"+
+      "padding:12px;border:1px solid "+(dark?"#9bad9e":"#a9c1b2")+
+      ";border-radius:10px;background:"+(dark?"#1a1c1a":"#fff")+
+      ";color:"+(dark?"#f4f6f4":"#173b2c")+
+      ";box-shadow:0 8px 25px #0004;font:14px/1.4 system-ui,sans-serif";
+    const title=doc.createElement("strong");
+    title.textContent="Arrange this section";
+    const hint=doc.createElement("p");
+    hint.textContent="Choose a desktop arrangement. Mobile keeps the original reading order in one column.";
+    hint.style.cssText="margin:0;font-size:12px;line-height:1.45";
+    const choices=doc.createElement("div");
+    choices.style.cssText="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px";
+    const original=layoutGroups().find(group=>group.parentSelector===parentSelector);
+    const current=$("directLayoutPreset").value;
+    const presetLabels=[
+      ["stack","One column"],
+      ["two","Two equal"],
+      ["first-wide","Wide left"],
+      ["second-wide","Wide right"],
+      ["three","Three columns"]
+    ];
+    const action=(value,remove=false)=>{
+      const again=directLayoutSelection();
+      if(!again||again.spec.parentSelector!==parentSelector){
+        notice("This section has changed. Select it again before arranging.","Layout unavailable");
+        panel.remove();return;
+      }
+      if(remove&&!layoutGroups().some(g=>g.parentSelector===parentSelector)){
+        panel.remove();return;
+      }
+      if(!remove)$("directLayoutPreset").value=value;
+      updateDirectLayout(remove);
+      panel.remove();
+    };
+    for(const [preset,label] of presetLabels){
+      const button=doc.createElement("button");
+      button.type="button";button.textContent=label;
+      button.setAttribute("aria-label","Set selected section layout to "+label.toLowerCase());
+      button.setAttribute("aria-pressed",String(!!original&&current===preset));
+      button.style.cssText="padding:11px 5px;min-height:44px;"+
+        "border:1px solid "+(dark?"#82968b":"#a4bbaf")+
+        ";border-radius:7px;background:"+
+        (original&&current===preset?(dark?"#365c46":"#dceee1"):"transparent")+
+        ";color:inherit;cursor:pointer;font:600 12px system-ui";
+      button.addEventListener("click",event=>{
+        event.preventDefault();event.stopPropagation();
+        action(preset);
+      });
+      choices.append(button);
+    }
+    const controls=doc.createElement("div");
+    controls.style.cssText="display:flex;justify-content:space-between;gap:8px";
+    const reset=doc.createElement("button");
+    reset.type="button";reset.textContent="Remove layout";
+    reset.disabled=!original;
+    reset.style.cssText="padding:7px 8px;border:1px solid currentColor;border-radius:6px;"+
+      "background:transparent;color:inherit;font:600 12px system-ui";
+    reset.addEventListener("click",()=>action("",true));
+    const close=doc.createElement("button");
+    close.type="button";close.textContent="Cancel";
+    close.style.cssText=reset.style.cssText;
+    const dismiss=()=>{
+      panel.remove();
+      doc.getElementById("moon-quick-toolbar")
+        ?.querySelector('button[aria-label="Arrange selected section into responsive columns"]')
+        ?.focus({preventScroll:true});
+    };
+    close.addEventListener("click",dismiss);
+    panel.addEventListener("keydown",event=>{
+      if(event.key==="Escape"){event.preventDefault();event.stopPropagation();dismiss();}
+    });
+    controls.append(reset,close);
+    panel.append(title,hint,choices,controls);
+    doc.body.append(panel);
+    positionQuickLayout();
+    choices.querySelector("button")?.focus({preventScroll:true});
   }
 
   function quickInsertAnchor(){
