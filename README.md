@@ -41,6 +41,8 @@ The experimental `fluid-layout-lab.html` can import portfolio page content into 
 
 **Verified handoff to the main editor** supports changes to imported plain text and these explicitly adjusted properties: font size, text colour, background colour, text alignment, maximum width, and spacing above/below an element. The destination editor rechecks the live source, refuses invalid CSS and conflicting browser drafts, and keeps the changes local until review. Existing inline links and emphasis are preserved for style-only edits.
 
-**Not yet publishable through the handoff** are freeform block positions and sizes, newly added or removed blocks, and layout-level image changes. Visual review files are prototypes and must never replace a live page without a separate structural, accessibility, and content review.
+**Constrained responsive groups.** After importing a page, select a heading or paragraph and choose **Use selected sibling group**. If the selected parent contains only two to twelve fully mapped, neighbouring text elements, the shared validator can translate their desktop and mobile grid positions into scoped CSS. The receiving editor independently verifies all source elements, rejects overlaps or unsafe selectors, previews the result, and includes the generated CSS in its reviewable HTML and draft PR proposal. Original HTML, links, and DOM reading order stay intact.
+
+**Not yet publishable through the handoff** are unrestricted freeform positions outside a verified sibling group, newly added or removed blocks, and layout-level image changes. Visual review files are prototypes and must never replace a live page without a separate structural, accessibility, and content review.
 
 The project runs browser tests and publishing-preflight checks for the experimental builder before changes are proposed for merging. The experimental builder is developed on a separate draft pull request; its existence does not imply that it is deployed to GitHub Pages.
