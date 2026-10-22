@@ -2682,3 +2682,44 @@ test('main editor creates a heading and preserves its addition after a reload',a
  await page.locator('#reviewBtn').click();
  await expect(page.locator('#reviewChangeList')).toContainText('New heading');
 });
+
+test('direct inspector additions can coexist with edited source text and remain separate per page',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+ body:'<!doctype html><html><head></head><body><main><section><h2>Original heading</h2><p>Original paragraph</p></section></main></body></html>'}));
+ await page.route('**/research.html',route=>route.fulfill({status:200,contentType:'text/html',
+ body:'<!doctype html><html><head></head><body><main><section><h2>Research title</h2><p>Unchanged article</p></section></main></body></html>'}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ await page.frameLocator('#pageFrame').locator('main h2').click();
+ await page.locator('#selectionText').fill('Revised heading');
+ await page.locator('#selectionText').dispatchEvent('input');
+ await page.locator('#insertContentText').fill('Additional explanation');
+ await page.locator('#insertContentBtn').click();
+ await expect(page.locator('#changeCount')).toContainText('1 added content block');
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).toContain('Revised heading');
+ expect(html).toContain('<p>Additional explanation</p>');
+ await page.locator('#pagePicker').selectOption('research.html');
+ await expect(page.locator('#exportBtn')).toBeDisabled();
+ await page.locator('#pagePicker').selectOption('about.html');
+ await expect(page.locator('#exportBtn')).toBeEnabled();
+ await page.locator('#reviewBtn').click();
+ await expect(page.locator('#reviewChangeList')).toContainText('Additional explanation');
+});
+
+test('direct inspector refuses multiple insertions after the same source element',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+ body:'<!doctype html><html><head></head><body><main><section><h2>Title</h2><p>Body</p></section></main></body></html>'}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ await page.frameLocator('#pageFrame').locator('main h2').click();
+ await page.locator('#insertContentText').fill('First addition');
+ await page.locator('#insertContentBtn').click();
+ await page.frameLocator('#pageFrame').locator('main h2').click();
+ await page.locator('#insertContentText').fill('Second addition');
+ await page.locator('#insertContentBtn').click();
+ await expect(page.locator('#noticeMessage')).toContainText('Invalid paragraph insertion');
+ const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'))?.additions);
+ expect(saved).toHaveLength(1);
+ expect(saved[0].text).toBe('First addition');
+});
