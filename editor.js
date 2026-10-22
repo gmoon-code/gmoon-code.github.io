@@ -317,7 +317,7 @@
     return "<!doctype html>\n"+copy.documentElement.outerHTML;
   }
 
-  function renderPreview() {
+  function renderPreview(reselectKey=null) {
     state.selected=null;
     state.selectedAddition=null;
     $("addedBlockDetails").hidden=true;
@@ -340,6 +340,10 @@
         d.addEventListener("scroll",positionImageResizeHandle,true);
         d.defaultView.addEventListener("resize",positionImageResizeHandle);
         refreshPageFind();
+        if(reselectKey){
+          const target=d.querySelector('[data-editor-key="'+reselectKey+'"]');
+          if(target){selectElement(target);target.scrollIntoView({block:"center"});}
+        }
       } catch(e) {notice("The preview did not become editable. Please reload the editor.");}
     };
     frame.srcdoc=previewMarkup();
@@ -820,6 +824,161 @@
     positionImageResizeHandle();
   }
 
+
+
+  /* Moving original content is restricted to a continuous run of verified
+     sibling blocks. Exact source fragments and whitespace gaps are kept. */
+  const MOVE_TAGS=new Set(["P","IMG","LI","BLOCKQUOTE","FIGURE"]);
+  function movableSourceNode(node){
+    if(!node||!MOVE_TAGS.has(node.tagName)||!node.parentElement||
+       !state.doc?.querySelector("main")?.contains(node))return false;
+    const key=node.getAttribute("data-editor-key");
+    if(!key||!state.original.has(key)||cleanOuter(node)!==state.original.get(key)||
+       node.hasAttribute("id")||node.hasAttribute("name")||
+       node.matches("nav *,header *,footer *,aside *,form *,dialog *")||
+       node.querySelector("[id],[name],script,form,button,iframe,[contenteditable]")||
+       state.stagedMedia?.key===key)return false;
+    const dirty=[...state.dirty].some(id=>{
+      const edit=getWorking(id);
+      return edit&&(node===edit||node.contains(edit)||edit.contains(node));
+    });
+    if(dirty)return false;
+    if(layoutGroups().some(group=>{
+      const parent=state.doc.querySelector("main "+group.parentSelector);
+      return !parent||parent.contains(node)||node.contains(parent);
+    }))return false;
+    if(state.removals.some(item=>item.key===key||
+      node.contains(getWorking(item.key))))return false;
+    if(state.additions.some(item=>{
+      const root=state.doc.querySelector("main");
+      const target=root?.querySelector(item.selector);
+      return !target||target===node||node.contains(target);
+    }))return false;
+    return true;
+  }
+  function blockSourceSpans(html,keys){
+    const entries=keys.map(key=>{
+      const markup=state.original.get(key);
+      if(!markup)throw Error("A moved block no longer has original markup");
+      const index=html.indexOf(markup);
+      if(index<0||html.indexOf(markup,index+markup.length)>=0)
+        throw Error("A content block is not uniquely identifiable in the page source");
+      return {key,markup,start:index,end:index+markup.length};
+    });
+    for(let i=1;i<entries.length;i++){
+      if(entries[i-1].end>entries[i].start||
+         html.slice(entries[i-1].end,entries[i].start).trim())
+        throw Error("Only immediately adjacent source blocks can be reordered");
+    }
+    return entries;
+  }
+  function validateBlockOrders(groups){
+    if(!Array.isArray(groups)||groups.length>8)throw Error("Too many rearranged content groups");
+    const used=new Set(),validated=[];
+    for(const group of groups){
+      const a=group?.originalKeys,b=group?.keys;
+      if(!Array.isArray(a)||!Array.isArray(b)||a.length<2||a.length>12||
+         a.length!==b.length||new Set(a).size!==a.length||new Set(b).size!==b.length||
+         a.some(key=>typeof key!=="string"||!/^e\d+$/.test(key)||used.has(key))||
+         b.some(key=>!a.includes(key)))throw Error("Content group order is invalid");
+      const nodes=a.map(key=>getWorking(key));
+      if(nodes.some(node=>!movableSourceNode(node)))throw Error("Content group has protected or edited blocks");
+      const parent=nodes[0]?.parentElement;
+      if(!parent||nodes.some(node=>node.parentElement!==parent))
+        throw Error("Content blocks must remain in the same container");
+      // Key order is checked against the original source, even when the
+      // working document has already been rearranged.
+      blockSourceSpans(state.source,a);
+      // An interrupted run must never be collapsed into a new order.
+      const current=[...parent.children].filter(node=>a.includes(node.getAttribute("data-editor-key")));
+      if(current.length!==a.length||current.some((node,i)=>i>0&&
+         [...parent.children].indexOf(node)!==[...parent.children].indexOf(current[i-1])+1))
+        throw Error("Content group is no longer a contiguous run");
+      a.forEach(key=>used.add(key));
+      if(b.some((key,i)=>key!==a[i]))
+        validated.push({originalKeys:a.slice(),keys:b.slice()});
+    }
+    return validated;
+  }
+  function applyBlockOrdersToWorking(groups){
+    for(const group of groups){
+      const nodes=group.keys.map(key=>getWorking(key));
+      const parent=nodes[0]?.parentElement;
+      const original=[...parent.children].filter(node=>
+        group.originalKeys.includes(node.getAttribute("data-editor-key")));
+      if(!parent||nodes.some(node=>node.parentElement!==parent)||
+         original.length!==group.keys.length)throw Error("Content move cannot be restored");
+      original[0].before(...nodes);
+    }
+  }
+  function blockMoveCandidate(key){
+    const node=getWorking(key);
+    if(!node||!movableSourceNode(node))return null;
+    const siblings=[...node.parentElement.children];
+    const index=siblings.indexOf(node);
+    let lo=index,hi=index;
+    while(lo>0&&movableSourceNode(siblings[lo-1]))lo--;
+    while(hi+1<siblings.length&&movableSourceNode(siblings[hi+1]))hi++;
+    if(hi-lo<1)return null;
+    const keys=siblings.slice(lo,hi+1).map(item=>item.getAttribute("data-editor-key"));
+    const existing=state.blockOrders.find(group=>group.originalKeys.includes(key));
+    const originalKeys=existing?existing.originalKeys:keys;
+    if(existing&&(existing.originalKeys.length!==keys.length||
+       originalKeys.some(id=>!keys.includes(id))))return null;
+    if(state.blockOrders.some(group=>group!==existing&&
+       group.originalKeys.some(id=>keys.includes(id))))return null;
+    try{blockSourceSpans(state.source,originalKeys)}
+    catch{return null}
+    return {keys,originalKeys,index:keys.indexOf(key)};
+  }
+  function moveOriginalBlock(direction){
+    if(![-1,1].includes(direction)||!state.selected)return;
+    const candidate=blockMoveCandidate(state.selected);
+    if(!candidate)return;
+    const target=candidate.index+direction;
+    if(target<0||target>=candidate.keys.length)return;
+    const groups=state.blockOrders.map(group=>({
+      originalKeys:group.originalKeys.slice(),keys:group.keys.slice()
+    }));
+    const existing=groups.find(group=>group.originalKeys.includes(state.selected));
+    const proposed=existing||{originalKeys:candidate.originalKeys.slice(),keys:candidate.keys.slice()};
+    const changed=proposed.keys.slice();
+    const i=changed.indexOf(state.selected);
+    [changed[i],changed[i+direction]]=[changed[i+direction],changed[i]];
+    proposed.keys=changed;
+    if(!existing)groups.push(proposed);
+    try{
+      checkpoint();
+      const node=getWorking(state.selected),neighbour=getWorking(candidate.keys[target]);
+      if(direction<0)neighbour.before(node);else neighbour.after(node);
+      state.blockOrders=validateBlockOrders(groups);
+      renderPreview(state.selected);
+      scheduleDraft();
+      updateStatus("Original content order updated · Not published");
+    }catch(error){
+      undo();
+      notice("This content cannot be rearranged safely. "+error.message,"Move stopped");
+    }
+  }
+  function exportBlockOrders(html){
+    const groups=validateBlockOrders(state.blockOrders);
+    const edits=[];
+    for(const group of groups){
+      const source=blockSourceSpans(html,group.originalKeys);
+      const parts=new Map(source.map(item=>[item.key,item.markup]));
+      const gaps=source.slice(0,-1).map((item,i)=>
+        html.slice(item.end,source[i+1].start));
+      let replacement="";
+      group.keys.forEach((key,i)=>replacement+=parts.get(key)+(gaps[i]||""));
+      edits.push({start:source[0].start,end:source.at(-1).end,replacement});
+    }
+    edits.sort((a,b)=>b.start-a.start);
+    for(let i=1;i<edits.length;i++)
+      if(edits[i-1].start<edits[i].end)throw Error("Moved content groups overlap");
+    for(const edit of edits)
+      html=html.slice(0,edit.start)+edit.replacement+html.slice(edit.end);
+    return html;
+  }
 
   function directLayoutSelection(){
     if(!state.selected||!state.source||!window.MoonResponsiveLayout)return null;
