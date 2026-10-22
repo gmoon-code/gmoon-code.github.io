@@ -2938,7 +2938,8 @@ test('main inspector arranges intact nested cards while preserving linked markup
  await expect(page.locator('#directLayoutStatus')).toContainText('Card or row group');
  await page.locator('#directLayoutPreset').selectOption('first-wide');
  await page.locator('#directLayoutApply').click();
- await expect(page.frameLocator('#pageFrame').locator('#moon-responsive-group-layout')).toContainText('grid-column:9 / span 4');
+ const nestedCss=await page.frameLocator('#pageFrame').locator('#moon-responsive-group-layout').textContent();
+ expect(nestedCss).toContain('grid-column:9 / span 4');
  const download=page.waitForEvent('download');
  await page.locator('#exportBtn').click();
  const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
