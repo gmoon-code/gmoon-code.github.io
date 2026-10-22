@@ -35,3 +35,13 @@ jobs:
           path: test-results/layout-previews/
           if-no-files-found: ignore
           retention-days: 7
+      - name: Upload failing browser page state
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fluid-layout-failure-context
+          path: |
+            test-results/**/error-context.md
+            test-results/**/test-failed-*.png
+          if-no-files-found: ignore
+          retention-days: 7
