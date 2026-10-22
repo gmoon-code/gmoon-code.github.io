@@ -3572,8 +3572,14 @@ test('original block preview drag handle reorders source paragraphs without rewr
  await expect(handle).toBeVisible();
  await expect(handle).toHaveAttribute('draggable','true');
  const target=blocks.last();
+ const start=await handle.boundingBox();
  const rect=await target.boundingBox();
- await handle.dragTo(target,{targetPosition:{x:Math.min(12,rect.width/2),y:Math.max(1,rect.height-3)}});
+ // Use the pointer directly. Locator.dragTo waits for a destination frame
+ // that our successful drop intentionally regenerates.
+ await page.mouse.move(start.x+start.width/2,start.y+start.height/2);
+ await page.mouse.down();
+ await page.mouse.move(rect.x+Math.min(12,rect.width/2),rect.y+Math.max(1,rect.height-3),{steps:14});
+ await page.mouse.up();
  await expect.poll(async()=>blocks.allTextContents()).toEqual([
   'Evidence two.','Interpretation three.','Conclusion four.','Question one.'
  ]);
