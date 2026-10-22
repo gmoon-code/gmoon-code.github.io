@@ -2133,9 +2133,9 @@ test('actual Home and CV pages support two independent published card groups eac
   test.setTimeout(120000);
   const fs=require('node:fs');
   fs.mkdirSync('test-results/layout-previews',{recursive:true});
+  page.on('dialog',dialog=>dialog.accept().catch(()=>{}));
   for(const filename of ['index.html','cv.html']){
     await page.locator('#sourcePage').selectOption(filename);
-    page.once('dialog', dialog=>dialog.accept());
     await page.locator('#importPage').click();
     await expect.poll(async()=>page.evaluate(()=>JSON.parse(localStorage.getItem('moon-fluid-layout-lab-v1'))?.sourcePage)).toBe(filename);
     await expect(page.locator('#status')).toContainText('Imported');
@@ -2176,7 +2176,6 @@ test('actual Home and CV pages support two independent published card groups eac
       path:'test-results/layout-previews/'+filename.replace('.html','')+'-two-groups-mobile.png'
     });
     await page.locator('#closeSitePreview').click();
-    page.on('dialog',dialog=>dialog.accept());
     await page.locator('#openPublisher').click();
     await expect(page.locator('#editorSaveStatus')).toContainText('transferred');
     await page.locator('#reviewBtn').click();
