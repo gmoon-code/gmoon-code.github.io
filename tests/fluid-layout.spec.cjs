@@ -2425,3 +2425,82 @@ test('new heading and link can be removed from the builder before transfer',asyn
  await page.locator('#undo').click();
  await expect(page.locator('#grid .block')).toHaveCount(2);
 });
+
+test('new heading level can switch to H2 and persist through publisher export',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+ body:'<!doctype html><html><head></head><body><main><section><p>Introduction</p></section></main></body></html>'}));
+ await page.locator('#sourcePage').selectOption('about.html');
+ page.once('dialog',dialog=>dialog.accept());
+ await page.locator('#importPage').click();
+ await page.locator('#grid .block').first().click();
+ page.once('dialog',dialog=>dialog.accept('New major section'));
+ await page.locator('#appendSourceHeading').click();
+ await page.locator('#insertionHeadingTag').selectOption('h2');
+ await page.locator('#viewSitePreview').click();
+ await page.locator('#previewSiteApplied').click();
+ expect(await page.locator('#sitePreviewFrame').getAttribute('srcdoc')).toContain('<h2>New major section</h2>');
+ await page.locator('#closeSitePreview').click();
+ page.on('dialog',dialog=>dialog.accept());
+ await page.locator('#openPublisher').click();
+ await expect(page.locator('#editorSaveStatus')).toContainText('transferred');
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).toContain('<h2>New major section</h2>');
+});
+
+test('revised source heading and a new link can export together without losing siblings',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+ body:'<!doctype html><html><head></head><body><main><section id="intro"><h2>Original heading</h2><p>Other content</p><a href="research.html">Original link</a></section></main></body></html>'}));
+ await page.locator('#sourcePage').selectOption('about.html');
+ page.once('dialog',dialog=>dialog.accept());
+ await page.locator('#importPage').click();
+ await page.locator('#grid .block.heading').first().click();
+ await page.locator('#text').fill('Revised heading');
+ await page.locator('#text').dispatchEvent('change');
+ const prompts=['Project resources','projects.html'];
+ page.on('dialog',dialog=>dialog.accept(prompts.shift()||''));
+ await page.locator('#appendSourceLink').click();
+ await page.locator('#openPublisher').click();
+ await expect(page).toHaveURL(/editor\.html\?page=about\.html$/);
+ await expect(page.locator('#editorSaveStatus')).toContainText('transferred');
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).toContain('<h2>Revised heading</h2>');
+ expect(html).toContain('<p><a href="projects.html">Project resources</a></p>');
+ expect(html).toContain('<p>Other content</p>');
+ expect(html).toContain('href="research.html"');
+});
+
+test('invalid edits to a staged link destination do not overwrite the saved URL',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+ body:'<!doctype html><html><head></head><body><main><section><h2>Resources</h2></section></main></body></html>'}));
+ await page.locator('#sourcePage').selectOption('about.html');
+ page.once('dialog',dialog=>dialog.accept());
+ await page.locator('#importPage').click();
+ await page.locator('#grid .block').first().click();
+ const prompts=['Resource link','research.html'];
+ page.on('dialog',dialog=>dialog.accept(prompts.shift()||''));
+ await page.locator('#appendSourceLink').click();
+ await page.locator('#insertionLinkUrl').fill('javascript:alert(1)');
+ await page.locator('#insertionLinkUrl').dispatchEvent('change');
+ await expect(page.locator('#status')).toContainText('Invalid destination');
+ await page.locator('#viewSitePreview').click();
+ await page.locator('#previewSiteApplied').click();
+ const raw=await page.locator('#sitePreviewFrame').getAttribute('srcdoc');
+ expect(raw).toContain('href="research.html"');
+ expect(raw).not.toContain('href="javascript:alert(1)"');
+});
+
+test('forged file draft containing unsafe link is refused on JSON import',async({page})=>{
+ const data={version:2,sourcePage:'about.html',blocks:[{
+  id:1,type:'text',text:'Unsafe',x:1,y:1,w:6,h:2,
+  insertion:{page:'about.html',selector:'section:nth-of-type(1) > p:nth-of-type(1)',
+   tag:'p',before:'Old text',kind:'link',href:'data:text/html,bad'}
+ }]};
+ await page.locator('#jsonImport').setInputFiles({name:'unsafe-layout.json',
+  mimeType:'application/json',buffer:Buffer.from(JSON.stringify(data))});
+ await expect(page.locator('#status')).toContainText('Invalid new link source or content');
+ await expect(page.locator('#grid .block')).toHaveCount(3);
+});
