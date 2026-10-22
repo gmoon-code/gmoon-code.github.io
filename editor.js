@@ -346,12 +346,14 @@
         d.addEventListener("scroll",positionAddedMoveHandle,true);
         d.addEventListener("scroll",positionAddedWidthHandle,true);
         d.addEventListener("scroll",positionQuickToolbar,true);
+        d.addEventListener("scroll",positionQuickComposer,true);
         d.addEventListener("scroll",positionColumnResizeHandle,true);
         d.defaultView.addEventListener("resize",positionImageResizeHandle);
         d.defaultView.addEventListener("resize",positionBlockMoveHandle);
         d.defaultView.addEventListener("resize",positionAddedMoveHandle);
         d.defaultView.addEventListener("resize",positionAddedWidthHandle);
         d.defaultView.addEventListener("resize",positionQuickToolbar);
+        d.defaultView.addEventListener("resize",positionQuickComposer);
         d.defaultView.addEventListener("resize",positionColumnResizeHandle);
 
         refreshPageFind();
@@ -462,7 +464,7 @@
 
   function onPreviewClick(event) {
     // In-preview controls must never be interpreted as selected page content.
-    if(event.target.closest("#moon-quick-toolbar"))return;
+    if(event.target.closest("#moon-quick-toolbar,#moon-quick-composer"))return;
     /* Stop navigation, but keep normal selection behaviour for editable text. */
     if (event.target.closest("a")) event.preventDefault();
     const added=event.target.closest("[data-editor-added-index]");
@@ -611,6 +613,7 @@
   function createQuickToolbar(){
     const doc=state.frameDoc;
     if(!doc)return;
+    doc.getElementById("moon-quick-composer")?.remove();
     doc.getElementById("moon-quick-toolbar")?.remove();
     const selected=quickSelection();
     if(!selected)return;
@@ -646,6 +649,11 @@
         createQuickToolbar();
       },current===value,"Align selected block "+label.toLowerCase()));
     }
+    const addAnchor=quickInsertAnchor();
+    if(addAnchor&&state.additions.length<10){
+      bar.append(make("+ Add",()=>openQuickComposer(addAnchor),null,
+        "Add new content after this block"));
+    }
     if(selected.added){
       const divider=doc.createElement("span");
       divider.setAttribute("aria-hidden","true");
@@ -662,6 +670,166 @@
     },null,"Focus selected block details in inspector"));
     doc.body.append(bar);
     positionQuickToolbar();
+  }
+
+  function quickInsertAnchor(){
+    const selected=quickSelection();
+    if(!selected)return null;
+    const anchors=sourceMoveAnchors();
+    if(selected.added){
+      const item=state.additions[state.selectedAddition];
+      return anchors.find(a=>a.selector===item?.selector)||null;
+    }
+    return anchors.find(a=>a.key===state.selected)||null;
+  }
+  function positionQuickComposer(){
+    const doc=state.frameDoc,composer=doc?.getElementById("moon-quick-composer");
+    if(!composer)return;
+    const toolbar=doc.getElementById("moon-quick-toolbar"),view=doc.defaultView;
+    if(!toolbar||toolbar.hidden){composer.hidden=true;return;}
+    composer.hidden=false;
+    const bounds=toolbar.getBoundingClientRect();
+    const width=composer.getBoundingClientRect().width||320;
+    const height=composer.getBoundingClientRect().height||280;
+    const left=Math.max(5,Math.min(view.innerWidth-width-5,bounds.left));
+    const below=bounds.bottom+7;
+    const above=bounds.top-height-7;
+    composer.style.left=left+"px";
+    composer.style.top=Math.max(5,Math.min(Math.max(5,view.innerHeight-height-5),
+      below+height<=view.innerHeight-5?below:above>=5?above:below))+"px";
+  }
+  function openQuickComposer(anchor){
+    const doc=state.frameDoc;
+    if(!doc||!sourceMoveAnchors().some(a=>a.key===anchor.key)||state.additions.length>=10)return;
+    doc.getElementById("moon-quick-composer")?.remove();
+    const dark=$("previewTheme").value==="dark";
+    const form=doc.createElement("form");
+    form.id="moon-quick-composer";
+    form.setAttribute("role","dialog");
+    form.setAttribute("aria-modal","false");
+    form.setAttribute("aria-label","Add content to the page");
+    form.noValidate=true;
+    form.style.cssText="position:fixed;z-index:2147483646;display:grid;gap:8px;"+
+      "width:min(330px,calc(100vw - 10px));max-width:calc(100vw - 10px);"+
+      "max-height:calc(100vh - 10px);overflow:auto;padding:13px;box-sizing:border-box;"+
+      "border:1px solid "+(dark?"#9bad9e":"#a9c1b2")+";border-radius:11px;"+
+      "background:"+(dark?"#1a1c1a":"#fff")+";color:"+
+      (dark?"#f4f6f4":"#173b2c")+";box-shadow:0 8px 25px #0004;"+
+      "font:14px/1.4 system-ui,sans-serif";
+    const idPrefix="moon-quick-new-";
+    const heading=doc.createElement("strong");
+    heading.textContent="Add below selected content";
+    const field=(name,label,node)=>{
+      const labelNode=doc.createElement("label");
+      node.id=idPrefix+name;
+      labelNode.htmlFor=node.id;
+      labelNode.textContent=label;
+      labelNode.style.cssText="font-weight:600;display:block";
+      node.style.cssText="display:block;box-sizing:border-box;width:100%;"+
+        "margin-top:3px;padding:7px 8px;border:1px solid "+
+        (dark?"#9bad9e":"#9cb0a6")+";border-radius:5px;"+
+        "background:"+(dark?"#222722":"#fff")+";color:inherit;font:inherit";
+      labelNode.append(node);
+      return labelNode;
+    };
+    const kind=doc.createElement("select");
+    for(const [value,label] of [["paragraph","Paragraph"],["heading","Heading"],
+      ["link","Link"],["image","Existing website image"]]){
+      const option=doc.createElement("option");
+      option.value=value;option.textContent=label;kind.append(option);
+    }
+    const headingLevel=doc.createElement("select");
+    for(const value of ["h2","h3"]){
+      const option=doc.createElement("option");
+      option.value=value;option.textContent=value.toUpperCase();
+      headingLevel.append(option);
+    }
+    const description=doc.createElement("textarea");
+    description.rows=3;description.maxLength=2000;
+    const href=doc.createElement("input");
+    href.type="url";href.maxLength=500;href.placeholder="https://example.org or local-page.html";
+    const imagePath=doc.createElement("input");
+    imagePath.type="text";imagePath.maxLength=220;imagePath.placeholder="assets/existing-photo.webp";
+    const kindField=field("kind","Content type",kind);
+    const levelField=field("level","Heading level",headingLevel);
+    const textField=field("text","Text",description);
+    const hrefField=field("href","Link destination",href);
+    const imageField=field("image","Existing image path",imagePath);
+    const help=doc.createElement("p");
+    help.textContent="Images must already exist on this website. Your additions remain a local draft until reviewed.";
+    help.style.cssText="margin:0;font-size:12px;line-height:1.35;opacity:.85";
+    const status=doc.createElement("p");
+    status.setAttribute("role","status");
+    status.setAttribute("aria-live","polite");
+    status.style.cssText="margin:0;font-size:12px";
+    const row=doc.createElement("div");
+    row.style.cssText="display:flex;gap:7px;justify-content:flex-end";
+    const cancel=doc.createElement("button");
+    cancel.type="button";cancel.textContent="Cancel";
+    const submit=doc.createElement("button");
+    submit.type="submit";submit.textContent="Add to page";
+    for(const button of [cancel,submit]){
+      button.style.cssText="padding:7px 10px;border:1px solid "+
+        (dark?"#9bad9e":"#9cb0a6")+";border-radius:6px;"+
+        "background:"+(button===submit?(dark?"#406d50":"#dceee1"):"transparent")+
+        ";color:inherit;font:600 13px system-ui;cursor:pointer";
+    }
+    const refresh=()=>{
+      const selection=kind.value;
+      levelField.hidden=selection!=="heading";
+      hrefField.hidden=selection!=="link";
+      imageField.hidden=selection!=="image";
+      textField.firstChild.textContent=selection==="image"?"Image description (alt text)":"Text";
+      description.maxLength=selection==="paragraph"?2000:selection==="image"?200:140;
+      status.textContent="";
+    };
+    kind.addEventListener("change",refresh);
+    const close=()=>{
+      form.remove();
+      doc.getElementById("moon-quick-toolbar")
+        ?.querySelector('button[aria-label="Add new content after this block"]')
+        ?.focus({preventScroll:true});
+    };
+    cancel.addEventListener("click",close);
+    form.addEventListener("keydown",event=>{
+      if(event.key==="Escape"){event.preventDefault();event.stopPropagation();close();}
+      if((event.ctrlKey||event.metaKey)&&event.key==="Enter"){
+        event.preventDefault();form.requestSubmit();
+      }
+    });
+    form.addEventListener("submit",event=>{
+      event.preventDefault();event.stopPropagation();
+      const resolved=sourceMoveAnchors().find(a=>a.key===anchor.key);
+      if(!resolved||resolved.selector!==anchor.selector){
+        status.textContent="The original insertion location has changed. Select it again.";
+        return;
+      }
+      const item={page:state.page,selector:resolved.selector,tag:resolved.tag,
+        before:resolved.before,kind:kind.value,text:description.value.trim()};
+      if(item.kind==="heading")item.headingTag=headingLevel.value;
+      if(item.kind==="link")item.href=href.value.trim();
+      if(item.kind==="image")item.src=imagePath.value.trim();
+      const previous=state.additions;
+      try{
+        const proposed=validateParagraphAdditions([...previous,item]);
+        state.additions=proposed;
+        try{buildExport()}finally{state.additions=previous;}
+        checkpoint();
+        state.additions=proposed;
+        renderPreview(null,proposed.length-1);
+        scheduleDraft();
+        updateStatus("New "+item.kind+" added beside selected content · Not published");
+      }catch(error){
+        state.additions=previous;
+        status.textContent="Cannot add this content. "+error.message;
+      }
+    });
+    row.append(cancel,submit);
+    form.append(heading,kindField,levelField,textField,hrefField,imageField,help,status,row);
+    doc.body.append(form);
+    refresh();
+    positionQuickComposer();
+    kind.focus({preventScroll:true});
   }
 
   function selectElement(node) {
