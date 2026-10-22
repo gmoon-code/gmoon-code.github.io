@@ -1596,8 +1596,12 @@ test('report compatible responsive sections across all eight portfolio pages', a
     await page.locator('#findResponsiveGroups').click();
     await expect(page.locator('#status')).toContainText(/Found \d+ complete text sections|No compatible sections found/);
     const options=await page.locator('#responsiveGroupPicker option').allTextContents();
-    report.push({page:filename,importedBlocks:imported,compatibleSections:options.length-1,
-      examples:options.slice(1,4)});
+    await page.locator('#findContainerGroups').click();
+    await expect(page.locator('#status')).toContainText(/Found \d+ complete card|No complete card or row groups/);
+    const cards=await page.locator('#containerGroupPicker option').allTextContents();
+    report.push({page:filename,importedBlocks:imported,compatibleTextSections:options.length-1,
+      compatibleCardGroups:cards.length-1,
+      textExamples:options.slice(1,4),cardExamples:cards.slice(1,4)});
   }
   fs.mkdirSync('test-results/layout-previews',{recursive:true});
   fs.writeFileSync('test-results/layout-previews/compatible-sections.json',
