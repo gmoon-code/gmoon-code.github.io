@@ -309,6 +309,7 @@
       '[data-editor-key][data-editor-find-active]{outline:3px solid #b15b16!important;outline-offset:5px!important;}',
       '[data-editor-key][data-editor-drag-target]{outline:3px dashed #27654f!important;outline-offset:4px!important;}',
       '[data-editor-added-index][data-editor-added-drop-target]{outline:3px dashed #27654f!important;outline-offset:4px!important;}',
+      '[data-editor-key][data-editor-added-anchor-target]{outline:3px dashed #27654f!important;outline-offset:4px!important;}',
       "[data-editor-key][contenteditable=true]{min-height:1em;}",
       "[data-editor-key][contenteditable=true]:focus{outline:2px solid #2b8769!important;}",
       "@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}"
@@ -632,7 +633,21 @@
       " of "+state.additions.length+" · Local draft";
     updateBrowseControls();
     if(kind==="image")createImageResizeHandle();
-    if(siblings.length>1)createAddedMoveHandle();
+    const anchors=sourceMoveAnchors();
+    const picker=$("moveAddedAnchorPicker");
+    picker.replaceChildren();
+    for(const anchor of anchors){
+      const option=document.createElement("option");
+      option.value=anchor.key;option.textContent=anchor.title;
+      option.selected=anchor.selector===addition.selector;
+      picker.appendChild(option);
+    }
+    const currentAnchor=anchors.find(a=>a.selector===addition.selector);
+    $("moveAddedAnchorFields").hidden=anchors.filter(a=>a.selector!==addition.selector).length===0;
+    if(!currentAnchor&&picker.options.length)picker.selectedIndex=-1;
+    updateAddedAnchorButton();
+    if(siblings.length>1||anchors.some(a=>a.selector!==addition.selector))
+      createAddedMoveHandle();
   }
   function applyAddedBlock(){
     const index=state.selectedAddition,original=state.additions[index];
@@ -2428,8 +2443,70 @@
       updateInsertKind();
     }
   }
-  // Pointer reordering for inserted blocks stays within one verified source
-  // anchor. The same inspector arrow buttons remain available without a mouse.
+  // New content may be relocated after an existing unique heading or
+  // paragraph. Only source anchors may receive an addition, and all newly
+  // proposed destinations are checked again against the untouched page.
+  function sourceMoveAnchors(){
+    if(!state.doc||!state.source||!window.MoonResponsiveLayout)return [];
+    const main=state.doc.querySelector("main");
+    const source=new DOMParser().parseFromString(state.source,"text/html");
+    const original=source.querySelector("main");
+    if(!main||!original)return [];
+    const anchors=[];
+    for(const node of main.querySelectorAll("h2,h3,h4,p")){
+      const key=node.getAttribute("data-editor-key");
+      if(!key||!state.original.has(key)||
+         node.closest("nav,header,footer,aside,form,dialog")||
+         state.removals.some(item=>item.key===key)||
+         state.blockOrders.some(group=>group.originalKeys.includes(key)))continue;
+      let selector;
+      try{selector=MoonResponsiveLayout.sourceSelector(node,main)}
+      catch{continue;}
+      let matches;
+      try{matches=[...original.querySelectorAll(selector)]}
+      catch{continue;}
+      if(matches.length!==1||matches[0].tagName!==node.tagName)continue;
+      const matched=matches[0];
+      if(layoutGroups().some(group=>
+        original.querySelector(group.parentSelector)?.contains(matched)))continue;
+      const before=matched.textContent.trim().replace(/\s+/g," ");
+      if(!before||before.length>4000)continue;
+      const excerpt=before.slice(0,75)+(before.length>75?"…":"");
+      anchors.push({key,selector,tag:node.tagName.toLowerCase(),before,
+        title:(node.tagName==="P"?"Paragraph":node.tagName.toLowerCase().toUpperCase())+
+          " · "+excerpt});
+    }
+    return anchors;
+  }
+  function updateAddedAnchorButton(){
+    const item=state.additions[state.selectedAddition];
+    const anchors=sourceMoveAnchors();
+    const destination=anchors.find(a=>a.key===$("moveAddedAnchorPicker").value);
+    $("moveAddedAnchorBtn").disabled=!item||!destination||
+      destination.selector===item.selector;
+  }
+  function relocateAddedToAnchor(from,key){
+    const item=state.additions[from];
+    if(!item)return false;
+    const anchor=sourceMoveAnchors().find(a=>a.key===key);
+    if(!anchor||anchor.selector===item.selector)return false;
+    const proposed=state.additions.filter((_,i)=>i!==from);
+    proposed.push({...item,selector:anchor.selector,tag:anchor.tag,before:anchor.before});
+    try{validateParagraphAdditions(proposed)}
+    catch(error){
+      notice("This destination cannot accept the new block. "+error.message,"Move stopped");
+      return false;
+    }
+    checkpoint();
+    state.additions=proposed;
+    renderPreview(null,proposed.length-1);
+    scheduleDraft();
+    updateStatus("New block moved to another verified location · Not published");
+    return true;
+  }
+  // New blocks can reorder within the same source anchor or move after
+  // another verified source block; cross-anchor drops onto new blocks
+  // remain disabled to avoid ambiguous placement.
   function reorderAddedRelative(from,to,after){
     const source=state.additions[from],destination=state.additions[to];
     if(!source||!destination||from===to||source.selector!==destination.selector)return false;
@@ -2460,7 +2537,9 @@
     const index=state.selectedAddition,item=state.additions[index];
     const target=doc.querySelector('[data-editor-added-index="'+index+'"]');
     const count=state.additions.filter(entry=>entry.selector===item?.selector).length;
-    if(!target||count<2){handle.remove();return;}
+    if(!target||(count<2&&!sourceMoveAnchors().some(a=>a.selector!==item?.selector))){
+      handle.remove();return;
+    }
     const rect=target.getBoundingClientRect(),view=doc.defaultView;
     if(rect.bottom<0||rect.right<0||rect.top>view.innerHeight||rect.left>view.innerWidth){
       handle.hidden=true;return;
@@ -2478,9 +2557,21 @@
     const index=target?Number(target.getAttribute("data-editor-added-index")):-1;
     return index>=0&&index!==from&&state.additions[index]?.selector===selector?target:null;
   }
+  function sourceAddedDropTarget(doc,x,y,handle,targets){
+    const previous=handle.style.pointerEvents;
+    handle.style.pointerEvents="none";
+    const hit=doc.elementFromPoint(x,y);
+    handle.style.pointerEvents=previous;
+    const node=hit?.closest?.("[data-editor-key]");
+    const key=node?.getAttribute("data-editor-key");
+    return key&&targets.has(key)?node:null;
+  }
   function clearAddedDropTargets(doc){
-    for(const marked of doc.querySelectorAll("[data-editor-added-drop-target]"))
+    for(const marked of doc.querySelectorAll(
+      "[data-editor-added-drop-target],[data-editor-added-anchor-target]")){
       marked.removeAttribute("data-editor-added-drop-target");
+      marked.removeAttribute("data-editor-added-anchor-target");
+    }
   }
   function createAddedMoveHandle(){
     const doc=state.frameDoc;
@@ -2488,8 +2579,8 @@
     const handle=doc.createElement("button");
     handle.id="moon-added-block-move-handle";handle.type="button";
     handle.textContent="⠿";
-    handle.title="Drag this new block among additions at the same location";
-    handle.setAttribute("aria-label","Drag new block to reorder it. Move earlier and Move later remain available in the inspector.");
+    handle.title="Drag a new block to another original heading or paragraph";
+    handle.setAttribute("aria-label","Drag the new block after another original heading or paragraph, or reorder it among additions at the same location. Location and order controls are available in the inspector.");
     handle.style.cssText="position:fixed;z-index:2147483646;display:grid;place-items:center;width:30px;height:30px;border:2px solid #27654f;border-radius:5px;background:#fff;color:#174932;cursor:grab;touch-action:none;font:700 21px/1 system-ui;box-shadow:0 1px 6px #0004";
     handle.addEventListener("click",event=>event.stopPropagation());
     handle.addEventListener("pointerdown",event=>{
@@ -2498,6 +2589,8 @@
       event.preventDefault();event.stopPropagation();
       const rect=handle.getBoundingClientRect();
       state.addedPointer={id:event.pointerId,from,selector:item.selector,
+        targets:new Map(sourceMoveAnchors().filter(a=>a.selector!==item.selector)
+          .map(a=>[a.key,a])),
         x:event.clientX,y:event.clientY,left:rect.left,top:rect.top};
       handle.setPointerCapture(event.pointerId);
       handle.style.cursor="grabbing";
@@ -2514,6 +2607,10 @@
         const rect=target.getBoundingClientRect();
         target.setAttribute("data-editor-added-drop-target",
           event.clientY>=rect.top+rect.height/2?"after":"before");
+      }else{
+        const sourceTarget=sourceAddedDropTarget(doc,event.clientX,event.clientY,
+          handle,drag.targets);
+        if(sourceTarget)sourceTarget.setAttribute("data-editor-added-anchor-target","");
       }
     });
     const finish=event=>{
@@ -2522,6 +2619,9 @@
       event.preventDefault();
       const target=event.type==="pointerup"?
         addedDropTarget(doc,event.clientX,event.clientY,drag.from,drag.selector,handle):null;
+      const sourceTarget=!target&&event.type==="pointerup"?
+        sourceAddedDropTarget(doc,event.clientX,event.clientY,handle,drag.targets):null;
+      const sourceKey=sourceTarget?.getAttribute("data-editor-key");
       const rect=target?.getBoundingClientRect();
       const index=target?Number(target.getAttribute("data-editor-added-index")):-1;
       const after=!!rect&&event.clientY>=rect.top+rect.height/2;
@@ -2531,6 +2631,7 @@
       clearAddedDropTargets(doc);
       positionAddedMoveHandle();
       if(index>=0)setTimeout(()=>reorderAddedRelative(drag.from,index,after),0);
+      else if(sourceKey)setTimeout(()=>relocateAddedToAnchor(drag.from,sourceKey),0);
     };
     handle.addEventListener("pointerup",finish);
     handle.addEventListener("pointercancel",finish);
@@ -3118,6 +3219,9 @@
     $("applyAddedBlockBtn").addEventListener("click",applyAddedBlock);
     $("removeAddedBlockBtn").addEventListener("click",removeAddedBlock);
     $("duplicateAddedBlockBtn").addEventListener("click",duplicateAddedBlock);
+    $("moveAddedAnchorPicker").addEventListener("change",updateAddedAnchorButton);
+    $("moveAddedAnchorBtn").addEventListener("click",()=>
+      relocateAddedToAnchor(state.selectedAddition,$("moveAddedAnchorPicker").value));
     $("moveAddedEarlierBtn").addEventListener("click",()=>moveReviewedAddition(state.selectedAddition,-1));
     $("moveAddedLaterBtn").addEventListener("click",()=>moveReviewedAddition(state.selectedAddition,1));
     $("insertContentBtn").addEventListener("click",addContentFromInspector);
