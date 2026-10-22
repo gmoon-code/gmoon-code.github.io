@@ -1864,3 +1864,35 @@ test('forged card group markup cannot be accepted by the destination editor', as
   await expect(page.locator('#noticeMessage')).toContainText('No edits were applied');
   expect(await page.evaluate(()=>localStorage.getItem('moon-portfolio-visual-editor-v1:index.html'))).toBeNull();
 });
+
+test('capture original-site desktop and mobile card and CV row previews', async ({ page }) => {
+  test.setTimeout(90000);
+  const fs=require('node:fs');
+  fs.mkdirSync('test-results/layout-previews',{recursive:true});
+  await page.setViewportSize({width:1440,height:1000});
+  for(const [filename,stem,preset] of [
+    ['index.html','home-card-layout','first-wide'],
+    ['cv.html','cv-row-layout','columns']
+  ]){
+    await page.locator('#sourcePage').selectOption(filename);
+    page.once('dialog',dialog=>dialog.accept());
+    await page.locator('#importPage').click();
+    await expect(page.locator('#status')).toContainText('Imported');
+    await page.locator('#findContainerGroups').click();
+    await expect(page.locator('#containerGroupPicker option').nth(1)).toBeVisible();
+    await page.locator('#containerColumns').selectOption(preset);
+    await page.locator('#applyContainerGroup').click();
+    await expect(page.locator('#responsiveGroupStatus')).toContainText('Card or CV row group selected');
+    await page.locator('#viewSitePreview').click();
+    await page.locator('#previewSiteApplied').click();
+    await expect(page.frameLocator('#sitePreviewFrame').locator('#moon-responsive-group-layout')).toHaveCount(1);
+    await page.locator('#sitePreviewDialog').screenshot({
+      path:'test-results/layout-previews/'+stem+'-desktop.png'
+    });
+    await page.locator('#previewSiteMobile').click();
+    await page.locator('#sitePreviewDialog').screenshot({
+      path:'test-results/layout-previews/'+stem+'-mobile.png'
+    });
+    await page.locator('#closeSitePreview').click();
+  }
+});
