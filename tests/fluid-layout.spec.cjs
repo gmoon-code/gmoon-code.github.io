@@ -3569,16 +3569,16 @@ test('new paragraph uses responsive width, centre alignment and exact spacing in
  await page.locator('#addedBlockSpaceBelow').dispatchEvent('change');
  await expect(newBlock).toHaveAttribute('style',/width:\s*65%/);
  await expect(newBlock).toHaveAttribute('style',/text-align:\s*center/);
- await expect(newBlock).toHaveAttribute('style',/margin-top:\s*15px/);
- await expect(newBlock).toHaveAttribute('style',/margin-bottom:\s*20px/);
+ await expect(newBlock).toHaveCSS('margin-top','15px');
+ await expect(newBlock).toHaveCSS('margin-bottom','20px');
  await expect(page.locator('#addedBlockWidthValue')).toHaveText('65%');
  await expect.poll(async()=>page.evaluate(()=>
   JSON.parse(localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'))
    ?.additions?.[0]?.layout?.spaceBelow)).toBe(20);
  await page.locator('#undoBtn').click();
- await expect(newBlock).not.toHaveAttribute('style',/margin-bottom:\s*20px/);
+ expect(await newBlock.evaluate(el=>el.style.marginBottom)).toBe('');
  await page.locator('#redoBtn').click();
- await expect(newBlock).toHaveAttribute('style',/margin-bottom:\s*20px/);
+ await expect(newBlock).toHaveCSS('margin-bottom','20px');
  const download=page.waitForEvent('download');
  await page.locator('#exportBtn').click();
  const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
