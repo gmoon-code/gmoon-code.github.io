@@ -3,6 +3,7 @@ on:
   pull_request:
     paths:
       - 'fluid-layout-lab.html'
+      - 'responsive-layout.js'
       - 'editor.html'
       - 'editor.js'
       - 'editor.css'
