@@ -904,6 +904,106 @@
     const node=doc.querySelector('[data-editor-key="'+state.selected+'"]');
     return node?.tagName==="IMG"?node:null;
   }
+  function syncAddedBlockLayoutControls(item){
+    const layout=addedBlockLayout(item);
+    $("addedBlockAlign").value=layout.align;
+    $("addedBlockWidth").value=String(layout.widthPercent);
+    $("addedBlockWidthValue").textContent=layout.widthPercent+"%";
+    $("addedBlockSpaceAbove").value=String(layout.spaceAbove);
+    $("addedBlockSpaceBelow").value=String(layout.spaceBelow);
+    $("resetAddedBlockLayout").disabled=!item.layout;
+  }
+  function setAddedBlockLayout(patch,makeCheckpoint=false){
+    const index=state.selectedAddition,item=state.additions[index];
+    if(!item)return false;
+    const layout={...addedBlockLayout(item),...patch};
+    try{validateAddedLayout(layout)}
+    catch(error){
+      $("addedBlockStatus").textContent="Block layout unchanged. "+error.message;
+      syncAddedBlockLayoutControls(item);
+      return false;
+    }
+    const revised={...item};
+    if(isDefaultAddedLayout(layout))delete revised.layout;
+    else revised.layout=layout;
+    if(JSON.stringify(revised)===JSON.stringify(item))return false;
+    const proposed=state.additions.map((entry,i)=>i===index?revised:entry);
+    try{validateParagraphAdditions(proposed)}
+    catch(error){
+      $("addedBlockStatus").textContent="Block layout unchanged. "+error.message;
+      syncAddedBlockLayoutControls(item);
+      return false;
+    }
+    if(makeCheckpoint)checkpoint();
+    state.additions=proposed;
+    const target=state.frameDoc?.querySelector('[data-editor-added-index="'+index+'"]');
+    if(target){
+      const css=addedBlockStyle(revised);
+      if(css)target.style.cssText=css;
+      else target.removeAttribute("style");
+    }
+    syncAddedBlockLayoutControls(revised);
+    $("addedBlockStatus").textContent="Block position updated · Local draft";
+    positionAddedWidthHandle();
+    positionImageResizeHandle();
+    positionAddedMoveHandle();
+    scheduleDraft();
+    return true;
+  }
+  function positionAddedWidthHandle(){
+    const doc=state.frameDoc,handle=doc?.getElementById("moon-added-block-width-handle");
+    if(!handle||state.addedWidthPointer)return;
+    const item=state.additions[state.selectedAddition];
+    const target=doc.querySelector('[data-editor-added-index="'+state.selectedAddition+'"]');
+    if(!item||insertionKind(item)==="image"||!target){handle.remove();return;}
+    const rect=target.getBoundingClientRect(),view=doc.defaultView;
+    if(rect.bottom<0||rect.right<0||rect.top>view.innerHeight||rect.left>view.innerWidth){
+      handle.hidden=true;return;
+    }
+    handle.hidden=false;
+    handle.style.left=Math.max(0,Math.min(view.innerWidth-28,rect.right-13))+"px";
+    handle.style.top=Math.max(0,Math.min(view.innerHeight-28,rect.bottom-13))+"px";
+  }
+  function createAddedWidthHandle(){
+    const doc=state.frameDoc;
+    if(!doc||doc.getElementById("moon-added-block-width-handle"))return;
+    const handle=doc.createElement("button");
+    handle.id="moon-added-block-width-handle";handle.type="button";
+    handle.textContent="↘";
+    handle.title="Drag to resize this new text block";
+    handle.setAttribute("aria-label","Drag to adjust new block width. Use the block width slider in the inspector for keyboard editing.");
+    handle.style.cssText="position:fixed;z-index:2147483645;width:28px;height:28px;border:2px solid #27654f;border-radius:5px;background:#fff;color:#174932;cursor:nwse-resize;font:700 20px/20px system-ui;touch-action:none;box-shadow:0 1px 6px #0004";
+    handle.addEventListener("click",event=>event.stopPropagation());
+    handle.addEventListener("pointerdown",event=>{
+      if(event.button!==0||state.addedWidthPointer)return;
+      const item=state.additions[state.selectedAddition],target=doc.querySelector(
+        '[data-editor-added-index="'+state.selectedAddition+'"]');
+      const parentWidth=target?.parentElement?.getBoundingClientRect().width;
+      if(!item||insertionKind(item)==="image"||!parentWidth)return;
+      event.preventDefault();event.stopPropagation();
+      checkpoint();
+      state.addedWidthPointer={id:event.pointerId,index:state.selectedAddition,
+        startX:event.clientX,startPercent:addedBlockLayout(item).widthPercent,parentWidth};
+      handle.setPointerCapture(event.pointerId);
+    });
+    handle.addEventListener("pointermove",event=>{
+      const drag=state.addedWidthPointer;
+      if(!drag||drag.id!==event.pointerId||drag.index!==state.selectedAddition)return;
+      const desired=Math.round((drag.startPercent+
+        100*(event.clientX-drag.startX)/drag.parentWidth)/5)*5;
+      setAddedBlockLayout({widthPercent:Math.max(30,Math.min(100,desired))});
+    });
+    const finish=event=>{
+      if(state.addedWidthPointer?.id!==event.pointerId)return;
+      state.addedWidthPointer=null;
+      positionAddedWidthHandle();
+      scheduleDraft();
+    };
+    handle.addEventListener("pointerup",finish);
+    handle.addEventListener("pointercancel",finish);
+    doc.body.append(handle);
+    positionAddedWidthHandle();
+  }
   function resizeAddedImage(percent){
     const index=state.selectedAddition,item=state.additions[index];
     const image=selectedPreviewImage();
@@ -3234,6 +3334,27 @@
       resizeAddedImage(Number(event.target.value));
       state.imageSliderActive=false;
     });
+    $("addedBlockAlign").addEventListener("change",event=>
+      setAddedBlockLayout({align:event.target.value},true));
+    $("addedBlockWidth").addEventListener("input",event=>{
+      if(!state.addedBlockSliderActive){
+        checkpoint();state.addedBlockSliderActive=true;
+      }
+      setAddedBlockLayout({widthPercent:Number(event.target.value)});
+    });
+    $("addedBlockWidth").addEventListener("change",event=>{
+      if(!state.addedBlockSliderActive)
+        setAddedBlockLayout({widthPercent:Number(event.target.value)},true);
+      else setAddedBlockLayout({widthPercent:Number(event.target.value)});
+      state.addedBlockSliderActive=false;
+    });
+    for(const [id,key] of [
+      ["addedBlockSpaceAbove","spaceAbove"],
+      ["addedBlockSpaceBelow","spaceBelow"]
+    ])$(id).addEventListener("change",event=>
+      setAddedBlockLayout({[key]:Number(event.target.value)},true));
+    $("resetAddedBlockLayout").addEventListener("click",()=>
+      setAddedBlockLayout({...ADDED_LAYOUT_DEFAULT},true));
     $("textAlignment").addEventListener("change",event=>
       updateSelectedStyle("textAlign",event.target.value,["left","center","right","justify"]));
     for(const [id,property,unit,min,max] of [
