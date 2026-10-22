@@ -2960,6 +2960,16 @@
       const title=document.createElement('h3');title.textContent='New '+insertionKind(item)+' after '+item.selector;
       const text=document.createElement('p');text.textContent=item.text;
       if(insertionKind(item)==='link')text.textContent+=' · '+item.href;
+      if(insertionKind(item)==='image')text.textContent+=' · '+item.src;
+      const position=document.createElement('p');
+      const blockLayout=addedBlockLayout(item);
+      position.textContent="Block position · "+
+        ({left:"Left",center:"Centre",right:"Right"}[blockLayout.align])+
+        " · width "+blockLayout.widthPercent+"%"+
+        " · above "+blockLayout.spaceAbove+"px"+
+        " · below "+blockLayout.spaceBelow+"px"+
+        (insertionKind(item)==="image"?
+          " · image width "+(item.widthPercent===undefined?100:item.widthPercent)+"%":"");
       const edit=document.createElement('button');
       edit.type='button';edit.textContent='Edit added content';
       edit.setAttribute('aria-label','Edit added '+insertionKind(item)+' '+(index+1));
@@ -2978,7 +2988,7 @@
       down.type='button';down.textContent='Move later';down.disabled=position===siblings.length-1;
       down.setAttribute('aria-label','Move added '+insertionKind(item)+' '+(index+1)+' later');
       down.addEventListener('click',()=>moveReviewedAddition(index,1));
-      el.append(title,text,up,down,edit,remove);list.append(el);
+      el.append(title,text,position,up,down,edit,remove);list.append(el);
     });
     if(layoutGroups().length){
       const layout=document.createElement("section");
