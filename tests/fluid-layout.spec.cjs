@@ -3552,11 +3552,18 @@ test('unsafe inserted image widths in local drafts fail source validation',async
  await expect.poll(async()=>page.evaluate(()=>
   JSON.parse(localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'))?.additions?.length
  )).toBe(1);
- await page.evaluate(()=>{
+ // The editor saves its live draft during beforeunload. Corrupt the draft
+ // at document startup, immediately before the next editor reads storage.
+ await page.addInitScript(()=>{
+  if(window.top!==window)return;
   const key='moon-portfolio-visual-editor-v1:about.html';
-  const draft=JSON.parse(localStorage.getItem(key));
-  draft.additions[0].widthPercent='75%;position:fixed';
-  localStorage.setItem(key,JSON.stringify(draft));
+  const raw=localStorage.getItem(key);
+  if(!raw)return;
+  const draft=JSON.parse(raw);
+  if(draft.additions?.length){
+   draft.additions[0].widthPercent='75%;position:fixed';
+   localStorage.setItem(key,JSON.stringify(draft));
+  }
  });
  await page.reload();
  await expect(page.locator('#noticeMessage')).toContainText('could not be restored safely');
