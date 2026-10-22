@@ -393,7 +393,18 @@ try {
     "Existing classroom materials");
   assert.equal(await imageComposer.locator("img").getAttribute("src"),
     "assets/editor-existing-example.webp");
+  await imageComposer.getByLabel("Existing image path").fill("../unsafe.svg");
   await imageComposer.getByRole("button",{name:"Add to page"}).click();
+  assert.match(await imageComposer.getByRole("status").textContent(),/Cannot add this content/);
+  assert.equal(await inline.frameLocator("#pageFrame")
+    .locator("[data-editor-added-index]").count(),2);
+  console.log("INLINE: rejected unsafe image path");
+  await imageComposer.getByLabel("Existing image path")
+    .fill("assets/editor-existing-example.webp");
+  await imageComposer.getByRole("button",{name:"Add to page"}).click();
+  console.log("INLINE: retried safe image after rejection");
+  assert.equal(await imageComposer.count(),0,
+    "Valid image retry must close inline composer after rejected unsafe source");
   await inline.frameLocator("#pageFrame").locator("[data-editor-added-index]").nth(2)
     .locator("img").waitFor({timeout:6000});
   console.log("PASS: inline page composer supports valid image selection, safe links, reload and edits");
