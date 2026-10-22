@@ -3422,3 +3422,140 @@ test('keyboard users can select newly inserted blocks without persisting preview
  expect(html).not.toContain('Press Enter to edit');
  expect(html).toContain('<p>A keyboard-editable new paragraph</p>');
 });
+
+test('original paragraph blocks move within a section with exact markup, undo, redo and reload persistence',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+  body:'<!doctype html><html><head></head><body><main><section><h2>Scientific explanations</h2>'+
+   '<p>First science explanation.</p><p><strong>Second</strong> with <a href="research.html">research link</a>.</p>'+
+   '<p>Third science explanation.</p></section><footer><p>Unchanged footer.</p></footer></main></body></html>'}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ const blocks=page.frameLocator('#pageFrame').locator('main section > p');
+ const original=await blocks.allTextContents();
+ expect(original).toEqual(['First science explanation.','Second with research link.','Third science explanation.']);
+ await blocks.nth(1).click();
+ await expect(page.locator('#moveOriginalBlockFields')).toBeVisible();
+ await expect(page.locator('#moveOriginalUp')).toBeEnabled();
+ await page.locator('#moveOriginalUp').click();
+ await expect.poll(async()=>blocks.allTextContents()).toEqual([
+  'Second with research link.','First science explanation.','Third science explanation.'
+ ]);
+ await expect(page.locator('#changeCount')).toContainText('1 rearranged content group');
+ await expect(page.locator('#moveOriginalUp')).toBeDisabled();
+ await page.locator('#moveOriginalDown').click();
+ await expect.poll(async()=>blocks.allTextContents()).toEqual(original);
+ await expect(page.locator('#exportBtn')).toBeDisabled();
+ await page.locator('#undoBtn').click();
+ await expect.poll(async()=>blocks.allTextContents()).toEqual([
+  'Second with research link.','First science explanation.','Third science explanation.'
+ ]);
+ await page.locator('#redoBtn').click();
+ await expect.poll(async()=>blocks.allTextContents()).toEqual(original);
+ await blocks.nth(1).click();
+ await page.locator('#moveOriginalDown').click();
+ await expect.poll(async()=>blocks.allTextContents()).toEqual([
+  'First science explanation.','Third science explanation.','Second with research link.'
+ ]);
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).toContain('<p>First science explanation.</p><p>Third science explanation.</p>'+
+  '<p><strong>Second</strong> with <a href="research.html">research link</a>.</p>');
+ expect(html).toContain('<footer><p>Unchanged footer.</p></footer>');
+ expect(html).not.toContain('data-editor-key');
+ await expect.poll(async()=>page.evaluate(()=>JSON.parse(
+  localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'))?.blockOrders?.length)).toBe(1);
+ await page.reload();
+ await expect.poll(async()=>blocks.allTextContents()).toEqual([
+  'First science explanation.','Third science explanation.','Second with research link.'
+ ]);
+ await page.locator('#reviewBtn').click();
+ await expect(page.locator('#reviewChangeList')).toContainText('Rearranged existing content group 1');
+ await expect(page.locator('#reviewExportStatus')).toContainText('Source check passed');
+ await page.getByRole('button',{name:'Restore reordered content group 1'}).click();
+ await expect.poll(async()=>blocks.allTextContents()).toEqual(original);
+ await expect(page.locator('#exportBtn')).toBeDisabled();
+ await expect.poll(async()=>page.evaluate(()=>
+  localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'))).toBeNull();
+});
+
+test('original list item blocks can move without changing links or list semantics',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+  body:'<!doctype html><html><head></head><body><main><section><h2>Reading list</h2>'+
+   '<ul><li>Evidence A</li><li><a href="research.html">Evidence B</a></li><li>Evidence C</li></ul>'+
+   '</section></main></body></html>'}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ const list=page.frameLocator('#pageFrame').locator('main li');
+ await list.nth(2).click();
+ await expect(page.locator('#moveOriginalUp')).toBeEnabled();
+ await page.locator('#moveOriginalUp').click();
+ await expect.poll(async()=>list.allTextContents()).toEqual(['Evidence A','Evidence C','Evidence B']);
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).toContain('<ul><li>Evidence A</li><li>Evidence C</li><li><a href="research.html">Evidence B</a></li></ul>');
+});
+
+test('unsafe moves are disabled for ambiguous, named or edited source and commented gaps',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+  body:'<!doctype html><html><head></head><body><main><section><h2>Protected and duplicates</h2>'+
+   '<p id="linked-section">Named paragraph.</p><p>Duplicate phrase.</p><p>Duplicate phrase.</p>'+
+   '<p>Unique first.</p><!-- editorial note --><p>Unique second.</p>'+
+   '</section></main></body></html>'}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ const ps=page.frameLocator('#pageFrame').locator('main section > p');
+ await ps.nth(0).click();
+ await expect(page.locator('#moveOriginalBlockFields')).toBeHidden();
+ await ps.nth(1).click();
+ await expect(page.locator('#moveOriginalBlockFields')).toBeHidden();
+ await ps.nth(3).click();
+ await expect(page.locator('#moveOriginalBlockFields')).toBeHidden();
+ await ps.nth(4).click();
+ await expect(page.locator('#moveOriginalBlockFields')).toBeHidden();
+ await expect(page.locator('#exportBtn')).toBeDisabled();
+});
+
+test('existing content move conflicts with staged additions and source removals',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+  body:'<!doctype html><html><head></head><body><main><section><h2>Inquiry</h2>'+
+   '<p>First.</p><p>Second.</p><p>Third.</p></section></main></body></html>'}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ const blocks=page.frameLocator('#pageFrame').locator('main section > p[data-editor-key]');
+ await blocks.first().click();
+ await page.locator('#insertContentText').fill('An added paragraph after first.');
+ await page.locator('#insertContentBtn').click();
+ await blocks.nth(1).click();
+ await expect(page.locator('#moveOriginalBlockFields')).toBeVisible();
+ await expect(page.locator('#moveOriginalUp')).toBeDisabled();
+ await page.locator('#reviewBtn').click();
+ await page.getByRole('button',{name:'Remove added paragraph 1'}).click();
+ await expect.poll(async()=>page.locator('#changeCount').textContent()).toContain('0 edited elements');
+ await blocks.nth(1).click();
+ await expect(page.locator('#moveOriginalUp')).toBeEnabled();
+ await page.locator('#moveOriginalUp').click();
+ await expect(page.locator('#removeSourceBtn')).toBeDisabled();
+ await expect(page.locator('#insertContentFields')).toBeVisible();
+ await page.locator('#insertContentText').fill('Conflicting addition');
+ await page.locator('#insertContentBtn').click();
+ await expect(page.locator('#noticeMessage')).toContainText('Restore the original order');
+ await page.locator('#noticeDialog form button').click();
+ await expect(page.locator('#changeCount')).toContainText('1 rearranged content group');
+});
+
+test('forged reordered content drafts are rejected and leave protected source intact',async({page})=>{
+ const source='<!doctype html><html><head></head><body><main><section><h2>Keep heading</h2>'+
+  '<p>Alpha content.</p><p>Beta content.</p></section></main></body></html>';
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',body:source}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ await page.evaluate(source=>{
+  let hash=2166136261;
+  for(let i=0;i<source.length;i++){hash^=source.charCodeAt(i);hash=Math.imul(hash,16777619);}
+  localStorage.setItem('moon-portfolio-visual-editor-v1:about.html',JSON.stringify({
+   version:1,sourceHash:(hash>>>0).toString(16),items:[],
+   blockOrders:[{originalKeys:['e0','e1'],keys:['e1','e0']}]
+  }));
+ },source);
+ await page.reload();
+ await expect(page.frameLocator('#pageFrame').locator('main h2')).toHaveText('Keep heading');
+ await expect(page.frameLocator('#pageFrame').locator('main section > p').first()).toHaveText('Alpha content.');
+ await expect(page.locator('#exportBtn')).toBeDisabled();
+});
