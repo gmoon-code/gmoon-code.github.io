@@ -308,3 +308,15 @@ test("multiple distinct responsive groups are independently validated by the pub
  assert.throws(()=>util.validateEdit("about.html",source,append(
    Array(7).fill(group('alpha')).join('\n'))),/Responsive layout CSS/);
 });
+
+test("approved plain-text paragraph insertion preserves protected publisher resources",()=>{
+ const current=page.replace("<h1>Original title</h1>","<h1>Original title</h1><p>Existing</p>");
+ const updated=current.replace("<p>Existing</p>","<p>Existing</p>\n<p>New note &lt;script&gt;literal&lt;/script&gt;</p>");
+ assert.doesNotThrow(()=>util.validateEdit("about.html",current,updated));
+ assert.throws(()=>util.validateEdit("about.html",current,
+   updated.replace("&lt;script&gt;literal&lt;/script&gt;","<script>alert(1)</script>")),
+   /Scripts, stylesheets|executable/i);
+ assert.throws(()=>util.validateEdit("about.html",current,
+   updated.replace("</main>","<iframe src=\"https://example.org\"></iframe></main>")),
+   /executable/i);
+});
