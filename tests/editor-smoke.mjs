@@ -34,6 +34,22 @@ function checkNoPageErrors(where) {
 
 try {
   await ready();
+  // Navigate original blocks without changing the source or creating tab traps.
+  assert.equal(await page.locator("#browseNextElement").isEnabled(),true);
+  await page.locator("#browseNextElement").click();
+  const firstBrowse=await page.locator("#pageFrame").evaluate(frame=>
+    frame.contentDocument.querySelector("[data-editor-selected]")?.getAttribute("data-editor-key"));
+  assert.match(firstBrowse,/^e\d+$/);
+  assert.match(await page.locator("#browseElementStatus").textContent(),/Element 1 of/);
+  await page.locator("#browseNextElement").click();
+  const secondBrowse=await page.locator("#pageFrame").evaluate(frame=>
+    frame.contentDocument.querySelector("[data-editor-selected]")?.getAttribute("data-editor-key"));
+  assert.notEqual(secondBrowse,firstBrowse);
+  await page.locator("#browsePrevElement").click();
+  assert.equal(await page.locator("#pageFrame").evaluate(frame=>
+    frame.contentDocument.querySelector("[data-editor-selected]")?.getAttribute("data-editor-key")),firstBrowse);
+  assert.equal(await page.locator("#exportBtn").isDisabled(),true,
+    "Browsing content must not create an exportable change");
   // An optional single bookmark opens the complete directory without
   // requiring credentials or enabling editor publication rights.
   const directory=await context.newPage();
@@ -111,6 +127,16 @@ try {
   assert(/style="[^"]*text-align:\s*center/.test(html),
     "Selected text alignment must survive source export");
   assert(!html.includes("javascript:void"),"No scripts should be introduced");
+  await page.locator("#previewHeading").click();
+  await page.keyboard.press("Control+z");
+  assert.notEqual(await kicker.evaluate(el=>el.style.textAlign),"center",
+    "Ctrl+Z should undo an inspector style edit outside text fields");
+  await page.keyboard.press("Control+Shift+z");
+  assert.equal(await kicker.evaluate(el=>el.style.textAlign),"center",
+    "Ctrl+Shift+Z should restore the inspector style");
+  await page.keyboard.press("Control+s");
+  assert.match(await page.locator("#editorSaveStatus").textContent(),/Draft saved/,
+    "Ctrl+S should save a local draft without a browser download");
 
   await page.reload({waitUntil:"domcontentloaded"});
   await page.frameLocator("#pageFrame").locator("main").waitFor();
