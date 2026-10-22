@@ -35,7 +35,7 @@
     selected:null,history:[],redo:[],fingerprint:"",loadToken:0,saveTimer:null,staleDraft:false,
     originalSections:[],sectionGroups:[],sectionOrder:[],mediaAssets:null,mediaPromise:null,
     stagedMedia:null,responsiveGroup:null,responsiveGroups:[],additions:[],resizeStart:null,imageSliderActive:false,
-    pageFindKeys:[],pageFindIndex:-1,mediaChooseInsert:false,removals:[],selectedAddition:null,blockOrders:[],columnPointer:null,blockPointer:null
+    pageFindKeys:[],pageFindIndex:-1,mediaChooseInsert:false,removals:[],selectedAddition:null,blockOrders:[],columnPointer:null,blockPointer:null,addedPointer:null
   };
 
   function hashText(text) {
@@ -308,6 +308,7 @@
       '[data-editor-key][data-editor-find-match]{box-shadow:inset 0 -3px #f7c85e!important;}',
       '[data-editor-key][data-editor-find-active]{outline:3px solid #b15b16!important;outline-offset:5px!important;}',
       '[data-editor-key][data-editor-drag-target]{outline:3px dashed #27654f!important;outline-offset:4px!important;}',
+      '[data-editor-added-index][data-editor-added-drop-target]{outline:3px dashed #27654f!important;outline-offset:4px!important;}',
       "[data-editor-key][contenteditable=true]{min-height:1em;}",
       "[data-editor-key][contenteditable=true]:focus{outline:2px solid #2b8769!important;}",
       "@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}"
@@ -318,7 +319,7 @@
     return "<!doctype html>\n"+copy.documentElement.outerHTML;
   }
 
-  function renderPreview(reselectKey=null) {
+  function renderPreview(reselectKey=null,reselectAddition=null) {
     state.selected=null;
     state.selectedAddition=null;
     $("addedBlockDetails").hidden=true;
@@ -340,9 +341,11 @@
         d.addEventListener("paste",onPreviewPaste,true);
         d.addEventListener("scroll",positionImageResizeHandle,true);
         d.addEventListener("scroll",positionBlockMoveHandle,true);
+        d.addEventListener("scroll",positionAddedMoveHandle,true);
         d.addEventListener("scroll",positionColumnResizeHandle,true);
         d.defaultView.addEventListener("resize",positionImageResizeHandle);
         d.defaultView.addEventListener("resize",positionBlockMoveHandle);
+        d.defaultView.addEventListener("resize",positionAddedMoveHandle);
         d.defaultView.addEventListener("resize",positionColumnResizeHandle);
 
         refreshPageFind();
@@ -350,6 +353,11 @@
         if(reselectKey){
           const target=d.querySelector('[data-editor-key="'+reselectKey+'"]');
           if(target){selectElement(target);target.scrollIntoView({block:"center"});}
+        }
+        if(Number.isInteger(reselectAddition)&&state.additions[reselectAddition]){
+          selectAddedBlock(reselectAddition);
+          d.querySelector('[data-editor-added-index="'+reselectAddition+'"]')
+            ?.scrollIntoView({block:"center"});
         }
       } catch(e) {notice("The preview did not become editable. Please reload the editor.");}
     };
@@ -570,6 +578,7 @@
     if(state.frameDoc.getElementById("moon-image-resize-handle"))
       state.frameDoc.getElementById("moon-image-resize-handle").remove();
     state.frameDoc.getElementById("moon-column-resize-handle")?.remove();
+    state.frameDoc.getElementById("moon-added-block-move-handle")?.remove();
     node.setAttribute("data-editor-selected","");
     if (TEXT_TAGS.has(node.tagName)) node.setAttribute("contenteditable","true");
     updateInspector(node);
@@ -592,6 +601,7 @@
     state.frameDoc.getElementById("moon-image-resize-handle")?.remove();
     state.frameDoc.getElementById("moon-block-move-handle")?.remove();
     state.frameDoc.getElementById("moon-column-resize-handle")?.remove();
+    state.frameDoc.getElementById("moon-added-block-move-handle")?.remove();
     $("selectionDetails").hidden=true;
     $("selectionEmpty").hidden=true;
     $("selectionTag").textContent="New "+insertionKind(addition);
@@ -622,6 +632,7 @@
       " of "+state.additions.length+" · Local draft";
     updateBrowseControls();
     if(kind==="image")createImageResizeHandle();
+    if(siblings.length>1)createAddedMoveHandle();
   }
   function applyAddedBlock(){
     const index=state.selectedAddition,original=state.additions[index];
@@ -2416,6 +2427,115 @@
       $("insertLinkHref").value=saved.href;
       updateInsertKind();
     }
+  }
+  // Pointer reordering for inserted blocks stays within one verified source
+  // anchor. The same inspector arrow buttons remain available without a mouse.
+  function reorderAddedRelative(from,to,after){
+    const source=state.additions[from],destination=state.additions[to];
+    if(!source||!destination||from===to||source.selector!==destination.selector)return false;
+    const positions=state.additions.map((item,i)=>
+      item.selector===source.selector?i:-1).filter(i=>i>=0);
+    const fromAt=positions.indexOf(from),toAt=positions.indexOf(to);
+    if(fromAt<0||toAt<0)return false;
+    const ordered=positions.map(i=>state.additions[i]);
+    const revised=ordered.slice();
+    const [moved]=revised.splice(fromAt,1);
+    const at=(fromAt<toAt?toAt-1:toAt)+(after?1:0);
+    revised.splice(at,0,moved);
+    if(revised.every((item,i)=>item===ordered[i]))return false;
+    const proposal=state.additions.slice();
+    positions.forEach((index,i)=>{proposal[index]=revised[i]});
+    try{validateParagraphAdditions(proposal)}
+    catch(error){notice("The new content cannot be moved. "+error.message,"Move stopped");return false;}
+    checkpoint();
+    state.additions=proposal;
+    renderPreview(null,positions[at]);
+    scheduleDraft();
+    updateStatus("New content order updated · Not published");
+    return true;
+  }
+  function positionAddedMoveHandle(){
+    const doc=state.frameDoc,handle=doc?.getElementById("moon-added-block-move-handle");
+    if(!handle||state.addedPointer)return;
+    const index=state.selectedAddition,item=state.additions[index];
+    const target=doc.querySelector('[data-editor-added-index="'+index+'"]');
+    const count=state.additions.filter(entry=>entry.selector===item?.selector).length;
+    if(!target||count<2){handle.remove();return;}
+    const rect=target.getBoundingClientRect(),view=doc.defaultView;
+    if(rect.bottom<0||rect.right<0||rect.top>view.innerHeight||rect.left>view.innerWidth){
+      handle.hidden=true;return;
+    }
+    handle.hidden=false;
+    handle.style.left=Math.max(0,Math.min(view.innerWidth-32,rect.left-29))+"px";
+    handle.style.top=Math.max(0,Math.min(view.innerHeight-32,rect.top))+"px";
+  }
+  function addedDropTarget(doc,x,y,from,selector,handle){
+    const previous=handle.style.pointerEvents;
+    handle.style.pointerEvents="none";
+    const hit=doc.elementFromPoint(x,y);
+    handle.style.pointerEvents=previous;
+    const target=hit?.closest?.("[data-editor-added-index]");
+    const index=target?Number(target.getAttribute("data-editor-added-index")):-1;
+    return index>=0&&index!==from&&state.additions[index]?.selector===selector?target:null;
+  }
+  function clearAddedDropTargets(doc){
+    for(const marked of doc.querySelectorAll("[data-editor-added-drop-target]"))
+      marked.removeAttribute("data-editor-added-drop-target");
+  }
+  function createAddedMoveHandle(){
+    const doc=state.frameDoc;
+    if(!doc||doc.getElementById("moon-added-block-move-handle"))return;
+    const handle=doc.createElement("button");
+    handle.id="moon-added-block-move-handle";handle.type="button";
+    handle.textContent="⠿";
+    handle.title="Drag this new block among additions at the same location";
+    handle.setAttribute("aria-label","Drag new block to reorder it. Move earlier and Move later remain available in the inspector.");
+    handle.style.cssText="position:fixed;z-index:2147483646;display:grid;place-items:center;width:30px;height:30px;border:2px solid #27654f;border-radius:5px;background:#fff;color:#174932;cursor:grab;touch-action:none;font:700 21px/1 system-ui;box-shadow:0 1px 6px #0004";
+    handle.addEventListener("click",event=>event.stopPropagation());
+    handle.addEventListener("pointerdown",event=>{
+      const from=state.selectedAddition,item=state.additions[from];
+      if(event.button!==0||state.addedPointer||!item)return;
+      event.preventDefault();event.stopPropagation();
+      const rect=handle.getBoundingClientRect();
+      state.addedPointer={id:event.pointerId,from,selector:item.selector,
+        x:event.clientX,y:event.clientY,left:rect.left,top:rect.top};
+      handle.setPointerCapture(event.pointerId);
+      handle.style.cursor="grabbing";
+    });
+    handle.addEventListener("pointermove",event=>{
+      const drag=state.addedPointer;
+      if(!drag||drag.id!==event.pointerId)return;
+      event.preventDefault();
+      handle.style.left=(drag.left+event.clientX-drag.x)+"px";
+      handle.style.top=(drag.top+event.clientY-drag.y)+"px";
+      clearAddedDropTargets(doc);
+      const target=addedDropTarget(doc,event.clientX,event.clientY,drag.from,drag.selector,handle);
+      if(target){
+        const rect=target.getBoundingClientRect();
+        target.setAttribute("data-editor-added-drop-target",
+          event.clientY>=rect.top+rect.height/2?"after":"before");
+      }
+    });
+    const finish=event=>{
+      const drag=state.addedPointer;
+      if(!drag||drag.id!==event.pointerId)return;
+      event.preventDefault();
+      const target=event.type==="pointerup"?
+        addedDropTarget(doc,event.clientX,event.clientY,drag.from,drag.selector,handle):null;
+      const rect=target?.getBoundingClientRect();
+      const index=target?Number(target.getAttribute("data-editor-added-index")):-1;
+      const after=!!rect&&event.clientY>=rect.top+rect.height/2;
+      state.addedPointer=null;
+      if(handle.hasPointerCapture(event.pointerId))handle.releasePointerCapture(event.pointerId);
+      handle.style.cursor="grab";
+      clearAddedDropTargets(doc);
+      positionAddedMoveHandle();
+      if(index>=0)setTimeout(()=>reorderAddedRelative(drag.from,index,after),0);
+    };
+    handle.addEventListener("pointerup",finish);
+    handle.addEventListener("pointercancel",finish);
+    doc.body.append(handle);
+    positionAddedMoveHandle();
   }
   function moveReviewedAddition(index,direction){
     const item=state.additions[index];
