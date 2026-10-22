@@ -1288,7 +1288,7 @@
     if(!raw||raw.length>200000)return rejectHandoff();
     let payload;
     try{payload=JSON.parse(raw)}catch{return rejectHandoff();}
-    if(!payload||typeof payload!=="object"||![1,2,3].includes(payload.version)||payload.page!==page||
+    if(!payload||typeof payload!=="object"||![1,2,3,4].includes(payload.version)||payload.page!==page||
        !Array.isArray(payload.changes)||payload.changes.length>100||
        (payload.version>=2&&(!Array.isArray(payload.styleChanges)||payload.styleChanges.length>100)))
       return rejectHandoff();
@@ -1337,22 +1337,24 @@
         preparedStyles.push({key:target.key,styles});
       }
     }
-    let preparedGroup=null;
-    if(payload.version===3){
-      if(!payload.layoutGroup||!window.MoonResponsiveLayout)return rejectHandoff();
-      try{MoonResponsiveLayout.cssFor(new DOMParser().parseFromString(state.source,'text/html'),payload.layoutGroup);
-        preparedGroup=payload.layoutGroup;
+    let preparedGroups=[];
+    if(payload.version===3||payload.version===4){
+      if(!window.MoonResponsiveLayout)return rejectHandoff();
+      const received=payload.version===3?[payload.layoutGroup]:payload.layoutGroups;
+      try{
+        MoonResponsiveLayout.cssForGroups(new DOMParser().parseFromString(state.source,'text/html'),received);
+        preparedGroups=received;
       }catch{return rejectHandoff()}
     }
-    if(!preparedText.length&&!preparedStyles.length&&!preparedGroup)return rejectHandoff();
+    if(!preparedText.length&&!preparedStyles.length&&!preparedGroups.length)return rejectHandoff();
     let existingDraft=false;
     try{existingDraft=localStorage.getItem(DRAFT_PREFIX+page)!==null}catch{existingDraft=true}
-    if(existingDraft||state.dirty.size||state.staleDraft||state.responsiveGroup){
+    if(existingDraft||state.dirty.size||state.staleDraft||layoutGroups().length){
       notice("The page already has a local draft. Review or export that draft before transferring changes.","Transfer not applied");
       return false;
     }
     if(!confirm("Apply "+preparedText.length+" verified text edits and "+preparedStyles.length+
-       " visual style edits and "+(preparedGroup?preparedGroup.children.length:0)+" responsive block placements to the local editor draft? Unapproved freeform positions are not included. Nothing will be published."))return false;
+       " visual style edits and "+preparedGroups.reduce((n,g)=>n+g.children.length,0)+" responsive block placements across "+preparedGroups.length+" groups to the local editor draft? Unapproved freeform positions are not included. Nothing will be published."))return false;
     checkpoint();
     const touched=new Set();
     for(const change of preparedText){
@@ -1374,7 +1376,8 @@
       touched.add(change.key);
     }
     for(const key of touched)updateDirty(key);
-    state.responsiveGroup=preparedGroup;
+    state.responsiveGroup=preparedGroups.length===1?preparedGroups[0]:null;
+    state.responsiveGroups=preparedGroups;
     saveDraft();
     return true;
   }
