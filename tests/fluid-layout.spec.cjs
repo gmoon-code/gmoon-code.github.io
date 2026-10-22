@@ -1234,3 +1234,67 @@ test('real About page responsive group preserves complete page markup in editor 
   expect(html).toContain('assets/profile-portrait.webp');
   expect(html).toContain('A little about me');
 });
+
+test('forged overlapping responsive placement is rejected without a local editor draft', async ({ page }) => {
+  await page.route('**/about.html', route => route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<!doctype html><html><head></head><body><main><section id="layout"><h2>Heading</h2><p>Paragraph</p></section></main></body></html>'
+  }));
+  const same={x:1,y:1,w:12,h:3};
+  const payload={version:3,page:'about.html',changes:[],styleChanges:[],layoutGroup:{
+    version:1,parentSelector:'#layout',children:[
+      {selector:'#layout > h2:nth-of-type(1)',tag:'h2',before:'Heading',desktop:same,mobile:same},
+      {selector:'#layout > p:nth-of-type(1)',tag:'p',before:'Paragraph',desktop:same,mobile:same}
+    ]
+  }};
+  await page.evaluate(data=>sessionStorage.setItem('moon-fluid-text-handoff-v1',JSON.stringify(data)),payload);
+  await page.goto('http://127.0.0.1:8765/editor.html?page=about.html&importFluidText=1');
+  await expect(page.locator('#noticeMessage')).toContainText('No edits were applied');
+  expect(await page.evaluate(()=>localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'))).toBeNull();
+});
+
+test('responsive group handoff rejects an original text change between verification and receipt', async ({ page }) => {
+  let reads=0;
+  await page.route('**/about.html', route => {
+    reads++;
+    return route.fulfill({status:200,contentType:'text/html',
+      body:'<!doctype html><html><head></head><body><main><section id="layout"><h2>Heading</h2><p>'+
+        (reads>=4?'Changed elsewhere':'Paragraph')+'</p></section></main></body></html>'});
+  });
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  await expect(page.locator('#grid .block')).toHaveCount(2);
+  await page.locator('#grid .block').first().click();
+  await page.locator('#useResponsiveGroup').click();
+  await expect(page.locator('#responsiveGroupStatus')).toContainText('2 blocks');
+  page.on('dialog', dialog => dialog.accept());
+  await page.locator('#openPublisher').click();
+  await expect(page).toHaveURL(/editor\.html\?page=about\.html$/);
+  await expect(page.locator('#noticeMessage')).toContainText('No edits were applied');
+  expect(await page.evaluate(()=>localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'))).toBeNull();
+});
+
+test('accepted responsive grid group survives editor reload and can be undone', async ({ page }) => {
+  await page.route('**/about.html', route => route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<!doctype html><html><head></head><body><main><section id="layout"><h2>Heading</h2><p>Paragraph</p></section></main></body></html>'
+  }));
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  await page.locator('#grid .block').first().click();
+  await page.locator('#useResponsiveGroup').click();
+  page.on('dialog', dialog => dialog.accept());
+  await page.locator('#openPublisher').click();
+  await expect(page.locator('#editorSaveStatus')).toContainText('transferred');
+  await expect.poll(async()=>page.evaluate(()=>JSON.parse(localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'))?.responsiveGroup?.children?.length)).toBe(2);
+  await page.reload();
+  await expect(page.locator('#reviewBtn')).toBeEnabled();
+  await page.locator('#reviewBtn').click();
+  await expect(page.locator('#reviewChangeList')).toContainText('Responsive group');
+  await page.locator('#reviewDialog form button').click();
+  await page.locator('#resetBtn').click();
+  await expect(page.locator('#exportBtn')).toBeDisabled();
+  await expect.poll(async()=>page.evaluate(()=>localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'))).toBeNull();
+});
