@@ -281,3 +281,30 @@ test("accept only exact, bounded responsive grid CSS while protecting existing s
  assert.throws(()=>util.validateEdit("about.html",section,withCss(css).replace(
    'id="moon-responsive-group-layout"', 'id="moon-responsive-group-layout" onload="alert(1)"')),/responsive layout stylesheet/i);
 });
+
+test("multiple distinct responsive groups are independently validated by the publisher",()=>{
+ const source=page.replace("<h1>Original title</h1>",
+  '<section id="alpha"><h2>Alpha</h2><p>Research</p></section>'+
+  '<section id="beta"><h2>Beta</h2><p>Teaching</p></section>');
+ const group=id=>{
+  const container='main #'+id+'{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));'+
+   'grid-auto-rows:minmax(0,auto);column-gap:12px;row-gap:8px;align-items:start;}';
+  const child=(tag,x,y,w)=>'main #'+id+' > '+tag+':nth-of-type(1)'+
+   '{grid-column:'+x+' / span '+w+';grid-row:'+y+' / span 1;min-width:0;}';
+  return '/* Reviewed responsive group. Existing page markup remains unchanged. */\n'+
+   '@media(min-width:701px){\n'+container+'\n'+
+   child('h2',1,1,6)+'\n'+child('p',7,1,6)+'\n}\n'+
+   '@media(max-width:700px){\n'+container+'\n'+
+   child('h2',1,1,12)+'\n'+child('p',1,3,12)+'\n}';
+ };
+ const css=group('alpha')+'\n'+group('beta');
+ const append=value=>source.replace("</head>",'<style id="moon-responsive-group-layout">\n'+value+'\n</style>\n</head>');
+ assert.doesNotThrow(()=>util.validateEdit("about.html",source,append(css)));
+ assert.throws(()=>util.validateEdit("about.html",source,append(css+'\n'+group('alpha'))),/Responsive layout CSS/);
+ assert.throws(()=>util.validateEdit("about.html",source,append(css.replace(
+   'grid-column:7 / span 6','grid-column:1 / span 6'))),/Responsive layout CSS/);
+ assert.throws(()=>util.validateEdit("about.html",source,append(css.replace(
+   'grid-auto-rows:minmax(0,auto)','position:fixed;grid-auto-rows:minmax(0,auto)'))),/Responsive layout CSS/);
+ assert.throws(()=>util.validateEdit("about.html",source,append(
+   Array(7).fill(group('alpha')).join('\n'))),/Responsive layout CSS/);
+});
