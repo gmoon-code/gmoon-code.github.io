@@ -490,6 +490,8 @@
       previously.removeAttribute("data-editor-selected");
       previously.removeAttribute("contenteditable");
     }
+    for(const marked of state.frameDoc.querySelectorAll("[data-editor-added-selected]"))
+      marked.removeAttribute("data-editor-added-selected");
     state.selected=node.getAttribute("data-editor-key");
     state.selectedAddition=null;
     $("addedBlockDetails").hidden=true;
