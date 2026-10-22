@@ -300,6 +300,12 @@
           </div>
           <button type="button" id="applyAddedBlockBtn" class="primary">Apply block edits</button>
           <button type="button" id="duplicateAddedBlockBtn" class="secondary">Duplicate this new block</button>
+          <div id="moveAddedAnchorFields">
+            <label for="moveAddedAnchorPicker">Move this block below another original element</label>
+            <select id="moveAddedAnchorPicker" aria-describedby="moveAddedAnchorHelp"></select>
+            <button type="button" id="moveAddedAnchorBtn" class="secondary" disabled>Move to selected location</button>
+            <p id="moveAddedAnchorHelp" class="small-note">Choose an original section heading or paragraph on this page. The original content stays in place, and this new block moves beneath it. You can also drag the block handle directly onto the original element.</p>
+          </div>
           <div class="page-find-controls">
             <button type="button" id="moveAddedEarlierBtn" class="secondary">Move earlier</button>
             <button type="button" id="moveAddedLaterBtn" class="secondary">Move later</button>
