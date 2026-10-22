@@ -2790,3 +2790,32 @@ test('review panel moves new blocks earlier and later without changing source co
  const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
  expect(html).toContain('<h2>Source heading</h2>\n<p>First</p>\n<p>Second</p><p>Existing text</p>');
 });
+
+test('addition-only drafts enable a review PR proposal after authorized publisher sign-in',async({page})=>{
+ const origin='http://127.0.0.1:8765';
+ await page.route('**/editor-publisher-config.js',route=>route.fulfill({
+  status:200,contentType:'text/javascript',body:`window.MoonEditorPublisherConfig={apiBase:"https://publisher.example.org",clientId:"test-client",redirectUri:"${origin}/editor.html"};`
+ }));
+ await page.route('https://publisher.example.org/**',route=>{
+  const cors={'access-control-allow-origin':origin,'access-control-allow-headers':'Content-Type, Authorization',
+   'access-control-allow-methods':'POST, GET, OPTIONS'};
+  if(route.request().method()==='OPTIONS')return route.fulfill({status:204,headers:cors,body:''});
+  if(route.request().url().endsWith('/oauth/exchange'))
+   return route.fulfill({status:200,contentType:'application/json',headers:cors,
+    body:JSON.stringify({ok:true,session:'session-for-test',login:'gmoon-code'})});
+  return route.fulfill({status:500,contentType:'application/json',headers:cors,body:'{"ok":false}'});
+ });
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+  body:'<!doctype html><html><head></head><body><main><section><h2>Evidence</h2><p>Existing text</p></section></main></body></html>'}));
+ await page.goto(origin+'/editor.html?page=about.html');
+ await page.evaluate(()=>sessionStorage.setItem('moon-publisher-oauth-state','state-for-test'));
+ await page.goto(origin+'/editor.html?page=about.html&code=test12345&state=state-for-test');
+ await expect(page.locator('#publisherStatus')).toContainText('Connected as gmoon-code');
+ await page.frameLocator('#pageFrame').locator('main h2').click();
+ await page.locator('#insertContentText').fill('Proposed new content');
+ await page.locator('#insertContentBtn').click();
+ await page.locator('#publisherSummary').fill('Add a reviewed research paragraph');
+ await expect(page.locator('#publisherPropose')).toBeEnabled();
+ await page.locator('#reviewBtn').click();
+ await expect(page.locator('#reviewExportStatus')).toContainText('Source check passed');
+});
