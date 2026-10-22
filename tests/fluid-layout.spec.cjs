@@ -3400,3 +3400,25 @@ test('added image can reopen local media library for source and description chan
  expect(html).toContain('alt="Accessible updated photo description"');
  expect(html).not.toContain('data-editor-added-index');
 });
+
+test('keyboard users can select newly inserted blocks without persisting preview-only attributes',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+  body:'<!doctype html><html><head></head><body><main><section><h2>Accessible additions</h2>'+
+   '<p>Unchanged original paragraph.</p></section></main></body></html>'}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ await page.frameLocator('#pageFrame').locator('main h2').click();
+ await page.locator('#insertContentText').fill('A keyboard-editable new paragraph');
+ await page.locator('#insertContentBtn').click();
+ const added=page.frameLocator('#pageFrame').locator('[data-editor-added-index]');
+ await expect(added).toHaveAttribute('tabindex','0');
+ await added.focus();
+ await added.press('Enter');
+ await expect(page.locator('#addedBlockDetails')).toBeVisible();
+ await expect(page.locator('#addedBlockText')).toHaveValue('A keyboard-editable new paragraph');
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).not.toContain('data-editor-added-index');
+ expect(html).not.toContain('Press Enter to edit');
+ expect(html).toContain('<p>A keyboard-editable new paragraph</p>');
+});
