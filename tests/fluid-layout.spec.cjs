@@ -1778,3 +1778,89 @@ test('container groups are discoverable in actual Home and CV pages', async ({ p
     await page.locator('#closeSitePreview').click();
   }
 });
+
+test('card layout width presets produce safe 8/4, 4/8 and three-column desktop grids', async ({ page }) => {
+  await page.route('**/index.html',route=>route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<!doctype html><html><head></head><body><main><div id="tiles">'+
+      '<article><h2>First card</h2><p>Details</p></article>'+
+      '<article><h2>Second card</h2><p>Details</p></article>'+
+      '<article><h2>Third card</h2><p>Details</p></article>'+
+      '</div></main></body></html>'
+  }));
+  await page.locator('#sourcePage').selectOption('index.html');
+  page.once('dialog',dialog=>dialog.accept());
+  await page.locator('#importPage').click();
+  await page.locator('#findContainerGroups').click();
+  await expect(page.locator('#containerGroupPicker option')).toHaveCount(2);
+  for(const [mode,expected] of [
+    ['first-wide','grid-column:9 / span 4'],
+    ['last-wide','grid-column:5 / span 8'],
+    ['thirds','grid-column:9 / span 4']
+  ]){
+    await page.locator('#containerColumns').selectOption(mode);
+    await page.locator('#applyContainerGroup').click();
+    await page.locator('#viewSitePreview').click();
+    await page.locator('#previewSiteApplied').click();
+    const html=await page.locator('#sitePreviewFrame').getAttribute('srcdoc');
+    expect(html).toContain(expected);
+    expect(html).toContain('id="moon-responsive-group-layout"');
+    expect(html).toContain('<h2>Third card</h2>');
+    await page.locator('#closeSitePreview').click();
+  }
+});
+
+test('source-exact card drafts survive JSON export import and block unexpected source changes', async ({ page }) => {
+  let changed=false;
+  await page.route('**/cv.html',route=>route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<!doctype html><html><head></head><body><main><div id="rows">'+
+      '<div class="row"><p>2026 · <strong>Degree</strong></p></div>'+
+      '<div class="row"><p>2020 · '+(changed?'Revised':'Original')+' degree</p></div>'+
+      '</div></main></body></html>'
+  }));
+  await page.locator('#sourcePage').selectOption('cv.html');
+  page.once('dialog',dialog=>dialog.accept());
+  await page.locator('#importPage').click();
+  await page.locator('#findContainerGroups').click();
+  await page.locator('#applyContainerGroup').click();
+  await expect(page.locator('#responsiveGroupStatus')).toContainText('Card or CV row group selected');
+  const downloadPromise=page.waitForEvent('download');
+  await page.locator('#export').click();
+  const json=require('node:fs').readFileSync(await (await downloadPromise).path(),'utf8');
+  const layout=JSON.parse(json);
+  expect(layout.responsiveGroup.containerChildren).toHaveLength(2);
+  page.once('dialog',dialog=>dialog.accept());
+  await page.locator('#jsonImport').setInputFiles({
+    name:'card-layout.json',mimeType:'application/json',buffer:Buffer.from(json)
+  });
+  await expect(page.locator('#status')).toContainText('Imported');
+  await expect(page.locator('#responsiveGroupStatus')).toContainText('Card or CV row group selected');
+  changed=true;
+  await page.locator('#openPublisher').click();
+  await expect(page).toHaveURL(/fluid-layout-lab\.html$/);
+  await expect(page.locator('#status')).toContainText('source has changed');
+});
+
+test('forged card group markup cannot be accepted by the destination editor', async ({ page }) => {
+  await page.route('**/index.html',route=>route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<!doctype html><html><head></head><body><main><div id="cards">'+
+      '<article><h2>Research</h2></article><article><h2>Teaching</h2></article>'+
+      '</div></main></body></html>'
+  }));
+  const children=[
+    {selector:'#cards > article:nth-of-type(1)',tag:'article',before:'Research',
+      markup:'<article><h2>Forged</h2></article>',
+      desktop:{x:1,y:1,w:6,h:1},mobile:{x:1,y:1,w:12,h:1}},
+    {selector:'#cards > article:nth-of-type(2)',tag:'article',before:'Teaching',
+      markup:'<article><h2>Teaching</h2></article>',
+      desktop:{x:7,y:1,w:6,h:1},mobile:{x:1,y:3,w:12,h:1}}
+  ];
+  const payload={version:3,page:'index.html',changes:[],styleChanges:[],
+    layoutGroup:{version:2,parentSelector:'#cards',children}};
+  await page.evaluate(data=>sessionStorage.setItem('moon-fluid-text-handoff-v1',JSON.stringify(data)),payload);
+  await page.goto('http://127.0.0.1:8765/editor.html?page=index.html&importFluidText=1');
+  await expect(page.locator('#noticeMessage')).toContainText('No edits were applied');
+  expect(await page.evaluate(()=>localStorage.getItem('moon-portfolio-visual-editor-v1:index.html'))).toBeNull();
+});
