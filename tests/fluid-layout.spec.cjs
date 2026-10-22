@@ -2708,7 +2708,7 @@ test('direct inspector additions can coexist with edited source text and remain 
  await expect(page.locator('#reviewChangeList')).toContainText('Additional explanation');
 });
 
-test('direct inspector refuses multiple insertions after the same source element',async({page})=>{
+test('direct inspector allows ordered additions after one heading with export, reload and undo',async({page})=>{
  await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
  body:'<!doctype html><html><head></head><body><main><section><h2>Title</h2><p>Body</p></section></main></body></html>'}));
  await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
@@ -2716,10 +2716,47 @@ test('direct inspector refuses multiple insertions after the same source element
  await page.locator('#insertContentText').fill('First addition');
  await page.locator('#insertContentBtn').click();
  await page.frameLocator('#pageFrame').locator('main h2').click();
+ await page.locator('#insertContentKind').selectOption('heading');
+ await page.locator('#insertHeadingLevel').selectOption('h3');
  await page.locator('#insertContentText').fill('Second addition');
  await page.locator('#insertContentBtn').click();
- await expect(page.locator('#noticeMessage')).toContainText('Invalid paragraph insertion');
- await expect.poll(async()=>page.evaluate(()=>JSON.parse(localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'))?.additions?.length)).toBe(1);
- const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'))?.additions);
- expect(saved[0].text).toBe('First addition');
+ await expect.poll(async()=>page.evaluate(()=>JSON.parse(localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'))?.additions?.length)).toBe(2);
+ const preview=await page.frameLocator('#pageFrame').locator('main section > h2, main section > h3, main section > p').allTextContents();
+ expect(preview).toEqual(['Title','First addition','Second addition','Body']);
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).toContain('<h2>Title</h2>\n<p>First addition</p>\n<h3>Second addition</h3><p>Body</p>');
+ await page.reload();
+ await expect(page.locator('#changeCount')).toContainText('2 added content blocks');
+ await page.locator('#undoBtn').click();
+ await expect(page.locator('#exportBtn')).toBeDisabled();
+});
+
+test('layout builder transfers several additions after one source heading in review order',async({page})=>{
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
+  body:'<!doctype html><html><head></head><body><main><section><h2>Research questions</h2><p>Existing section</p></section></main></body></html>'}));
+ await page.locator('#sourcePage').selectOption('about.html');
+ page.once('dialog',dialog=>dialog.accept());
+ await page.locator('#importPage').click();
+ await page.locator('#grid .block.heading').first().dispatchEvent('click');
+ page.once('dialog',dialog=>dialog.accept('First drafted paragraph'));
+ await page.locator('#appendSourceParagraph').click();
+ await page.locator('#grid .block.heading').first().dispatchEvent('click');
+ page.once('dialog',dialog=>dialog.accept('Another drafted paragraph'));
+ await page.locator('#appendSourceParagraph').click();
+ await page.locator('#viewSitePreview').click();
+ await page.locator('#previewSiteApplied').click();
+ const applied=await page.locator('#sitePreviewFrame').getAttribute('srcdoc');
+ expect(applied.indexOf('First drafted paragraph')).toBeGreaterThan(applied.indexOf('Research questions'));
+ expect(applied.indexOf('Another drafted paragraph')).toBeGreaterThan(applied.indexOf('First drafted paragraph'));
+ expect(applied.indexOf('Existing section')).toBeGreaterThan(applied.indexOf('Another drafted paragraph'));
+ await page.locator('#closeSitePreview').click();
+ page.on('dialog',dialog=>dialog.accept());
+ await page.locator('#openPublisher').click();
+ await expect(page.locator('#editorSaveStatus')).toContainText('transferred');
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).toContain('<h2>Research questions</h2>\n<p>First drafted paragraph</p>\n<p>Another drafted paragraph</p>');
 });
