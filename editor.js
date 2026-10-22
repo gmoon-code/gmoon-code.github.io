@@ -767,7 +767,9 @@
     const cancel=doc.createElement("button");
     cancel.type="button";cancel.textContent="Cancel";
     const submit=doc.createElement("button");
-    submit.type="submit";submit.textContent="Add to page";
+    // The isolated preview deliberately disallows sandbox form submissions.
+    // Commit explicitly from this local button without navigating the iframe.
+    submit.type="button";submit.textContent="Add to page";
     for(const button of [cancel,submit]){
       button.style.cssText="padding:7px 10px;border:1px solid "+
         (dark?"#9bad9e":"#9cb0a6")+";border-radius:6px;"+
@@ -794,10 +796,10 @@
     form.addEventListener("keydown",event=>{
       if(event.key==="Escape"){event.preventDefault();event.stopPropagation();close();}
       if((event.ctrlKey||event.metaKey)&&event.key==="Enter"){
-        event.preventDefault();form.requestSubmit();
+        event.preventDefault();event.stopPropagation();submit.click();
       }
     });
-    form.addEventListener("submit",event=>{
+    submit.addEventListener("click",event=>{
       event.preventDefault();event.stopPropagation();
       const resolved=sourceMoveAnchors().find(a=>a.key===anchor.key);
       if(!resolved||resolved.selector!==anchor.selector){
