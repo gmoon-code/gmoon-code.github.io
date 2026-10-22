@@ -765,7 +765,10 @@
       "padding:8px;border:1px solid "+(dark?"#9bad9e":"#9cb0a6")+
       ";border-radius:6px;background:"+(dark?"#303d33":"#e8f2eb")+
       ";color:inherit;font:600 13px system-ui;cursor:pointer";
-    imageField.append(browseImages);
+    // Keep interactive gallery controls outside the text-input label, so
+    // clicking Browse does not trigger a label's input activation behaviour.
+    const imageGroup=doc.createElement("div");
+    imageGroup.append(imageField,browseImages);
     browseImages.addEventListener("click",()=>{
       if(kind.value==="image")openMediaLibrary("quick");
     });
@@ -779,7 +782,7 @@
     const imageNote=doc.createElement("small");
     imageNote.style.cssText="overflow-wrap:anywhere;font-size:11px";
     imagePreview.append(thumbnail,imageNote);
-    imageField.append(imagePreview);
+    imageGroup.append(imagePreview);
     const updateImagePreview=()=>{
       const path=imagePath.value.trim();
       const valid=path&&safeExistingImagePath(path);
@@ -824,7 +827,7 @@
       imageField.hidden=selection!=="image";
       levelField.style.display=levelField.hidden?"none":"block";
       hrefField.style.display=hrefField.hidden?"none":"block";
-      imageField.style.display=imageField.hidden?"none":"block";
+      imageGroup.style.display=imageField.hidden?"none":"block";
       updateImagePreview();
       textField.firstChild.textContent=selection==="image"?"Image description (alt text)":"Text";
       description.maxLength=selection==="paragraph"?2000:selection==="image"?200:140;
@@ -872,7 +875,7 @@
       }
     });
     row.append(cancel,submit);
-    form.append(heading,kindField,levelField,textField,hrefField,imageField,help,status,row);
+    form.append(heading,kindField,levelField,textField,hrefField,imageGroup,help,status,row);
     doc.body.append(form);
     refresh();
     positionQuickComposer();
