@@ -1345,3 +1345,49 @@ test('builder blocks responsive section whose canvas order no longer matches sou
   await expect(page.locator('#status')).toContainText('reading order');
   await expect(page.locator('#responsiveGroupStatus')).toContainText('No responsive group selected');
 });
+
+test('responsive grid and ordinary text edits transfer and export together safely', async ({ page }) => {
+  await page.route('**/about.html', route => route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<!doctype html><html><head></head><body><main><section id="layout"><h2>First heading</h2><p>Second paragraph</p></section></main></body></html>'
+  }));
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  await expect(page.locator('#grid .block')).toHaveCount(2);
+  await page.locator('#grid .block').first().click();
+  await page.locator('#useResponsiveGroup').click();
+  await expect(page.locator('#responsiveGroupStatus')).toContainText('2 blocks');
+  await page.locator('#text').fill('Changed first heading');
+  await page.locator('#text').dispatchEvent('change');
+  page.on('dialog', dialog => dialog.accept());
+  await page.locator('#openPublisher').click();
+  await expect(page).toHaveURL(/editor\.html\?page=about\.html$/);
+  await expect(page.locator('#editorSaveStatus')).toContainText('transferred');
+  const downloadPromise=page.waitForEvent('download');
+  await page.locator('#exportBtn').click();
+  const html=require('node:fs').readFileSync(await (await downloadPromise).path(),'utf8');
+  expect(html).toContain('Changed first heading');
+  expect(html).toContain('<style id="moon-responsive-group-layout">');
+  expect(html).toContain('Second paragraph');
+  expect(html).not.toContain('data-editor-key');
+});
+
+test('undo discards incoming responsive grid CSS without affecting original markup', async ({ page }) => {
+  await page.route('**/about.html', route => route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<!doctype html><html><head></head><body><main><section id="layout"><h2>First</h2><p>Second</p></section></main></body></html>'
+  }));
+  await page.locator('#sourcePage').selectOption('about.html');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#importPage').click();
+  await page.locator('#grid .block').first().click();
+  await page.locator('#useResponsiveGroup').click();
+  page.on('dialog', dialog => dialog.accept());
+  await page.locator('#openPublisher').click();
+  await expect(page.locator('#editorSaveStatus')).toContainText('transferred');
+  await expect(page.locator('#exportBtn')).toBeEnabled();
+  await page.locator('#undoBtn').click();
+  await expect(page.locator('#exportBtn')).toBeDisabled();
+  await expect.poll(async()=>page.evaluate(()=>localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'))).toBeNull();
+});
