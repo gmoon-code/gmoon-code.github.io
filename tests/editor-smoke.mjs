@@ -435,7 +435,43 @@ try {
   await sections.locator("#undoBtn").click();
   assert(!/responsive layout group/.test(await sections.locator("#changeCount").textContent()));
   console.log("PASS: inline source-verified section layout, original HTML and undo");
+  await sections.frameLocator("#pageFrame").locator("main h2").click();
+  await sections.frameLocator("#pageFrame").locator("main p").first().click();
+  assert.equal(await sections.locator("#selectionTag").textContent(),"p");
+  console.log("PASS: contextual toolbar does not obstruct selection of adjacent text");
   await sections.close();
+  const retry=await context.newPage();
+  await retry.route("**/about.html",route=>route.fulfill({
+    status:200,contentType:"text/html",
+    body:'<!doctype html><html><head></head><body><main><section>'+
+      '<h2>Gallery</h2><p>Original gallery introduction.</p>'+
+      '<img src="assets/example-photograph.webp" alt="Existing image">'+
+      '</section></main></body></html>'
+  }));
+  await retry.goto(base+"/editor.html?page=about.html");
+  await retry.frameLocator("#pageFrame").locator("main h2").click();
+  await retry.frameLocator("#pageFrame").locator("#moon-quick-toolbar")
+    .getByRole("button",{name:"Add new content after this block"}).click();
+  const retryComposer=retry.frameLocator("#pageFrame")
+    .getByRole("dialog",{name:"Add content to the page"});
+  await retryComposer.getByLabel("Content type").selectOption("link");
+  await retryComposer.getByLabel("Text",{exact:true}).fill("Untrusted destination");
+  await retryComposer.getByLabel("Link destination").fill("javascript:alert(1)");
+  await retryComposer.getByRole("button",{name:"Add to page"}).click();
+  assert.match(await retryComposer.getByRole("status").textContent(),/Cannot add/);
+  await retryComposer.getByLabel("Content type").selectOption("image");
+  await retryComposer.getByLabel("Image description (alt text)")
+    .fill("Existing fieldwork photograph");
+  await retryComposer.getByLabel("Existing image path").fill("../unsafe.svg");
+  await retryComposer.getByRole("button",{name:"Add to page"}).click();
+  assert.match(await retryComposer.getByRole("status").textContent(),/Cannot add/);
+  await retryComposer.getByLabel("Existing image path")
+    .fill("assets/example-photograph.webp");
+  await retryComposer.getByRole("button",{name:"Add to page"}).click();
+  await retry.frameLocator("#pageFrame").locator("[data-editor-added-index] img")
+    .waitFor({timeout:6000});
+  console.log("PASS: unsafe-link and unsafe-image rejection followed by valid inline image");
+  await retry.close();
   console.log("PASS: text, drafts, reset, link/image export, 17 pages, dark/mobile previews");
 } finally {
   await page.screenshot({path:"/tmp/editor-test-artifacts/editor-last.png",fullPage:true}).catch(()=>{});
