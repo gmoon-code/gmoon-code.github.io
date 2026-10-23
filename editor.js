@@ -980,14 +980,14 @@
   }
   // Selection displays resize grips immediately. Moving an object or grip
   // enters free canvas automatically while a simple click still edits text.
-  function enableFreeCanvasForDrag(){
+  function enableFreeCanvasForDrag(keepEditable=false){
     if(freeCanvasActive)return;
     freeCanvasActive=true;
     state.frameDoc?.documentElement.classList.add("moon-free-mode");
     const button=$("freeCanvasToggle");
     button.setAttribute("aria-pressed","true");
     button.textContent="✓ Free move & resize";
-    state.frameDoc?.querySelector("[data-editor-selected][contenteditable]")?.removeAttribute("contenteditable");
+    if(!keepEditable)state.frameDoc?.querySelector("[data-editor-selected][contenteditable]")?.removeAttribute("contenteditable");
     for(const id of ["moon-image-resize-handle","moon-block-move-handle",
       "moon-added-block-move-handle","moon-added-block-width-handle",
       "moon-source-width-handle","moon-spacing-grip"])
@@ -1013,7 +1013,7 @@
   function freeGestureStart(event,direction,handle,origin=null){
     const sel=freeSelected();
     if(!sel||event.button!==0||freeGesture)return;
-    enableFreeCanvasForDrag();
+    enableFreeCanvasForDrag(Boolean(origin));
     event.preventDefault();event.stopPropagation();
     const base=freeGeometry(sel);
     freeGesture={id:event.pointerId,direction,
@@ -1032,8 +1032,12 @@
       const pending=pendingCanvasDrag;
       if(Math.hypot(event.clientX-pending.startX,event.clientY-pending.startY)>=6&&pending.node.isConnected){
         pendingCanvasDrag=null;
-        if(pending.added)selectAddedBlock(Number(pending.node.getAttribute("data-editor-added-index")));
-        else selectElement(pending.node);
+        if(pending.added){
+          const index=Number(pending.node.getAttribute("data-editor-added-index"));
+          if(state.selectedAddition!==index)selectAddedBlock(index);
+        }else if(state.selected!==pending.node.getAttribute("data-editor-key")){
+          selectElement(pending.node);
+        }
         freeGestureStart(event,event.shiftKey?"se":"move",pending.node,
           {x:pending.startX,y:pending.startY});
       }
@@ -1069,6 +1073,8 @@
     const drag=freeGesture;if(!drag||drag.id!==event.pointerId)return;
     event.preventDefault();event.stopPropagation();
     freeGesture=null;
+    if(drag.key===state.selected&&freeCanvasActive)
+      state.frameDoc?.querySelector("[data-editor-selected][contenteditable]")?.removeAttribute("contenteditable");
     if(event.type==="pointercancel"){
       if(drag.moved)undo();
       return;
