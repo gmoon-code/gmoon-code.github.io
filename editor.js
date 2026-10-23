@@ -864,7 +864,7 @@
 
   // Free mode uses viewport-positioned selection controls without adding
   // editor-only markup to the exported website HTML.
-  let freeCanvasActive=false,freeGesture=null;
+  let freeCanvasActive=false,freeGesture=null,pendingCanvasDrag=null;
   function freeSelected(){
     let sel=quickSelection();
     if(!sel&&freeCanvasActive&&state.selected){
@@ -944,7 +944,7 @@
   function positionFreeSelection(){
     const doc=state.frameDoc,frame=doc?.getElementById("moon-free-selection");
     if(!frame)return;
-    const sel=freeCanvasActive?freeSelected():null;
+    const sel=freeSelected();
     if(!sel){frame.remove();return;}
     const rect=sel.node.getBoundingClientRect(),view=doc.defaultView;
     if(rect.right<0||rect.bottom<0||rect.left>view.innerWidth||rect.top>view.innerHeight){
@@ -956,28 +956,62 @@
     frame.style.width=Math.max(1,rect.width)+"px";
     frame.style.height=Math.max(1,rect.height)+"px";
   }
+  // Selection displays resize grips immediately. Moving an object or grip
+  // enters free canvas automatically while a simple click still edits text.
+  function enableFreeCanvasForDrag(){
+    if(freeCanvasActive)return;
+    freeCanvasActive=true;
+    state.frameDoc?.documentElement.classList.add("moon-free-mode");
+    const button=$("freeCanvasToggle");
+    button.setAttribute("aria-pressed","true");
+    button.textContent="✓ Free move & resize";
+    state.frameDoc?.querySelector("[data-editor-selected][contenteditable]")?.removeAttribute("contenteditable");
+    for(const id of ["moon-image-resize-handle","moon-block-move-handle",
+      "moon-added-block-move-handle","moon-added-block-width-handle",
+      "moon-source-width-handle","moon-spacing-grip"])
+      state.frameDoc?.getElementById(id)?.remove();
+    refreshFreePrecisionFields();
+  }
   function onFreeObjectPointerDown(event){
-    if(!freeCanvasActive||event.button!==0||event.defaultPrevented)return;
+    if(event.button!==0||event.defaultPrevented)return;
     if(event.target.closest("#moon-free-selection,#moon-quick-toolbar,#moon-quick-composer,#moon-quick-layout,#moon-quick-size,#moon-quick-properties"))return;
     const added=event.target.closest("[data-editor-added-index]");
     const original=added?null:event.target.closest("[data-editor-key]");
     const node=added||original;
     if(!node||!node.closest("main"))return;
-    if(added)selectAddedBlock(Number(added.getAttribute("data-editor-added-index")));
-    else selectElement(original);
-    freeGestureStart(event,"move",node);
+    if(freeCanvasActive){
+      if(added)selectAddedBlock(Number(added.getAttribute("data-editor-added-index")));
+      else selectElement(original);
+      freeGestureStart(event,"move",node);
+      return;
+    }
+    pendingCanvasDrag={id:event.pointerId,startX:event.clientX,startY:event.clientY,
+      node,added:!!added};
   }
-  function freeGestureStart(event,direction,handle){
+  function freeGestureStart(event,direction,handle,origin=null){
     const sel=freeSelected();
     if(!sel||event.button!==0||freeGesture)return;
+    enableFreeCanvasForDrag();
     event.preventDefault();event.stopPropagation();
     const base=freeGeometry(sel);
     checkpoint();
-    freeGesture={id:event.pointerId,direction,startX:event.clientX,startY:event.clientY,
+    freeGesture={id:event.pointerId,direction,
+      startX:origin?.x??event.clientX,startY:origin?.y??event.clientY,
       base,added:sel.added,key:state.selected,index:state.selectedAddition};
-    handle.setPointerCapture(event.pointerId);
+    try{handle.setPointerCapture(event.pointerId);}
+    catch{/* Document-level pointer listeners still handle the gesture. */}
   }
   function freeGestureMove(event){
+    if(pendingCanvasDrag&&pendingCanvasDrag.id===event.pointerId&&!freeGesture){
+      const pending=pendingCanvasDrag;
+      if(Math.hypot(event.clientX-pending.startX,event.clientY-pending.startY)>=6&&pending.node.isConnected){
+        pendingCanvasDrag=null;
+        if(pending.added)selectAddedBlock(Number(pending.node.getAttribute("data-editor-added-index")));
+        else selectElement(pending.node);
+        freeGestureStart(event,event.shiftKey?"se":"move",pending.node,
+          {x:pending.startX,y:pending.startY});
+      }
+    }
     const drag=freeGesture;if(!drag||drag.id!==event.pointerId)return;
     event.preventDefault();event.stopPropagation();
     if(drag.key!==state.selected||drag.index!==state.selectedAddition)return;
@@ -1004,6 +1038,7 @@
     applyFreeGeometry(next);
   }
   function freeGestureEnd(event){
+    if(pendingCanvasDrag?.id===event.pointerId)pendingCanvasDrag=null;
     const drag=freeGesture;if(!drag||drag.id!==event.pointerId)return;
     event.preventDefault();event.stopPropagation();
     freeGesture=null;
@@ -1014,7 +1049,8 @@
     if(drag.moved)finishFreeGeometry();
   }
   function freeNudge(dx,dy){
-    const sel=freeSelected();if(!sel||!freeCanvasActive)return;
+    const sel=freeSelected();if(!sel)return;
+    enableFreeCanvasForDrag();
     const base=freeGeometry(sel);
     const next={...base,x:Math.max(-16000,Math.min(16000,base.x+dx)),
       y:Math.max(-16000,Math.min(16000,base.y+dy))};
@@ -1108,7 +1144,7 @@
   function createFreeSelection(){
     const doc=state.frameDoc;
     doc?.getElementById("moon-free-selection")?.remove();
-    const sel=freeCanvasActive?freeSelected():null;
+    const sel=freeSelected();
     refreshFreePrecisionFields();
     if(!doc||!sel)return;
     const frame=doc.createElement("div");
@@ -1171,7 +1207,7 @@
         else node.setAttribute("contenteditable","true");
       }
     }
-    if(!freeCanvasActive){freeGesture=null;state.frameDoc?.getElementById("moon-free-selection")?.remove();}
+    if(!freeCanvasActive){freeGesture=null;pendingCanvasDrag=null;}
     else{
       for(const id of ["moon-image-resize-handle","moon-block-move-handle",
         "moon-added-block-move-handle","moon-added-block-width-handle",
