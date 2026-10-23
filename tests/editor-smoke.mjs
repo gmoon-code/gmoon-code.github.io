@@ -744,6 +744,19 @@ try {
   assert.equal(await sections.frameLocator("#pageFrame").locator("main p").first()
     .evaluate(el=>el.style.marginBottom),"");
   console.log("PASS: on-canvas spacing grip, keyboard adjustment and undo");
+  // An interrupted drag must restore its original value, while an ordinary
+  // drag commits a local draft. Dispatch pointer events to exercise both.
+  await sections.frameLocator("#pageFrame").locator("main p").first().click();
+  await sections.frameLocator("#pageFrame").locator("#moon-spacing-grip").evaluate(grip=>{
+    const rect=grip.getBoundingClientRect();
+    const x=rect.left+10,y=rect.top+10;
+    grip.dispatchEvent(new PointerEvent("pointerdown",{bubbles:true,pointerId:77,pointerType:"touch",button:0,clientX:x,clientY:y}));
+    grip.dispatchEvent(new PointerEvent("pointermove",{bubbles:true,pointerId:77,pointerType:"touch",button:0,clientX:x,clientY:y+25}));
+    grip.dispatchEvent(new PointerEvent("pointercancel",{bubbles:true,pointerId:77,pointerType:"touch",button:0,clientX:x,clientY:y+25}));
+  });
+  assert.equal(await sections.frameLocator("#pageFrame").locator("main p").first()
+    .evaluate(el=>el.style.marginBottom),"");
+  console.log("PASS: cancelled spacing gesture restores original block spacing");
   // Keyboard reordering uses the same verified neighbouring-block move as dragging.
   const grip=sections.frameLocator("#pageFrame").locator("#moon-block-move-handle");
   await grip.focus();
