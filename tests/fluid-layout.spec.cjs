@@ -2786,6 +2786,7 @@ test('addition-only drafts enable a review PR proposal after authorized publishe
  await page.frameLocator('#pageFrame').locator('main h2').click();
  await page.locator('#insertContentText').fill('Proposed new content');
  await page.locator('#insertContentBtn').click();
+ await page.locator('.inspector-footer details summary').click();
  await page.locator('#publisherSummary').fill('Add a reviewed research paragraph');
  await expect(page.locator('#publisherPropose')).toBeEnabled();
  await page.locator('#reviewBtn').click();
