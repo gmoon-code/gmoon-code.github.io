@@ -4923,10 +4923,29 @@ test('Direct click selects a full set of handles and object drag escapes a clipp
  await expect(selection).toBeVisible();
  await expect(selection.locator('[data-free-direction]:not([data-free-direction="move"])')).toHaveCount(8);
  const box=await target.boundingBox();
+ await target.evaluate(el=>{
+   const d=el.ownerDocument;
+   d.defaultView.__moonPointerLog=[];
+   for(const type of ['pointerdown','pointermove','pointerup','pointercancel','lostpointercapture'])
+     d.addEventListener(type,e=>d.defaultView.__moonPointerLog.push({
+       type,x:Math.round(e.clientX),y:Math.round(e.clientY),
+       target:e.target.tagName,handle:e.target.dataset?.freeDirection||'',
+       captured:e.target.hasPointerCapture?.(e.pointerId)||false
+     }),true);
+ });
+ console.log('DIRECT GRAB HIT',await target.evaluate(el=>{
+   const r=el.getBoundingClientRect(),x=r.x+Math.min(75,r.width/2),y=r.y+r.height/2;
+   const hit=document.elementFromPoint(x,y);
+   return {target:hit?.tagName,id:hit?.id,dir:hit?.dataset?.freeDirection,tag:el.tagName,r:{x:r.x,y:r.y,width:r.width,height:r.height}};
+ }));
  await page.mouse.move(box.x+Math.min(75,box.width/2),box.y+box.height/2);
  await page.mouse.down();
  await page.mouse.move(box.x+Math.min(75,box.width/2)+165,box.y+box.height/2+24,{steps:7});
  await page.mouse.up();
+ console.log('DIRECT GRAB EVENTS',await target.evaluate(el=>({
+  events:el.ownerDocument.defaultView.__moonPointerLog,
+  translate:el.style.translate,style:el.getAttribute('style')
+ })));
  await expect(page.locator('#freeCanvasToggle')).toHaveAttribute('aria-pressed','true');
  await expect(target).toHaveCSS('translate','165px 24px');
  await expect(view.locator('#bounded')).toHaveCSS('overflow','visible');
@@ -4960,10 +4979,23 @@ test('Selected image can resize with handles despite inline important width and 
    return {x,y,width:r.width,height:r.height,hit:hit?.getAttribute('data-free-direction')||hit?.tagName,
      captured:getComputedStyle(el).pointerEvents};
  }));
+ await right.evaluate(el=>{
+   const d=el.ownerDocument;
+   d.defaultView.__moonGripLog=[];
+   for(const type of ['pointerdown','pointermove','pointerup','pointercancel','lostpointercapture'])
+     d.addEventListener(type,e=>d.defaultView.__moonGripLog.push({
+       type,button:e.button,dir:e.target.dataset?.freeDirection||'',x:Math.round(e.clientX),
+       captured:e.target.hasPointerCapture?.(e.pointerId)||false
+     }),true);
+ });
  await page.mouse.move(position.x+position.width/2,position.y+position.height/2);
  await page.mouse.down();
  await page.mouse.move(position.x+position.width/2+115,position.y+position.height/2,{steps:6});
  await page.mouse.up();
+ console.log('GRIP POINTER EVENTS',await right.evaluate(el=>({
+  events:el.ownerDocument.defaultView.__moonGripLog,
+  image:el.ownerDocument.querySelector('#bounded img')?.getAttribute('style')
+ })));
  await expect(page.locator('#freeCanvasToggle')).toHaveAttribute('aria-pressed','true');
  const resized=await target.boundingBox();
  expect(resized.width).toBeGreaterThan(original.width+90);
