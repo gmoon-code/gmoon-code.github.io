@@ -1167,8 +1167,13 @@
       button.type="button";button.dataset.freeDirection=name;
       button.setAttribute("aria-label",label);
       button.title=label;
+      const exterior={
+        nw:"translate(-100%,-100%)",n:"translate(-50%,-100%)",ne:"translate(0,-100%)",
+        e:"translate(0,-50%)",se:"translate(0,0)",s:"translate(-50%,0)",
+        sw:"translate(-100%,0)",w:"translate(-100%,-50%)"
+      };
       button.style.cssText="position:absolute;left:"+x+";top:"+y+";"+
-        "transform:translate(-50%,-50%);width:22px;height:22px;"+
+        "transform:"+(exterior[name]||"translate(-50%,-50%)")+";width:22px;height:22px;"+
         "padding:0;border:2px solid #fff;border-radius:3px;"+
         "background:#2675dd;box-shadow:0 0 0 1px #225498;"+
         "pointer-events:auto;touch-action:none;cursor:"+cursor;
