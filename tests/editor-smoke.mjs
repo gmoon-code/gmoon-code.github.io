@@ -59,6 +59,9 @@ try {
   await page.locator("#togglePagesPanel").click();
   assert.equal(await page.locator("#editorNavigation").isVisible(),true);
   assert.equal(await page.locator("#exportBtn").isDisabled(),true);
+  // The next browse scenario requires no selected element at page load.
+  // UI panel preferences persist, but this navigation resets selection.
+  await ready();
   // Navigate original blocks without changing the source or creating tab traps.
   assert.equal(await page.locator("#browseNextElement").isEnabled(),true);
   await page.locator("#browseNextElement").click();
