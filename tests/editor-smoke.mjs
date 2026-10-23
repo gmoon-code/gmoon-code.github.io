@@ -416,7 +416,34 @@ try {
   await blockControls.screenshot({
     path:"/tmp/editor-test-artifacts/academic-canvas-block-actions.png",fullPage:true
   });
-  await sourceToolbar.getByRole("button",{name:"Move selected block down"}).click();
+  // Width preview is reversible without creating a draft or checkpoint.
+  await sourceToolbar.getByRole("button",{name:"Resize selected text block on the page"}).click();
+  const sizePanel=blockControls.frameLocator("#pageFrame").getByRole("dialog",{name:"Resize selected block"});
+  const sizeSlider=sizePanel.getByRole("slider",{name:"Block width within section"});
+  await sizeSlider.evaluate(el=>{
+    el.value="65";el.dispatchEvent(new Event("input",{bubbles:true}));
+  });
+  assert.equal(await originalBlocks.first().evaluate(el=>el.style.maxWidth),"65%");
+  assert.equal(await blockControls.locator("#exportBtn").isDisabled(),true,
+    "Preview-only sizing must never modify an export");
+  await sizePanel.getByRole("button",{name:"Cancel"}).click();
+  assert.equal(await originalBlocks.first().evaluate(el=>el.style.maxWidth),"");
+  assert.equal(await blockControls.locator("#exportBtn").isDisabled(),true);
+  // Commit a preset, check export, and undo the real working-document change.
+  await sourceToolbar.getByRole("button",{name:"Resize selected text block on the page"}).click();
+  await blockControls.frameLocator("#pageFrame").getByRole("dialog",{name:"Resize selected block"})
+    .getByRole("button",{name:"75%"}).click();
+  assert.equal(await originalBlocks.first().evaluate(el=>el.style.maxWidth),"75%");
+  const widthDownload=blockControls.waitForEvent("download");
+  await blockControls.locator("#exportBtn").click();
+  const widthFile=await widthDownload;
+  assert.match(await readFile(await widthFile.path(),"utf8"),/max-width:\s*75%/);
+  await blockControls.locator("#undoBtn").click();
+  assert.equal(await blockControls.frameLocator("#pageFrame").locator("main p").first()
+    .evaluate(el=>el.style.maxWidth),"");
+  await blockControls.frameLocator("#pageFrame").locator("main p").first().click();
+  await blockControls.frameLocator("#pageFrame").locator("#moon-quick-toolbar")
+    .getByRole("button",{name:"Move selected block down"}).click();
   assert.deepEqual(await blockControls.frameLocator("#pageFrame").locator("main p").allTextContents(),
     ["Second movable paragraph.","First movable paragraph."]);
   await blockControls.locator("#undoBtn").click();
@@ -427,6 +454,16 @@ try {
     .getByRole("button",{name:"Duplicate selected original paragraph or heading"}).click();
   assert.equal(await blockControls.frameLocator("#pageFrame").locator("[data-editor-added-index]").count(),1);
   assert.match(await blockControls.locator("#changeCount").textContent(),/1 added content block/);
+  await blockControls.frameLocator("#pageFrame").locator("[data-editor-added-index]").click();
+  await blockControls.frameLocator("#pageFrame").locator("#moon-quick-toolbar")
+    .getByRole("button",{name:"Resize selected text block on the page"}).click();
+  await blockControls.frameLocator("#pageFrame").getByRole("dialog",{name:"Resize selected block"})
+    .getByRole("button",{name:"50%"}).click();
+  assert.equal(await blockControls.frameLocator("#pageFrame").locator("[data-editor-added-index]")
+    .evaluate(el=>el.style.width),"50%");
+  await blockControls.locator("#undoBtn").click();
+  assert.equal(await blockControls.frameLocator("#pageFrame").locator("[data-editor-added-index]")
+    .evaluate(el=>el.style.width),"");
   await blockControls.locator("#undoBtn").click();
   assert.equal(await blockControls.frameLocator("#pageFrame").locator("[data-editor-added-index]").count(),0);
   assert.equal(await blockControls.locator("#exportBtn").isDisabled(),true);
