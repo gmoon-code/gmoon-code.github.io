@@ -52,3 +52,8 @@ The experimental `fluid-layout-lab.html` can import portfolio page content into 
 **Not yet publishable through the handoff** are unrestricted freeform positions outside a verified text or card group, newly added or removed blocks, and layout-level image changes. Visual review files are prototypes and must never replace a live page without a separate structural, accessibility, and content review.
 
 The project runs browser tests and publishing-preflight checks for the experimental builder before changes are proposed for merging. The experimental builder is developed on a separate draft pull request; its existence does not imply that it is deployed to GitHub Pages.
+
+
+## Website editor release and rollback
+
+Before publishing the three-editor hub, follow the [editor release candidate and rollback guide](docs/website-editors-release.md). It includes the exact required checks, release sequence, live-authentication review, confirmation of disabled unconfigured publishers, and recovery steps.

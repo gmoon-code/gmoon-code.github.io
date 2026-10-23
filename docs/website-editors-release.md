@@ -1,0 +1,52 @@
+# Website editor release candidate and rollback guide
+
+This document covers the *editor interfaces* in the three connected websites. It does not authorize publication of any academic research text, teaching guidance, or frozen AP Biology curriculum revision.
+
+## Release candidates
+
+| Website | Draft PR | Editor behaviour |
+| --- | --- | --- |
+| Ye Eun Moon academic website | [PR 2](https://github.com/gmoon-code/gmoon-code.github.io/pull/2) | Direct on-page edits, validated layout proposals, browser-local drafts, reviewed HTML export |
+| Research Methods Studio | [PR 11](https://github.com/gmoon-code/research-methods/pull/11) | Sign-in-protected Admin Workspace and visual guidance editing with the existing review/publishing pipeline |
+| AP Biology Story Method | [PR 8](https://github.com/gmoon-code/memory-palace-u1-8/pull/8) | Narrative-only editor with drafts, reviewed JSON export/restore, find-and-replace, and mobile navigation |
+
+The editor directory is located at `https://gmoon-code.github.io/editors.html` after merging the academic PR. It links to:
+
+- `https://gmoon-code.github.io/editor.html`
+- `https://gmoon-code.github.io/research-methods/editor.html`
+- `https://gmoon-code.github.io/memory-palace-u1-8/editor.html`
+
+These static editor pages and the directory may be publicly viewable. A `noindex` directive reduces search indexing but does **not** restrict access. The Research Methods Studio authoring workspace requires its own teacher sign-in. The other two editors cannot directly modify a deployed website.
+
+## Required release gates
+
+- [ ] Latest **exact PR head** has successful GitHub Actions checks. Academic `Secure editor publisher checks`, `Visual editor smoke test`, `Fluid layout lab browser tests`, and `Cross-site GitHub Pages editor preflight` all need to pass. Research Methods Studio needs `Admin visual guidance smoke test`. Story Method needs both `Narrative visual editor smoke test` and `Memory Palace QA`.
+- [ ] Download and inspect current desktop and mobile screenshots from the GitHub Actions artifacts. Confirm visible toolbars, keyboard focus, no off-screen forms, clean light/dark previews, and legible links.
+- [ ] Review that public student content, the academic website's source pages, and canonical journey JSON files are not changed by these PRs. Compare each PR file list to `main`.
+- [ ] Test the **real Research Methods Studio teacher/admin login** using an authorised account, including a *draft-only* guidance edit and preview. The automated tests simulate a session and cannot replace this check. Do not submit a live publish or rollback just to test the UI.
+- [ ] Confirm the academic publisher is **disabled** until the separate private publisher API and GitHub OAuth client are configured. The public `editor-publisher-config.js` intentionally has blank `apiBase` and `clientId`; no secrets belong in the public repository.
+- [ ] Confirm Story Method narrative changes remain browser-local, that a downloaded JSON proposal preserves protected science and checkpoint fields, and that its editor cannot write to GitHub.
+- [ ] Preserve the exact tested commit SHAs and a clean copy of `main` before merge. Ensure any browser-local draft that should survive is exported to a separate file.
+
+## Staged publication order
+
+1. Merge the Story Method draft PR after its full curriculum QA and editor smoke tests succeed. `pages.yml` deploys **only after successful Memory Palace QA on `main`**, from the exact tested commit. Wait for the production verification job before proceeding. Do not change any frozen curriculum text as part of this editor release.
+2. Merge the Research Methods Studio PR after its browser smoke test and the authorised login review. Confirm its `editor.html` redirects to the established teacher sign-in and the Admin Workspace loads under an actual authorised session.
+3. Merge the academic website PR last, after its own four checks and a fresh cross-site integration pass. Confirm `/editors.html` shows all three links and the associated redirects. Verify that its proposed-editing controls stay local while private publisher settings are blank.
+4. Open the public editor routes in a clean browser on both desktop and phone. Test selection, cancel, export, reload, and app navigation. Do **not** publish example text or curriculum proposals.
+
+The academic and Research Methods Studio sites use GitHub Pages, but their actual Pages source configuration must be verified in repository settings by an authorised maintainer before merging. A green draft PR does not itself prove the public GitHub Pages deployment has refreshed.
+
+## Recovery and rollback
+
+- Keep the pre-release `main` SHA for each repository in the release record. For a regression, create a **new revert PR** (or revert the specific merge commit), run the normal checks, and restore the previous mainline content through the normal Pages release flow. Avoid force-pushing shared `main`.
+- For Story Method, a reverted mainline must pass its full Memory Palace QA before `pages.yml` deploys the reverted artifact. Monitor the production verification step.
+- For Research Methods Studio, reverting the visual editor files does not automatically roll back a separately published guidance data revision. Use the existing authorised content rollback procedure if actual published guidance changed.
+- Browser-local drafts may refer to old source hashes after a rollback. Export any needed draft before clearing storage. Do not blindly reimport a draft against changed source content.
+- If authentication, content validation or private publishing boundaries fail, disable the affected release path and revert the editor deployment before resuming use.
+
+## Intentional limitations of version one
+
+The academic editor and Story Method editor **do not have one-click production publishing**. They produce reviewed local exports. The academic editor's private publisher connection remains deliberately disabled. Story Method editing is narrative-only and protects the frozen AP Biology science, memory objects, checkpoints and scene geometry. Research Methods Studio has more direct authorised publication controls only for supported guidance workflows; other wording proposals remain review-only.
+
+A later phase may improve layout freedom and authoring controls without coupling them to unrestricted public-site writes.

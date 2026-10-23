@@ -235,6 +235,24 @@ try{
     "Mobile Story Method must put reading and text editing before long curriculum navigation");
   assert(storyMobile.documentWidth<=storyMobile.viewport+1,
     "Story Method mobile editor must fit within the screen");
+  // The assembled Pages build must preserve the two-way mobile editing
+  // shortcut without silently changing a reviewed narrative draft.
+  await page.locator('#scenePreview [data-edit-key="0:title"]').click();
+  const exportWasEnabled=await page.locator("#export").isEnabled();
+  assert.equal(await page.locator("#mobileSelectionBar").isVisible(),true,
+    "Mobile authors need an on-screen shortcut to the selected inspector field");
+  await page.locator("#mobileEditInInspector").click();
+  assert.equal(await page.locator("#editText").evaluate(
+    el=>document.activeElement===el),true);
+  assert.equal(await page.locator("#mobileSelectionBar").isVisible(),false,
+    "Floating controls must yield to the inspector");
+  await page.locator("#mobileBackToPassage").click();
+  assert.equal(await page.locator('#scenePreview [data-edit-key="0:title"]').evaluate(
+    el=>document.activeElement===el),true);
+  await page.locator("#mobileDismissSelection").click();
+  assert.equal(await page.locator("#mobileSelectionBar").isVisible(),false);
+  assert.equal(await page.locator("#export").isEnabled(),exportWasEnabled,
+    "Mobile inspector navigation must preserve the existing draft state");
   await page.screenshot({path:output+"/story-method-mobile.png",fullPage:true});
   await page.setViewportSize({width:1440,height:900});
 
