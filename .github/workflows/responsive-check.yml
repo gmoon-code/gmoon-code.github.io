@@ -9,6 +9,13 @@ on:
       - "site-theme.css"
       - "scripts/responsive_smoke.py"
       - ".github/workflows/responsive-check.yml"
+  pull_request:
+    paths:
+      - "*.html"
+      - "styles-20261013.css"
+      - "site-theme.css"
+      - "scripts/responsive_smoke.py"
+      - ".github/workflows/responsive-check.yml"
   workflow_dispatch:
 
 permissions:

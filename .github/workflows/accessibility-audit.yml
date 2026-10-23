@@ -9,6 +9,13 @@ on:
       - "site-theme.css"
       - "scripts/accessibility_audit.py"
       - ".github/workflows/accessibility-audit.yml"
+  pull_request:
+    paths:
+      - "*.html"
+      - "styles-20261013.css"
+      - "site-theme.css"
+      - "scripts/accessibility_audit.py"
+      - ".github/workflows/accessibility-audit.yml"
   workflow_dispatch:
 
 permissions:
