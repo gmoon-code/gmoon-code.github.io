@@ -3556,7 +3556,7 @@
     if(!summary||summary.length>100){directGithubMessage("Enter a short update description.");return;}
     if(state.stagedMedia){directGithubMessage("Direct publishing of new image files is not supported.");return;}
     const page=state.page,source=state.source,fingerprint=state.fingerprint;
-    if(!page||!^[a-z0-9-]+\.html$/.test(page))return;
+    if(!page||!/^[a-z0-9-]+\.html$/.test(page))return;
     let content;
     try{content=buildExport();}
     catch(error){directGithubMessage(error.message);return;}
