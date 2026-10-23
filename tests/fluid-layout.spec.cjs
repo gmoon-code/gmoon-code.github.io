@@ -4761,6 +4761,15 @@ test('PowerPoint-style selection moves and resizes source text freely with Undo 
  const handles=view.getByRole('group',{name:'Free move and resize selected object'});
  await expect(handles).toBeVisible();
  await expect(handles.locator('button[data-free-direction]:not([data-free-direction="move"])')).toHaveCount(8);
+ const initial=await target.boundingBox();
+ await page.mouse.move(initial.x+initial.width/2,initial.y+initial.height/2);
+ await page.mouse.down();
+ await page.mouse.move(initial.x+initial.width/2+22,initial.y+initial.height/2+14,{steps:3});
+ await page.mouse.up();
+ await expect(target).toHaveCSS('translate','22px 14px');
+ await page.locator('#undoBtn').click();
+ await expect(view.locator('main #a h2')).not.toHaveClass(/moon-free-object/);
+ await view.locator('main #a h2').click();
  const move=handles.getByRole('button',{name:'Drag selected object freely or use arrow keys'});
  await move.focus();
  await move.press('Shift+ArrowRight');
@@ -4784,6 +4793,8 @@ test('PowerPoint-style selection moves and resizes source text freely with Undo 
  expect(html).toContain('translate: 10px 1px');
  await page.locator('#undoBtn').click();
  await expect(view.locator('main #a h2')).toHaveCSS('translate','10px 1px');
+ await page.locator('#undoBtn').click();
+ await expect(view.locator('main #a h2')).toHaveCSS('translate','10px');
  await page.locator('#undoBtn').click();
  await expect(view.locator('main #a h2')).not.toHaveClass(/moon-free-object/);
 });
