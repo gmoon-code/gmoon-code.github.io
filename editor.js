@@ -1315,6 +1315,7 @@
     updateBrowseControls();
     createQuickToolbar();
     createSourceWidthHandle();
+    createSpacingGrip();
   }
 
 
@@ -1685,6 +1686,68 @@
 
   // Drag the bottom-right corner of an original text block. One pointer
   // gesture makes one history checkpoint, including continuous preview.
+  // A compact bottom-edge grip adjusts spacing below the selected text.
+  // Draft edits and undo checkpoints reuse the inspector's validated paths.
+  function createSpacingGrip(){
+    const doc=state.frameDoc;
+    doc?.getElementById("moon-spacing-grip")?.remove();
+    const selection=quickSelection();
+    if(!selection||!QUICK_SOURCE_TAGS.has(selection.node.tagName))return;
+    const grip=doc.createElement("button");
+    grip.type="button";grip.id="moon-spacing-grip";grip.textContent="↕";
+    grip.title="Drag vertically to adjust space below; arrow keys adjust by 5 px";
+    grip.setAttribute("aria-label","Adjust space below selected text with vertical dragging, or Up and Down arrows in five pixel steps");
+    grip.style.cssText="position:fixed;z-index:2147483645;width:28px;height:28px;border:2px solid #27654f;border-radius:5px;background:#fff;color:#174932;cursor:ns-resize;touch-action:none;font:700 18px system-ui";
+    const value=()=>{
+      if(selection.added)return addedBlockLayout(state.additions[state.selectedAddition]).spaceBelow;
+      return parseInt(getWorking(state.selected)?.style.marginBottom,10)||0;
+    };
+    const set=(amount,history)=>{
+      const px=Math.max(0,Math.min(80,Math.round(amount/5)*5));
+      if(selection.added)setAddedBlockLayout({spaceBelow:px},history);
+      else updateSelectedStyle("marginBottom",px+"px",[px+"px"],history);
+      position();
+    };
+    const position=()=>{
+      if(!grip.isConnected)return;
+      const box=selection.node.getBoundingClientRect(),view=doc.defaultView;
+      grip.hidden=box.bottom<0||box.top>view.innerHeight;
+      grip.style.left=Math.max(0,Math.min(view.innerWidth-28,box.left+Math.min(box.width/2,80)))+"px";
+      grip.style.top=Math.max(0,Math.min(view.innerHeight-28,box.bottom+2))+"px";
+      grip.setAttribute("aria-valuenow",String(value()));
+    };
+    grip.addEventListener("click",event=>event.stopPropagation());
+    grip.addEventListener("keydown",event=>{
+      if(!["ArrowUp","ArrowDown","Home","End"].includes(event.key))return;
+      event.preventDefault();event.stopPropagation();
+      const next=event.key==="Home"?0:event.key==="End"?80:value()+(event.key==="ArrowDown"?5:-5);
+      if(next!==value())set(next,true);
+    });
+    let drag=null;
+    grip.addEventListener("pointerdown",event=>{
+      if(event.button!==0||drag)return;
+      event.preventDefault();event.stopPropagation();
+      checkpoint();drag={id:event.pointerId,y:event.clientY,initial:value()};
+      grip.setPointerCapture(event.pointerId);
+    });
+    grip.addEventListener("pointermove",event=>{
+      if(!drag||drag.id!==event.pointerId)return;
+      event.preventDefault();
+      set(drag.initial+event.clientY-drag.y,false);
+    });
+    const finish=event=>{
+      if(!drag||drag.id!==event.pointerId)return;
+      drag=null;
+      if(grip.hasPointerCapture(event.pointerId))grip.releasePointerCapture(event.pointerId);
+      scheduleDraft();position();
+    };
+    grip.addEventListener("pointerup",finish);
+    grip.addEventListener("pointercancel",finish);
+    doc.body.append(grip);
+    doc.defaultView.addEventListener("scroll",position,{passive:true});
+    position();
+  }
+
   function positionSourceWidthHandle(){
     const doc=state.frameDoc,h=doc?.getElementById("moon-source-width-handle");
     if(!h||state.sourceWidthPointer)return;
