@@ -1715,8 +1715,8 @@
     if(!selection||!QUICK_SOURCE_TAGS.has(selection.node.tagName))return;
     const grip=doc.createElement("button");
     grip.type="button";grip.id="moon-spacing-grip";grip.textContent="↕";
-    grip.title="Drag vertically to adjust space below; arrow keys adjust by 5 px";
-    grip.setAttribute("aria-label","Adjust space below selected text with vertical dragging, or Up and Down arrows in five pixel steps");
+    grip.title="Drag to adjust lower spacing; arrows change 5 px, Delete restores default";
+    grip.setAttribute("aria-label","Adjust space below selected text with vertical dragging, or Up and Down arrows in five pixel steps; Delete restores the original value");
     grip.setAttribute("role","slider");
     grip.setAttribute("aria-valuemin","0");
     grip.setAttribute("aria-valuemax","80");
@@ -1742,8 +1742,16 @@
     };
     grip.addEventListener("click",event=>event.stopPropagation());
     grip.addEventListener("keydown",event=>{
-      if(!["ArrowUp","ArrowDown","Home","End"].includes(event.key))return;
+      if(!["ArrowUp","ArrowDown","Home","End","Delete","Backspace"].includes(event.key))return;
       event.preventDefault();event.stopPropagation();
+      if(event.key==="Delete"||event.key==="Backspace"){
+        if(selection.added){
+          if(value()!==0)setAddedBlockLayout({spaceBelow:0},true);
+        }else if(getWorking(state.selected)?.style.marginBottom){
+          updateSelectedStyle("marginBottom","",[""]);
+        }
+        position();return;
+      }
       const next=event.key==="Home"?0:event.key==="End"?80:value()+(event.key==="ArrowDown"?5:-5);
       if(next!==value())set(next,true);
     });
