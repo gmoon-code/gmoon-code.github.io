@@ -2841,6 +2841,7 @@ test('image can be resized by a direct drag handle and keyboard-accessible inspe
  await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
  const image=page.frameLocator('#pageFrame').locator('main img');
  await image.click();
+ await page.locator('#freeCanvasToggle').click();
  const handle=page.frameLocator('#pageFrame').locator('#moon-image-resize-handle');
  await expect(handle).toBeVisible();
  const before=await image.evaluate(el=>el.style.width);
@@ -3368,6 +3369,7 @@ test('new content blocks can be dragged within an anchor but not across source a
   'New first','New second','New third','At a separate anchor'
  ]);
  await added.first().click();
+ await page.locator('#freeCanvasToggle').click();
  const grip=page.frameLocator('#pageFrame').locator('#moon-added-block-move-handle');
  await expect(grip).toBeVisible();
  const sourceBox=await grip.boundingBox(),targetBox=await added.nth(2).boundingBox();
@@ -3487,6 +3489,7 @@ test('new block drag grip relocates a paragraph onto a different original source
  await page.locator('#insertContentBtn').click();
  const added=page.frameLocator('#pageFrame').locator('[data-editor-added-index]');
  await added.click();
+ await page.locator('#freeCanvasToggle').click();
  const grip=page.frameLocator('#pageFrame').locator('#moon-added-block-move-handle');
  await expect(grip).toBeVisible();
  const handle=await grip.boundingBox();
@@ -3982,6 +3985,7 @@ test('new paragraph uses responsive width, centre alignment and exact spacing in
  await page.locator('#insertContentBtn').click();
  const newBlock=page.frameLocator('#pageFrame').locator('[data-editor-added-index]');
  await newBlock.click();
+ await page.locator('#freeCanvasToggle').click();
  await expect(page.locator('#addedBlockLayoutFields')).toBeVisible();
  await expect(page.locator('#addedBlockWidth')).toHaveValue('100');
  await expect(page.locator('#addedBlockAlign')).toHaveValue('left');
@@ -4040,6 +4044,7 @@ test('new heading width handle adjusts text block without changing reading order
  await page.locator('#insertContentBtn').click();
  const added=page.frameLocator('#pageFrame').locator('[data-editor-added-index]');
  await added.click();
+ await page.locator('#freeCanvasToggle').click();
  const handle=page.frameLocator('#pageFrame').locator('#moon-added-block-width-handle');
  await expect(handle).toBeVisible();
  const bounds=await handle.boundingBox();
@@ -4205,6 +4210,7 @@ test('new image width uses slider and on-image handle, with undo, reload and val
  await page.locator('#insertContentBtn').click();
  const inserted=page.frameLocator('#pageFrame').locator('[data-editor-added-index] img');
  await inserted.click();
+ await page.locator('#freeCanvasToggle').click();
  await expect(page.locator('#addedImageWidthPercent')).toBeVisible();
  await expect(page.locator('#addedImageWidthPercent')).toHaveValue('100');
  const handle=page.frameLocator('#pageFrame').locator('#moon-image-resize-handle');
@@ -4455,6 +4461,7 @@ test('original block preview drag handle reorders source paragraphs without rewr
  await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
  const blocks=page.frameLocator('#pageFrame').locator('main section > p');
  await blocks.first().click();
+ await page.locator('#freeCanvasToggle').click();
  const handle=page.frameLocator('#pageFrame').locator('#moon-block-move-handle');
  await expect(handle).toBeVisible();
  await expect(handle).toHaveCSS('touch-action','none');
@@ -4686,15 +4693,18 @@ test('on-page Style editor exports verified font, size and colours for original 
  await properties.locator('input[type="color"]').first().fill('#225544');
  await properties.locator('input[type="color"]').first().dispatchEvent('change');
  await properties.getByRole('button',{name:'Done'}).click();
+ console.log('STYLE CHECKPOINT: original appearance controls closed');
  const heading=preview.locator('main h2');
  await expect(heading).toHaveCSS('font-family','Georgia, serif');
  await expect(heading).toHaveCSS('font-size','32px');
  await expect(heading).toHaveCSS('color','rgb(34, 85, 68)');
  await heading.click();
+ console.log('STYLE CHECKPOINT: reselected original heading');
  await bar.getByRole('button',{name:'Add new content after this block'}).click();
  const composer=preview.getByRole('dialog',{name:'Add content to the page'});
  await composer.getByLabel('Text',{exact:true}).fill('New styled paragraph');
  await composer.getByRole('button',{name:'Add to page'}).click();
+ console.log('STYLE CHECKPOINT: added styled paragraph');
  await preview.locator('[data-editor-added-index]').click();
  await bar.getByRole('button',{name:'Change font, size and colours of selected text'}).click();
  properties=preview.getByRole('dialog',{name:'Style selected text'});
@@ -4756,7 +4766,7 @@ test('PowerPoint-style selection moves and resizes source text freely with Undo 
  const view=page.frameLocator('#pageFrame');
  const target=view.locator('main #a h2');
  await target.click();
- await page.locator('#freeCanvasToggle').click();
+ // Free positioning activates automatically on selection.
  await expect(page.locator('#freeCanvasToggle')).toHaveAttribute('aria-pressed','true');
  const handles=view.getByRole('group',{name:'Free move and resize selected object'});
  await expect(handles).toBeVisible();
@@ -4837,4 +4847,196 @@ test('PowerPoint-style free positioning survives local drafts for inserted image
  expect(html).toContain('moon-free-object');
  expect(html).toContain('translate:10px 10px');
  expect(html).toContain('assets/example-photograph.webp');
+});
+
+test('Precision fields apply source object positions and preserve unrelated typography',async({page})=>{
+ const source='<!doctype html><html><head></head><body><main><section id="a"><h2>Research heading</h2><p>Study notes.</p></section></main></body></html>';
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',body:source}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html',{waitUntil:'domcontentloaded'});
+ const view=page.frameLocator('#pageFrame'),heading=view.locator('main #a h2');
+ await heading.click();
+ await page.locator('#textAlignment').selectOption('center');
+ // Free positioning activates automatically on selection.
+ const precision=page.locator('#freePrecisionFields');
+ await expect(precision).toBeVisible();
+ await expect(page.locator('#freePrecisionReset')).toBeDisabled();
+ await page.locator('#freePrecisionX').fill('115');
+ await page.locator('#freePrecisionY').fill('-32');
+ await page.locator('#freePrecisionWidth').fill('245');
+ await page.locator('#freePrecisionHeight').fill('93');
+ await page.locator('#freePrecisionApply').click();
+ await expect(heading).toHaveClass(/moon-free-object/);
+ await expect(heading).toHaveCSS('translate','115px -32px');
+ await expect(heading).toHaveCSS('width','245px');
+ await expect(heading).toHaveCSS('min-height','93px');
+ await expect(page.locator('#freePrecisionReset')).toBeEnabled();
+ await page.locator('#freePrecisionX').fill('20000');
+ await page.locator('#freePrecisionApply').click();
+ await expect(page.locator('#freePrecisionStatus')).toContainText('Enter whole-pixel values');
+ await expect(heading).toHaveCSS('translate','115px -32px');
+ await page.locator('#freePrecisionX').fill('115');
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).toContain('translate: 115px -32px');
+ expect(html).toContain('width: 245px');
+ await page.locator('#freePrecisionReset').click();
+ await expect(heading).not.toHaveClass(/moon-free-object/);
+ await expect(heading).toHaveCSS('text-align','center');
+ await expect(page.locator('#freePrecisionReset')).toBeDisabled();
+ await page.locator('#undoBtn').click();
+ await expect(view.locator('main #a h2')).toHaveClass(/moon-free-object/);
+ await expect(view.locator('main #a h2')).toHaveCSS('translate','115px -32px');
+});
+
+test('Precision inspector persists new image placement with one Undo step',async({page})=>{
+ const source='<!doctype html><html><head></head><body><main><section id="a"><h2>Image section</h2><p>Notes.</p></section></main></body></html>';
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',body:source}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html',{waitUntil:'domcontentloaded'});
+ const view=page.frameLocator('#pageFrame');
+ await view.locator('main #a h2').click();
+ await page.locator('#insertContentKind').selectOption('image');
+ await page.locator('#insertContentText').fill('Archive image');
+ await page.locator('#insertImageSrc').fill('assets/example-photograph.webp');
+ await page.locator('#insertContentBtn').click();
+ const added=view.locator('[data-editor-added-index]');
+ await added.click();
+ // Free positioning activates automatically on selection.
+ await expect(page.locator('#freePrecisionFields')).toBeVisible();
+ await page.locator('#freePrecisionX').fill('41');
+ await page.locator('#freePrecisionY').fill('62');
+ await page.locator('#freePrecisionWidth').fill('225');
+ await page.locator('#freePrecisionHeight').fill('90');
+ await page.locator('#freePrecisionApply').click();
+ await expect(added).toHaveCSS('translate','41px 62px');
+ await expect.poll(async()=>page.evaluate(()=>
+  JSON.parse(localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'))?.additions?.[0]?.freePosition?.width
+ )).toBe(225);
+ await page.locator('#freePrecisionReset').click();
+ await expect(view.locator('[data-editor-added-index]')).not.toHaveClass(/moon-free-object/);
+ await page.locator('#undoBtn').click();
+ await expect(view.locator('[data-editor-added-index]')).toHaveCSS('translate','41px 62px');
+});
+
+test('Direct click selects a full set of handles and object drag escapes a clipped parent',async({page})=>{
+ const source='<!doctype html><html><head></head><body><main><section id="bounded" style="overflow:hidden;width:220px">'+
+  '<h2>Move anywhere</h2><p>A test paragraph.</p></section></main></body></html>';
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',body:source}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html',{waitUntil:'domcontentloaded'});
+ const view=page.frameLocator('#pageFrame'),target=view.locator('#bounded h2');
+ await target.click();
+ await expect(page.locator('#freeCanvasToggle')).toHaveAttribute('aria-pressed','true');
+ const selection=view.getByRole('group',{name:'Free move and resize selected object'});
+ await expect(selection).toBeVisible();
+ await expect(selection.locator('[data-free-direction]:not([data-free-direction="move"])')).toHaveCount(8);
+ const box=await target.boundingBox();
+ await target.evaluate(el=>{
+   const d=el.ownerDocument;
+   d.defaultView.__moonPointerLog=[];
+   for(const type of ['pointerdown','pointermove','pointerup','pointercancel','lostpointercapture'])
+     d.addEventListener(type,e=>d.defaultView.__moonPointerLog.push({
+       type,x:Math.round(e.clientX),y:Math.round(e.clientY),
+       target:e.target.tagName,handle:e.target.dataset?.freeDirection||'',
+       captured:e.target.hasPointerCapture?.(e.pointerId)||false
+     }),true);
+ });
+ console.log('DIRECT GLOBAL POSITION',{
+  targetBox:box,
+  frameBox:await page.locator('#pageFrame').boundingBox(),
+  topHit:await page.evaluate(([x,y])=>{
+    const e=document.elementFromPoint(x,y);
+    return {tag:e?.tagName,id:e?.id,classes:e?.className?.toString().slice(0,60)}
+  },[box.x+Math.min(75,box.width/2),box.y+box.height/2])
+ });
+ console.log('DIRECT GRAB HIT',await target.evaluate(el=>{
+   const r=el.getBoundingClientRect(),x=r.x+Math.min(75,r.width/2),y=r.y+r.height/2;
+   const hit=document.elementFromPoint(x,y);
+   return {target:hit?.tagName,id:hit?.id,dir:hit?.dataset?.freeDirection,tag:el.tagName,r:{x:r.x,y:r.y,width:r.width,height:r.height}};
+ }));
+ await target.hover({position:{x:Math.min(75,box.width/2),y:box.height/2}});
+ await page.mouse.down();
+ await page.mouse.move(box.x+Math.min(75,box.width/2)+165,box.y+box.height/2+24,{steps:7});
+ await page.mouse.up();
+ console.log('DIRECT GRAB EVENTS',await target.evaluate(el=>({
+  events:el.ownerDocument.defaultView.__moonPointerLog,
+  translate:el.style.translate,style:el.getAttribute('style')
+ })));
+ await expect(page.locator('#freeCanvasToggle')).toHaveAttribute('aria-pressed','true');
+ await expect(target).toHaveCSS('translate','165px 24px');
+ await expect(view.locator('#bounded')).toHaveCSS('overflow','visible');
+ const rect=await target.boundingBox();
+ const parent=await view.locator('#bounded').boundingBox();
+ expect(rect.x+rect.width).toBeGreaterThan(parent.x+parent.width);
+ await target.dblclick({position:{x:12,y:10}});
+ await expect(page.locator('#freeCanvasToggle')).toHaveAttribute('aria-pressed','false');
+ await expect(target).toHaveAttribute('contenteditable','true');
+ await page.locator('#undoBtn').click();
+ await expect(view.locator('#bounded h2')).not.toHaveClass(/moon-free-object/);
+});
+
+test('Selected image can resize with handles despite inline important width and hidden container',async({page})=>{
+ const source='<!doctype html><html><head></head><body><main><section id="bounded" style="overflow:hidden;width:240px">'+
+  '<img src="assets/test-image.webp" width="240" height="180" alt="Image for resize testing" '+
+  'style="width:100%!important;max-width:100%!important;height:120px!important"></section></main></body></html>';
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',body:source}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html',{waitUntil:'domcontentloaded'});
+ const view=page.frameLocator('#pageFrame'),target=view.locator('#bounded img');
+ await target.click();
+ await expect(page.locator('#freeCanvasToggle')).toHaveAttribute('aria-pressed','true');
+ const handles=view.getByRole('group',{name:'Free move and resize selected object'});
+ await expect(handles).toBeVisible();
+ const original=await target.boundingBox();
+ const right=handles.getByRole('button',{name:'Resize selected object from right'});
+ const position=await right.boundingBox();
+ console.log('IMAGE RIGHT GRIP HIT:',await right.evaluate(el=>{
+   const r=el.getBoundingClientRect(),x=r.x+r.width/2,y=r.y+r.height/2;
+   const hit=document.elementFromPoint(x,y);
+   return {x,y,width:r.width,height:r.height,hit:hit?.getAttribute('data-free-direction')||hit?.tagName,
+     captured:getComputedStyle(el).pointerEvents};
+ }));
+ await right.evaluate(el=>{
+   const d=el.ownerDocument;
+   d.defaultView.__moonGripLog=[];
+   for(const type of ['pointerdown','pointermove','pointerup','pointercancel','lostpointercapture'])
+     d.addEventListener(type,e=>d.defaultView.__moonGripLog.push({
+       type,button:e.button,dir:e.target.dataset?.freeDirection||'',x:Math.round(e.clientX),
+       captured:e.target.hasPointerCapture?.(e.pointerId)||false
+     }),true);
+ });
+ await right.hover();
+ await page.mouse.down();
+ await page.mouse.move(position.x+position.width/2+115,position.y+position.height/2,{steps:6});
+ await page.mouse.up();
+ console.log('GRIP POINTER EVENTS',await right.evaluate(el=>{
+  const img=el.ownerDocument.querySelector('#bounded img');
+  return {
+    events:el.ownerDocument.defaultView.__moonGripLog,
+    image:img?.getAttribute('style'),
+    computed:img&&{width:getComputedStyle(img).width,height:getComputedStyle(img).height,
+      translate:getComputedStyle(img).translate,maxWidth:getComputedStyle(img).maxWidth,
+      rect:{x:img.getBoundingClientRect().x,y:img.getBoundingClientRect().y,
+        width:img.getBoundingClientRect().width,height:img.getBoundingClientRect().height}},
+    frame:el.ownerDocument.defaultView.frameElement?.getBoundingClientRect().toJSON?.()
+  };
+ }));
+ await expect(page.locator('#freeCanvasToggle')).toHaveAttribute('aria-pressed','true');
+ const resized=await target.boundingBox();
+ expect(resized.width).toBeGreaterThan(original.width+90);
+ expect(resized.width).toBeGreaterThan((await view.locator('#bounded').boundingBox()).width);
+ const bottom=handles.getByRole('button',{name:'Resize selected object from bottom',exact:true});
+ const bottomBox=await bottom.boundingBox();
+ await page.mouse.move(bottomBox.x+bottomBox.width/2,bottomBox.y+bottomBox.height/2);
+ await page.mouse.down();
+ await page.mouse.move(bottomBox.x+bottomBox.width/2,bottomBox.y+bottomBox.height/2+75,{steps:5});
+ await page.mouse.up();
+ const taller=await target.boundingBox();
+ expect(taller.height).toBeGreaterThan(resized.height+60);
+ await expect(view.locator('#bounded')).toHaveCSS('overflow','visible');
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).toContain('--moon-free-width:');
+ expect(html).toContain('moon-free-object');
+ expect(html).toContain('moon-free-position-css');
+ expect(html).not.toContain('moon-free-selection');
 });

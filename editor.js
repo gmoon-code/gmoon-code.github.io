@@ -319,7 +319,10 @@
       const style=copy.createElement('style');style.id='moon-responsive-group-layout';
       style.textContent=css;copy.head.append(style);
     }
-    if(copy.querySelector("main ."+FREE_CLASS)||state.additions.some(item=>item.freePosition)){
+    // Install the canvas rules even before the first drag. Otherwise the
+    // live iframe has no .moon-free-object CSS until an expensive reload,
+    // and original image constraints can override an initial resize.
+    {
       const style=copy.createElement("style");style.id="moon-free-position-css";
       style.textContent=FREE_CSS;copy.head.append(style);
     }
@@ -386,10 +389,15 @@
         d.documentElement.classList.toggle("moon-free-mode",freeCanvasActive);
         updateStagedPreview();
         d.addEventListener("click",onPreviewClick,true);
+        d.addEventListener("dblclick",onPreviewDoubleClick,true);
         d.addEventListener("pointerdown",onFreeObjectPointerDown,true);
         d.addEventListener("pointermove",freeGestureMove,true);
         d.addEventListener("pointerup",freeGestureEnd,true);
         d.addEventListener("pointercancel",freeGestureEnd,true);
+        d.addEventListener("dragstart",event=>{
+          if(event.target.closest?.("main [data-editor-key],main [data-editor-added-index]"))
+            event.preventDefault();
+        },true);
         d.addEventListener("keydown",onPreviewKeydown,true);
         d.addEventListener("input",onPreviewInput,true);
         d.addEventListener("focusin",onPreviewFocus,true);
@@ -533,12 +541,24 @@
     const added=event.target.closest("[data-editor-added-index]");
     if(added){
       selectAddedBlock(Number(added.getAttribute("data-editor-added-index")));
+      if(automaticFreeSelection)enableFreeCanvasForDrag();
       return;
     }
     const node=event.target.closest("[data-editor-key]");
     if (!node) return;
     selectElement(node);
-    if (TEXT_TAGS.has(node.tagName)) node.focus({preventScroll:true});
+    if(automaticFreeSelection)enableFreeCanvasForDrag();
+  }
+
+  function onPreviewDoubleClick(event){
+    if(!freeCanvasActive)return;
+    const node=event.target.closest?.("[data-editor-key]");
+    if(!node||!TEXT_TAGS.has(node.tagName))return;
+    // A double-click returns to inline writing after moving an object.
+    // Handles remain available when the user selects it again.
+    toggleFreeCanvas();
+    selectElement(node);
+    node.focus({preventScroll:true});
   }
 
   function onPreviewFocus(event) {
@@ -864,16 +884,16 @@
 
   // Free mode uses viewport-positioned selection controls without adding
   // editor-only markup to the exported website HTML.
-  let freeCanvasActive=false,freeGesture=null;
+  let freeCanvasActive=false,freeGesture=null,pendingCanvasDrag=null,automaticFreeSelection=true;
   function freeSelected(){
     let sel=quickSelection();
-    if(!sel&&freeCanvasActive&&state.selected){
+    if(!sel&&state.selected){
       const node=state.frameDoc?.querySelector('main [data-editor-key="'+state.selected+'"]');
       if(node)sel={node,added:false};
     }
     if(!sel)return null;
     const kind=sel.added?insertionKind(state.additions[state.selectedAddition]):sel.node.tagName.toLowerCase();
-    if(!["p","h1","h2","h3","h4","h5","h6","img","blockquote","li","figcaption","dt","dd","heading","paragraph","image","link"].includes(kind))
+    if(!["p","h1","h2","h3","h4","h5","h6","img","a","blockquote","li","figcaption","dt","dd","th","td","heading","paragraph","image","link"].includes(kind))
       return null;
     return sel;
   }
@@ -918,9 +938,15 @@
       for(const node of [source,sel.node]){
         node.classList.add(FREE_CLASS);
         node.style.translate=geometry.x+"px "+geometry.y+"px";
-        node.style.width=geometry.width+"px";
-        node.style.minHeight=geometry.height+"px";
-        node.style.maxWidth="none";
+        node.style.setProperty("width",geometry.width+"px","important");
+        node.style.setProperty("--moon-free-width",geometry.width+"px");
+        node.style.setProperty("min-height",geometry.height+"px","important");
+        node.style.setProperty("--moon-free-height",geometry.height+"px");
+        if(node.tagName==="IMG"){
+          node.style.setProperty("height",geometry.height+"px","important");
+          node.style.setProperty("object-fit","contain","important");
+        }
+        node.style.setProperty("max-width","none","important");
         node.style.boxSizing="border-box";
       }
     }
@@ -939,11 +965,12 @@
     }
     positionFreeSelection();
     positionQuickToolbar();
+    refreshFreePrecisionFields();
   }
   function positionFreeSelection(){
     const doc=state.frameDoc,frame=doc?.getElementById("moon-free-selection");
     if(!frame)return;
-    const sel=freeCanvasActive?freeSelected():null;
+    const sel=freeSelected();
     if(!sel){frame.remove();return;}
     const rect=sel.node.getBoundingClientRect(),view=doc.defaultView;
     if(rect.right<0||rect.bottom<0||rect.left>view.innerWidth||rect.top>view.innerHeight){
@@ -955,33 +982,83 @@
     frame.style.width=Math.max(1,rect.width)+"px";
     frame.style.height=Math.max(1,rect.height)+"px";
   }
+  // Selection displays resize grips immediately. Moving an object or grip
+  // enters free canvas automatically while a simple click still edits text.
+  function enableFreeCanvasForDrag(keepEditable=false){
+    if(freeCanvasActive)return;
+    freeCanvasActive=true;
+    state.frameDoc?.documentElement.classList.add("moon-free-mode");
+    const button=$("freeCanvasToggle");
+    button.setAttribute("aria-pressed","true");
+    button.textContent="✓ Free move & resize";
+    if(!keepEditable)state.frameDoc?.querySelector("[data-editor-selected][contenteditable]")?.removeAttribute("contenteditable");
+    for(const id of ["moon-image-resize-handle","moon-block-move-handle",
+      "moon-added-block-move-handle","moon-added-block-width-handle",
+      "moon-source-width-handle","moon-spacing-grip"])
+      state.frameDoc?.getElementById(id)?.remove();
+    refreshFreePrecisionFields();
+  }
   function onFreeObjectPointerDown(event){
-    if(!freeCanvasActive||event.button!==0||event.defaultPrevented)return;
+    if(event.button!==0||event.defaultPrevented)return;
     if(event.target.closest("#moon-free-selection,#moon-quick-toolbar,#moon-quick-composer,#moon-quick-layout,#moon-quick-size,#moon-quick-properties"))return;
     const added=event.target.closest("[data-editor-added-index]");
     const original=added?null:event.target.closest("[data-editor-key]");
     const node=added||original;
     if(!node||!node.closest("main"))return;
-    if(added)selectAddedBlock(Number(added.getAttribute("data-editor-added-index")));
-    else selectElement(original);
-    freeGestureStart(event,"move",node);
+    if(freeCanvasActive){
+      if(added)selectAddedBlock(Number(added.getAttribute("data-editor-added-index")));
+      else selectElement(original);
+      freeGestureStart(event,"move",node);
+      return;
+    }
+    // Stop the browser beginning its own text/image selection drag, which
+    // otherwise competes with the canvas movement on pointermove.
+    event.preventDefault();
+    pendingCanvasDrag={id:event.pointerId,startX:event.clientX,startY:event.clientY,
+      node,added:!!added};
+    // Capture at pointerdown, before the cursor can leave the iframe, so
+    // direct page moves keep receiving pointermove/pointerup events.
+    try{node.setPointerCapture(event.pointerId);}
+    catch{/* A document-level listener remains as a fallback. */}
   }
-  function freeGestureStart(event,direction,handle){
+  function freeGestureStart(event,direction,handle,origin=null){
     const sel=freeSelected();
     if(!sel||event.button!==0||freeGesture)return;
+    enableFreeCanvasForDrag(Boolean(origin));
     event.preventDefault();event.stopPropagation();
     const base=freeGeometry(sel);
-    checkpoint();
-    freeGesture={id:event.pointerId,direction,startX:event.clientX,startY:event.clientY,
+    freeGesture={id:event.pointerId,direction,
+      startX:origin?.x??event.clientX,startY:origin?.y??event.clientY,
       base,added:sel.added,key:state.selected,index:state.selectedAddition};
-    handle.setPointerCapture(event.pointerId);
+    // Capturing a pointer only after its first move can cause a browser to
+    // lose the active gesture while editable text is being deactivated.
+    // Document-level listeners track delayed direct grabs without capture.
+    if(!origin){
+      try{handle.setPointerCapture(event.pointerId);}
+      catch{/* Document-level pointer listeners still handle the gesture. */}
+    }
   }
   function freeGestureMove(event){
+    if(pendingCanvasDrag&&pendingCanvasDrag.id===event.pointerId&&!freeGesture){
+      const pending=pendingCanvasDrag;
+      if(Math.hypot(event.clientX-pending.startX,event.clientY-pending.startY)>=6&&pending.node.isConnected){
+        pendingCanvasDrag=null;
+        if(pending.added){
+          const index=Number(pending.node.getAttribute("data-editor-added-index"));
+          if(state.selectedAddition!==index)selectAddedBlock(index);
+        }else if(state.selected!==pending.node.getAttribute("data-editor-key")){
+          selectElement(pending.node);
+        }
+        freeGestureStart(event,event.shiftKey?"se":"move",pending.node,
+          {x:pending.startX,y:pending.startY});
+      }
+    }
     const drag=freeGesture;if(!drag||drag.id!==event.pointerId)return;
     event.preventDefault();event.stopPropagation();
     if(drag.key!==state.selected||drag.index!==state.selectedAddition)return;
     let dx=Math.round(event.clientX-drag.startX),dy=Math.round(event.clientY-drag.startY);
     if(dx===0&&dy===0)return;
+    if(!drag.moved)checkpoint();
     drag.moved=true;
     const next={...drag.base},d=drag.direction;
     if(d==="move"){
@@ -1003,9 +1080,12 @@
     applyFreeGeometry(next);
   }
   function freeGestureEnd(event){
+    if(pendingCanvasDrag?.id===event.pointerId)pendingCanvasDrag=null;
     const drag=freeGesture;if(!drag||drag.id!==event.pointerId)return;
     event.preventDefault();event.stopPropagation();
     freeGesture=null;
+    if(drag.key===state.selected&&freeCanvasActive)
+      state.frameDoc?.querySelector("[data-editor-selected][contenteditable]")?.removeAttribute("contenteditable");
     if(event.type==="pointercancel"){
       if(drag.moved)undo();
       return;
@@ -1013,17 +1093,109 @@
     if(drag.moved)finishFreeGeometry();
   }
   function freeNudge(dx,dy){
-    const sel=freeSelected();if(!sel||!freeCanvasActive)return;
+    const sel=freeSelected();if(!sel)return;
+    enableFreeCanvasForDrag();
     const base=freeGeometry(sel);
     const next={...base,x:Math.max(-16000,Math.min(16000,base.x+dx)),
       y:Math.max(-16000,Math.min(16000,base.y+dy))};
     if(next.x===base.x&&next.y===base.y)return;
     checkpoint();applyFreeGeometry(next);finishFreeGeometry();
   }
+  function refreshFreePrecisionFields(){
+    const panel=$("freePrecisionFields");
+    const selection=freeCanvasActive?freeSelected():null;
+    panel.hidden=!selection;
+    if(!selection)return;
+    const position=freeGeometry(selection);
+    for(const [field,dimension] of [
+      ["freePrecisionX","x"],["freePrecisionY","y"],
+      ["freePrecisionWidth","width"],["freePrecisionHeight","height"]]){
+      $(field).value=String(position[dimension]);
+    }
+    const saved=selection.added?
+      Boolean(state.additions[state.selectedAddition]?.freePosition):
+      selection.node.classList.contains(FREE_CLASS);
+    $("freePrecisionReset").disabled=!saved;
+  }
+  function applyFreePrecisionFields(){
+    const selection=freeCanvasActive?freeSelected():null;
+    if(!selection)return;
+    const geometry={};
+    for(const [field,dimension] of [
+      ["freePrecisionX","x"],["freePrecisionY","y"],
+      ["freePrecisionWidth","width"],["freePrecisionHeight","height"]]){
+      const value=$(field).value.trim();
+      geometry[dimension]=/^-?\d+$/.test(value)?Number(value):NaN;
+    }
+    if(!freePositionValid(geometry)){
+      $("freePrecisionStatus").textContent=
+        "Enter whole-pixel values. X and Y can be -16000 to 16000; width 35–4000; height 18–4000.";
+      return;
+    }
+    const current=freeGeometry(selection);
+    const positioned=selection.added?
+      Boolean(state.additions[state.selectedAddition]?.freePosition):
+      selection.node.classList.contains(FREE_CLASS);
+    if(positioned&&["x","y","width","height"].every(k=>current[k]===geometry[k])){
+      $("freePrecisionStatus").textContent="The selected object already uses these measurements.";
+      return;
+    }
+    checkpoint();
+    if(!applyFreeGeometry(geometry)){undo();return;}
+    finishFreeGeometry();
+    refreshFreePrecisionFields();
+    $("freePrecisionStatus").textContent="Position and size applied. Undo restores the previous placement.";
+  }
+  function resetFreePrecision(){
+    const selection=freeCanvasActive?freeSelected():null;
+    if(!selection)return;
+    const positioned=selection.added?
+      Boolean(state.additions[state.selectedAddition]?.freePosition):
+      selection.node.classList.contains(FREE_CLASS);
+    if(!positioned)return;
+    checkpoint();
+    if(selection.added){
+      const index=state.selectedAddition;
+      const next={...state.additions[index]};
+      delete next.freePosition;
+      state.additions[index]=next;
+      try{validateParagraphAdditions(state.additions);}
+      catch(error){undo();notice(error.message,"Placement reset stopped");return;}
+      renderPreview(null,index);
+      scheduleDraft();
+      updateStatus("New block returned to its regular flow · Not published");
+    }else{
+      const key=state.selected,source=getWorking(key);
+      const original=new DOMParser().parseFromString(state.original.get(key)||"",
+        "text/html").body.firstElementChild;
+      if(!source||!original){undo();return;}
+      const defaultStyle=original.classList.contains(FREE_CLASS)?null:original.style;
+      for(const node of [source,selection.node]){
+        node.classList.remove(FREE_CLASS);
+        for(const name of ["translate","width","height","min-height","max-width","box-sizing","object-fit"]){
+          const value=defaultStyle?.getPropertyValue(name)||"";
+          if(value)node.style.setProperty(name,value,defaultStyle.getPropertyPriority(name));
+          else node.style.removeProperty(name);
+        }
+        for(const name of ["--moon-free-width","--moon-free-height"])
+          if(defaultStyle?.getPropertyValue(name))node.style.setProperty(name,defaultStyle.getPropertyValue(name));
+          else node.style.removeProperty(name);
+        if(!node.getAttribute("style")?.trim())node.removeAttribute("style");
+      }
+      updateDirty(key);
+      updateInspector(selection.node);
+      createQuickToolbar();
+      createFreeSelection();
+    }
+    refreshFreePrecisionFields();
+    $("freePrecisionStatus").textContent="Regular document flow restored. Undo can bring back the placement.";
+  }
+
   function createFreeSelection(){
     const doc=state.frameDoc;
     doc?.getElementById("moon-free-selection")?.remove();
-    const sel=freeCanvasActive?freeSelected():null;
+    const sel=freeSelected();
+    refreshFreePrecisionFields();
     if(!doc||!sel)return;
     const frame=doc.createElement("div");
     frame.id="moon-free-selection";
@@ -1036,8 +1208,13 @@
       button.type="button";button.dataset.freeDirection=name;
       button.setAttribute("aria-label",label);
       button.title=label;
+      const exterior={
+        nw:"translate(-100%,-100%)",n:"translate(-50%,-100%)",ne:"translate(0,-100%)",
+        e:"translate(20px,-50%)",se:"translate(20px,20px)",s:"translate(-50%,0)",
+        sw:"translate(-100%,0)",w:"translate(-100%,-50%)"
+      };
       button.style.cssText="position:absolute;left:"+x+";top:"+y+";"+
-        "transform:translate(-50%,-50%);width:14px;height:14px;"+
+        "transform:"+(exterior[name]||"translate(-50%,-50%)")+";width:22px;height:22px;"+
         "padding:0;border:2px solid #fff;border-radius:3px;"+
         "background:#2675dd;box-shadow:0 0 0 1px #225498;"+
         "pointer-events:auto;touch-action:none;cursor:"+cursor;
@@ -1074,6 +1251,7 @@
   }
   function toggleFreeCanvas(){
     freeCanvasActive=!freeCanvasActive;
+    automaticFreeSelection=freeCanvasActive;
     state.frameDoc?.documentElement.classList.toggle("moon-free-mode",freeCanvasActive);
     const button=$("freeCanvasToggle");
     button.setAttribute("aria-pressed",String(freeCanvasActive));
@@ -1085,14 +1263,24 @@
         else node.setAttribute("contenteditable","true");
       }
     }
-    if(!freeCanvasActive){freeGesture=null;state.frameDoc?.getElementById("moon-free-selection")?.remove();}
-    else{
+    if(!freeCanvasActive){
+      freeGesture=null;pendingCanvasDrag=null;
+      // Restore the original document-layout tools when the author opts
+      // out of free manipulation. Selecting another block honours this
+      // preference until Free move & resize is enabled again.
+      if(state.selectedAddition!==null)selectAddedBlock(state.selectedAddition);
+      else if(state.selected){
+        const node=state.frameDoc?.querySelector('[data-editor-key="'+state.selected+'"]');
+        if(node)selectElement(node);
+      }
+    }else{
       for(const id of ["moon-image-resize-handle","moon-block-move-handle",
         "moon-added-block-move-handle","moon-added-block-width-handle",
         "moon-source-width-handle","moon-spacing-grip"])
         state.frameDoc?.getElementById(id)?.remove();
       createFreeSelection();
     }
+    refreshFreePrecisionFields();
   }
 
   function positionQuickToolbar(){
@@ -2088,6 +2276,7 @@
     updateInspector(rendered);
     createQuickToolbar();
     positionSourceWidthHandle();
+    positionFreeSelection();
   }
 
   function updateNumericInspectorStyle(property,field,unit,min,max){
@@ -3522,15 +3711,18 @@
   }
   const FREE_CLASS="moon-free-object";
   const FREE_CSS=[
+    "html:has(.moon-free-object),body:has(.moon-free-object){overflow-x:visible!important}",
     "main:has(.moon-free-object),main:has(.moon-free-object) *:has(.moon-free-object){overflow:visible!important}",
-    ".moon-free-object{position:relative;z-index:3;box-sizing:border-box;max-width:none}",
-    "@media(max-width:700px){html:not(.moon-free-mode) .moon-free-object{translate:none!important;width:auto!important;max-width:100%!important;min-height:0!important;height:auto!important;position:static!important}html:not(.moon-free-mode) img.moon-free-object{width:auto!important;max-width:100%!important;height:auto!important}}"
+    ".moon-free-object{transition:none!important;animation:none!important;position:relative;z-index:3;box-sizing:border-box;width:var(--moon-free-width)!important;min-width:var(--moon-free-width)!important;flex:none!important;min-height:var(--moon-free-height)!important;max-width:none!important;overflow:visible!important}",
+    "img.moon-free-object{height:var(--moon-free-height)!important;object-fit:contain!important}",
+    "@media(max-width:700px){html:not(.moon-free-mode) .moon-free-object{--moon-free-width:auto!important;--moon-free-height:auto!important;translate:none!important;min-width:0!important;flex:initial!important;max-width:100%!important;min-height:0!important;height:auto!important;position:static!important}html:not(.moon-free-mode) img.moon-free-object{max-width:100%!important;height:auto!important}}"
   ].join("\n");
   function freePositionValid(p){return !!p&&typeof p==="object"&&!Array.isArray(p)&&
     Object.keys(p).length===4&&["x","y","width","height"].every(k=>Number.isInteger(p[k]))&&
     Math.abs(p.x)<=16000&&Math.abs(p.y)<=16000&&p.width>=35&&p.width<=4000&&p.height>=18&&p.height<=4000;}
   function freeStyle(p){return "translate:"+p.x+"px "+p.y+"px;width:"+p.width+
-    "px;min-height:"+p.height+"px;max-width:none;box-sizing:border-box"}
+    "px;--moon-free-width:"+p.width+"px;min-height:"+p.height+
+    "px;--moon-free-height:"+p.height+"px;max-width:none;box-sizing:border-box"}
   const ADDED_LAYOUT_DEFAULT={align:"left",widthPercent:100,spaceAbove:0,spaceBelow:0};
   function addedBlockLayout(item){return {...ADDED_LAYOUT_DEFAULT,...(item?.layout||{})};}
   function isDefaultAddedLayout(layout){
@@ -5187,6 +5379,12 @@
     $("downloadStagedImage").addEventListener("click",downloadStagedImage);
     $("reviewBtn").addEventListener("click",reviewChanges);
     $("freeCanvasToggle").addEventListener("click",toggleFreeCanvas);
+    $("freePrecisionApply").addEventListener("click",applyFreePrecisionFields);
+    $("freePrecisionReset").addEventListener("click",resetFreePrecision);
+    for(const field of ["freePrecisionX","freePrecisionY","freePrecisionWidth","freePrecisionHeight"])
+      $(field).addEventListener("keydown",event=>{
+        if(event.key==="Enter"){event.preventDefault();applyFreePrecisionFields();}
+      });
     $("chooseExistingImage").addEventListener("click",()=>openMediaLibrary(false));
     $("chooseInsertImageBtn").addEventListener("click",()=>openMediaLibrary(true));
     $("chooseAddedImageBtn").addEventListener("click",()=>openMediaLibrary("added"));

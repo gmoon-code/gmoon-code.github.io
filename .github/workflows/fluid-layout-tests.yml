@@ -29,6 +29,8 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - name: Start local preview server
         run: python3 -m http.server 8765 --bind 127.0.0.1 > /tmp/fluid-layout-http.log 2>&1 &
+      - name: Verify direct canvas interaction regressions first
+        run: npx playwright test tests/fluid-layout.spec.cjs --browser chromium --reporter=list --workers=1 --grep 'Direct click|Selected image can resize|on-page Style editor'
       - name: Run browser tests
         run: npx playwright test tests/fluid-layout.spec.cjs --browser chromium --reporter=list --workers=1
       - name: Upload visual review screenshots
