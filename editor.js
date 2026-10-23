@@ -1729,7 +1729,8 @@
     grip.addEventListener("pointerdown",event=>{
       if(event.button!==0||drag)return;
       event.preventDefault();event.stopPropagation();
-      checkpoint();drag={id:event.pointerId,y:event.clientY,initial:value()};
+      checkpoint();drag={id:event.pointerId,y:event.clientY,initial:value(),
+        originalStyle:selection.added?null:getWorking(state.selected)?.style.marginBottom||""};
       grip.setPointerCapture(event.pointerId);
     });
     grip.addEventListener("pointermove",event=>{
@@ -1739,12 +1740,15 @@
     });
     const finish=event=>{
       if(!drag||drag.id!==event.pointerId)return;
-      const initial=drag.initial;
+      const {initial,originalStyle}=drag;
       drag=null;
       if(grip.hasPointerCapture(event.pointerId))grip.releasePointerCapture(event.pointerId);
       // Losing pointer capture (including an interrupted touch gesture) must
       // not accidentally leave a partially applied layout change behind.
-      if(event.type==="pointercancel"&&value()!==initial)set(initial,false);
+      if(event.type==="pointercancel"&&value()!==initial){
+        if(selection.added)set(initial,false);
+        else updateSelectedStyle("marginBottom",originalStyle,[originalStyle],false);
+      }
       scheduleDraft();position();
     };
     grip.addEventListener("pointerup",finish);
