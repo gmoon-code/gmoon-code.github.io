@@ -3636,32 +3636,54 @@ test('inline composer rejects unsafe link or image sources, preserves valid exis
    '</section></main></body></html>'}));
  await page.goto('http://127.0.0.1:8765/editor.html?page=about.html',{waitUntil:'domcontentloaded'});
  console.log('FLUID checkpoint: editor loaded');
+ console.log('FLUID step inline composer: 1');
  await page.frameLocator('#pageFrame').locator('main h2').click();
  console.log('FLUID checkpoint: heading clicked');
  const toolbar=page.frameLocator('#pageFrame').locator('#moon-quick-toolbar');
+ console.log('FLUID step inline composer: 2');
  await toolbar.getByRole('button',{name:'Add new content after this block'}).click();
  console.log('FLUID checkpoint: composer opened');
  let composer=page.frameLocator('#pageFrame').getByRole('dialog',{name:'Add content to the page'});
+ console.log('FLUID step inline composer: 3');
  await composer.getByLabel('Content type').selectOption('link');
+ console.log('FLUID step inline composer: 4');
  await composer.getByLabel('Text',{exact:true}).fill('Untrusted destination');
+ console.log('FLUID step inline composer: 5');
  await composer.getByLabel('Link destination').fill('javascript:alert(1)');
+ console.log('FLUID step inline composer: 6');
  await composer.getByRole('button',{name:'Add to page'}).click();
+ console.log('FLUID step inline composer: 7');
  await expect(composer.getByRole('status')).toContainText('Cannot add this content');
+ console.log('FLUID step inline composer: 8');
  await expect(page.frameLocator('#pageFrame').locator('[data-editor-added-index]')).toHaveCount(0);
+ console.log('FLUID step inline composer: 9');
  await composer.getByLabel('Content type').selectOption('image');
+ console.log('FLUID step inline composer: 10');
  await expect(composer.getByLabel('Link destination')).toBeHidden();
+ console.log('FLUID step inline composer: 11');
  await expect(composer.getByLabel('Existing image path')).toBeVisible();
+ console.log('FLUID step inline composer: 12');
  await composer.getByLabel('Image description (alt text)').fill('Existing fieldwork photograph');
+ console.log('FLUID step inline composer: 13');
  await composer.getByLabel('Existing image path').fill('../unsafe.svg');
+ console.log('FLUID step inline composer: 14');
  await composer.getByRole('button',{name:'Add to page'}).click();
+ console.log('FLUID step inline composer: 15');
  await expect(composer.getByRole('status')).toContainText('Cannot add this content');
+ console.log('FLUID step inline composer: 16');
  await composer.getByLabel('Existing image path').fill('assets/example-photograph.webp');
+ console.log('FLUID step inline composer: 17');
  await composer.getByRole('button',{name:'Add to page'}).click();
  const added=page.frameLocator('#pageFrame').locator('[data-editor-added-index]');
+ console.log('FLUID step inline composer: 18');
  await expect(added).toHaveCount(1);
+ console.log('FLUID step inline composer: 19');
  await expect(added.locator('img')).toHaveAttribute('alt','Existing fieldwork photograph');
+ console.log('FLUID step inline composer: 20');
  await expect(added.locator('img')).toHaveAttribute('src','assets/example-photograph.webp');
+ console.log('FLUID step inline composer: 21');
  const download=page.waitForEvent('download');
+ console.log('FLUID step inline composer: 22');
  await page.locator('#exportBtn').click();
  console.log('FLUID checkpoint: export clicked');
  const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
@@ -3681,45 +3703,68 @@ test('inline image gallery selects a site asset, provides preview and exports im
    '</section></main></body></html>'}));
  await page.goto('http://127.0.0.1:8765/editor.html?page=about.html',{waitUntil:'domcontentloaded'});
  console.log('FLUID checkpoint: editor loaded');
+ console.log('FLUID step inline image ga: 1');
  await page.frameLocator('#pageFrame').locator('main h2').click();
  console.log('FLUID checkpoint: heading clicked');
  const toolbar=page.frameLocator('#pageFrame').locator('#moon-quick-toolbar');
+ console.log('FLUID step inline image ga: 2');
  await toolbar.getByRole('button',{name:'Add new content after this block'}).click();
  console.log('FLUID checkpoint: composer opened');
  const composer=page.frameLocator('#pageFrame').getByRole('dialog',{name:'Add content to the page'});
+ console.log('FLUID step inline image ga: 3');
  await composer.getByLabel('Content type').selectOption('image');
  const browse=composer.getByRole('button',{name:'Choose an existing website image from the image gallery'});
+ console.log('FLUID step inline image ga: 4');
  await expect(browse).toBeVisible();
+ console.log('FLUID step inline image ga: 5');
  await expect(composer.getByLabel('Link destination')).toBeHidden();
+ console.log('FLUID step inline image ga: 6');
  await browse.click();
+ console.log('FLUID step inline image ga: 7');
  await expect(page.locator('#mediaDialog')).toBeVisible();
  const result=page.locator('#mediaResults .media-option').filter({
    hasText:'assets/editor-existing-example.webp'
  });
+ console.log('FLUID step inline image ga: 8');
  await expect(result).toHaveCount(1);
+ console.log('FLUID step inline image ga: 9');
  await result.click();
+ console.log('FLUID step inline image ga: 10');
  await expect(page.locator('#mediaDialog')).not.toBeVisible();
+ console.log('FLUID step inline image ga: 11');
  await expect(composer.getByLabel('Existing image path')).toHaveValue('assets/editor-existing-example.webp');
+ console.log('FLUID step inline image ga: 12');
  await expect(composer.getByLabel('Image description (alt text)')).toHaveValue('Student investigation materials');
  const thumb=composer.locator('img');
+ console.log('FLUID step inline image ga: 13');
  await expect(thumb).toBeVisible();
+ console.log('FLUID step inline image ga: 14');
  await expect(thumb).toHaveAttribute('src','assets/editor-existing-example.webp');
+ console.log('FLUID step inline image ga: 15');
  await composer.getByLabel('Image description (alt text)').fill(
    'Student-created model during a classroom investigation');
+ console.log('FLUID step inline image ga: 16');
  await composer.getByRole('button',{name:'Add to page'}).click();
  const added=page.frameLocator('#pageFrame').locator('[data-editor-added-index]');
+ console.log('FLUID step inline image ga: 17');
  await expect(added).toHaveCount(1);
+ console.log('FLUID step inline image ga: 18');
  await expect(added.locator('img')).toHaveAttribute('alt',
    'Student-created model during a classroom investigation');
+ console.log('FLUID step inline image ga: 19');
  await expect(added.locator('img')).toHaveAttribute('src','assets/editor-existing-example.webp');
+ console.log('FLUID step inline image ga: 20');
  const download=page.waitForEvent('download');
+ console.log('FLUID step inline image ga: 21');
  await page.locator('#exportBtn').click();
  console.log('FLUID checkpoint: export clicked');
  const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
  expect(html).toContain('alt="Student-created model during a classroom investigation"');
  expect(html).toContain('<p>Preserved original context.</p>');
  expect(html).not.toContain('moon-quick-composer');
+ console.log('FLUID step inline image ga: 22');
  await page.reload();
+ console.log('FLUID step inline image ga: 23');
  await expect(added.locator('img')).toHaveAttribute('src','assets/editor-existing-example.webp');
 });
 
@@ -3762,25 +3807,37 @@ test('section layout can be chosen directly on page with original mobile reading
  await page.goto('http://127.0.0.1:8765/editor.html?page=about.html',{waitUntil:'domcontentloaded'});
  console.log('FLUID checkpoint: editor loaded');
  const heading=page.frameLocator('#pageFrame').locator('#project-section h2');
+ console.log('FLUID step section layout : 1');
  await heading.click();
  const toolbar=page.frameLocator('#pageFrame').locator('#moon-quick-toolbar');
+ console.log('FLUID step section layout : 2');
  await expect(toolbar.getByRole('button',{
   name:'Arrange selected section into responsive columns'
  })).toBeVisible();
+ console.log('FLUID step section layout : 3');
  await toolbar.getByRole('button',{
   name:'Arrange selected section into responsive columns'
  }).click();
  let dialog=page.frameLocator('#pageFrame').getByRole('dialog',{name:'Arrange selected section'});
+ console.log('FLUID step section layout : 4');
  await expect(dialog).toContainText('Mobile keeps the original reading order');
+ console.log('FLUID step section layout : 5');
  await expect(dialog.getByRole('button',{name:'Remove layout'})).toBeDisabled();
+ console.log('FLUID step section layout : 6');
  await dialog.getByRole('button',{name:'Set selected section layout to two equal'}).click();
+ console.log('FLUID step section layout : 7');
  await expect(dialog).toHaveCount(0);
+ console.log('FLUID step section layout : 8');
  await expect(page.locator('#directLayoutPreset')).toHaveValue('two');
+ console.log('FLUID step section layout : 9');
  let css=await page.frameLocator('#pageFrame').locator('#moon-responsive-group-layout').textContent();
  expect(css).toContain('grid-column:7 / span 6');
  expect(css).toContain('@media(max-width:700px)');
+ console.log('FLUID step section layout : 10');
  await expect(page.locator('#changeCount')).toContainText('1 responsive layout group');
+ console.log('FLUID step section layout : 11');
  const download=page.waitForEvent('download');
+ console.log('FLUID step section layout : 12');
  await page.locator('#exportBtn').click();
  console.log('FLUID checkpoint: export clicked');
  const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
@@ -3788,23 +3845,35 @@ test('section layout can be chosen directly on page with original mobile reading
  expect(html).toContain('<p>First reasoning step.</p><p>Second reasoning step.</p>');
  expect(html.indexOf('First reasoning step.')).toBeLessThan(html.indexOf('Third reasoning step.'));
  expect(html).not.toContain('moon-quick-layout');
+ console.log('FLUID step section layout : 13');
  await page.locator('#previewViewport').selectOption('mobile');
+ console.log('FLUID step section layout : 14');
  await expect.poll(async()=>page.frameLocator('#pageFrame')
   .locator('#project-section p').allTextContents()).toEqual([
     'First reasoning step.','Second reasoning step.','Third reasoning step.'
   ]);
+ console.log('FLUID step section layout : 15');
  await page.locator('#undoBtn').click();
+ console.log('FLUID step section layout : 16');
  await expect(page.locator('#changeCount')).not.toContainText('responsive layout group');
+ console.log('FLUID step section layout : 17');
  await page.locator('#redoBtn').click();
+ console.log('FLUID step section layout : 18');
  await expect(page.locator('#changeCount')).toContainText('1 responsive layout group');
+ console.log('FLUID step section layout : 19');
  await page.frameLocator('#pageFrame').locator('#project-section h2').click();
+ console.log('FLUID step section layout : 20');
  await toolbar.getByRole('button',{
   name:'Arrange selected section into responsive columns'
  }).click();
  dialog=page.frameLocator('#pageFrame').getByRole('dialog',{name:'Arrange selected section'});
+ console.log('FLUID step section layout : 21');
  await expect(dialog.getByRole('button',{name:'Remove layout'})).toBeEnabled();
+ console.log('FLUID step section layout : 22');
  await dialog.getByRole('button',{name:'Remove layout'}).click();
+ console.log('FLUID step section layout : 23');
  await expect(page.locator('#changeCount')).not.toContainText('responsive layout group');
+ console.log('FLUID step section layout : 24');
  await expect(page.locator('#exportBtn')).toBeDisabled();
 });
 
