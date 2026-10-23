@@ -3699,7 +3699,7 @@
   const FREE_CSS=[
     "html:has(.moon-free-object),body:has(.moon-free-object){overflow-x:visible!important}",
     "main:has(.moon-free-object),main:has(.moon-free-object) *:has(.moon-free-object){overflow:visible!important}",
-    ".moon-free-object{position:relative;z-index:3;box-sizing:border-box;width:var(--moon-free-width)!important;min-height:var(--moon-free-height)!important;max-width:none!important;overflow:visible!important}",
+    ".moon-free-object{transition:none!important;animation:none!important;position:relative;z-index:3;box-sizing:border-box;width:var(--moon-free-width)!important;min-height:var(--moon-free-height)!important;max-width:none!important;overflow:visible!important}",
     "img.moon-free-object{height:var(--moon-free-height)!important;object-fit:contain!important}",
     "@media(max-width:700px){html:not(.moon-free-mode) .moon-free-object{--moon-free-width:auto!important;--moon-free-height:auto!important;translate:none!important;max-width:100%!important;min-height:0!important;height:auto!important;position:static!important}html:not(.moon-free-mode) img.moon-free-object{max-width:100%!important;height:auto!important}}"
   ].join("\n");
