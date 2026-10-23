@@ -29,6 +29,7 @@
         <button type="button" id="resetBtn" class="secondary" disabled>Reset page</button>
         <button type="button" id="reviewBtn" class="secondary" disabled>Review changes</button>
         <button type="button" id="exportBtn" class="primary" disabled>Export edited HTML</button>
+        <button type="button" id="directPublishOpen" class="primary" disabled>Publish live</button>
       </div>
     </header>
 
@@ -369,6 +370,31 @@
     <div id="reviewChangeList" class="review-change-list"></div>
     <div id="reviewExportStatus" role="status" aria-live="polite"></div>
     <form method="dialog"><button type="submit" class="primary">Close review</button></form>
+  </dialog>
+  <dialog id="directPublishDialog" class="direct-publish-dialog" aria-labelledby="directPublishTitle">
+    <h2 id="directPublishTitle">Publish this page live</h2>
+    <p class="small-note">Commit the reviewed page to <strong>gmoon-code/gmoon-code.github.io</strong>, branch <strong>main</strong>. GitHub Pages then updates the public website. Only this page is changed.</p>
+    <p id="directPublishPage" class="direct-publish-page"></p>
+    <div class="direct-publish-credentials">
+      <label for="directGithubToken">GitHub fine-grained personal access token</label>
+      <input id="directGithubToken" type="password" autocomplete="off" spellcheck="false" placeholder="github_pat_…" aria-describedby="directTokenHelp">
+      <p id="directTokenHelp" class="small-note">First use only. Create a token limited to this repository with <strong>Contents: Read and write</strong>. The token stays in this tab's memory, is not saved in the website, and can be disconnected.</p>
+      <p><a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener noreferrer">Create a fine-grained GitHub token ↗</a></p>
+      <div class="direct-publish-actions">
+        <button type="button" id="directGithubConnect" class="secondary">Connect GitHub</button>
+        <button type="button" id="directGithubDisconnect" class="secondary" disabled>Disconnect</button>
+      </div>
+    </div>
+    <p id="directGithubStatus" class="small-note" role="status" aria-live="polite">Connect GitHub to publish directly.</p>
+    <label for="directPublishSummary">Describe this update</label>
+    <input id="directPublishSummary" maxlength="100" placeholder="Update Research page" autocomplete="off">
+    <label class="direct-publish-confirm"><input type="checkbox" id="directPublishApprove"> I reviewed the changes and want to update the public website.</label>
+    <p class="small-note">The editor checks that the live GitHub file has not changed since you began editing. New uploaded image files require a separate review and cannot be sent with this one-page action.</p>
+    <div class="direct-publish-actions">
+      <button type="button" id="directPublishConfirm" class="primary" disabled>Publish this page now</button>
+      <button type="button" id="directPublishClose" class="secondary">Close</button>
+    </div>
+    <div id="directPublishResult" role="status" aria-live="polite"></div>
   </dialog>
   <dialog id="noticeDialog" aria-labelledby="noticeTitle">
     <h2 id="noticeTitle">Editor notice</h2>
