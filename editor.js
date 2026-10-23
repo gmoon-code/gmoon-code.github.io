@@ -2068,9 +2068,19 @@
     const handle=doc.createElement("button");
     handle.id="moon-block-move-handle";handle.type="button";
     handle.textContent="⠿";
-    handle.title="Drag this original content block to a neighbouring position";
-    handle.setAttribute("aria-label","Drag selected content block. Keyboard users can use Move block up or Move block down in the inspector.");
+    handle.title="Drag or use Up/Down arrow keys to reorder this block";
+    handle.setAttribute("aria-label","Drag selected content block, or use Up and Down arrow keys to move it among eligible neighbouring blocks.");
     handle.style.cssText="position:fixed;z-index:2147483646;display:grid;place-items:center;width:30px;height:30px;border:2px solid #27654f;border-radius:5px;background:#fff;color:#174932;cursor:grab;touch-action:none;font:700 21px/1 system-ui;box-shadow:0 1px 6px #0004";
+    handle.addEventListener("keydown",event=>{
+      if(!["ArrowUp","ArrowDown"].includes(event.key))return;
+      event.preventDefault();event.stopPropagation();
+      const direction=event.key==="ArrowUp"?-1:1;
+      const candidate=blockMoveCandidate(state.selected);
+      if(!candidate?.keys[candidate.index+direction])return;
+      moveOriginalBlock(direction);
+      // Moving rerenders the iframe. Restore keyboard focus to the new grip.
+      state.frameDoc?.getElementById("moon-block-move-handle")?.focus({preventScroll:true});
+    });
     handle.addEventListener("click",event=>event.stopPropagation());
     handle.addEventListener("pointerdown",event=>{
       if(event.button!==0||state.blockPointer)return;
