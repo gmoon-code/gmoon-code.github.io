@@ -27,15 +27,15 @@ jobs:
         uses: actions/checkout@v4
 
       # Pin the exact reviewed cross-repository snapshots. Bump these
-      # commits deliberately whenever one of the other draft PRs changes.
-      - name: Check out Research Methods Studio draft
+      # commits deliberately whenever one of the other sites changes.
+      - name: Check out deployed Research Methods Studio
         uses: actions/checkout@v4
         with:
           repository: gmoon-code/research-methods
-          ref: 322fe1416634e27ea0ee62422c8f15b5399e1699
+          ref: 3eb53f6488cb5767e42933b515650ae109f7927d
           path: .integration/research-methods
 
-      - name: Check out Story Method draft
+      - name: Check out deployed Story Method
         uses: actions/checkout@v4
         with:
           repository: gmoon-code/memory-palace-u1-8
