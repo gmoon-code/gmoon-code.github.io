@@ -735,6 +735,19 @@ try {
     .evaluate(el=>el.style.marginTop),"");
   console.log("PASS: on-canvas space-above control and undo");
   await sections.frameLocator("#pageFrame").locator("main p").first().click();
+  await sections.frameLocator("#pageFrame").locator("#moon-quick-toolbar")
+    .getByRole("button",{name:"Increase space above selected block"}).click();
+  await sections.frameLocator("#pageFrame").locator("#moon-quick-toolbar")
+    .getByRole("button",{name:"Increase space below selected block"}).click();
+  await sections.frameLocator("#pageFrame").locator("#moon-quick-toolbar")
+    .getByRole("button",{name:"Restore original spacing above and below selected block"}).click();
+  assert.deepEqual(await sections.frameLocator("#pageFrame").locator("main p").first()
+    .evaluate(el=>[el.style.marginTop,el.style.marginBottom]),["",""]);
+  await sections.locator("#undoBtn").click();
+  assert.deepEqual(await sections.frameLocator("#pageFrame").locator("main p").first()
+    .evaluate(el=>[el.style.marginTop,el.style.marginBottom]),["10px","10px"]);
+  console.log("PASS: one-click reset for both spacing margins and undo");
+  await sections.frameLocator("#pageFrame").locator("main p").first().click();
   const spacingGrip=sections.frameLocator("#pageFrame").locator("#moon-spacing-grip");
   await spacingGrip.focus();
   await spacingGrip.press("ArrowDown");
