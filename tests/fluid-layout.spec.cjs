@@ -4782,10 +4782,10 @@ test('PowerPoint-style selection moves and resizes source text freely with Undo 
  const rect=await corner.boundingBox();
  await page.mouse.move(rect.x+rect.width/2,rect.y+rect.height/2);
  await page.mouse.down();
- await page.mouse.move(rect.x+rect.width/2-45,rect.y+rect.height/2-25,{steps:4});
+ await page.mouse.move(rect.x+rect.width/2+45,rect.y+rect.height/2+5,{steps:4});
  await page.mouse.up();
  const width=await target.evaluate(node=>Number.parseInt(node.style.width,10));
- expect(width).toBeGreaterThan(initialWidth+30);
+ expect(width).toBeLessThan(initialWidth-30);
  await expect(target).toHaveClass(/moon-free-object/);
  const download=page.waitForEvent('download');
  await page.locator('#exportBtn').click();
