@@ -702,6 +702,10 @@ try {
   const customArrangement=sections.frameLocator("#pageFrame")
     .getByRole("dialog",{name:"Arrange selected section"});
   await customArrangement.getByRole("slider",{name:"First column width in a twelve-column grid"}).fill("8");
+  assert.equal(await customArrangement.locator('div[aria-hidden="true"][style*="grid-template-columns"]')
+    .count(),1);
+  assert.match(await customArrangement.locator('div[aria-hidden="true"][style*="grid-template-columns"]')
+    .getAttribute("style"),/8fr 4fr/);
   await customArrangement.getByRole("button",{name:"Apply custom columns"}).click();
   assert.equal(await sections.locator("#directLayoutPreset").inputValue(),"custom");
   assert.match(await sections.frameLocator("#pageFrame").locator("#moon-responsive-group-layout")
