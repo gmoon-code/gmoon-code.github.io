@@ -35,6 +35,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Validate JavaScript syntax before installing browsers
+        run: |
+          node --check editor.js
+          node --check tests/editor-smoke.mjs
       - name: Install browser test dependency
         run: |
           npm install --no-save playwright@1.56.1
