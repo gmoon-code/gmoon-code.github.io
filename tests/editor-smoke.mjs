@@ -166,6 +166,20 @@ try {
     .first().click();
   assert.equal(await phoneEditor.locator("#selectionTag").textContent(),"p",
     "Tapping a real page paragraph must select the correct inspector field");
+  await phoneEditor.frameLocator("#pageFrame").locator("#moon-quick-toolbar")
+    .getByRole("button",{name:"Resize selected text block on the page"}).click();
+  const phoneSize=phoneEditor.frameLocator("#pageFrame")
+    .getByRole("dialog",{name:"Resize selected block"});
+  const sizeGeometry=await phoneSize.evaluate(el=>{
+    const rect=el.getBoundingClientRect(),w=el.ownerDocument.defaultView.innerWidth;
+    return {left:rect.left,right:rect.right,width:w};
+  });
+  assert(sizeGeometry.left>=0&&sizeGeometry.right<=sizeGeometry.width+1,
+    "Mobile width controls must remain within the actual preview frame");
+  await phoneEditor.screenshot({
+    path:"/tmp/editor-test-artifacts/academic-quick-size-mobile.png",fullPage:true
+  });
+  await phoneSize.getByRole("button",{name:"Cancel"}).click();
   assert.equal(await phoneEditor.locator("#exportBtn").isDisabled(),true,
     "Selecting content on a phone must never produce a draft change");
   await phoneEditor.screenshot({
@@ -419,6 +433,9 @@ try {
   // Width preview is reversible without creating a draft or checkpoint.
   await sourceToolbar.getByRole("button",{name:"Resize selected text block on the page"}).click();
   const sizePanel=blockControls.frameLocator("#pageFrame").getByRole("dialog",{name:"Resize selected block"});
+  await blockControls.screenshot({
+    path:"/tmp/editor-test-artifacts/academic-quick-size-desktop.png",fullPage:true
+  });
   const sizeSlider=sizePanel.getByRole("slider",{name:"Block width within section"});
   await sizeSlider.evaluate(el=>{
     el.value="65";el.dispatchEvent(new Event("input",{bubbles:true}));
