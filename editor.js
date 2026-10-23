@@ -1000,7 +1000,6 @@
     enableFreeCanvasForDrag();
     event.preventDefault();event.stopPropagation();
     const base=freeGeometry(sel);
-    checkpoint();
     freeGesture={id:event.pointerId,direction,
       startX:origin?.x??event.clientX,startY:origin?.y??event.clientY,
       base,added:sel.added,key:state.selected,index:state.selectedAddition};
@@ -1023,6 +1022,7 @@
     if(drag.key!==state.selected||drag.index!==state.selectedAddition)return;
     let dx=Math.round(event.clientX-drag.startX),dy=Math.round(event.clientY-drag.startY);
     if(dx===0&&dy===0)return;
+    if(!drag.moved)checkpoint();
     drag.moved=true;
     const next={...drag.base},d=drag.direction;
     if(d==="move"){
