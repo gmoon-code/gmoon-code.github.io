@@ -5016,7 +5016,7 @@ test('Selected image can resize with handles despite inline important width and 
  const resized=await target.boundingBox();
  expect(resized.width).toBeGreaterThan(original.width+90);
  expect(resized.width).toBeGreaterThan((await view.locator('#bounded').boundingBox()).width);
- const bottom=handles.getByRole('button',{name:'Resize selected object from bottom'});
+ const bottom=handles.getByRole('button',{name:'Resize selected object from bottom',exact:true});
  const bottomBox=await bottom.boundingBox();
  await page.mouse.move(bottomBox.x+bottomBox.width/2,bottomBox.y+bottomBox.height/2);
  await page.mouse.down();
