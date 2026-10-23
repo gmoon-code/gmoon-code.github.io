@@ -117,6 +117,7 @@
     $("undoBtn").disabled=!state.history.length;
     $("redoBtn").disabled=!state.redo.length;
     updatePublishControls();
+    updateDirectPublishControls();
   }
 
   function annotationId(i) {return "e"+i;}
@@ -3439,6 +3440,169 @@
     return next;
   }
 
+  // GitHub-only direct publishing. No server, OAuth client secret, or stored token.
+  // Fine-grained tokens are held only in this tab's JavaScript memory.
+  const directGithub={token:"",login:"",busy:false,lastPublished:""};
+  const DIRECT_REPO="gmoon-code/gmoon-code.github.io";
+  const DIRECT_API="https://api.github.com/repos/"+DIRECT_REPO+"/contents/";
+  function directGithubMessage(message){
+    $("directGithubStatus").textContent=message;
+  }
+  function updateDirectPublishControls(){
+    const moved=state.sectionOrder.some((id,i)=>id!==state.originalSections[i]);
+    const changed=state.dirty.size||moved||layoutGroups().length||
+      state.additions.length||state.removals.length||state.blockOrders.length;
+    const published=directGithub.lastPublished===state.page+":"+state.fingerprint;
+    $("directPublishOpen").disabled=!state.page||!changed||!!state.staleDraft||
+      directGithub.busy||published;
+    $("directGithubConnect").disabled=directGithub.busy;
+    $("directGithubDisconnect").disabled=directGithub.busy||!directGithub.token;
+    $("directGithubToken").disabled=directGithub.busy;
+    $("directPublishSummary").disabled=directGithub.busy;
+    $("directPublishApprove").disabled=directGithub.busy;
+    $("directPublishClose").disabled=directGithub.busy;
+    $("directPublishConfirm").disabled=directGithub.busy||!directGithub.token||
+      !$("directPublishApprove").checked||!$("directPublishSummary").value.trim()||
+      published||!!state.stagedMedia;
+  }
+  function openDirectPublish(){
+    if(!state.page||directGithub.busy)return;
+    try{buildExport();}
+    catch(error){notice(error.message,"Review your changes before publishing");return;}
+    const dialog=$("directPublishDialog");
+    $("directPublishPage").textContent="Page to publish: "+state.page;
+    $("directPublishSummary").value="Update "+state.page;
+    $("directPublishApprove").checked=false;
+    $("directPublishResult").replaceChildren();
+    directGithubMessage(state.stagedMedia?
+      "An image upload is staged. Export and review the new image separately before using direct publish.":
+      directGithub.token?"Connected to GitHub as "+directGithub.login+" for this tab.":
+      "Connect using a fine-grained token for this repository.");
+    updateDirectPublishControls();
+    dialog.showModal();
+  }
+  async function directGithubRequest(path,token,options={}){
+    const response=await fetch(path,{
+      ...options,cache:"no-store",
+      headers:{
+        "Accept":"application/vnd.github+json",
+        "X-GitHub-Api-Version":"2022-11-28",
+        "Authorization":"Bearer "+token,
+        ...(options.body?{"Content-Type":"application/json"}:{})
+      }
+    });
+    let data={};
+    try{data=await response.json()}catch{}
+    if(!response.ok){
+      const message=response.status===401?"Token invalid or expired.":
+        response.status===403?"GitHub denied this operation. Check Contents: Read and write and branch protection.":
+        response.status===404?"Repository or file not available to this token.":
+        response.status===409?"GitHub detected a conflicting update. Reload before publishing.":
+        response.status===422?"GitHub rejected this update. Check branch rules and the file content.":
+        "GitHub API returned HTTP "+response.status+".";
+      throw Error(message);
+    }
+    return data;
+  }
+  async function connectDirectGithub(){
+    if(directGithub.busy)return;
+    const token=$("directGithubToken").value.trim();
+    $("directGithubToken").value="";
+    if(!/^github_pat_[A-Za-z0-9_]+$/.test(token)){
+      directGithubMessage("Use a fine-grained personal access token beginning with github_pat_.");
+      return;
+    }
+    directGithub.busy=true;updateDirectPublishControls();
+    directGithubMessage("Checking your GitHub account…");
+    try{
+      const user=await directGithubRequest("https://api.github.com/user",token);
+      if(typeof user.login!=="string"||user.login.toLowerCase()!=="gmoon-code")
+        throw Error("Please use a token owned by the gmoon-code GitHub account.");
+      // A GET also checks access to the exact repository before any commit.
+      await directGithubRequest(DIRECT_API+"index.html?ref=main",token);
+      directGithub.token=token;
+      directGithub.login=user.login;
+      directGithubMessage("Connected as "+user.login+". Token is kept only until this tab closes or you disconnect.");
+    }catch(error){
+      directGithub.token="";directGithub.login="";
+      directGithubMessage(error.message||"Could not connect to GitHub.");
+    }finally{
+      directGithub.busy=false;updateDirectPublishControls();
+    }
+  }
+  function disconnectDirectGithub(){
+    if(directGithub.busy)return;
+    directGithub.token="";directGithub.login="";
+    $("directGithubToken").value="";
+    directGithubMessage("Disconnected. The token is no longer retained by this editor.");
+    updateDirectPublishControls();
+  }
+  function decodeGitHubContent(content){
+    if(typeof content!=="string")throw Error("GitHub did not provide file contents.");
+    const bytes=Uint8Array.from(atob(content.replace(/\s/g,"")),character=>character.charCodeAt(0));
+    return new TextDecoder("utf-8",{fatal:true}).decode(bytes);
+  }
+  function encodeGitHubContent(content){
+    const bytes=new TextEncoder().encode(content);
+    // Chunk conversion avoids argument-list limits for larger HTML pages.
+    let binary="";
+    for(let start=0;start<bytes.length;start+=8192)
+      binary+=String.fromCharCode(...bytes.subarray(start,start+8192));
+    return btoa(binary);
+  }
+  async function publishDirectGithub(){
+    if(directGithub.busy||!directGithub.token||!$("directPublishApprove").checked)return;
+    const summary=$("directPublishSummary").value.trim();
+    if(!summary||summary.length>100){directGithubMessage("Enter a short update description.");return;}
+    if(state.stagedMedia){directGithubMessage("Direct publishing of new image files is not supported.");return;}
+    const page=state.page,source=state.source,fingerprint=state.fingerprint;
+    if(!page||!/^[a-z0-9-]+\.html$/.test(page))return;
+    let content;
+    try{content=buildExport();}
+    catch(error){directGithubMessage(error.message);return;}
+    if(!window.confirm("Publish changes to the LIVE website?\n\n"+page+
+      "\n"+summary+"\n\nGitHub will commit this page directly to main. This is publicly visible after GitHub Pages deploys."))return;
+    directGithub.busy=true;updateDirectPublishControls();
+    directGithubMessage("Checking the current GitHub version of "+page+"…");
+    const result=$("directPublishResult");result.replaceChildren();
+    try{
+      const file=await directGithubRequest(DIRECT_API+page+"?ref=main",directGithub.token);
+      if(file.type!=="file"||typeof file.sha!=="string"||file.encoding!=="base64")
+        throw Error("GitHub returned an unexpected file. No changes were published.");
+      if(decodeGitHubContent(file.content)!==source)
+        throw Error("The page has changed on GitHub since this draft began. Export your changes, refresh the website, and reconcile them before publishing. Nothing was overwritten.");
+      if(state.page!==page||state.source!==source||state.fingerprint!==fingerprint||
+        buildExport()!==content)
+        throw Error("The editor changed during the publication check. Review and try again.");
+      directGithubMessage("Verified source. Committing the reviewed page to GitHub…");
+      const response=await directGithubRequest(DIRECT_API+page,directGithub.token,{
+        method:"PUT",
+        body:JSON.stringify({message:"Website editor: "+summary,
+          content:encodeGitHubContent(content),sha:file.sha,branch:"main"})
+      });
+      const commit=response.commit?.sha;
+      if(typeof commit!=="string"||!/^[a-f0-9]{40}$/.test(commit))
+        throw Error("GitHub responded without a verifiable commit. Check the repository before retrying.");
+      directGithub.lastPublished=page+":"+fingerprint;
+      directGithubMessage("Committed to GitHub. GitHub Pages may still be deploying the new version.");
+      const link=document.createElement("a");
+      link.href="https://github.com/"+DIRECT_REPO+"/commit/"+commit;
+      link.target="_blank";link.rel="noopener noreferrer";
+      link.textContent="View published GitHub commit ↗";
+      const live=document.createElement("a");
+      live.href="https://gmoon-code.github.io/"+page;
+      live.target="_blank";live.rel="noopener noreferrer";
+      live.textContent="Check the live page ↗";
+      const spacer=document.createTextNode("  ·  ");
+      result.append(link,spacer,live);
+      $("editorSaveStatus").textContent="GitHub commit created · Pages deployment pending";
+    }catch(error){
+      directGithubMessage(error.message||"Publication failed. No success was confirmed.");
+    }finally{
+      directGithub.busy=false;updateDirectPublishControls();
+    }
+  }
+
   async function connectPublisher() {
     if(!publisherConfigured()) return;
     const nonce=new Uint8Array(24);
@@ -4492,6 +4656,17 @@
       renderMediaResults((state.mediaAssets||[]).filter(item=>
         (item.path+" "+item.description).toLowerCase().includes(query)));
     });
+    $("directPublishOpen").addEventListener("click",openDirectPublish);
+    $("directGithubConnect").addEventListener("click",connectDirectGithub);
+    $("directGithubDisconnect").addEventListener("click",disconnectDirectGithub);
+    $("directPublishConfirm").addEventListener("click",publishDirectGithub);
+    $("directPublishClose").addEventListener("click",()=>$("directPublishDialog").close());
+    $("directPublishSummary").addEventListener("input",updateDirectPublishControls);
+    $("directPublishApprove").addEventListener("change",updateDirectPublishControls);
+    $("directPublishDialog").addEventListener("cancel",event=>{
+      if(directGithub.busy)event.preventDefault();
+    });
+    window.addEventListener("pagehide",()=>{directGithub.token="";directGithub.login="";});
     $("publisherConnect").addEventListener("click",connectPublisher);
     $("publisherPropose").addEventListener("click",createPublisherProposal);
     $("publisherSummary").addEventListener("input",updatePublishControls);

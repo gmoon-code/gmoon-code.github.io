@@ -29,6 +29,7 @@
         <button type="button" id="resetBtn" class="secondary" disabled>Reset page</button>
         <button type="button" id="reviewBtn" class="secondary" disabled>Review changes</button>
         <button type="button" id="exportBtn" class="primary" disabled>Export edited HTML</button>
+        <button type="button" id="directPublishOpen" class="primary" disabled>Publish live</button>
       </div>
     </header>
 
@@ -91,7 +92,7 @@
           <h2>Editing</h2>
           <p class="sidebar-help">Click a heading, paragraph, image, caption, or link in the preview, or use Browse editable elements to navigate with the keyboard. Type directly on the selected text. Use the inspector to edit image descriptions and links.</p>
           <p class="sidebar-help">Keyboard shortcuts outside text fields: Alt+Shift+C toggles Focus canvas, / opens Find an element, Ctrl/⌘+Z undoes, Ctrl/⌘+Shift+Z or Ctrl+Y redoes. Ctrl/⌘+S saves your local draft without opening the browser Save dialog.</p>
-          <p class="sidebar-help">Edits remain in this browser until you export them or, after the private publisher is configured, explicitly submit them for GitHub review. Nothing is published automatically.</p>
+          <p class="sidebar-help">Edit freely in a local draft. Choose <strong>Publish live</strong> in the top bar to send a reviewed page directly to GitHub Pages with your GitHub token, or export HTML for manual review. Nothing publishes without confirmation.</p>
           <a href="index.html" class="editor-site-link">View public website <span aria-hidden="true">↗</span></a>
         </div>
         <div class="sidebar-section">
@@ -339,8 +340,11 @@
           <p id="addedBlockStatus" class="small-note" role="status" aria-live="polite">These changes remain in the browser until exported or reviewed.</p>
         </div>
         <div class="inspector-footer">
-          <h3>Propose changes</h3>
-          <p>Connect your authorized GitHub account to create a draft pull request. Nothing is published automatically.</p>
+          <h3>Publish your edits</h3>
+          <p>After editing, choose <strong>Publish live</strong> in the top bar. Connect a fine-grained GitHub token for this repository, review the change, and confirm publication. No hosting provider or publishing server is needed.</p>
+          <details>
+            <summary>Legacy private review service (not configured)</summary>
+            <p class="small-note">This optional pull-request integration remains disabled until a separate private service is configured.</p>
           <p id="publisherStatus" role="status" aria-live="polite" class="publisher-status">GitHub publishing is not configured. Export HTML remains available.</p>
           <div class="inspector-group">
             <button type="button" id="publisherConnect" class="secondary" disabled>Connect GitHub</button>
@@ -349,7 +353,8 @@
             <button type="button" id="publisherPropose" class="primary" disabled>Create draft pull request</button>
             <div id="publisherResult" aria-live="polite"></div>
           </div>
-          <p class="small-note">The editor only submits changes after you review and confirm them. Publishing requires a separately configured private service.</p>
+          <p class="small-note">Use the Publish live button above for direct GitHub publishing. The legacy review service is optional.</p>
+          </details>
         </div>
       </aside>
     </div>
@@ -369,6 +374,31 @@
     <div id="reviewChangeList" class="review-change-list"></div>
     <div id="reviewExportStatus" role="status" aria-live="polite"></div>
     <form method="dialog"><button type="submit" class="primary">Close review</button></form>
+  </dialog>
+  <dialog id="directPublishDialog" class="direct-publish-dialog" aria-labelledby="directPublishTitle">
+    <h2 id="directPublishTitle">Publish this page live</h2>
+    <p class="small-note">Commit the reviewed page to <strong>gmoon-code/gmoon-code.github.io</strong>, branch <strong>main</strong>. GitHub Pages then updates the public website. Only this page is changed.</p>
+    <p id="directPublishPage" class="direct-publish-page"></p>
+    <div class="direct-publish-credentials">
+      <label for="directGithubToken">GitHub fine-grained personal access token</label>
+      <input id="directGithubToken" type="password" autocomplete="off" spellcheck="false" placeholder="github_pat_…" aria-describedby="directTokenHelp">
+      <p id="directTokenHelp" class="small-note">First use only. Create a token limited to this repository with <strong>Contents: Read and write</strong>. The token stays in this tab's memory, is not saved in the website, and can be disconnected.</p>
+      <p><a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener noreferrer">Create a fine-grained GitHub token ↗</a></p>
+      <div class="direct-publish-actions">
+        <button type="button" id="directGithubConnect" class="secondary">Connect GitHub</button>
+        <button type="button" id="directGithubDisconnect" class="secondary" disabled>Disconnect</button>
+      </div>
+    </div>
+    <p id="directGithubStatus" class="small-note" role="status" aria-live="polite">Connect GitHub to publish directly.</p>
+    <label for="directPublishSummary">Describe this update</label>
+    <input id="directPublishSummary" maxlength="100" placeholder="Update Research page" autocomplete="off">
+    <label class="direct-publish-confirm"><input type="checkbox" id="directPublishApprove"> I reviewed the changes and want to update the public website.</label>
+    <p class="small-note">The editor checks that the live GitHub file has not changed since you began editing. New uploaded image files require a separate review and cannot be sent with this one-page action.</p>
+    <div class="direct-publish-actions">
+      <button type="button" id="directPublishConfirm" class="primary" disabled>Publish this page now</button>
+      <button type="button" id="directPublishClose" class="secondary">Close</button>
+    </div>
+    <div id="directPublishResult" role="status" aria-live="polite"></div>
   </dialog>
   <dialog id="noticeDialog" aria-labelledby="noticeTitle">
     <h2 id="noticeTitle">Editor notice</h2>
