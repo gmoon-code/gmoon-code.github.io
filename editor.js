@@ -541,12 +541,13 @@
     const added=event.target.closest("[data-editor-added-index]");
     if(added){
       selectAddedBlock(Number(added.getAttribute("data-editor-added-index")));
+      enableFreeCanvasForDrag();
       return;
     }
     const node=event.target.closest("[data-editor-key]");
     if (!node) return;
     selectElement(node);
-    if (TEXT_TAGS.has(node.tagName)) node.focus({preventScroll:true});
+    enableFreeCanvasForDrag();
   }
 
   function onPreviewDoubleClick(event){
@@ -3702,9 +3703,9 @@
   const FREE_CSS=[
     "html:has(.moon-free-object),body:has(.moon-free-object){overflow-x:visible!important}",
     "main:has(.moon-free-object),main:has(.moon-free-object) *:has(.moon-free-object){overflow:visible!important}",
-    ".moon-free-object{transition:none!important;animation:none!important;position:relative;z-index:3;box-sizing:border-box;width:var(--moon-free-width)!important;min-height:var(--moon-free-height)!important;max-width:none!important;overflow:visible!important}",
+    ".moon-free-object{transition:none!important;animation:none!important;position:relative;z-index:3;box-sizing:border-box;width:var(--moon-free-width)!important;min-width:var(--moon-free-width)!important;flex:none!important;min-height:var(--moon-free-height)!important;max-width:none!important;overflow:visible!important}",
     "img.moon-free-object{height:var(--moon-free-height)!important;object-fit:contain!important}",
-    "@media(max-width:700px){html:not(.moon-free-mode) .moon-free-object{--moon-free-width:auto!important;--moon-free-height:auto!important;translate:none!important;max-width:100%!important;min-height:0!important;height:auto!important;position:static!important}html:not(.moon-free-mode) img.moon-free-object{max-width:100%!important;height:auto!important}}"
+    "@media(max-width:700px){html:not(.moon-free-mode) .moon-free-object{--moon-free-width:auto!important;--moon-free-height:auto!important;translate:none!important;min-width:0!important;flex:initial!important;max-width:100%!important;min-height:0!important;height:auto!important;position:static!important}html:not(.moon-free-mode) img.moon-free-object{max-width:100%!important;height:auto!important}}"
   ].join("\n");
   function freePositionValid(p){return !!p&&typeof p==="object"&&!Array.isArray(p)&&
     Object.keys(p).length===4&&["x","y","width","height"].every(k=>Number.isInteger(p[k]))&&
