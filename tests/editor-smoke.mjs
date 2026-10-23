@@ -497,6 +497,16 @@ try {
   assert.deepEqual(await blockControls.frameLocator("#pageFrame").locator("main p").allTextContents(),
     ["First movable paragraph.","Second movable paragraph."]);
   await blockControls.frameLocator("#pageFrame").locator("main p").first().click();
+  // Quick spacing edits must affect only the chosen block, remain Undo-able,
+  // and keep the original source page unmodified until reviewed.
+  await blockControls.frameLocator("#pageFrame").locator("#moon-quick-toolbar")
+    .getByRole("button",{name:"Increase space below selected block"}).click();
+  assert.equal(await blockControls.frameLocator("#pageFrame").locator("main p").first()
+    .evaluate(el=>el.style.marginBottom),"10px");
+  await blockControls.locator("#undoBtn").click();
+  assert.equal(await blockControls.frameLocator("#pageFrame").locator("main p").first()
+    .evaluate(el=>el.style.marginBottom),"");
+  await blockControls.frameLocator("#pageFrame").locator("main p").first().click();
   await blockControls.frameLocator("#pageFrame").locator("#moon-quick-toolbar")
     .getByRole("button",{name:"Duplicate selected original paragraph or heading"}).click();
   assert.equal(await blockControls.frameLocator("#pageFrame").locator("[data-editor-added-index]").count(),1);
