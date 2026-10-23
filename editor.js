@@ -943,6 +943,9 @@
     if(!bar||bar.hidden){panel.hidden=true;return;}
     panel.hidden=false;
     const b=bar.getBoundingClientRect();
+    // Measure against the actual iframe viewport. When the preview is narrow
+    // or short, the panel scrolls internally and its actions remain visible.
+    panel.style.maxHeight=Math.max(90,view.innerHeight-12)+"px";
     const width=panel.getBoundingClientRect().width||310;
     const height=panel.getBoundingClientRect().height||280;
     panel.style.left=Math.max(4,Math.min(view.innerWidth-width-4,b.left))+"px";
@@ -1061,7 +1064,8 @@
     });
     custom.append(customLabel,preview,slider,ratio,applyCustom);
     const controls=doc.createElement("div");
-    controls.style.cssText="display:flex;justify-content:space-between;gap:8px";
+    controls.style.cssText="display:flex;justify-content:space-between;gap:8px;"+
+      "position:sticky;top:0;z-index:1;padding:5px 0;background:inherit";
     const reset=doc.createElement("button");
     reset.type="button";reset.textContent="Remove layout";
     reset.disabled=!original;
@@ -1082,7 +1086,9 @@
       if(event.key==="Escape"){event.preventDefault();event.stopPropagation();dismiss();}
     });
     controls.append(reset,close);
-    panel.append(title,hint,choices,custom,controls);
+    // The destructive and dismiss actions must remain reachable even when
+    // the mobile preview clips the lower half of the arrangement dialog.
+    panel.append(title,controls,hint,choices,custom);
     doc.body.append(panel);
     positionQuickLayout();
     choices.querySelector("button")?.focus({preventScroll:true});
@@ -1111,6 +1117,7 @@
     const available=Math.max(0,view.innerWidth-10);
     composer.style.width=Math.min(330,available)+"px";
     composer.style.maxWidth=available+"px";
+    composer.style.maxHeight=Math.max(90,view.innerHeight-12)+"px";
     const width=composer.getBoundingClientRect().width||Math.min(320,available);
     const height=composer.getBoundingClientRect().height||280;
     const left=Math.max(5,Math.min(view.innerWidth-width-5,bounds.left));
@@ -1229,7 +1236,7 @@
     status.style.cssText="margin:0;font-size:12px";
     const row=doc.createElement("div");
     row.style.cssText="display:flex;gap:7px;justify-content:flex-end;"+
-      "position:sticky;bottom:0;padding-top:5px;background:inherit";
+      "position:sticky;top:0;z-index:1;padding:6px 0;background:inherit";
     const cancel=doc.createElement("button");
     cancel.type="button";cancel.textContent="Cancel";
     const submit=doc.createElement("button");
@@ -1300,7 +1307,9 @@
       }
     });
     row.append(cancel,submit);
-    form.append(heading,kindField,levelField,textField,hrefField,imageGroup,help,status,row);
+    // Keep Add / Cancel at the top of the scrolling dialog so they remain
+    // operable in short iframe previews, including after an image appears.
+    form.append(heading,row,kindField,levelField,textField,hrefField,imageGroup,help,status);
     doc.body.append(form);
     refresh();
     positionQuickComposer();
