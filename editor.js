@@ -1015,8 +1015,10 @@
     }
     if(selected.added){
       bar.append(make("Remove",removeAddedBlock,null,"Remove selected new block from page"));
-    }else if(sourceRemovalCandidate(state.selected)){
-      bar.append(make("Remove",removeSelectedSource,null,"Remove selected existing block from page"));
+    }else if(sourceRemovalCandidate(state.selected)||
+      (chosenImage&&state.dirty.has(state.selected)&&
+        state.stagedMedia?.key!==state.selected)){
+      bar.append(make("Remove",quickRemoveSelectedSource,null,"Remove selected existing block from page"));
     }
     bar.append(make("Details",()=>{
       setWorkspacePanel("inspector",true);
@@ -3481,6 +3483,36 @@
       html=html.slice(0,span.start)+html.slice(span.end);
     }
     return html;
+  }
+  function quickRemoveSelectedSource(){
+    if(sourceRemovalCandidate(state.selected))return removeSelectedSource();
+    // A common visual-editing workflow is to resize an original image and
+    // then remove it. Revert that image inside the working draft before
+    // requesting a verified source removal, preserving a single Undo step.
+    const key=state.selected,current=key&&getWorking(key);
+    if(current?.tagName!=="IMG"||!state.dirty.has(key)||
+       state.stagedMedia?.key===key)return;
+    const originalMarkup=state.original.get(key);
+    if(!originalMarkup)return;
+    if(!confirm("Remove this image from the page? Its prior edits will also be discarded. Undo can restore the image."))return;
+    const original=new DOMParser().parseFromString(originalMarkup,"text/html").body.firstElementChild;
+    if(original?.tagName!=="IMG")return;
+    checkpoint();
+    const replacement=original.cloneNode(true);
+    replacement.setAttribute("data-editor-key",key);
+    current.replaceWith(replacement);
+    state.dirty.delete(key);
+    const verified=sourceRemovalCandidate(key);
+    if(!verified){
+      replacement.replaceWith(current);
+      state.dirty.add(key);
+      notice("This image is involved in another change and cannot be removed safely.");
+      return;
+    }
+    state.removals.push(verified);
+    renderPreview();
+    saveDraft();
+    updateStatus("Image removed from draft · Undo to restore");
   }
   function removeSelectedSource(){
     const candidate=sourceRemovalCandidate(state.selected);
