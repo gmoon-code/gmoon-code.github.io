@@ -939,6 +939,7 @@
     }
     positionFreeSelection();
     positionQuickToolbar();
+    refreshFreePrecisionFields();
   }
   function positionFreeSelection(){
     const doc=state.frameDoc,frame=doc?.getElementById("moon-free-selection");
@@ -1020,10 +1021,95 @@
     if(next.x===base.x&&next.y===base.y)return;
     checkpoint();applyFreeGeometry(next);finishFreeGeometry();
   }
+  function refreshFreePrecisionFields(){
+    const panel=$("freePrecisionFields");
+    const selection=freeCanvasActive?freeSelected():null;
+    panel.hidden=!selection;
+    if(!selection)return;
+    const position=freeGeometry(selection);
+    for(const [field,dimension] of [
+      ["freePrecisionX","x"],["freePrecisionY","y"],
+      ["freePrecisionWidth","width"],["freePrecisionHeight","height"]]){
+      $(field).value=String(position[dimension]);
+    }
+    const saved=selection.added?
+      Boolean(state.additions[state.selectedAddition]?.freePosition):
+      selection.node.classList.contains(FREE_CLASS);
+    $("freePrecisionReset").disabled=!saved;
+  }
+  function applyFreePrecisionFields(){
+    const selection=freeCanvasActive?freeSelected():null;
+    if(!selection)return;
+    const geometry={};
+    for(const [field,dimension] of [
+      ["freePrecisionX","x"],["freePrecisionY","y"],
+      ["freePrecisionWidth","width"],["freePrecisionHeight","height"]]){
+      const value=$(field).value.trim();
+      geometry[dimension]=/^-?\\d+$/.test(value)?Number(value):NaN;
+    }
+    if(!freePositionValid(geometry)){
+      $("freePrecisionStatus").textContent=
+        "Enter whole-pixel values. X and Y can be -16000 to 16000; width 35–4000; height 18–4000.";
+      return;
+    }
+    const current=freeGeometry(selection);
+    const positioned=selection.added?
+      Boolean(state.additions[state.selectedAddition]?.freePosition):
+      selection.node.classList.contains(FREE_CLASS);
+    if(positioned&&["x","y","width","height"].every(k=>current[k]===geometry[k])){
+      $("freePrecisionStatus").textContent="The selected object already uses these measurements.";
+      return;
+    }
+    checkpoint();
+    if(!applyFreeGeometry(geometry)){undo();return;}
+    finishFreeGeometry();
+    refreshFreePrecisionFields();
+    $("freePrecisionStatus").textContent="Position and size applied. Undo restores the previous placement.";
+  }
+  function resetFreePrecision(){
+    const selection=freeCanvasActive?freeSelected():null;
+    if(!selection)return;
+    const positioned=selection.added?
+      Boolean(state.additions[state.selectedAddition]?.freePosition):
+      selection.node.classList.contains(FREE_CLASS);
+    if(!positioned)return;
+    checkpoint();
+    if(selection.added){
+      const index=state.selectedAddition;
+      const next={...state.additions[index]};
+      delete next.freePosition;
+      state.additions[index]=next;
+      try{validateParagraphAdditions(state.additions);}
+      catch(error){undo();notice(error.message,"Placement reset stopped");return;}
+      renderPreview(null,index);
+      scheduleDraft();
+      updateStatus("New block returned to its regular flow · Not published");
+    }else{
+      const key=state.selected,source=getWorking(key);
+      const original=new DOMParser().parseFromString(state.original.get(key)||"",
+        "text/html").body.firstElementChild;
+      if(!source||!original){undo();return;}
+      const defaultStyle=original.classList.contains(FREE_CLASS)?null:original.style;
+      for(const node of [source,selection.node]){
+        node.classList.remove(FREE_CLASS);
+        for(const name of ["translate","width","minHeight","maxWidth","boxSizing"])
+          node.style[name]=defaultStyle?.[name]||"";
+        if(!node.getAttribute("style")?.trim())node.removeAttribute("style");
+      }
+      updateDirty(key);
+      updateInspector(selection.node);
+      createQuickToolbar();
+      createFreeSelection();
+    }
+    refreshFreePrecisionFields();
+    $("freePrecisionStatus").textContent="Regular document flow restored. Undo can bring back the placement.";
+  }
+
   function createFreeSelection(){
     const doc=state.frameDoc;
     doc?.getElementById("moon-free-selection")?.remove();
     const sel=freeCanvasActive?freeSelected():null;
+    refreshFreePrecisionFields();
     if(!doc||!sel)return;
     const frame=doc.createElement("div");
     frame.id="moon-free-selection";
@@ -1093,6 +1179,7 @@
         state.frameDoc?.getElementById(id)?.remove();
       createFreeSelection();
     }
+    refreshFreePrecisionFields();
   }
 
   function positionQuickToolbar(){
@@ -5187,6 +5274,12 @@
     $("downloadStagedImage").addEventListener("click",downloadStagedImage);
     $("reviewBtn").addEventListener("click",reviewChanges);
     $("freeCanvasToggle").addEventListener("click",toggleFreeCanvas);
+    $("freePrecisionApply").addEventListener("click",applyFreePrecisionFields);
+    $("freePrecisionReset").addEventListener("click",resetFreePrecision);
+    for(const field of ["freePrecisionX","freePrecisionY","freePrecisionWidth","freePrecisionHeight"])
+      $(field).addEventListener("keydown",event=>{
+        if(event.key==="Enter"){event.preventDefault();applyFreePrecisionFields();}
+      });
     $("chooseExistingImage").addEventListener("click",()=>openMediaLibrary(false));
     $("chooseInsertImageBtn").addEventListener("click",()=>openMediaLibrary(true));
     $("chooseAddedImageBtn").addEventListener("click",()=>openMediaLibrary("added"));
