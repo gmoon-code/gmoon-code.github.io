@@ -616,6 +616,13 @@ try {
   await addedResize.press("End");
   assert.equal(await inline.locator("#addedBlockWidth").inputValue(),"100");
   console.log("PASS: keyboard resize of newly inserted text");
+  // A single addition has no sibling at its anchor, so arrow moves are no-ops.
+  await inline.frameLocator("#pageFrame").locator("[data-editor-added-index]").first().click();
+  const addedMoveGrip=inline.frameLocator("#pageFrame").locator("#moon-added-block-move-handle");
+  await addedMoveGrip.focus();
+  await addedMoveGrip.press("ArrowDown");
+  assert.equal(await inline.frameLocator("#pageFrame").locator("[data-editor-added-index]").count(),1);
+  console.log("PASS: added-block keyboard move respects eligible sibling positions");
   console.log("INLINE: select restored addition to add another");
   await inline.frameLocator("#pageFrame").locator("[data-editor-added-index]").click();
   await inline.frameLocator("#pageFrame").locator("#moon-quick-toolbar")
