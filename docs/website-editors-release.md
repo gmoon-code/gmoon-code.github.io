@@ -4,7 +4,7 @@ This document covers the *editor interfaces* in the three connected websites. It
 
 ## Release candidates
 
-| Website | Draft PR | Editor behaviour |
+| Website | Review PR | Editor behaviour |
 | --- | --- | --- |
 | Ye Eun Moon academic website | [PR 2](https://github.com/gmoon-code/gmoon-code.github.io/pull/2) | Direct on-page edits, validated layout proposals, browser-local drafts, reviewed HTML export |
 | Research Methods Studio | [PR 11](https://github.com/gmoon-code/research-methods/pull/11) | Sign-in-protected Admin Workspace and visual guidance editing with the existing review/publishing pipeline |
@@ -24,7 +24,9 @@ These static editor pages and the directory may be publicly viewable. A `noindex
 - [ ] Download and inspect current desktop and mobile screenshots from the GitHub Actions artifacts. Confirm visible toolbars, keyboard focus, no off-screen forms, clean light/dark previews, and legible links.
 - [ ] Review that public student content, the academic website's source pages, and canonical journey JSON files are not changed by these PRs. Compare each PR file list to `main`.
 - [ ] Review the passing **negative authentication test** for signed-out users and expired/unverified stored sessions on the exact Research Methods Studio PR head; this test blocks external network calls and never authenticates as an administrator.
-- [ ] Test the **real Research Methods Studio teacher/admin login** using an authorised account, including a *draft-only* guidance edit and preview. The automated tests simulate a session and cannot replace this check. Do not submit a live publish or rollback just to test the UI.
+- [ ] Verify the **existing live Research Methods Studio teacher/admin login** using an authorised account in a private browser session. Open the live `teacher.html` route, sign in, confirm the Admin Workspace opens, sign out and confirm the gate returns. This validates the unchanged production authentication route, **not the unmerged visual editing UI**. Never send a teacher access code through chat, issues, screenshots or test logs.
+- [ ] Inspect the new visual editing UI through the authenticated-session-independent Chromium previews and source/browser tests on the draft branch. The draft cannot use live production sign-in directly because the Worker origin allowlist and GitHub Pages setup do not serve arbitrary PR branches. For a true pre-merge authenticated draft test, create an approved **isolated staging Worker and Pages origin**, with separate credentials and data. Do not temporarily enable production CORS on localhost.
+- [ ] After an authorised merge of Research Methods Studio, immediately check its **new** visual guidance editor with a real authorised account, perform an in-memory draft-only edit and preview, then cancel without publishing. If sign-in, validation or editing fails, revert the visual editor release via the normal PR/deployment process. Do not submit a live publish or rollback solely to test the UI.
 - [ ] Confirm the academic publisher is **disabled** until the separate private publisher API and GitHub OAuth client are configured. The public `editor-publisher-config.js` intentionally has blank `apiBase` and `clientId`; no secrets belong in the public repository.
 - [ ] Confirm Story Method narrative changes remain browser-local, that a downloaded JSON proposal preserves protected science and checkpoint fields, and that its editor cannot write to GitHub.
 - [ ] Preserve the exact tested commit SHAs and a clean copy of `main` before merge. Ensure any browser-local draft that should survive is exported to a separate file.
@@ -32,7 +34,7 @@ These static editor pages and the directory may be publicly viewable. A `noindex
 ## Staged publication order
 
 1. Merge the Story Method draft PR after its full curriculum QA and editor smoke tests succeed. `pages.yml` deploys **only after successful Memory Palace QA on `main`**, from the exact tested commit. Wait for the production verification job before proceeding. Do not change any frozen curriculum text as part of this editor release.
-2. Merge the Research Methods Studio PR after its browser smoke test and the authorised login review. Confirm its `editor.html` redirects to the established teacher sign-in and the Admin Workspace loads under an actual authorised session.
+2. Merge the Research Methods Studio PR only after its browser smoke test, passing signed-out session tests, review of the unchanged production sign-in on the **current live site**, and release authorisation. Confirm its `editor.html` redirects to teacher sign-in. Immediately after GitHub Pages deploys the new UI, perform the new visual-guidance draft-only acceptance test using an authorised session; revert if it fails. Alternatively, complete that review before merging in an independently configured staging environment.
 3. Merge the academic website PR last, after its own four checks and a fresh cross-site integration pass. Confirm `/editors.html` shows all three links and the associated redirects. Verify that its proposed-editing controls stay local while private publisher settings are blank.
 4. Open the public editor routes in a clean browser on both desktop and phone. Test selection, cancel, export, reload, and app navigation. Do **not** publish example text or curriculum proposals.
 
