@@ -4586,3 +4586,86 @@ test('responsive divider does not appear for three columns or original unarrange
  await page.locator('#directLayoutRemove').click();
  await expect(page.frameLocator('#pageFrame').locator('#moon-column-resize-handle')).toHaveCount(0);
 });
+
+
+test('GitHub-only Publish Live commits an explicitly reviewed page with no stored token',async({page})=>{
+ const source='<!doctype html><html><head></head><body><main><section id="study"><h2>Research note</h2><p>Original text.</p></section></main></body></html>';
+ const token='github_pat_test_fine_grained_token',writes=[];
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',body:source}));
+ await page.route('https://api.github.com/**',async route=>{
+   const request=route.request(),url=new URL(request.url());
+   expect(request.headers().authorization).toBe('Bearer '+token);
+   if(url.pathname==='/user'){
+     await route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({login:'gmoon-code'})});
+   }else if(url.pathname.endsWith('/contents/index.html')){
+     await route.fulfill({status:200,contentType:'application/json',body:'{}'});
+   }else if(url.pathname.endsWith('/contents/about.html')&&request.method()==='GET'){
+     await route.fulfill({status:200,contentType:'application/json',
+       body:JSON.stringify({type:'file',sha:'original-blob-sha',encoding:'base64',
+         content:Buffer.from(source,'utf8').toString('base64')})});
+   }else if(url.pathname.endsWith('/contents/about.html')&&request.method()==='PUT'){
+     writes.push(JSON.parse(request.postData()));
+     await route.fulfill({status:200,contentType:'application/json',
+       body:JSON.stringify({commit:{sha:'a'.repeat(40)}})});
+   }else throw Error('Unexpected GitHub API request '+request.url());
+ });
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html',{waitUntil:'domcontentloaded'});
+ await expect(page.locator('#directPublishOpen')).toBeDisabled();
+ await page.frameLocator('#pageFrame').locator('#study h2').click();
+ await page.locator('#insertContentText').fill('Added via the editor');
+ await page.locator('#insertContentBtn').click();
+ await expect(page.locator('#directPublishOpen')).toBeEnabled();
+ await page.locator('#directPublishOpen').click();
+ await expect(page.locator('#directPublishConfirm')).toBeDisabled();
+ await page.locator('#directGithubToken').fill(token);
+ await page.locator('#directGithubConnect').click();
+ await expect(page.locator('#directGithubStatus')).toContainText('Connected as gmoon-code');
+ await expect(page.locator('#directGithubToken')).toHaveValue('');
+ const stored=await page.evaluate(()=>({
+   local:JSON.stringify(Object.entries(localStorage)),
+   session:JSON.stringify(Object.entries(sessionStorage))
+ }));
+ expect(stored.local).not.toContain(token);
+ expect(stored.session).not.toContain(token);
+ await page.locator('#directPublishApprove').check();
+ await expect(page.locator('#directPublishConfirm')).toBeEnabled();
+ page.once('dialog',dialog=>dialog.accept());
+ await page.locator('#directPublishConfirm').click();
+ await expect(page.locator('#directGithubStatus')).toContainText('Committed to GitHub');
+ expect(writes).toHaveLength(1);
+ expect(writes[0]).toMatchObject({branch:'main',sha:'original-blob-sha'});
+ expect(Buffer.from(writes[0].content,'base64').toString('utf8')).toContain('Added via the editor');
+ await expect(page.locator('#directPublishResult a').first()).toHaveAttribute('href',
+   'https://github.com/gmoon-code/gmoon-code.github.io/commit/'+ 'a'.repeat(40));
+ await expect(page.locator('#directPublishOpen')).toBeDisabled();
+ await page.locator('#directGithubDisconnect').click();
+ await expect(page.locator('#directGithubStatus')).toContainText('Disconnected');
+});
+
+test('GitHub-only publishing rejects changed GitHub source without a write',async({page})=>{
+ const source='<!doctype html><html><head></head><body><main><section id="study"><h2>Research note</h2><p>Original text.</p></section></main></body></html>';
+ let writes=0;
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',body:source}));
+ await page.route('https://api.github.com/**',async route=>{
+   const request=route.request(),url=new URL(request.url());
+   if(request.method()==='PUT'){writes++;throw Error('An outdated draft attempted to overwrite source');}
+   const data=url.pathname==='/user'?{login:'gmoon-code'}:
+     url.pathname.endsWith('/index.html')?{}:
+     {type:'file',sha:'newer-source',encoding:'base64',
+      content:Buffer.from(source.replace('Original text.','Someone else updated the page.'),'utf8').toString('base64')};
+   await route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(data)});
+ });
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html',{waitUntil:'domcontentloaded'});
+ await page.frameLocator('#pageFrame').locator('#study h2').click();
+ await page.locator('#insertContentText').fill('My locally drafted paragraph');
+ await page.locator('#insertContentBtn').click();
+ await page.locator('#directPublishOpen').click();
+ await page.locator('#directGithubToken').fill('github_pat_test_token');
+ await page.locator('#directGithubConnect').click();
+ await expect(page.locator('#directGithubStatus')).toContainText('Connected');
+ await page.locator('#directPublishApprove').check();
+ page.once('dialog',dialog=>dialog.accept());
+ await page.locator('#directPublishConfirm').click();
+ await expect(page.locator('#directGithubStatus')).toContainText('changed on GitHub');
+ expect(writes).toBe(0);
+});
