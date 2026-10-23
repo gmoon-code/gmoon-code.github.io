@@ -602,6 +602,22 @@
   }
   function handleEditorShortcuts(event){
     if(!state.doc||event.defaultPrevented)return false;
+    const typing=Boolean(event.target?.closest?.("input,textarea,select,[contenteditable='true'],[role='textbox']"));
+    // Alt+Shift+C toggles the editing panels without taking over browser
+    // Find or interfering with typing inside forms.
+    if(event.altKey&&event.shiftKey&&!event.ctrlKey&&!event.metaKey&&event.key.toLowerCase()==="c"&&!typing){
+      event.preventDefault();
+      $("toggleCanvasFocus").click();
+      return true;
+    }
+    // The slash key opens the existing page content finder from anywhere
+    // in the editor outside input fields. No source content is altered.
+    if(event.key==="/"&&!event.altKey&&!event.ctrlKey&&!event.metaKey&&!typing){
+      event.preventDefault();
+      if(!panelPreference.pages)setWorkspacePanel("pages",true);
+      $("pageFindQuery").focus();
+      return true;
+    }
     if(!(event.ctrlKey||event.metaKey)||event.altKey)return false;
     const key=event.key.toLowerCase();
     if(key==="s"&&!event.shiftKey){
