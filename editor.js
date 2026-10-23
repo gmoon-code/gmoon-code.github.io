@@ -852,6 +852,211 @@
     positionQuickProperties();
   }
 
+
+  // Free mode uses viewport-positioned selection controls without adding
+  // editor-only markup to the exported website HTML.
+  let freeCanvasActive=false,freeGesture=null;
+  function freeSelected(){
+    const sel=quickSelection();
+    if(!sel)return null;
+    const kind=sel.added?insertionKind(state.additions[state.selectedAddition]):sel.node.tagName.toLowerCase();
+    if(!["p","h1","h2","h3","h4","img","blockquote","li","heading","paragraph","image","link"].includes(kind))
+      return null;
+    return sel;
+  }
+  function freeGeometry(sel){
+    if(sel.added){
+      const saved=state.additions[state.selectedAddition]?.freePosition;
+      if(saved)return {...saved};
+    }else{
+      const source=getWorking(state.selected),style=source?.style;
+      if(style&&source.classList.contains(FREE_CLASS)){
+        const parts=/^(-?\d+)px\s+(-?\d+)px$/.exec(style.translate||"");
+        const width=parseInt(style.width,10),height=parseInt(style.minHeight,10);
+        if(parts&&freePositionValid({x:+parts[1],y:+parts[2],width,height}))
+          return {x:+parts[1],y:+parts[2],width,height};
+      }
+    }
+    const rect=sel.node.getBoundingClientRect();
+    return {x:0,y:0,width:Math.max(35,Math.min(4000,Math.round(rect.width))),
+      height:Math.max(18,Math.min(4000,Math.round(rect.height)))};
+  }
+  function applyFreeGeometry(geometry){
+    if(!freePositionValid(geometry))return false;
+    const sel=freeSelected();if(!sel)return false;
+    const doc=state.frameDoc;
+    if(!doc.getElementById("moon-free-position-css")){
+      const style=doc.createElement("style");style.id="moon-free-position-css";
+      style.textContent=FREE_CSS;doc.head.append(style);
+    }
+    if(sel.added){
+      const i=state.selectedAddition,item=state.additions[i];
+      const next={...item,freePosition:{...geometry}};
+      state.additions[i]=next;
+      sel.node.classList.add(FREE_CLASS);
+      sel.node.style.cssText=addedBlockStyle(next);
+      const image=sel.node.querySelector("img");
+      if(image)image.style.width="100%";
+    }else{
+      const source=getWorking(state.selected);
+      if(!source)return false;
+      for(const node of [source,sel.node]){
+        node.classList.add(FREE_CLASS);
+        node.style.translate=geometry.x+"px "+geometry.y+"px";
+        node.style.width=geometry.width+"px";
+        node.style.minHeight=geometry.height+"px";
+        node.style.maxWidth="none";
+        node.style.boxSizing="border-box";
+      }
+    }
+    positionFreeSelection();
+    return true;
+  }
+  function finishFreeGeometry(){
+    if(state.selectedAddition!==null){
+      try{validateParagraphAdditions(state.additions)}catch(error){
+        undo();notice(error.message,"Position not saved");return;
+      }
+      saveDraft();
+      updateStatus("Free-positioned content saved · Not published");
+    }else if(state.selected){
+      updateDirty(state.selected);
+    }
+    positionFreeSelection();
+    positionQuickToolbar();
+  }
+  function positionFreeSelection(){
+    const doc=state.frameDoc,frame=doc?.getElementById("moon-free-selection");
+    if(!frame)return;
+    const sel=freeCanvasActive?freeSelected():null;
+    if(!sel){frame.remove();return;}
+    const rect=sel.node.getBoundingClientRect(),view=doc.defaultView;
+    if(rect.right<0||rect.bottom<0||rect.left>view.innerWidth||rect.top>view.innerHeight){
+      frame.hidden=true;return;
+    }
+    frame.hidden=false;
+    frame.style.left=rect.left+"px";
+    frame.style.top=rect.top+"px";
+    frame.style.width=Math.max(1,rect.width)+"px";
+    frame.style.height=Math.max(1,rect.height)+"px";
+  }
+  function freeGestureStart(event,direction,handle){
+    const sel=freeSelected();
+    if(!sel||event.button!==0||freeGesture)return;
+    event.preventDefault();event.stopPropagation();
+    const base=freeGeometry(sel);
+    checkpoint();
+    freeGesture={id:event.pointerId,direction,startX:event.clientX,startY:event.clientY,
+      base,added:sel.added,key:state.selected,index:state.selectedAddition};
+    handle.setPointerCapture(event.pointerId);
+  }
+  function freeGestureMove(event){
+    const drag=freeGesture;if(!drag||drag.id!==event.pointerId)return;
+    event.preventDefault();event.stopPropagation();
+    if(drag.key!==state.selected||drag.index!==state.selectedAddition)return;
+    let dx=Math.round(event.clientX-drag.startX),dy=Math.round(event.clientY-drag.startY);
+    const next={...drag.base},d=drag.direction;
+    if(d==="move"){
+      next.x+=dx;next.y+=dy;
+    }else{
+      if(d.includes("w")){
+        dx=Math.min(dx,drag.base.width-35);
+        next.x+=dx;next.width-=dx;
+      }else if(d.includes("e"))next.width+=dx;
+      if(d.includes("n")){
+        dy=Math.min(dy,drag.base.height-18);
+        next.y+=dy;next.height-=dy;
+      }else if(d.includes("s"))next.height+=dy;
+    }
+    next.x=Math.max(-16000,Math.min(16000,next.x));
+    next.y=Math.max(-16000,Math.min(16000,next.y));
+    next.width=Math.max(35,Math.min(4000,next.width));
+    next.height=Math.max(18,Math.min(4000,next.height));
+    applyFreeGeometry(next);
+  }
+  function freeGestureEnd(event){
+    const drag=freeGesture;if(!drag||drag.id!==event.pointerId)return;
+    event.preventDefault();event.stopPropagation();
+    freeGesture=null;
+    if(event.type==="pointercancel")applyFreeGeometry(drag.base);
+    finishFreeGeometry();
+  }
+  function freeNudge(dx,dy){
+    const sel=freeSelected();if(!sel||!freeCanvasActive)return;
+    const base=freeGeometry(sel);
+    const next={...base,x:Math.max(-16000,Math.min(16000,base.x+dx)),
+      y:Math.max(-16000,Math.min(16000,base.y+dy))};
+    if(next.x===base.x&&next.y===base.y)return;
+    checkpoint();applyFreeGeometry(next);finishFreeGeometry();
+  }
+  function createFreeSelection(){
+    const doc=state.frameDoc;
+    doc?.getElementById("moon-free-selection")?.remove();
+    const sel=freeCanvasActive?freeSelected():null;
+    if(!doc||!sel)return;
+    const frame=doc.createElement("div");
+    frame.id="moon-free-selection";
+    frame.setAttribute("role","group");frame.setAttribute("aria-label","Free move and resize selected object");
+    frame.style.cssText="position:fixed;box-sizing:border-box;border:2px solid #2675dd;"+
+      "z-index:2147483645;pointer-events:none;overflow:visible;"+
+      "box-shadow:0 0 0 1px #fff9;touch-action:none";
+    const grip=(name,label,x,y,cursor)=>{
+      const button=doc.createElement("button");
+      button.type="button";button.dataset.freeDirection=name;
+      button.setAttribute("aria-label",label);
+      button.title=label;
+      button.style.cssText="position:absolute;left:"+x+";top:"+y+";"+
+        "transform:translate(-50%,-50%);width:14px;height:14px;"+
+        "padding:0;border:2px solid #fff;border-radius:3px;"+
+        "background:#2675dd;box-shadow:0 0 0 1px #225498;"+
+        "pointer-events:auto;touch-action:none;cursor:"+cursor;
+      button.addEventListener("click",e=>{e.preventDefault();e.stopPropagation();});
+      button.addEventListener("pointerdown",event=>freeGestureStart(event,name,button));
+      button.addEventListener("pointermove",freeGestureMove);
+      button.addEventListener("pointerup",freeGestureEnd);
+      button.addEventListener("pointercancel",freeGestureEnd);
+      frame.append(button);return button;
+    };
+    for(const [direction,label,x,y,cursor] of [
+      ["nw","top-left","0%","0%","nwse-resize"],["n","top","50%","0%","ns-resize"],
+      ["ne","top-right","100%","0%","nesw-resize"],["e","right","100%","50%","ew-resize"],
+      ["se","bottom-right","100%","100%","nwse-resize"],
+      ["s","bottom","50%","100%","ns-resize"],["sw","bottom-left","0%","100%","nesw-resize"],
+      ["w","left","0%","50%","ew-resize"]
+    ])grip(direction,"Resize selected object from "+label,x,y,cursor);
+    const move=grip("move","Drag selected object freely or use arrow keys","50%","0%","grab");
+    move.textContent="⠿ Move";
+    move.style.width="82px";move.style.height="27px";
+    move.style.top="-22px";move.style.borderRadius="6px";move.style.color="#fff";
+    move.style.font="600 12px system-ui";move.style.transform="translate(-50%,-100%)";
+    move.addEventListener("keydown",event=>{
+      if(!["ArrowLeft","ArrowRight","ArrowUp","ArrowDown"].includes(event.key))return;
+      event.preventDefault();event.stopPropagation();
+      const step=event.shiftKey?10:1;
+      freeNudge(event.key==="ArrowLeft"?-step:event.key==="ArrowRight"?step:0,
+        event.key==="ArrowUp"?-step:event.key==="ArrowDown"?step:0);
+      state.frameDoc?.querySelector('#moon-free-selection [data-free-direction="move"]')
+        ?.focus({preventScroll:true});
+    });
+    doc.body.append(frame);
+    positionFreeSelection();
+  }
+  function toggleFreeCanvas(){
+    freeCanvasActive=!freeCanvasActive;
+    const button=$("freeCanvasToggle");
+    button.setAttribute("aria-pressed",String(freeCanvasActive));
+    button.textContent=freeCanvasActive?"✓ Free move & resize":"Free move & resize";
+    if(state.frameDoc&&state.selected){
+      const node=state.frameDoc.querySelector('[data-editor-key="'+state.selected+'"]');
+      if(node&&TEXT_TAGS.has(node.tagName)){
+        if(freeCanvasActive)node.removeAttribute("contenteditable");
+        else node.setAttribute("contenteditable","true");
+      }
+    }
+    if(!freeCanvasActive){freeGesture=null;state.frameDoc?.getElementById("moon-free-selection")?.remove();}
+    else createFreeSelection();
+  }
+
   function positionQuickToolbar(){
     const doc=state.frameDoc,bar=doc?.getElementById("moon-quick-toolbar");
     if(!bar)return;
