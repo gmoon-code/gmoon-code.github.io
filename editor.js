@@ -1019,8 +1019,13 @@
     freeGesture={id:event.pointerId,direction,
       startX:origin?.x??event.clientX,startY:origin?.y??event.clientY,
       base,added:sel.added,key:state.selected,index:state.selectedAddition};
-    try{handle.setPointerCapture(event.pointerId);}
-    catch{/* Document-level pointer listeners still handle the gesture. */}
+    // Capturing a pointer only after its first move can cause a browser to
+    // lose the active gesture while editable text is being deactivated.
+    // Document-level listeners track delayed direct grabs without capture.
+    if(!origin){
+      try{handle.setPointerCapture(event.pointerId);}
+      catch{/* Document-level pointer listeners still handle the gesture. */}
+    }
   }
   function freeGestureMove(event){
     if(pendingCanvasDrag&&pendingCanvasDrag.id===event.pointerId&&!freeGesture){
