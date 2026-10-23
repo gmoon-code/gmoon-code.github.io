@@ -71,3 +71,19 @@ Select an original paragraph or heading, or a newly added text block, and choose
 ### Resize existing content by dragging
 
 Selected original text blocks now show a small corner resize handle. Dragging this handle adjusts the same source-safe percentage width setting as the on-page Size control, with a single Undo checkpoint per drag. The corner handle is mouse/touch-accessible; the Size range input and inspector remain the precise keyboard alternatives. Only the academic editor preview receives editor handles. Those controls are removed from reviewed HTML exports.
+
+
+## Publish academic website edits through GitHub only
+
+The academic editor at `editor.html` provides **Publish live** in the top bar. It can commit one reviewed existing HTML page directly to `main` through GitHub's REST Contents API, so GitHub Pages deploys the change using the repository's existing Pages configuration. It does not require Vercel, a private publisher server, an OAuth client, or a deployed backend.
+
+1. Create a [fine-grained GitHub personal access token](https://github.com/settings/personal-access-tokens/new) belonging to `gmoon-code`, restricted to the **gmoon-code.github.io** repository, with **Contents: Read and write** and a short expiry. Never share the token or place it in the repository.
+2. Open `editor.html`, make the page changes, and select **Publish live**. Enter the token in the dialog, then **Connect GitHub**. The editor verifies the account and repository.
+3. Review the selected page and update description, check the explicit approval box, then select **Publish this page now** and confirm the browser confirmation. The editor fetches the newest original HTML on `main` and refuses to publish if it differs from the file you started editing.
+4. Use the returned GitHub commit link and **Check the live page** link. GitHub Pages deployment may finish after the successful commit; refresh the public page once deployment completes. For further edits, reload the editor after GitHub Pages has served the new source.
+
+**Security boundaries:** This publisher operates entirely in the browser. The token is held in JavaScript memory for the tab only and is cleared from the password input after connection. Disconnect clears the in-memory token. Neither localStorage nor sessionStorage, exports, nor the GitHub commit contain the token. Using a short-expiry, single-repository token limits access; revoke it in GitHub Settings when finished if desired. GitHub branch protection and Contents API permissions still apply. The editor uses the original GitHub blob SHA when updating to protect against racing commits, alongside an exact HTML source comparison. There is no automatic publishing while typing.
+
+**Limitations:** This direct action publishes one existing HTML page per commit; staged new image uploads require a separate review workflow. Unsupported edits remain restricted by existing export validators. If Pages is configured for a branch other than `main` or for a custom Actions deployment workflow, confirm that source updates are deployed before relying on this control. Browser extensions and other scripts with access to the editor tab can create security risks for in-memory tokens, so use a trusted browser and avoid sharing the token.
+
+The old private pull-request publisher remains optional and unconfigured; it is not required for direct GitHub publishing.
