@@ -53,6 +53,25 @@ try {
   await page.screenshot({
     path:"/tmp/editor-test-artifacts/academic-canvas-focus-desktop.png",fullPage:true
   });
+  // Keyboard shortcuts restore workspace controls without introducing edits.
+  await page.keyboard.press("Alt+Shift+c");
+  assert.equal(await page.locator("#editorNavigation").isVisible(),true);
+  assert.equal(await page.locator("#editorSettings").isVisible(),true);
+  assert.equal(await page.locator("#toggleCanvasFocus").getAttribute("aria-pressed"),"false");
+  await page.keyboard.press("Alt+Shift+c");
+  assert.equal(await page.locator("#editorNavigation").isVisible(),false);
+  assert.equal(await page.locator("#editorSettings").isVisible(),false);
+  assert.equal(await page.locator("#toggleCanvasFocus").getAttribute("aria-pressed"),"true");
+  await page.keyboard.press("/");
+  assert.equal(await page.locator("#editorNavigation").isVisible(),true);
+  assert.equal(await page.locator("#pageFindQuery").evaluate(el=>document.activeElement===el),true);
+  await page.locator("#pageFindQuery").fill("research");
+  await page.locator("#pageFindQuery").press("/");
+  assert.match(await page.locator("#pageFindQuery").inputValue(),/research\\//);
+  await page.locator("#pageFindQuery").fill("");
+  await page.locator("#pageFindQuery").blur();
+  assert.equal(await page.locator("#exportBtn").isDisabled(),true);
+  console.log("PASS: keyboard canvas focus, page search and text-field safety");
   await page.frameLocator("#pageFrame").locator("main .home-kicker").first().click();
   await page.frameLocator("#pageFrame").locator("#moon-quick-toolbar")
     .getByRole("button",{name:"Focus selected block details in inspector"}).click();
