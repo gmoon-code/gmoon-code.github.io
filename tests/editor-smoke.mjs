@@ -765,6 +765,8 @@ try {
   await sections.locator("#undoBtn").click();
   assert.equal(await sections.frameLocator("#pageFrame").locator("main p").first()
     .evaluate(el=>el.style.marginBottom),"");
+  // Undo rebuilds the preview; selecting again recreates its contextual grip.
+  await sections.frameLocator("#pageFrame").locator("main p").first().click();
   assert.equal(await sections.frameLocator("#pageFrame").locator("#moon-spacing-grip").getAttribute("role"),"slider");
   assert.equal(await sections.frameLocator("#pageFrame").locator("#moon-spacing-grip").getAttribute("aria-valuemax"),"80");
   console.log("PASS: on-canvas spacing grip, keyboard adjustment and undo");
