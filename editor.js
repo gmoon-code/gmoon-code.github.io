@@ -1824,7 +1824,7 @@
       if(!state.selected||!getWorking(state.selected))return;
       event.preventDefault();event.stopPropagation();
       const current=getWorking(state.selected).style.maxWidth;
-      const percent=/^(?:[3-9]\\d|100)%$/.test(current)?parseInt(current,10):100;
+      const percent=/^(?:[3-9]\d|100)%$/.test(current)?parseInt(current,10):100;
       const delta=(event.shiftKey?20:5)*(event.key==="ArrowRight"?1:-1);
       const next=event.key==="Home"?30:event.key==="End"?100:
         Math.max(30,Math.min(100,Math.round((percent+delta)/5)*5));
