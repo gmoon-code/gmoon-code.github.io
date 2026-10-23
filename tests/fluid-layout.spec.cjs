@@ -4946,7 +4946,7 @@ test('Direct click selects a full set of handles and object drag escapes a clipp
    const hit=document.elementFromPoint(x,y);
    return {target:hit?.tagName,id:hit?.id,dir:hit?.dataset?.freeDirection,tag:el.tagName,r:{x:r.x,y:r.y,width:r.width,height:r.height}};
  }));
- await page.mouse.move(box.x+Math.min(75,box.width/2),box.y+box.height/2);
+ await target.hover({position:{x:Math.min(75,box.width/2),y:box.height/2}});
  await page.mouse.down();
  await page.mouse.move(box.x+Math.min(75,box.width/2)+165,box.y+box.height/2+24,{steps:7});
  await page.mouse.up();
@@ -4996,7 +4996,7 @@ test('Selected image can resize with handles despite inline important width and 
        captured:e.target.hasPointerCapture?.(e.pointerId)||false
      }),true);
  });
- await page.mouse.move(position.x+position.width/2,position.y+position.height/2);
+ await right.hover();
  await page.mouse.down();
  await page.mouse.move(position.x+position.width/2+115,position.y+position.height/2,{steps:6});
  await page.mouse.up();
