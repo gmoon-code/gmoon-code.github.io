@@ -3635,9 +3635,12 @@ test('inline composer rejects unsafe link or image sources, preserves valid exis
    '<img src="assets/example-photograph.webp" alt="Existing image">'+
    '</section></main></body></html>'}));
  await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ console.log('FLUID checkpoint: editor loaded');
  await page.frameLocator('#pageFrame').locator('main h2').click();
+ console.log('FLUID checkpoint: heading clicked');
  const toolbar=page.frameLocator('#pageFrame').locator('#moon-quick-toolbar');
  await toolbar.getByRole('button',{name:'Add new content after this block'}).click();
+ console.log('FLUID checkpoint: composer opened');
  let composer=page.frameLocator('#pageFrame').getByRole('dialog',{name:'Add content to the page'});
  await composer.getByLabel('Content type').selectOption('link');
  await composer.getByLabel('Text',{exact:true}).fill('Untrusted destination');
@@ -3660,6 +3663,7 @@ test('inline composer rejects unsafe link or image sources, preserves valid exis
  await expect(added.locator('img')).toHaveAttribute('src','assets/example-photograph.webp');
  const download=page.waitForEvent('download');
  await page.locator('#exportBtn').click();
+ console.log('FLUID checkpoint: export clicked');
  const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
  expect(html).toContain('alt="Existing fieldwork photograph"');
  expect(html).not.toContain('javascript:alert');
@@ -3676,9 +3680,12 @@ test('inline image gallery selects a site asset, provides preview and exports im
    '<img src="assets/editor-existing-example.webp" alt="Student investigation materials">'+
    '</section></main></body></html>'}));
  await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ console.log('FLUID checkpoint: editor loaded');
  await page.frameLocator('#pageFrame').locator('main h2').click();
+ console.log('FLUID checkpoint: heading clicked');
  const toolbar=page.frameLocator('#pageFrame').locator('#moon-quick-toolbar');
  await toolbar.getByRole('button',{name:'Add new content after this block'}).click();
+ console.log('FLUID checkpoint: composer opened');
  const composer=page.frameLocator('#pageFrame').getByRole('dialog',{name:'Add content to the page'});
  await composer.getByLabel('Content type').selectOption('image');
  const browse=composer.getByRole('button',{name:'Choose an existing website image from the image gallery'});
@@ -3707,6 +3714,7 @@ test('inline image gallery selects a site asset, provides preview and exports im
  await expect(added.locator('img')).toHaveAttribute('src','assets/editor-existing-example.webp');
  const download=page.waitForEvent('download');
  await page.locator('#exportBtn').click();
+ console.log('FLUID checkpoint: export clicked');
  const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
  expect(html).toContain('alt="Student-created model during a classroom investigation"');
  expect(html).toContain('<p>Preserved original context.</p>');
@@ -3752,6 +3760,7 @@ test('section layout can be chosen directly on page with original mobile reading
    '<p>First reasoning step.</p><p>Second reasoning step.</p>'+
    '<p>Third reasoning step.</p></section></main></body></html>'}));
  await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ console.log('FLUID checkpoint: editor loaded');
  const heading=page.frameLocator('#pageFrame').locator('#project-section h2');
  await heading.click();
  const toolbar=page.frameLocator('#pageFrame').locator('#moon-quick-toolbar');
@@ -3773,6 +3782,7 @@ test('section layout can be chosen directly on page with original mobile reading
  await expect(page.locator('#changeCount')).toContainText('1 responsive layout group');
  const download=page.waitForEvent('download');
  await page.locator('#exportBtn').click();
+ console.log('FLUID checkpoint: export clicked');
  const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
  expect(html).toContain('@media(max-width:700px)');
  expect(html).toContain('<p>First reasoning step.</p><p>Second reasoning step.</p>');
