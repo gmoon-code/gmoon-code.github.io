@@ -2332,7 +2332,7 @@
     handle.style.left=Math.max(0,Math.min(view.innerWidth-30,rr.left-21))+"px";
     handle.style.top=Math.max(0,Math.min(view.innerHeight-42,Math.max(0,rr.top+8)))+"px";
     handle.title="Drag to resize two columns · "+current.split+" / "+(12-current.split);
-    handle.setAttribute("aria-label","Resize column divider. Use the custom split slider for keyboard editing.");
+    handle.setAttribute("aria-label","Resize column divider: "+current.split+" of 12 columns on the left. Use Left or Right arrows, Shift for two-column steps, Home for minimum, End for maximum.");
   }
   function createColumnResizeHandle(){
     const doc=state.frameDoc;
@@ -2341,6 +2341,29 @@
     handle.id="moon-column-resize-handle";handle.type="button";
     handle.textContent="↔";
     handle.style.cssText="position:fixed;z-index:2147483645;display:grid;place-items:center;width:30px;height:42px;border:2px solid #27654f;border-radius:5px;background:#fff;color:#174932;cursor:ew-resize;touch-action:none;font:700 21px/1 system-ui;box-shadow:0 1px 6px #0004";
+    handle.addEventListener("keydown",event=>{
+      if(!["ArrowLeft","ArrowRight","Home","End"].includes(event.key))return;
+      const current=activeTwoColumnLayout();
+      if(!current)return;
+      event.preventDefault();event.stopPropagation();
+      const step=event.shiftKey?2:1;
+      const desired=event.key==="Home"?2:event.key==="End"?10:
+        Math.max(2,Math.min(10,current.split+(event.key==="ArrowRight"?step:-step)));
+      if(desired===current.split)return;
+      const candidate=resizeTwoColumnLayout(desired);
+      if(!candidate)return;
+      checkpoint();
+      state.responsiveGroups=candidate.proposed;
+      state.responsiveGroup=candidate.proposed.length===1?candidate.proposed[0]:null;
+      $("directLayoutPreset").value="custom";
+      $("directLayoutCustomField").hidden=false;
+      $("directLayoutCustomColumns").value=String(desired);
+      $("directLayoutCustomValue").textContent=desired+" / "+(12-desired)+" columns";
+      renderPreview(state.selected);
+      scheduleDraft();
+      updateStatus("Responsive columns resized · Not published");
+      state.frameDoc?.getElementById("moon-column-resize-handle")?.focus({preventScroll:true});
+    });
     handle.addEventListener("click",event=>event.stopPropagation());
     handle.addEventListener("pointerdown",event=>{
       if(event.button!==0||state.columnPointer)return;
