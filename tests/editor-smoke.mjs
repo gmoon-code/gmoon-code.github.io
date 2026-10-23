@@ -34,6 +34,31 @@ function checkNoPageErrors(where) {
 
 try {
   await ready();
+  // Desktop editing surfaces can be expanded independently, without
+  // modifying the source page or activating the publisher.
+  const originalCanvasWidth=await page.locator("#editorPreview")
+    .evaluate(el=>el.getBoundingClientRect().width);
+  await page.locator("#togglePagesPanel").click();
+  assert.equal(await page.locator("#editorNavigation").isVisible(),false);
+  assert.equal(await page.locator("#togglePagesPanel").getAttribute("aria-expanded"),"false");
+  assert((await page.locator("#editorPreview").evaluate(
+    el=>el.getBoundingClientRect().width))>originalCanvasWidth+150);
+  await page.locator("#toggleInspectorPanel").click();
+  assert.equal(await page.locator("#editorSettings").isVisible(),false);
+  assert.equal(await page.locator("#exportBtn").isDisabled(),true);
+  await page.reload({waitUntil:"domcontentloaded"});
+  await page.frameLocator("#pageFrame").locator("main").waitFor();
+  assert.equal(await page.locator("#editorNavigation").isVisible(),false);
+  assert.equal(await page.locator("#editorSettings").isVisible(),false);
+  await page.frameLocator("#pageFrame").locator("main .home-kicker").first().click();
+  await page.frameLocator("#pageFrame").locator("#moon-quick-toolbar")
+    .getByRole("button",{name:"Focus selected block details in inspector"}).click();
+  assert.equal(await page.locator("#editorSettings").isVisible(),true);
+  assert.equal(await page.locator("#selectionText")
+    .evaluate(el=>document.activeElement===el),true);
+  await page.locator("#togglePagesPanel").click();
+  assert.equal(await page.locator("#editorNavigation").isVisible(),true);
+  assert.equal(await page.locator("#exportBtn").isDisabled(),true);
   // Navigate original blocks without changing the source or creating tab traps.
   assert.equal(await page.locator("#browseNextElement").isEnabled(),true);
   await page.locator("#browseNextElement").click();
@@ -97,6 +122,8 @@ try {
   phoneEditor.on("pageerror",error=>phoneErrors.push(error.message));
   await phoneEditor.setViewportSize({width:390,height:844});
   await phoneEditor.goto(base+"/editor.html",{waitUntil:"domcontentloaded"});
+  assert.equal(await phoneEditor.locator("#togglePagesPanel").isVisible(),false,
+    "Phone editors must retain visible navigation and inspector");
   await phoneEditor.frameLocator("#pageFrame").locator("main .home-kicker")
     .first().waitFor();
   const phoneMetrics=await phoneEditor.evaluate(()=>{
@@ -364,6 +391,38 @@ try {
   checkNoPageErrors("all 17 portfolio pages");
   // A fast smoke check exercises the preview-only composer using the same
   // sandbox restrictions as the full browser regression suite.
+  // Contextual move/copy actions should work on actual source-backed
+  // neighbours and must participate in local Undo, not a remote publication.
+  const blockControls=await context.newPage();
+  blockControls.on("pageerror",error=>errors.push("block-controls: "+error.message));
+  await blockControls.route("**/about.html",route=>route.fulfill({
+    status:200,contentType:"text/html",
+    body:'<!doctype html><html><head></head><body><main><section>'+
+      '<p>First movable paragraph.</p><p>Second movable paragraph.</p>'+
+      '</section></main></body></html>'
+  }));
+  await blockControls.goto(base+"/editor.html?page=about.html",{waitUntil:"domcontentloaded"});
+  const originalBlocks=blockControls.frameLocator("#pageFrame").locator("main p");
+  await originalBlocks.first().click();
+  const sourceToolbar=blockControls.frameLocator("#pageFrame").locator("#moon-quick-toolbar");
+  assert.equal(await sourceToolbar.getByRole("button",{name:"Move selected block up"}).isDisabled(),true);
+  assert.equal(await sourceToolbar.getByRole("button",{name:"Move selected block down"}).isEnabled(),true);
+  await sourceToolbar.getByRole("button",{name:"Move selected block down"}).click();
+  assert.deepEqual(await blockControls.frameLocator("#pageFrame").locator("main p").allTextContents(),
+    ["Second movable paragraph.","First movable paragraph."]);
+  await blockControls.locator("#undoBtn").click();
+  assert.deepEqual(await blockControls.frameLocator("#pageFrame").locator("main p").allTextContents(),
+    ["First movable paragraph.","Second movable paragraph."]);
+  await blockControls.frameLocator("#pageFrame").locator("main p").first().click();
+  await blockControls.frameLocator("#pageFrame").locator("#moon-quick-toolbar")
+    .getByRole("button",{name:"Duplicate selected original paragraph or heading"}).click();
+  assert.equal(await blockControls.frameLocator("#pageFrame").locator("[data-editor-added-index]").count(),1);
+  assert.match(await blockControls.locator("#changeCount").textContent(),/1 added content block/);
+  await blockControls.locator("#undoBtn").click();
+  assert.equal(await blockControls.frameLocator("#pageFrame").locator("[data-editor-added-index]").count(),0);
+  assert.equal(await blockControls.locator("#exportBtn").isDisabled(),true);
+  await blockControls.close();
+
   const inline=await context.newPage();
   await inline.route("**/about.html",route=>route.fulfill({
     status:200,contentType:"text/html",
