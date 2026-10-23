@@ -491,6 +491,9 @@ try {
   assert.deepEqual(await blockControls.frameLocator("#pageFrame").locator("main p").allTextContents(),
     ["Second movable paragraph.","First movable paragraph."]);
   await blockControls.locator("#undoBtn").click();
+  // Undo renders a fresh sandboxed iframe. Wait for its actual source
+  // paragraphs before comparing their reading order.
+  await blockControls.frameLocator("#pageFrame").locator("main p").first().waitFor();
   assert.deepEqual(await blockControls.frameLocator("#pageFrame").locator("main p").allTextContents(),
     ["First movable paragraph.","Second movable paragraph."]);
   await blockControls.frameLocator("#pageFrame").locator("main p").first().click();
