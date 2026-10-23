@@ -50,6 +50,9 @@ try {
   await page.frameLocator("#pageFrame").locator("main").waitFor();
   assert.equal(await page.locator("#editorNavigation").isVisible(),false);
   assert.equal(await page.locator("#editorSettings").isVisible(),false);
+  await page.screenshot({
+    path:"/tmp/editor-test-artifacts/academic-canvas-focus-desktop.png",fullPage:true
+  });
   await page.frameLocator("#pageFrame").locator("main .home-kicker").first().click();
   await page.frameLocator("#pageFrame").locator("#moon-quick-toolbar")
     .getByRole("button",{name:"Focus selected block details in inspector"}).click();
@@ -410,6 +413,9 @@ try {
   const sourceToolbar=blockControls.frameLocator("#pageFrame").locator("#moon-quick-toolbar");
   assert.equal(await sourceToolbar.getByRole("button",{name:"Move selected block up"}).isDisabled(),true);
   assert.equal(await sourceToolbar.getByRole("button",{name:"Move selected block down"}).isEnabled(),true);
+  await blockControls.screenshot({
+    path:"/tmp/editor-test-artifacts/academic-canvas-block-actions.png",fullPage:true
+  });
   await sourceToolbar.getByRole("button",{name:"Move selected block down"}).click();
   assert.deepEqual(await blockControls.frameLocator("#pageFrame").locator("main p").allTextContents(),
     ["Second movable paragraph.","First movable paragraph."]);
