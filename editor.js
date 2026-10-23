@@ -713,6 +713,25 @@
     if(selected.added?insertionKind(state.additions[state.selectedAddition])!=="image":
       ["P","H1","H2","H3","H4","BLOCKQUOTE","LI"].includes(selected.node.tagName)){
       bar.append(make("Size",()=>openQuickSize(),null,"Resize selected text block on the page"));
+      // Small spatial adjustments are common while composing a page. Reuse
+      // the inspector's validated style and Undo history, one click per step.
+      const spacing=selected.added?addedBlockLayout(state.additions[state.selectedAddition]).spaceBelow:
+        (/^(\\d+)px$/.exec(getWorking(state.selected)?.style.marginBottom||"")?.[1]||0);
+      const currentGap=Math.max(0,Math.min(80,Number(spacing)||0));
+      for(const [label,step,description] of [
+        ["Gap −",-10,"Decrease space below selected block"],
+        ["Gap +",10,"Increase space below selected block"]
+      ]){
+        const control=make(label,()=>{
+          const next=Math.max(0,Math.min(80,currentGap+step));
+          if(next===currentGap)return;
+          if(selected.added)setAddedBlockLayout({spaceBelow:next},true);
+          else updateSelectedStyle("marginBottom",next+"px",[next+"px"]);
+        },null,description);
+        control.disabled=step<0?currentGap===0:currentGap===80;
+        control.title="Space below: "+currentGap+" px";
+        bar.append(control);
+      }
     }
     if(!selected.added){
       const movable=blockMoveCandidate(state.selected);
