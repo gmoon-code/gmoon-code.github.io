@@ -4622,6 +4622,7 @@ test('GitHub-only Publish Live commits an explicitly reviewed page with no store
  await page.locator('#directGithubToken').fill(token);
  await page.locator('#directGithubConnect').click();
  await expect(page.locator('#directGithubStatus')).toContainText('Connected as gmoon-code');
+ await expect(page.locator('#directGithubSetup')).toBeHidden();
  await expect(page.locator('#directGithubToken')).toHaveValue('');
  const stored=await page.evaluate(()=>({
    local:JSON.stringify(Object.entries(localStorage)),
@@ -4629,9 +4630,7 @@ test('GitHub-only Publish Live commits an explicitly reviewed page with no store
  }));
  expect(stored.local).not.toContain(token);
  expect(stored.session).not.toContain(token);
- await page.locator('#directPublishApprove').check();
  await expect(page.locator('#directPublishConfirm')).toBeEnabled();
- page.once('dialog',dialog=>dialog.accept());
  await page.locator('#directPublishConfirm').click();
  await expect(page.locator('#directGithubStatus')).toContainText('Committed to GitHub');
  expect(writes).toHaveLength(1);
@@ -4665,8 +4664,6 @@ test('GitHub-only publishing rejects changed GitHub source without a write',asyn
  await page.locator('#directGithubToken').fill('github_pat_test_token');
  await page.locator('#directGithubConnect').click();
  await expect(page.locator('#directGithubStatus')).toContainText('Connected');
- await page.locator('#directPublishApprove').check();
- page.once('dialog',dialog=>dialog.accept());
  await page.locator('#directPublishConfirm').click();
  await expect(page.locator('#directGithubStatus')).toContainText('changed on GitHub');
  expect(writes).toBe(0);
