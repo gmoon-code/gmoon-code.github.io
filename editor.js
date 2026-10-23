@@ -64,7 +64,7 @@
     selected:null,history:[],redo:[],fingerprint:"",loadToken:0,saveTimer:null,staleDraft:false,
     originalSections:[],sectionGroups:[],sectionOrder:[],mediaAssets:null,mediaPromise:null,
     stagedMedia:null,responsiveGroup:null,responsiveGroups:[],additions:[],resizeStart:null,imageSliderActive:false,
-    pageFindKeys:[],pageFindIndex:-1,mediaChooseInsert:false,removals:[],selectedAddition:null,blockOrders:[],columnPointer:null,blockPointer:null,addedPointer:null,addedWidthPointer:null,addedBlockSliderActive:false
+    pageFindKeys:[],pageFindIndex:-1,mediaChooseInsert:false,removals:[],selectedAddition:null,blockOrders:[],columnPointer:null,blockPointer:null,addedPointer:null,addedWidthPointer:null,sourceWidthPointer:null,addedBlockSliderActive:false
   };
 
   function hashText(text) {
@@ -375,6 +375,7 @@
         d.addEventListener("scroll",positionBlockMoveHandle,true);
         d.addEventListener("scroll",positionAddedMoveHandle,true);
         d.addEventListener("scroll",positionAddedWidthHandle,true);
+        d.addEventListener("scroll",positionSourceWidthHandle,true);
         d.addEventListener("scroll",positionQuickToolbar,true);
         d.defaultView.addEventListener("scroll",positionQuickSize);
         // Only viewport scrolls move the composer. Internal form scrolling
@@ -386,6 +387,7 @@
         d.defaultView.addEventListener("resize",positionBlockMoveHandle);
         d.defaultView.addEventListener("resize",positionAddedMoveHandle);
         d.defaultView.addEventListener("resize",positionAddedWidthHandle);
+        d.defaultView.addEventListener("resize",positionSourceWidthHandle);
         d.defaultView.addEventListener("resize",positionQuickToolbar);
         d.defaultView.addEventListener("resize",positionQuickSize);
         d.defaultView.addEventListener("resize",positionQuickComposer);
@@ -500,7 +502,7 @@
 
   function onPreviewClick(event) {
     // In-preview controls must never be interpreted as selected page content.
-    if(event.target.closest("#moon-quick-toolbar,#moon-quick-composer,#moon-quick-layout,#moon-quick-size"))return;
+    if(event.target.closest("#moon-quick-toolbar,#moon-quick-composer,#moon-quick-layout,#moon-quick-size,#moon-source-width-handle"))return;
     /* Stop navigation, but keep normal selection behaviour for editable text. */
     if (event.target.closest("a")) event.preventDefault();
     const added=event.target.closest("[data-editor-added-index]");
@@ -1211,11 +1213,13 @@
     state.frameDoc.getElementById("moon-column-resize-handle")?.remove();
     state.frameDoc.getElementById("moon-added-block-move-handle")?.remove();
     state.frameDoc.getElementById("moon-added-block-width-handle")?.remove();
+    state.frameDoc.getElementById("moon-source-width-handle")?.remove();
     node.setAttribute("data-editor-selected","");
     if (TEXT_TAGS.has(node.tagName)) node.setAttribute("contenteditable","true");
     updateInspector(node);
     updateBrowseControls();
     createQuickToolbar();
+    createSourceWidthHandle();
   }
 
 
@@ -1236,6 +1240,7 @@
     state.frameDoc.getElementById("moon-column-resize-handle")?.remove();
     state.frameDoc.getElementById("moon-added-block-move-handle")?.remove();
     state.frameDoc.getElementById("moon-added-block-width-handle")?.remove();
+    state.frameDoc.getElementById("moon-source-width-handle")?.remove();
     $("selectionDetails").hidden=true;
     $("selectionEmpty").hidden=true;
     $("selectionTag").textContent="New "+insertionKind(addition);
@@ -1486,12 +1491,12 @@
     updateInspector(preview);
   }
 
-  function updateSelectedStyle(property,value,allowed) {
+  function updateSelectedStyle(property,value,allowed,makeCheckpoint=true) {
     if(!state.selected||!(value===""||allowed.includes(value)))return;
     const actual=getWorking(state.selected);
     const rendered=state.frameDoc?.querySelector('[data-editor-key="'+state.selected+'"]');
     if(!actual||!rendered)return;
-    checkpoint();
+    if(makeCheckpoint)checkpoint();
     for(const node of [actual,rendered]) {
       node.style[property]=value;
       if(!node.getAttribute("style")?.trim())node.removeAttribute("style");
@@ -1499,6 +1504,7 @@
     updateDirty(state.selected);
     updateInspector(rendered);
     createQuickToolbar();
+    positionSourceWidthHandle();
   }
 
   function updateNumericInspectorStyle(property,field,unit,min,max){
@@ -1581,6 +1587,76 @@
     scheduleDraft();
     return true;
   }
+
+  // Drag the bottom-right corner of an original text block. One pointer
+  // gesture makes one history checkpoint, including continuous preview.
+  function positionSourceWidthHandle(){
+    const doc=state.frameDoc,h=doc?.getElementById("moon-source-width-handle");
+    if(!h||state.sourceWidthPointer)return;
+    const node=doc.querySelector('[data-editor-key="'+state.selected+'"]');
+    if(!node||state.selectedAddition!==null||!QUICK_SOURCE_TAGS.has(node.tagName)){
+      h.remove();return;
+    }
+    const rect=node.getBoundingClientRect(),view=doc.defaultView;
+    if(rect.bottom<0||rect.right<0||rect.top>view.innerHeight||rect.left>view.innerWidth){
+      h.hidden=true;return;
+    }
+    h.hidden=false;
+    h.style.left=Math.max(0,Math.min(view.innerWidth-28,rect.right-14))+"px";
+    h.style.top=Math.max(0,Math.min(view.innerHeight-28,rect.bottom-14))+"px";
+  }
+  function createSourceWidthHandle(){
+    const doc=state.frameDoc;
+    if(!doc||state.selectedAddition!==null||doc.getElementById("moon-source-width-handle"))return;
+    const node=doc.querySelector('[data-editor-key="'+state.selected+'"]');
+    if(!node||!QUICK_SOURCE_TAGS.has(node.tagName))return;
+    const h=doc.createElement("button");
+    h.id="moon-source-width-handle";h.type="button";
+    h.textContent="↘";h.title="Drag to resize selected text";
+    h.setAttribute("aria-label",
+      "Drag to adjust selected text width. Use Size or the Inspector for keyboard control.");
+    h.style.cssText="position:fixed;z-index:2147483645;width:28px;height:28px;"+
+      "border:2px solid #27654f;border-radius:5px;background:#fff;color:#174932;"+
+      "cursor:nwse-resize;touch-action:none;font:700 20px/20px system-ui;box-shadow:0 1px 6px #0004";
+    h.addEventListener("click",event=>event.stopPropagation());
+    h.addEventListener("pointerdown",event=>{
+      if(event.button!==0||state.sourceWidthPointer||!state.selected)return;
+      const preview=doc.querySelector('[data-editor-key="'+state.selected+'"]');
+      const work=getWorking(state.selected);
+      const parentWidth=preview?.parentElement?.getBoundingClientRect().width;
+      if(!work||!preview||!parentWidth)return;
+      event.preventDefault();event.stopPropagation();
+      checkpoint();
+      const specified=work.style.maxWidth.endsWith("%")?
+        Number.parseInt(work.style.maxWidth,10):100;
+      state.sourceWidthPointer={id:event.pointerId,key:state.selected,
+        startX:event.clientX,startPercent:Number.isFinite(specified)?specified:100,parentWidth};
+      h.setPointerCapture(event.pointerId);
+    });
+    h.addEventListener("pointermove",event=>{
+      const drag=state.sourceWidthPointer;
+      if(!drag||drag.id!==event.pointerId||state.selected!==drag.key)return;
+      event.preventDefault();
+      const desired=Math.round((drag.startPercent+
+        100*(event.clientX-drag.startX)/drag.parentWidth)/5)*5;
+      const width=Math.max(30,Math.min(100,desired));
+      updateSelectedStyle("maxWidth",width===100?"":width+"%",
+        [width===100?"":width+"%"],false);
+    });
+    const finish=event=>{
+      const drag=state.sourceWidthPointer;
+      if(!drag||drag.id!==event.pointerId)return;
+      state.sourceWidthPointer=null;
+      if(h.hasPointerCapture(event.pointerId))h.releasePointerCapture(event.pointerId);
+      positionSourceWidthHandle();
+      scheduleDraft();
+    };
+    h.addEventListener("pointerup",finish);
+    h.addEventListener("pointercancel",finish);
+    doc.body.append(h);
+    positionSourceWidthHandle();
+  }
+
   function positionAddedWidthHandle(){
     const doc=state.frameDoc,handle=doc?.getElementById("moon-added-block-width-handle");
     if(!handle||state.addedWidthPointer)return;
