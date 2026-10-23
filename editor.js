@@ -497,7 +497,7 @@
 
   function onPreviewClick(event) {
     // In-preview controls must never be interpreted as selected page content.
-    if(event.target.closest("#moon-quick-toolbar,#moon-quick-composer,#moon-quick-layout"))return;
+    if(event.target.closest("#moon-quick-toolbar,#moon-quick-composer,#moon-quick-layout,#moon-quick-size"))return;
     /* Stop navigation, but keep normal selection behaviour for editable text. */
     if (event.target.closest("a")) event.preventDefault();
     const added=event.target.closest("[data-editor-added-index]");
@@ -668,6 +668,7 @@
     if(!doc)return;
     doc.getElementById("moon-quick-composer")?.remove();
     doc.getElementById("moon-quick-layout")?.remove();
+    closeQuickSize(true);
     doc.getElementById("moon-quick-toolbar")?.remove();
     const selected=quickSelection();
     if(!selected)return;
@@ -703,6 +704,10 @@
         else updateSelectedStyle("textAlign",value,["left","center","right"]);
         createQuickToolbar();
       },current===value,"Align selected block "+label.toLowerCase()));
+    }
+    if(selected.added?insertionKind(state.additions[state.selectedAddition])!=="image":
+      ["P","H1","H2","H3","H4","BLOCKQUOTE","LI"].includes(selected.node.tagName)){
+      bar.append(make("Size",()=>openQuickSize(),null,"Resize selected text block on the page"));
     }
     if(!selected.added){
       const movable=blockMoveCandidate(state.selected);
@@ -750,6 +755,115 @@
   // A compact visual launcher for the existing source-verified layout
   // engine. Column definitions remain 12-column responsive groups, with
   // source order preserved and mobile always stacked.
+
+  // An isolated, reversible width preview. The working source is only
+  // modified when a preset is chosen or the slider is released.
+  let quickSizeDraft=null;
+  function closeQuickSize(restore=false){
+    const old=quickSizeDraft;
+    quickSizeDraft=null;
+    if(restore&&old?.node?.isConnected){
+      if(old.style===null)old.node.removeAttribute("style");
+      else old.node.setAttribute("style",old.style);
+    }
+    old?.panel?.remove();
+  }
+  function positionQuickSize(){
+    const doc=state.frameDoc,form=doc?.getElementById("moon-quick-size");
+    if(!form)return;
+    const bar=doc.getElementById("moon-quick-toolbar");
+    if(!bar||bar.hidden){form.hidden=true;return;}
+    form.hidden=false;
+    const w=doc.defaultView.innerWidth,b=bar.getBoundingClientRect();
+    const width=Math.min(300,Math.max(0,w-10));
+    form.style.width=width+"px";
+    const height=form.getBoundingClientRect().height||175;
+    form.style.left=Math.max(5,Math.min(w-width-5,b.left))+"px";
+    const below=b.bottom+7,above=b.top-height-7;
+    form.style.top=Math.max(5,Math.min(Math.max(5,doc.defaultView.innerHeight-height-5),
+      below+height<=doc.defaultView.innerHeight-5?below:above>=5?above:below))+"px";
+  }
+  function openQuickSize(){
+    const selected=quickSelection(),doc=state.frameDoc;
+    if(!selected||!doc)return;
+    closeQuickSize(true);
+    doc.getElementById("moon-quick-layout")?.remove();
+    doc.getElementById("moon-quick-composer")?.remove();
+    const added=selected.added,index=state.selectedAddition,key=state.selected;
+    const item=added?state.additions[index]:null;
+    if(added&&(!item||insertionKind(item)==="image"))return;
+    const original=added?null:getWorking(key);
+    if(!added&&!original)return;
+    const node=selected.node,dark=$("previewTheme").value==="dark";
+    const previous=added?addedBlockLayout(item).widthPercent:
+      /^([3-9]\\d|100)%$/.exec(original.style.maxWidth)?.[1];
+    const value=previous?Number(previous):100;
+    const form=doc.createElement("section");
+    form.id="moon-quick-size";form.setAttribute("role","dialog");
+    form.setAttribute("aria-label","Resize selected block");
+    form.setAttribute("aria-modal","false");
+    form.style.cssText="position:fixed;z-index:2147483646;display:grid;gap:10px;"+
+      "box-sizing:border-box;max-height:calc(100vh - 10px);overflow:auto;padding:13px;"+
+      "border:1px solid "+(dark?"#a7baa9":"#9cb7a9")+";border-radius:10px;"+
+      "background:"+(dark?"#1a1c1a":"#fff")+";color:"+
+      (dark?"#f5f7f5":"#183e30")+";box-shadow:0 7px 24px #0004;"+
+      "font:13px/1.4 system-ui,sans-serif";
+    const title=doc.createElement("strong");title.textContent="Resize this block";
+    const label=doc.createElement("label");
+    label.style.cssText="display:grid;gap:5px;font-weight:600";
+    label.textContent="Width within this section";
+    const output=doc.createElement("output");
+    output.id="moon-quick-size-value";output.textContent=value+"%";
+    const slider=doc.createElement("input");
+    slider.type="range";slider.min="30";slider.max="100";slider.step="5";
+    slider.value=String(value);slider.setAttribute("aria-label","Block width within section");
+    slider.setAttribute("aria-describedby",output.id);
+    slider.style.cssText="width:100%;accent-color:"+(dark?"#81cca0":"#276b4d");
+    label.append(output,slider);
+    const button=(label,handler)=>{
+      const b=doc.createElement("button");b.type="button";b.textContent=label;
+      b.style.cssText="border:1px solid "+(dark?"#78887d":"#b8cac0")+
+        ";padding:6px 9px;min-height:31px;border-radius:5px;"+
+        "background:transparent;color:inherit;font:600 12px system-ui;cursor:pointer";
+      b.addEventListener("click",event=>{event.preventDefault();event.stopPropagation();handler();});
+      return b;
+    };
+    const active=()=>quickSizeDraft?.panel===form&&node.isConnected&&
+      (added?state.selectedAddition===index:state.selected===key);
+    const preview=width=>{
+      if(!active())return;
+      if(added)node.style.width=width+"%";
+      else node.style.maxWidth=width+"%";
+      output.textContent=width+"%";
+      positionQuickSize();
+    };
+    const commit=width=>{
+      if(!active())return;
+      closeQuickSize(true);
+      if(added)setAddedBlockLayout({widthPercent:width},true);
+      else updateSelectedStyle("maxWidth",width===100?"":width+"%",[width===100?"":width+"%"]);
+    };
+    slider.addEventListener("input",()=>preview(Number(slider.value)));
+    slider.addEventListener("change",()=>commit(Number(slider.value)));
+    const presets=doc.createElement("div");presets.style.cssText="display:flex;flex-wrap:wrap;gap:6px";
+    for(const width of [100,75,50])presets.append(
+      button(width===100?"Full width":width+"%",()=>commit(width)));
+    const footer=doc.createElement("div");
+    footer.style.cssText="display:flex;align-items:center;justify-content:space-between;gap:9px";
+    const hint=doc.createElement("small");
+    hint.textContent="Drag to preview. Release to apply. Undo restores the previous width.";
+    hint.style.cssText="opacity:.85;line-height:1.3";
+    footer.append(hint,button("Cancel",()=>closeQuickSize(true)));
+    form.append(title,label,presets,footer);
+    form.addEventListener("keydown",event=>{
+      if(event.key==="Escape"){event.preventDefault();event.stopPropagation();closeQuickSize(true);}
+    });
+    doc.body.append(form);
+    quickSizeDraft={node,style:node.getAttribute("style"),panel:form};
+    positionQuickSize();
+    slider.focus({preventScroll:true});
+  }
+
   function positionQuickLayout(){
     const doc=state.frameDoc,panel=doc?.getElementById("moon-quick-layout");
     if(!panel)return;
