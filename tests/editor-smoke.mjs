@@ -467,6 +467,24 @@ try {
   await blockControls.locator("#undoBtn").click();
   assert.equal(await blockControls.frameLocator("#pageFrame").locator("main p").first()
     .evaluate(el=>el.style.maxWidth),"");
+  // The original text also has a direct corner handle, with a single Undo
+  // checkpoint across the entire physical pointer gesture.
+  await blockControls.frameLocator("#pageFrame").locator("main p").first().click();
+  const corner=blockControls.frameLocator("#pageFrame").locator("#moon-source-width-handle");
+  const position=await corner.boundingBox();
+  assert(position&&position.width>0,"Existing text must expose its resize grip");
+  await blockControls.mouse.move(position.x+position.width/2,position.y+position.height/2);
+  await blockControls.mouse.down();
+  await blockControls.mouse.move(position.x+position.width/2-185,
+    position.y+position.height/2,{steps:6});
+  await blockControls.mouse.up();
+  const draggedWidth=await blockControls.frameLocator("#pageFrame").locator("main p").first()
+    .evaluate(el=>el.style.maxWidth);
+  assert.match(draggedWidth,/^([3-9]\\d)%$/,"A drag should resize the existing text block");
+  await blockControls.locator("#undoBtn").click();
+  assert.equal(await blockControls.frameLocator("#pageFrame").locator("main p").first()
+    .evaluate(el=>el.style.maxWidth),"",
+    "One Undo must restore the entire source text resize drag");
   await blockControls.frameLocator("#pageFrame").locator("main p").first().click();
   await blockControls.frameLocator("#pageFrame").locator("#moon-quick-toolbar")
     .getByRole("button",{name:"Move selected block down"}).click();
