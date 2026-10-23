@@ -319,7 +319,10 @@
       const style=copy.createElement('style');style.id='moon-responsive-group-layout';
       style.textContent=css;copy.head.append(style);
     }
-    if(copy.querySelector("main ."+FREE_CLASS)||state.additions.some(item=>item.freePosition)){
+    // Install the canvas rules even before the first drag. Otherwise the
+    // live iframe has no .moon-free-object CSS until an expensive reload,
+    // and original image constraints can override an initial resize.
+    {
       const style=copy.createElement("style");style.id="moon-free-position-css";
       style.textContent=FREE_CSS;copy.head.append(style);
     }
