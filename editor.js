@@ -3942,7 +3942,7 @@
       state.additions.some(item=>item.freePosition);
     if(floating&&!next.includes('id="moon-free-position-css"')){
       if(!/<\/head>/i.test(next))throw Error("Cannot add responsive mobile behaviour");
-      next=next.replace(/<\/head>/i,'<style id="moon-free-position-css">\\n'+FREE_CSS+'\\n</style>\\n</head>');
+      next=next.replace(/<\/head>/i,'<style id="moon-free-position-css">\n'+FREE_CSS+'\n</style>\n</head>');
     }
     if (next===state.source) throw new Error("There are no exportable changes.");
     return next;
