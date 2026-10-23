@@ -709,7 +709,7 @@ try {
   await customArrangement.getByRole("button",{name:"Apply custom columns"}).click();
   assert.equal(await sections.locator("#directLayoutPreset").inputValue(),"custom");
   assert.match(await sections.frameLocator("#pageFrame").locator("#moon-responsive-group-layout")
-    .textContent(),/grid-column:9 \\/ span 4/);
+    .textContent(),"grid-column:9 / span 4");
   console.log("PASS: on-canvas custom responsive column proportions");
   // The existing draggable divider is also operable by keyboard.
   const divider=sections.frameLocator("#pageFrame").locator("#moon-column-resize-handle");
