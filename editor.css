@@ -185,6 +185,7 @@ dialog form { text-align:right;margin-top:20px; }
 .page-find-results button:hover,.page-find-results button:focus-visible { outline:2px solid #397d68;outline-offset:1px; }
 
 /* Collapsible desktop editing panels are UI-only, not page layout edits. */
+.workspace-toolbar,.workspace-tools{flex-wrap:wrap}
 .workspace-panel-toggle{width:auto;white-space:nowrap;font-size:12px;padding:7px 10px}
 .editor-content.is-pages-collapsed{grid-template-columns:minmax(0,1fr) 288px}
 .editor-content.is-inspector-collapsed{grid-template-columns:230px minmax(0,1fr)}
