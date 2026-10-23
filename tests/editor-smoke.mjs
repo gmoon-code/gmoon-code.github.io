@@ -761,6 +761,8 @@ try {
   await sections.frameLocator("#pageFrame").locator("#moon-quick-toolbar")
     .getByRole("button",{name:"Restore original spacing above and below selected block"}).click();
   await sections.frameLocator("#pageFrame").locator("main p").first().click();
+  // Flow-layout controls remain available when free positioning is disabled.
+  await sections.locator("#freeCanvasToggle").click();
   const spacingGrip=sections.frameLocator("#pageFrame").locator("#moon-spacing-grip");
   await spacingGrip.focus();
   await spacingGrip.press("ArrowDown");
