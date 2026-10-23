@@ -743,6 +743,8 @@ try {
   await sections.locator("#undoBtn").click();
   assert.equal(await sections.frameLocator("#pageFrame").locator("main p").first()
     .evaluate(el=>el.style.marginBottom),"");
+  assert.equal(await sections.frameLocator("#pageFrame").locator("#moon-spacing-grip").getAttribute("role"),"slider");
+  assert.equal(await sections.frameLocator("#pageFrame").locator("#moon-spacing-grip").getAttribute("aria-valuemax"),"80");
   console.log("PASS: on-canvas spacing grip, keyboard adjustment and undo");
   // An interrupted drag must restore its original value, while an ordinary
   // drag commits a local draft. Dispatch pointer events to exercise both.
