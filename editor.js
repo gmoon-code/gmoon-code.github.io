@@ -994,6 +994,35 @@
       });
       choices.append(button);
     }
+    // Adjust the same validated 12-column split without leaving the page.
+    const custom=doc.createElement("div");
+    custom.style.cssText="display:grid;gap:5px;padding:8px 0";
+    const customLabel=doc.createElement("label");
+    const customId="moon-layout-custom-width";
+    customLabel.htmlFor=customId;
+    customLabel.textContent="Custom two-column split";
+    customLabel.style.cssText="font-weight:600;font-size:12px";
+    const slider=doc.createElement("input");
+    slider.type="range";slider.id=customId;slider.min="2";slider.max="10";slider.step="1";
+    slider.value=$("directLayoutCustomColumns").value;
+    slider.setAttribute("aria-label","First column width in a twelve-column grid");
+    slider.style.width="100%";
+    const ratio=doc.createElement("output");
+    ratio.htmlFor=customId;
+    ratio.textContent=slider.value+" / "+(12-Number(slider.value));
+    const applyCustom=doc.createElement("button");
+    applyCustom.type="button";applyCustom.textContent="Apply custom columns";
+    applyCustom.style.cssText="padding:9px;border:1px solid currentColor;border-radius:6px;background:transparent;color:inherit;font:600 12px system-ui;cursor:pointer";
+    slider.addEventListener("input",()=>{
+      ratio.textContent=slider.value+" / "+(12-Number(slider.value));
+    });
+    applyCustom.addEventListener("click",()=>{
+      $("directLayoutCustomColumns").value=slider.value;
+      $("directLayoutCustomValue").textContent=ratio.textContent+" columns";
+      $("directLayoutCustomField").hidden=false;
+      action("custom");
+    });
+    custom.append(customLabel,slider,ratio,applyCustom);
     const controls=doc.createElement("div");
     controls.style.cssText="display:flex;justify-content:space-between;gap:8px";
     const reset=doc.createElement("button");
@@ -1016,7 +1045,7 @@
       if(event.key==="Escape"){event.preventDefault();event.stopPropagation();dismiss();}
     });
     controls.append(reset,close);
-    panel.append(title,hint,choices,controls);
+    panel.append(title,hint,choices,custom,controls);
     doc.body.append(panel);
     positionQuickLayout();
     choices.querySelector("button")?.focus({preventScroll:true});
