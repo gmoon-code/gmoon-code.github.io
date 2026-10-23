@@ -514,7 +514,7 @@
 
   function onPreviewClick(event) {
     // In-preview controls must never be interpreted as selected page content.
-    if(event.target.closest("#moon-quick-toolbar,#moon-quick-composer,#moon-quick-layout,#moon-quick-size,#moon-source-width-handle"))return;
+    if(event.target.closest("#moon-quick-toolbar,#moon-quick-composer,#moon-quick-layout,#moon-quick-size,#moon-source-width-handle,#moon-quick-properties"))return;
     /* Stop navigation, but keep normal selection behaviour for editable text. */
     if (event.target.closest("a")) event.preventDefault();
     const added=event.target.closest("[data-editor-added-index]");
@@ -640,7 +640,7 @@
 
   // All contextual controls live only in the script-disabled preview iframe.
   // Source documents, draft HTML and exported pages never receive this toolbar.
-  const QUICK_SOURCE_TAGS=new Set(["P","H1","H2","H3","H4","BLOCKQUOTE","LI"]);
+  const QUICK_SOURCE_TAGS=new Set(["P","H1","H2","H3","H4","BLOCKQUOTE","LI","IMG"]);
   function quickSelection(){
     const doc=state.frameDoc;
     if(!doc)return null;
@@ -659,6 +659,195 @@
     const source=getWorking(state.selected);
     return ["center","right"].includes(source?.style.textAlign)?source.style.textAlign:"left";
   }
+  function setAddedAppearance(patch){
+    const index=state.selectedAddition,item=state.additions[index];
+    if(!item||insertionKind(item)==="image")return false;
+    const next={...(item.appearance||{}),...patch};
+    for(const key of Object.keys(next))if(next[key]===""||next[key]===null)delete next[key];
+    if(!allowedAppearance(next))return false;
+    const updated={...item};
+    if(Object.keys(next).length)updated.appearance=next;
+    else delete updated.appearance;
+    const proposed=state.additions.map((entry,i)=>i===index?updated:entry);
+    try{validateParagraphAdditions(proposed)}catch{return false;}
+    checkpoint();
+    state.additions=proposed;
+    const node=state.frameDoc?.querySelector('[data-editor-added-index="'+index+'"]');
+    if(node){
+      const css=addedBlockStyle(updated);
+      if(css)node.style.cssText=css;
+      else node.removeAttribute("style");
+    }
+    scheduleDraft();
+    updateStatus("Text appearance changed · Local draft");
+    return true;
+  }
+  function closeQuickProperties(){
+    state.frameDoc?.getElementById("moon-quick-properties")?.remove();
+  }
+  function positionQuickProperties(){
+    const doc=state.frameDoc,panel=doc?.getElementById("moon-quick-properties");
+    const bar=doc?.getElementById("moon-quick-toolbar");
+    if(!panel||!bar||bar.hidden)return;
+    const view=doc.defaultView,b=bar.getBoundingClientRect();
+    const width=Math.min(300,Math.max(80,view.innerWidth-12));
+    panel.style.width=width+"px";
+    panel.style.maxHeight=Math.max(80,view.innerHeight-12)+"px";
+    const height=panel.getBoundingClientRect().height;
+    const left=Math.max(6,Math.min(view.innerWidth-width-6,b.left));
+    const top=b.bottom+6+height<=view.innerHeight-6?b.bottom+6:
+      Math.max(6,b.top-height-6);
+    panel.style.left=left+"px";panel.style.top=Math.max(6,top)+"px";
+  }
+  function openQuickProperties(){
+    const selected=quickSelection(),doc=state.frameDoc;
+    if(!selected||!doc)return;
+    closeQuickProperties();
+    const isImage=selected.added?
+      insertionKind(state.additions[state.selectedAddition])==="image":
+      selected.node.tagName==="IMG";
+    if(!isImage&&!(selected.added||TEXT_TAGS.has(selected.node.tagName)))return;
+    const dark=$("previewTheme").value==="dark";
+    const panel=doc.createElement("section");
+    panel.id="moon-quick-properties";
+    panel.setAttribute("role","dialog");
+    panel.setAttribute("aria-label",isImage?"Edit selected image":"Style selected text");
+    panel.setAttribute("aria-modal","false");
+    panel.style.cssText="position:fixed;z-index:2147483646;display:grid;gap:9px;"+
+      "box-sizing:border-box;padding:13px;overflow:auto;border-radius:11px;"+
+      "border:1px solid "+(dark?"#9bad9e":"#a9c1b2")+";"+
+      "background:"+(dark?"#1a1c1a":"#fff")+";color:"+(dark?"#f5f7f5":"#183e30")+";"+
+      "box-shadow:0 8px 24px #0004;font:13px/1.45 system-ui,sans-serif";
+    panel.addEventListener("click",event=>event.stopPropagation());
+    panel.addEventListener("keydown",event=>{
+      if(event.key==="Escape"){event.preventDefault();event.stopPropagation();closeQuickProperties();}
+    });
+    const heading=doc.createElement("strong");
+    heading.textContent=isImage?"Image size and content":"Fonts and colours";
+    const field=(label,control)=>{
+      const row=doc.createElement("label");
+      row.style.cssText="display:grid;gap:4px;font:600 12px system-ui";
+      const caption=doc.createElement("span");caption.textContent=label;
+      control.style.cssText="box-sizing:border-box;min-width:0;width:100%;"+
+        "min-height:32px;padding:5px;border-radius:5px;border:1px solid #9cb0a6;"+
+        "background:"+(dark?"#292f29":"#fff")+";color:inherit";
+      row.append(caption,control);return row;
+    };
+    const button=(name,action)=>{
+      const node=doc.createElement("button");node.type="button";node.textContent=name;
+      node.style.cssText="cursor:pointer;min-height:34px;border:1px solid #94ac9b;"+
+        "border-radius:6px;padding:6px 9px;background:transparent;color:inherit";
+      node.addEventListener("click",event=>{event.preventDefault();event.stopPropagation();action();});
+      return node;
+    };
+    panel.append(heading);
+    if(isImage){
+      const image=selectedPreviewImage();
+      if(!image)return;
+      const size=doc.createElement("input");
+      size.type="range";size.min="20";size.max="100";size.step="5";
+      let previous=Number.parseInt(image.style.width||image.style.maxWidth,10);
+      if(!Number.isFinite(previous)||previous<20||previous>100)previous=100;
+      size.value=String(Math.round(previous/5)*5);
+      const percent=doc.createElement("span");
+      percent.textContent=size.value+"%";
+      size.setAttribute("aria-label","Image width percentage");
+      size.addEventListener("input",()=>{percent.textContent=size.value+"%";});
+      size.addEventListener("change",()=>{
+        const value=Number(size.value);
+        if(selected.added){
+          checkpoint();
+          resizeAddedImage(value);
+        }else resizeImage(value,true);
+        percent.textContent=value+"%";
+      });
+      const row=doc.createElement("div");row.style.cssText="display:flex;align-items:center;gap:8px";
+      row.append(size,percent);
+      panel.append(field("Width",row));
+      const presets=doc.createElement("div");
+      presets.style.cssText="display:flex;flex-wrap:wrap;gap:5px";
+      for(const value of [25,50,75,100]){
+        presets.append(button(value+"%",()=>{
+          size.value=String(value);
+          size.dispatchEvent(new doc.defaultView.Event("change",{bubbles:true}));
+        }));
+      }
+      panel.append(presets);
+      const alt=doc.createElement("input");alt.type="text";alt.maxLength=200;
+      alt.value=selected.added?state.additions[state.selectedAddition].text:
+        getWorking(state.selected)?.getAttribute("alt")||"";
+      const saveAlt=button("Save description",()=>{
+        const value=alt.value.trim();
+        if(!value){alt.setCustomValidity("Describe the image before saving.");alt.reportValidity();return;}
+        alt.setCustomValidity("");
+        if(selected.added){
+          $("addedBlockText").value=value;
+          applyAddedBlock();
+        }else updateSelectedAttribute("alt",value);
+        closeQuickProperties();
+      });
+      panel.append(field("Image description for accessibility",alt),saveAlt);
+      panel.append(button("Replace from website images",()=>{
+        closeQuickProperties();
+        openMediaLibrary(selected.added?"added":false);
+      }));
+      const tip=doc.createElement("small");
+      tip.textContent="Drag the corner handle on the image to resize it directly. Move with the on-page arrows or drag handle where source order permits.";
+      panel.append(tip);
+    }else{
+      const appearance=selected.added?state.additions[state.selectedAddition]?.appearance||{}:{};
+      const working=selected.added?null:getWorking(state.selected);
+      const family=doc.createElement("select");family.setAttribute("aria-label","Font family");
+      const current=selected.added?appearance.family||"":working?.style.fontFamily||"";
+      for(const [id,value] of Object.entries(QUICK_FONTS)){
+        const option=doc.createElement("option");option.value=value;
+        option.textContent={default:"Site default",serif:"Georgia",classic:"Times New Roman",
+          sans:"Arial",modern:"System sans",mono:"Monospace"}[id];
+        family.append(option);
+      }
+      family.value=current;
+      family.addEventListener("change",()=>{
+        if(selected.added)setAddedAppearance({family:family.value});
+        else updateSelectedStyle("fontFamily",family.value,Object.values(QUICK_FONTS));
+      });
+      panel.append(field("Font",family));
+      const size=doc.createElement("input");size.type="number";
+      size.min="12";size.max="80";size.step="1";size.placeholder="Site default";
+      size.setAttribute("aria-label","Font size in pixels");
+      size.value=String(selected.added?appearance.size||"":
+        Number.parseInt(working?.style.fontSize,10)||"");
+      size.addEventListener("change",()=>{
+        if(size.value!==""&&(!Number.isInteger(Number(size.value))||
+          Number(size.value)<12||Number(size.value)>80)){size.reportValidity();return;}
+        if(selected.added)setAddedAppearance({size:size.value?Number(size.value):null});
+        else updateSelectedStyle("fontSize",size.value?size.value+"px":"",[size.value?size.value+"px":""]);
+      });
+      panel.append(field("Size in pixels (12–80)",size));
+      for(const [label,prop,key] of [["Text colour","color","color"],["Background colour","backgroundColor","background"]]){
+        const palette=doc.createElement("div");palette.style.cssText="display:flex;gap:5px;align-items:center;flex-wrap:wrap";
+        const picker=doc.createElement("input");picker.type="color";
+        picker.style.cssText="width:48px;height:33px;cursor:pointer;padding:2px";
+        picker.setAttribute("aria-label",label);
+        picker.value=selected.added?appearance[key]||"#ffffff":
+          colorAsHex(working?.style[prop])||"#ffffff";
+        picker.addEventListener("change",()=>{
+          if(selected.added)setAddedAppearance({[key]:picker.value});
+          else updateSelectedStyle(prop,picker.value,[picker.value]);
+        });
+        const clear=button("Reset",()=>{
+          if(selected.added)setAddedAppearance({[key]:null});
+          else updateSelectedStyle(prop,"",[""]);
+        });
+        palette.append(picker,clear);
+        panel.append(field(label,palette));
+      }
+    }
+    const done=button("Done",closeQuickProperties);
+    panel.append(done);
+    doc.body.append(panel);
+    positionQuickProperties();
+  }
+
   function positionQuickToolbar(){
     const doc=state.frameDoc,bar=doc?.getElementById("moon-quick-toolbar");
     if(!bar)return;
@@ -730,8 +919,14 @@
       });
       return button;
     };
+    const chosenImage=selected.added?insertionKind(state.additions[state.selectedAddition])==="image":selected.node.tagName==="IMG";
+    if(chosenImage){
+      bar.append(make("Image",openQuickProperties,null,"Edit selected image on the page"));
+    }else{
+      bar.append(make("Style",openQuickProperties,null,"Change font, size and colours of selected text"));
+    }
     const current=quickAlignment();
-    for(const [label,value] of [["Left","left"],["Centre","center"],["Right","right"]]){
+    if(!chosenImage)for(const [label,value] of [["Left","left"],["Centre","center"],["Right","right"]]){
       bar.append(make(label,()=>{
         if(state.selectedAddition!==null)setAddedBlockLayout({align:value},true);
         else updateSelectedStyle("textAlign",value,["left","center","right"]);
@@ -816,6 +1011,11 @@
       if(duplicate.disabled)duplicate.style.opacity=".45";
       bar.append(duplicate);
     }
+    if(selected.added){
+      bar.append(make("Remove",removeAddedBlock,null,"Remove selected new block from page"));
+    }else if(sourceRemovalCandidate(state.selected)){
+      bar.append(make("Remove",removeSelectedSource,null,"Remove selected existing block from page"));
+    }
     bar.append(make("Details",()=>{
       setWorkspacePanel("inspector",true);
       if(selected.added)$("addedBlockText").focus();
@@ -823,6 +1023,7 @@
     },null,"Focus selected block details in inspector"));
     doc.body.append(bar);
     positionQuickToolbar();
+    positionQuickProperties();
   }
 
   // A compact visual launcher for the existing source-verified layout
@@ -1326,6 +1527,7 @@
     }
     for(const marked of state.frameDoc.querySelectorAll("[data-editor-added-selected]"))
       marked.removeAttribute("data-editor-added-selected");
+    closeQuickProperties();
     state.selected=node.getAttribute("data-editor-key");
     state.selectedAddition=null;
     $("addedBlockDetails").hidden=true;
@@ -1348,6 +1550,7 @@
 
 
   function selectAddedBlock(index){
+    closeQuickProperties();
     const addition=state.additions[index];
     if(!addition||!state.frameDoc)return;
     const previous=state.frameDoc.querySelector("[data-editor-selected]");
