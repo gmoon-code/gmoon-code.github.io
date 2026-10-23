@@ -759,6 +759,13 @@ try {
   assert.equal(await sections.frameLocator("#pageFrame").locator("#moon-spacing-grip").getAttribute("role"),"slider");
   assert.equal(await sections.frameLocator("#pageFrame").locator("#moon-spacing-grip").getAttribute("aria-valuemax"),"80");
   console.log("PASS: on-canvas spacing grip, keyboard adjustment and undo");
+  await sections.frameLocator("#pageFrame").locator("main p").first().click();
+  await sections.frameLocator("#pageFrame").locator("#moon-spacing-grip").focus();
+  await sections.frameLocator("#pageFrame").locator("#moon-spacing-grip").press("ArrowDown");
+  await sections.frameLocator("#pageFrame").locator("#moon-spacing-grip").press("Delete");
+  assert.equal(await sections.frameLocator("#pageFrame").locator("main p").first()
+    .evaluate(el=>el.style.marginBottom),"");
+  console.log("PASS: spacing grip Delete restores inherited margin");
   // An interrupted drag must restore its original value, while an ordinary
   // drag commits a local draft. Dispatch pointer events to exercise both.
   await sections.frameLocator("#pageFrame").locator("main p").first().click();
