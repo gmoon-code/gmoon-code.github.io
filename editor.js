@@ -3554,9 +3554,21 @@
     const handle=doc.createElement("button");
     handle.id="moon-added-block-move-handle";handle.type="button";
     handle.textContent="⠿";
-    handle.title="Drag a new block to another original heading or paragraph";
-    handle.setAttribute("aria-label","Drag the new block after another original heading or paragraph, or reorder it among additions at the same location. Location and order controls are available in the inspector.");
+    handle.title="Drag to relocate, or use Up/Down arrows to reorder at this location";
+    handle.setAttribute("aria-label","Drag this new block to another original text anchor; press Up or Down to reorder additions at the current anchor.");
     handle.style.cssText="position:fixed;z-index:2147483646;display:grid;place-items:center;width:30px;height:30px;border:2px solid #27654f;border-radius:5px;background:#fff;color:#174932;cursor:grab;touch-action:none;font:700 21px/1 system-ui;box-shadow:0 1px 6px #0004";
+    handle.addEventListener("keydown",event=>{
+      if(!["ArrowUp","ArrowDown"].includes(event.key))return;
+      const index=state.selectedAddition,item=state.additions[index];
+      if(!item)return;
+      event.preventDefault();event.stopPropagation();
+      const direction=event.key==="ArrowUp"?-1:1;
+      const peers=state.additions.map((part,i)=>part.selector===item.selector?i:-1).filter(i=>i>=0);
+      if(peers[peers.indexOf(index)+direction]===undefined)return;
+      moveReviewedAddition(index,direction);
+      // Preview is rebuilt after a move; recover the on-canvas keyboard target.
+      state.frameDoc?.getElementById("moon-added-block-move-handle")?.focus({preventScroll:true});
+    });
     handle.addEventListener("click",event=>event.stopPropagation());
     handle.addEventListener("pointerdown",event=>{
       const from=state.selectedAddition,item=state.additions[from];
