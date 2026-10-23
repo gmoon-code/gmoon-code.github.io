@@ -710,7 +710,8 @@ try {
   assert.match(await customArrangement.locator('div[aria-hidden="true"][style*="grid-template-columns"]')
     .getAttribute("style"),/8fr 4fr/);
   await customArrangement.getByRole("button",{name:"Apply custom columns"}).click();
-  assert.equal(await sections.locator("#directLayoutPreset").inputValue(),"custom");
+  assert.equal(await sections.locator("#directLayoutPreset").inputValue(),"first-wide",
+    "An 8/4 custom split is represented by the equivalent first-wide preset");
   assert.ok((await sections.frameLocator("#pageFrame").locator("#moon-responsive-group-layout")
     .textContent()).includes("grid-column:9 / span 4"));
   console.log("PASS: on-canvas custom responsive column proportions");
