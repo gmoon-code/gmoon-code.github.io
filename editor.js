@@ -3088,7 +3088,23 @@
           (item.widthPercent!==undefined&&!validImagePercent(item.widthPercent)):
           item.widthPercent!==undefined)||
         item.page!==state.page)
-        throw Error("Invalid "+kind+" insertion");
+        {
+          if(kind==="image"&&item){
+            const issues=[];
+            if(!["p","h2","h3","h4"].includes(item.tag))issues.push("unsupported anchor");
+            if(typeof item.selector!=="string"||item.selector.length>500)issues.push("anchor selector");
+            if(typeof item.before!=="string"||item.before.length>4000)issues.push("source text");
+            if(typeof item.text!=="string"||!item.text.trim()||item.text.length>200)
+              issues.push("image description");
+            if(!safeExistingImagePath(item.src))issues.push("image path");
+            if(item.headingTag!==undefined||item.href!==undefined)issues.push("unexpected fields");
+            if(item.widthPercent!==undefined&&!validImagePercent(item.widthPercent))
+              issues.push("image width");
+            if(item.page!==state.page)issues.push("page mismatch");
+            throw Error("Invalid image insertion"+(issues.length?" ("+issues.join(", ")+")":""));
+          }
+          throw Error("Invalid "+kind+" insertion");
+        }
       validateAddedLayout(item.layout);
       let matches;
       try{matches=[...root.querySelectorAll(item.selector)]}catch{throw Error("Invalid content anchor")}
