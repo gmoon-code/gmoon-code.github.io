@@ -4808,7 +4808,7 @@ test('PowerPoint-style free positioning survives local drafts for inserted image
  await view.locator('main #a h2').click();
  await page.locator('#insertContentKind').selectOption('image');
  await page.locator('#insertContentText').fill('A fieldwork image');
- await page.locator('#insertImageSrc').fill('assets/editor-existing-example.webp');
+ await page.locator('#insertImageSrc').fill('assets/example-photograph.webp');
  await page.locator('#insertContentBtn').click();
  await expect(view.locator('[data-editor-added-index]')).toHaveCount(1);
  await view.locator('[data-editor-added-index]').click();
@@ -4831,5 +4831,5 @@ test('PowerPoint-style free positioning survives local drafts for inserted image
  const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
  expect(html).toContain('moon-free-object');
  expect(html).toContain('translate:10px 10px');
- expect(html).toContain('assets/editor-existing-example.webp');
+ expect(html).toContain('assets/example-photograph.webp');
 });
