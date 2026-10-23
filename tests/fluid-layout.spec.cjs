@@ -3290,6 +3290,7 @@ test('removal-only drafts enable a publishing proposal after mocked authorised s
  await page.frameLocator('#pageFrame').locator('main section > p').first().click();
  page.once('dialog',dialog=>dialog.accept());
  await page.locator('#removeSourceBtn').click();
+ await page.locator('.inspector-footer details summary').click();
  await page.locator('#publisherSummary').fill('Remove a reviewed obsolete paragraph');
  await expect(page.locator('#publisherPropose')).toBeEnabled();
  await page.locator('#reviewBtn').click();
