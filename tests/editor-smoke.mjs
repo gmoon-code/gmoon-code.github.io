@@ -78,7 +78,9 @@ try {
   assert.equal(await page.locator("#editorSettings").isVisible(),true);
   assert.equal(await page.locator("#selectionText")
     .evaluate(el=>document.activeElement===el),true);
-  await page.locator("#togglePagesPanel").click();
+  // The "/" shortcut already reopened Pages. Keep it visible for the next step.
+  if(!(await page.locator("#editorNavigation").isVisible()))
+    await page.locator("#togglePagesPanel").click();
   assert.equal(await page.locator("#editorNavigation").isVisible(),true);
   assert.equal(await page.locator("#exportBtn").isDisabled(),true);
   // Resize an existing heading through its on-canvas handle using the keyboard.
