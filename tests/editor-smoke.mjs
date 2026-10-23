@@ -83,20 +83,20 @@ try {
     await page.locator("#togglePagesPanel").click();
   assert.equal(await page.locator("#editorNavigation").isVisible(),true);
   assert.equal(await page.locator("#exportBtn").isDisabled(),true);
-  // Resize an existing heading through its on-canvas handle using the keyboard.
+  // The selected object exposes the same move grip as the pointer canvas.
   await page.frameLocator("#pageFrame").locator("main .home-kicker").first().click();
-  const resizeHandle=page.frameLocator("#pageFrame").locator("#moon-source-width-handle");
+  const resizeHandle=page.frameLocator("#pageFrame")
+    .locator('#moon-free-selection [data-free-direction="move"]');
   await resizeHandle.focus();
-  await resizeHandle.press("Home");
-  assert.equal(await page.frameLocator("#pageFrame").locator("main .home-kicker").first()
-    .evaluate(el=>el.style.maxWidth),"30%");
   await resizeHandle.press("ArrowRight");
   assert.equal(await page.frameLocator("#pageFrame").locator("main .home-kicker").first()
-    .evaluate(el=>el.style.maxWidth),"35%");
-  await resizeHandle.press("End");
+    .evaluate(el=>el.style.translate),"1px 0px");
+  await resizeHandle.press("Shift+ArrowRight");
   assert.equal(await page.frameLocator("#pageFrame").locator("main .home-kicker").first()
-    .evaluate(el=>el.style.maxWidth),"");
-  console.log("PASS: source text resize handle supports keyboard and reset");
+    .evaluate(el=>el.style.translate),"11px 0px");
+  await page.locator("#undoBtn").click();
+  await page.locator("#undoBtn").click();
+  console.log("PASS: selected canvas object supports keyboard movement and undo");
   // The next browse scenario requires no selected element at page load.
   // UI panel preferences persist, but this navigation resets selection.
   await ready();
