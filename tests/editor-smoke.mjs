@@ -14,7 +14,7 @@ await mkdir("/tmp/editor-test-artifacts",{recursive:true});
 async function ready(file="index.html") {
   await page.goto(base+"/editor.html",{waitUntil:"domcontentloaded"});
   await page.frameLocator("#pageFrame").locator("main").waitFor();
-  await page.waitForFunction(()=>document.getElementById("pageFrame")?.contentDocument?.querySelector("main"));
+  await page.waitForFunction(()=>document.getElementById("pageFrame")?.contentDocument?.querySelector("main"),null,{timeout:12000});
   assert.equal(await page.locator("#pagePicker").inputValue(),file);
 }
 async function downloadedHtml() {
@@ -97,9 +97,11 @@ try {
   await page.locator("#undoBtn").click();
   await page.locator("#undoBtn").click();
   console.log("PASS: selected canvas object supports keyboard movement and undo");
+  console.log("SMOKE: reloading editor after canvas undo");
   // The next browse scenario requires no selected element at page load.
   // UI panel preferences persist, but this navigation resets selection.
   await ready();
+  console.log("SMOKE: editor reloaded for content browsing");
   // Navigate original blocks without changing the source or creating tab traps.
   assert.equal(await page.locator("#browseNextElement").isEnabled(),true);
   await page.locator("#browseNextElement").click();
@@ -118,6 +120,7 @@ try {
     "Browsing content must not create an exportable change");
   // An optional single bookmark opens the complete directory without
   // requiring credentials or enabling editor publication rights.
+  console.log("SMOKE: original content browsing finished");
   const directory=await context.newPage();
   await directory.goto(base+"/editors.html",{waitUntil:"domcontentloaded"});
   assert.equal(await directory.title(),"Website Editors | Ye Eun Moon");
