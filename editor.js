@@ -1045,7 +1045,7 @@
       ["freePrecisionX","x"],["freePrecisionY","y"],
       ["freePrecisionWidth","width"],["freePrecisionHeight","height"]]){
       const value=$(field).value.trim();
-      geometry[dimension]=/^-?\\d+$/.test(value)?Number(value):NaN;
+      geometry[dimension]=/^-?\d+$/.test(value)?Number(value):NaN;
     }
     if(!freePositionValid(geometry)){
       $("freePrecisionStatus").textContent=
