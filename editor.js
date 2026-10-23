@@ -1739,8 +1739,12 @@
     });
     const finish=event=>{
       if(!drag||drag.id!==event.pointerId)return;
+      const initial=drag.initial;
       drag=null;
       if(grip.hasPointerCapture(event.pointerId))grip.releasePointerCapture(event.pointerId);
+      // Losing pointer capture (including an interrupted touch gesture) must
+      // not accidentally leave a partially applied layout change behind.
+      if(event.type==="pointercancel"&&value()!==initial)set(initial,false);
       scheduleDraft();position();
     };
     grip.addEventListener("pointerup",finish);
