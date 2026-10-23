@@ -1021,6 +1021,7 @@
     bar.append(make("Details",()=>{
       setWorkspacePanel("inspector",true);
       if(selected.added)$("addedBlockText").focus();
+      else if(chosenImage)$("imageAlt").focus();
       else $("selectionText").focus();
     },null,"Focus selected block details in inspector"));
     doc.body.append(bar);
@@ -3687,10 +3688,9 @@
     $("directGithubDisconnect").disabled=directGithub.busy||!directGithub.token;
     $("directGithubToken").disabled=directGithub.busy;
     $("directPublishSummary").disabled=directGithub.busy;
-    $("directPublishApprove").disabled=directGithub.busy;
     $("directPublishClose").disabled=directGithub.busy;
     $("directPublishConfirm").disabled=directGithub.busy||!directGithub.token||
-      !$("directPublishApprove").checked||!$("directPublishSummary").value.trim()||
+      !$("directPublishSummary").value.trim()||
       published||!!state.stagedMedia;
   }
   function openDirectPublish(){
@@ -3700,8 +3700,8 @@
     const dialog=$("directPublishDialog");
     $("directPublishPage").textContent="Page to publish: "+state.page;
     $("directPublishSummary").value="Update "+state.page;
-    $("directPublishApprove").checked=false;
     $("directPublishResult").replaceChildren();
+    $("directGithubSetup").hidden=!!directGithub.token;
     directGithubMessage(state.stagedMedia?
       "An image upload is staged. Export and review the new image separately before using direct publish.":
       directGithub.token?"Connected to GitHub as "+directGithub.login+" for this tab.":
@@ -3750,6 +3750,7 @@
       await directGithubRequest(DIRECT_API+"index.html?ref=main",token);
       directGithub.token=token;
       directGithub.login=user.login;
+      $("directGithubSetup").hidden=true;
       directGithubMessage("Connected as "+user.login+". Token is kept only until this tab closes or you disconnect.");
     }catch(error){
       directGithub.token="";directGithub.login="";
@@ -3762,6 +3763,7 @@
     if(directGithub.busy)return;
     directGithub.token="";directGithub.login="";
     $("directGithubToken").value="";
+    $("directGithubSetup").hidden=false;
     directGithubMessage("Disconnected. The token is no longer retained by this editor.");
     updateDirectPublishControls();
   }
@@ -3779,7 +3781,7 @@
     return btoa(binary);
   }
   async function publishDirectGithub(){
-    if(directGithub.busy||!directGithub.token||!$("directPublishApprove").checked)return;
+    if(directGithub.busy||!directGithub.token)return;
     const summary=$("directPublishSummary").value.trim();
     if(!summary||summary.length>100){directGithubMessage("Enter a short update description.");return;}
     if(state.stagedMedia){directGithubMessage("Direct publishing of new image files is not supported.");return;}
@@ -3788,8 +3790,6 @@
     let content;
     try{content=buildExport();}
     catch(error){directGithubMessage(error.message);return;}
-    if(!window.confirm("Publish changes to the LIVE website?\n\n"+page+
-      "\n"+summary+"\n\nGitHub will commit this page directly to main. This is publicly visible after GitHub Pages deploys."))return;
     directGithub.busy=true;updateDirectPublishControls();
     directGithubMessage("Checking the current GitHub version of "+page+"…");
     const result=$("directPublishResult");result.replaceChildren();
@@ -4890,7 +4890,6 @@
     $("directPublishConfirm").addEventListener("click",publishDirectGithub);
     $("directPublishClose").addEventListener("click",()=>$("directPublishDialog").close());
     $("directPublishSummary").addEventListener("input",updateDirectPublishControls);
-    $("directPublishApprove").addEventListener("change",updateDirectPublishControls);
     $("directPublishDialog").addEventListener("cancel",event=>{
       if(directGithub.busy)event.preventDefault();
     });
