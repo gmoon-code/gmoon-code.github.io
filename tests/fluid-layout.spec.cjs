@@ -3627,7 +3627,7 @@ test('inline composer supports headings and links from newly inserted blocks wit
 });
 
 test('inline composer rejects unsafe link or image sources, preserves valid existing images',async({page})=>{
- test.setTimeout(60000);
+ test.setTimeout(25000);
  console.log('FLUID diagnostic: started inline composer rejects unsafe link or');
  await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
   body:'<!doctype html><html><head></head><body><main><section>'+
@@ -3674,6 +3674,10 @@ test('inline composer rejects unsafe link or image sources, preserves valid exis
  await composer.getByLabel('Existing image path').fill('assets/example-photograph.webp');
  console.log('FLUID step inline composer: 17');
  await composer.getByRole('button',{name:'Add to page'}).click();
+ if(await composer.count()){
+  const rejection=await composer.getByRole('status').textContent();
+  if(rejection?.includes('Cannot add this content'))throw new Error(rejection);
+ }
  const added=page.frameLocator('#pageFrame').locator('[data-editor-added-index]');
  console.log('FLUID step inline composer: 18');
  await expect(added).toHaveCount(1);
@@ -3694,7 +3698,7 @@ test('inline composer rejects unsafe link or image sources, preserves valid exis
 });
 
 test('inline image gallery selects a site asset, provides preview and exports image description',async({page})=>{
- test.setTimeout(60000);
+ test.setTimeout(25000);
  console.log('FLUID diagnostic: started inline image gallery selects a site as');
  await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
   body:'<!doctype html><html><head></head><body><main><section>'+
@@ -3745,6 +3749,10 @@ test('inline image gallery selects a site asset, provides preview and exports im
    'Student-created model during a classroom investigation');
  console.log('FLUID step inline image ga: 16');
  await composer.getByRole('button',{name:'Add to page'}).click();
+ if(await composer.count()){
+  const rejection=await composer.getByRole('status').textContent();
+  throw new Error(rejection||'The image composer stayed open after Add to page');
+ }
  const added=page.frameLocator('#pageFrame').locator('[data-editor-added-index]');
  console.log('FLUID step inline image ga: 17');
  await expect(added).toHaveCount(1);
@@ -3797,7 +3805,7 @@ test('inline composer cancels with Escape, stays within mobile preview, and neve
  await expect(page.locator('#exportBtn')).toBeDisabled();
 });
 test('section layout can be chosen directly on page with original mobile reading order intact',async({page})=>{
- test.setTimeout(60000);
+ test.setTimeout(25000);
  console.log('FLUID diagnostic: started section layout can be chosen directly ');
  await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
   body:'<!doctype html><html><head></head><body><main>'+
@@ -3870,7 +3878,7 @@ test('section layout can be chosen directly on page with original mobile reading
  console.log('FLUID step section layout : 21');
  await expect(dialog.getByRole('button',{name:'Remove layout'})).toBeEnabled();
  console.log('FLUID step section layout : 22');
- await dialog.getByRole('button',{name:'Remove layout'}).click();
+ await dialog.getByRole('button',{name:'Remove layout'}).click({timeout:6000});
  console.log('FLUID step section layout : 23');
  await expect(page.locator('#changeCount')).not.toContainText('responsive layout group');
  console.log('FLUID step section layout : 24');
