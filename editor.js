@@ -1057,7 +1057,13 @@
       }
     }
     if(!freeCanvasActive){freeGesture=null;state.frameDoc?.getElementById("moon-free-selection")?.remove();}
-    else createFreeSelection();
+    else{
+      for(const id of ["moon-image-resize-handle","moon-block-move-handle",
+        "moon-added-block-move-handle","moon-added-block-width-handle",
+        "moon-source-width-handle","moon-spacing-grip"])
+        state.frameDoc?.getElementById(id)?.remove();
+      createFreeSelection();
+    }
   }
 
   function positionQuickToolbar(){
@@ -2141,6 +2147,7 @@
   // A compact bottom-edge grip adjusts spacing below the selected text.
   // Draft edits and undo checkpoints reuse the inspector's validated paths.
   function createSpacingGrip(){
+    if(freeCanvasActive)return;
     const doc=state.frameDoc;
     doc?.getElementById("moon-spacing-grip")?.remove();
     const selection=quickSelection();
@@ -2236,6 +2243,7 @@
     h.style.top=Math.max(0,Math.min(view.innerHeight-28,rect.bottom-14))+"px";
   }
   function createSourceWidthHandle(){
+    if(freeCanvasActive)return;
     const doc=state.frameDoc;
     if(!doc||state.selectedAddition!==null||doc.getElementById("moon-source-width-handle"))return;
     const node=doc.querySelector('[data-editor-key="'+state.selected+'"]');
@@ -2321,6 +2329,7 @@
     handle.style.top=Math.max(0,Math.min(view.innerHeight-28,rect.bottom-13))+"px";
   }
   function createAddedWidthHandle(){
+    if(freeCanvasActive)return;
     const doc=state.frameDoc;
     if(!doc||doc.getElementById("moon-added-block-width-handle"))return;
     const handle=doc.createElement("button");
@@ -2432,6 +2441,7 @@
     handle.style.top=Math.max(0,Math.min(view.innerHeight-28,rect.bottom-12))+"px";
   }
   function createImageResizeHandle(){
+    if(freeCanvasActive)return;
     const doc=state.frameDoc;
     if(!doc||doc.getElementById("moon-image-resize-handle"))return;
     const handle=doc.createElement("button");
@@ -2647,6 +2657,7 @@
       marked.removeAttribute("data-editor-drag-target");
   }
   function createBlockMoveHandle(){
+    if(freeCanvasActive)return;
     const doc=state.frameDoc;
     if(!doc||doc.getElementById("moon-block-move-handle"))return;
     const handle=doc.createElement("button");
@@ -4409,6 +4420,7 @@
     }
   }
   function createAddedMoveHandle(){
+    if(freeCanvasActive)return;
     const doc=state.frameDoc;
     if(!doc||doc.getElementById("moon-added-block-move-handle"))return;
     const handle=doc.createElement("button");
