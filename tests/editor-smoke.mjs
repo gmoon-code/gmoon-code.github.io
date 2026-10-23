@@ -480,7 +480,7 @@ try {
   await blockControls.mouse.up();
   const draggedWidth=await blockControls.frameLocator("#pageFrame").locator("main p").first()
     .evaluate(el=>el.style.maxWidth);
-  assert.match(draggedWidth,/^([3-9]\\d)%$/,"A drag should resize the existing text block");
+  assert.match(draggedWidth,/^([3-9]\d)%$/,"A drag should resize the existing text block");
   await blockControls.locator("#undoBtn").click();
   assert.equal(await blockControls.frameLocator("#pageFrame").locator("main p").first()
     .evaluate(el=>el.style.maxWidth),"",
