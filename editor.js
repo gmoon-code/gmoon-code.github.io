@@ -1190,7 +1190,7 @@
       button.title=label;
       const exterior={
         nw:"translate(-100%,-100%)",n:"translate(-50%,-100%)",ne:"translate(0,-100%)",
-        e:"translate(0,-50%)",se:"translate(0,0)",s:"translate(-50%,0)",
+        e:"translate(20px,-50%)",se:"translate(20px,20px)",s:"translate(-50%,0)",
         sw:"translate(-100%,0)",w:"translate(-100%,-50%)"
       };
       button.style.cssText="position:absolute;left:"+x+";top:"+y+";"+
@@ -2246,6 +2246,7 @@
     updateInspector(rendered);
     createQuickToolbar();
     positionSourceWidthHandle();
+    positionFreeSelection();
   }
 
   function updateNumericInspectorStyle(property,field,unit,min,max){
