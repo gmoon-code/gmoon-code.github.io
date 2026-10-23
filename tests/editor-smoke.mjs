@@ -523,6 +523,7 @@ try {
   await blockControls.frameLocator("#pageFrame").locator("main p").first().click();
   await blockControls.frameLocator("#pageFrame").locator("#moon-quick-toolbar")
     .getByRole("button",{name:"Move selected block down"}).click();
+  await blockControls.frameLocator("#pageFrame").locator("main p").first().waitFor();
   assert.deepEqual(await blockControls.frameLocator("#pageFrame").locator("main p").allTextContents(),
     ["Second movable paragraph.","First movable paragraph."]);
   await blockControls.locator("#undoBtn").click();
