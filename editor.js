@@ -541,13 +541,13 @@
     const added=event.target.closest("[data-editor-added-index]");
     if(added){
       selectAddedBlock(Number(added.getAttribute("data-editor-added-index")));
-      enableFreeCanvasForDrag();
+      if(automaticFreeSelection)enableFreeCanvasForDrag();
       return;
     }
     const node=event.target.closest("[data-editor-key]");
     if (!node) return;
     selectElement(node);
-    enableFreeCanvasForDrag();
+    if(automaticFreeSelection)enableFreeCanvasForDrag();
   }
 
   function onPreviewDoubleClick(event){
@@ -884,7 +884,7 @@
 
   // Free mode uses viewport-positioned selection controls without adding
   // editor-only markup to the exported website HTML.
-  let freeCanvasActive=false,freeGesture=null,pendingCanvasDrag=null;
+  let freeCanvasActive=false,freeGesture=null,pendingCanvasDrag=null,automaticFreeSelection=true;
   function freeSelected(){
     let sel=quickSelection();
     if(!sel&&state.selected){
@@ -1251,6 +1251,7 @@
   }
   function toggleFreeCanvas(){
     freeCanvasActive=!freeCanvasActive;
+    automaticFreeSelection=freeCanvasActive;
     state.frameDoc?.documentElement.classList.toggle("moon-free-mode",freeCanvasActive);
     const button=$("freeCanvasToggle");
     button.setAttribute("aria-pressed",String(freeCanvasActive));
@@ -1262,8 +1263,17 @@
         else node.setAttribute("contenteditable","true");
       }
     }
-    if(!freeCanvasActive){freeGesture=null;pendingCanvasDrag=null;}
-    else{
+    if(!freeCanvasActive){
+      freeGesture=null;pendingCanvasDrag=null;
+      // Restore the original document-layout tools when the author opts
+      // out of free manipulation. Selecting another block honours this
+      // preference until Free move & resize is enabled again.
+      if(state.selectedAddition!==null)selectAddedBlock(state.selectedAddition);
+      else if(state.selected){
+        const node=state.frameDoc?.querySelector('[data-editor-key="'+state.selected+'"]');
+        if(node)selectElement(node);
+      }
+    }else{
       for(const id of ["moon-image-resize-handle","moon-block-move-handle",
         "moon-added-block-move-handle","moon-added-block-width-handle",
         "moon-source-width-handle","moon-spacing-grip"])
