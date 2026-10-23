@@ -742,22 +742,26 @@
       bar.append(make("Size",()=>openQuickSize(),null,"Resize selected text block on the page"));
       // Small spatial adjustments are common while composing a page. Reuse
       // the inspector's validated style and Undo history, one click per step.
-      const spacing=selected.added?addedBlockLayout(state.additions[state.selectedAddition]).spaceBelow:
-        (/^(\\d+)px$/.exec(getWorking(state.selected)?.style.marginBottom||"")?.[1]||0);
-      const currentGap=Math.max(0,Math.min(80,Number(spacing)||0));
-      for(const [label,step,description] of [
-        ["Gap −",-10,"Decrease space below selected block"],
-        ["Gap +",10,"Increase space below selected block"]
-      ]){
-        const control=make(label,()=>{
-          const next=Math.max(0,Math.min(80,currentGap+step));
-          if(next===currentGap)return;
-          if(selected.added)setAddedBlockLayout({spaceBelow:next},true);
-          else updateSelectedStyle("marginBottom",next+"px",[next+"px"]);
-        },null,description);
-        control.disabled=step<0?currentGap===0:currentGap===80;
-        control.title="Space below: "+currentGap+" px";
-        bar.append(control);
+      for(const side of ["Above","Below"]){
+        const field=side==="Above"?"spaceAbove":"spaceBelow";
+        const cssProp=side==="Above"?"marginTop":"marginBottom";
+        const spacing=selected.added?addedBlockLayout(state.additions[state.selectedAddition])[field]:
+          (/^(\\d+)px$/.exec(getWorking(state.selected)?.style[cssProp]||"")?.[1]||0);
+        const currentGap=Math.max(0,Math.min(80,Number(spacing)||0));
+        for(const [label,step,description] of [
+          ["−",-10,"Decrease space "+side.toLowerCase()+" selected block"],
+          ["+",10,"Increase space "+side.toLowerCase()+" selected block"]
+        ]){
+          const control=make(side+" "+label,()=>{
+            const next=Math.max(0,Math.min(80,currentGap+step));
+            if(next===currentGap)return;
+            if(selected.added)setAddedBlockLayout({[field]:next},true);
+            else updateSelectedStyle(cssProp,next+"px",[next+"px"]);
+          },null,description);
+          control.disabled=step<0?currentGap===0:currentGap===80;
+          control.title="Space "+side.toLowerCase()+": "+currentGap+" px";
+          bar.append(control);
+        }
       }
     }
     if(!selected.added){
