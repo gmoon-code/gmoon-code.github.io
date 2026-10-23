@@ -4838,3 +4838,72 @@ test('PowerPoint-style free positioning survives local drafts for inserted image
  expect(html).toContain('translate:10px 10px');
  expect(html).toContain('assets/example-photograph.webp');
 });
+
+test('Precision fields apply source object positions and preserve unrelated typography',async({page})=>{
+ const source='<!doctype html><html><head></head><body><main><section id="a"><h2>Research heading</h2><p>Study notes.</p></section></main></body></html>';
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',body:source}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html',{waitUntil:'domcontentloaded'});
+ const view=page.frameLocator('#pageFrame'),heading=view.locator('main #a h2');
+ await heading.click();
+ await page.locator('#textAlignment').selectOption('center');
+ await page.locator('#freeCanvasToggle').click();
+ const precision=page.locator('#freePrecisionFields');
+ await expect(precision).toBeVisible();
+ await expect(page.locator('#freePrecisionReset')).toBeDisabled();
+ await page.locator('#freePrecisionX').fill('115');
+ await page.locator('#freePrecisionY').fill('-32');
+ await page.locator('#freePrecisionWidth').fill('245');
+ await page.locator('#freePrecisionHeight').fill('93');
+ await page.locator('#freePrecisionApply').click();
+ await expect(heading).toHaveClass(/moon-free-object/);
+ await expect(heading).toHaveCSS('translate','115px -32px');
+ await expect(heading).toHaveCSS('width','245px');
+ await expect(heading).toHaveCSS('min-height','93px');
+ await expect(page.locator('#freePrecisionReset')).toBeEnabled();
+ await page.locator('#freePrecisionX').fill('20000');
+ await page.locator('#freePrecisionApply').click();
+ await expect(page.locator('#freePrecisionStatus')).toContainText('Enter whole-pixel values');
+ await expect(heading).toHaveCSS('translate','115px -32px');
+ await page.locator('#freePrecisionX').fill('115');
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).toContain('translate: 115px -32px');
+ expect(html).toContain('width: 245px');
+ await page.locator('#freePrecisionReset').click();
+ await expect(heading).not.toHaveClass(/moon-free-object/);
+ await expect(heading).toHaveCSS('text-align','center');
+ await expect(page.locator('#freePrecisionReset')).toBeDisabled();
+ await page.locator('#undoBtn').click();
+ await expect(view.locator('main #a h2')).toHaveClass(/moon-free-object/);
+ await expect(view.locator('main #a h2')).toHaveCSS('translate','115px -32px');
+});
+
+test('Precision inspector persists new image placement with one Undo step',async({page})=>{
+ const source='<!doctype html><html><head></head><body><main><section id="a"><h2>Image section</h2><p>Notes.</p></section></main></body></html>';
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',body:source}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html',{waitUntil:'domcontentloaded'});
+ const view=page.frameLocator('#pageFrame');
+ await view.locator('main #a h2').click();
+ await page.locator('#insertContentKind').selectOption('image');
+ await page.locator('#insertContentText').fill('Archive image');
+ await page.locator('#insertImageSrc').fill('assets/example-photograph.webp');
+ await page.locator('#insertContentBtn').click();
+ const added=view.locator('[data-editor-added-index]');
+ await added.click();
+ await page.locator('#freeCanvasToggle').click();
+ await expect(page.locator('#freePrecisionFields')).toBeVisible();
+ await page.locator('#freePrecisionX').fill('41');
+ await page.locator('#freePrecisionY').fill('62');
+ await page.locator('#freePrecisionWidth').fill('225');
+ await page.locator('#freePrecisionHeight').fill('90');
+ await page.locator('#freePrecisionApply').click();
+ await expect(added).toHaveCSS('translate','41px 62px');
+ await expect.poll(async()=>page.evaluate(()=>
+  JSON.parse(localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'))?.additions?.[0]?.freePosition?.width
+ )).toBe(225);
+ await page.locator('#freePrecisionReset').click();
+ await expect(view.locator('[data-editor-added-index]')).not.toHaveClass(/moon-free-object/);
+ await page.locator('#undoBtn').click();
+ await expect(view.locator('[data-editor-added-index]')).toHaveCSS('translate','41px 62px');
+});
