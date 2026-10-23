@@ -1742,10 +1742,27 @@
     const handle=doc.createElement("button");
     handle.id="moon-added-block-width-handle";handle.type="button";
     handle.textContent="↘";
-    handle.title="Drag to resize this new text block";
-    handle.setAttribute("aria-label","Drag to adjust new block width. Use the block width slider in the inspector for keyboard editing.");
+    handle.title="Drag or use arrow keys to resize; double-click to reset";
+    handle.setAttribute("aria-label","Resize new block: drag or press Left/Right arrows, Shift for larger steps, Home for 30%, End for 100%, double-click to reset.");
     handle.style.cssText="position:fixed;z-index:2147483645;width:28px;height:28px;border:2px solid #27654f;border-radius:5px;background:#fff;color:#174932;cursor:nwse-resize;font:700 20px/20px system-ui;touch-action:none;box-shadow:0 1px 6px #0004";
     handle.addEventListener("click",event=>event.stopPropagation());
+    handle.addEventListener("keydown",event=>{
+      if(!["ArrowLeft","ArrowRight","Home","End"].includes(event.key))return;
+      const item=state.additions[state.selectedAddition];
+      if(!item||insertionKind(item)==="image")return;
+      event.preventDefault();event.stopPropagation();
+      const current=addedBlockLayout(item).widthPercent;
+      const delta=(event.shiftKey?20:5)*(event.key==="ArrowRight"?1:-1);
+      const next=event.key==="Home"?30:event.key==="End"?100:
+        Math.max(30,Math.min(100,Math.round((current+delta)/5)*5));
+      if(next!==current)setAddedBlockLayout({widthPercent:next},true);
+    });
+    handle.addEventListener("dblclick",event=>{
+      event.preventDefault();event.stopPropagation();
+      const item=state.additions[state.selectedAddition];
+      if(item&&addedBlockLayout(item).widthPercent!==100)
+        setAddedBlockLayout({widthPercent:100},true);
+    });
     handle.addEventListener("pointerdown",event=>{
       if(event.button!==0||state.addedWidthPointer)return;
       const item=state.additions[state.selectedAddition],target=doc.querySelector(
