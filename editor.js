@@ -390,6 +390,10 @@
         d.addEventListener("pointermove",freeGestureMove,true);
         d.addEventListener("pointerup",freeGestureEnd,true);
         d.addEventListener("pointercancel",freeGestureEnd,true);
+        d.addEventListener("dragstart",event=>{
+          if(event.target.closest?.("main [data-editor-key],main [data-editor-added-index]"))
+            event.preventDefault();
+        },true);
         d.addEventListener("keydown",onPreviewKeydown,true);
         d.addEventListener("input",onPreviewInput,true);
         d.addEventListener("focusin",onPreviewFocus,true);
@@ -919,7 +923,9 @@
         node.classList.add(FREE_CLASS);
         node.style.translate=geometry.x+"px "+geometry.y+"px";
         node.style.width=geometry.width+"px";
+        node.style.setProperty("--moon-free-width",geometry.width+"px");
         node.style.minHeight=geometry.height+"px";
+        node.style.setProperty("--moon-free-height",geometry.height+"px");
         node.style.maxWidth="none";
         node.style.boxSizing="border-box";
       }
@@ -1130,6 +1136,9 @@
         node.classList.remove(FREE_CLASS);
         for(const name of ["translate","width","minHeight","maxWidth","boxSizing"])
           node.style[name]=defaultStyle?.[name]||"";
+        for(const name of ["--moon-free-width","--moon-free-height"])
+          if(defaultStyle?.getPropertyValue(name))node.style.setProperty(name,defaultStyle.getPropertyValue(name));
+          else node.style.removeProperty(name);
         if(!node.getAttribute("style")?.trim())node.removeAttribute("style");
       }
       updateDirty(key);
@@ -3645,15 +3654,18 @@
   }
   const FREE_CLASS="moon-free-object";
   const FREE_CSS=[
+    "html:has(.moon-free-object),body:has(.moon-free-object){overflow-x:visible!important}",
     "main:has(.moon-free-object),main:has(.moon-free-object) *:has(.moon-free-object){overflow:visible!important}",
-    ".moon-free-object{position:relative;z-index:3;box-sizing:border-box;max-width:none}",
-    "@media(max-width:700px){html:not(.moon-free-mode) .moon-free-object{translate:none!important;width:auto!important;max-width:100%!important;min-height:0!important;height:auto!important;position:static!important}html:not(.moon-free-mode) img.moon-free-object{width:auto!important;max-width:100%!important;height:auto!important}}"
+    ".moon-free-object{position:relative;z-index:3;box-sizing:border-box;width:var(--moon-free-width)!important;min-height:var(--moon-free-height)!important;max-width:none!important;overflow:visible!important}",
+    "img.moon-free-object{height:var(--moon-free-height)!important;object-fit:contain!important}",
+    "@media(max-width:700px){html:not(.moon-free-mode) .moon-free-object{--moon-free-width:auto!important;--moon-free-height:auto!important;translate:none!important;max-width:100%!important;min-height:0!important;height:auto!important;position:static!important}html:not(.moon-free-mode) img.moon-free-object{max-width:100%!important;height:auto!important}}"
   ].join("\n");
   function freePositionValid(p){return !!p&&typeof p==="object"&&!Array.isArray(p)&&
     Object.keys(p).length===4&&["x","y","width","height"].every(k=>Number.isInteger(p[k]))&&
     Math.abs(p.x)<=16000&&Math.abs(p.y)<=16000&&p.width>=35&&p.width<=4000&&p.height>=18&&p.height<=4000;}
   function freeStyle(p){return "translate:"+p.x+"px "+p.y+"px;width:"+p.width+
-    "px;min-height:"+p.height+"px;max-width:none;box-sizing:border-box"}
+    "px;--moon-free-width:"+p.width+"px;min-height:"+p.height+
+    "px;--moon-free-height:"+p.height+"px;max-width:none;box-sizing:border-box"}
   const ADDED_LAYOUT_DEFAULT={align:"left",widthPercent:100,spaceAbove:0,spaceBelow:0};
   function addedBlockLayout(item){return {...ADDED_LAYOUT_DEFAULT,...(item?.layout||{})};}
   function isDefaultAddedLayout(layout){
