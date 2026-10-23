@@ -800,6 +800,7 @@ try {
     "Second research summary.","First research summary.","Third research summary."
   ]);
   await sections.locator("#undoBtn").click();
+  await sections.frameLocator("#pageFrame").locator("main section p").first().waitFor({timeout:6000});
   assert.deepEqual((await sections.frameLocator("#pageFrame").locator("main section p")
     .allTextContents()).slice(0,3),[
     "First research summary.","Second research summary.","Third research summary."
