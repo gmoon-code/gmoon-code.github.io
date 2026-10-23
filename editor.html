@@ -340,6 +340,29 @@
           <button type="button" id="removeAddedBlockBtn" class="secondary">Remove new block</button>
           <p id="addedBlockStatus" class="small-note" role="status" aria-live="polite">These changes remain in the browser until exported or reviewed.</p>
         </div>
+        <fieldset id="freePrecisionFields" class="inspector-group free-precision-fields" hidden>
+          <legend>Precise object position</legend>
+          <p class="small-note">Adjust the selected object's position and size on the desktop canvas. On narrow screens, objects return to document flow for readability.</p>
+          <div class="free-precision-grid">
+            <label for="freePrecisionX">Move right (px)
+              <input id="freePrecisionX" type="number" min="-16000" max="16000" step="1">
+            </label>
+            <label for="freePrecisionY">Move down (px)
+              <input id="freePrecisionY" type="number" min="-16000" max="16000" step="1">
+            </label>
+            <label for="freePrecisionWidth">Width (px)
+              <input id="freePrecisionWidth" type="number" min="35" max="4000" step="1">
+            </label>
+            <label for="freePrecisionHeight">Minimum height (px)
+              <input id="freePrecisionHeight" type="number" min="18" max="4000" step="1">
+            </label>
+          </div>
+          <div class="free-precision-actions">
+            <button id="freePrecisionApply" type="button" class="primary">Apply position and size</button>
+            <button id="freePrecisionReset" type="button" class="secondary" disabled>Restore normal flow</button>
+          </div>
+          <p id="freePrecisionStatus" class="small-note" role="status" aria-live="polite">Changes stay in your local draft and can be undone.</p>
+        </fieldset>
         <div class="inspector-footer">
           <h3>Publish your edits</h3>
           <p>After editing, choose <strong>Publish live</strong> in the top bar. Connect a fine-grained GitHub token for this repository, review the change, and confirm publication. No hosting provider or publishing server is needed.</p>
