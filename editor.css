@@ -183,3 +183,27 @@ dialog form { text-align:right;margin-top:20px; }
   color:var(--text);font-size:12px;line-height:1.45;cursor:pointer; }
 .page-find-results button[aria-current="true"] { border-color:#2a7c63;background:var(--surface-soft,#edf5f0); }
 .page-find-results button:hover,.page-find-results button:focus-visible { outline:2px solid #397d68;outline-offset:1px; }
+
+/* Collapsible desktop editing panels are UI-only, not page layout edits. */
+.workspace-panel-toggle{width:auto;white-space:nowrap;font-size:12px;padding:7px 10px}
+.editor-content.is-pages-collapsed{grid-template-columns:minmax(0,1fr) 288px}
+.editor-content.is-inspector-collapsed{grid-template-columns:230px minmax(0,1fr)}
+.editor-content.is-pages-collapsed.is-inspector-collapsed{grid-template-columns:minmax(0,1fr)}
+.editor-content.is-pages-collapsed .editor-sidebar,
+.editor-content.is-inspector-collapsed .editor-inspector{display:none}
+@media(max-width:1180px) and (min-width:921px){
+.editor-content.is-pages-collapsed{grid-template-columns:minmax(0,1fr) 250px}
+.editor-content.is-inspector-collapsed{grid-template-columns:195px minmax(0,1fr)}
+}
+@media(max-width:920px){
+.workspace-panel-toggle{display:none}
+.editor-content.is-pages-collapsed .editor-sidebar{display:grid}
+.editor-content.is-inspector-collapsed .editor-inspector{display:block}
+.editor-content.is-pages-collapsed,.editor-content.is-inspector-collapsed,
+.editor-content.is-pages-collapsed.is-inspector-collapsed{grid-template-columns:minmax(0,1fr) 248px}
+}
+@media(max-width:660px){
+.editor-content.is-pages-collapsed .editor-sidebar{display:block}
+.editor-content.is-pages-collapsed,.editor-content.is-inspector-collapsed,
+.editor-content.is-pages-collapsed.is-inspector-collapsed{display:flex;flex-direction:column}
+}

@@ -6,6 +6,35 @@
   const EDITABLE = "h1,h2,h3,h4,h5,h6,p,li,figcaption,blockquote,dt,dd,a,img,th,td";
   const TEXT_TAGS = new Set(["H1","H2","H3","H4","H5","H6","P","LI","FIGCAPTION","BLOCKQUOTE","DT","DD","A","TH","TD"]);
   const DRAFT_PREFIX = "moon-portfolio-visual-editor-v1:";
+  const PANEL_PREFERENCE_KEY="moon-portfolio-editor-workspace-v1";
+  const panelPreference={pages:true,inspector:true};
+  function setWorkspacePanel(panel,open){
+    if(!["pages","inspector"].includes(panel))return;
+    panelPreference[panel]=Boolean(open);
+    const area=$("editorNavigation").parentElement;
+    area.classList.toggle("is-pages-collapsed",!panelPreference.pages);
+    area.classList.toggle("is-inspector-collapsed",!panelPreference.inspector);
+    for(const [key,id,label] of [["pages","togglePagesPanel","pages"],["inspector","toggleInspectorPanel","inspector"]]){
+      const button=$(id);
+      button.textContent=(panelPreference[key]?"Hide ":"Show ")+label;
+      button.setAttribute("aria-expanded",String(panelPreference[key]));
+    }
+    try{localStorage.setItem(PANEL_PREFERENCE_KEY,JSON.stringify(panelPreference));}
+    catch{/* Storage may be unavailable. The controls still work. */}
+  }
+  function initialiseWorkspacePanels(){
+    try{
+      const saved=JSON.parse(localStorage.getItem(PANEL_PREFERENCE_KEY)||"null");
+      if(saved&&typeof saved==="object"){
+        if(typeof saved.pages==="boolean")panelPreference.pages=saved.pages;
+        if(typeof saved.inspector==="boolean")panelPreference.inspector=saved.inspector;
+      }
+    }catch{/* Invalid preferences use both panels open. */}
+    setWorkspacePanel("pages",panelPreference.pages);
+    setWorkspacePanel("inspector",panelPreference.inspector);
+    $("togglePagesPanel").addEventListener("click",()=>setWorkspacePanel("pages",!panelPreference.pages));
+    $("toggleInspectorPanel").addEventListener("click",()=>setWorkspacePanel("inspector",!panelPreference.inspector));
+  }
   const PUBLISH_CONFIG=window.MoonEditorPublisherConfig||{};
   const publisher={session:null,login:"",busy:false};
   function publisherEndpoint() {
@@ -631,7 +660,7 @@
     // transition. Keep the actual CSS position clamped to the changing
     // viewport even before the next resize notification arrives.
     const desiredLeft=Math.max(4,Math.min(maxLeft,left));
-    bar.style.left="max(4px,min("+desiredLeft+"px,calc(100vw - min(260px, calc(100vw - 8px)) - 4px)))";
+    bar.style.left="max(4px,min("+desiredLeft+"px,calc(100vw - min(310px, calc(100vw - 8px)) - 4px)))";
     bar.style.top=Math.max(4,Math.min(maxTop,top))+"px";
   }
   function createQuickToolbar(){
@@ -649,7 +678,7 @@
     bar.setAttribute("aria-label","Selected block quick actions");
     bar.setAttribute("aria-orientation","horizontal");
     bar.style.cssText="position:fixed;z-index:2147483644;display:flex;align-items:center;flex-wrap:wrap;gap:4px;padding:5px;"+
-      "width:min(260px,calc(100vw - 8px));box-sizing:border-box;border:1px solid "+
+      "width:min(310px,calc(100vw - 8px));box-sizing:border-box;border:1px solid "+
       (dark?"#a7baa9":"#9cb7a9")+";border-radius:9px;background:"+
       (dark?"#1a1c1a":"#fff")+";color:"+(dark?"#f5f7f5":"#183e30")+
       ";box-shadow:0 4px 16px #0003;font:600 12px/1.25 system-ui,sans-serif;max-width:calc(100vw - 8px)";
@@ -676,6 +705,18 @@
       },current===value,"Align selected block "+label.toLowerCase()));
     }
     if(!selected.added){
+      const movable=blockMoveCandidate(state.selected);
+      if(movable){
+        const up=make("↑ Up",()=>moveOriginalBlock(-1),null,"Move selected block up");
+        up.disabled=movable.index===0;
+        const down=make("↓ Down",()=>moveOriginalBlock(1),null,"Move selected block down");
+        down.disabled=movable.index===movable.keys.length-1;
+        bar.append(up,down);
+      }
+      if(!$("duplicateSourceBtn").disabled&&state.additions.length<10){
+        bar.append(make("Copy",()=>duplicateSelectedSource(),null,
+          "Duplicate selected original paragraph or heading"));
+      }
       const section=directLayoutSelection();
       if(section){
         bar.append(make("Layout",()=>openQuickLayout(section.spec.parentSelector),null,
@@ -698,6 +739,7 @@
       bar.append(duplicate);
     }
     bar.append(make("Details",()=>{
+      setWorkspacePanel("inspector",true);
       if(selected.added)$("addedBlockText").focus();
       else $("selectionText").focus();
     },null,"Focus selected block details in inspector"));
@@ -3784,6 +3826,7 @@
   }
 
   function init() {
+    initialiseWorkspacePanels();
     // The full page navigator remains available lower down on mobile, while
     // a compact equivalent beside the preview makes the editor usable first.
     // Both selectors feed the same source-verified loadPage workflow.

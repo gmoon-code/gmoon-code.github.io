@@ -33,7 +33,7 @@
     </header>
 
     <div class="editor-content">
-      <aside class="editor-sidebar" aria-label="Editor navigation">
+      <aside id="editorNavigation" class="editor-sidebar" aria-label="Editor navigation">
         <div class="sidebar-section">
           <h2>Pages</h2>
           <label for="pagePicker">Choose a page</label>
@@ -121,6 +121,8 @@
             <span id="changeCount">0 unsaved changes</span>
           </div>
           <div class="workspace-tools" aria-label="Preview options">
+            <button type="button" id="togglePagesPanel" class="secondary workspace-panel-toggle" aria-controls="editorNavigation" aria-expanded="true">Hide pages</button>
+            <button type="button" id="toggleInspectorPanel" class="secondary workspace-panel-toggle" aria-controls="editorSettings" aria-expanded="true">Hide inspector</button>
             <label for="previewViewport">Viewport</label>
             <select id="previewViewport" aria-label="Preview width">
               <option value="desktop">Desktop</option>
@@ -142,7 +144,7 @@
         <p class="preview-caption">This is an isolated preview. Links do not navigate, and page scripts do not run while editing.</p>
       </main>
 
-      <aside class="editor-inspector" aria-label="Selected element settings">
+      <aside id="editorSettings" class="editor-inspector" aria-label="Selected element settings">
         <div class="inspector-heading">
           <h2>Inspector</h2>
           <span id="selectionTag" class="selection-tag">Nothing selected</span>
