@@ -1010,19 +1010,35 @@
     const ratio=doc.createElement("output");
     ratio.htmlFor=customId;
     ratio.textContent=slider.value+" / "+(12-Number(slider.value));
+    // A proportional preview responds immediately to keyboard and pointer
+    // slider input; changes reach the source-verified layout only on Apply.
+    const preview=doc.createElement("div");
+    preview.setAttribute("aria-hidden","true");
+    preview.style.cssText="display:grid;gap:4px;height:46px";
+    const leftPreview=doc.createElement("div");
+    const rightPreview=doc.createElement("div");
+    for(const block of [leftPreview,rightPreview]){
+      block.style.cssText="border:1px solid currentColor;border-radius:4px;opacity:.8;"+
+        "background:repeating-linear-gradient(0deg,transparent,transparent 8px,currentColor 9px,transparent 10px)";
+    }
+    const updateColumnPreview=()=>{
+      const first=Number(slider.value);
+      ratio.textContent=first+" / "+(12-first);
+      preview.style.gridTemplateColumns=first+"fr "+(12-first)+"fr";
+    };
+    preview.append(leftPreview,rightPreview);
+    updateColumnPreview();
     const applyCustom=doc.createElement("button");
     applyCustom.type="button";applyCustom.textContent="Apply custom columns";
     applyCustom.style.cssText="padding:9px;border:1px solid currentColor;border-radius:6px;background:transparent;color:inherit;font:600 12px system-ui;cursor:pointer";
-    slider.addEventListener("input",()=>{
-      ratio.textContent=slider.value+" / "+(12-Number(slider.value));
-    });
+    slider.addEventListener("input",updateColumnPreview);
     applyCustom.addEventListener("click",()=>{
       $("directLayoutCustomColumns").value=slider.value;
       $("directLayoutCustomValue").textContent=ratio.textContent+" columns";
       $("directLayoutCustomField").hidden=false;
       action("custom");
     });
-    custom.append(customLabel,slider,ratio,applyCustom);
+    custom.append(customLabel,preview,slider,ratio,applyCustom);
     const controls=doc.createElement("div");
     controls.style.cssText="display:flex;justify-content:space-between;gap:8px";
     const reset=doc.createElement("button");
