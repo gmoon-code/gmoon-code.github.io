@@ -374,6 +374,7 @@
     $("selectionDetails").hidden=true;
     $("selectionEmpty").hidden=false;
     $("selectionTag").textContent="Nothing selected";
+    state.frameDoc?.getElementById("moon-free-selection")?.remove();
     const frame=$("pageFrame");
     frame.onload=function () {
       try {
@@ -388,6 +389,7 @@
         d.addEventListener("focusin",onPreviewFocus,true);
         d.addEventListener("paste",onPreviewPaste,true);
         d.addEventListener("scroll",positionImageResizeHandle,true);
+        d.addEventListener("scroll",positionFreeSelection,true);
         d.addEventListener("scroll",positionBlockMoveHandle,true);
         d.addEventListener("scroll",positionAddedMoveHandle,true);
         d.addEventListener("scroll",positionAddedWidthHandle,true);
@@ -400,6 +402,7 @@
         d.defaultView.addEventListener("scroll",positionQuickLayout);
         d.addEventListener("scroll",positionColumnResizeHandle,true);
         d.defaultView.addEventListener("resize",positionImageResizeHandle);
+        d.defaultView.addEventListener("resize",positionFreeSelection);
         d.defaultView.addEventListener("resize",positionBlockMoveHandle);
         d.defaultView.addEventListener("resize",positionAddedMoveHandle);
         d.defaultView.addEventListener("resize",positionAddedWidthHandle);
@@ -518,7 +521,7 @@
 
   function onPreviewClick(event) {
     // In-preview controls must never be interpreted as selected page content.
-    if(event.target.closest("#moon-quick-toolbar,#moon-quick-composer,#moon-quick-layout,#moon-quick-size,#moon-source-width-handle,#moon-quick-properties"))return;
+    if(event.target.closest("#moon-free-selection,#moon-quick-toolbar,#moon-quick-composer,#moon-quick-layout,#moon-quick-size,#moon-source-width-handle,#moon-quick-properties"))return;
     /* Stop navigation, but keep normal selection behaviour for editable text. */
     if (event.target.closest("a")) event.preventDefault();
     const added=event.target.closest("[data-editor-added-index]");
@@ -1187,7 +1190,7 @@
       bar.append(clear);
     }
     if(!selected.added){
-      const movable=blockMoveCandidate(state.selected);
+      const movable=freeCanvasActive?null:blockMoveCandidate(state.selected);
       if(movable){
         const up=make("↑ Up",()=>moveOriginalBlock(-1),null,"Move selected block up");
         up.disabled=movable.index===0;
@@ -1755,12 +1758,12 @@
     state.frameDoc.getElementById("moon-source-width-handle")?.remove();
     state.frameDoc.getElementById("moon-spacing-grip")?.remove();
     node.setAttribute("data-editor-selected","");
-    if (TEXT_TAGS.has(node.tagName)) node.setAttribute("contenteditable","true");
+    if (TEXT_TAGS.has(node.tagName)&&!freeCanvasActive) node.setAttribute("contenteditable","true");
     updateInspector(node);
     updateBrowseControls();
     createQuickToolbar();
-    createSourceWidthHandle();
-    createSpacingGrip();
+    if(!freeCanvasActive){createSourceWidthHandle();createSpacingGrip();}
+    createFreeSelection();
   }
 
 
@@ -1821,7 +1824,7 @@
     $("addedBlockStatus").textContent="New "+kind+" · block "+(index+1)+
       " of "+state.additions.length+" · Local draft";
     updateBrowseControls();
-    if(kind==="image")createImageResizeHandle();
+    if(kind==="image"&&!freeCanvasActive)createImageResizeHandle();
     const anchors=sourceMoveAnchors();
     const picker=$("moveAddedAnchorPicker");
     picker.replaceChildren();
@@ -1835,11 +1838,12 @@
     $("moveAddedAnchorFields").hidden=anchors.filter(a=>a.selector!==addition.selector).length===0;
     if(!currentAnchor&&picker.options.length)picker.selectedIndex=-1;
     updateAddedAnchorButton();
-    if(siblings.length>1||anchors.some(a=>a.selector!==addition.selector))
+    if(!freeCanvasActive&&(siblings.length>1||anchors.some(a=>a.selector!==addition.selector)))
       createAddedMoveHandle();
-    if(kind!=="image")createAddedWidthHandle();
+    if(kind!=="image"&&!freeCanvasActive)createAddedWidthHandle();
     createQuickToolbar();
-    if(kind!=="image")createSpacingGrip();
+    if(kind!=="image"&&!freeCanvasActive)createSpacingGrip();
+    createFreeSelection();
   }
   function applyAddedBlock(){
     const index=state.selectedAddition,original=state.additions[index];
@@ -5140,6 +5144,7 @@
     $("stageImageBtn").addEventListener("click",stageNewImage);
     $("downloadStagedImage").addEventListener("click",downloadStagedImage);
     $("reviewBtn").addEventListener("click",reviewChanges);
+    $("freeCanvasToggle").addEventListener("click",toggleFreeCanvas);
     $("chooseExistingImage").addEventListener("click",()=>openMediaLibrary(false));
     $("chooseInsertImageBtn").addEventListener("click",()=>openMediaLibrary(true));
     $("chooseAddedImageBtn").addEventListener("click",()=>openMediaLibrary("added"));
