@@ -614,20 +614,18 @@ try {
   await inline.reload();
   await inline.frameLocator("#pageFrame").locator("[data-editor-added-index]").waitFor({timeout:6000});
   await inline.frameLocator("#pageFrame").locator("[data-editor-added-index]").first().click();
-  const addedResize=inline.frameLocator("#pageFrame").locator("#moon-added-block-width-handle");
+  const addedResize=inline.locator("#addedBlockWidth");
   await addedResize.focus();
   await addedResize.press("Home");
-  assert.equal(await inline.locator("#addedBlockWidth").inputValue(),"30");
+  assert.equal(await addedResize.inputValue(),"30");
   await addedResize.press("ArrowRight");
-  assert.equal(await inline.locator("#addedBlockWidth").inputValue(),"35");
+  assert.equal(await addedResize.inputValue(),"35");
   await addedResize.press("End");
-  assert.equal(await inline.locator("#addedBlockWidth").inputValue(),"100");
+  assert.equal(await addedResize.inputValue(),"100");
   console.log("PASS: keyboard resize of newly inserted text");
   // A single addition has no sibling at its anchor, so arrow moves are no-ops.
   await inline.frameLocator("#pageFrame").locator("[data-editor-added-index]").first().click();
-  const addedMoveGrip=inline.frameLocator("#pageFrame").locator("#moon-added-block-move-handle");
-  await addedMoveGrip.focus();
-  await addedMoveGrip.press("ArrowDown");
+  assert.equal(await inline.locator("#moveAddedLaterBtn").isDisabled(),true);
   assert.equal(await inline.frameLocator("#pageFrame").locator("[data-editor-added-index]").count(),1);
   console.log("PASS: added-block keyboard move respects eligible sibling positions");
   console.log("INLINE: select restored addition to add another");
@@ -797,9 +795,7 @@ try {
     .evaluate(el=>el.style.marginBottom),"");
   console.log("PASS: cancelled spacing gesture restores original block spacing");
   // Keyboard reordering uses the same verified neighbouring-block move as dragging.
-  const grip=sections.frameLocator("#pageFrame").locator("#moon-block-move-handle");
-  await grip.focus();
-  await grip.press("ArrowDown");
+  await sections.locator("#moveOriginalDown").click();
   const reordered=await sections.frameLocator("#pageFrame").locator("main section p")
     .allTextContents();
   assert.deepEqual(reordered.slice(0,3),[
