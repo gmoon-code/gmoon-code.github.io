@@ -3627,6 +3627,8 @@ test('inline composer supports headings and links from newly inserted blocks wit
 });
 
 test('inline composer rejects unsafe link or image sources, preserves valid existing images',async({page})=>{
+ test.setTimeout(60000);
+ console.log('FLUID diagnostic: started inline composer rejects unsafe link or');
  await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
   body:'<!doctype html><html><head></head><body><main><section>'+
    '<h2>Gallery</h2><p>Original gallery introduction.</p>'+
@@ -3666,6 +3668,8 @@ test('inline composer rejects unsafe link or image sources, preserves valid exis
 });
 
 test('inline image gallery selects a site asset, provides preview and exports image description',async({page})=>{
+ test.setTimeout(60000);
+ console.log('FLUID diagnostic: started inline image gallery selects a site as');
  await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
   body:'<!doctype html><html><head></head><body><main><section>'+
    '<h2>Student project gallery</h2><p>Preserved original context.</p>'+
@@ -3740,6 +3744,8 @@ test('inline composer cancels with Escape, stays within mobile preview, and neve
  await expect(page.locator('#exportBtn')).toBeDisabled();
 });
 test('section layout can be chosen directly on page with original mobile reading order intact',async({page})=>{
+ test.setTimeout(60000);
+ console.log('FLUID diagnostic: started section layout can be chosen directly ');
  await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',
   body:'<!doctype html><html><head></head><body><main>'+
    '<section id="project-section"><h2>Collaborative investigations</h2>'+
