@@ -345,6 +345,7 @@
     const overlay=copy.createElement("style");
     overlay.textContent=[
       "[data-editor-key]{cursor:text;outline-offset:3px;}",
+      "html.moon-free-mode main [data-editor-key],html.moon-free-mode main [data-editor-added-index]{cursor:grab!important;touch-action:none}",
       '[data-editor-added-index]{cursor:pointer;outline-offset:3px;}',
       '[data-editor-added-index]:hover{outline:1px dashed #8d8d8d;}',
       '[data-editor-added-index][data-editor-added-selected]{outline:2px solid #35745c!important;outline-offset:4px!important;}',
@@ -382,8 +383,10 @@
         const d=state.frameDoc;
         d.documentElement.setAttribute("data-moon-theme",$("previewTheme").value);
         d.documentElement.style.colorScheme=$("previewTheme").value;
+        d.documentElement.classList.toggle("moon-free-mode",freeCanvasActive);
         updateStagedPreview();
         d.addEventListener("click",onPreviewClick,true);
+        d.addEventListener("pointerdown",onFreeObjectPointerDown,true);
         d.addEventListener("keydown",onPreviewKeydown,true);
         d.addEventListener("input",onPreviewInput,true);
         d.addEventListener("focusin",onPreviewFocus,true);
@@ -943,6 +946,17 @@
     frame.style.width=Math.max(1,rect.width)+"px";
     frame.style.height=Math.max(1,rect.height)+"px";
   }
+  function onFreeObjectPointerDown(event){
+    if(!freeCanvasActive||event.button!==0||event.defaultPrevented)return;
+    if(event.target.closest("#moon-free-selection,#moon-quick-toolbar,#moon-quick-composer,#moon-quick-layout,#moon-quick-size,#moon-quick-properties"))return;
+    const added=event.target.closest("[data-editor-added-index]");
+    const original=added?null:event.target.closest("[data-editor-key]");
+    const node=added||original;
+    if(!node||!node.closest("main"))return;
+    if(added)selectAddedBlock(Number(added.getAttribute("data-editor-added-index")));
+    else selectElement(original);
+    freeGestureStart(event,"move",node);
+  }
   function freeGestureStart(event,direction,handle){
     const sel=freeSelected();
     if(!sel||event.button!==0||freeGesture)return;
@@ -1046,6 +1060,7 @@
   }
   function toggleFreeCanvas(){
     freeCanvasActive=!freeCanvasActive;
+    state.frameDoc?.documentElement.classList.toggle("moon-free-mode",freeCanvasActive);
     const button=$("freeCanvasToggle");
     button.setAttribute("aria-pressed",String(freeCanvasActive));
     button.textContent=freeCanvasActive?"✓ Free move & resize":"Free move & resize";
