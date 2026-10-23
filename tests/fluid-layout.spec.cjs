@@ -3940,6 +3940,12 @@ test('floating toolbar stays inside narrow viewport and follows light/dark previ
  expect(geometry.y).toBeGreaterThanOrEqual(0);
  expect(geometry.right).toBeLessThanOrEqual(geometry.width+1);
  expect(geometry.bottom).toBeLessThanOrEqual(geometry.height+1);
+ await page.locator('#previewViewport').selectOption('tablet');
+ await page.locator('#previewViewport').selectOption('mobile');
+ await expect.poll(async()=>toolbar.evaluate(el=>{
+  const r=el.getBoundingClientRect();
+  return r.x>=0&&r.right<=el.ownerDocument.defaultView.innerWidth+1;
+ })).toBe(true);
  await page.locator('#previewTheme').selectOption('dark');
  await expect(toolbar).toBeVisible();
  await expect.poll(async()=>toolbar.evaluate(el=>getComputedStyle(el).backgroundColor))

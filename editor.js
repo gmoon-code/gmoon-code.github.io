@@ -627,7 +627,11 @@
       // and away from the centre of the next original paragraph.
       left=maxLeft;top=4;
     }
-    bar.style.left=Math.max(4,Math.min(maxLeft,left))+"px";
+    // A numeric left coordinate can outlive a responsive iframe width
+    // transition. Keep the actual CSS position clamped to the changing
+    // viewport even before the next resize notification arrives.
+    const desiredLeft=Math.max(4,Math.min(maxLeft,left));
+    bar.style.left="max(4px,min("+desiredLeft+"px,calc(100vw - min(260px, calc(100vw - 8px)) - 4px)))";
     bar.style.top=Math.max(4,Math.min(maxTop,top))+"px";
   }
   function createQuickToolbar(){
@@ -3797,6 +3801,15 @@
     });
     $("previewViewport").addEventListener("change",event=>{
       $("previewContainer").className="preview-frame-container "+event.target.value;
+      positionQuickToolbar();
+      positionQuickComposer();
+      positionQuickLayout();
+    });
+    $("previewContainer").addEventListener("transitionend",event=>{
+      if(event.target!==$("previewContainer")||event.propertyName!=="max-width")return;
+      positionQuickToolbar();
+      positionQuickComposer();
+      positionQuickLayout();
     });
     $("previewTheme").addEventListener("change",event=>{
       const documentInFrame=$("pageFrame").contentDocument;
