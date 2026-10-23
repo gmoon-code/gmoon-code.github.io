@@ -726,6 +726,14 @@ try {
   await sections.frameLocator("#pageFrame").locator("main p").first().click();
   assert.equal(await sections.locator("#selectionTag").textContent(),"p");
   console.log("PASS: contextual toolbar does not obstruct selection of adjacent text");
+  await sections.frameLocator("#pageFrame").locator("#moon-quick-toolbar")
+    .getByRole("button",{name:"Increase space above selected block"}).click();
+  assert.equal(await sections.frameLocator("#pageFrame").locator("main p").first()
+    .evaluate(el=>el.style.marginTop),"10px");
+  await sections.locator("#undoBtn").click();
+  assert.equal(await sections.frameLocator("#pageFrame").locator("main p").first()
+    .evaluate(el=>el.style.marginTop),"");
+  console.log("PASS: on-canvas space-above control and undo");
   // Keyboard reordering uses the same verified neighbouring-block move as dragging.
   const grip=sections.frameLocator("#pageFrame").locator("#moon-block-move-handle");
   await grip.focus();
