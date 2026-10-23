@@ -1012,6 +1012,10 @@
     event.preventDefault();
     pendingCanvasDrag={id:event.pointerId,startX:event.clientX,startY:event.clientY,
       node,added:!!added};
+    // Capture at pointerdown, before the cursor can leave the iframe, so
+    // direct page moves keep receiving pointermove/pointerup events.
+    try{node.setPointerCapture(event.pointerId);}
+    catch{/* A document-level listener remains as a fallback. */}
   }
   function freeGestureStart(event,direction,handle,origin=null){
     const sel=freeSelected();
