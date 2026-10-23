@@ -57,3 +57,9 @@ A later phase may improve layout freedom and authoring controls without coupling
 ## Physical phone-width editing order
 
 The 390px academic editor release smoke test now checks the complete application rather than only the website's mobile page preview. At narrow widths, the editable page and its inspector appear before the long navigation sidebar. A compact **Choose a page** control above the preview mirrors the full sidebar page picker and uses the same source-validated loader. The test changes pages in both controls, checks the source remains unpublished, and saves an `academic-editor-mobile.png` screenshot in the editor smoke-test artifact. Wide-screen three-column layout remains unchanged.
+
+## Confirmed release sequence
+
+**Story Method Stage 1 released 23 October 2026** at mainline commit `0615a01f80cde6aa97dd02dfa5d1a9012bf434e7` from reviewed PR #8. [Mainline Memory Palace QA](https://github.com/gmoon-code/memory-palace-u1-8/actions/runs/39888377409) and the [guarded Pages build, deploy and verify-production jobs](https://github.com/gmoon-code/memory-palace-u1-8/actions/runs/39888516593) all passed. Production QA confirmed all 8 units, 58 journeys and 448 scenes. Story Method editor URL is `https://gmoon-code.github.io/memory-palace-u1-8/editor.html`. The cross-site preflight now pins this deployed main commit, rather than the pre-merge feature commit.
+
+**Research Methods Studio Stage 2 remains on hold** until the owner privately verifies the existing live teacher login and approves the authorized release. No live access code should be shared in GitHub issues or chat. The secure test workflow is green, but a simulated login cannot satisfy that manual gate. The academic editor hub Stage 3 remains unmerged, contingent on Stage 2 acceptance and its own exact-head tests.

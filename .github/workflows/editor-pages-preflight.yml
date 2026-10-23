@@ -39,7 +39,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: gmoon-code/memory-palace-u1-8
-          ref: 0a0d9b900b2b6344c4e21b93b80f0f91f7e03d44
+          ref: 0615a01f80cde6aa97dd02dfa5d1a9012bf434e7
           path: .integration/story-method
 
       - uses: actions/setup-node@v4
