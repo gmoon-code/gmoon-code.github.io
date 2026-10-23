@@ -3739,7 +3739,8 @@
     if (!/^[a-z0-9-]+\.html$/.test(page)) return;
     if(state.page&&page!==state.page&&state.stagedMedia&&
        !confirm("The new image is only staged in this browser. Switching pages will discard its file. Continue?")){
-      $("pagePicker").value=state.page;return;
+      $("pagePicker").value=state.page;
+      $("mobilePagePicker").value=state.page;return;
     }
     if (state.doc) saveDraft();
     if(page!==state.page)clearStagedMedia();
@@ -3753,6 +3754,7 @@
       if (token!==state.loadToken) return;
       if (!/<main\b/i.test(source)) throw new Error("The requested page has no main region.");
       state.page=page;
+      $("mobilePagePicker").value=page;
       state.source=source;
       state.fingerprint=hashText(source);
       state.doc=new DOMParser().parseFromString(source,"text/html");
@@ -3769,13 +3771,30 @@
       updateStatus(transferred?"Verified content, style and/or responsive layout transferred · Not published":state.dirty.size||moved||layoutGroups().length||state.additions.length||state.removals.length||state.blockOrders.length?"Draft restored · Not published":state.staleDraft?"Older local draft exists · Not applied":"Ready to edit · Not published");
     } catch(e) {
       notice("Could not load "+page+". "+e.message,"Page load failed");
-      if (state.page) $("pagePicker").value=state.page;
+      if (state.page) {
+        $("pagePicker").value=state.page;
+        $("mobilePagePicker").value=state.page;
+      }
       updateStatus("Unable to load page");
     }
   }
 
   function init() {
-    $("pagePicker").addEventListener("change",event=>loadPage(event.target.value));
+    // The full page navigator remains available lower down on mobile, while
+    // a compact equivalent beside the preview makes the editor usable first.
+    // Both selectors feed the same source-verified loadPage workflow.
+    const mobilePicker=$("mobilePagePicker");
+    mobilePicker.replaceChildren(...[...$("pagePicker").options].map(option=>
+      option.cloneNode(true)));
+    mobilePicker.value=$("pagePicker").value;
+    $("pagePicker").addEventListener("change",event=>{
+      mobilePicker.value=event.target.value;
+      loadPage(event.target.value);
+    });
+    mobilePicker.addEventListener("change",event=>{
+      $("pagePicker").value=event.target.value;
+      loadPage(event.target.value);
+    });
     $("previewViewport").addEventListener("change",event=>{
       $("previewContainer").className="preview-frame-container "+event.target.value;
     });

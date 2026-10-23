@@ -113,9 +113,18 @@ try {
   });
   assert(phoneMetrics.documentWidth<=phoneMetrics.viewport+1,
     "The complete academic editor must fit a 390px phone without horizontal overflow");
-  assert(phoneMetrics.sidebarTop<phoneMetrics.previewTop&&
-    phoneMetrics.previewTop<phoneMetrics.inspectorTop,
-    "Phone layout must present navigation, page preview and then inspector in order");
+  assert(phoneMetrics.previewTop<phoneMetrics.inspectorTop&&
+    phoneMetrics.inspectorTop<phoneMetrics.sidebarTop,
+    "Phone editing should show the page preview and inspector before long navigation");
+  assert.equal(await phoneEditor.locator("#mobilePagePicker").isVisible(),true);
+  assert.equal(await phoneEditor.locator("#mobilePagePicker").inputValue(),"index.html");
+  await phoneEditor.locator("#mobilePagePicker").selectOption("research.html");
+  await phoneEditor.frameLocator("#pageFrame").locator("main").waitFor();
+  await phoneEditor.waitForFunction(()=>document.getElementById("pagePicker")?.value==="research.html");
+  assert.equal(await phoneEditor.locator("#pagePicker").inputValue(),"research.html");
+  await phoneEditor.locator("#mobilePagePicker").selectOption("index.html");
+  await phoneEditor.frameLocator("#pageFrame").locator("main .home-kicker").waitFor();
+  assert.equal(await phoneEditor.locator("#pagePicker").inputValue(),"index.html");
   assert(phoneMetrics.frameWidth<=phoneMetrics.viewport,
     "The editable website preview must remain within the physical phone viewport");
   assert.equal(await phoneEditor.locator("#publisherConnect").isDisabled(),true,

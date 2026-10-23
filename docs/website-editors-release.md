@@ -50,3 +50,7 @@ The academic and Research Methods Studio sites use GitHub Pages, but their actua
 The academic editor and Story Method editor **do not have one-click production publishing**. They produce reviewed local exports. The academic editor's private publisher connection remains deliberately disabled. Story Method editing is narrative-only and protects the frozen AP Biology science, memory objects, checkpoints and scene geometry. Research Methods Studio has more direct authorised publication controls only for supported guidance workflows; other wording proposals remain review-only.
 
 A later phase may improve layout freedom and authoring controls without coupling them to unrestricted public-site writes.
+
+## Physical phone-width editing order
+
+The 390px academic editor release smoke test now checks the complete application rather than only the website's mobile page preview. At narrow widths, the editable page and its inspector appear before the long navigation sidebar. A compact **Choose a page** control above the preview mirrors the full sidebar page picker and uses the same source-validated loader. The test changes pages in both controls, checks the source remains unpublished, and saves an `academic-editor-mobile.png` screenshot in the editor smoke-test artifact. Wide-screen three-column layout remains unchanged.
