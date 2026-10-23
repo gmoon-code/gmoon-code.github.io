@@ -67,7 +67,7 @@ try {
   assert.equal(await page.locator("#pageFindQuery").evaluate(el=>document.activeElement===el),true);
   await page.locator("#pageFindQuery").fill("research");
   await page.locator("#pageFindQuery").press("/");
-  assert.match(await page.locator("#pageFindQuery").inputValue(),/research\\//);
+  assert.equal(await page.locator("#pageFindQuery").inputValue(),"research/");
   await page.locator("#pageFindQuery").fill("");
   await page.locator("#pageFindQuery").blur();
   assert.equal(await page.locator("#exportBtn").isDisabled(),true);
