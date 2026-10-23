@@ -3267,6 +3267,17 @@
       ["color","background"].every(key=>value[key]===undefined||
         (typeof value[key]==="string"&&/^#[0-9a-fA-F]{6}$/.test(value[key])));
   }
+  const FREE_CLASS="moon-free-object";
+  const FREE_CSS=[
+    "main:has(.moon-free-object) *:has(.moon-free-object){overflow:visible!important}",
+    ".moon-free-object{position:relative;z-index:3;box-sizing:border-box;max-width:none}",
+    "@media(max-width:700px){.moon-free-object{translate:none!important;width:auto!important;max-width:100%!important;min-height:0!important;height:auto!important;position:static!important}img.moon-free-object{width:auto!important;max-width:100%!important;height:auto!important}}"
+  ].join("\n");
+  function freePositionValid(p){return !!p&&typeof p==="object"&&!Array.isArray(p)&&
+    Object.keys(p).length===4&&["x","y","width","height"].every(k=>Number.isInteger(p[k]))&&
+    Math.abs(p.x)<=16000&&Math.abs(p.y)<=16000&&p.width>=35&&p.width<=4000&&p.height>=18&&p.height<=4000;}
+  function freeStyle(p){return "translate:"+p.x+"px "+p.y+"px;width:"+p.width+
+    "px;min-height:"+p.height+"px;max-width:none;box-sizing:border-box"}
   const ADDED_LAYOUT_DEFAULT={align:"left",widthPercent:100,spaceAbove:0,spaceBelow:0};
   function addedBlockLayout(item){return {...ADDED_LAYOUT_DEFAULT,...(item?.layout||{})};}
   function isDefaultAddedLayout(layout){
@@ -3287,7 +3298,7 @@
       throw Error("Invalid added block layout");
   }
   function addedBlockStyle(item){
-    if(!item?.layout&&!item?.appearance)return "";
+    if(!item?.layout&&!item?.appearance&&!item?.freePosition)return "";
     const layout=addedBlockLayout(item),rules=[];
     if(layout.widthPercent!==100)rules.push("width:"+layout.widthPercent+"%","max-width:100%","box-sizing:border-box");
     if(layout.align==="center")rules.push("text-align:center","margin-left:auto","margin-right:auto");
@@ -3300,6 +3311,7 @@
     if(a.size)rules.push("font-size:"+a.size+"px");
     if(a.color)rules.push("color:"+a.color);
     if(a.background)rules.push("background-color:"+a.background);
+    if(item.freePosition)rules.push(freeStyle(item.freePosition));
     return rules.join(";");
   }
   function safeExistingImagePath(path){
@@ -3343,6 +3355,7 @@
           throw Error("Invalid "+kind+" insertion");
         }
       validateAddedLayout(item.layout);
+      if(item.freePosition!==undefined&&!freePositionValid(item.freePosition))throw Error("Invalid free canvas position");
       if(item.appearance!==undefined&&
          (kind==="image"||!allowedAppearance(item.appearance)))
         throw Error("Invalid text appearance");
@@ -3360,7 +3373,8 @@
         ...(kind==="image"?{src:item.src,...(item.widthPercent!==undefined?
           {widthPercent:item.widthPercent}:{})}:{}),
         ...(item.layout!==undefined?{layout:{...item.layout}}:{}),
-        ...(item.appearance!==undefined?{appearance:{...item.appearance}}:{})});
+        ...(item.appearance!==undefined?{appearance:{...item.appearance}}:{}),
+        ...(item.freePosition!==undefined?{freePosition:{...item.freePosition}}:{})});
     }
     return out;
   }
@@ -3371,10 +3385,12 @@
     const kind=insertionKind(item);
     if(kind==="heading"){
       const node=doc.createElement(item.headingTag);node.textContent=item.text;
+      if(item.freePosition)node.classList.add(FREE_CLASS);
       if(addedBlockStyle(item))node.setAttribute("style",addedBlockStyle(item));
       return node;
     }
     const node=doc.createElement("p");
+    if(item.freePosition)node.classList.add(FREE_CLASS);
     if(addedBlockStyle(item))node.setAttribute("style",addedBlockStyle(item));
     if(kind==="image"){
       const img=doc.createElement("img");
@@ -3383,6 +3399,7 @@
       img.setAttribute("loading","lazy");
       img.style.cssText="max-width:100%;height:auto";
       if(item.widthPercent!==undefined)img.style.width=item.widthPercent+"%";
+      if(item.freePosition)img.style.width="100%";
       node.append(img);
       return node;
     }
@@ -3397,14 +3414,14 @@
   function additionHtml(item){
     const text=escapePlainText(item.text),css=addedBlockStyle(item);
     const style=css?' style="'+css+'"':"";
-    if(insertionKind(item)==="image")return '<p'+style+'><img src="'+item.src+
+    if(insertionKind(item)==="image")return '<p'+(item.freePosition?' class="moon-free-object"':"")+style+'><img src="'+item.src+
       '" alt="'+text.replace(/"/g,"&quot;").replace(/'/g,"&#39;")+
       '" loading="lazy" style="max-width:100%;height:auto'+
         (item.widthPercent===undefined?"":";width:"+item.widthPercent+"%")+'"></p>';
-    if(insertionKind(item)==="heading")return "<"+item.headingTag+style+">"+text+"</"+item.headingTag+">";
-    if(insertionKind(item)==="link")return "<p"+style+"><a href=\""+escapePlainText(item.href)+"\""+
+    if(insertionKind(item)==="heading")return "<"+item.headingTag+(item.freePosition?' class="moon-free-object"':"")+style+">"+text+"</"+item.headingTag+">";
+    if(insertionKind(item)==="link")return "<p"+(item.freePosition?' class="moon-free-object"':"")+style+"><a href=\""+escapePlainText(item.href)+"\""+
       (/^https:\/\//i.test(item.href)?" rel=\"noopener noreferrer\"":"")+">"+text+"</a></p>";
-    return "<p"+style+">"+text+"</p>";
+    return "<p"+(item.freePosition?' class="moon-free-object"':"")+style+">"+text+"</p>";
   }
 
   // Removal proposals retain the original source in the working document.
