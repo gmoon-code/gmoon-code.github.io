@@ -734,6 +734,16 @@ try {
   assert.equal(await sections.frameLocator("#pageFrame").locator("main p").first()
     .evaluate(el=>el.style.marginTop),"");
   console.log("PASS: on-canvas space-above control and undo");
+  await sections.frameLocator("#pageFrame").locator("main p").first().click();
+  const spacingGrip=sections.frameLocator("#pageFrame").locator("#moon-spacing-grip");
+  await spacingGrip.focus();
+  await spacingGrip.press("ArrowDown");
+  assert.equal(await sections.frameLocator("#pageFrame").locator("main p").first()
+    .evaluate(el=>el.style.marginBottom),"5px");
+  await sections.locator("#undoBtn").click();
+  assert.equal(await sections.frameLocator("#pageFrame").locator("main p").first()
+    .evaluate(el=>el.style.marginBottom),"");
+  console.log("PASS: on-canvas spacing grip, keyboard adjustment and undo");
   // Keyboard reordering uses the same verified neighbouring-block move as dragging.
   const grip=sections.frameLocator("#pageFrame").locator("#moon-block-move-handle");
   await grip.focus();
