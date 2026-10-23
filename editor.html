@@ -8,6 +8,7 @@
   <title>Visual Editor | Ye Eun Moon</title>
   <link rel="stylesheet" href="editor.css">
   <script src="editor-publisher-config.js" defer></script>
+  <script src="responsive-layout.js" defer></script>
   <script src="editor.js" defer></script>
 </head>
 <body>
@@ -24,6 +25,7 @@
       <div class="editor-top-actions">
         <span id="editorSaveStatus" class="save-status" role="status" aria-live="polite">Local draft · Not published</span>
         <button type="button" id="undoBtn" class="secondary" disabled>Undo</button>
+        <button type="button" id="redoBtn" class="secondary" disabled>Redo</button>
         <button type="button" id="resetBtn" class="secondary" disabled>Reset page</button>
         <button type="button" id="reviewBtn" class="secondary" disabled>Review changes</button>
         <button type="button" id="exportBtn" class="primary" disabled>Export edited HTML</button>
@@ -55,6 +57,24 @@
             <option value="teaching-osmosis-practice.html">Osmosis practice</option>
           </select>
         </div>
+        <div class="sidebar-section" aria-label="Find content on the selected page">
+          <h2>Find an element</h2>
+          <label for="pageFindQuery">Search page text</label>
+          <input type="search" id="pageFindQuery" autocomplete="off" spellcheck="false" placeholder="Type text to locate">
+          <div class="page-find-controls">
+            <button type="button" id="pageFindPrev" class="secondary" disabled>Previous</button>
+            <button type="button" id="pageFindNext" class="secondary" disabled>Next</button>
+            <button type="button" id="pageFindClear" class="secondary" disabled>Clear</button>
+          </div>
+          <p id="pageFindStatus" class="small-note" role="status" aria-live="polite">Find headings, paragraphs, links and image descriptions within the page.</p>
+          <div id="pageFindResults" class="page-find-results" aria-label="Matching editable elements"></div>
+          <h3>Browse editable elements</h3>
+          <div class="page-find-controls">
+            <button type="button" id="browsePrevElement" class="secondary" disabled>Previous element</button>
+            <button type="button" id="browseNextElement" class="secondary" disabled>Next element</button>
+          </div>
+          <p id="browseElementStatus" class="small-note" role="status" aria-live="polite">Select a page to browse its original content.</p>
+        </div>
         <div class="sidebar-section">
           <h2>On this page</h2>
           <nav id="outline" class="outline" aria-label="Page section outline">
@@ -69,9 +89,15 @@
         </div>
         <div class="sidebar-section">
           <h2>Editing</h2>
-          <p class="sidebar-help">Click a heading, paragraph, image, caption, or link in the preview. Type directly on the selected text. Use the inspector to edit image descriptions and links.</p>
-          <p class="sidebar-help">Edits remain in this browser until you export them. This editor does not publish to GitHub.</p>
+          <p class="sidebar-help">Click a heading, paragraph, image, caption, or link in the preview, or use Browse editable elements to navigate with the keyboard. Type directly on the selected text. Use the inspector to edit image descriptions and links.</p>
+          <p class="sidebar-help">Keyboard shortcuts outside text fields: Ctrl/⌘+Z to undo, Ctrl/⌘+Shift+Z or Ctrl+Y to redo. Ctrl/⌘+S saves your local draft without opening the browser Save dialog.</p>
+          <p class="sidebar-help">Edits remain in this browser until you export them or, after the private publisher is configured, explicitly submit them for GitHub review. Nothing is published automatically.</p>
           <a href="index.html" class="editor-site-link">View public website <span aria-hidden="true">↗</span></a>
+        </div>
+        <div class="sidebar-section">
+          <h2>Experimental layout builder</h2>
+          <p class="sidebar-help">Import a page into the layout builder to adjust text, font size, colours, alignment, and desktop/mobile block positions. Verified text, styling, and approved responsive sibling groups can transfer back here for review. Unapproved freeform positions and added or deleted blocks remain experimental drafts.</p>
+          <a href="fluid-layout-lab.html" class="editor-site-link">Open layout builder <span aria-hidden="true">↗</span></a>
         </div>
         <div class="sidebar-section">
           <h2>Other website editors</h2>
@@ -86,6 +112,10 @@
 
       <main id="editorPreview" class="editor-workspace" tabindex="-1">
         <div class="workspace-toolbar">
+          <div class="mobile-page-switch">
+            <label for="mobilePagePicker">Choose a page</label>
+            <select id="mobilePagePicker" aria-label="Choose website page on mobile"></select>
+          </div>
           <div class="workspace-title">
             <h1 id="previewHeading">Home</h1>
             <span id="changeCount">0 unsaved changes</span>
@@ -136,7 +166,19 @@
               <option value="right">Right</option>
               <option value="justify">Justified</option>
             </select>
-            <p class="small-note">Only the selected block changes. You can revert it without affecting the rest of the page.</p>
+            <label for="textFontSize">Font size in pixels</label>
+            <input id="textFontSize" type="number" min="12" max="80" step="1" placeholder="Page default">
+            <label for="textMaxWidth">Maximum text width (%)</label>
+            <input id="textMaxWidth" type="number" min="30" max="100" step="1" placeholder="Page default">
+            <label for="textSpaceAbove">Space above (px)</label>
+            <input id="textSpaceAbove" type="number" min="0" max="80" step="1" placeholder="Page default">
+            <label for="textSpaceBelow">Space below (px)</label>
+            <input id="textSpaceBelow" type="number" min="0" max="80" step="1" placeholder="Page default">
+            <label for="textColour">Text colour (hex)</label>
+            <input id="textColour" type="text" maxlength="7" placeholder="Page default, or #191919" spellcheck="false">
+            <label for="textBackgroundColour">Background colour (hex)</label>
+            <input id="textBackgroundColour" type="text" maxlength="7" placeholder="Page default, or #ffffff" spellcheck="false">
+            <p class="small-note">Leave a field blank to use the original page style. These changes apply to the selected block, and can be undone or reverted.</p>
           </div>
           <div id="linkFields" class="inspector-group" hidden>
             <label for="linkHref">Link destination</label>
@@ -161,19 +203,137 @@
             </fieldset>
             <label for="imageAlt">Image description (alt text)</label>
             <textarea id="imageAlt" rows="3"></textarea>
-            <label for="imageMaxWidth">Image maximum width</label>
-            <select id="imageMaxWidth">
-              <option value="">Use site default</option>
-              <option value="100%">Full container width</option>
-              <option value="75%">Three-quarter width</option>
-              <option value="50%">Half width</option>
-              <option value="25%">Quarter width</option>
-            </select>
+            <label for="imageWidthPercent">Image width within its container</label>
+            <input type="range" id="imageWidthPercent" min="20" max="100" step="5" value="100">
+            <output id="imageWidthValue" for="imageWidthPercent">100%</output>
+            <p class="small-note">Drag the bottom-right handle on the selected image to resize it directly, or use this slider with a mouse or keyboard. Revert this element to restore its original dimensions.</p>
             <p class="small-note">Existing images and staged uploads can be previewed. New files reach the website only after the private publisher is configured and the GitHub review PR is approved.</p>
+          </div>
+          <div id="moveOriginalBlockFields" class="inspector-group" hidden>
+            <h3>Move existing content</h3>
+            <p class="small-note">Reorder neighbouring paragraphs, illustrations or list items within the same verified content group. Links and embedded formatting stay intact.</p>
+            <div class="page-find-controls">
+              <button type="button" id="moveOriginalUp" class="secondary" disabled>Move block up</button>
+              <button type="button" id="moveOriginalDown" class="secondary" disabled>Move block down</button>
+            </div>
+            <p id="moveOriginalStatus" class="small-note" role="status">Select a standalone content block to arrange it.</p>
+          </div>
+          <div id="directLayoutFields" class="inspector-group" hidden>
+            <h3>Arrange this section</h3>
+            <p class="small-note">Arrange a complete group of nearby text blocks or cards into responsive columns. Existing links, images, and reading order are preserved.</p>
+            <label for="directLayoutPreset">Desktop arrangement</label>
+            <select id="directLayoutPreset">
+              <option value="stack">One column</option>
+              <option value="two" selected>Two equal columns</option>
+              <option value="first-wide">First column wider (8 / 4)</option>
+              <option value="second-wide">Second column wider (4 / 8)</option>
+              <option value="three">Three equal columns</option>
+              <option value="custom">Custom two-column split</option>
+            </select>
+            <div id="directLayoutCustomField" hidden>
+              <label for="directLayoutCustomColumns">First column width (of 12 grid columns)</label>
+              <input id="directLayoutCustomColumns" type="range" min="2" max="10" step="1" value="7">
+              <output id="directLayoutCustomValue" for="directLayoutCustomColumns">7 / 5 columns</output>
+            </div>
+            <button id="directLayoutApply" type="button" class="secondary">Apply responsive arrangement</button>
+            <button id="directLayoutRemove" type="button" class="secondary" disabled>Remove this arrangement</button>
+            <p id="directLayoutStatus" role="status" class="small-note">Select a heading, paragraph or card to arrange its immediate section.</p>
+          </div>
+          <div id="insertContentFields" class="inspector-group" hidden>
+            <h3>Add content below this element</h3>
+            <p class="small-note">Add one or several paragraphs, headings, or links after this element. New blocks appear in the order you add them, and the original content stays intact.</p>
+            <label for="insertContentKind">Content type</label>
+            <select id="insertContentKind">
+              <option value="paragraph">Paragraph</option>
+              <option value="heading">Heading</option>
+              <option value="link">Link</option>
+              <option value="image">Existing website image</option>
+            </select>
+            <label id="insertContentLabel" for="insertContentText">New text</label>
+            <textarea id="insertContentText" rows="3" spellcheck="true" maxlength="2000"></textarea>
+            <div id="insertHeadingField" hidden>
+              <label for="insertHeadingLevel">Heading level</label>
+              <select id="insertHeadingLevel"><option value="h2">Section heading</option><option value="h3" selected>Subheading</option></select>
+            </div>
+            <div id="insertLinkField" hidden>
+              <label for="insertLinkHref">Link destination</label>
+              <input id="insertLinkHref" type="url" placeholder="research.html or https://example.org" autocomplete="off">
+            </div>
+            <div id="insertImageField" hidden>
+              <label for="insertImageSrc">Existing image path</label>
+              <input id="insertImageSrc" type="text" placeholder="assets/example.webp" autocomplete="off" spellcheck="false">
+              <button type="button" id="chooseInsertImageBtn" class="secondary">Browse existing site images</button>
+              <p class="small-note">Choose an image already referenced by the website. A meaningful image description is required.</p>
+            </div>
+            <button type="button" id="insertContentBtn" class="secondary">Add to local draft</button>
+            <button type="button" id="duplicateSourceBtn" class="secondary" disabled>Duplicate selected plain-text block</button>
+            <p class="small-note">Duplicate creates a new paragraph or heading below the original. Blocks with embedded links or formatting are protected until rich-content duplication is supported.</p>
+            <p class="small-note">Review and export the addition before creating a GitHub proposal. Existing content will not be removed.</p>
           </div>
           <div class="inspector-group">
             <button type="button" id="revertElementBtn" class="secondary" disabled>Revert this element</button>
+            <button type="button" id="removeSourceBtn" class="secondary" disabled>Remove selected block</button>
+            <p id="removeSourceHelp" class="small-note" role="status">Select an eligible paragraph, heading or image to remove it. Removed source can be restored in Review changes or through Undo.</p>
           </div>
+        </div>
+        <div id="addedBlockDetails" class="inspector-group added-block-editor" hidden>
+          <h3>Edit newly added block</h3>
+          <p class="small-note">This block is part of your local draft. Edit its content here, or remove it without changing the original page.</p>
+          <p id="addedBlockKind" class="selection-tag">Paragraph</p>
+          <label id="addedBlockTextLabel" for="addedBlockText">Block text</label>
+          <textarea id="addedBlockText" rows="5" maxlength="2000" spellcheck="true"></textarea>
+          <div id="addedBlockHeadingField" hidden>
+            <label for="addedBlockHeadingLevel">Heading level</label>
+            <select id="addedBlockHeadingLevel">
+              <option value="h2">Section heading</option>
+              <option value="h3">Subheading</option>
+            </select>
+          </div>
+          <div id="addedBlockLinkField" hidden>
+            <label for="addedBlockHref">Link destination</label>
+            <input id="addedBlockHref" type="text" spellcheck="false" autocomplete="off">
+          </div>
+          <div id="addedBlockImageField" hidden>
+            <label for="addedBlockSrc">Existing image path</label>
+            <input id="addedBlockSrc" type="text" spellcheck="false" autocomplete="off">
+            <button type="button" id="chooseAddedImageBtn" class="secondary">Browse existing images</button>
+            <label for="addedImageWidthPercent">Image width within its container</label>
+            <input type="range" id="addedImageWidthPercent" min="20" max="100" step="5" value="100">
+            <output id="addedImageWidthValue" for="addedImageWidthPercent">100%</output>
+            <p class="small-note">Resize using the handle on the image or this slider. The size stays in your local draft and is included in review and export. Undo restores the previous width.</p>
+          </div>
+          <fieldset id="addedBlockLayoutFields" class="inspector-group">
+            <legend>Size and position in this section</legend>
+            <label for="addedBlockAlign">Block alignment</label>
+            <select id="addedBlockAlign">
+              <option value="left">Left</option>
+              <option value="center">Centre</option>
+              <option value="right">Right</option>
+            </select>
+            <label for="addedBlockWidth">Block width within its container</label>
+            <input type="range" id="addedBlockWidth" min="30" max="100" step="5" value="100">
+            <output id="addedBlockWidthValue" for="addedBlockWidth">100%</output>
+            <label for="addedBlockSpaceAbove">Space above (px)</label>
+            <input type="number" id="addedBlockSpaceAbove" min="0" max="80" step="5" value="0">
+            <label for="addedBlockSpaceBelow">Space below (px)</label>
+            <input type="number" id="addedBlockSpaceBelow" min="0" max="80" step="5" value="0">
+            <button type="button" id="resetAddedBlockLayout" class="secondary">Restore default size and position</button>
+            <p class="small-note">Drag the corner handle of a new text block to adjust width, or use the slider. Select Left, Centre or Right to place it within the section. These settings retain document reading order on smaller screens.</p>
+          </fieldset>
+          <button type="button" id="applyAddedBlockBtn" class="primary">Apply block edits</button>
+          <button type="button" id="duplicateAddedBlockBtn" class="secondary">Duplicate this new block</button>
+          <div id="moveAddedAnchorFields">
+            <label for="moveAddedAnchorPicker">Move this block below another original element</label>
+            <select id="moveAddedAnchorPicker" aria-describedby="moveAddedAnchorHelp"></select>
+            <button type="button" id="moveAddedAnchorBtn" class="secondary" disabled>Move to selected location</button>
+            <p id="moveAddedAnchorHelp" class="small-note">Choose an original section heading or paragraph on this page. The original content stays in place, and this new block moves beneath it. You can also drag the block handle directly onto the original element.</p>
+          </div>
+          <div class="page-find-controls">
+            <button type="button" id="moveAddedEarlierBtn" class="secondary">Move earlier</button>
+            <button type="button" id="moveAddedLaterBtn" class="secondary">Move later</button>
+          </div>
+          <button type="button" id="removeAddedBlockBtn" class="secondary">Remove new block</button>
+          <p id="addedBlockStatus" class="small-note" role="status" aria-live="polite">These changes remain in the browser until exported or reviewed.</p>
         </div>
         <div class="inspector-footer">
           <h3>Propose changes</h3>

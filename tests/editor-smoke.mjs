@@ -34,6 +34,22 @@ function checkNoPageErrors(where) {
 
 try {
   await ready();
+  // Navigate original blocks without changing the source or creating tab traps.
+  assert.equal(await page.locator("#browseNextElement").isEnabled(),true);
+  await page.locator("#browseNextElement").click();
+  const firstBrowse=await page.locator("#pageFrame").evaluate(frame=>
+    frame.contentDocument.querySelector("[data-editor-selected]")?.getAttribute("data-editor-key"));
+  assert.match(firstBrowse,/^e\d+$/);
+  assert.match(await page.locator("#browseElementStatus").textContent(),/Element 1 of/);
+  await page.locator("#browseNextElement").click();
+  const secondBrowse=await page.locator("#pageFrame").evaluate(frame=>
+    frame.contentDocument.querySelector("[data-editor-selected]")?.getAttribute("data-editor-key"));
+  assert.notEqual(secondBrowse,firstBrowse);
+  await page.locator("#browsePrevElement").click();
+  assert.equal(await page.locator("#pageFrame").evaluate(frame=>
+    frame.contentDocument.querySelector("[data-editor-selected]")?.getAttribute("data-editor-key")),firstBrowse);
+  assert.equal(await page.locator("#exportBtn").isDisabled(),true,
+    "Browsing content must not create an exportable change");
   // An optional single bookmark opens the complete directory without
   // requiring credentials or enabling editor publication rights.
   const directory=await context.newPage();
@@ -73,6 +89,58 @@ try {
     fullPage:true
   });
   await directory.close();
+
+  // Test the actual editor application at phone width, not merely the
+  // internal "Mobile" preview inside a desktop-sized editor window.
+  const phoneEditor=await context.newPage();
+  const phoneErrors=[];
+  phoneEditor.on("pageerror",error=>phoneErrors.push(error.message));
+  await phoneEditor.setViewportSize({width:390,height:844});
+  await phoneEditor.goto(base+"/editor.html",{waitUntil:"domcontentloaded"});
+  await phoneEditor.frameLocator("#pageFrame").locator("main .home-kicker")
+    .first().waitFor();
+  const phoneMetrics=await phoneEditor.evaluate(()=>{
+    const rect=id=>document.querySelector(id).getBoundingClientRect();
+    return {
+      viewport:innerWidth,
+      documentWidth:document.documentElement.scrollWidth,
+      topbarWidth:rect(".editor-topbar").width,
+      previewTop:rect(".editor-workspace").top,
+      sidebarTop:rect(".editor-sidebar").top,
+      inspectorTop:rect(".editor-inspector").top,
+      frameWidth:rect("#pageFrame").width
+    };
+  });
+  assert(phoneMetrics.documentWidth<=phoneMetrics.viewport+1,
+    "The complete academic editor must fit a 390px phone without horizontal overflow");
+  assert(phoneMetrics.previewTop<phoneMetrics.inspectorTop&&
+    phoneMetrics.inspectorTop<phoneMetrics.sidebarTop,
+    "Phone editing should show the page preview and inspector before long navigation");
+  assert.equal(await phoneEditor.locator("#mobilePagePicker").isVisible(),true);
+  assert.equal(await phoneEditor.locator("#mobilePagePicker").inputValue(),"index.html");
+  await phoneEditor.locator("#mobilePagePicker").selectOption("research.html");
+  await phoneEditor.frameLocator("#pageFrame").locator("main").waitFor();
+  await phoneEditor.waitForFunction(()=>document.getElementById("pagePicker")?.value==="research.html");
+  assert.equal(await phoneEditor.locator("#pagePicker").inputValue(),"research.html");
+  await phoneEditor.locator("#mobilePagePicker").selectOption("index.html");
+  await phoneEditor.frameLocator("#pageFrame").locator("main .home-kicker").waitFor();
+  assert.equal(await phoneEditor.locator("#pagePicker").inputValue(),"index.html");
+  assert(phoneMetrics.frameWidth<=phoneMetrics.viewport,
+    "The editable website preview must remain within the physical phone viewport");
+  assert.equal(await phoneEditor.locator("#publisherConnect").isDisabled(),true,
+    "The unconfigured publisher must stay disabled on mobile");
+  await phoneEditor.frameLocator("#pageFrame").locator("main .home-kicker")
+    .first().click();
+  assert.equal(await phoneEditor.locator("#selectionTag").textContent(),"p",
+    "Tapping a real page paragraph must select the correct inspector field");
+  assert.equal(await phoneEditor.locator("#exportBtn").isDisabled(),true,
+    "Selecting content on a phone must never produce a draft change");
+  await phoneEditor.screenshot({
+    path:"/tmp/editor-test-artifacts/academic-editor-mobile.png",fullPage:true
+  });
+  assert.deepEqual(phoneErrors,[],"Phone-sized editor must not raise page errors");
+  await phoneEditor.close();
+
   // All three editors can be bookmarked under GitHub Pages. Cross-site links
   // open separately so unfinished portfolio wording remains in this tab.
   const otherEditors=await page.locator(".other-editor-links a").evaluateAll(links=>
@@ -111,6 +179,16 @@ try {
   assert(/style="[^"]*text-align:\s*center/.test(html),
     "Selected text alignment must survive source export");
   assert(!html.includes("javascript:void"),"No scripts should be introduced");
+  await page.locator("#previewHeading").click();
+  await page.keyboard.press("Control+z");
+  assert.notEqual(await kicker.evaluate(el=>el.style.textAlign),"center",
+    "Ctrl+Z should undo an inspector style edit outside text fields");
+  await page.keyboard.press("Control+Shift+z");
+  assert.equal(await kicker.evaluate(el=>el.style.textAlign),"center",
+    "Ctrl+Shift+Z should restore the inspector style");
+  await page.keyboard.press("Control+s");
+  assert.match(await page.locator("#editorSaveStatus").textContent(),/Draft saved/,
+    "Ctrl+S should save a local draft without a browser download");
 
   await page.reload({waitUntil:"domcontentloaded"});
   await page.frameLocator("#pageFrame").locator("main").waitFor();
@@ -153,12 +231,15 @@ try {
   assert.equal(await page.locator("#imageFields").isVisible(),true);
   await page.locator("#imageAlt").fill("Editor visual test image description");
   await page.locator("#imageAlt").press("Tab");
-  await page.locator("#imageMaxWidth").selectOption("50%");
-  assert.equal(await image.evaluate(el=>el.style.maxWidth),"50%");
+  await page.locator("#imageWidthPercent").evaluate(element=>{
+    element.value="50";
+    element.dispatchEvent(new Event("change",{bubbles:true}));
+  });
+  assert.equal(await image.evaluate(el=>el.style.width),"50%");
   const imageHtml=await downloadedHtml();
   assert(imageHtml.includes('alt="Editor visual test image description"'),
     "Image description must survive source export");
-  assert(/style="[^"]*max-width:\s*50%/.test(imageHtml),
+  assert(/style="[^"]*width:\s*50%/.test(imageHtml),
     "Selected image width must survive source export");
 
   // The image library lists real assets already referenced by site pages.
@@ -216,13 +297,15 @@ try {
   assert.match(await page.frameLocator("#pageFrame")
     .locator("main > section").first().getAttribute("class"),/home-green/,
     "Reorder-only local drafts must survive reload");
-  // A second drag after the first move verifies that the group boundary
-  // tracks its current siblings, not the original final section ID.
-  const dragRowsAgain=page.locator("#sectionList .section-order-row");
-  await dragRowsAgain.nth(1).dragTo(dragRowsAgain.nth(0),{targetPosition:{x:30,y:2}});
+  // After restoring the draft, the accessible Move up action must use the
+  // current sibling order. A separate drag test above covers pointer sorting.
+  await page.locator("#sectionList .section-order-row").nth(1)
+    .locator("button[aria-label^='Move up']").click();
+  await page.waitForFunction(()=>document.querySelector("#pageFrame")?.contentDocument
+    ?.querySelector("main > section")?.classList.contains("home-yellow"));
   assert.match(await page.frameLocator("#pageFrame")
     .locator("main > section").first().getAttribute("class"),/home-yellow/,
-    "The second drag should restore the original first section");
+    "Moving up after reload should restore the original first section");
   assert.equal(await page.locator("#resetBtn").isDisabled(),true,
     "Reversing every section move should clear all local changes");
 
@@ -279,6 +362,168 @@ try {
     }
   }
   checkNoPageErrors("all 17 portfolio pages");
+  // A fast smoke check exercises the preview-only composer using the same
+  // sandbox restrictions as the full browser regression suite.
+  const inline=await context.newPage();
+  await inline.route("**/about.html",route=>route.fulfill({
+    status:200,contentType:"text/html",
+    body:'<!doctype html><html><head></head><body><main><section>'+
+      '<h2>Source heading</h2><p>Unchanged original.</p>'+
+      '<img src="assets/editor-existing-example.webp" alt="Existing classroom materials">'+
+      '</section></main></body></html>'
+  }));
+  await inline.goto(base+"/editor.html?page=about.html",{waitUntil:"domcontentloaded"});
+  await inline.frameLocator("#pageFrame").locator("main h2").click();
+  console.log("INLINE: selected source heading");
+  const toolbar=inline.frameLocator("#pageFrame").locator("#moon-quick-toolbar");
+  await toolbar.getByRole("button",{name:"Add new content after this block"}).click();
+  console.log("INLINE: opened composer");
+  const composer=inline.frameLocator("#pageFrame").getByRole("dialog",{name:"Add content to the page"});
+  await composer.getByLabel("Text",{exact:true}).fill("Inline test paragraph");
+  console.log("INLINE: filled text");
+  await composer.getByRole("button",{name:"Add to page"}).click();
+  console.log("INLINE: clicked Add");
+  await inline.frameLocator("#pageFrame").locator("[data-editor-added-index]").waitFor({timeout:6000});
+  assert.equal(await inline.frameLocator("#pageFrame").locator("[data-editor-added-index]").textContent(),
+    "Inline test paragraph");
+  assert.equal(await composer.count(),0);
+  console.log("INLINE: composer closed; verify changed count");
+  assert.match(await inline.locator("#changeCount").textContent(),/1 added content block/);
+  await inline.waitForFunction(()=>{
+    try{
+      const draft=JSON.parse(localStorage.getItem("moon-portfolio-visual-editor-v1:about.html"));
+      return draft?.additions?.[0]?.text==="Inline test paragraph";
+    }catch{return false;}
+  },null,{timeout:6000});
+  console.log("INLINE: local draft persisted");
+  const exportPromise=inline.waitForEvent("download");
+  await inline.locator("#exportBtn").click();
+  const exported=await exportPromise;
+  const markup=await readFile(await exported.path(),"utf8");
+  assert(markup.includes("<p>Inline test paragraph</p>"));
+  assert(markup.includes("<p>Unchanged original.</p>"));
+  assert(!markup.includes("moon-quick-composer"));
+  console.log("INLINE: clean source-preserving export");
+  await inline.locator("#undoBtn").click();
+  assert.equal(await inline.frameLocator("#pageFrame").locator("[data-editor-added-index]").count(),0);
+  await inline.locator("#redoBtn").click();
+  await inline.frameLocator("#pageFrame").locator("[data-editor-added-index]").waitFor();
+  console.log("INLINE: undo/redo works");
+  await inline.reload();
+  await inline.frameLocator("#pageFrame").locator("[data-editor-added-index]").waitFor({timeout:6000});
+  console.log("INLINE: select restored addition to add another");
+  await inline.frameLocator("#pageFrame").locator("[data-editor-added-index]").click();
+  await inline.frameLocator("#pageFrame").locator("#moon-quick-toolbar")
+    .getByRole("button",{name:"Add new content after this block"}).click();
+  const nextComposer=inline.frameLocator("#pageFrame")
+    .getByRole("dialog",{name:"Add content to the page"});
+  await nextComposer.getByLabel("Content type").selectOption("link");
+  await nextComposer.getByLabel("Text",{exact:true}).fill("Follow-up resource");
+  await nextComposer.getByLabel("Link destination").fill("javascript:alert(1)");
+  await nextComposer.getByRole("button",{name:"Add to page"}).click();
+  assert.match(await nextComposer.getByRole("status").textContent(),/Cannot add this content/);
+  console.log("INLINE: unsafe link rejected");
+  await nextComposer.getByLabel("Link destination").fill("https://example.org/resource");
+  await nextComposer.getByRole("button",{name:"Add to page"}).click();
+  await inline.frameLocator("#pageFrame").locator("[data-editor-added-index]").nth(1).waitFor({timeout:6000});
+  console.log("INLINE: select existing image from quick Add gallery");
+  await inline.frameLocator("#pageFrame").locator("[data-editor-added-index]").nth(1).click();
+  await inline.frameLocator("#pageFrame").locator("#moon-quick-toolbar")
+    .getByRole("button",{name:"Add new content after this block"}).click();
+  const imageComposer=inline.frameLocator("#pageFrame")
+    .getByRole("dialog",{name:"Add content to the page"});
+  await imageComposer.getByLabel("Content type").selectOption("image");
+  await imageComposer.getByRole("button",{
+    name:"Choose an existing website image from the image gallery"
+  }).click();
+  await inline.locator("#mediaDialog").waitFor();
+  await inline.locator("#mediaResults .media-option")
+    .filter({hasText:"assets/editor-existing-example.webp"}).click();
+  assert.equal(await imageComposer.getByLabel("Existing image path").inputValue(),
+    "assets/editor-existing-example.webp");
+  assert.equal(await imageComposer.getByLabel("Image description (alt text)").inputValue(),
+    "Existing classroom materials");
+  assert.equal(await imageComposer.locator("img").getAttribute("src"),
+    "assets/editor-existing-example.webp");
+  await imageComposer.getByLabel("Existing image path").fill("../unsafe.svg");
+  await imageComposer.getByRole("button",{name:"Add to page"}).click();
+  assert.match(await imageComposer.getByRole("status").textContent(),/Cannot add this content/);
+  assert.equal(await inline.frameLocator("#pageFrame")
+    .locator("[data-editor-added-index]").count(),2);
+  console.log("INLINE: rejected unsafe image path");
+  await imageComposer.getByLabel("Existing image path")
+    .fill("assets/editor-existing-example.webp");
+  await imageComposer.getByRole("button",{name:"Add to page"}).click();
+  console.log("INLINE: retried safe image after rejection");
+  assert.equal(await imageComposer.count(),0,
+    "Valid image retry must close inline composer after rejected unsafe source");
+  await inline.frameLocator("#pageFrame").locator("[data-editor-added-index]").nth(2)
+    .locator("img").waitFor({timeout:6000});
+  console.log("PASS: inline page composer supports valid image selection, safe links, reload and edits");
+  await inline.close();
+  // Exercise the contextual Layout menu through the original responsive
+  // group validator, then verify that Undo removes the draft-only layout.
+  const sections=await context.newPage();
+  await sections.route("**/about.html",route=>route.fulfill({
+    status:200,contentType:"text/html",
+    body:'<!doctype html><html><head></head><body><main>'+
+      '<section><h2>Section arrangement</h2>'+
+      '<p>First research summary.</p><p>Second research summary.</p>'+
+      '<p>Third research summary.</p></section></main></body></html>'
+  }));
+  await sections.goto(base+"/editor.html?page=about.html");
+  await sections.frameLocator("#pageFrame").locator("main h2").click();
+  await sections.frameLocator("#pageFrame").locator("#moon-quick-toolbar")
+    .getByRole("button",{name:"Arrange selected section into responsive columns"}).click();
+  const arrangement=sections.frameLocator("#pageFrame")
+    .getByRole("dialog",{name:"Arrange selected section"});
+  await arrangement.getByRole("button",{
+    name:"Set selected section layout to two equal"
+  }).click();
+  assert.equal(await sections.locator("#directLayoutPreset").inputValue(),"two");
+  assert.match(await sections.frameLocator("#pageFrame")
+    .locator("#moon-responsive-group-layout").textContent(),/grid-column:7 \/ span 6/);
+  assert.match(await sections.locator("#changeCount").textContent(),/1 responsive layout group/);
+  await sections.locator("#undoBtn").click();
+  assert(!/responsive layout group/.test(await sections.locator("#changeCount").textContent()));
+  console.log("PASS: inline source-verified section layout, original HTML and undo");
+  await sections.frameLocator("#pageFrame").locator("main h2").click();
+  await sections.frameLocator("#pageFrame").locator("main p").first().click();
+  assert.equal(await sections.locator("#selectionTag").textContent(),"p");
+  console.log("PASS: contextual toolbar does not obstruct selection of adjacent text");
+  await sections.close();
+  const retry=await context.newPage();
+  await retry.route("**/about.html",route=>route.fulfill({
+    status:200,contentType:"text/html",
+    body:'<!doctype html><html><head></head><body><main><section>'+
+      '<h2>Gallery</h2><p>Original gallery introduction.</p>'+
+      '<img src="assets/example-photograph.webp" alt="Existing image">'+
+      '</section></main></body></html>'
+  }));
+  await retry.goto(base+"/editor.html?page=about.html");
+  await retry.frameLocator("#pageFrame").locator("main h2").click();
+  await retry.frameLocator("#pageFrame").locator("#moon-quick-toolbar")
+    .getByRole("button",{name:"Add new content after this block"}).click();
+  const retryComposer=retry.frameLocator("#pageFrame")
+    .getByRole("dialog",{name:"Add content to the page"});
+  await retryComposer.getByLabel("Content type").selectOption("link");
+  await retryComposer.getByLabel("Text",{exact:true}).fill("Untrusted destination");
+  await retryComposer.getByLabel("Link destination").fill("javascript:alert(1)");
+  await retryComposer.getByRole("button",{name:"Add to page"}).click();
+  assert.match(await retryComposer.getByRole("status").textContent(),/Cannot add/);
+  await retryComposer.getByLabel("Content type").selectOption("image");
+  await retryComposer.getByLabel("Image description (alt text)")
+    .fill("Existing fieldwork photograph");
+  await retryComposer.getByLabel("Existing image path").fill("../unsafe.svg");
+  await retryComposer.getByRole("button",{name:"Add to page"}).click();
+  assert.match(await retryComposer.getByRole("status").textContent(),/Cannot add/);
+  await retryComposer.getByLabel("Existing image path")
+    .fill("assets/example-photograph.webp");
+  await retryComposer.getByRole("button",{name:"Add to page"}).click();
+  await retry.frameLocator("#pageFrame").locator("[data-editor-added-index] img")
+    .waitFor({timeout:6000});
+  console.log("PASS: unsafe-link and unsafe-image rejection followed by valid inline image");
+  await retry.close();
   console.log("PASS: text, drafts, reset, link/image export, 17 pages, dark/mobile previews");
 } finally {
   await page.screenshot({path:"/tmp/editor-test-artifacts/editor-last.png",fullPage:true}).catch(()=>{});

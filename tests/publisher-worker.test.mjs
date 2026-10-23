@@ -249,3 +249,101 @@ test("reject a second unsubmitted upload on a page already containing older edit
   assert(!calls.some(x=>x.method==="PUT"||x.uri.endsWith("/git/refs")));
  });
 });
+
+test("accept only exact, bounded responsive grid CSS while protecting existing styles",()=>{
+ const section=page.replace("<h1>Original title</h1>",
+   '<section id="layout"><h2>Heading</h2><p>Paragraph</p></section>');
+ const container='main #layout{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));'+
+   'grid-auto-rows:minmax(0,auto);column-gap:12px;row-gap:8px;align-items:start;}';
+ const child=(selector,x,y,w,h)=>'main '+selector+
+   '{grid-column:'+x+' / span '+w+';grid-row:'+y+' / span '+h+';min-width:0;}';
+ const selectors=['#layout > h2:nth-of-type(1)','#layout > p:nth-of-type(1)'];
+ const css='/* Reviewed responsive group. Existing page markup remains unchanged. */\n'+
+   '@media(min-width:701px){\n'+container+'\n'+
+   child(selectors[0],1,1,11,2)+'\n'+child(selectors[1],1,4,9,3)+'\n}\n'+
+   '@media(max-width:700px){\n'+container+'\n'+
+   child(selectors[0],1,1,12,2)+'\n'+child(selectors[1],1,4,12,3)+'\n}';
+ const withCss=value=>section.replace("</head>",
+   '<style id="moon-responsive-group-layout">\n'+value+'\n</style>\n</head>');
+ assert.doesNotThrow(()=>util.validateEdit("about.html",section,withCss(css)));
+ assert.throws(()=>util.validateEdit("about.html",section,withCss(css.replace(
+   'min-width:0;', 'position:fixed;min-width:0;'))),/Responsive layout CSS/);
+ assert.throws(()=>util.validateEdit("about.html",section,withCss(css.replace(
+   'grid-column:1 / span 11;', 'grid-column:1 / span 99;'))),/Responsive layout CSS/);
+ assert.throws(()=>util.validateEdit("about.html",section,withCss(css.replace(
+   'grid-row:4 / span 3;', 'grid-row:1 / span 3;'))),/Responsive layout CSS/);
+ assert.throws(()=>util.validateEdit("about.html",section,withCss(css.replace(
+   'grid-row:1 / span 2;', 'grid-row:7 / span 2;'))),/Responsive layout CSS/);
+ assert.throws(()=>util.validateEdit("about.html",section,withCss(css).replace(
+   "site-theme.css","malicious.css")) ,/Scripts, stylesheets/);
+ assert.throws(()=>util.validateEdit("about.html",section,
+   withCss(css).replace("</head>","<style>body{display:none}</style></head>")),/Scripts, stylesheets/);
+ assert.throws(()=>util.validateEdit("about.html",section,withCss(css).replace(
+   'id="moon-responsive-group-layout"', 'id="moon-responsive-group-layout" onload="alert(1)"')),/responsive layout stylesheet/i);
+});
+
+test("multiple distinct responsive groups are independently validated by the publisher",()=>{
+ const source=page.replace("<h1>Original title</h1>",
+  '<section id="alpha"><h2>Alpha</h2><p>Research</p></section>'+
+  '<section id="beta"><h2>Beta</h2><p>Teaching</p></section>');
+ const group=id=>{
+  const container='main #'+id+'{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));'+
+   'grid-auto-rows:minmax(0,auto);column-gap:12px;row-gap:8px;align-items:start;}';
+  const child=(tag,x,y,w)=>'main #'+id+' > '+tag+':nth-of-type(1)'+
+   '{grid-column:'+x+' / span '+w+';grid-row:'+y+' / span 1;min-width:0;}';
+  return '/* Reviewed responsive group. Existing page markup remains unchanged. */\n'+
+   '@media(min-width:701px){\n'+container+'\n'+
+   child('h2',1,1,6)+'\n'+child('p',7,1,6)+'\n}\n'+
+   '@media(max-width:700px){\n'+container+'\n'+
+   child('h2',1,1,12)+'\n'+child('p',1,3,12)+'\n}';
+ };
+ const css=group('alpha')+'\n'+group('beta');
+ const append=value=>source.replace("</head>",'<style id="moon-responsive-group-layout">\n'+value+'\n</style>\n</head>');
+ assert.doesNotThrow(()=>util.validateEdit("about.html",source,append(css)));
+ assert.throws(()=>util.validateEdit("about.html",source,append(css+'\n'+group('alpha'))),/Responsive layout CSS/);
+ assert.throws(()=>util.validateEdit("about.html",source,append(css.replace(
+   'grid-column:7 / span 6','grid-column:1 / span 6'))),/Responsive layout CSS/);
+ assert.throws(()=>util.validateEdit("about.html",source,append(css.replace(
+   'grid-auto-rows:minmax(0,auto)','position:fixed;grid-auto-rows:minmax(0,auto)'))),/Responsive layout CSS/);
+ assert.throws(()=>util.validateEdit("about.html",source,append(
+   Array(7).fill(group('alpha')).join('\n'))),/Responsive layout CSS/);
+});
+
+test("approved plain-text paragraph insertion preserves protected publisher resources",()=>{
+ const current=page.replace("<h1>Original title</h1>","<h1>Original title</h1><p>Existing</p>");
+ const updated=current.replace("<p>Existing</p>","<p>Existing</p>\n<p>New note &lt;script&gt;literal&lt;/script&gt;</p>");
+ assert.doesNotThrow(()=>util.validateEdit("about.html",current,updated));
+ assert.throws(()=>util.validateEdit("about.html",current,
+   updated.replace("&lt;script&gt;literal&lt;/script&gt;","<script>alert(1)</script>")),
+   /Scripts, stylesheets|executable/i);
+ assert.throws(()=>util.validateEdit("about.html",current,
+   updated.replace("</main>","<iframe src=\"https://example.org\"></iframe></main>")),
+   /executable/i);
+});
+
+test("safe inserted headings and links pass the private proposal security checks",()=>{
+ const current=page.replace("<h1>Original title</h1>","<h1>Original title</h1><p>Existing paragraph</p>");
+ const updated=current.replace("<p>Existing paragraph</p>",
+  '<p>Existing paragraph</p>\n<h2>New section</h2>\n'+
+  '<p><a href="research.html">Read research</a></p>\n'+
+  '<p><a href="https://example.org/a?one=1&amp;two=2" rel="noopener noreferrer">External source</a></p>');
+ assert.doesNotThrow(()=>util.validateEdit("about.html",current,updated));
+ assert.throws(()=>util.validateEdit("about.html",current,
+  updated.replace('href="research.html"','href="javascript:alert(1)"')),/executable/i);
+ assert.throws(()=>util.validateEdit("about.html",current,
+  updated.replace('rel="noopener noreferrer"','onclick="alert(1)"')),/executable/i);
+ assert.throws(()=>util.validateEdit("about.html",current,
+  updated.replace('<h2>New section</h2>','<script>alert(1)</script>')),/Scripts|executable/i);
+});
+
+test("event handler validation distinguishes real attributes from URL query strings",()=>{
+ const updated=page.replace("</main>",
+  '<p><a href="https://example.org/learn?one=1&amp;onboarding=ok">Read documentation</a></p></main>');
+ assert.doesNotThrow(()=>util.validateEdit("about.html",page,updated));
+ assert.throws(()=>util.validateEdit("about.html",page,
+  updated.replace("<p><a",'<p><a onclick="alert(1)"')),/executable/i);
+ assert.throws(()=>util.validateEdit("about.html",page,
+  updated.replace("<p><a",'<p><img/onerror="alert(1)"><a')),/executable/i);
+ assert.throws(()=>util.validateEdit("about.html",page,
+  updated.replace("</main>",'<img src="x" onload=alert(1)></main>')),/executable/i);
+});

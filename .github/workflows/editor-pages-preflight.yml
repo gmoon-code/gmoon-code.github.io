@@ -11,6 +11,10 @@ on:
       - ".github/workflows/editor-pages-preflight.yml"
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
@@ -23,19 +27,19 @@ jobs:
         uses: actions/checkout@v4
 
       # Pin the exact reviewed cross-repository snapshots. Bump these
-      # commits deliberately whenever one of the other draft PRs changes.
-      - name: Check out Research Methods Studio draft
+      # commits deliberately whenever one of the other sites changes.
+      - name: Check out deployed Research Methods Studio
         uses: actions/checkout@v4
         with:
           repository: gmoon-code/research-methods
-          ref: ac222c2a4f5f20aaa75d66d40ba0076ce29f62b3
+          ref: 3eb53f6488cb5767e42933b515650ae109f7927d
           path: .integration/research-methods
 
-      - name: Check out Story Method draft
+      - name: Check out deployed Story Method
         uses: actions/checkout@v4
         with:
           repository: gmoon-code/memory-palace-u1-8
-          ref: dda576d1f11d3146c5a335a53115aed4549a44ac
+          ref: 0615a01f80cde6aa97dd02dfa5d1a9012bf434e7
           path: .integration/story-method
 
       - uses: actions/setup-node@v4

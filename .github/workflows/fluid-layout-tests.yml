@@ -1,0 +1,51 @@
+name: Fluid layout lab browser tests
+on:
+  pull_request:
+    paths:
+      - 'fluid-layout-lab.html'
+      - 'responsive-layout.js'
+      - 'editor.html'
+      - 'editor.js'
+      - 'editor.css'
+      - 'tests/fluid-layout.spec.cjs'
+      - '.github/workflows/fluid-layout-tests.yml'
+  workflow_dispatch:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+jobs:
+  browser-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-save --no-package-lock @playwright/test
+      - run: npx playwright install --with-deps chromium
+      - name: Start local preview server
+        run: python3 -m http.server 8765 --bind 127.0.0.1 > /tmp/fluid-layout-http.log 2>&1 &
+      - name: Run browser tests
+        run: npx playwright test tests/fluid-layout.spec.cjs --browser chromium --reporter=list --workers=1
+      - name: Upload visual review screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fluid-layout-visual-review
+          path: test-results/layout-previews/
+          if-no-files-found: ignore
+          retention-days: 7
+      - name: Upload failing browser page state
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fluid-layout-failure-context
+          path: |
+            test-results/**/error-context.md
+            test-results/**/test-failed-*.png
+          if-no-files-found: ignore
+          retention-days: 7

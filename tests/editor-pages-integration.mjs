@@ -31,6 +31,28 @@ async function isolatedContext(viewport={width:1440,height:900}){
   });
   return context;
 }
+// Release gate: verify the production Pages build really serves the merged
+// Research Methods editor, independently of our offline composite preview.
+// All requests are GETs for static public files; no teacher authentication,
+// student data or publication endpoints are contacted.
+async function checkDeployedResearchMethods(request){
+  const root="https://gmoon-code.github.io/research-methods/";
+  const paths=[
+    ["editor.html","teacher.html#visualGuidanceEditor"],
+    ["admin-workspace.html",'id="visualDuplicateListItem"'],
+    ["assets/admin-visual-guidance.js","pointerSelectingRich"]
+  ];
+  for(const [path,marker] of paths){
+    const response=await request.get(root+path,{
+      timeout:25000,headers:{"Cache-Control":"no-cache"}
+    });
+    assert.equal(response.status(),200,"The live Research Methods "+path+" must be accessible");
+    const source=await response.text();
+    assert(source.includes(marker),
+      "The published Research Methods "+path+" does not contain expected release UI");
+  }
+  console.log("PASS: live Research Methods editor routes and visual toolbar are deployed");
+}
 async function checkHub(page){
   await page.goto(origin+"/editors.html",{waitUntil:"domcontentloaded"});
   assert.equal(await page.title(),"Website Editors | Ye Eun Moon");
@@ -46,6 +68,7 @@ try{
   page.on("pageerror",e=>failures.push(page.url()+" :: "+e.stack));
 
   await checkHub(page);
+  await checkDeployedResearchMethods(page.request);
   await page.screenshot({path:output+"/hub-desktop.png",fullPage:true});
 
   // Follow each link as a person would. All are hosted beneath the same
@@ -235,6 +258,24 @@ try{
     "Mobile Story Method must put reading and text editing before long curriculum navigation");
   assert(storyMobile.documentWidth<=storyMobile.viewport+1,
     "Story Method mobile editor must fit within the screen");
+  // The assembled Pages build must preserve the two-way mobile editing
+  // shortcut without silently changing a reviewed narrative draft.
+  await page.locator('#scenePreview [data-edit-key="0:title"]').click();
+  const exportWasEnabled=await page.locator("#export").isEnabled();
+  assert.equal(await page.locator("#mobileSelectionBar").isVisible(),true,
+    "Mobile authors need an on-screen shortcut to the selected inspector field");
+  await page.locator("#mobileEditInInspector").click();
+  assert.equal(await page.locator("#editText").evaluate(
+    el=>document.activeElement===el),true);
+  assert.equal(await page.locator("#mobileSelectionBar").isVisible(),false,
+    "Floating controls must yield to the inspector");
+  await page.locator("#mobileBackToPassage").click();
+  assert.equal(await page.locator('#scenePreview [data-edit-key="0:title"]').evaluate(
+    el=>document.activeElement===el),true);
+  await page.locator("#mobileDismissSelection").click();
+  assert.equal(await page.locator("#mobileSelectionBar").isVisible(),false);
+  assert.equal(await page.locator("#export").isEnabled(),exportWasEnabled,
+    "Mobile inspector navigation must preserve the existing draft state");
   await page.screenshot({path:output+"/story-method-mobile.png",fullPage:true});
   await page.setViewportSize({width:1440,height:900});
 

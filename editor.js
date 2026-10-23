@@ -23,7 +23,7 @@
     $("publisherSummary").disabled=!publisher.session||publisher.busy;
     const moved=state.sectionOrder.some((id,i)=>id!==state.originalSections[i]);
     $("publisherPropose").disabled=!publisher.session||publisher.busy||
-      (!state.dirty.size&&!moved)||!$("publisherSummary").value.trim();
+      (!state.dirty.size&&!moved&&!layoutGroups().length&&!state.additions.length&&!state.removals.length&&!state.blockOrders.length)||!$("publisherSummary").value.trim();
   }
   function publishMessage(text) {
     $("publisherStatus").textContent=text;
@@ -32,9 +32,10 @@
   const $ = id => document.getElementById(id);
   const state = {
     page:null,source:"",doc:null,frameDoc:null,original:new Map(),dirty:new Set(),
-    selected:null,history:[],fingerprint:"",loadToken:0,saveTimer:null,staleDraft:false,
+    selected:null,history:[],redo:[],fingerprint:"",loadToken:0,saveTimer:null,staleDraft:false,
     originalSections:[],sectionGroups:[],sectionOrder:[],mediaAssets:null,mediaPromise:null,
-    stagedMedia:null
+    stagedMedia:null,responsiveGroup:null,responsiveGroups:[],additions:[],resizeStart:null,imageSliderActive:false,
+    pageFindKeys:[],pageFindIndex:-1,mediaChooseInsert:false,removals:[],selectedAddition:null,blockOrders:[],columnPointer:null,blockPointer:null,addedPointer:null,addedWidthPointer:null,addedBlockSliderActive:false
   };
 
   function hashText(text) {
@@ -54,16 +55,27 @@
     else alert(message);
   }
 
+  function layoutGroups(){
+    return state.responsiveGroups.length?state.responsiveGroups:(state.responsiveGroup?[state.responsiveGroup]:[]);
+  }
+  function layoutCss(doc){
+    return MoonResponsiveLayout.cssForGroups(doc,layoutGroups());
+  }
   function updateStatus(message) {
     $("editorSaveStatus").textContent=message;
     const moved=state.sectionOrder.filter((id,i)=>id!==state.originalSections[i]).length;
-    const total=state.dirty.size+moved;
+    const total=state.dirty.size+moved+layoutGroups().length+state.additions.length+state.removals.length+state.blockOrders.length;
     $("changeCount").textContent=state.dirty.size+" edited element"+(state.dirty.size===1?"":"s")+
-      (moved?" · "+moved+" moved section"+(moved===1?"":"s"):"");
+      (moved?" · "+moved+" moved section"+(moved===1?"":"s"):"")+
+      (layoutGroups().length?" · "+layoutGroups().length+" responsive layout group"+(layoutGroups().length===1?"":"s"):"")+
+      (state.additions.length?" · "+state.additions.length+" added content block"+(state.additions.length===1?"":"s"):"")+
+      (state.removals.length?" · "+state.removals.length+" removed block"+(state.removals.length===1?"":"s"):"")+
+      (state.blockOrders.length?" · "+state.blockOrders.length+" rearranged content group"+(state.blockOrders.length===1?"":"s"):"");
     $("exportBtn").disabled=!total;
     $("reviewBtn").disabled=!total;
     $("resetBtn").disabled=!total;
     $("undoBtn").disabled=!state.history.length;
+    $("redoBtn").disabled=!state.redo.length;
     updatePublishControls();
   }
 
@@ -151,14 +163,15 @@
 
   function snapshot() {
     return {html:state.doc.documentElement.outerHTML,dirty:[...state.dirty],
-      order:state.sectionOrder.slice()};
+      order:state.sectionOrder.slice(),responsiveGroup:state.responsiveGroup,responsiveGroups:state.responsiveGroups.slice(),additions:state.additions.map(x=>({...x})),removals:state.removals.map(x=>({...x})),blockOrders:state.blockOrders.map(x=>({originalKeys:x.originalKeys.slice(),keys:x.keys.slice()}))};
   }
 
   function checkpoint() {
     if (!state.doc) return;
     const current=snapshot();
     const previous=state.history[state.history.length-1];
-    if (previous&&previous.html===current.html) return;
+    if (previous&&JSON.stringify(previous)===JSON.stringify(current)) return;
+    state.redo.length=0;
     state.history.push(current);
     if (state.history.length>24) state.history.shift();
     updateStatus("Local draft · Not published");
@@ -173,16 +186,16 @@
     const key=DRAFT_PREFIX+state.page;
     try {
       const orderChanged=state.sectionOrder.some((id,i)=>id!==state.originalSections[i]);
-      if (!items.length&&!orderChanged) {
+      if (!items.length&&!orderChanged&&!layoutGroups().length&&!state.additions.length&&!state.removals.length&&!state.blockOrders.length) {
         if (state.staleDraft) return;
         localStorage.removeItem(key);
       } else {
         localStorage.setItem(key,JSON.stringify({
           version:1,sourceHash:state.fingerprint,updated:Date.now(),items,
-          sectionOrder:state.sectionOrder.slice()
+          sectionOrder:state.sectionOrder.slice(),responsiveGroup:state.responsiveGroup,responsiveGroups:state.responsiveGroups,additions:state.additions,removals:state.removals,blockOrders:state.blockOrders
         }));
       }
-      updateStatus(items.length||orderChanged?"Draft saved in this browser · Not published":"No changes · Not published");
+      updateStatus(items.length||orderChanged||layoutGroups().length||state.additions.length||state.removals.length||state.blockOrders.length?"Draft saved in this browser · Not published":"No changes · Not published");
     } catch (e) {
       updateStatus("Draft storage unavailable · Export your HTML");
     }
@@ -212,6 +225,17 @@
         "This draft references an uploaded image whose binary file was not retained after reload. Select the image on the page and stage its file again.";
     }
     try {
+      const incoming=Array.isArray(draft.responsiveGroups)&&draft.responsiveGroups.length?
+        draft.responsiveGroups:(draft.responsiveGroup?[draft.responsiveGroup]:[]);
+      if(incoming.length){
+        if(!window.MoonResponsiveLayout)throw Error('Responsive layout validator missing');
+        MoonResponsiveLayout.verifyGroups(new DOMParser().parseFromString(state.source,'text/html'),incoming);
+        state.responsiveGroups=incoming.slice();
+        state.responsiveGroup=incoming.length===1?incoming[0]:null;
+      }
+      if(Array.isArray(draft.additions)&&draft.additions.length){
+        state.additions=validateParagraphAdditions(draft.additions);
+      }
       for (const item of draft.items) {
         if (!state.original.has(item.id)||checkDangerousHtml(item.markup)) continue;
         const destination=getWorking(item.id);
@@ -230,7 +254,13 @@
         const node=getWorking(key);
         if (!node||cleanOuter(node)===state.original.get(key)) state.dirty.delete(key);
       }
-      updateStatus(state.dirty.size?"Draft restored from this browser · Not published":"No changes · Not published");
+      if(Array.isArray(draft.removals)&&draft.removals.length)
+        state.removals=validateSourceRemovals(draft.removals);
+      if(Array.isArray(draft.blockOrders)&&draft.blockOrders.length){
+        state.blockOrders=validateBlockOrders(draft.blockOrders);
+        applyBlockOrdersToWorking(state.blockOrders);
+      }
+      updateStatus(state.dirty.size||state.removals.length?"Draft restored from this browser · Not published":"No changes · Not published");
     } catch(e) {
       notice("The saved draft could not be restored safely. The original page has been left available.","Draft mismatch");
     }
@@ -242,11 +272,44 @@
     const base=copy.createElement("base");
     base.setAttribute("href",new URL("./",location.href).href);
     copy.head.prepend(base);
+    if(layoutGroups().length){
+      const original=new DOMParser().parseFromString(state.source,'text/html');
+      const css=layoutCss(original);
+      const style=copy.createElement('style');style.id='moon-responsive-group-layout';
+      style.textContent=css;copy.head.append(style);
+    }
+    const additionsByAnchor=new Map();
+    state.additions.forEach((addition,index)=>{
+      if(!additionsByAnchor.has(addition.selector))additionsByAnchor.set(addition.selector,[]);
+      const inserted=createAdditionElement(copy,addition);
+      inserted.setAttribute("data-editor-added-index",String(index));
+      inserted.setAttribute("tabindex","0");
+      inserted.setAttribute("title","Press Enter to edit this newly added block");
+      additionsByAnchor.get(addition.selector).push(inserted);
+    });
+    for(const [selector,elements] of additionsByAnchor){
+      const matches=[...copy.querySelectorAll('main '+selector)];
+      if(matches.length!==1)throw Error('Content insertion source is missing');
+      matches[0].after(...elements);
+    }
+    for(const removal of state.removals){
+      const target=copy.querySelector('[data-editor-key="'+removal.key+'"]');
+      if(!target)throw Error("Removed source element is missing");
+      target.remove();
+    }
     const overlay=copy.createElement("style");
     overlay.textContent=[
       "[data-editor-key]{cursor:text;outline-offset:3px;}",
+      '[data-editor-added-index]{cursor:pointer;outline-offset:3px;}',
+      '[data-editor-added-index]:hover{outline:1px dashed #8d8d8d;}',
+      '[data-editor-added-index][data-editor-added-selected]{outline:2px solid #35745c!important;outline-offset:4px!important;}',
       "[data-editor-key]:hover{outline:1px dashed #8d8d8d;}",
       '[data-editor-key][data-editor-selected]{outline:2px solid #2b8769!important;outline-offset:4px!important;}',
+      '[data-editor-key][data-editor-find-match]{box-shadow:inset 0 -3px #f7c85e!important;}',
+      '[data-editor-key][data-editor-find-active]{outline:3px solid #b15b16!important;outline-offset:5px!important;}',
+      '[data-editor-key][data-editor-drag-target]{outline:3px dashed #27654f!important;outline-offset:4px!important;}',
+      '[data-editor-added-index][data-editor-added-drop-target]{outline:3px dashed #27654f!important;outline-offset:4px!important;}',
+      '[data-editor-key][data-editor-added-anchor-target]{outline:3px dashed #27654f!important;outline-offset:4px!important;}',
       "[data-editor-key][contenteditable=true]{min-height:1em;}",
       "[data-editor-key][contenteditable=true]:focus{outline:2px solid #2b8769!important;}",
       "@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}"
@@ -257,8 +320,11 @@
     return "<!doctype html>\n"+copy.documentElement.outerHTML;
   }
 
-  function renderPreview() {
+  function renderPreview(reselectKey=null,reselectAddition=null) {
     state.selected=null;
+    state.selectedAddition=null;
+    state.addedBlockSliderActive=false;
+    $("addedBlockDetails").hidden=true;
     $("selectionDetails").hidden=true;
     $("selectionEmpty").hidden=false;
     $("selectionTag").textContent="Nothing selected";
@@ -271,9 +337,40 @@
         d.documentElement.style.colorScheme=$("previewTheme").value;
         updateStagedPreview();
         d.addEventListener("click",onPreviewClick,true);
+        d.addEventListener("keydown",onPreviewKeydown,true);
         d.addEventListener("input",onPreviewInput,true);
         d.addEventListener("focusin",onPreviewFocus,true);
         d.addEventListener("paste",onPreviewPaste,true);
+        d.addEventListener("scroll",positionImageResizeHandle,true);
+        d.addEventListener("scroll",positionBlockMoveHandle,true);
+        d.addEventListener("scroll",positionAddedMoveHandle,true);
+        d.addEventListener("scroll",positionAddedWidthHandle,true);
+        d.addEventListener("scroll",positionQuickToolbar,true);
+        // Only viewport scrolls move the composer. Internal form scrolling
+        // must not reposition the form under the user's pointer.
+        d.defaultView.addEventListener("scroll",positionQuickComposer);
+        d.defaultView.addEventListener("scroll",positionQuickLayout);
+        d.addEventListener("scroll",positionColumnResizeHandle,true);
+        d.defaultView.addEventListener("resize",positionImageResizeHandle);
+        d.defaultView.addEventListener("resize",positionBlockMoveHandle);
+        d.defaultView.addEventListener("resize",positionAddedMoveHandle);
+        d.defaultView.addEventListener("resize",positionAddedWidthHandle);
+        d.defaultView.addEventListener("resize",positionQuickToolbar);
+        d.defaultView.addEventListener("resize",positionQuickComposer);
+        d.defaultView.addEventListener("resize",positionQuickLayout);
+        d.defaultView.addEventListener("resize",positionColumnResizeHandle);
+
+        refreshPageFind();
+        updateBrowseControls();
+        if(reselectKey){
+          const target=d.querySelector('[data-editor-key="'+reselectKey+'"]');
+          if(target){selectElement(target);target.scrollIntoView({block:"center"});}
+        }
+        if(Number.isInteger(reselectAddition)&&state.additions[reselectAddition]){
+          selectAddedBlock(reselectAddition);
+          d.querySelector('[data-editor-added-index="'+reselectAddition+'"]')
+            ?.scrollIntoView({block:"center"});
+        }
       } catch(e) {notice("The preview did not become editable. Please reload the editor.");}
     };
     frame.srcdoc=previewMarkup();
@@ -281,9 +378,104 @@
     updateSectionList();
   }
 
+
+  // Search never touches state.doc. Result highlights and selection markers
+  // exist only in the sandboxed, script-disabled iframe preview.
+  function refreshPageFind(reset=false){
+    const query=$("pageFindQuery").value.trim().toLocaleLowerCase();
+    const list=$("pageFindResults");
+    list.replaceChildren();
+    const doc=state.frameDoc;
+    const former=state.pageFindKeys[state.pageFindIndex];
+    state.pageFindKeys=[];
+    if(reset)state.pageFindIndex=-1;
+    if(!doc||!doc.querySelector("main")){
+      $("pageFindStatus").textContent="Load a page to search its editable elements.";
+      for(const id of ["pageFindNext","pageFindPrev","pageFindClear"])$(id).disabled=true;
+      return;
+    }
+    for(const node of doc.querySelectorAll("[data-editor-find-match],[data-editor-find-active]")){
+      node.removeAttribute("data-editor-find-match");
+      node.removeAttribute("data-editor-find-active");
+    }
+    const all=[...doc.querySelectorAll("main [data-editor-key]")];
+    const hits=!query?[]:all.filter(node=>{
+      const value=node.tagName==="IMG"?(node.getAttribute("alt")||""):node.textContent||"";
+      if(!value.toLocaleLowerCase().includes(query))return false;
+      return ![...node.querySelectorAll("[data-editor-key]")].some(child=>
+        (child.tagName==="IMG"?(child.getAttribute("alt")||""):child.textContent||"")
+          .toLocaleLowerCase().includes(query));
+    });
+    const limited=hits.slice(0,80);
+    state.pageFindKeys=limited.map(node=>node.getAttribute("data-editor-key"));
+    state.pageFindIndex=!limited.length?-1:!reset&&state.pageFindKeys.includes(former)?
+      state.pageFindKeys.indexOf(former):0;
+    limited.forEach((node,index)=>{
+      node.setAttribute("data-editor-find-match","");
+      const button=document.createElement("button");
+      button.type="button";
+      const content=(node.tagName==="IMG"?node.getAttribute("alt")||"Image":node.textContent||"")
+        .trim().replace(/\\s+/g," ");
+      button.textContent=node.tagName.toLowerCase()+" · "+(content.slice(0,98)||"Untitled")+
+        (content.length>98?"…":"");
+      button.setAttribute("aria-current",String(index===state.pageFindIndex));
+      button.addEventListener("click",()=>choosePageFind(index));
+      if(index<30)list.append(button);
+    });
+    const count=hits.length;
+    $("pageFindStatus").textContent=!query?"Find headings, paragraphs, links and image descriptions within the page.":
+      count?count+" matching element"+(count===1?"":"s")+
+        (count>80?" · first 80 available":"")+" · "+(state.pageFindIndex+1)+" of "+limited.length:
+        "No matching editable elements on this page.";
+    $("pageFindNext").disabled=limited.length<2;
+    $("pageFindPrev").disabled=limited.length<2;
+    $("pageFindClear").disabled=!query;
+    const active=doc.querySelector('[data-editor-key="'+state.pageFindKeys[state.pageFindIndex]+'"]');
+    if(active)active.setAttribute("data-editor-find-active","");
+  }
+  function choosePageFind(index){
+    const keys=state.pageFindKeys;
+    if(!keys.length||index<0||index>=keys.length||!state.frameDoc)return;
+    state.pageFindIndex=index;
+    const node=state.frameDoc.querySelector('[data-editor-key="'+keys[index]+'"]');
+    if(!node)return;
+    for(const marked of state.frameDoc.querySelectorAll("[data-editor-find-active]"))
+      marked.removeAttribute("data-editor-find-active");
+    node.setAttribute("data-editor-find-active","");
+    selectElement(node);
+    node.scrollIntoView({block:"center",inline:"nearest"});
+    for(const [i,button] of [...$("pageFindResults").children].entries())
+      button.setAttribute("aria-current",String(i===index));
+    const q=$("pageFindQuery").value.trim();
+    $("pageFindStatus").textContent=keys.length+" results · selected "+(index+1)+" of "+keys.length+
+      " for “"+q.slice(0,80)+"”";
+  }
+  function navigatePageFind(direction){
+    if(!state.pageFindKeys.length)return;
+    const next=(state.pageFindIndex+direction+state.pageFindKeys.length)%state.pageFindKeys.length;
+    choosePageFind(next);
+  }
+
+  function onPreviewKeydown(event){
+    if(handleEditorShortcuts(event))return;
+    if(!["Enter"," "].includes(event.key))return;
+    const added=event.target.closest?.("[data-editor-added-index]");
+    if(!added||!state.frameDoc)return;
+    if(event.key===" "&&event.target.tagName==="A")return;
+    event.preventDefault();
+    selectAddedBlock(Number(added.getAttribute("data-editor-added-index")));
+  }
+
   function onPreviewClick(event) {
+    // In-preview controls must never be interpreted as selected page content.
+    if(event.target.closest("#moon-quick-toolbar,#moon-quick-composer,#moon-quick-layout"))return;
     /* Stop navigation, but keep normal selection behaviour for editable text. */
     if (event.target.closest("a")) event.preventDefault();
+    const added=event.target.closest("[data-editor-added-index]");
+    if(added){
+      selectAddedBlock(Number(added.getAttribute("data-editor-added-index")));
+      return;
+    }
     const node=event.target.closest("[data-editor-key]");
     if (!node) return;
     selectElement(node);
@@ -327,6 +519,519 @@
     dst.innerHTML=html;
     updateDirty(key);
     if (state.selected===key) updateInspector(edit);
+    if($("pageFindQuery").value.trim())refreshPageFind();
+  }
+
+  // Navigation remains preview-only and creates no editable source markers.
+  // Sequential controls avoid hundreds of extra stops in the Tab order.
+  function browsableElements(){
+    if(!state.frameDoc)return [];
+    return [...state.frameDoc.querySelectorAll("main [data-editor-key]")]
+      .filter(node=>!node.closest("nav")&&node.getClientRects().length);
+  }
+  function updateBrowseControls(){
+    const nodes=browsableElements(),selected=nodes.findIndex(node=>
+      node.getAttribute("data-editor-key")===state.selected);
+    $("browsePrevElement").disabled=!nodes.length;
+    $("browseNextElement").disabled=!nodes.length;
+    $("browseElementStatus").textContent=!nodes.length?
+      "No editable content available on this page.":
+      selected<0?"Use Previous or Next to select one of "+nodes.length+" original elements.":
+      "Element "+(selected+1)+" of "+nodes.length+
+        " · "+nodes[selected].tagName.toLowerCase()+
+        " · Selection is in the page preview.";
+  }
+  function browseElement(direction){
+    const nodes=browsableElements();
+    if(!nodes.length||![-1,1].includes(direction))return;
+    const current=nodes.findIndex(node=>
+      node.getAttribute("data-editor-key")===state.selected);
+    const next=current<0?(direction===1?0:nodes.length-1):
+      (current+direction+nodes.length)%nodes.length;
+    const target=nodes[next];
+    selectElement(target);
+    target.setAttribute("tabindex","-1");
+    target.focus({preventScroll:true});
+    target.scrollIntoView({block:"center"});
+    updateBrowseControls();
+  }
+  function handleEditorShortcuts(event){
+    if(!state.doc||event.defaultPrevented)return false;
+    if(!(event.ctrlKey||event.metaKey)||event.altKey)return false;
+    const key=event.key.toLowerCase();
+    if(key==="s"&&!event.shiftKey){
+      event.preventDefault();
+      saveDraft();
+      return true;
+    }
+    // Browser-native undo should remain available while writing in a field.
+    if(event.target?.closest?.("input,textarea,select,[contenteditable='true'],[role='textbox']"))
+      return false;
+    if(key==="z"||(key==="y"&&!event.shiftKey)){
+      event.preventDefault();
+      if((key==="z"&&event.shiftKey)||key==="y")redo();
+      else undo();
+      return true;
+    }
+    return false;
+  }
+
+  // All contextual controls live only in the script-disabled preview iframe.
+  // Source documents, draft HTML and exported pages never receive this toolbar.
+  const QUICK_SOURCE_TAGS=new Set(["P","H1","H2","H3","H4","BLOCKQUOTE","LI"]);
+  function quickSelection(){
+    const doc=state.frameDoc;
+    if(!doc)return null;
+    if(state.selectedAddition!==null&&state.additions[state.selectedAddition]){
+      const node=doc.querySelector('[data-editor-added-index="'+state.selectedAddition+'"]');
+      return node?{node,added:true}:null;
+    }
+    if(state.selected){
+      const node=doc.querySelector('[data-editor-key="'+state.selected+'"]');
+      if(node&&QUICK_SOURCE_TAGS.has(node.tagName))return {node,added:false};
+    }
+    return null;
+  }
+  function quickAlignment(){
+    if(state.selectedAddition!==null)return addedBlockLayout(state.additions[state.selectedAddition]).align;
+    const source=getWorking(state.selected);
+    return ["center","right"].includes(source?.style.textAlign)?source.style.textAlign:"left";
+  }
+  function positionQuickToolbar(){
+    const doc=state.frameDoc,bar=doc?.getElementById("moon-quick-toolbar");
+    if(!bar)return;
+    const selected=quickSelection();
+    if(!selected){bar.remove();return;}
+    const view=doc.defaultView,rect=selected.node.getBoundingClientRect();
+    if(rect.bottom<0||rect.right<0||rect.top>view.innerHeight||rect.left>view.innerWidth){
+      bar.hidden=true;return;
+    }
+    bar.hidden=false;
+    const width=bar.getBoundingClientRect().width||290;
+    const height=bar.getBoundingClientRect().height||38;
+    const maxLeft=Math.max(4,view.innerWidth-width-4);
+    const maxTop=Math.max(4,view.innerHeight-height-4);
+    // Keep the controls outside the selected text where there is enough
+    // room. A toolbar below a page-top heading can cover the next paragraph
+    // and prevent its selection, so use a bottom-corner fallback.
+    let left,top;
+    if(rect.right+width+9<=view.innerWidth-4){
+      left=rect.right+8;top=rect.top;
+    }else if(rect.left-width-9>=4){
+      left=rect.left-width-8;top=rect.top;
+    }else if(rect.top>=height+10){
+      left=rect.left;top=rect.top-height-7;
+    }else{
+      // The bottom of the preview iframe may extend beyond the editor's
+      // visible browser viewport. Keep the compact fallback at the top edge
+      // and away from the centre of the next original paragraph.
+      left=maxLeft;top=4;
+    }
+    // A numeric left coordinate can outlive a responsive iframe width
+    // transition. Keep the actual CSS position clamped to the changing
+    // viewport even before the next resize notification arrives.
+    const desiredLeft=Math.max(4,Math.min(maxLeft,left));
+    bar.style.left="max(4px,min("+desiredLeft+"px,calc(100vw - min(260px, calc(100vw - 8px)) - 4px)))";
+    bar.style.top=Math.max(4,Math.min(maxTop,top))+"px";
+  }
+  function createQuickToolbar(){
+    const doc=state.frameDoc;
+    if(!doc)return;
+    doc.getElementById("moon-quick-composer")?.remove();
+    doc.getElementById("moon-quick-layout")?.remove();
+    doc.getElementById("moon-quick-toolbar")?.remove();
+    const selected=quickSelection();
+    if(!selected)return;
+    const dark=$("previewTheme").value==="dark";
+    const bar=doc.createElement("div");
+    bar.id="moon-quick-toolbar";
+    bar.setAttribute("role","toolbar");
+    bar.setAttribute("aria-label","Selected block quick actions");
+    bar.setAttribute("aria-orientation","horizontal");
+    bar.style.cssText="position:fixed;z-index:2147483644;display:flex;align-items:center;flex-wrap:wrap;gap:4px;padding:5px;"+
+      "width:min(260px,calc(100vw - 8px));box-sizing:border-box;border:1px solid "+
+      (dark?"#a7baa9":"#9cb7a9")+";border-radius:9px;background:"+
+      (dark?"#1a1c1a":"#fff")+";color:"+(dark?"#f5f7f5":"#183e30")+
+      ";box-shadow:0 4px 16px #0003;font:600 12px/1.25 system-ui,sans-serif;max-width:calc(100vw - 8px)";
+    const make=(label,action,selectedState,description)=>{
+      const button=doc.createElement("button");
+      button.type="button";button.textContent=label;
+      button.setAttribute("aria-label",description);
+      if(selectedState!==null)button.setAttribute("aria-pressed",String(selectedState));
+      button.style.cssText="padding:6px 7px;min-height:30px;border:1px solid "+
+        (dark?"#78887d":"#b8cac0")+";border-radius:5px;background:"+
+        (selectedState===true?(dark?"#365c46":"#dceee1"):"transparent")+
+        ";color:inherit;font:inherit;cursor:pointer;white-space:nowrap";
+      button.addEventListener("click",event=>{
+        event.preventDefault();event.stopPropagation();action();
+      });
+      return button;
+    };
+    const current=quickAlignment();
+    for(const [label,value] of [["Left","left"],["Centre","center"],["Right","right"]]){
+      bar.append(make(label,()=>{
+        if(state.selectedAddition!==null)setAddedBlockLayout({align:value},true);
+        else updateSelectedStyle("textAlign",value,["left","center","right"]);
+        createQuickToolbar();
+      },current===value,"Align selected block "+label.toLowerCase()));
+    }
+    if(!selected.added){
+      const section=directLayoutSelection();
+      if(section){
+        bar.append(make("Layout",()=>openQuickLayout(section.spec.parentSelector),null,
+          "Arrange selected section into responsive columns"));
+      }
+    }
+    const addAnchor=quickInsertAnchor();
+    if(addAnchor&&state.additions.length<10){
+      bar.append(make("+ Add",()=>openQuickComposer(addAnchor),null,
+        "Add new content after this block"));
+    }
+    if(selected.added){
+      const divider=doc.createElement("span");
+      divider.setAttribute("aria-hidden","true");
+      divider.style.cssText="height:22px;border-left:1px solid "+(dark?"#78887d":"#b8cac0");
+      bar.append(divider);
+      const duplicate=make("Copy",()=>duplicateAddedBlock(),null,"Duplicate selected new block");
+      duplicate.disabled=state.additions.length>=10;
+      if(duplicate.disabled)duplicate.style.opacity=".45";
+      bar.append(duplicate);
+    }
+    bar.append(make("Details",()=>{
+      if(selected.added)$("addedBlockText").focus();
+      else $("selectionText").focus();
+    },null,"Focus selected block details in inspector"));
+    doc.body.append(bar);
+    positionQuickToolbar();
+  }
+
+  // A compact visual launcher for the existing source-verified layout
+  // engine. Column definitions remain 12-column responsive groups, with
+  // source order preserved and mobile always stacked.
+  function positionQuickLayout(){
+    const doc=state.frameDoc,panel=doc?.getElementById("moon-quick-layout");
+    if(!panel)return;
+    const bar=doc.getElementById("moon-quick-toolbar"),view=doc.defaultView;
+    if(!bar||bar.hidden){panel.hidden=true;return;}
+    panel.hidden=false;
+    const b=bar.getBoundingClientRect();
+    const width=panel.getBoundingClientRect().width||310;
+    const height=panel.getBoundingClientRect().height||280;
+    panel.style.left=Math.max(4,Math.min(view.innerWidth-width-4,b.left))+"px";
+    const below=b.bottom+7,above=b.top-height-7;
+    const top=below+height<=view.innerHeight-4?below:
+      above>=4?above:Math.max(4,view.innerHeight-height-4);
+    panel.style.top=Math.max(4,top)+"px";
+  }
+  function openQuickLayout(parentSelector){
+    const doc=state.frameDoc;
+    if(!doc)return;
+    const selected=directLayoutSelection();
+    if(!selected||selected.spec.parentSelector!==parentSelector)return;
+    doc.getElementById("moon-quick-layout")?.remove();
+    const dark=$("previewTheme").value==="dark";
+    const panel=doc.createElement("section");
+    panel.id="moon-quick-layout";
+    panel.setAttribute("role","dialog");
+    panel.setAttribute("aria-label","Arrange selected section");
+    panel.setAttribute("aria-modal","false");
+    panel.style.cssText="position:fixed;z-index:2147483646;"+
+      "display:grid;gap:8px;width:min(316px,calc(100vw - 8px));"+
+      "max-height:calc(100vh - 8px);overflow:auto;box-sizing:border-box;"+
+      "padding:12px;border:1px solid "+(dark?"#9bad9e":"#a9c1b2")+
+      ";border-radius:10px;background:"+(dark?"#1a1c1a":"#fff")+
+      ";color:"+(dark?"#f4f6f4":"#173b2c")+
+      ";box-shadow:0 8px 25px #0004;font:14px/1.4 system-ui,sans-serif";
+    const title=doc.createElement("strong");
+    title.textContent="Arrange this section";
+    const hint=doc.createElement("p");
+    hint.textContent="Choose a desktop arrangement. Mobile keeps the original reading order in one column.";
+    hint.style.cssText="margin:0;font-size:12px;line-height:1.45";
+    const choices=doc.createElement("div");
+    choices.style.cssText="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px";
+    const original=layoutGroups().find(group=>group.parentSelector===parentSelector);
+    const current=$("directLayoutPreset").value;
+    const presetLabels=[
+      ["stack","One column"],
+      ["two","Two equal"],
+      ["first-wide","Wide left"],
+      ["second-wide","Wide right"],
+      ["three","Three columns"]
+    ];
+    const action=(value,remove=false)=>{
+      const again=directLayoutSelection();
+      if(!again||again.spec.parentSelector!==parentSelector){
+        notice("This section has changed. Select it again before arranging.","Layout unavailable");
+        panel.remove();return;
+      }
+      if(remove&&!layoutGroups().some(g=>g.parentSelector===parentSelector)){
+        panel.remove();return;
+      }
+      if(!remove)$("directLayoutPreset").value=value;
+      updateDirectLayout(remove);
+      panel.remove();
+    };
+    for(const [preset,label] of presetLabels){
+      const button=doc.createElement("button");
+      button.type="button";button.textContent=label;
+      button.setAttribute("aria-label","Set selected section layout to "+label.toLowerCase());
+      button.setAttribute("aria-pressed",String(!!original&&current===preset));
+      button.style.cssText="padding:11px 5px;min-height:44px;"+
+        "border:1px solid "+(dark?"#82968b":"#a4bbaf")+
+        ";border-radius:7px;background:"+
+        (original&&current===preset?(dark?"#365c46":"#dceee1"):"transparent")+
+        ";color:inherit;cursor:pointer;font:600 12px system-ui";
+      button.addEventListener("click",event=>{
+        event.preventDefault();event.stopPropagation();
+        action(preset);
+      });
+      choices.append(button);
+    }
+    const controls=doc.createElement("div");
+    controls.style.cssText="display:flex;justify-content:space-between;gap:8px";
+    const reset=doc.createElement("button");
+    reset.type="button";reset.textContent="Remove layout";
+    reset.disabled=!original;
+    reset.style.cssText="padding:7px 8px;border:1px solid currentColor;border-radius:6px;"+
+      "background:transparent;color:inherit;font:600 12px system-ui";
+    reset.addEventListener("click",()=>action("",true));
+    const close=doc.createElement("button");
+    close.type="button";close.textContent="Cancel";
+    close.style.cssText=reset.style.cssText;
+    const dismiss=()=>{
+      panel.remove();
+      doc.getElementById("moon-quick-toolbar")
+        ?.querySelector('button[aria-label="Arrange selected section into responsive columns"]')
+        ?.focus({preventScroll:true});
+    };
+    close.addEventListener("click",dismiss);
+    panel.addEventListener("keydown",event=>{
+      if(event.key==="Escape"){event.preventDefault();event.stopPropagation();dismiss();}
+    });
+    controls.append(reset,close);
+    panel.append(title,hint,choices,controls);
+    doc.body.append(panel);
+    positionQuickLayout();
+    choices.querySelector("button")?.focus({preventScroll:true});
+  }
+
+  function quickInsertAnchor(){
+    const selected=quickSelection();
+    if(!selected)return null;
+    const anchors=sourceMoveAnchors();
+    if(selected.added){
+      const item=state.additions[state.selectedAddition];
+      return anchors.find(a=>a.selector===item?.selector)||null;
+    }
+    return anchors.find(a=>a.key===state.selected)||null;
+  }
+  function positionQuickComposer(){
+    const doc=state.frameDoc,composer=doc?.getElementById("moon-quick-composer");
+    if(!composer)return;
+    const toolbar=doc.getElementById("moon-quick-toolbar"),view=doc.defaultView;
+    if(!toolbar||toolbar.hidden){composer.hidden=true;return;}
+    composer.hidden=false;
+    const bounds=toolbar.getBoundingClientRect();
+    // Preview frames may be narrower than the main editor viewport. Give
+    // the grid a definite frame-relative width before measuring and placing
+    // it, so its intrinsic form controls cannot stretch past the right edge.
+    const available=Math.max(0,view.innerWidth-10);
+    composer.style.width=Math.min(330,available)+"px";
+    composer.style.maxWidth=available+"px";
+    const width=composer.getBoundingClientRect().width||Math.min(320,available);
+    const height=composer.getBoundingClientRect().height||280;
+    const left=Math.max(5,Math.min(view.innerWidth-width-5,bounds.left));
+    const below=bounds.bottom+7;
+    const above=bounds.top-height-7;
+    composer.style.left=left+"px";
+    composer.style.top=Math.max(5,Math.min(Math.max(5,view.innerHeight-height-5),
+      below+height<=view.innerHeight-5?below:above>=5?above:below))+"px";
+  }
+  function openQuickComposer(anchor){
+    const doc=state.frameDoc;
+    if(!doc||!sourceMoveAnchors().some(a=>a.key===anchor.key)||state.additions.length>=10)return;
+    doc.getElementById("moon-quick-composer")?.remove();
+    const dark=$("previewTheme").value==="dark";
+    const form=doc.createElement("form");
+    form.id="moon-quick-composer";
+    form.setAttribute("role","dialog");
+    form.setAttribute("aria-modal","false");
+    form.setAttribute("aria-label","Add content to the page");
+    form.noValidate=true;
+    form.style.cssText="position:fixed;z-index:2147483646;display:grid;gap:8px;"+
+      "grid-template-columns:minmax(0,1fr);min-width:0;"+
+      "width:min(330px,calc(100vw - 10px));max-width:calc(100vw - 10px);"+
+      "max-height:calc(100vh - 10px);overflow:auto;padding:13px;box-sizing:border-box;"+
+      "border:1px solid "+(dark?"#9bad9e":"#a9c1b2")+";border-radius:11px;"+
+      "background:"+(dark?"#1a1c1a":"#fff")+";color:"+
+      (dark?"#f4f6f4":"#173b2c")+";box-shadow:0 8px 25px #0004;"+
+      "font:14px/1.4 system-ui,sans-serif";
+    const idPrefix="moon-quick-new-";
+    const heading=doc.createElement("strong");
+    heading.textContent="Add below selected content";
+    const field=(name,label,node)=>{
+      const labelNode=doc.createElement("label");
+      node.id=idPrefix+name;
+      labelNode.htmlFor=node.id;
+      labelNode.textContent=label;
+      labelNode.style.cssText="font-weight:600;display:block";
+      node.style.cssText="display:block;box-sizing:border-box;width:100%;"+
+        "margin-top:3px;padding:7px 8px;border:1px solid "+
+        (dark?"#9bad9e":"#9cb0a6")+";border-radius:5px;"+
+        "background:"+(dark?"#222722":"#fff")+";color:inherit;font:inherit";
+      labelNode.append(node);
+      return labelNode;
+    };
+    const kind=doc.createElement("select");
+    for(const [value,label] of [["paragraph","Paragraph"],["heading","Heading"],
+      ["link","Link"],["image","Existing website image"]]){
+      const option=doc.createElement("option");
+      option.value=value;option.textContent=label;kind.append(option);
+    }
+    const headingLevel=doc.createElement("select");
+    for(const value of ["h2","h3"]){
+      const option=doc.createElement("option");
+      option.value=value;option.textContent=value.toUpperCase();
+      headingLevel.append(option);
+    }
+    const description=doc.createElement("textarea");
+    description.rows=3;description.maxLength=2000;
+    const href=doc.createElement("input");
+    href.type="url";href.maxLength=500;href.placeholder="https://example.org or local-page.html";
+    const imagePath=doc.createElement("input");
+    imagePath.type="text";imagePath.maxLength=220;imagePath.placeholder="assets/existing-photo.webp";
+    const kindField=field("kind","Content type",kind);
+    const levelField=field("level","Heading level",headingLevel);
+    const textField=field("text","Text",description);
+    const hrefField=field("href","Link destination",href);
+    const imageField=field("image","Existing image path",imagePath);
+    const browseImages=doc.createElement("button");
+    browseImages.type="button";
+    browseImages.textContent="Browse website images";
+    browseImages.setAttribute("aria-label","Choose an existing website image from the image gallery");
+    browseImages.style.cssText="display:block;width:100%;margin-top:6px;"+
+      "padding:8px;border:1px solid "+(dark?"#9bad9e":"#9cb0a6")+
+      ";border-radius:6px;background:"+(dark?"#303d33":"#e8f2eb")+
+      ";color:inherit;font:600 13px system-ui;cursor:pointer";
+    // Keep interactive gallery controls outside the text-input label, so
+    // clicking Browse does not trigger a label's input activation behaviour.
+    const imageGroup=doc.createElement("div");
+    imageGroup.append(imageField,browseImages);
+    browseImages.addEventListener("click",()=>{
+      if(kind.value==="image")openMediaLibrary("quick");
+    });
+    const imagePreview=doc.createElement("div");
+    imagePreview.setAttribute("aria-live","polite");
+    imagePreview.style.cssText="display:none;gap:8px;align-items:center;margin-top:6px";
+    const thumbnail=doc.createElement("img");
+    thumbnail.alt="";
+    thumbnail.style.cssText="display:block;width:68px;height:54px;object-fit:contain;"+
+      "border:1px solid "+(dark?"#9bad9e":"#a9c1b2")+";border-radius:4px";
+    const imageNote=doc.createElement("small");
+    imageNote.style.cssText="overflow-wrap:anywhere;font-size:11px";
+    imagePreview.append(thumbnail,imageNote);
+    imageGroup.append(imagePreview);
+    const updateImagePreview=()=>{
+      const path=imagePath.value.trim();
+      const valid=path&&safeExistingImagePath(path);
+      imagePreview.style.display=valid?"flex":"none";
+      if(valid){
+        if(thumbnail.getAttribute("src")!==path)thumbnail.setAttribute("src",path);
+        imageNote.textContent="Selected image · "+path;
+      }else{
+        thumbnail.removeAttribute("src");
+        imageNote.textContent="";
+      }
+      // A newly visible thumbnail changes the panel height. Reposition the
+      // fixed composer before the browser tries to scroll its action row.
+      if(form.isConnected)positionQuickComposer();
+    };
+    imagePath.addEventListener("input",updateImagePreview);
+    const help=doc.createElement("p");
+    help.textContent="Images must already exist on this website. Your additions remain a local draft until reviewed.";
+    help.style.cssText="margin:0;font-size:12px;line-height:1.35;opacity:.85";
+    const status=doc.createElement("p");
+    status.setAttribute("role","status");
+    status.setAttribute("aria-live","polite");
+    status.style.cssText="margin:0;font-size:12px";
+    const row=doc.createElement("div");
+    row.style.cssText="display:flex;gap:7px;justify-content:flex-end;"+
+      "position:sticky;bottom:0;padding-top:5px;background:inherit";
+    const cancel=doc.createElement("button");
+    cancel.type="button";cancel.textContent="Cancel";
+    const submit=doc.createElement("button");
+    // The isolated preview deliberately disallows sandbox form submissions.
+    // Commit explicitly from this local button without navigating the iframe.
+    submit.type="button";submit.textContent="Add to page";
+    for(const button of [cancel,submit]){
+      button.style.cssText="padding:7px 10px;border:1px solid "+
+        (dark?"#9bad9e":"#9cb0a6")+";border-radius:6px;"+
+        "background:"+(button===submit?(dark?"#406d50":"#dceee1"):"transparent")+
+        ";color:inherit;font:600 13px system-ui;cursor:pointer";
+    }
+    const refresh=()=>{
+      const selection=kind.value;
+      // Inline display:block overrides the browser's [hidden] styling.
+      // Explicitly hide inactive fields so the Add action fits small previews.
+      levelField.hidden=selection!=="heading";
+      hrefField.hidden=selection!=="link";
+      imageField.hidden=selection!=="image";
+      levelField.style.display=levelField.hidden?"none":"block";
+      hrefField.style.display=hrefField.hidden?"none":"block";
+      imageGroup.style.display=imageField.hidden?"none":"block";
+      updateImagePreview();
+      textField.firstChild.textContent=selection==="image"?"Image description (alt text)":"Text";
+      description.maxLength=selection==="paragraph"?2000:selection==="image"?200:140;
+      status.textContent="";
+      if(form.isConnected)positionQuickComposer();
+    };
+    kind.addEventListener("change",refresh);
+    const close=()=>{
+      form.remove();
+      doc.getElementById("moon-quick-toolbar")
+        ?.querySelector('button[aria-label="Add new content after this block"]')
+        ?.focus({preventScroll:true});
+    };
+    cancel.addEventListener("click",close);
+    form.addEventListener("keydown",event=>{
+      if(event.key==="Escape"){event.preventDefault();event.stopPropagation();close();}
+      if((event.ctrlKey||event.metaKey)&&event.key==="Enter"){
+        event.preventDefault();event.stopPropagation();submit.click();
+      }
+    });
+    submit.addEventListener("click",event=>{
+      event.preventDefault();event.stopPropagation();
+      const resolved=sourceMoveAnchors().find(a=>a.key===anchor.key);
+      if(!resolved||resolved.selector!==anchor.selector){
+        status.textContent="The original insertion location has changed. Select it again.";
+        return;
+      }
+      const item={page:state.page,selector:resolved.selector,tag:resolved.tag,
+        before:resolved.before,kind:kind.value,text:description.value.trim()};
+      if(item.kind==="heading")item.headingTag=headingLevel.value;
+      if(item.kind==="link")item.href=href.value.trim();
+      if(item.kind==="image")item.src=imagePath.value.trim();
+      const previous=state.additions;
+      try{
+        const proposed=validateParagraphAdditions([...previous,item]);
+        state.additions=proposed;
+        try{buildExport()}finally{state.additions=previous;}
+        checkpoint();
+        state.additions=proposed;
+        renderPreview(null,proposed.length-1);
+        scheduleDraft();
+        updateStatus("New "+item.kind+" added beside selected content · Not published");
+      }catch(error){
+        state.additions=previous;
+        status.textContent="Cannot add this content. "+error.message;
+      }
+    });
+    row.append(cancel,submit);
+    form.append(heading,kindField,levelField,textField,hrefField,imageGroup,help,status,row);
+    doc.body.append(form);
+    refresh();
+    positionQuickComposer();
+    kind.focus({preventScroll:true});
   }
 
   function selectElement(node) {
@@ -336,10 +1041,145 @@
       previously.removeAttribute("data-editor-selected");
       previously.removeAttribute("contenteditable");
     }
+    for(const marked of state.frameDoc.querySelectorAll("[data-editor-added-selected]"))
+      marked.removeAttribute("data-editor-added-selected");
     state.selected=node.getAttribute("data-editor-key");
+    state.selectedAddition=null;
+    $("addedBlockDetails").hidden=true;
+    state.imageSliderActive=false;
+    if(state.frameDoc.getElementById("moon-image-resize-handle"))
+      state.frameDoc.getElementById("moon-image-resize-handle").remove();
+    state.frameDoc.getElementById("moon-column-resize-handle")?.remove();
+    state.frameDoc.getElementById("moon-added-block-move-handle")?.remove();
+    state.frameDoc.getElementById("moon-added-block-width-handle")?.remove();
     node.setAttribute("data-editor-selected","");
     if (TEXT_TAGS.has(node.tagName)) node.setAttribute("contenteditable","true");
     updateInspector(node);
+    updateBrowseControls();
+    createQuickToolbar();
+  }
+
+
+  function selectAddedBlock(index){
+    const addition=state.additions[index];
+    if(!addition||!state.frameDoc)return;
+    const previous=state.frameDoc.querySelector("[data-editor-selected]");
+    if(previous){previous.removeAttribute("data-editor-selected");previous.removeAttribute("contenteditable");}
+    for(const marked of state.frameDoc.querySelectorAll("[data-editor-added-selected]"))
+      marked.removeAttribute("data-editor-added-selected");
+    const node=state.frameDoc.querySelector('[data-editor-added-index="'+index+'"]');
+    if(!node)return;
+    node.setAttribute("data-editor-added-selected","");
+    state.selected=null;
+    state.selectedAddition=index;
+    state.frameDoc.getElementById("moon-image-resize-handle")?.remove();
+    state.frameDoc.getElementById("moon-block-move-handle")?.remove();
+    state.frameDoc.getElementById("moon-column-resize-handle")?.remove();
+    state.frameDoc.getElementById("moon-added-block-move-handle")?.remove();
+    state.frameDoc.getElementById("moon-added-block-width-handle")?.remove();
+    $("selectionDetails").hidden=true;
+    $("selectionEmpty").hidden=true;
+    $("selectionTag").textContent="New "+insertionKind(addition);
+    $("addedBlockDetails").hidden=false;
+    state.imageSliderActive=false;
+    state.addedBlockSliderActive=false;
+    const layout=addedBlockLayout(addition);
+    $("addedBlockAlign").value=layout.align;
+    $("addedBlockWidth").value=String(layout.widthPercent);
+    $("addedBlockWidthValue").textContent=layout.widthPercent+"%";
+    $("addedBlockSpaceAbove").value=String(layout.spaceAbove);
+    $("addedBlockSpaceBelow").value=String(layout.spaceBelow);
+    $("resetAddedBlockLayout").disabled=!addition.layout;
+    const kind=insertionKind(addition);
+    $("addedBlockKind").textContent=kind==="image"?"Existing website image":kind;
+    $("addedBlockTextLabel").textContent=kind==="image"?"Image description (alt text)":"Block text";
+    $("addedBlockText").maxLength=kind==="paragraph"?2000:kind==="image"?200:140;
+    $("addedBlockText").value=addition.text;
+    $("addedBlockHeadingField").hidden=kind!=="heading";
+    $("addedBlockLinkField").hidden=kind!=="link";
+    $("addedBlockImageField").hidden=kind!=="image";
+    if(kind==="heading")$("addedBlockHeadingLevel").value=addition.headingTag;
+    if(kind==="link")$("addedBlockHref").value=addition.href;
+    if(kind==="image"){
+      $("addedBlockSrc").value=addition.src;
+      const percent=addition.widthPercent===undefined?100:addition.widthPercent;
+      $("addedImageWidthPercent").value=String(percent);
+      $("addedImageWidthValue").textContent=percent+"%";
+    }
+    const siblings=state.additions.map((entry,i)=>entry.selector===addition.selector?i:-1).filter(i=>i>=0);
+    const position=siblings.indexOf(index);
+    $("moveAddedEarlierBtn").disabled=position<=0;
+    $("moveAddedLaterBtn").disabled=position>=siblings.length-1;
+    $("duplicateAddedBlockBtn").disabled=state.additions.length>=10;
+    $("addedBlockStatus").textContent="New "+kind+" · block "+(index+1)+
+      " of "+state.additions.length+" · Local draft";
+    updateBrowseControls();
+    if(kind==="image")createImageResizeHandle();
+    const anchors=sourceMoveAnchors();
+    const picker=$("moveAddedAnchorPicker");
+    picker.replaceChildren();
+    for(const anchor of anchors){
+      const option=document.createElement("option");
+      option.value=anchor.key;option.textContent=anchor.title;
+      option.selected=anchor.selector===addition.selector;
+      picker.appendChild(option);
+    }
+    const currentAnchor=anchors.find(a=>a.selector===addition.selector);
+    $("moveAddedAnchorFields").hidden=anchors.filter(a=>a.selector!==addition.selector).length===0;
+    if(!currentAnchor&&picker.options.length)picker.selectedIndex=-1;
+    updateAddedAnchorButton();
+    if(siblings.length>1||anchors.some(a=>a.selector!==addition.selector))
+      createAddedMoveHandle();
+    if(kind!=="image")createAddedWidthHandle();
+    createQuickToolbar();
+  }
+  function applyAddedBlock(){
+    const index=state.selectedAddition,original=state.additions[index];
+    if(!original)return;
+    const revised={...original,text:$("addedBlockText").value.trim()};
+    const kind=insertionKind(original);
+    if(kind==="heading")revised.headingTag=$("addedBlockHeadingLevel").value;
+    if(kind==="link")revised.href=$("addedBlockHref").value.trim();
+    if(kind==="image")revised.src=$("addedBlockSrc").value.trim();
+    const proposed=state.additions.map((item,i)=>i===index?revised:item);
+    try{validateParagraphAdditions(proposed)}
+    catch(error){
+      $("addedBlockStatus").textContent="Change not applied. "+error.message;
+      return;
+    }
+    if(JSON.stringify(revised)===JSON.stringify(original)){
+      $("addedBlockStatus").textContent="No changes to this new block.";
+      return;
+    }
+    checkpoint();
+    state.additions=proposed;
+    renderPreview();
+    saveDraft();
+    updateStatus("New block edited · Not published");
+  }
+  function removeAddedBlock(){
+    const index=state.selectedAddition;
+    if(index===null||!state.additions[index])return;
+    checkpoint();
+    state.additions.splice(index,1);
+    renderPreview();
+    saveDraft();
+    updateStatus("New block removed from draft · Not published");
+  }
+  function duplicateAddedBlock(){
+    const index=state.selectedAddition,item=state.additions[index];
+    if(!item||state.additions.length>=10)return;
+    const next=state.additions.slice();
+    next.splice(index+1,0,{...item});
+    try{validateParagraphAdditions(next)}catch(error){
+      $("addedBlockStatus").textContent="Duplicate not applied. "+error.message;
+      return;
+    }
+    checkpoint();
+    state.additions=next;
+    renderPreview(null,index+1);
+    saveDraft();
+    updateStatus("New block duplicated · Not published");
   }
 
   function updateInspector(node) {
@@ -353,14 +1193,82 @@
     $("textAppearanceFields").hidden=isImage;
     $("selectionText").closest(".inspector-group").hidden=isImage;
     $("revertElementBtn").disabled=!state.dirty.has(state.selected);
+    const move=blockMoveCandidate(state.selected);
+    const movedSource=state.blockOrders.some(group=>group.originalKeys.includes(state.selected));
+    $("moveOriginalBlockFields").hidden=!move;
+    $("moveOriginalUp").disabled=!move||move.index===0;
+    $("moveOriginalDown").disabled=!move||move.index===move.keys.length-1;
+    if(move){
+      $("moveOriginalStatus").textContent="Block "+(move.index+1)+" of "+move.keys.length+
+        " · Drag the handle in the preview or use the arrow buttons. Mobile reading order follows the new sequence."+
+      (movedSource?" Restore this group to its original order before adding or removing its blocks.":"");
+      createBlockMoveHandle();
+    }else state.frameDoc?.getElementById("moon-block-move-handle")?.remove();
+    const removable=sourceRemovalCandidate(state.selected);
+    $("removeSourceBtn").disabled=!removable;
+    $("removeSourceHelp").textContent=removable?
+      "Remove this original block from the reviewed draft. Undo and Review changes can restore it.":
+      "Removal is available for uniquely verified standalone paragraphs, supported headings and images without conflicting edits or layouts.";
+    const compatible=movedSource?null:directLayoutSelection();
+    $("directLayoutFields").hidden=!compatible;
+    if(compatible){
+      const active=layoutGroups().some(group=>group.parentSelector===compatible.spec.parentSelector);
+      $("directLayoutRemove").disabled=!active;
+      $("directLayoutStatus").textContent=(compatible.spec.version===2?"Card or row group":"Text group")+
+        " · "+compatible.spec.children.length+" blocks"+(active?" · Layout active":" · Original layout")+
+        ". Mobile stays in reading order.";
+      if(active){
+        const two=activeTwoColumnLayout();
+        const activeGroup=layoutGroups().find(g=>g.parentSelector===compatible.spec.parentSelector);
+        if(two){
+          const split=two.split;
+          $("directLayoutPreset").value=split===6?"two":split===8?"first-wide":
+            split===4?"second-wide":"custom";
+          $("directLayoutCustomColumns").value=String(split);
+          $("directLayoutCustomValue").textContent=split+" / "+(12-split)+" columns";
+        }else if(activeGroup?.children.every(c=>c.desktop.w===12)){
+          $("directLayoutPreset").value="stack";
+        }else if(activeGroup?.children.some(c=>c.desktop.x===9&&c.desktop.w===4)){
+          $("directLayoutPreset").value="three";
+        }
+        $("directLayoutCustomField").hidden=$("directLayoutPreset").value!=="custom";
+        createColumnResizeHandle();
+      }else state.frameDoc?.getElementById("moon-column-resize-handle")?.remove();
+    }
+    const canInsert=["H2","H3","H4","P"].includes(node.tagName)&&
+      !!state.original.get(state.selected)&&!movedSource;
+    $("insertContentFields").hidden=!canInsert;
+    const sourceText=node.textContent.trim();
+    $("duplicateSourceBtn").disabled=!canInsert||!["P","H2","H3"].includes(node.tagName)||
+      !!node.children.length||!sourceText||
+      sourceText.length>(node.tagName==="P"?2000:140)||state.additions.length>=10;
+    if(canInsert){
+      const kind=$("insertContentKind").value;
+      $("insertHeadingField").hidden=kind!=="heading";
+      $("insertLinkField").hidden=kind!=="link";
+    }
     if (isImage) {
       $("imageSrc").value=getWorking(state.selected)?.getAttribute("src")||node.getAttribute("src")||"";
       $("imageAlt").value=node.getAttribute("alt")||"";
-      $("imageMaxWidth").value=["100%","75%","50%","25%"].includes(node.style.maxWidth)?node.style.maxWidth:"";
+      const width=Number.parseInt(node.style.width||node.style.maxWidth,10);
+      const pct=Number.isFinite(width)&&width>=20&&width<=100?Math.round(width/5)*5:100;
+      $("imageWidthPercent").value=String(pct);
+      $("imageWidthValue").textContent=pct+"%";
+      createImageResizeHandle();
     } else {
       $("selectionText").value=node.textContent;
       $("textAlignment").value=["left","center","right","justify"].includes(node.style.textAlign)?
         node.style.textAlign:"";
+      const numberValue=(style,units,min,max)=>{
+        const match=new RegExp("^(\\d+)"+units+"$").exec(style);
+        return match&&Number(match[1])>=min&&Number(match[1])<=max?match[1]:"";
+      };
+      $("textFontSize").value=numberValue(node.style.fontSize,"px",12,80);
+      $("textMaxWidth").value=numberValue(node.style.maxWidth,"%",30,100);
+      $("textSpaceAbove").value=numberValue(node.style.marginTop,"px",0,80);
+      $("textSpaceBelow").value=numberValue(node.style.marginBottom,"px",0,80);
+      $("textColour").value=colorAsHex(node.style.color);
+      $("textBackgroundColour").value=colorAsHex(node.style.backgroundColor);
       const rich=[...node.children].length>0;
       $("selectionText").readOnly=rich;
       $("richTextNote").textContent=rich?
@@ -371,6 +1279,14 @@
       $("linkHref").value=node.getAttribute("href")||"";
       $("linkTarget").value=node.getAttribute("target")==="_blank"?"new":"same";
     }
+  }
+
+  function colorAsHex(value){
+    if(!value)return "";
+    if(/^#[0-9a-f]{6}$/i.test(value))return value.toLowerCase();
+    const rgb=/^rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)$/i.exec(value);
+    if(!rgb||rgb.slice(1).some(n=>Number(n)>255))return "";
+    return "#"+rgb.slice(1).map(n=>Number(n).toString(16).padStart(2,"0")).join("");
   }
 
   function safeUrl(value,kind) {
@@ -423,6 +1339,728 @@
     }
     updateDirty(state.selected);
     updateInspector(rendered);
+    createQuickToolbar();
+  }
+
+  function updateNumericInspectorStyle(property,field,unit,min,max){
+    const value=$(field).value.trim();
+    if(value!==""&&(!/^\d+$/.test(value)||Number(value)<min||Number(value)>max)){
+      notice("Enter a whole number between "+min+" and "+max+", or leave the field blank to use the page style.","Invalid style");
+      const selected=state.frameDoc?.querySelector('[data-editor-key="'+state.selected+'"]');
+      if(selected)updateInspector(selected);
+      return;
+    }
+    updateSelectedStyle(property,value?value+unit:"",[value?value+unit:""]);
+  }
+  function updateColorInspectorStyle(property,field){
+    const value=$(field).value.trim();
+    if(value&&!/^#[0-9a-fA-F]{6}$/.test(value)){
+      notice("Enter a six-digit hex colour such as #296c56, or leave the field blank.","Invalid colour");
+      const selected=state.frameDoc?.querySelector('[data-editor-key="'+state.selected+'"]');
+      if(selected)updateInspector(selected);
+      return;
+    }
+    updateSelectedStyle(property,value,[value]);
+  }
+  function validImagePercent(percent){
+    return Number.isInteger(percent)&&percent>=20&&percent<=100&&percent%5===0;
+  }
+  function selectedPreviewImage(){
+    const doc=state.frameDoc;
+    if(!doc)return null;
+    if(state.selectedAddition!==null){
+      const block=doc.querySelector('[data-editor-added-index="'+state.selectedAddition+'"]');
+      return block?.querySelector("img")||null;
+    }
+    const node=doc.querySelector('[data-editor-key="'+state.selected+'"]');
+    return node?.tagName==="IMG"?node:null;
+  }
+  function syncAddedBlockLayoutControls(item){
+    const layout=addedBlockLayout(item);
+    $("addedBlockAlign").value=layout.align;
+    $("addedBlockWidth").value=String(layout.widthPercent);
+    $("addedBlockWidthValue").textContent=layout.widthPercent+"%";
+    $("addedBlockSpaceAbove").value=String(layout.spaceAbove);
+    $("addedBlockSpaceBelow").value=String(layout.spaceBelow);
+    $("resetAddedBlockLayout").disabled=!item.layout;
+  }
+  function setAddedBlockLayout(patch,makeCheckpoint=false){
+    const index=state.selectedAddition,item=state.additions[index];
+    if(!item)return false;
+    const layout={...addedBlockLayout(item),...patch};
+    try{validateAddedLayout(layout)}
+    catch(error){
+      $("addedBlockStatus").textContent="Block layout unchanged. "+error.message;
+      syncAddedBlockLayoutControls(item);
+      return false;
+    }
+    const revised={...item};
+    if(isDefaultAddedLayout(layout))delete revised.layout;
+    else revised.layout=layout;
+    if(JSON.stringify(revised)===JSON.stringify(item))return false;
+    const proposed=state.additions.map((entry,i)=>i===index?revised:entry);
+    try{validateParagraphAdditions(proposed)}
+    catch(error){
+      $("addedBlockStatus").textContent="Block layout unchanged. "+error.message;
+      syncAddedBlockLayoutControls(item);
+      return false;
+    }
+    if(makeCheckpoint)checkpoint();
+    state.additions=proposed;
+    const target=state.frameDoc?.querySelector('[data-editor-added-index="'+index+'"]');
+    if(target){
+      const css=addedBlockStyle(revised);
+      if(css)target.style.cssText=css;
+      else target.removeAttribute("style");
+    }
+    syncAddedBlockLayoutControls(revised);
+    $("addedBlockStatus").textContent="Block position updated · Local draft";
+    positionAddedWidthHandle();
+    positionImageResizeHandle();
+    positionAddedMoveHandle();
+    createQuickToolbar();
+    scheduleDraft();
+    return true;
+  }
+  function positionAddedWidthHandle(){
+    const doc=state.frameDoc,handle=doc?.getElementById("moon-added-block-width-handle");
+    if(!handle||state.addedWidthPointer)return;
+    const item=state.additions[state.selectedAddition];
+    const target=doc.querySelector('[data-editor-added-index="'+state.selectedAddition+'"]');
+    if(!item||insertionKind(item)==="image"||!target){handle.remove();return;}
+    const rect=target.getBoundingClientRect(),view=doc.defaultView;
+    if(rect.bottom<0||rect.right<0||rect.top>view.innerHeight||rect.left>view.innerWidth){
+      handle.hidden=true;return;
+    }
+    handle.hidden=false;
+    handle.style.left=Math.max(0,Math.min(view.innerWidth-28,rect.right-13))+"px";
+    handle.style.top=Math.max(0,Math.min(view.innerHeight-28,rect.bottom-13))+"px";
+  }
+  function createAddedWidthHandle(){
+    const doc=state.frameDoc;
+    if(!doc||doc.getElementById("moon-added-block-width-handle"))return;
+    const handle=doc.createElement("button");
+    handle.id="moon-added-block-width-handle";handle.type="button";
+    handle.textContent="↘";
+    handle.title="Drag to resize this new text block";
+    handle.setAttribute("aria-label","Drag to adjust new block width. Use the block width slider in the inspector for keyboard editing.");
+    handle.style.cssText="position:fixed;z-index:2147483645;width:28px;height:28px;border:2px solid #27654f;border-radius:5px;background:#fff;color:#174932;cursor:nwse-resize;font:700 20px/20px system-ui;touch-action:none;box-shadow:0 1px 6px #0004";
+    handle.addEventListener("click",event=>event.stopPropagation());
+    handle.addEventListener("pointerdown",event=>{
+      if(event.button!==0||state.addedWidthPointer)return;
+      const item=state.additions[state.selectedAddition],target=doc.querySelector(
+        '[data-editor-added-index="'+state.selectedAddition+'"]');
+      const parentWidth=target?.parentElement?.getBoundingClientRect().width;
+      if(!item||insertionKind(item)==="image"||!parentWidth)return;
+      event.preventDefault();event.stopPropagation();
+      checkpoint();
+      state.addedWidthPointer={id:event.pointerId,index:state.selectedAddition,
+        startX:event.clientX,startPercent:addedBlockLayout(item).widthPercent,parentWidth};
+      handle.setPointerCapture(event.pointerId);
+    });
+    handle.addEventListener("pointermove",event=>{
+      const drag=state.addedWidthPointer;
+      if(!drag||drag.id!==event.pointerId||drag.index!==state.selectedAddition)return;
+      const desired=Math.round((drag.startPercent+
+        100*(event.clientX-drag.startX)/drag.parentWidth)/5)*5;
+      setAddedBlockLayout({widthPercent:Math.max(30,Math.min(100,desired))});
+    });
+    const finish=event=>{
+      if(state.addedWidthPointer?.id!==event.pointerId)return;
+      state.addedWidthPointer=null;
+      positionAddedWidthHandle();
+      scheduleDraft();
+    };
+    handle.addEventListener("pointerup",finish);
+    handle.addEventListener("pointercancel",finish);
+    doc.body.append(handle);
+    positionAddedWidthHandle();
+  }
+  function resizeAddedImage(percent){
+    const index=state.selectedAddition,item=state.additions[index];
+    const image=selectedPreviewImage();
+    if(!validImagePercent(percent)||insertionKind(item)!=="image"||!image)return;
+    if(item.widthPercent===percent)return;
+    const proposed=state.additions.map((part,i)=>i===index?{...part,widthPercent:percent}:part);
+    try{validateParagraphAdditions(proposed)}
+    catch(error){
+      $("addedBlockStatus").textContent="Image width was not changed. "+error.message;
+      return;
+    }
+    state.additions=proposed;
+    image.style.width=percent+"%";
+    image.style.maxWidth="100%";
+    image.style.height="auto";
+    $("addedImageWidthPercent").value=String(percent);
+    $("addedImageWidthValue").textContent=percent+"%";
+    $("addedBlockStatus").textContent="Image resized to "+percent+"% · Local draft";
+    scheduleDraft();
+    positionImageResizeHandle();
+  }
+  function resizeSelectedImage(percent){
+    if(state.selectedAddition!==null)resizeAddedImage(percent);
+    else resizeImage(percent);
+  }
+  function resizeImage(percent,makeCheckpoint=false){
+    if(!state.selected||!Number.isInteger(percent)||percent<20||percent>100||percent%5)return;
+    const work=getWorking(state.selected);
+    const preview=state.frameDoc?.querySelector('[data-editor-key="'+state.selected+'"]');
+    if(work?.tagName!=="IMG"||preview?.tagName!=="IMG")return;
+    if(makeCheckpoint)checkpoint();
+    for(const img of [work,preview]){
+      img.style.width=percent+"%";
+      img.style.maxWidth="100%";
+      img.style.height="auto";
+    }
+    $("imageWidthPercent").value=String(percent);
+    $("imageWidthValue").textContent=percent+"%";
+    updateDirty(state.selected);
+    positionImageResizeHandle();
+  }
+  function positionImageResizeHandle(){
+    const doc=state.frameDoc,handle=doc?.getElementById("moon-image-resize-handle");
+    if(!handle)return;
+    const img=selectedPreviewImage();
+    if(!img){handle.remove();return;}
+    const rect=img.getBoundingClientRect(),view=doc.defaultView;
+    if(rect.bottom<0||rect.right<0||rect.top>view.innerHeight||rect.left>view.innerWidth){
+      handle.hidden=true;return;
+    }
+    handle.hidden=false;
+    handle.style.left=Math.max(0,Math.min(view.innerWidth-28,rect.right-12))+"px";
+    handle.style.top=Math.max(0,Math.min(view.innerHeight-28,rect.bottom-12))+"px";
+  }
+  function createImageResizeHandle(){
+    const doc=state.frameDoc;
+    if(!doc||doc.getElementById("moon-image-resize-handle"))return;
+    const handle=doc.createElement("button");
+    handle.id="moon-image-resize-handle";handle.type="button";
+    handle.textContent="↘";handle.title="Drag to resize image";
+    handle.setAttribute("aria-label","Drag to resize selected image. The width slider is keyboard accessible.");
+    handle.style.cssText="position:fixed;z-index:2147483647;width:28px;height:28px;border:2px solid #27654f;border-radius:5px;background:#fff;color:#174932;cursor:nwse-resize;font:700 20px/20px system-ui;touch-action:none;box-shadow:0 1px 6px #0004";
+    handle.addEventListener("click",event=>event.stopPropagation());
+    handle.addEventListener("pointerdown",event=>{
+      if(event.button!==0||state.resizeStart)return;
+      const img=selectedPreviewImage();
+      const parent=img?.parentElement;
+      if(!img||!parent)return;
+      const parentWidth=parent.getBoundingClientRect().width;
+      if(parentWidth<=0)return;
+      event.preventDefault();event.stopPropagation();
+      checkpoint();
+      state.resizeStart={pointerId:event.pointerId,startX:event.clientX,
+        startPercent:/^\d+%$/.test(img.style.width)?Number.parseInt(img.style.width,10):
+          img.getBoundingClientRect().width/parentWidth*100,parentWidth};
+      handle.setPointerCapture(event.pointerId);
+    });
+    handle.addEventListener("pointermove",event=>{
+      const drag=state.resizeStart;
+      if(!drag||drag.pointerId!==event.pointerId)return;
+      const desired=Math.round((drag.startPercent+100*(event.clientX-drag.startX)/drag.parentWidth)/5)*5;
+      resizeSelectedImage(Math.max(20,Math.min(100,desired)));
+    });
+    const finish=event=>{
+      if(state.resizeStart?.pointerId!==event.pointerId)return;
+      state.resizeStart=null;
+      scheduleDraft();
+    };
+    handle.addEventListener("pointerup",finish);
+    handle.addEventListener("pointercancel",finish);
+    doc.body.appendChild(handle);
+    positionImageResizeHandle();
+  }
+
+
+
+  /* Moving original content is restricted to a continuous run of verified
+     sibling blocks. Exact source fragments and whitespace gaps are kept. */
+  const MOVE_TAGS=new Set(["P","IMG","LI","BLOCKQUOTE","FIGURE"]);
+  function movableSourceNode(node){
+    if(!node||!MOVE_TAGS.has(node.tagName)||!node.parentElement||
+       !state.doc?.querySelector("main")?.contains(node))return false;
+    const key=node.getAttribute("data-editor-key");
+    if(!key||!state.original.has(key)||cleanOuter(node)!==state.original.get(key)||
+       node.hasAttribute("id")||node.hasAttribute("name")||
+       node.matches("nav *,header *,footer *,aside *,form *,dialog *")||
+       node.querySelector("[id],[name],script,form,button,iframe,[contenteditable]")||
+       state.stagedMedia?.key===key)return false;
+    const dirty=[...state.dirty].some(id=>{
+      const edit=getWorking(id);
+      return edit&&(node===edit||node.contains(edit)||edit.contains(node));
+    });
+    if(dirty)return false;
+    if(layoutGroups().some(group=>{
+      const parent=state.doc.querySelector("main "+group.parentSelector);
+      return !parent||parent.contains(node)||node.contains(parent);
+    }))return false;
+    if(state.removals.some(item=>item.key===key||
+      node.contains(getWorking(item.key))))return false;
+    if(state.additions.some(item=>{
+      const root=state.doc.querySelector("main");
+      const target=root?.querySelector(item.selector);
+      return !target||target===node||node.contains(target);
+    }))return false;
+    return true;
+  }
+  function blockSourceSpans(html,keys){
+    const entries=keys.map(key=>{
+      const markup=state.original.get(key);
+      if(!markup)throw Error("A moved block no longer has original markup");
+      const index=html.indexOf(markup);
+      if(index<0||html.indexOf(markup,index+markup.length)>=0)
+        throw Error("A content block is not uniquely identifiable in the page source");
+      return {key,markup,start:index,end:index+markup.length};
+    });
+    for(let i=1;i<entries.length;i++){
+      if(entries[i-1].end>entries[i].start||
+         html.slice(entries[i-1].end,entries[i].start).trim())
+        throw Error("Only immediately adjacent source blocks can be reordered");
+    }
+    return entries;
+  }
+  function validateBlockOrders(groups){
+    if(!Array.isArray(groups)||groups.length>8)throw Error("Too many rearranged content groups");
+    const used=new Set(),validated=[];
+    for(const group of groups){
+      const a=group?.originalKeys,b=group?.keys;
+      if(!Array.isArray(a)||!Array.isArray(b)||a.length<2||a.length>12||
+         a.length!==b.length||new Set(a).size!==a.length||new Set(b).size!==b.length||
+         a.some(key=>typeof key!=="string"||!/^e\d+$/.test(key)||used.has(key))||
+         b.some(key=>!a.includes(key)))throw Error("Content group order is invalid");
+      const nodes=a.map(key=>getWorking(key));
+      if(nodes.some(node=>!movableSourceNode(node)))throw Error("Content group has protected or edited blocks");
+      const parent=nodes[0]?.parentElement;
+      if(!parent||nodes.some(node=>node.parentElement!==parent))
+        throw Error("Content blocks must remain in the same container");
+      // Key order is checked against the original source, even when the
+      // working document has already been rearranged.
+      blockSourceSpans(state.source,a);
+      // An interrupted run must never be collapsed into a new order.
+      const current=[...parent.children].filter(node=>a.includes(node.getAttribute("data-editor-key")));
+      if(current.length!==a.length||current.some((node,i)=>i>0&&
+         [...parent.children].indexOf(node)!==[...parent.children].indexOf(current[i-1])+1))
+        throw Error("Content group is no longer a contiguous run");
+      a.forEach(key=>used.add(key));
+      if(b.some((key,i)=>key!==a[i]))
+        validated.push({originalKeys:a.slice(),keys:b.slice()});
+    }
+    return validated;
+  }
+  function applyBlockOrdersToWorking(groups){
+    for(const group of groups){
+      const nodes=group.keys.map(key=>getWorking(key));
+      const parent=nodes[0]?.parentElement;
+      const original=[...parent.children].filter(node=>
+        group.originalKeys.includes(node.getAttribute("data-editor-key")));
+      if(!parent||nodes.some(node=>node.parentElement!==parent)||
+         original.length!==group.keys.length)throw Error("Content move cannot be restored");
+      original[0].before(...nodes);
+    }
+  }
+  function blockMoveCandidate(key){
+    const node=getWorking(key);
+    if(!node||!movableSourceNode(node))return null;
+    const siblings=[...node.parentElement.children];
+    const index=siblings.indexOf(node);
+    let lo=index,hi=index;
+    while(lo>0&&movableSourceNode(siblings[lo-1]))lo--;
+    while(hi+1<siblings.length&&movableSourceNode(siblings[hi+1]))hi++;
+    if(hi-lo<1)return null;
+    const keys=siblings.slice(lo,hi+1).map(item=>item.getAttribute("data-editor-key"));
+    const existing=state.blockOrders.find(group=>group.originalKeys.includes(key));
+    const originalKeys=existing?existing.originalKeys:keys;
+    if(existing&&(existing.originalKeys.length!==keys.length||
+       originalKeys.some(id=>!keys.includes(id))))return null;
+    if(state.blockOrders.some(group=>group!==existing&&
+       group.originalKeys.some(id=>keys.includes(id))))return null;
+    try{blockSourceSpans(state.source,originalKeys)}
+    catch{return null}
+    return {keys,originalKeys,index:keys.indexOf(key)};
+  }
+
+  function reorderOriginalRelative(fromKey,targetKey,after){
+    const candidate=blockMoveCandidate(fromKey);
+    if(!candidate||fromKey===targetKey||!candidate.keys.includes(targetKey))return false;
+    const desired=candidate.keys.filter(key=>key!==fromKey);
+    const at=desired.indexOf(targetKey)+(after?1:0);
+    desired.splice(at,0,fromKey);
+    if(desired.every((key,i)=>key===candidate.keys[i]))return false;
+    const groups=state.blockOrders.map(group=>({
+      originalKeys:group.originalKeys.slice(),keys:group.keys.slice()
+    }));
+    const existing=groups.find(group=>group.originalKeys.includes(fromKey));
+    if(existing)existing.keys=desired;
+    else groups.push({originalKeys:candidate.originalKeys.slice(),keys:desired});
+    try{
+      checkpoint();
+      const node=getWorking(fromKey),target=getWorking(targetKey);
+      if(after)target.after(node);else target.before(node);
+      state.blockOrders=validateBlockOrders(groups);
+      renderPreview(fromKey);
+      scheduleDraft();
+      updateStatus("Original content order updated · Not published");
+      return true;
+    }catch(error){
+      undo();
+      notice("This content cannot be rearranged safely. "+error.message,"Move stopped");
+      return false;
+    }
+  }
+  function moveOriginalBlock(direction){
+    if(![-1,1].includes(direction)||!state.selected)return;
+    const candidate=blockMoveCandidate(state.selected);
+    const target=candidate?.keys[candidate.index+direction];
+    if(!target)return;
+    reorderOriginalRelative(state.selected,target,direction>0);
+  }
+  function positionBlockMoveHandle(){
+    const doc=state.frameDoc,handle=doc?.getElementById("moon-block-move-handle");
+    if(!handle||state.blockPointer)return;
+    const node=doc.querySelector('[data-editor-key="'+state.selected+'"]');
+    if(!node||!blockMoveCandidate(state.selected)){handle.remove();return;}
+    const r=node.getBoundingClientRect(),w=doc.defaultView;
+    if(r.bottom<0||r.right<0||r.top>w.innerHeight||r.left>w.innerWidth){
+      handle.hidden=true;return;
+    }
+    handle.hidden=false;
+    handle.style.left=Math.max(0,Math.min(w.innerWidth-32,r.left-27))+"px";
+    handle.style.top=Math.max(0,Math.min(w.innerHeight-32,r.top))+"px";
+  }
+
+  function pointerBlockTarget(doc,x,y,keys,from,handle){
+    // The grip follows the pointer, so temporarily remove it from hit tests.
+    const former=handle.style.pointerEvents;
+    handle.style.pointerEvents="none";
+    const hit=doc.elementFromPoint(x,y);
+    handle.style.pointerEvents=former;
+    for(let node=hit;node&&node!==doc.body;node=node.parentElement){
+      const key=node.getAttribute?.("data-editor-key");
+      if(key&&key!==from&&keys.includes(key))return node;
+    }
+    return null;
+  }
+  function clearPointerBlockMarks(){
+    const doc=state.frameDoc;
+    if(!doc)return;
+    for(const marked of doc.querySelectorAll("[data-editor-drag-target]"))
+      marked.removeAttribute("data-editor-drag-target");
+  }
+  function createBlockMoveHandle(){
+    const doc=state.frameDoc;
+    if(!doc||doc.getElementById("moon-block-move-handle"))return;
+    const handle=doc.createElement("button");
+    handle.id="moon-block-move-handle";handle.type="button";
+    handle.textContent="⠿";
+    handle.title="Drag this original content block to a neighbouring position";
+    handle.setAttribute("aria-label","Drag selected content block. Keyboard users can use Move block up or Move block down in the inspector.");
+    handle.style.cssText="position:fixed;z-index:2147483646;display:grid;place-items:center;width:30px;height:30px;border:2px solid #27654f;border-radius:5px;background:#fff;color:#174932;cursor:grab;touch-action:none;font:700 21px/1 system-ui;box-shadow:0 1px 6px #0004";
+    handle.addEventListener("click",event=>event.stopPropagation());
+    handle.addEventListener("pointerdown",event=>{
+      if(event.button!==0||state.blockPointer)return;
+      const group=blockMoveCandidate(state.selected);
+      if(!group)return;
+      event.preventDefault();event.stopPropagation();
+      const box=handle.getBoundingClientRect();
+      state.blockPointer={id:event.pointerId,from:state.selected,
+        keys:group.keys.slice(),x:event.clientX,y:event.clientY,
+        left:box.left,top:box.top};
+      handle.setPointerCapture(event.pointerId);
+      handle.style.cursor="grabbing";
+    });
+    handle.addEventListener("pointermove",event=>{
+      const drag=state.blockPointer;
+      if(!drag||drag.id!==event.pointerId)return;
+      event.preventDefault();
+      handle.style.left=(drag.left+event.clientX-drag.x)+"px";
+      handle.style.top=(drag.top+event.clientY-drag.y)+"px";
+      clearPointerBlockMarks();
+      const target=pointerBlockTarget(doc,event.clientX,event.clientY,drag.keys,drag.from,handle);
+      if(target){
+        const rect=target.getBoundingClientRect();
+        target.setAttribute("data-editor-drag-target",
+          event.clientY>=rect.top+rect.height/2?"after":"before");
+      }
+    });
+    const endDrag=event=>{
+      const drag=state.blockPointer;
+      if(!drag||drag.id!==event.pointerId)return;
+      event.preventDefault();
+      const target=event.type==="pointerup"?
+        pointerBlockTarget(doc,event.clientX,event.clientY,drag.keys,drag.from,handle):null;
+      const rect=target?.getBoundingClientRect();
+      const key=target?.getAttribute("data-editor-key");
+      const after=!!rect&&event.clientY>=rect.top+rect.height/2;
+      state.blockPointer=null;
+      if(handle.hasPointerCapture(event.pointerId))
+        handle.releasePointerCapture(event.pointerId);
+      handle.style.cursor="grab";
+      clearPointerBlockMarks();
+      positionBlockMoveHandle();
+      if(key)setTimeout(()=>reorderOriginalRelative(drag.from,key,after),0);
+    };
+    handle.addEventListener("pointerup",endDrag);
+    handle.addEventListener("pointercancel",endDrag);
+    doc.body.appendChild(handle);
+    positionBlockMoveHandle();
+  }
+
+  function restoreReviewedBlockOrder(index){
+    const group=state.blockOrders[index];
+    if(!group)return;
+    checkpoint();
+    const nodes=group.originalKeys.map(key=>getWorking(key));
+    const parent=nodes[0]?.parentElement;
+    const first=[...parent.children].find(node=>group.originalKeys.includes(node.getAttribute("data-editor-key")));
+    first.before(...nodes);
+    state.blockOrders.splice(index,1);
+    renderPreview();
+    saveDraft();
+    updateStatus("Original content order restored · Not published");
+    const modal=$("reviewDialog");
+    if(modal.open)modal.close();
+    if(state.dirty.size||state.additions.length||layoutGroups().length||
+       state.removals.length||state.blockOrders.length||
+       state.sectionOrder.some((id,i)=>id!==state.originalSections[i]))reviewChanges();
+  }
+  function exportBlockOrders(html){
+    const groups=validateBlockOrders(state.blockOrders);
+    const edits=[];
+    for(const group of groups){
+      const source=blockSourceSpans(html,group.originalKeys);
+      const parts=new Map(source.map(item=>[item.key,item.markup]));
+      const gaps=source.slice(0,-1).map((item,i)=>
+        html.slice(item.end,source[i+1].start));
+      let replacement="";
+      group.keys.forEach((key,i)=>replacement+=parts.get(key)+(gaps[i]||""));
+      edits.push({start:source[0].start,end:source.at(-1).end,replacement});
+    }
+    edits.sort((a,b)=>b.start-a.start);
+    for(let i=1;i<edits.length;i++)
+      if(edits[i-1].start<edits[i].end)throw Error("Moved content groups overlap");
+    for(const edit of edits)
+      html=html.slice(0,edit.start)+edit.replacement+html.slice(edit.end);
+    return html;
+  }
+
+  function directLayoutSelection(){
+    if(!state.selected||!state.source||!window.MoonResponsiveLayout)return null;
+    const selected=getWorking(state.selected),workMain=state.doc.querySelector("main");
+    if(!selected||!workMain?.contains(selected))return null;
+    const original=new DOMParser().parseFromString(state.source,"text/html");
+    const originalMain=original.querySelector("main");
+    if(!originalMain)return null;
+    let selector;
+    try{selector=MoonResponsiveLayout.sourceSelector(selected,workMain);}
+    catch{return null;}
+    const matches=[...originalMain.querySelectorAll(selector)];
+    if(matches.length!==1)return null;
+    const textTags=new Set(["h1","h2","h3","h4","p","blockquote","figcaption"]);
+    const containerTags=new Set(["div","article","figure","section","aside"]);
+    let textFallback=null;
+    for(let parent=matches[0].parentElement;parent&&parent!==originalMain;parent=parent.parentElement){
+      const children=[...parent.children];
+      if(children.length<2||children.length>12)continue;
+      const kinds=children.map(node=>node.tagName.toLowerCase());
+      const version=kinds.every(tag=>textTags.has(tag))?1:
+        kinds.every(tag=>containerTags.has(tag))?2:0;
+      if(!version)continue;
+      let spec;
+      try{
+        const parentSelector=MoonResponsiveLayout.sourceSelector(parent,originalMain);
+        spec={version,parentSelector,children:children.map((child,index)=>{
+          const tag=child.tagName.toLowerCase();
+          const before=child.textContent.trim().replace(/\s+/g," ");
+          const position={x:1,y:index+1,w:12,h:1};
+          return {selector:MoonResponsiveLayout.sourceSelector(child,originalMain),
+            tag,before,...(version===2?{markup:child.outerHTML}:{}),
+            desktop:{...position},mobile:{...position}};
+        })};
+        MoonResponsiveLayout.verify(original,spec);
+        if(version===2)return {original,spec};
+        if(!textFallback)textFallback={original,spec};
+      }catch{continue;}
+    }
+    return textFallback;
+  }
+  function arrangedDirectSpec(spec,preset){
+    const lead=spec.version===1&&/^h[1-4]$/.test(spec.children[0].tag)?1:0;
+    let columns=1,widths=[12];
+    if(preset==="two"){columns=2;widths=[6,6];}
+    else if(preset==="first-wide"){columns=2;widths=[8,4];}
+    else if(preset==="second-wide"){columns=2;widths=[4,8];}
+    else if(preset==="three"){columns=3;widths=[4,4,4];}
+    else if(preset==="custom"){
+      const first=Number($("directLayoutCustomColumns").value);
+      if(!Number.isInteger(first)||first<2||first>10)throw Error("Custom column widths must be between 2 and 10");
+      columns=2;widths=[first,12-first];
+    }
+    else if(preset!=="stack")throw Error("Unknown layout preset");
+    return {...spec,children:spec.children.map((child,index)=>{
+      const j=index-lead;
+      const position=index<lead?{x:1,y:1,w:12,h:1}:{
+        x:1+widths.slice(0,j%columns).reduce((total,w)=>total+w,0),
+        y:1+lead+Math.floor(j/columns),w:widths[j%columns],h:1};
+      return {...child,desktop:position,mobile:{x:1,y:index+1,w:12,h:1}};
+    })};
+  }
+
+  // The visible divider applies only to source-verified 12-column groups
+  // created with two stable columns. It never changes mobile positions.
+  function activeTwoColumnLayout(){
+    const choice=directLayoutSelection();
+    if(!choice)return null;
+    const index=layoutGroups().findIndex(group=>
+      group.parentSelector===choice.spec.parentSelector);
+    if(index<0)return null;
+    const group=layoutGroups()[index];
+    const placed=group.children.filter(child=>child.desktop.w!==12);
+    if(placed.length<2)return null;
+    const right=placed.filter(child=>child.desktop.x>1);
+    const left=placed.filter(child=>child.desktop.x===1);
+    if(!left.length||!right.length)return null;
+    const split=right[0].desktop.x-1;
+    if(split<2||split>10||left.some(c=>c.desktop.w!==split)||
+       right.some(c=>c.desktop.x!==split+1||c.desktop.w!==12-split))
+      return null;
+    // A full-width heading is allowed, but partial-width spanning cards
+    // would be distorted by a blanket left/right width adjustment.
+    if(placed.length!==left.length+right.length)return null;
+    return {group,index,split,parentSelector:group.parentSelector,
+      rightSelector:right[0].selector};
+  }
+  function resizeTwoColumnLayout(width){
+    const current=activeTwoColumnLayout();
+    if(!current||!Number.isInteger(width)||width<2||width>10)return null;
+    const amended={...current.group,children:current.group.children.map(child=>{
+      const position={...child.desktop};
+      if(position.w!==12){
+        if(position.x===1)position.w=width;
+        else {position.x=width+1;position.w=12-width;}
+      }
+      return {...child,desktop:position};
+    })};
+    const proposed=layoutGroups().map((g,i)=>i===current.index?amended:g);
+    const original=new DOMParser().parseFromString(state.source,"text/html");
+    const css=MoonResponsiveLayout.cssForGroups(original,proposed);
+    return {css,proposed,current};
+  }
+  function positionColumnResizeHandle(){
+    const doc=state.frameDoc,handle=doc?.getElementById("moon-column-resize-handle");
+    if(!handle||state.columnPointer)return;
+    const current=activeTwoColumnLayout();
+    if(!current){handle.remove();return;}
+    const parent=doc.querySelector("main "+current.parentSelector);
+    const right=doc.querySelector("main "+current.rightSelector);
+    if(!parent||!right){handle.remove();return;}
+    const pr=parent.getBoundingClientRect(),rr=right.getBoundingClientRect(),view=doc.defaultView;
+    if(pr.bottom<0||pr.top>view.innerHeight||rr.left<0||rr.left>view.innerWidth){
+      handle.hidden=true;return;
+    }
+    handle.hidden=false;
+    handle.style.left=Math.max(0,Math.min(view.innerWidth-30,rr.left-21))+"px";
+    handle.style.top=Math.max(0,Math.min(view.innerHeight-42,Math.max(0,rr.top+8)))+"px";
+    handle.title="Drag to resize two columns · "+current.split+" / "+(12-current.split);
+    handle.setAttribute("aria-label","Resize column divider. Use the custom split slider for keyboard editing.");
+  }
+  function createColumnResizeHandle(){
+    const doc=state.frameDoc;
+    if(!doc||doc.getElementById("moon-column-resize-handle")||!activeTwoColumnLayout())return;
+    const handle=doc.createElement("button");
+    handle.id="moon-column-resize-handle";handle.type="button";
+    handle.textContent="↔";
+    handle.style.cssText="position:fixed;z-index:2147483645;display:grid;place-items:center;width:30px;height:42px;border:2px solid #27654f;border-radius:5px;background:#fff;color:#174932;cursor:ew-resize;touch-action:none;font:700 21px/1 system-ui;box-shadow:0 1px 6px #0004";
+    handle.addEventListener("click",event=>event.stopPropagation());
+    handle.addEventListener("pointerdown",event=>{
+      if(event.button!==0||state.columnPointer)return;
+      const current=activeTwoColumnLayout();
+      const parent=current&&doc.querySelector("main "+current.parentSelector);
+      const rect=parent?.getBoundingClientRect();
+      if(!current||!rect||rect.width<=0)return;
+      event.preventDefault();event.stopPropagation();
+      state.columnPointer={id:event.pointerId,rect,width:current.split,
+        selected:state.selected,initial:current.split};
+      handle.setPointerCapture(event.pointerId);
+      handle.style.cursor="grabbing";
+    });
+    handle.addEventListener("pointermove",event=>{
+      const drag=state.columnPointer;
+      if(!drag||drag.id!==event.pointerId)return;
+      event.preventDefault();
+      const desired=Math.max(2,Math.min(10,
+        Math.round(12*(event.clientX-drag.rect.left)/drag.rect.width)));
+      if(desired===drag.width)return;
+      const candidate=resizeTwoColumnLayout(desired);
+      if(!candidate)return;
+      drag.width=desired;
+      const style=doc.getElementById("moon-responsive-group-layout");
+      if(style)style.textContent=candidate.css;
+      handle.title="Column widths "+desired+" / "+(12-desired);
+      $("directLayoutCustomValue").textContent=desired+" / "+(12-desired)+" columns";
+    });
+    const finish=event=>{
+      const drag=state.columnPointer;
+      if(!drag||drag.id!==event.pointerId)return;
+      event.preventDefault();event.stopPropagation();
+      state.columnPointer=null;
+      if(handle.hasPointerCapture(event.pointerId))handle.releasePointerCapture(event.pointerId);
+      handle.style.cursor="ew-resize";
+      if(event.type==="pointercancel"||drag.width===drag.initial){
+        const style=doc.getElementById("moon-responsive-group-layout");
+        const original=new DOMParser().parseFromString(state.source,"text/html");
+        if(style)style.textContent=layoutCss(original);
+        positionColumnResizeHandle();return;
+      }
+      const candidate=resizeTwoColumnLayout(drag.width);
+      if(!candidate){positionColumnResizeHandle();return;}
+      checkpoint();
+      state.responsiveGroups=candidate.proposed;
+      state.responsiveGroup=candidate.proposed.length===1?candidate.proposed[0]:null;
+      $("directLayoutPreset").value="custom";
+      $("directLayoutCustomField").hidden=false;
+      $("directLayoutCustomColumns").value=String(drag.width);
+      $("directLayoutCustomValue").textContent=drag.width+" / "+(12-drag.width)+" columns";
+      renderPreview(drag.selected);
+      scheduleDraft();
+      updateStatus("Responsive columns resized · Not published");
+    };
+    handle.addEventListener("pointerup",finish);
+    handle.addEventListener("pointercancel",finish);
+    doc.body.appendChild(handle);
+    positionColumnResizeHandle();
+  }
+
+  function updateDirectLayout(remove=false){
+    const choice=directLayoutSelection();
+    if(!choice){notice("Select a heading, paragraph, or card inside a compatible complete section.","Layout unavailable");return;}
+    const original=choice.original,parent=choice.spec.parentSelector;
+    const existing=layoutGroups();
+    const without=existing.filter(group=>group.parentSelector!==parent);
+    if(remove&&!existing.some(group=>group.parentSelector===parent))return;
+    try{
+      const target=remove?null:arrangedDirectSpec(choice.spec,$("directLayoutPreset").value);
+      const proposal=target?[...without,target]:without;
+      if(target&&state.additions.some(item=>
+        original.querySelector("main "+parent)?.contains(original.querySelector("main "+item.selector))))
+        throw Error("New content inside this group must be reviewed separately before arranging it");
+      if(target&&state.blockOrders.some(group=>{
+        const root=state.doc.querySelector("main");
+        const container=root?.querySelector(parent);
+        return group.originalKeys.some(key=>container?.contains(getWorking(key)));
+      }))throw Error("Undo block rearrangements in this section before applying a responsive grid");
+      if(target&&state.removals.some(item=>{
+        const root=state.doc.querySelector("main");
+        const group=root?.querySelector(parent);
+        const removed=getWorking(item.key);
+        return group&&removed&&group.contains(removed);
+      }))throw Error("Restore removed blocks in this section before arranging it");
+      if(proposal.length)MoonResponsiveLayout.cssForGroups(original,proposal);
+      checkpoint();
+      state.responsiveGroups=proposal;
+      state.responsiveGroup=proposal.length===1?proposal[0]:null;
+      renderPreview(state.selected);scheduleDraft();
+      updateStatus(remove?"Responsive arrangement removed · Not published":
+        "Responsive arrangement applied · Preview desktop and mobile before export");
+    }catch(error){notice("Cannot arrange this group. "+error.message,"Layout not applied");}
   }
 
   function onInspectorText() {
@@ -433,6 +2071,7 @@
     el.textContent=$("selectionText").value;
     work.textContent=$("selectionText").value;
     updateDirty(state.selected);
+    $("removeSourceBtn").disabled=!sourceRemovalCandidate(state.selected);
   }
 
 
@@ -794,6 +2433,33 @@
       const code=document.createElement("small");code.textContent=item.path;
       button.append(img,label,code);
       button.addEventListener("click",()=>{
+        if(state.mediaChooseInsert==="quick"){
+          const form=state.frameDoc?.getElementById("moon-quick-composer");
+          const path=form?.querySelector("#moon-quick-new-image");
+          const text=form?.querySelector("#moon-quick-new-text");
+          if(!form||!path||!text||!safeExistingImagePath(item.path)){
+            $("mediaStatus").textContent="The inline image editor is no longer available.";
+            return;
+          }
+          path.value=item.path;
+          path.dispatchEvent(new Event("input",{bubbles:true}));
+          if(!text.value.trim())text.value=item.description.slice(0,200);
+          $("mediaDialog").close();
+          path.focus({preventScroll:true});
+          return;
+        }
+        if(state.mediaChooseInsert==="added"){
+          $("addedBlockSrc").value=item.path;
+          if(!$("addedBlockText").value.trim())$("addedBlockText").value=item.description;
+          $("mediaDialog").close();
+          return;
+        }
+        if(state.mediaChooseInsert){
+          $("insertImageSrc").value=item.path;
+          if(!$("insertContentText").value.trim())$("insertContentText").value=item.description;
+          $("mediaDialog").close();
+          return;
+        }
         const selected=state.frameDoc?.querySelector(
           '[data-editor-key="'+state.selected+'"]');
         if(!selected||selected.tagName!=="IMG"){
@@ -808,10 +2474,18 @@
     $("mediaStatus").textContent=items.length+
       " existing image"+(items.length===1?"":"s")+".";
   }
-  async function openMediaLibrary(){
+  async function openMediaLibrary(forInsertion=false){
     const selected=state.frameDoc?.querySelector(
       '[data-editor-key="'+state.selected+'"]');
-    if(!selected||selected.tagName!=="IMG")return;
+    if(forInsertion==="quick"){
+      const form=state.frameDoc?.getElementById("moon-quick-composer");
+      if(!form||form.querySelector("#moon-quick-new-kind")?.value!=="image")return;
+    }else if(forInsertion==="added"){
+      if(insertionKind(state.additions[state.selectedAddition])!=="image")return;
+    }else if(forInsertion){
+      if(!selected||!["P","H2","H3","H4"].includes(selected.tagName))return;
+    }else if(!selected||selected.tagName!=="IMG")return;
+    state.mediaChooseInsert=forInsertion;
     $("mediaSearch").value="";
     $("mediaResults").replaceChildren();
     $("mediaStatus").textContent="Finding images already used on the site…";
@@ -826,6 +2500,7 @@
     nav.replaceChildren();
     const headings=state.doc.querySelectorAll("main h1,main h2,main h3");
     for (const h of headings) {
+      if(state.removals.some(item=>item.key===h.getAttribute("data-editor-key")))continue;
       const b=document.createElement("button");
       b.type="button";
       b.dataset.level=h.tagName.slice(1);
@@ -847,6 +2522,264 @@
     return cleanOuter(node);
   }
 
+  function safeNewLink(href){
+    if(typeof href!=="string"||href.length>500||href.trim()!==href||/[\s\x00-\x1f<>"'\\]/.test(href))return false;
+    if(/^[a-z0-9-]+\.html(?:#[A-Za-z0-9_-]+)?$/.test(href))return true;
+    if(!/^https:\/\/[^/]+/i.test(href))return false;
+    try{
+      const url=new URL(href);
+      return url.protocol==="https:"&&!url.username&&!url.password&&!!url.hostname&&
+        !url.hostname.endsWith(".")&&!url.hostname.includes("..")&&(url.port===""||url.port==="443");
+    }catch{return false}
+  }
+  function insertionKind(s){return s?.kind||"paragraph"}
+  const ADDED_LAYOUT_DEFAULT={align:"left",widthPercent:100,spaceAbove:0,spaceBelow:0};
+  function addedBlockLayout(item){return {...ADDED_LAYOUT_DEFAULT,...(item?.layout||{})};}
+  function isDefaultAddedLayout(layout){
+    return Object.keys(ADDED_LAYOUT_DEFAULT).every(k=>layout[k]===ADDED_LAYOUT_DEFAULT[k]);
+  }
+  function validateAddedLayout(value){
+    if(value===undefined)return;
+    if(!value||typeof value!=="object"||Array.isArray(value)||
+      Object.keys(value).length!==4||
+      Object.keys(ADDED_LAYOUT_DEFAULT).some(k=>!Object.hasOwn(value,k))||
+      !["left","center","right"].includes(value.align)||
+      !Number.isInteger(value.widthPercent)||value.widthPercent<30||
+      value.widthPercent>100||value.widthPercent%5!==0||
+      !Number.isInteger(value.spaceAbove)||value.spaceAbove<0||
+      value.spaceAbove>80||value.spaceAbove%5!==0||
+      !Number.isInteger(value.spaceBelow)||value.spaceBelow<0||
+      value.spaceBelow>80||value.spaceBelow%5!==0)
+      throw Error("Invalid added block layout");
+  }
+  function addedBlockStyle(item){
+    if(!item?.layout)return "";
+    const layout=addedBlockLayout(item),rules=[];
+    if(layout.widthPercent!==100)rules.push("width:"+layout.widthPercent+"%","max-width:100%","box-sizing:border-box");
+    if(layout.align==="center")rules.push("text-align:center","margin-left:auto","margin-right:auto");
+    else if(layout.align==="right")rules.push("text-align:right","margin-left:auto","margin-right:0");
+    else if(layout.widthPercent!==100)rules.push("margin-left:0","margin-right:auto");
+    if(layout.spaceAbove)rules.push("margin-top:"+layout.spaceAbove+"px");
+    if(layout.spaceBelow)rules.push("margin-bottom:"+layout.spaceBelow+"px");
+    return rules.join(";");
+  }
+  function safeExistingImagePath(path){
+    return typeof path==="string"&&path.length<=220&&IMAGE_PATH.test(path)&&
+      !path.includes("..")&&!path.includes("//");
+  }
+  function validateParagraphAdditions(incoming){
+    if(!Array.isArray(incoming)||incoming.length>10)throw Error("Invalid content additions");
+    const original=new DOMParser().parseFromString(state.source,"text/html");
+    const root=original.querySelector("main"),out=[];
+    for(const item of incoming){
+      const kind=insertionKind(item);
+      if(!item||typeof item!=="object"||!["p","h2","h3","h4"].includes(item.tag)||
+        typeof item.selector!=="string"||item.selector.length>500||
+        typeof item.before!=="string"||item.before.length>4000||
+        typeof item.text!=="string"||!item.text.trim()||
+        !["paragraph","heading","link","image"].includes(kind)||
+        item.text.length>(kind==="paragraph"?2000:kind==="image"?200:140)||
+        (kind==="heading"?!["h2","h3"].includes(item.headingTag):item.headingTag!==undefined)||
+        (kind==="link"?!safeNewLink(item.href):item.href!==undefined)||
+        (kind==="image"?!safeExistingImagePath(item.src):item.src!==undefined)||
+        (kind==="image"?
+          (item.widthPercent!==undefined&&!validImagePercent(item.widthPercent)):
+          item.widthPercent!==undefined)||
+        item.page!==state.page)
+        throw Error("Invalid "+kind+" insertion");
+      validateAddedLayout(item.layout);
+      let matches;
+      try{matches=[...root.querySelectorAll(item.selector)]}catch{throw Error("Invalid content anchor")}
+      if(matches.length!==1||matches[0].tagName.toLowerCase()!==item.tag||
+        matches[0].textContent.trim().replace(/\s+/g," ")!==item.before)
+        throw Error("Content insertion source changed");
+      for(const group of layoutGroups()){
+        const parent=root.querySelector(group.parentSelector);
+        if(parent?.contains(matches[0]))throw Error("New content cannot be inserted inside a responsive group");
+      }
+      out.push({page:item.page,selector:item.selector,tag:item.tag,before:item.before,text:item.text,
+        kind,...(kind==="heading"?{headingTag:item.headingTag}:{}),...(kind==="link"?{href:item.href}:{}),
+        ...(kind==="image"?{src:item.src,...(item.widthPercent!==undefined?
+          {widthPercent:item.widthPercent}:{})}:{}),
+        ...(item.layout!==undefined?{layout:{...item.layout}}:{})});
+    }
+    return out;
+  }
+  function escapePlainText(text){
+    return text.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  }
+  function createAdditionElement(doc,item){
+    const kind=insertionKind(item);
+    if(kind==="heading"){
+      const node=doc.createElement(item.headingTag);node.textContent=item.text;
+      if(addedBlockStyle(item))node.setAttribute("style",addedBlockStyle(item));
+      return node;
+    }
+    const node=doc.createElement("p");
+    if(addedBlockStyle(item))node.setAttribute("style",addedBlockStyle(item));
+    if(kind==="image"){
+      const img=doc.createElement("img");
+      img.setAttribute("src",item.src);
+      img.setAttribute("alt",item.text);
+      img.setAttribute("loading","lazy");
+      img.style.cssText="max-width:100%;height:auto";
+      if(item.widthPercent!==undefined)img.style.width=item.widthPercent+"%";
+      node.append(img);
+      return node;
+    }
+    if(kind==="link"){
+      const link=doc.createElement("a");
+      link.setAttribute("href",item.href);link.textContent=item.text;
+      if(/^https:\/\//i.test(item.href))link.setAttribute("rel","noopener noreferrer");
+      node.append(link);
+    }else node.textContent=item.text;
+    return node;
+  }
+  function additionHtml(item){
+    const text=escapePlainText(item.text),css=addedBlockStyle(item);
+    const style=css?' style="'+css+'"':"";
+    if(insertionKind(item)==="image")return '<p'+style+'><img src="'+item.src+
+      '" alt="'+text.replace(/"/g,"&quot;").replace(/'/g,"&#39;")+
+      '" loading="lazy" style="max-width:100%;height:auto'+
+        (item.widthPercent===undefined?"":";width:"+item.widthPercent+"%")+'"></p>';
+    if(insertionKind(item)==="heading")return "<"+item.headingTag+style+">"+text+"</"+item.headingTag+">";
+    if(insertionKind(item)==="link")return "<p"+style+"><a href=\""+escapePlainText(item.href)+"\""+
+      (/^https:\/\//i.test(item.href)?" rel=\"noopener noreferrer\"":"")+">"+text+"</a></p>";
+    return "<p"+style+">"+text+"</p>";
+  }
+
+  // Removal proposals retain the original source in the working document.
+  // Only the isolated preview and the verified exported HTML omit a block.
+  function rawRemovalSpan(html,key){
+    const before=state.original.get(key);
+    if(!before)throw Error("The source block cannot be verified");
+    const old=new DOMParser().parseFromString(before,"text/html").body.firstElementChild;
+    if(!old||!["P","H2","H3","IMG"].includes(old.tagName))
+      throw Error("This source block cannot be removed safely");
+    const direct=html.indexOf(before);
+    if(direct>=0&&html.indexOf(before,direct+before.length)<0)
+      return {start:direct,end:direct+before.length};
+    if(old.tagName!=="IMG")throw Error("The source markup is ambiguous or has changed");
+    // Source images can differ in harmless whitespace, quote style and
+    // self-closing syntax. Check every original attribute before removal.
+    const possible=[...html.matchAll(/<img\b[^>]*>/gi)].filter(match=>{
+      const parsed=new DOMParser().parseFromString(match[0],"text/html").body.firstElementChild;
+      return parsed?.tagName==="IMG"&&
+        [...parsed.attributes].length===[...old.attributes].length&&
+        [...old.attributes].every(attr=>parsed.getAttribute(attr.name)===attr.value);
+    });
+    if(possible.length!==1)throw Error("The original image cannot be identified uniquely");
+    return {start:possible[0].index,end:possible[0].index+possible[0][0].length};
+  }
+  function sourceRemovalCandidate(key,allowExisting=false){
+    if(!key||!state.page||!state.doc||!state.original.has(key)||
+       (!allowExisting&&state.removals.some(item=>item.key===key)))return null;
+    const root=state.doc.querySelector("main"),node=getWorking(key);
+    if(!root||!node||!root.contains(node)||
+       !["P","H2","H3","IMG"].includes(node.tagName))return null;
+    if(node.closest("nav,header,footer,aside,form,dialog,a,[hidden],[aria-hidden='true']"))
+      return null;
+    if(node.hasAttribute("id")||node.hasAttribute("name")||
+       node.querySelector("[id],[name],script,button,form,iframe"))return null;
+    if(state.stagedMedia?.key===key||state.blockOrders.some(group=>group.originalKeys.includes(key)))return null;
+    // Check the working markup independently of the dirty bookkeeping so a
+    // just-typed inspector change cannot be silently discarded by removal.
+    if(cleanOuter(node)!==state.original.get(key))return null;
+    if(["H2","H3"].includes(node.tagName)&&node.parentElement?.querySelectorAll("h2,h3").length===1)
+      return null;
+    if([...state.dirty].some(dirtyKey=>{
+      const dirty=getWorking(dirtyKey);
+      return dirty&&(dirty===node||node.contains(dirty)||dirty.contains(node));
+    }))return null;
+    if(layoutGroups().some(group=>{
+      const parent=root.querySelector(group.parentSelector);
+      return !parent||parent.contains(node)||node.contains(parent);
+    }))return null;
+    if(state.additions.some(item=>{
+      const anchor=root.querySelector(item.selector);
+      return !anchor||anchor===node||node.contains(anchor);
+    }))return null;
+    try{rawRemovalSpan(state.source,key)}catch{return null}
+    return {key,tag:node.tagName.toLowerCase(),before:state.original.get(key)};
+  }
+  function validateSourceRemovals(items){
+    if(!Array.isArray(items)||items.length>12)throw Error("Too many removed blocks");
+    const seen=new Set(),validated=[];
+    for(const item of items){
+      if(!item||typeof item!=="object"||typeof item.key!=="string"||
+         !/^e\d+$/.test(item.key)||seen.has(item.key))
+        throw Error("Duplicate or invalid removed block");
+      const verified=sourceRemovalCandidate(item.key,true);
+      if(!verified||item.tag!==verified.tag||item.before!==verified.before)
+        throw Error("The removed source block has changed or conflicts with another edit");
+      seen.add(item.key);
+      validated.push(verified);
+    }
+    return validated;
+  }
+  function exportSourceRemovals(html){
+    const removals=validateSourceRemovals(state.removals);
+    for(const item of removals){
+      const span=rawRemovalSpan(html,item.key);
+      html=html.slice(0,span.start)+html.slice(span.end);
+    }
+    return html;
+  }
+  function removeSelectedSource(){
+    const candidate=sourceRemovalCandidate(state.selected);
+    if(!candidate)return;
+    if(!confirm("Remove this "+candidate.tag+" block from the page draft? The original content can be restored with Undo or from Review changes. Nothing is published."))return;
+    checkpoint();
+    state.removals.push(candidate);
+    renderPreview();
+    saveDraft();
+    updateStatus("Original block removed from draft · Not published");
+  }
+  function restoreReviewedSource(index){
+    if(index<0||index>=state.removals.length)return;
+    checkpoint();
+    state.removals.splice(index,1);
+    renderPreview();
+    saveDraft();
+    updateStatus("Removed source block restored · Not published");
+    const modal=$("reviewDialog");
+    if(modal.open)modal.close();
+    if(state.dirty.size||state.additions.length||layoutGroups().length||state.removals.length||
+       state.sectionOrder.some((id,i)=>id!==state.originalSections[i]))reviewChanges();
+  }
+
+  function exportParagraphs(html){
+    const original=new DOMParser().parseFromString(state.source,"text/html");
+    const root=original.querySelector("main"),anchors=validateParagraphAdditions(state.additions);
+    const grouped=new Map();
+    for(const item of anchors){
+      if(!grouped.has(item.selector))grouped.set(item.selector,[]);
+      grouped.get(item.selector).push(item);
+    }
+    for(const [selector,items] of grouped){
+      const item=items[0];
+      const matches=[...root.querySelectorAll(selector)];
+      const anchor=matches[0],originalMarkup=anchor.outerHTML;
+      const candidates=[originalMarkup];
+      const edited=state.doc.querySelector("main "+item.selector);
+      if(edited&&edited.tagName.toLowerCase()===item.tag){
+        const revised=cleanOuter(edited);
+        if(!candidates.includes(revised))candidates.push(revised);
+      }
+      let at=-1,markup="";
+      for(const candidate of candidates){
+        const pos=html.indexOf(candidate);
+        if(pos>=0&&html.indexOf(candidate,pos+candidate.length)===-1){
+          if(at>=0)throw Error("Ambiguous content insertion anchor");
+          at=pos;markup=candidate;
+        }
+      }
+      if(at<0)throw Error("Cannot uniquely locate the content insertion in source HTML");
+      const offset=at+markup.length;
+      html=html.slice(0,offset)+"\n"+items.map(additionHtml).join("\n")+html.slice(offset);
+    }
+    return html;
+  }
   function buildExport() {
     let next=state.source;
     const toExport=[...state.dirty].filter(key=>{
@@ -951,6 +2884,16 @@
       next=next.slice(0,pos)+after+next.slice(pos+before.length);
     }
     next=exportSectionOrder(next);
+    if(state.blockOrders.length)next=exportBlockOrders(next);
+    if(state.additions.length)next=exportParagraphs(next);
+    if(state.removals.length)next=exportSourceRemovals(next);
+    if(layoutGroups().length){
+      const original=new DOMParser().parseFromString(state.source,'text/html');
+      const css=layoutCss(original);
+      if(!/<\/head>/i.test(next)||next.includes('id="moon-responsive-group-layout"'))
+        throw Error('Cannot insert the responsive group into this page safely');
+      next=next.replace(/<\/head>/i,'<style id="moon-responsive-group-layout">\\n'+css+'\\n</style>\\n</head>');
+    }
     if(state.stagedMedia&&next.includes(state.stagedMedia.path)){
       const image=getWorking(state.stagedMedia.key);
       const original=new DOMParser().parseFromString(
@@ -1026,7 +2969,7 @@
 
   async function createPublisherProposal() {
     const reordered=state.sectionOrder.some((id,i)=>id!==state.originalSections[i]);
-    if(!publisher.session||(!state.dirty.size&&!reordered)||publisher.busy)return;
+    if(!publisher.session||(!state.dirty.size&&!reordered&&!layoutGroups().length&&!state.additions.length&&!state.removals.length&&!state.blockOrders.length)||publisher.busy)return;
     const summary=$("publisherSummary").value.trim();
     if(!summary||summary.length>140){publishMessage("Enter a short change summary.");return;}
     let content;
@@ -1069,6 +3012,332 @@
     }finally{publisher.busy=false;updatePublishControls();}
   }
 
+  function updateInsertKind(){
+    const kind=$("insertContentKind").value;
+    $("insertHeadingField").hidden=kind!=="heading";
+    $("insertLinkField").hidden=kind!=="link";
+    $("insertImageField").hidden=kind!=="image";
+    $("insertContentLabel").textContent=kind==="image"?"Image description (alt text)":"New text";
+    $("insertContentText").maxLength=kind==="paragraph"?2000:kind==="image"?200:140;
+  }
+  function addContentFromInspector(){
+    if(!state.selected||!state.doc||!window.MoonResponsiveLayout)return;
+    const node=getWorking(state.selected);
+    if(!node||!["H2","H3","H4","P"].includes(node.tagName))return;
+    const kind=$("insertContentKind").value,text=$("insertContentText").value.trim();
+    const original=new DOMParser().parseFromString(state.source,"text/html");
+    const sourceRoot=original.querySelector("main");
+    if(!sourceRoot)return;
+    let selector;
+    try{selector=MoonResponsiveLayout.sourceSelector(node,state.doc.querySelector("main"))}
+    catch(error){notice(error.message,"Cannot add content");return}
+    const matches=[...sourceRoot.querySelectorAll(selector)];
+    if(matches.length!==1||matches[0].tagName!==node.tagName){
+      notice("The selected element no longer has a unique source position. Review the page structure first.","Cannot add content");return;
+    }
+    const sourceNode=matches[0];
+    if(state.blockOrders.some(group=>group.originalKeys.includes(state.selected))){
+      notice("Restore the original order of these blocks before attaching new content to one of them.","Insertion unavailable");
+      return;
+    }
+    const proposed={page:state.page,selector,tag:node.tagName.toLowerCase(),
+      before:sourceNode.textContent.trim().replace(/\s+/g," "),kind,text};
+    if(kind==="heading")proposed.headingTag=$("insertHeadingLevel").value;
+    if(kind==="link")proposed.href=$("insertLinkHref").value.trim();
+    if(kind==="image")proposed.src=$("insertImageSrc").value.trim();
+    try{
+      const additions=validateParagraphAdditions([...state.additions,proposed]);
+      if(layoutGroups().some(group=>sourceRoot.querySelector(group.parentSelector)?.contains(sourceNode)))
+        throw Error("Additions inside active responsive groups are not supported");
+      checkpoint();
+      state.additions=additions;
+      $("insertContentText").value="";
+      if(kind==="link")$("insertLinkHref").value="";
+      if(kind==="image")$("insertImageSrc").value="";
+      renderPreview();
+      scheduleDraft();
+      updateStatus("New "+kind+" added to local draft · Not published");
+    }catch(error){notice("The content could not be added. "+error.message,"Insertion not applied")}
+  }
+  function duplicateSelectedSource(){
+    if($("duplicateSourceBtn").disabled||!state.selected)return;
+    const node=getWorking(state.selected);
+    if(!node||node.children.length||!["P","H2","H3"].includes(node.tagName))return;
+    const text=node.textContent.trim();
+    const kind=node.tagName==="P"?"paragraph":"heading";
+    if(!text)return;
+    const saved={
+      kind:$("insertContentKind").value,text:$("insertContentText").value,
+      heading:$("insertHeadingLevel").value,href:$("insertLinkHref").value
+    };
+    try{
+      $("insertContentKind").value=kind;
+      $("insertContentText").value=text;
+      if(kind==="heading")$("insertHeadingLevel").value=node.tagName.toLowerCase();
+      addContentFromInspector();
+    }finally{
+      $("insertContentKind").value=saved.kind;
+      $("insertContentText").value=saved.text;
+      $("insertHeadingLevel").value=saved.heading;
+      $("insertLinkHref").value=saved.href;
+      updateInsertKind();
+    }
+  }
+  // New content may be relocated after an existing unique heading or
+  // paragraph. Only source anchors may receive an addition, and all newly
+  // proposed destinations are checked again against the untouched page.
+  function sourceMoveAnchors(){
+    if(!state.doc||!state.source||!window.MoonResponsiveLayout)return [];
+    const main=state.doc.querySelector("main");
+    const source=new DOMParser().parseFromString(state.source,"text/html");
+    const original=source.querySelector("main");
+    if(!main||!original)return [];
+    const anchors=[];
+    for(const node of main.querySelectorAll("h2,h3,h4,p")){
+      const key=node.getAttribute("data-editor-key");
+      if(!key||!state.original.has(key)||
+         node.closest("nav,header,footer,aside,form,dialog")||
+         state.removals.some(item=>item.key===key)||
+         state.blockOrders.some(group=>group.originalKeys.includes(key)))continue;
+      let selector;
+      try{selector=MoonResponsiveLayout.sourceSelector(node,main)}
+      catch{continue;}
+      let matches;
+      try{matches=[...original.querySelectorAll(selector)]}
+      catch{continue;}
+      if(matches.length!==1||matches[0].tagName!==node.tagName)continue;
+      const matched=matches[0];
+      if(layoutGroups().some(group=>
+        original.querySelector(group.parentSelector)?.contains(matched)))continue;
+      const before=matched.textContent.trim().replace(/\s+/g," ");
+      if(!before||before.length>4000)continue;
+      const excerpt=before.slice(0,75)+(before.length>75?"…":"");
+      anchors.push({key,selector,tag:node.tagName.toLowerCase(),before,
+        title:(node.tagName==="P"?"Paragraph":node.tagName.toLowerCase().toUpperCase())+
+          " · "+excerpt});
+    }
+    return anchors;
+  }
+  function updateAddedAnchorButton(){
+    const item=state.additions[state.selectedAddition];
+    const anchors=sourceMoveAnchors();
+    const destination=anchors.find(a=>a.key===$("moveAddedAnchorPicker").value);
+    $("moveAddedAnchorBtn").disabled=!item||!destination||
+      destination.selector===item.selector;
+  }
+  function relocateAddedToAnchor(from,key){
+    const item=state.additions[from];
+    if(!item)return false;
+    const anchor=sourceMoveAnchors().find(a=>a.key===key);
+    if(!anchor||anchor.selector===item.selector)return false;
+    const proposed=state.additions.filter((_,i)=>i!==from);
+    proposed.push({...item,selector:anchor.selector,tag:anchor.tag,before:anchor.before});
+    // Validate both the structured addition and the exact source-preserving
+    // export before recording a move. Some pages contain duplicate raw HTML
+    // fragments even when a CSS selector is unique.
+    const previous=state.additions;
+    try{
+      validateParagraphAdditions(proposed);
+      state.additions=proposed;
+      try{buildExport()}finally{state.additions=previous;}
+    }catch(error){
+      state.additions=previous;
+      notice("This destination cannot accept the new block. "+error.message,"Move stopped");
+      return false;
+    }
+    checkpoint();
+    state.additions=proposed;
+    renderPreview(null,proposed.length-1);
+    scheduleDraft();
+    updateStatus("New block moved to another verified location · Not published");
+    return true;
+  }
+  // New blocks can reorder within the same source anchor or move after
+  // another verified source block; cross-anchor drops onto new blocks
+  // remain disabled to avoid ambiguous placement.
+  function reorderAddedRelative(from,to,after){
+    const source=state.additions[from],destination=state.additions[to];
+    if(!source||!destination||from===to||source.selector!==destination.selector)return false;
+    const positions=state.additions.map((item,i)=>
+      item.selector===source.selector?i:-1).filter(i=>i>=0);
+    const fromAt=positions.indexOf(from),toAt=positions.indexOf(to);
+    if(fromAt<0||toAt<0)return false;
+    const ordered=positions.map(i=>state.additions[i]);
+    const revised=ordered.slice();
+    const [moved]=revised.splice(fromAt,1);
+    const at=(fromAt<toAt?toAt-1:toAt)+(after?1:0);
+    revised.splice(at,0,moved);
+    if(revised.every((item,i)=>item===ordered[i]))return false;
+    const proposal=state.additions.slice();
+    positions.forEach((index,i)=>{proposal[index]=revised[i]});
+    try{validateParagraphAdditions(proposal)}
+    catch(error){notice("The new content cannot be moved. "+error.message,"Move stopped");return false;}
+    checkpoint();
+    state.additions=proposal;
+    renderPreview(null,positions[at]);
+    scheduleDraft();
+    updateStatus("New content order updated · Not published");
+    return true;
+  }
+  function positionAddedMoveHandle(){
+    const doc=state.frameDoc,handle=doc?.getElementById("moon-added-block-move-handle");
+    if(!handle||state.addedPointer)return;
+    const index=state.selectedAddition,item=state.additions[index];
+    const target=doc.querySelector('[data-editor-added-index="'+index+'"]');
+    const count=state.additions.filter(entry=>entry.selector===item?.selector).length;
+    if(!target||(count<2&&!sourceMoveAnchors().some(a=>a.selector!==item?.selector))){
+      handle.remove();return;
+    }
+    const rect=target.getBoundingClientRect(),view=doc.defaultView;
+    if(rect.bottom<0||rect.right<0||rect.top>view.innerHeight||rect.left>view.innerWidth){
+      handle.hidden=true;return;
+    }
+    handle.hidden=false;
+    handle.style.left=Math.max(0,Math.min(view.innerWidth-32,rect.left-29))+"px";
+    handle.style.top=Math.max(0,Math.min(view.innerHeight-32,rect.top))+"px";
+  }
+  function addedDropTarget(doc,x,y,from,selector,handle){
+    const previous=handle.style.pointerEvents;
+    handle.style.pointerEvents="none";
+    const hit=doc.elementFromPoint(x,y);
+    handle.style.pointerEvents=previous;
+    const target=hit?.closest?.("[data-editor-added-index]");
+    const index=target?Number(target.getAttribute("data-editor-added-index")):-1;
+    return index>=0&&index!==from&&state.additions[index]?.selector===selector?target:null;
+  }
+  function sourceAddedDropTarget(doc,x,y,handle,targets){
+    const previous=handle.style.pointerEvents;
+    handle.style.pointerEvents="none";
+    const hit=doc.elementFromPoint(x,y);
+    handle.style.pointerEvents=previous;
+    const node=hit?.closest?.("[data-editor-key]");
+    const key=node?.getAttribute("data-editor-key");
+    return key&&targets.has(key)?node:null;
+  }
+  function clearAddedDropTargets(doc){
+    for(const marked of doc.querySelectorAll(
+      "[data-editor-added-drop-target],[data-editor-added-anchor-target]")){
+      marked.removeAttribute("data-editor-added-drop-target");
+      marked.removeAttribute("data-editor-added-anchor-target");
+    }
+  }
+  function createAddedMoveHandle(){
+    const doc=state.frameDoc;
+    if(!doc||doc.getElementById("moon-added-block-move-handle"))return;
+    const handle=doc.createElement("button");
+    handle.id="moon-added-block-move-handle";handle.type="button";
+    handle.textContent="⠿";
+    handle.title="Drag a new block to another original heading or paragraph";
+    handle.setAttribute("aria-label","Drag the new block after another original heading or paragraph, or reorder it among additions at the same location. Location and order controls are available in the inspector.");
+    handle.style.cssText="position:fixed;z-index:2147483646;display:grid;place-items:center;width:30px;height:30px;border:2px solid #27654f;border-radius:5px;background:#fff;color:#174932;cursor:grab;touch-action:none;font:700 21px/1 system-ui;box-shadow:0 1px 6px #0004";
+    handle.addEventListener("click",event=>event.stopPropagation());
+    handle.addEventListener("pointerdown",event=>{
+      const from=state.selectedAddition,item=state.additions[from];
+      if(event.button!==0||state.addedPointer||!item)return;
+      event.preventDefault();event.stopPropagation();
+      const rect=handle.getBoundingClientRect();
+      state.addedPointer={id:event.pointerId,from,selector:item.selector,
+        targets:new Map(sourceMoveAnchors().filter(a=>a.selector!==item.selector)
+          .map(a=>[a.key,a])),
+        x:event.clientX,y:event.clientY,left:rect.left,top:rect.top};
+      handle.setPointerCapture(event.pointerId);
+      handle.style.cursor="grabbing";
+    });
+    handle.addEventListener("pointermove",event=>{
+      const drag=state.addedPointer;
+      if(!drag||drag.id!==event.pointerId)return;
+      event.preventDefault();
+      handle.style.left=(drag.left+event.clientX-drag.x)+"px";
+      handle.style.top=(drag.top+event.clientY-drag.y)+"px";
+      clearAddedDropTargets(doc);
+      const target=addedDropTarget(doc,event.clientX,event.clientY,drag.from,drag.selector,handle);
+      if(target){
+        const rect=target.getBoundingClientRect();
+        target.setAttribute("data-editor-added-drop-target",
+          event.clientY>=rect.top+rect.height/2?"after":"before");
+      }else{
+        const sourceTarget=sourceAddedDropTarget(doc,event.clientX,event.clientY,
+          handle,drag.targets);
+        if(sourceTarget)sourceTarget.setAttribute("data-editor-added-anchor-target","");
+      }
+    });
+    const finish=event=>{
+      const drag=state.addedPointer;
+      if(!drag||drag.id!==event.pointerId)return;
+      event.preventDefault();
+      const target=event.type==="pointerup"?
+        addedDropTarget(doc,event.clientX,event.clientY,drag.from,drag.selector,handle):null;
+      const sourceTarget=!target&&event.type==="pointerup"?
+        sourceAddedDropTarget(doc,event.clientX,event.clientY,handle,drag.targets):null;
+      const sourceKey=sourceTarget?.getAttribute("data-editor-key");
+      const rect=target?.getBoundingClientRect();
+      const index=target?Number(target.getAttribute("data-editor-added-index")):-1;
+      const after=!!rect&&event.clientY>=rect.top+rect.height/2;
+      state.addedPointer=null;
+      if(handle.hasPointerCapture(event.pointerId))handle.releasePointerCapture(event.pointerId);
+      handle.style.cursor="grab";
+      clearAddedDropTargets(doc);
+      positionAddedMoveHandle();
+      if(index>=0)setTimeout(()=>reorderAddedRelative(drag.from,index,after),0);
+      else if(sourceKey)setTimeout(()=>relocateAddedToAnchor(drag.from,sourceKey),0);
+    };
+    handle.addEventListener("pointerup",finish);
+    handle.addEventListener("pointercancel",finish);
+    doc.body.append(handle);
+    positionAddedMoveHandle();
+  }
+  function moveReviewedAddition(index,direction){
+    const item=state.additions[index];
+    if(!item||![-1,1].includes(direction))return;
+    const siblings=state.additions.map((entry,i)=>entry.selector===item.selector?i:-1).filter(i=>i>=0);
+    const adjacent=siblings[siblings.indexOf(index)+direction];
+    if(adjacent===undefined)return;
+    checkpoint();
+    [state.additions[index],state.additions[adjacent]]=[state.additions[adjacent],state.additions[index]];
+    renderPreview();
+    saveDraft();
+    updateStatus("New content order updated · Not published");
+    const modal=$("reviewDialog");
+    if(modal.open){modal.close();reviewChanges();}
+  }
+  function modifyReviewedAddition(index,remove=false){
+    const previous=state.additions[index];
+    if(!previous)return;
+    let nextItem={...previous};
+    if(!remove){
+      const label=prompt("Edit "+insertionKind(previous)+" text",previous.text);
+      if(label===null)return;
+      nextItem.text=label.trim();
+      if(insertionKind(previous)==="heading"){
+        const level=prompt("Heading level (h2 or h3)",previous.headingTag);
+        if(level===null)return;
+        nextItem.headingTag=level.trim().toLowerCase();
+      }
+      if(insertionKind(previous)==="link"){
+        const href=prompt("Link destination (.html or HTTPS)",previous.href);
+        if(href===null)return;
+        nextItem.href=href.trim();
+      }
+      if(insertionKind(previous)==="image"){
+        const src=prompt("Existing website image path (assets/...)",previous.src);
+        if(src===null)return;
+        nextItem.src=src.trim();
+      }
+    }
+    const proposed=remove?state.additions.filter((_,i)=>i!==index):
+      state.additions.map((item,i)=>i===index?nextItem:item);
+    try{validateParagraphAdditions(proposed)}
+    catch(error){notice("The addition could not be changed. "+error.message,"Content review");return}
+    checkpoint();
+    state.additions=proposed;
+    renderPreview();
+    saveDraft();
+    updateStatus(remove?"Staged addition removed · Not published":"Staged addition updated · Not published");
+    const modal=$("reviewDialog");
+    if(modal.open)modal.close();
+    if(state.dirty.size||state.additions.length||layoutGroups().length||
+       state.sectionOrder.some((id,i)=>id!==state.originalSections[i]))reviewChanges();
+  }
   function reviewChanges() {
     const list=$("reviewChangeList");
     list.replaceChildren();
@@ -1076,6 +3345,10 @@
     const reordered=state.sectionOrder.some((id,i)=>id!==state.originalSections[i]);
     $("reviewSummary").textContent=ids.length+" edited element"+(ids.length===1?"":"s")+
       (reordered?" · section order changed":"")+
+      (layoutGroups().length?" · "+layoutGroups().length+" responsive layout group"+(layoutGroups().length===1?"":"s"):"")+
+      (state.additions.length?" · "+state.additions.length+" added content block"+(state.additions.length===1?"":"s"):"")+
+      (state.removals.length?" · "+state.removals.length+" removed source block"+(state.removals.length===1?"":"s"):"")+
+      (state.blockOrders.length?" · "+state.blockOrders.length+" rearranged content group"+(state.blockOrders.length===1?"":"s"):"")+
       " on "+$("pagePicker").selectedOptions[0]?.textContent+".";
     const previewText=(node)=>{
       if (!node) return "";
@@ -1108,7 +3381,117 @@
         block.append(title,text);
         item.appendChild(block);
       }
+      // Surface style-only edits even when the visible text has not changed.
+      const styling=[
+        ["font-size","Font size"],
+        ["color","Text colour"],
+        ["background-color","Background colour"],
+        ["text-align","Text alignment"],
+        ["max-width","Maximum width"],
+        ["margin-top","Space above"],
+        ["margin-bottom","Space below"]
+      ];
+      const styleChanges=styling.flatMap(([prop,name])=>{
+        const before=previous?.style.getPropertyValue(prop)||"";
+        const after=current.style.getPropertyValue(prop)||"";
+        return before===after?[]:[name+": "+(before||"Page stylesheet")+
+          " → "+(after||"Page stylesheet")];
+      });
+      if(styleChanges.length){
+        const change=document.createElement("div");
+        change.className="review-change-part";
+        const title=document.createElement("strong");title.textContent="Visual styling";
+        const values=document.createElement("p");
+        values.textContent=styleChanges.join("\n");
+        values.style.whiteSpace="pre-wrap";
+        change.append(title,values);
+        item.appendChild(change);
+      }
       list.appendChild(item);
+    }
+    state.blockOrders.forEach((group,index)=>{
+      const section=document.createElement("section");
+      section.className="review-change";
+      const h=document.createElement("h3");
+      h.textContent="Rearranged existing content group "+(index+1);
+      const detail=document.createElement("p");
+      const describe=key=>{
+        const node=getWorking(key);
+        const value=node?.tagName==="IMG"?(node.getAttribute("alt")||"Image"):
+          (node?.textContent||"").trim().replace(/\s+/g," ");
+        return value.length>72?value.slice(0,72)+"…":value;
+      };
+      detail.textContent="Original order\n"+group.originalKeys.map(describe).join(" → ")+
+        "\nCurrent order\n"+group.keys.map(describe).join(" → ");
+      detail.style.whiteSpace="pre-wrap";
+      const restore=document.createElement("button");
+      restore.type="button";restore.textContent="Restore original block order";
+      restore.setAttribute("aria-label","Restore reordered content group "+(index+1));
+      restore.addEventListener("click",()=>restoreReviewedBlockOrder(index));
+      section.append(h,detail,restore);list.append(section);
+    });
+    state.removals.forEach((removal,index)=>{
+      const section=document.createElement("section");section.className="review-change";
+      const heading=document.createElement("h3");
+      heading.textContent="Removed existing "+removal.tag+" · "+removal.key;
+      const content=document.createElement("p");
+      const before=new DOMParser().parseFromString(removal.before,"text/html").body.firstElementChild;
+      content.textContent=removal.tag==="img"?
+        "Image · "+(before?.getAttribute("alt")||before?.getAttribute("src")||""):
+        (before?.textContent.trim().slice(0,280)||"");
+      const restore=document.createElement("button");restore.type="button";
+      restore.textContent="Restore original block";
+      restore.setAttribute("aria-label","Restore removed source block "+(index+1));
+      restore.addEventListener("click",()=>restoreReviewedSource(index));
+      section.append(heading,content,restore);list.append(section);
+    });
+    state.additions.forEach((item,index)=>{
+      const el=document.createElement('section');el.className='review-change';
+      const title=document.createElement('h3');title.textContent='New '+insertionKind(item)+' after '+item.selector;
+      const text=document.createElement('p');text.textContent=item.text;
+      if(insertionKind(item)==='link')text.textContent+=' · '+item.href;
+      if(insertionKind(item)==='image')text.textContent+=' · '+item.src;
+      const placementInfo=document.createElement('p');
+      const blockLayout=addedBlockLayout(item);
+      placementInfo.textContent="Block position · "+
+        ({left:"Left",center:"Centre",right:"Right"}[blockLayout.align])+
+        " · width "+blockLayout.widthPercent+"%"+
+        " · above "+blockLayout.spaceAbove+"px"+
+        " · below "+blockLayout.spaceBelow+"px"+
+        (insertionKind(item)==="image"?
+          " · image width "+(item.widthPercent===undefined?100:item.widthPercent)+"%":"");
+      const edit=document.createElement('button');
+      edit.type='button';edit.textContent='Edit added content';
+      edit.setAttribute('aria-label','Edit added '+insertionKind(item)+' '+(index+1));
+      edit.addEventListener('click',()=>modifyReviewedAddition(index));
+      const remove=document.createElement('button');
+      remove.type='button';remove.textContent='Remove addition';
+      remove.setAttribute('aria-label','Remove added '+insertionKind(item)+' '+(index+1));
+      remove.addEventListener('click',()=>modifyReviewedAddition(index,true));
+      const siblings=state.additions.map((entry,i)=>entry.selector===item.selector?i:-1).filter(i=>i>=0);
+      const position=siblings.indexOf(index);
+      const up=document.createElement('button');
+      up.type='button';up.textContent='Move earlier';up.disabled=position===0;
+      up.setAttribute('aria-label','Move added '+insertionKind(item)+' '+(index+1)+' earlier');
+      up.addEventListener('click',()=>moveReviewedAddition(index,-1));
+      const down=document.createElement('button');
+      down.type='button';down.textContent='Move later';down.disabled=position===siblings.length-1;
+      down.setAttribute('aria-label','Move added '+insertionKind(item)+' '+(index+1)+' later');
+      down.addEventListener('click',()=>moveReviewedAddition(index,1));
+      el.append(title,text,placementInfo,up,down,edit,remove);list.append(el);
+    });
+    if(layoutGroups().length){
+      const layout=document.createElement("section");
+      layout.className="review-change";
+      const heading=document.createElement("h3");
+      heading.textContent="Responsive groups · "+layoutGroups().length+" sections · "+layoutGroups().reduce((n,g)=>n+g.children.length,0)+" blocks";
+      const info=document.createElement("p");
+      info.textContent="A source-preserving 12-column grid with independent desktop and mobile positions. DOM reading order, links, and surrounding page markup remain unchanged.";
+      const pre=document.createElement("pre");
+      pre.textContent=layoutCss(new DOMParser().parseFromString(state.source,'text/html'));
+      pre.style.cssText="white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px;max-height:200px;overflow:auto";
+      layout.append(heading,info,pre);
+      list.append(layout);
     }
     if(state.stagedMedia){
       const node=document.createElement("p");
@@ -1156,15 +3539,45 @@
     }
   }
 
-  function undo() {
-    const last=state.history.pop();
-    if (!last) return;
+  function restoreHistorySnapshot(last){
     state.doc=new DOMParser().parseFromString(last.html,"text/html");
     state.dirty=new Set(last.dirty);
     state.sectionOrder=Array.isArray(last.order)?last.order.slice():state.originalSections.slice();
+    state.responsiveGroup=last.responsiveGroup||null;
+    state.responsiveGroups=last.responsiveGroups||[];
+    state.additions=last.additions||[];
+    state.removals=last.removals||[];
+    state.blockOrders=last.blockOrders||[];
     renderPreview();
     scheduleDraft();
+  }
+  function undo() {
+    const before=snapshot();
+    let last=null;
+    // Focusing an editable element can record a checkpoint without changing
+    // the document. Never consume an Undo step on an identical snapshot.
+    while(state.history.length){
+      const candidate=state.history.pop();
+      if(JSON.stringify(candidate)!==JSON.stringify(before)){last=candidate;break;}
+    }
+    if(!last){updateStatus("No earlier content change · Not published");return;}
+    state.redo.push(before);
+    if(state.redo.length>24)state.redo.shift();
+    restoreHistorySnapshot(last);
     updateStatus("Previous edit restored · Not published");
+  }
+  function redo() {
+    const before=snapshot();
+    let next=null;
+    while(state.redo.length){
+      const candidate=state.redo.pop();
+      if(JSON.stringify(candidate)!==JSON.stringify(before)){next=candidate;break;}
+    }
+    if(!next){updateStatus("No further content change · Not published");return;}
+    state.history.push(before);
+    if(state.history.length>24)state.history.shift();
+    restoreHistorySnapshot(next);
+    updateStatus("Undone edit reapplied · Not published");
   }
 
   function resetPage() {
@@ -1174,7 +3587,9 @@
     initialIndex();
     state.dirty.clear();
     state.history.length=0;
+    state.redo.length=0;
     state.staleDraft=false;
+    state.responsiveGroup=null;state.responsiveGroups=[];state.additions=[];state.removals=[];state.blockOrders=[];
     renderPreview();
     saveDraft();
   }
@@ -1202,11 +3617,134 @@
     updateStatus("Element reverted · Not published");
   }
 
+  function consumeFluidTextHandoff(page) {
+    const params=new URLSearchParams(window.location.search);
+    if(params.get("importFluidText")!=="1")return false;
+    function rejectHandoff(){
+      notice("The layout-builder transfer could not be verified against this page. The source may have changed, or the transfer data was invalid. No edits were applied.","Transfer not applied");
+      return false;
+    }
+    params.delete("importFluidText");
+    history.replaceState(null,"",window.location.pathname+(params.size?"?"+params:"")+window.location.hash);
+    let raw;
+    try{raw=sessionStorage.getItem("moon-fluid-text-handoff-v1");sessionStorage.removeItem("moon-fluid-text-handoff-v1");}
+    catch{return rejectHandoff();}
+    if(!raw||raw.length>200000)return rejectHandoff();
+    let payload;
+    try{payload=JSON.parse(raw)}catch{return rejectHandoff();}
+    if(!payload||typeof payload!=="object"||![1,2,3,4,5].includes(payload.version)||payload.page!==page||
+       !Array.isArray(payload.changes)||payload.changes.length>100||
+       (payload.version>=2&&(!Array.isArray(payload.styleChanges)||payload.styleChanges.length>100)))
+      return rejectHandoff();
+    const root=state.doc.querySelector("main");
+    if(!root)return rejectHandoff();
+    const preparedText=[],preparedStyles=[],usedText=new Set(),usedStyles=new Set();
+    function lookup(change,allowNested){
+      if(!change||typeof change.selector!=="string"||change.selector.length>500||
+         !/^(h[1-4]|p|blockquote|figcaption)$/.test(change.tag)||
+         typeof change.before!=="string"||change.before.length>4000)return null;
+      let matches;
+      try{matches=[...root.querySelectorAll(change.selector)]}catch{return null;}
+      if(matches.length!==1||matches[0].tagName.toLowerCase()!==change.tag||
+         (!allowNested&&matches[0].children.length)||
+         matches[0].textContent.trim().replace(/\s+/g," ")!==change.before)return null;
+      const key=matches[0].getAttribute("data-editor-key");
+      if(!key||!state.original.has(key))return null;
+      return {key,node:matches[0]};
+    }
+    for(const change of payload.changes){
+      if(typeof change?.after!=="string"||change.after.length>4000||
+         usedText.has(change.selector))return rejectHandoff();
+      usedText.add(change.selector);
+      const target=lookup(change,false);
+      if(!target||preparedText.some(p=>p.key===target.key))return rejectHandoff();
+      preparedText.push({key:target.key,text:change.after});
+    }
+    if(payload.version>=2){
+      for(const change of payload.styleChanges){
+        if(usedStyles.has(change?.selector))return rejectHandoff();
+        usedStyles.add(change.selector);
+        const target=lookup(change,true);
+        if(!target||preparedStyles.some(p=>p.key===target.key))return rejectHandoff();
+        const styles=change.styles;
+        if(!styles||typeof styles!=="object"||Array.isArray(styles))return rejectHandoff();
+        const keys=Object.keys(styles);
+        if(!keys.length||keys.length>7||keys.some(k=>!["align","fontSize","color","background","maxWidthPct","spaceAbove","spaceBelow"].includes(k)))return rejectHandoff();
+        for(const k of keys){
+          const value=styles[k];
+          if(k==="align"&&!["left","center","right"].includes(value))return rejectHandoff();
+          if(k==="fontSize"&&(!Number.isInteger(value)||value<12||value>80))return rejectHandoff();
+          if((k==="color"||k==="background")&&(typeof value!=="string"||!/^#[0-9a-fA-F]{6}$/.test(value)))return rejectHandoff();
+          if(k==="maxWidthPct"&&(!Number.isInteger(value)||value<30||value>100))return rejectHandoff();
+          if((k==="spaceAbove"||k==="spaceBelow")&&(!Number.isInteger(value)||value<0||value>80))return rejectHandoff();
+        }
+        preparedStyles.push({key:target.key,styles});
+      }
+    }
+    let preparedGroups=[];
+    if(payload.version===3||payload.version===4||(payload.version===5&&Array.isArray(payload.layoutGroups)&&payload.layoutGroups.length)){
+      if(!window.MoonResponsiveLayout)return rejectHandoff();
+      const received=payload.version===3?[payload.layoutGroup]:payload.layoutGroups||[];
+      try{
+        MoonResponsiveLayout.cssForGroups(new DOMParser().parseFromString(state.source,'text/html'),received);
+        preparedGroups=received;
+      }catch{return rejectHandoff()}
+    }
+    let preparedAdditions=[];
+    if(payload.version===5){
+      try{
+        preparedAdditions=validateParagraphAdditions(payload.additions);
+        const sourceRoot=state.doc.querySelector('main');
+        for(const addition of preparedAdditions){
+          const anchor=sourceRoot.querySelector(addition.selector);
+          if(preparedGroups.some(group=>sourceRoot.querySelector(group.parentSelector)?.contains(anchor)))
+            throw Error('Paragraph insertion conflicts with a responsive layout group');
+        }
+      }catch{return rejectHandoff()}
+    }
+    if(!preparedText.length&&!preparedStyles.length&&!preparedGroups.length&&!preparedAdditions.length)return rejectHandoff();
+    let existingDraft=false;
+    try{existingDraft=localStorage.getItem(DRAFT_PREFIX+page)!==null}catch{existingDraft=true}
+    if(existingDraft||state.dirty.size||state.staleDraft||layoutGroups().length||state.additions.length||state.removals.length||state.blockOrders.length){
+      notice("The page already has a local draft. Review or export that draft before transferring changes.","Transfer not applied");
+      return false;
+    }
+    if(!confirm("Apply "+preparedText.length+" verified text edits and "+preparedStyles.length+
+       " visual style edits and "+preparedGroups.reduce((n,g)=>n+g.children.length,0)+" responsive block placements across "+preparedGroups.length+" groups and "+preparedAdditions.length+" new content blocks to the local editor draft? Unapproved freeform positions are not included. Nothing will be published."))return false;
+    checkpoint();
+    const touched=new Set();
+    for(const change of preparedText){
+      const node=getWorking(change.key);
+      node.textContent=change.text;
+      touched.add(change.key);
+    }
+    for(const change of preparedStyles){
+      const node=getWorking(change.key);
+      for(const [key,value] of Object.entries(change.styles)){
+        if(key==="align")node.style.textAlign=value;
+        else if(key==="fontSize")node.style.fontSize=value+"px";
+        else if(key==="color")node.style.color=value;
+        else if(key==="background")node.style.backgroundColor=value;
+        else if(key==="maxWidthPct")node.style.maxWidth=value+"%";
+        else if(key==="spaceAbove")node.style.marginTop=value+"px";
+        else if(key==="spaceBelow")node.style.marginBottom=value+"px";
+      }
+      touched.add(change.key);
+    }
+    for(const key of touched)updateDirty(key);
+    state.responsiveGroup=preparedGroups.length===1?preparedGroups[0]:null;
+    state.responsiveGroups=preparedGroups;
+    state.additions=preparedAdditions;
+    saveDraft();
+    return true;
+  }
+
   async function loadPage(page) {
     if (!/^[a-z0-9-]+\.html$/.test(page)) return;
     if(state.page&&page!==state.page&&state.stagedMedia&&
        !confirm("The new image is only staged in this browser. Switching pages will discard its file. Continue?")){
-      $("pagePicker").value=state.page;return;
+      $("pagePicker").value=state.page;
+      $("mobilePagePicker").value=state.page;return;
     }
     if (state.doc) saveDraft();
     if(page!==state.page)clearStagedMedia();
@@ -1220,28 +3758,58 @@
       if (token!==state.loadToken) return;
       if (!/<main\b/i.test(source)) throw new Error("The requested page has no main region.");
       state.page=page;
+      $("mobilePagePicker").value=page;
       state.source=source;
       state.fingerprint=hashText(source);
       state.doc=new DOMParser().parseFromString(source,"text/html");
+      state.responsiveGroup=null;state.responsiveGroups=[];state.additions=[];state.removals=[];state.blockOrders=[];
       state.dirty.clear();
       state.history.length=0;
+      state.redo.length=0;
       state.staleDraft=false;
       initialIndex();
       restoreDraft();
+      const transferred=consumeFluidTextHandoff(page);
       renderPreview();
       const moved=state.sectionOrder.some((id,i)=>id!==state.originalSections[i]);
-      updateStatus(state.dirty.size||moved?"Draft restored · Not published":state.staleDraft?"Older local draft exists · Not applied":"Ready to edit · Not published");
+      updateStatus(transferred?"Verified content, style and/or responsive layout transferred · Not published":state.dirty.size||moved||layoutGroups().length||state.additions.length||state.removals.length||state.blockOrders.length?"Draft restored · Not published":state.staleDraft?"Older local draft exists · Not applied":"Ready to edit · Not published");
     } catch(e) {
       notice("Could not load "+page+". "+e.message,"Page load failed");
-      if (state.page) $("pagePicker").value=state.page;
+      if (state.page) {
+        $("pagePicker").value=state.page;
+        $("mobilePagePicker").value=state.page;
+      }
       updateStatus("Unable to load page");
     }
   }
 
   function init() {
-    $("pagePicker").addEventListener("change",event=>loadPage(event.target.value));
+    // The full page navigator remains available lower down on mobile, while
+    // a compact equivalent beside the preview makes the editor usable first.
+    // Both selectors feed the same source-verified loadPage workflow.
+    const mobilePicker=$("mobilePagePicker");
+    mobilePicker.replaceChildren(...[...$("pagePicker").options].map(option=>
+      option.cloneNode(true)));
+    mobilePicker.value=$("pagePicker").value;
+    $("pagePicker").addEventListener("change",event=>{
+      mobilePicker.value=event.target.value;
+      loadPage(event.target.value);
+    });
+    mobilePicker.addEventListener("change",event=>{
+      $("pagePicker").value=event.target.value;
+      loadPage(event.target.value);
+    });
     $("previewViewport").addEventListener("change",event=>{
       $("previewContainer").className="preview-frame-container "+event.target.value;
+      positionQuickToolbar();
+      positionQuickComposer();
+      positionQuickLayout();
+    });
+    $("previewContainer").addEventListener("transitionend",event=>{
+      if(event.target!==$("previewContainer")||event.propertyName!=="max-width")return;
+      positionQuickToolbar();
+      positionQuickComposer();
+      positionQuickLayout();
     });
     $("previewTheme").addEventListener("change",event=>{
       const documentInFrame=$("pageFrame").contentDocument;
@@ -1249,21 +3817,124 @@
         state.frameDoc=documentInFrame;
         documentInFrame.documentElement.setAttribute("data-moon-theme",event.target.value);
         documentInFrame.documentElement.style.colorScheme=event.target.value;
+        createQuickToolbar();
       }
+    });
+    $("pageFindQuery").addEventListener("input",()=>refreshPageFind(true));
+    $("pageFindQuery").addEventListener("keydown",event=>{
+      if(event.key==="Enter"){
+        event.preventDefault();
+        navigatePageFind(event.shiftKey?-1:1);
+      } else if(event.key==="Escape"&&event.target.value){
+        event.preventDefault();
+        event.target.value="";
+        refreshPageFind(true);
+      }
+    });
+    $("browsePrevElement").addEventListener("click",()=>browseElement(-1));
+    $("browseNextElement").addEventListener("click",()=>browseElement(1));
+    window.addEventListener("keydown",handleEditorShortcuts);
+    $("pageFindNext").addEventListener("click",()=>navigatePageFind(1));
+    $("pageFindPrev").addEventListener("click",()=>navigatePageFind(-1));
+    $("pageFindClear").addEventListener("click",()=>{
+      $("pageFindQuery").value="";
+      refreshPageFind(true);
+      $("pageFindQuery").focus();
     });
     $("selectionText").addEventListener("focus",checkpoint);
     $("selectionText").addEventListener("input",onInspectorText);
     $("imageSrc").addEventListener("change",event=>updateSelectedAttribute("src",event.target.value));
     $("imageAlt").addEventListener("change",event=>updateSelectedAttribute("alt",event.target.value));
-    $("imageMaxWidth").addEventListener("change",event=>
-      updateSelectedStyle("maxWidth",event.target.value,["100%","75%","50%","25%"]));
+    $("imageWidthPercent").addEventListener("input",event=>{
+      if(!state.imageSliderActive){checkpoint();state.imageSliderActive=true;}
+      resizeImage(Number(event.target.value));
+    });
+    $("imageWidthPercent").addEventListener("change",event=>{
+      if(!state.imageSliderActive)checkpoint();
+      resizeImage(Number(event.target.value));
+      state.imageSliderActive=false;
+    });
+    $("addedImageWidthPercent").addEventListener("input",event=>{
+      if(!state.imageSliderActive){checkpoint();state.imageSliderActive=true;}
+      resizeAddedImage(Number(event.target.value));
+    });
+    $("addedImageWidthPercent").addEventListener("change",event=>{
+      if(!state.imageSliderActive)checkpoint();
+      resizeAddedImage(Number(event.target.value));
+      state.imageSliderActive=false;
+    });
+    $("addedBlockAlign").addEventListener("change",event=>
+      setAddedBlockLayout({align:event.target.value},true));
+    $("addedBlockWidth").addEventListener("input",event=>{
+      if(!state.addedBlockSliderActive){
+        checkpoint();state.addedBlockSliderActive=true;
+      }
+      setAddedBlockLayout({widthPercent:Number(event.target.value)});
+    });
+    $("addedBlockWidth").addEventListener("change",event=>{
+      if(!state.addedBlockSliderActive)
+        setAddedBlockLayout({widthPercent:Number(event.target.value)},true);
+      else setAddedBlockLayout({widthPercent:Number(event.target.value)});
+      state.addedBlockSliderActive=false;
+    });
+    for(const [id,key] of [
+      ["addedBlockSpaceAbove","spaceAbove"],
+      ["addedBlockSpaceBelow","spaceBelow"]
+    ])$(id).addEventListener("change",event=>
+      setAddedBlockLayout({[key]:Number(event.target.value)},true));
+    $("resetAddedBlockLayout").addEventListener("click",()=>
+      setAddedBlockLayout({...ADDED_LAYOUT_DEFAULT},true));
     $("textAlignment").addEventListener("change",event=>
       updateSelectedStyle("textAlign",event.target.value,["left","center","right","justify"]));
+    for(const [id,property,unit,min,max] of [
+      ["textFontSize","fontSize","px",12,80],
+      ["textMaxWidth","maxWidth","%",30,100],
+      ["textSpaceAbove","marginTop","px",0,80],
+      ["textSpaceBelow","marginBottom","px",0,80]
+    ])$(id).addEventListener("change",()=>updateNumericInspectorStyle(property,id,unit,min,max));
+    $("textColour").addEventListener("change",()=>updateColorInspectorStyle("color","textColour"));
+    $("textBackgroundColour").addEventListener("change",()=>updateColorInspectorStyle("backgroundColor","textBackgroundColour"));
     $("linkHref").addEventListener("change",event=>updateSelectedAttribute("href",event.target.value));
     $("linkTarget").addEventListener("change",event=>updateSelectedAttribute("target",event.target.value==="new"?"_blank":""));
     $("undoBtn").addEventListener("click",undo);
+    $("redoBtn").addEventListener("click",redo);
     $("resetBtn").addEventListener("click",resetPage);
     $("revertElementBtn").addEventListener("click",revertSelected);
+    $("removeSourceBtn").addEventListener("click",removeSelectedSource);
+    $("moveOriginalUp").addEventListener("click",()=>moveOriginalBlock(-1));
+    $("moveOriginalDown").addEventListener("click",()=>moveOriginalBlock(1));
+    $("directLayoutPreset").addEventListener("change",()=>{
+      $("directLayoutCustomField").hidden=$("directLayoutPreset").value!=="custom";
+    });
+    $("directLayoutCustomColumns").addEventListener("input",event=>{
+      const first=Number(event.target.value);
+      $("directLayoutCustomValue").textContent=first+" / "+(12-first)+" columns";
+    });
+    $("directLayoutCustomColumns").addEventListener("change",()=>{
+      if($("directLayoutPreset").value!=="custom")return;
+      const chosen=directLayoutSelection();
+      if(chosen&&layoutGroups().some(group=>group.parentSelector===chosen.spec.parentSelector))
+        updateDirectLayout();
+    });
+    $("directLayoutApply").addEventListener("click",()=>updateDirectLayout());
+    $("directLayoutRemove").addEventListener("click",()=>updateDirectLayout(true));
+    $("insertContentKind").addEventListener("change",updateInsertKind);
+    $("addedBlockText").addEventListener("keydown",event=>{
+      if((event.ctrlKey||event.metaKey)&&event.key==="Enter"){
+        event.preventDefault();applyAddedBlock();
+      }
+    });
+    $("applyAddedBlockBtn").addEventListener("click",applyAddedBlock);
+    $("removeAddedBlockBtn").addEventListener("click",removeAddedBlock);
+    $("duplicateAddedBlockBtn").addEventListener("click",duplicateAddedBlock);
+    $("moveAddedAnchorPicker").addEventListener("change",updateAddedAnchorButton);
+    $("moveAddedAnchorBtn").addEventListener("click",()=>
+      relocateAddedToAnchor(state.selectedAddition,$("moveAddedAnchorPicker").value));
+    $("moveAddedEarlierBtn").addEventListener("click",()=>moveReviewedAddition(state.selectedAddition,-1));
+    $("moveAddedLaterBtn").addEventListener("click",()=>moveReviewedAddition(state.selectedAddition,1));
+    $("insertContentBtn").addEventListener("click",addContentFromInspector);
+    $("duplicateSourceBtn").addEventListener("click",duplicateSelectedSource);
+    updateInsertKind();
     $("exportBtn").addEventListener("click",exportHtml);
     $("newImageFile").addEventListener("change",()=>{
       $("stageImageBtn").disabled=!$("newImageFile").files?.length;
@@ -1271,7 +3942,9 @@
     $("stageImageBtn").addEventListener("click",stageNewImage);
     $("downloadStagedImage").addEventListener("click",downloadStagedImage);
     $("reviewBtn").addEventListener("click",reviewChanges);
-    $("chooseExistingImage").addEventListener("click",openMediaLibrary);
+    $("chooseExistingImage").addEventListener("click",()=>openMediaLibrary(false));
+    $("chooseInsertImageBtn").addEventListener("click",()=>openMediaLibrary(true));
+    $("chooseAddedImageBtn").addEventListener("click",()=>openMediaLibrary("added"));
     $("mediaSearch").addEventListener("input",event=>{
       const query=event.target.value.trim().toLowerCase();
       renderMediaResults((state.mediaAssets||[]).filter(item=>
@@ -1286,6 +3959,9 @@
     updatePublishControls();
     processPublisherCallback();
     window.addEventListener("beforeunload",()=>{if (state.page) saveDraft();});
+    const requestedPage=new URLSearchParams(window.location.search).get("page");
+    const pageOptions=[...$("pagePicker").options].map(option=>option.value);
+    if(requestedPage&&pageOptions.includes(requestedPage))$("pagePicker").value=requestedPage;
     loadPage($("pagePicker").value);
   }
 

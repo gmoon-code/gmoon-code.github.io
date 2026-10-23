@@ -129,6 +129,139 @@ function protectedTokens(text) {
     [...text.matchAll(/<meta\b[^>]*>/gi)].map(m=>m[0])
   ];
 }
+/* The editor may append exactly one generated responsive-grid stylesheet.
+   This parser independently validates every permitted CSS rule before treating
+   that new style tag as an approved editorial resource. All other stylesheets,
+   metadata and scripts remain immutable. */
+function validateResponsiveGridCss(css){
+ if(typeof css!=="string"||css.length>15000)return false;
+ const wrapper=css.trim().match(/^\/\* Reviewed responsive group\. Existing page markup remains unchanged\. \*\/\n@media\(min-width:701px\)\{\n([\s\S]*?)\n\}\n@media\(max-width:700px\)\{\n([\s\S]*?)\n\}$/);
+ if(!wrapper)return false;
+ const selector=/^(?:#[A-Za-z][A-Za-z0-9_-]*|[a-z][a-z0-9-]*:nth-of-type\([1-9][0-9]*\))(?: > [a-z][a-z0-9-]*:nth-of-type\([1-9][0-9]*\))*$/;
+ const parentRule=/^main (.+)\{display:grid;grid-template-columns:repeat\(12,minmax\(0,1fr\)\);grid-auto-rows:minmax\(0,auto\);column-gap:12px;row-gap:8px;align-items:start;\}$/;
+ const childRule=/^main (.+)\{grid-column:(\d{1,2}) \/ span (\d{1,2});grid-row:(\d{1,3}) \/ span (\d{1,2});min-width:0;\}$/;
+ const parse=content=>{
+  const lines=content.split("\n");
+  if(lines.length<3||lines.length>13)return null;
+  const parent=lines[0].match(parentRule)?.[1];
+  if(!parent||parent.length>500||!selector.test(parent))return null;
+  const children=[],seen=new Set();
+  for(const line of lines.slice(1)){
+   const match=line.match(childRule);
+   if(!match)return null;
+   const [,target,xText,wText,yText,hText]=match;
+   const x=Number(xText),w=Number(wText),y=Number(yText),h=Number(hText);
+   if(target.length>500||!selector.test(target)||seen.has(target)||
+      x<1||x>12||w<1||w>12||x+w>13||y<1||y>100||h<1||h>30)
+      return null;
+   seen.add(target);
+   children.push({target,x,y,w,h});
+  }
+  for(let i=0;i<children.length;i++){
+   const current=children[i];
+   if(i){
+    const prior=children[i-1];
+    if(current.y<prior.y||(current.y===prior.y&&current.x<prior.x))return null;
+   }
+   for(let j=i+1;j<children.length;j++){
+    const other=children[j];
+    if(current.x<other.x+other.w&&current.x+current.w>other.x&&
+       current.y<other.y+other.h&&current.y+current.h>other.y)return null;
+   }
+  }
+  return {parent,children};
+ };
+ const desktop=parse(wrapper[1]),mobile=parse(wrapper[2]);
+ return !!desktop&&!!mobile&&desktop.parent===mobile.parent&&
+   desktop.children.length===mobile.children.length&&
+   desktop.children.every((item,i)=>item.target===mobile.children[i].target);
+}
+function validateResponsiveStylesheet(css){
+ if(typeof css!=="string"||css.length>50000)return false;
+ const blocks=css.trim().split(/\n(?=\/\* Reviewed responsive group\. Existing page markup remains unchanged\. \*\/)/);
+ if(!blocks.length||blocks.length>6)return false;
+ const parents=new Set(),allChildren=new Set();
+ for(const block of blocks){
+  if(!validateResponsiveGridCss(block))return false;
+  const parent=block.match(/@media\(min-width:701px\)\{\nmain ([^\n{]+)\{/)[1];
+  if(parents.has(parent))return false;
+  for(const existing of parents){
+   if(parent.startsWith(existing+" > ")||existing.startsWith(parent+" > "))return false;
+  }
+  parents.add(parent);
+  const lines=block.split("@media(max-width:700px)")[0].split("\n").filter(line=>line.startsWith("main "));
+  for(const rule of lines){
+   const child=rule.match(/^main (.+)\{grid-column:/)?.[1];
+   if(child){
+    if(allChildren.has(child))return false;
+    allChildren.add(child);
+   }
+  }
+ }
+ return true;
+}
+function stripApprovedGridStyle(previous,edited){
+ const marker='<style id="moon-responsive-group-layout">';
+ if(!edited.includes("moon-responsive-group-layout"))return edited;
+ if(previous.includes("moon-responsive-group-layout"))
+  throw Error("Existing responsive styles must remain unchanged");
+ const start=edited.indexOf(marker);
+ if(start<0||edited.indexOf(marker,start+marker.length)!==-1)
+  throw Error("Invalid responsive layout stylesheet");
+ const end=edited.indexOf("</style>",start+marker.length);
+ if(end<0||!validateResponsiveStylesheet(edited.slice(start+marker.length,end)))
+  throw Error("Responsive layout CSS failed the publisher safety checks");
+ return edited.slice(0,start)+edited.slice(end+"</style>".length);
+}
+/* Inspect actual opening-tag attribute names, outside quoted attribute values.
+   URL query terms such as ?one=1 must not be mistaken for event handlers. */
+function eventHandlerAttributes(html){
+  const found=[];
+  let cursor=0;
+  while(cursor<html.length){
+    const start=html.indexOf("<",cursor);
+    if(start<0)break;
+    if(!/[a-z]/i.test(html[start+1]||"")){cursor=start+1;continue}
+    let end=start+1,quote="";
+    for(;end<html.length;end++){
+      const char=html[end];
+      if(quote){if(char===quote)quote="";}
+      else if(char==='"'||char==="'")quote=char;
+      else if(char===">")break;
+    }
+    if(end>=html.length)break;
+    const tag=html.slice(start+1,end);
+    let pos=0;
+    while(pos<tag.length&&!/[\s/>]/.test(tag[pos]))pos++;
+    while(pos<tag.length){
+      while(pos<tag.length&&/[\s/]/.test(tag[pos]))pos++;
+      const begin=pos;
+      while(pos<tag.length&&!/[\s=/>]/.test(tag[pos]))pos++;
+      if(pos===begin){pos++;continue}
+      const name=tag.slice(begin,pos).toLowerCase();
+      while(pos<tag.length&&/\s/.test(tag[pos]))pos++;
+      let value="";
+      if(tag[pos]==="="){
+        pos++;
+        while(pos<tag.length&&/\s/.test(tag[pos]))pos++;
+        const quoteMark=tag[pos];
+        if(quoteMark==='"'||quoteMark==="'"){
+          pos++;const valueStart=pos;
+          while(pos<tag.length&&tag[pos]!==quoteMark)pos++;
+          value=tag.slice(valueStart,pos);
+          if(pos<tag.length)pos++;
+        }else{
+          const valueStart=pos;
+          while(pos<tag.length&&!/\s/.test(tag[pos]))pos++;
+          value=tag.slice(valueStart,pos);
+        }
+      }
+      if(/^on[a-z][a-z0-9_-]*$/i.test(name))found.push(name+"="+value);
+    }
+    cursor=end+1;
+  }
+  return found;
+}
 function validateEdit(path,previous,edited) {
   if(!ALLOWED_PAGES.has(path))throw new Error("This page is not an approved editorial target");
   if(typeof edited!=="string"||edited.length<100||enc.encode(edited).length>MAX_CONTENT)
@@ -137,13 +270,15 @@ function validateEdit(path,previous,edited) {
   if(!/^<!doctype html>/i.test(edited.trimStart())||
     !/<main\b/i.test(edited)||!/<\/main>/i.test(edited))
     throw new Error("The edited HTML must preserve the page structure");
-  const oldTokens=protectedTokens(previous),newTokens=protectedTokens(edited);
+  const oldTokens=protectedTokens(previous),newTokens=protectedTokens(stripApprovedGridStyle(previous,edited));
   if(JSON.stringify(oldTokens)!==JSON.stringify(newTokens))
     throw new Error("Scripts, stylesheets, and document metadata must stay unchanged");
-  /* Compare full risky attribute values, including unquoted handlers.
-     This also prevents swapping handler code while keeping the same name. */
+  /* Compare real executable HTML attribute names and values; never parse
+     strings inside href or src attributes as event handlers. */
+  if(JSON.stringify(eventHandlerAttributes(previous))!==JSON.stringify(eventHandlerAttributes(edited)))
+    throw new Error("New executable HTML or active embeds are not permitted");
+  /* Compare other risky constructs, including unquoted active URLs. */
   const riskyPatterns=[
-    /\bon[a-z][a-z0-9_-]*\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi,
     /\b(?:href|src|srcset|action|formaction|xlink:href)\s*=\s*["']?\s*(?:javascript|data|vbscript)\s*:/gi,
     /\bsrcdoc\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi,
     /<\s*(?:iframe|object|embed|form|svg|math|template|base)\b[^>]*>/gi,
