@@ -208,3 +208,26 @@ dialog form { text-align:right;margin-top:20px; }
 .editor-content.is-pages-collapsed,.editor-content.is-inspector-collapsed,
 .editor-content.is-pages-collapsed.is-inspector-collapsed{display:flex;flex-direction:column}
 }
+
+/* GitHub-only direct publication: usable on desktop and physical phones. */
+.direct-publish-dialog {
+  width:min(560px,calc(100vw - 24px));max-width:calc(100vw - 24px);
+  max-height:calc(100dvh - 24px);overflow:auto;
+  padding:22px;border:1px solid var(--dark-line);border-radius:10px;
+  color:var(--ink);background:var(--paper);box-shadow:0 12px 50px #0004;
+}
+.direct-publish-dialog::backdrop{background:rgba(0,0,0,.48)}
+.direct-publish-dialog label:not(.direct-publish-confirm){display:block;margin-top:12px;margin-bottom:6px}
+.direct-publish-dialog p{margin:9px 0}
+.direct-publish-credentials{border:1px solid var(--line);padding:12px;border-radius:8px;margin:10px 0}
+.direct-publish-page{font-weight:700;overflow-wrap:anywhere}
+.direct-publish-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}
+.direct-publish-actions button{width:auto}
+.direct-publish-confirm{display:flex;align-items:flex-start;gap:9px;line-height:1.4;margin-top:14px}
+.direct-publish-confirm input{width:auto;min-width:16px;height:16px;margin:2px 0 0}
+#directPublishResult{margin-top:12px;overflow-wrap:anywhere}
+#directPublishResult a{color:inherit;text-underline-offset:3px}
+@media(max-width:560px){
+  .direct-publish-dialog{padding:15px}
+  .direct-publish-actions button{flex:1 1 150px}
+}
