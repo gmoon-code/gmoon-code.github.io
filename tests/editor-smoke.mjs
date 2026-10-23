@@ -545,6 +545,9 @@ try {
   await blockControls.frameLocator("#pageFrame").locator("main p").first().click();
   await blockControls.frameLocator("#pageFrame").locator("#moon-quick-toolbar")
     .getByRole("button",{name:"Duplicate selected original paragraph or heading"}).click();
+  // A source-backed duplication rebuilds the iframe. Do not count the
+  // previous document before the new preview has finished loading.
+  await blockControls.frameLocator("#pageFrame").locator("[data-editor-added-index]").first().waitFor();
   assert.equal(await blockControls.frameLocator("#pageFrame").locator("[data-editor-added-index]").count(),1);
   assert.match(await blockControls.locator("#changeCount").textContent(),/1 added content block/);
   await blockControls.frameLocator("#pageFrame").locator("[data-editor-added-index]").click();
