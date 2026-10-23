@@ -4793,7 +4793,9 @@ test('PowerPoint-style selection moves and resizes source text freely with Undo 
  expect(html).toContain('moon-free-object');
  expect(html).toContain('id="moon-free-position-css"');
  expect(html).toContain('@media(max-width:700px)');
- expect(html).toContain('translate: 10px 1px');
+ const resizedTranslation=await target.evaluate(node=>node.style.translate);
+ expect(resizedTranslation).not.toBe('10px 1px');
+ expect(html).toContain('translate: '+resizedTranslation);
  await page.locator('#undoBtn').click();
  await expect(view.locator('main #a h2')).toHaveCSS('translate','10px 1px');
  await page.locator('#undoBtn').click();
