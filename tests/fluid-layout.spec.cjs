@@ -4775,14 +4775,17 @@ test('PowerPoint-style selection moves and resizes source text freely with Undo 
  await move.press('Shift+ArrowRight');
  await move.press('ArrowDown');
  await expect(target).toHaveCSS('translate','10px 1px');
- const corner=handles.getByRole('button',{name:'Resize selected object from bottom-right'});
+ const initialWidth=await target.evaluate(node=>Number.parseInt(node.style.width,10));
+ // The example heading is wider than the iframe. Use its visible top-left
+ // corner to verify an actual pointer resize, not an off-screen grip.
+ const corner=handles.getByRole('button',{name:'Resize selected object from top-left'});
  const rect=await corner.boundingBox();
  await page.mouse.move(rect.x+rect.width/2,rect.y+rect.height/2);
  await page.mouse.down();
- await page.mouse.move(rect.x+rect.width/2+45,rect.y+rect.height/2+25,{steps:4});
+ await page.mouse.move(rect.x+rect.width/2-45,rect.y+rect.height/2-25,{steps:4});
  await page.mouse.up();
  const width=await target.evaluate(node=>Number.parseInt(node.style.width,10));
- expect(width).toBeGreaterThan(100);
+ expect(width).toBeGreaterThan(initialWidth+30);
  await expect(target).toHaveClass(/moon-free-object/);
  const download=page.waitForEvent('download');
  await page.locator('#exportBtn').click();
