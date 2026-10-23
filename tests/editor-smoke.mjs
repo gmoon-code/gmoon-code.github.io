@@ -90,10 +90,10 @@ try {
   await resizeHandle.focus();
   await resizeHandle.press("ArrowRight");
   assert.equal(await page.frameLocator("#pageFrame").locator("main .home-kicker").first()
-    .evaluate(el=>el.style.translate),"1px 0px");
+    .evaluate(el=>el.style.translate),"1px");
   await resizeHandle.press("Shift+ArrowRight");
   assert.equal(await page.frameLocator("#pageFrame").locator("main .home-kicker").first()
-    .evaluate(el=>el.style.translate),"11px 0px");
+    .evaluate(el=>el.style.translate),"11px");
   await page.locator("#undoBtn").click();
   await page.locator("#undoBtn").click();
   console.log("PASS: selected canvas object supports keyboard movement and undo");
