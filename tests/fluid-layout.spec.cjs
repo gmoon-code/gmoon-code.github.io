@@ -4794,7 +4794,7 @@ test('PowerPoint-style selection moves and resizes source text freely with Undo 
  await page.locator('#undoBtn').click();
  await expect(view.locator('main #a h2')).toHaveCSS('translate','10px 1px');
  await page.locator('#undoBtn').click();
- await expect(view.locator('main #a h2')).toHaveCSS('translate','10px');
+ await expect(view.locator('main #a h2')).toHaveCSS('translate',/^10px(?: 0px)?$/);
  await page.locator('#undoBtn').click();
  await expect(view.locator('main #a h2')).not.toHaveClass(/moon-free-object/);
 });
