@@ -884,10 +884,12 @@
     }else{
       const source=getWorking(state.selected),style=source?.style;
       if(style&&source.classList.contains(FREE_CLASS)){
-        const parts=/^(-?\d+)px\s+(-?\d+)px$/.exec(style.translate||"");
+        // CSS may normalize "10px 0px" to the shorter "10px" form.
+        const parts=/^(-?\d+)px(?:\s+(-?\d+)px)?$/.exec(style.translate||"");
         const width=parseInt(style.width,10),height=parseInt(style.minHeight,10);
-        if(parts&&freePositionValid({x:+parts[1],y:+parts[2],width,height}))
-          return {x:+parts[1],y:+parts[2],width,height};
+        const x=parts?Number(parts[1]):0,y=parts?Number(parts[2]||0):0;
+        if(parts&&freePositionValid({x,y,width,height}))
+          return {x,y,width,height};
       }
     }
     const rect=sel.node.getBoundingClientRect();
@@ -3962,7 +3964,8 @@
     const references=[...next.matchAll(/\bsrc\s*=\s*["\'](assets\/editor-[a-z0-9-]+\.(?:png|jpg|webp))["\']/gi)]
       .map(match=>match[1]).filter(path=>!state.source.includes(path));
     for(const path of references){
-      if(!state.stagedMedia||state.stagedMedia.path!==path)
+      const existing=state.mediaAssets?.some(asset=>asset.path===path);
+      if(!existing&&(!state.stagedMedia||state.stagedMedia.path!==path))
         throw new Error("This draft uses a new image whose file is unavailable. Re-select and stage that image before exporting.");
     }
     const floating=[...state.doc.querySelectorAll("main ."+FREE_CLASS)].length||
