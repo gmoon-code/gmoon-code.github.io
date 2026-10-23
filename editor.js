@@ -1000,6 +1000,8 @@
     if(addAnchor&&state.additions.length<10){
       bar.append(make("+ Add",()=>openQuickComposer(addAnchor),null,
         "Add new content after this block"));
+      bar.append(make("+ Image",()=>openQuickComposer(addAnchor,"image"),null,
+        "Add an existing website image after selected content"));
     }
     if(selected.added){
       const divider=doc.createElement("span");
@@ -1329,7 +1331,7 @@
     composer.style.top=Math.max(5,Math.min(Math.max(5,view.innerHeight-height-5),
       below+height<=view.innerHeight-5?below:above>=5?above:below))+"px";
   }
-  function openQuickComposer(anchor){
+  function openQuickComposer(anchor,initialKind="paragraph"){
     const doc=state.frameDoc;
     if(!doc||!sourceMoveAnchors().some(a=>a.key===anchor.key)||state.additions.length>=10)return;
     doc.getElementById("moon-quick-composer")?.remove();
@@ -1370,6 +1372,7 @@
       const option=doc.createElement("option");
       option.value=value;option.textContent=label;kind.append(option);
     }
+    if(["paragraph","heading","link","image"].includes(initialKind))kind.value=initialKind;
     const headingLevel=doc.createElement("select");
     for(const value of ["h2","h3"]){
       const option=doc.createElement("option");
