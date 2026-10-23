@@ -1309,6 +1309,7 @@
     state.frameDoc.getElementById("moon-added-block-move-handle")?.remove();
     state.frameDoc.getElementById("moon-added-block-width-handle")?.remove();
     state.frameDoc.getElementById("moon-source-width-handle")?.remove();
+    state.frameDoc.getElementById("moon-spacing-grip")?.remove();
     node.setAttribute("data-editor-selected","");
     if (TEXT_TAGS.has(node.tagName)) node.setAttribute("contenteditable","true");
     updateInspector(node);
@@ -1392,6 +1393,7 @@
       createAddedMoveHandle();
     if(kind!=="image")createAddedWidthHandle();
     createQuickToolbar();
+    if(kind!=="image")createSpacingGrip();
   }
   function applyAddedBlock(){
     const index=state.selectedAddition,original=state.additions[index];
