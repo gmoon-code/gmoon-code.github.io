@@ -606,6 +606,16 @@ try {
   console.log("INLINE: undo/redo works");
   await inline.reload();
   await inline.frameLocator("#pageFrame").locator("[data-editor-added-index]").waitFor({timeout:6000});
+  await inline.frameLocator("#pageFrame").locator("[data-editor-added-index]").first().click();
+  const addedResize=inline.frameLocator("#pageFrame").locator("#moon-added-block-width-handle");
+  await addedResize.focus();
+  await addedResize.press("Home");
+  assert.equal(await inline.locator("#addedBlockWidth").inputValue(),"30");
+  await addedResize.press("ArrowRight");
+  assert.equal(await inline.locator("#addedBlockWidth").inputValue(),"35");
+  await addedResize.press("End");
+  assert.equal(await inline.locator("#addedBlockWidth").inputValue(),"100");
+  console.log("PASS: keyboard resize of newly inserted text");
   console.log("INLINE: select restored addition to add another");
   await inline.frameLocator("#pageFrame").locator("[data-editor-added-index]").click();
   await inline.frameLocator("#pageFrame").locator("#moon-quick-toolbar")
