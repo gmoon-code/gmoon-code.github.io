@@ -1658,13 +1658,32 @@
     if(!node||!QUICK_SOURCE_TAGS.has(node.tagName))return;
     const h=doc.createElement("button");
     h.id="moon-source-width-handle";h.type="button";
-    h.textContent="↘";h.title="Drag to resize selected text";
+    h.textContent="↘";h.title="Drag or use arrow keys to resize; double-click to reset";
     h.setAttribute("aria-label",
-      "Drag to adjust selected text width. Use Size or the Inspector for keyboard control.");
+      "Resize text width: drag, press Left or Right arrow (Shift for larger steps), Home for 30%, End for full width, or double-click to reset.");
     h.style.cssText="position:fixed;z-index:2147483645;width:28px;height:28px;"+
       "border:2px solid #27654f;border-radius:5px;background:#fff;color:#174932;"+
       "cursor:nwse-resize;touch-action:none;font:700 20px/20px system-ui;box-shadow:0 1px 6px #0004";
     h.addEventListener("click",event=>event.stopPropagation());
+    // Keyboard access to the same constrained sizing used by pointer drag.
+    // Shift increases the step for efficient large adjustments.
+    h.addEventListener("keydown",event=>{
+      if(!["ArrowLeft","ArrowRight","Home","End"].includes(event.key))return;
+      if(!state.selected||!getWorking(state.selected))return;
+      event.preventDefault();event.stopPropagation();
+      const current=getWorking(state.selected).style.maxWidth;
+      const percent=/^(?:[3-9]\\d|100)%$/.test(current)?parseInt(current,10):100;
+      const delta=(event.shiftKey?20:5)*(event.key==="ArrowRight"?1:-1);
+      const next=event.key==="Home"?30:event.key==="End"?100:
+        Math.max(30,Math.min(100,Math.round((percent+delta)/5)*5));
+      if(next===percent)return;
+      updateSelectedStyle("maxWidth",next===100?"":next+"%",[next===100?"":next+"%"]);
+    });
+    h.addEventListener("dblclick",event=>{
+      event.preventDefault();event.stopPropagation();
+      if(getWorking(state.selected)?.style.maxWidth)
+        updateSelectedStyle("maxWidth","",[""]);
+    });
     h.addEventListener("pointerdown",event=>{
       if(event.button!==0||state.sourceWidthPointer||!state.selected)return;
       const preview=doc.querySelector('[data-editor-key="'+state.selected+'"]');
