@@ -4943,7 +4943,7 @@ test('Direct click selects a full set of handles and object drag escapes a clipp
 test('Selected image can resize with handles despite inline important width and hidden container',async({page})=>{
  const source='<!doctype html><html><head></head><body><main><section id="bounded" style="overflow:hidden;width:240px">'+
   '<img src="assets/test-image.webp" width="240" height="180" alt="Image for resize testing" '+
-  'style="width:100%!important;max-width:100%!important;height:auto!important"></section></main></body></html>';
+  'style="width:100%!important;max-width:100%!important;height:120px!important"></section></main></body></html>';
  await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',body:source}));
  await page.goto('http://127.0.0.1:8765/editor.html?page=about.html',{waitUntil:'domcontentloaded'});
  const view=page.frameLocator('#pageFrame'),target=view.locator('#bounded img');
