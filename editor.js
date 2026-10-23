@@ -934,15 +934,15 @@
       for(const node of [source,sel.node]){
         node.classList.add(FREE_CLASS);
         node.style.translate=geometry.x+"px "+geometry.y+"px";
-        node.style.width=geometry.width+"px";
+        node.style.setProperty("width",geometry.width+"px","important");
         node.style.setProperty("--moon-free-width",geometry.width+"px");
-        node.style.minHeight=geometry.height+"px";
+        node.style.setProperty("min-height",geometry.height+"px","important");
         node.style.setProperty("--moon-free-height",geometry.height+"px");
         if(node.tagName==="IMG"){
-          node.style.height=geometry.height+"px";
-          node.style.objectFit="contain";
+          node.style.setProperty("height",geometry.height+"px","important");
+          node.style.setProperty("object-fit","contain","important");
         }
-        node.style.maxWidth="none";
+        node.style.setProperty("max-width","none","important");
         node.style.boxSizing="border-box";
       }
     }
@@ -1007,6 +1007,9 @@
       freeGestureStart(event,"move",node);
       return;
     }
+    // Stop the browser beginning its own text/image selection drag, which
+    // otherwise competes with the canvas movement on pointermove.
+    event.preventDefault();
     pendingCanvasDrag={id:event.pointerId,startX:event.clientX,startY:event.clientY,
       node,added:!!added};
   }
@@ -1161,8 +1164,11 @@
       const defaultStyle=original.classList.contains(FREE_CLASS)?null:original.style;
       for(const node of [source,selection.node]){
         node.classList.remove(FREE_CLASS);
-        for(const name of ["translate","width","height","minHeight","maxWidth","boxSizing","objectFit"])
-          node.style[name]=defaultStyle?.[name]||"";
+        for(const name of ["translate","width","height","min-height","max-width","box-sizing","object-fit"]){
+          const value=defaultStyle?.getPropertyValue(name)||"";
+          if(value)node.style.setProperty(name,value,defaultStyle.getPropertyPriority(name));
+          else node.style.removeProperty(name);
+        }
         for(const name of ["--moon-free-width","--moon-free-height"])
           if(defaultStyle?.getPropertyValue(name))node.style.setProperty(name,defaultStyle.getPropertyValue(name));
           else node.style.removeProperty(name);
