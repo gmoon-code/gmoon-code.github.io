@@ -89,6 +89,49 @@ try {
     fullPage:true
   });
   await directory.close();
+
+  // Test the actual editor application at phone width, not merely the
+  // internal "Mobile" preview inside a desktop-sized editor window.
+  const phoneEditor=await context.newPage();
+  const phoneErrors=[];
+  phoneEditor.on("pageerror",error=>phoneErrors.push(error.message));
+  await phoneEditor.setViewportSize({width:390,height:844});
+  await phoneEditor.goto(base+"/editor.html",{waitUntil:"domcontentloaded"});
+  await phoneEditor.frameLocator("#pageFrame").locator("main .home-kicker")
+    .first().waitFor();
+  const phoneMetrics=await phoneEditor.evaluate(()=>{
+    const rect=id=>document.querySelector(id).getBoundingClientRect();
+    return {
+      viewport:innerWidth,
+      documentWidth:document.documentElement.scrollWidth,
+      topbarWidth:rect(".editor-topbar").width,
+      previewTop:rect(".editor-workspace").top,
+      sidebarTop:rect(".editor-sidebar").top,
+      inspectorTop:rect(".editor-inspector").top,
+      frameWidth:rect("#pageFrame").width
+    };
+  });
+  assert(phoneMetrics.documentWidth<=phoneMetrics.viewport+1,
+    "The complete academic editor must fit a 390px phone without horizontal overflow");
+  assert(phoneMetrics.sidebarTop<phoneMetrics.previewTop&&
+    phoneMetrics.previewTop<phoneMetrics.inspectorTop,
+    "Phone layout must present navigation, page preview and then inspector in order");
+  assert(phoneMetrics.frameWidth<=phoneMetrics.viewport,
+    "The editable website preview must remain within the physical phone viewport");
+  assert.equal(await phoneEditor.locator("#publisherConnect").isDisabled(),true,
+    "The unconfigured publisher must stay disabled on mobile");
+  await phoneEditor.frameLocator("#pageFrame").locator("main .home-kicker")
+    .first().click();
+  assert.equal(await phoneEditor.locator("#selectionTag").textContent(),"p",
+    "Tapping a real page paragraph must select the correct inspector field");
+  assert.equal(await phoneEditor.locator("#exportBtn").isDisabled(),true,
+    "Selecting content on a phone must never produce a draft change");
+  await phoneEditor.screenshot({
+    path:"/tmp/editor-test-artifacts/academic-editor-mobile.png",fullPage:true
+  });
+  assert.deepEqual(phoneErrors,[],"Phone-sized editor must not raise page errors");
+  await phoneEditor.close();
+
   // All three editors can be bookmarked under GitHub Pages. Cross-site links
   // open separately so unfinished portfolio wording remains in this tab.
   const otherEditors=await page.locator(".other-editor-links a").evaluateAll(links=>
