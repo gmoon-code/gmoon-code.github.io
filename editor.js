@@ -350,6 +350,7 @@
   }
 
   function renderPreview(reselectKey=null,reselectAddition=null) {
+    closeQuickSize(true);
     state.selected=null;
     state.selectedAddition=null;
     state.addedBlockSliderActive=false;
@@ -375,6 +376,7 @@
         d.addEventListener("scroll",positionAddedMoveHandle,true);
         d.addEventListener("scroll",positionAddedWidthHandle,true);
         d.addEventListener("scroll",positionQuickToolbar,true);
+        d.defaultView.addEventListener("scroll",positionQuickSize);
         // Only viewport scrolls move the composer. Internal form scrolling
         // must not reposition the form under the user's pointer.
         d.defaultView.addEventListener("scroll",positionQuickComposer);
@@ -385,6 +387,7 @@
         d.defaultView.addEventListener("resize",positionAddedMoveHandle);
         d.defaultView.addEventListener("resize",positionAddedWidthHandle);
         d.defaultView.addEventListener("resize",positionQuickToolbar);
+        d.defaultView.addEventListener("resize",positionQuickSize);
         d.defaultView.addEventListener("resize",positionQuickComposer);
         d.defaultView.addEventListener("resize",positionQuickLayout);
         d.defaultView.addEventListener("resize",positionColumnResizeHandle);
@@ -3959,12 +3962,14 @@
     $("previewViewport").addEventListener("change",event=>{
       $("previewContainer").className="preview-frame-container "+event.target.value;
       positionQuickToolbar();
+      positionQuickSize();
       positionQuickComposer();
       positionQuickLayout();
     });
     $("previewContainer").addEventListener("transitionend",event=>{
       if(event.target!==$("previewContainer")||event.propertyName!=="max-width")return;
       positionQuickToolbar();
+      positionQuickSize();
       positionQuickComposer();
       positionQuickLayout();
     });
