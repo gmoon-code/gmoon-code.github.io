@@ -4933,6 +4933,14 @@ test('Direct click selects a full set of handles and object drag escapes a clipp
        captured:e.target.hasPointerCapture?.(e.pointerId)||false
      }),true);
  });
+ console.log('DIRECT GLOBAL POSITION',{
+  targetBox:box,
+  frameBox:await page.locator('#pageFrame').boundingBox(),
+  topHit:await page.evaluate(([x,y])=>{
+    const e=document.elementFromPoint(x,y);
+    return {tag:e?.tagName,id:e?.id,classes:e?.className?.toString().slice(0,60)}
+  },[box.x+Math.min(75,box.width/2),box.y+box.height/2])
+ });
  console.log('DIRECT GRAB HIT',await target.evaluate(el=>{
    const r=el.getBoundingClientRect(),x=r.x+Math.min(75,r.width/2),y=r.y+r.height/2;
    const hit=document.elementFromPoint(x,y);
@@ -4992,10 +5000,18 @@ test('Selected image can resize with handles despite inline important width and 
  await page.mouse.down();
  await page.mouse.move(position.x+position.width/2+115,position.y+position.height/2,{steps:6});
  await page.mouse.up();
- console.log('GRIP POINTER EVENTS',await right.evaluate(el=>({
-  events:el.ownerDocument.defaultView.__moonGripLog,
-  image:el.ownerDocument.querySelector('#bounded img')?.getAttribute('style')
- })));
+ console.log('GRIP POINTER EVENTS',await right.evaluate(el=>{
+  const img=el.ownerDocument.querySelector('#bounded img');
+  return {
+    events:el.ownerDocument.defaultView.__moonGripLog,
+    image:img?.getAttribute('style'),
+    computed:img&&{width:getComputedStyle(img).width,height:getComputedStyle(img).height,
+      translate:getComputedStyle(img).translate,maxWidth:getComputedStyle(img).maxWidth,
+      rect:{x:img.getBoundingClientRect().x,y:img.getBoundingClientRect().y,
+        width:img.getBoundingClientRect().width,height:img.getBoundingClientRect().height}},
+    frame:el.ownerDocument.defaultView.frameElement?.getBoundingClientRect().toJSON?.()
+  };
+ }));
  await expect(page.locator('#freeCanvasToggle')).toHaveAttribute('aria-pressed','true');
  const resized=await target.boundingBox();
  expect(resized.width).toBeGreaterThan(original.width+90);
