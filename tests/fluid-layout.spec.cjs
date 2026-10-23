@@ -4930,6 +4930,9 @@ test('Direct click selects a full set of handles and object drag escapes a clipp
  const rect=await target.boundingBox();
  const parent=await view.locator('#bounded').boundingBox();
  expect(rect.x+rect.width).toBeGreaterThan(parent.x+parent.width);
+ await target.dblclick({position:{x:12,y:10}});
+ await expect(page.locator('#freeCanvasToggle')).toHaveAttribute('aria-pressed','false');
+ await expect(target).toHaveAttribute('contenteditable','true');
  await page.locator('#undoBtn').click();
  await expect(view.locator('#bounded h2')).not.toHaveClass(/moon-free-object/);
 });
