@@ -696,6 +696,22 @@ try {
   await sections.frameLocator("#pageFrame").locator("main p").first().click();
   assert.equal(await sections.locator("#selectionTag").textContent(),"p");
   console.log("PASS: contextual toolbar does not obstruct selection of adjacent text");
+  // Keyboard reordering uses the same verified neighbouring-block move as dragging.
+  const grip=sections.frameLocator("#pageFrame").locator("#moon-block-move-handle");
+  await grip.focus();
+  await grip.press("ArrowDown");
+  const reordered=await sections.frameLocator("#pageFrame").locator("main section p")
+    .allTextContents();
+  assert.deepEqual(reordered.slice(0,3),[
+    "Second research summary.","First research summary.","Third research summary."
+  ]);
+  await sections.locator("#undoBtn").click();
+  assert.deepEqual((await sections.frameLocator("#pageFrame").locator("main section p")
+    .allTextContents()).slice(0,3),[
+    "First research summary.","Second research summary.","Third research summary."
+  ]);
+  console.log("PASS: on-canvas keyboard block reorder and undo");
+
   await sections.close();
   const retry=await context.newPage();
   await retry.route("**/about.html",route=>route.fulfill({
