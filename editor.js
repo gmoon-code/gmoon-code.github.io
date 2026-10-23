@@ -319,6 +319,10 @@
       const style=copy.createElement('style');style.id='moon-responsive-group-layout';
       style.textContent=css;copy.head.append(style);
     }
+    if(copy.querySelector("main ."+FREE_CLASS)||state.additions.some(item=>item.freePosition)){
+      const style=copy.createElement("style");style.id="moon-free-position-css";
+      style.textContent=FREE_CSS;copy.head.append(style);
+    }
     const additionsByAnchor=new Map();
     state.additions.forEach((addition,index)=>{
       if(!additionsByAnchor.has(addition.selector))additionsByAnchor.set(addition.selector,[]);
@@ -3417,7 +3421,7 @@
     if(insertionKind(item)==="image")return '<p'+(item.freePosition?' class="moon-free-object"':"")+style+'><img src="'+item.src+
       '" alt="'+text.replace(/"/g,"&quot;").replace(/'/g,"&#39;")+
       '" loading="lazy" style="max-width:100%;height:auto'+
-        (item.widthPercent===undefined?"":";width:"+item.widthPercent+"%")+'"></p>';
+        (item.freePosition?";width:100%":item.widthPercent===undefined?"":";width:"+item.widthPercent+"%")+'"></p>';
     if(insertionKind(item)==="heading")return "<"+item.headingTag+(item.freePosition?' class="moon-free-object"':"")+style+">"+text+"</"+item.headingTag+">";
     if(insertionKind(item)==="link")return "<p"+(item.freePosition?' class="moon-free-object"':"")+style+"><a href=\""+escapePlainText(item.href)+"\""+
       (/^https:\/\//i.test(item.href)?" rel=\"noopener noreferrer\"":"")+">"+text+"</a></p>";
@@ -3713,6 +3717,12 @@
     for(const path of references){
       if(!state.stagedMedia||state.stagedMedia.path!==path)
         throw new Error("This draft uses a new image whose file is unavailable. Re-select and stage that image before exporting.");
+    }
+    const floating=[...state.doc.querySelectorAll("main ."+FREE_CLASS)].length||
+      state.additions.some(item=>item.freePosition);
+    if(floating&&!next.includes('id="moon-free-position-css"')){
+      if(!/<\/head>/i.test(next))throw Error("Cannot add responsive mobile behaviour");
+      next=next.replace(/<\/head>/i,'<style id="moon-free-position-css">\\n'+FREE_CSS+'\\n</style>\\n</head>');
     }
     if (next===state.source) throw new Error("There are no exportable changes.");
     return next;
