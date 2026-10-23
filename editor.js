@@ -6,6 +6,46 @@
   const EDITABLE = "h1,h2,h3,h4,h5,h6,p,li,figcaption,blockquote,dt,dd,a,img,th,td";
   const TEXT_TAGS = new Set(["H1","H2","H3","H4","H5","H6","P","LI","FIGCAPTION","BLOCKQUOTE","DT","DD","A","TH","TD"]);
   const DRAFT_PREFIX = "moon-portfolio-visual-editor-v1:";
+  const PANEL_PREFERENCE_KEY="moon-portfolio-editor-workspace-v1";
+  const panelPreference={pages:true,inspector:true};
+  function setWorkspacePanel(panel,open){
+    if(!["pages","inspector"].includes(panel))return;
+    panelPreference[panel]=Boolean(open);
+    const area=$("editorNavigation").parentElement;
+    area.classList.toggle("is-pages-collapsed",!panelPreference.pages);
+    area.classList.toggle("is-inspector-collapsed",!panelPreference.inspector);
+    for(const [key,id,label] of [["pages","togglePagesPanel","pages"],["inspector","toggleInspectorPanel","inspector"]]){
+      const button=$(id);
+      button.textContent=(panelPreference[key]?"Hide ":"Show ")+label;
+      button.setAttribute("aria-expanded",String(panelPreference[key]));
+    }
+    const focusButton=$("toggleCanvasFocus");
+    if(focusButton){
+      const focused=!panelPreference.pages&&!panelPreference.inspector;
+      focusButton.textContent=focused?"Show both panels":"Focus canvas";
+      focusButton.setAttribute("aria-pressed",String(focused));
+    }
+    try{localStorage.setItem(PANEL_PREFERENCE_KEY,JSON.stringify(panelPreference));}
+    catch{/* Storage may be unavailable. The controls still work. */}
+  }
+  function initialiseWorkspacePanels(){
+    try{
+      const saved=JSON.parse(localStorage.getItem(PANEL_PREFERENCE_KEY)||"null");
+      if(saved&&typeof saved==="object"){
+        if(typeof saved.pages==="boolean")panelPreference.pages=saved.pages;
+        if(typeof saved.inspector==="boolean")panelPreference.inspector=saved.inspector;
+      }
+    }catch{/* Invalid preferences use both panels open. */}
+    setWorkspacePanel("pages",panelPreference.pages);
+    setWorkspacePanel("inspector",panelPreference.inspector);
+    $("togglePagesPanel").addEventListener("click",()=>setWorkspacePanel("pages",!panelPreference.pages));
+    $("toggleInspectorPanel").addEventListener("click",()=>setWorkspacePanel("inspector",!panelPreference.inspector));
+    $("toggleCanvasFocus").addEventListener("click",()=>{
+      const focused=!panelPreference.pages&&!panelPreference.inspector;
+      setWorkspacePanel("pages",focused);
+      setWorkspacePanel("inspector",focused);
+    });
+  }
   const PUBLISH_CONFIG=window.MoonEditorPublisherConfig||{};
   const publisher={session:null,login:"",busy:false};
   function publisherEndpoint() {
@@ -35,7 +75,7 @@
     selected:null,history:[],redo:[],fingerprint:"",loadToken:0,saveTimer:null,staleDraft:false,
     originalSections:[],sectionGroups:[],sectionOrder:[],mediaAssets:null,mediaPromise:null,
     stagedMedia:null,responsiveGroup:null,responsiveGroups:[],additions:[],resizeStart:null,imageSliderActive:false,
-    pageFindKeys:[],pageFindIndex:-1,mediaChooseInsert:false,removals:[],selectedAddition:null,blockOrders:[],columnPointer:null,blockPointer:null,addedPointer:null,addedWidthPointer:null,addedBlockSliderActive:false
+    pageFindKeys:[],pageFindIndex:-1,mediaChooseInsert:false,removals:[],selectedAddition:null,blockOrders:[],columnPointer:null,blockPointer:null,addedPointer:null,addedWidthPointer:null,sourceWidthPointer:null,addedBlockSliderActive:false
   };
 
   function hashText(text) {
@@ -321,6 +361,7 @@
   }
 
   function renderPreview(reselectKey=null,reselectAddition=null) {
+    closeQuickSize(true);
     state.selected=null;
     state.selectedAddition=null;
     state.addedBlockSliderActive=false;
@@ -345,7 +386,9 @@
         d.addEventListener("scroll",positionBlockMoveHandle,true);
         d.addEventListener("scroll",positionAddedMoveHandle,true);
         d.addEventListener("scroll",positionAddedWidthHandle,true);
+        d.addEventListener("scroll",positionSourceWidthHandle,true);
         d.addEventListener("scroll",positionQuickToolbar,true);
+        d.defaultView.addEventListener("scroll",positionQuickSize);
         // Only viewport scrolls move the composer. Internal form scrolling
         // must not reposition the form under the user's pointer.
         d.defaultView.addEventListener("scroll",positionQuickComposer);
@@ -355,7 +398,9 @@
         d.defaultView.addEventListener("resize",positionBlockMoveHandle);
         d.defaultView.addEventListener("resize",positionAddedMoveHandle);
         d.defaultView.addEventListener("resize",positionAddedWidthHandle);
+        d.defaultView.addEventListener("resize",positionSourceWidthHandle);
         d.defaultView.addEventListener("resize",positionQuickToolbar);
+        d.defaultView.addEventListener("resize",positionQuickSize);
         d.defaultView.addEventListener("resize",positionQuickComposer);
         d.defaultView.addEventListener("resize",positionQuickLayout);
         d.defaultView.addEventListener("resize",positionColumnResizeHandle);
@@ -468,7 +513,7 @@
 
   function onPreviewClick(event) {
     // In-preview controls must never be interpreted as selected page content.
-    if(event.target.closest("#moon-quick-toolbar,#moon-quick-composer,#moon-quick-layout"))return;
+    if(event.target.closest("#moon-quick-toolbar,#moon-quick-composer,#moon-quick-layout,#moon-quick-size,#moon-source-width-handle"))return;
     /* Stop navigation, but keep normal selection behaviour for editable text. */
     if (event.target.closest("a")) event.preventDefault();
     const added=event.target.closest("[data-editor-added-index]");
@@ -557,6 +602,22 @@
   }
   function handleEditorShortcuts(event){
     if(!state.doc||event.defaultPrevented)return false;
+    const typing=Boolean(event.target?.closest?.("input,textarea,select,[contenteditable='true'],[role='textbox']"));
+    // Alt+Shift+C toggles the editing panels without taking over browser
+    // Find or interfering with typing inside forms.
+    if(event.altKey&&event.shiftKey&&!event.ctrlKey&&!event.metaKey&&event.key.toLowerCase()==="c"&&!typing){
+      event.preventDefault();
+      $("toggleCanvasFocus").click();
+      return true;
+    }
+    // The slash key opens the existing page content finder from anywhere
+    // in the editor outside input fields. No source content is altered.
+    if(event.key==="/"&&!event.altKey&&!event.ctrlKey&&!event.metaKey&&!typing){
+      event.preventDefault();
+      if(!panelPreference.pages)setWorkspacePanel("pages",true);
+      $("pageFindQuery").focus();
+      return true;
+    }
     if(!(event.ctrlKey||event.metaKey)||event.altKey)return false;
     const key=event.key.toLowerCase();
     if(key==="s"&&!event.shiftKey){
@@ -631,7 +692,7 @@
     // transition. Keep the actual CSS position clamped to the changing
     // viewport even before the next resize notification arrives.
     const desiredLeft=Math.max(4,Math.min(maxLeft,left));
-    bar.style.left="max(4px,min("+desiredLeft+"px,calc(100vw - min(260px, calc(100vw - 8px)) - 4px)))";
+    bar.style.left="max(4px,min("+desiredLeft+"px,calc(100vw - min(310px, calc(100vw - 8px)) - 4px)))";
     bar.style.top=Math.max(4,Math.min(maxTop,top))+"px";
   }
   function createQuickToolbar(){
@@ -639,6 +700,7 @@
     if(!doc)return;
     doc.getElementById("moon-quick-composer")?.remove();
     doc.getElementById("moon-quick-layout")?.remove();
+    closeQuickSize(true);
     doc.getElementById("moon-quick-toolbar")?.remove();
     const selected=quickSelection();
     if(!selected)return;
@@ -649,7 +711,7 @@
     bar.setAttribute("aria-label","Selected block quick actions");
     bar.setAttribute("aria-orientation","horizontal");
     bar.style.cssText="position:fixed;z-index:2147483644;display:flex;align-items:center;flex-wrap:wrap;gap:4px;padding:5px;"+
-      "width:min(260px,calc(100vw - 8px));box-sizing:border-box;border:1px solid "+
+      "width:min(310px,calc(100vw - 8px));box-sizing:border-box;border:1px solid "+
       (dark?"#a7baa9":"#9cb7a9")+";border-radius:9px;background:"+
       (dark?"#1a1c1a":"#fff")+";color:"+(dark?"#f5f7f5":"#183e30")+
       ";box-shadow:0 4px 16px #0003;font:600 12px/1.25 system-ui,sans-serif;max-width:calc(100vw - 8px)";
@@ -675,7 +737,63 @@
         createQuickToolbar();
       },current===value,"Align selected block "+label.toLowerCase()));
     }
+    if(selected.added?insertionKind(state.additions[state.selectedAddition])!=="image":
+      ["P","H1","H2","H3","H4","BLOCKQUOTE","LI"].includes(selected.node.tagName)){
+      bar.append(make("Size",()=>openQuickSize(),null,"Resize selected text block on the page"));
+      // Small spatial adjustments are common while composing a page. Reuse
+      // the inspector's validated style and Undo history, one click per step.
+      for(const side of ["Above","Below"]){
+        const field=side==="Above"?"spaceAbove":"spaceBelow";
+        const cssProp=side==="Above"?"marginTop":"marginBottom";
+        const spacing=selected.added?addedBlockLayout(state.additions[state.selectedAddition])[field]:
+          (/^(\\d+)px$/.exec(getWorking(state.selected)?.style[cssProp]||"")?.[1]||0);
+        const currentGap=Math.max(0,Math.min(80,Number(spacing)||0));
+        for(const [label,step,description] of [
+          ["−",-10,"Decrease space "+side.toLowerCase()+" selected block"],
+          ["+",10,"Increase space "+side.toLowerCase()+" selected block"]
+        ]){
+          const control=make(side+" "+label,()=>{
+            const next=Math.max(0,Math.min(80,currentGap+step));
+            if(next===currentGap)return;
+            if(selected.added)setAddedBlockLayout({[field]:next},true);
+            else updateSelectedStyle(cssProp,next+"px",[next+"px"]);
+          },null,description);
+          control.disabled=step<0?currentGap===0:currentGap===80;
+          control.title="Space "+side.toLowerCase()+": "+currentGap+" px";
+          bar.append(control);
+        }
+      }
+      const existingSpace=selected.added?addedBlockLayout(state.additions[state.selectedAddition]):null;
+      const workSpace=selected.added?null:getWorking(state.selected);
+      const hasCustomSpace=selected.added?
+        existingSpace.spaceAbove!==0||existingSpace.spaceBelow!==0:
+        Boolean(workSpace?.style.marginTop||workSpace?.style.marginBottom);
+      const clear=make("Reset gaps",()=>{
+        if(selected.added){
+          setAddedBlockLayout({spaceAbove:0,spaceBelow:0},true);
+        }else{
+          // A single history checkpoint covers both values.
+          checkpoint();
+          updateSelectedStyle("marginTop","",[""],false);
+          updateSelectedStyle("marginBottom","",[""],false);
+        }
+      },null,"Restore original spacing above and below selected block");
+      clear.disabled=!hasCustomSpace;
+      bar.append(clear);
+    }
     if(!selected.added){
+      const movable=blockMoveCandidate(state.selected);
+      if(movable){
+        const up=make("↑ Up",()=>moveOriginalBlock(-1),null,"Move selected block up");
+        up.disabled=movable.index===0;
+        const down=make("↓ Down",()=>moveOriginalBlock(1),null,"Move selected block down");
+        down.disabled=movable.index===movable.keys.length-1;
+        bar.append(up,down);
+      }
+      if(!$("duplicateSourceBtn").disabled&&state.additions.length<10){
+        bar.append(make("Copy",()=>duplicateSelectedSource(),null,
+          "Duplicate selected original paragraph or heading"));
+      }
       const section=directLayoutSelection();
       if(section){
         bar.append(make("Layout",()=>openQuickLayout(section.spec.parentSelector),null,
@@ -698,6 +816,7 @@
       bar.append(duplicate);
     }
     bar.append(make("Details",()=>{
+      setWorkspacePanel("inspector",true);
       if(selected.added)$("addedBlockText").focus();
       else $("selectionText").focus();
     },null,"Focus selected block details in inspector"));
@@ -708,6 +827,115 @@
   // A compact visual launcher for the existing source-verified layout
   // engine. Column definitions remain 12-column responsive groups, with
   // source order preserved and mobile always stacked.
+
+  // An isolated, reversible width preview. The working source is only
+  // modified when a preset is chosen or the slider is released.
+  let quickSizeDraft=null;
+  function closeQuickSize(restore=false){
+    const old=quickSizeDraft;
+    quickSizeDraft=null;
+    if(restore&&old?.node?.isConnected){
+      if(old.style===null)old.node.removeAttribute("style");
+      else old.node.setAttribute("style",old.style);
+    }
+    old?.panel?.remove();
+  }
+  function positionQuickSize(){
+    const doc=state.frameDoc,form=doc?.getElementById("moon-quick-size");
+    if(!form)return;
+    const bar=doc.getElementById("moon-quick-toolbar");
+    if(!bar||bar.hidden){form.hidden=true;return;}
+    form.hidden=false;
+    const w=doc.defaultView.innerWidth,b=bar.getBoundingClientRect();
+    const width=Math.min(300,Math.max(0,w-10));
+    form.style.width=width+"px";
+    const height=form.getBoundingClientRect().height||175;
+    form.style.left=Math.max(5,Math.min(w-width-5,b.left))+"px";
+    const below=b.bottom+7,above=b.top-height-7;
+    form.style.top=Math.max(5,Math.min(Math.max(5,doc.defaultView.innerHeight-height-5),
+      below+height<=doc.defaultView.innerHeight-5?below:above>=5?above:below))+"px";
+  }
+  function openQuickSize(){
+    const selected=quickSelection(),doc=state.frameDoc;
+    if(!selected||!doc)return;
+    closeQuickSize(true);
+    doc.getElementById("moon-quick-layout")?.remove();
+    doc.getElementById("moon-quick-composer")?.remove();
+    const added=selected.added,index=state.selectedAddition,key=state.selected;
+    const item=added?state.additions[index]:null;
+    if(added&&(!item||insertionKind(item)==="image"))return;
+    const original=added?null:getWorking(key);
+    if(!added&&!original)return;
+    const node=selected.node,dark=$("previewTheme").value==="dark";
+    const previous=added?addedBlockLayout(item).widthPercent:
+      /^([3-9]\d|100)%$/.exec(original.style.maxWidth)?.[1];
+    const value=previous?Number(previous):100;
+    const form=doc.createElement("section");
+    form.id="moon-quick-size";form.setAttribute("role","dialog");
+    form.setAttribute("aria-label","Resize selected block");
+    form.setAttribute("aria-modal","false");
+    form.style.cssText="position:fixed;z-index:2147483646;display:grid;gap:10px;"+
+      "box-sizing:border-box;max-height:calc(100vh - 10px);overflow:auto;padding:13px;"+
+      "border:1px solid "+(dark?"#a7baa9":"#9cb7a9")+";border-radius:10px;"+
+      "background:"+(dark?"#1a1c1a":"#fff")+";color:"+
+      (dark?"#f5f7f5":"#183e30")+";box-shadow:0 7px 24px #0004;"+
+      "font:13px/1.4 system-ui,sans-serif";
+    const title=doc.createElement("strong");title.textContent="Resize this block";
+    const label=doc.createElement("label");
+    label.style.cssText="display:grid;gap:5px;font-weight:600";
+    label.textContent="Width within this section";
+    const output=doc.createElement("output");
+    output.id="moon-quick-size-value";output.textContent=value+"%";
+    const slider=doc.createElement("input");
+    slider.type="range";slider.min="30";slider.max="100";slider.step="5";
+    slider.value=String(value);slider.setAttribute("aria-label","Block width within section");
+    slider.setAttribute("aria-describedby",output.id);
+    slider.style.cssText="width:100%;accent-color:"+(dark?"#81cca0":"#276b4d");
+    label.append(output,slider);
+    const button=(label,handler)=>{
+      const b=doc.createElement("button");b.type="button";b.textContent=label;
+      b.style.cssText="border:1px solid "+(dark?"#78887d":"#b8cac0")+
+        ";padding:6px 9px;min-height:31px;border-radius:5px;"+
+        "background:transparent;color:inherit;font:600 12px system-ui;cursor:pointer";
+      b.addEventListener("click",event=>{event.preventDefault();event.stopPropagation();handler();});
+      return b;
+    };
+    const active=()=>quickSizeDraft?.panel===form&&node.isConnected&&
+      (added?state.selectedAddition===index:state.selected===key);
+    const preview=width=>{
+      if(!active())return;
+      if(added)node.style.width=width+"%";
+      else node.style.maxWidth=width+"%";
+      output.textContent=width+"%";
+      positionQuickSize();
+    };
+    const commit=width=>{
+      if(!active())return;
+      closeQuickSize(true);
+      if(added)setAddedBlockLayout({widthPercent:width},true);
+      else updateSelectedStyle("maxWidth",width===100?"":width+"%",[width===100?"":width+"%"]);
+    };
+    slider.addEventListener("input",()=>preview(Number(slider.value)));
+    slider.addEventListener("change",()=>commit(Number(slider.value)));
+    const presets=doc.createElement("div");presets.style.cssText="display:flex;flex-wrap:wrap;gap:6px";
+    for(const width of [100,75,50])presets.append(
+      button(width===100?"Full width":width+"%",()=>commit(width)));
+    const footer=doc.createElement("div");
+    footer.style.cssText="display:flex;align-items:center;justify-content:space-between;gap:9px";
+    const hint=doc.createElement("small");
+    hint.textContent="Drag to preview. Release to apply. Undo restores the previous width.";
+    hint.style.cssText="opacity:.85;line-height:1.3";
+    footer.append(hint,button("Cancel",()=>closeQuickSize(true)));
+    form.append(title,label,presets,footer);
+    form.addEventListener("keydown",event=>{
+      if(event.key==="Escape"){event.preventDefault();event.stopPropagation();closeQuickSize(true);}
+    });
+    doc.body.append(form);
+    quickSizeDraft={node,style:node.getAttribute("style"),panel:form};
+    positionQuickSize();
+    slider.focus({preventScroll:true});
+  }
+
   function positionQuickLayout(){
     const doc=state.frameDoc,panel=doc?.getElementById("moon-quick-layout");
     if(!panel)return;
@@ -715,6 +943,9 @@
     if(!bar||bar.hidden){panel.hidden=true;return;}
     panel.hidden=false;
     const b=bar.getBoundingClientRect();
+    // Measure against the actual iframe viewport. When the preview is narrow
+    // or short, the panel scrolls internally and its actions remain visible.
+    panel.style.maxHeight=Math.max(90,view.innerHeight-12)+"px";
     const width=panel.getBoundingClientRect().width||310;
     const height=panel.getBoundingClientRect().height||280;
     panel.style.left=Math.max(4,Math.min(view.innerWidth-width-4,b.left))+"px";
@@ -787,8 +1018,54 @@
       });
       choices.append(button);
     }
+    // Adjust the same validated 12-column split without leaving the page.
+    const custom=doc.createElement("div");
+    custom.style.cssText="display:grid;gap:5px;padding:8px 0";
+    const customLabel=doc.createElement("label");
+    const customId="moon-layout-custom-width";
+    customLabel.htmlFor=customId;
+    customLabel.textContent="Custom two-column split";
+    customLabel.style.cssText="font-weight:600;font-size:12px";
+    const slider=doc.createElement("input");
+    slider.type="range";slider.id=customId;slider.min="2";slider.max="10";slider.step="1";
+    slider.value=$("directLayoutCustomColumns").value;
+    slider.setAttribute("aria-label","First column width in a twelve-column grid");
+    slider.style.width="100%";
+    const ratio=doc.createElement("output");
+    ratio.htmlFor=customId;
+    ratio.textContent=slider.value+" / "+(12-Number(slider.value));
+    // A proportional preview responds immediately to keyboard and pointer
+    // slider input; changes reach the source-verified layout only on Apply.
+    const preview=doc.createElement("div");
+    preview.setAttribute("aria-hidden","true");
+    preview.style.cssText="display:grid;gap:4px;height:46px";
+    const leftPreview=doc.createElement("div");
+    const rightPreview=doc.createElement("div");
+    for(const block of [leftPreview,rightPreview]){
+      block.style.cssText="border:1px solid currentColor;border-radius:4px;opacity:.8;"+
+        "background:repeating-linear-gradient(0deg,transparent,transparent 8px,currentColor 9px,transparent 10px)";
+    }
+    const updateColumnPreview=()=>{
+      const first=Number(slider.value);
+      ratio.textContent=first+" / "+(12-first);
+      preview.style.gridTemplateColumns=first+"fr "+(12-first)+"fr";
+    };
+    preview.append(leftPreview,rightPreview);
+    updateColumnPreview();
+    const applyCustom=doc.createElement("button");
+    applyCustom.type="button";applyCustom.textContent="Apply custom columns";
+    applyCustom.style.cssText="padding:9px;border:1px solid currentColor;border-radius:6px;background:transparent;color:inherit;font:600 12px system-ui;cursor:pointer";
+    slider.addEventListener("input",updateColumnPreview);
+    applyCustom.addEventListener("click",()=>{
+      $("directLayoutCustomColumns").value=slider.value;
+      $("directLayoutCustomValue").textContent=ratio.textContent+" columns";
+      $("directLayoutCustomField").hidden=false;
+      action("custom");
+    });
+    custom.append(customLabel,preview,slider,ratio,applyCustom);
     const controls=doc.createElement("div");
-    controls.style.cssText="display:flex;justify-content:space-between;gap:8px";
+    controls.style.cssText="display:flex;justify-content:space-between;gap:8px;"+
+      "position:sticky;top:0;z-index:1;padding:5px 0;background:inherit";
     const reset=doc.createElement("button");
     reset.type="button";reset.textContent="Remove layout";
     reset.disabled=!original;
@@ -809,7 +1086,9 @@
       if(event.key==="Escape"){event.preventDefault();event.stopPropagation();dismiss();}
     });
     controls.append(reset,close);
-    panel.append(title,hint,choices,controls);
+    // The destructive and dismiss actions must remain reachable even when
+    // the mobile preview clips the lower half of the arrangement dialog.
+    panel.append(title,controls,hint,choices,custom);
     doc.body.append(panel);
     positionQuickLayout();
     choices.querySelector("button")?.focus({preventScroll:true});
@@ -838,6 +1117,7 @@
     const available=Math.max(0,view.innerWidth-10);
     composer.style.width=Math.min(330,available)+"px";
     composer.style.maxWidth=available+"px";
+    composer.style.maxHeight=Math.max(90,view.innerHeight-12)+"px";
     const width=composer.getBoundingClientRect().width||Math.min(320,available);
     const height=composer.getBoundingClientRect().height||280;
     const left=Math.max(5,Math.min(view.innerWidth-width-5,bounds.left));
@@ -956,7 +1236,7 @@
     status.style.cssText="margin:0;font-size:12px";
     const row=doc.createElement("div");
     row.style.cssText="display:flex;gap:7px;justify-content:flex-end;"+
-      "position:sticky;bottom:0;padding-top:5px;background:inherit";
+      "position:sticky;top:0;z-index:1;padding:6px 0;background:inherit";
     const cancel=doc.createElement("button");
     cancel.type="button";cancel.textContent="Cancel";
     const submit=doc.createElement("button");
@@ -1027,7 +1307,9 @@
       }
     });
     row.append(cancel,submit);
-    form.append(heading,kindField,levelField,textField,hrefField,imageGroup,help,status,row);
+    // Keep Add / Cancel at the top of the scrolling dialog so they remain
+    // operable in short iframe previews, including after an image appears.
+    form.append(heading,row,kindField,levelField,textField,hrefField,imageGroup,help,status);
     doc.body.append(form);
     refresh();
     positionQuickComposer();
@@ -1052,11 +1334,15 @@
     state.frameDoc.getElementById("moon-column-resize-handle")?.remove();
     state.frameDoc.getElementById("moon-added-block-move-handle")?.remove();
     state.frameDoc.getElementById("moon-added-block-width-handle")?.remove();
+    state.frameDoc.getElementById("moon-source-width-handle")?.remove();
+    state.frameDoc.getElementById("moon-spacing-grip")?.remove();
     node.setAttribute("data-editor-selected","");
     if (TEXT_TAGS.has(node.tagName)) node.setAttribute("contenteditable","true");
     updateInspector(node);
     updateBrowseControls();
     createQuickToolbar();
+    createSourceWidthHandle();
+    createSpacingGrip();
   }
 
 
@@ -1077,6 +1363,8 @@
     state.frameDoc.getElementById("moon-column-resize-handle")?.remove();
     state.frameDoc.getElementById("moon-added-block-move-handle")?.remove();
     state.frameDoc.getElementById("moon-added-block-width-handle")?.remove();
+    state.frameDoc.getElementById("moon-source-width-handle")?.remove();
+    state.frameDoc.getElementById("moon-spacing-grip")?.remove();
     $("selectionDetails").hidden=true;
     $("selectionEmpty").hidden=true;
     $("selectionTag").textContent="New "+insertionKind(addition);
@@ -1132,6 +1420,7 @@
       createAddedMoveHandle();
     if(kind!=="image")createAddedWidthHandle();
     createQuickToolbar();
+    if(kind!=="image")createSpacingGrip();
   }
   function applyAddedBlock(){
     const index=state.selectedAddition,original=state.additions[index];
@@ -1327,12 +1616,12 @@
     updateInspector(preview);
   }
 
-  function updateSelectedStyle(property,value,allowed) {
+  function updateSelectedStyle(property,value,allowed,makeCheckpoint=true) {
     if(!state.selected||!(value===""||allowed.includes(value)))return;
     const actual=getWorking(state.selected);
     const rendered=state.frameDoc?.querySelector('[data-editor-key="'+state.selected+'"]');
     if(!actual||!rendered)return;
-    checkpoint();
+    if(makeCheckpoint)checkpoint();
     for(const node of [actual,rendered]) {
       node.style[property]=value;
       if(!node.getAttribute("style")?.trim())node.removeAttribute("style");
@@ -1340,6 +1629,7 @@
     updateDirty(state.selected);
     updateInspector(rendered);
     createQuickToolbar();
+    positionSourceWidthHandle();
   }
 
   function updateNumericInspectorStyle(property,field,unit,min,max){
@@ -1422,6 +1712,177 @@
     scheduleDraft();
     return true;
   }
+
+  // Drag the bottom-right corner of an original text block. One pointer
+  // gesture makes one history checkpoint, including continuous preview.
+  // A compact bottom-edge grip adjusts spacing below the selected text.
+  // Draft edits and undo checkpoints reuse the inspector's validated paths.
+  function createSpacingGrip(){
+    const doc=state.frameDoc;
+    doc?.getElementById("moon-spacing-grip")?.remove();
+    const selection=quickSelection();
+    if(!selection||!QUICK_SOURCE_TAGS.has(selection.node.tagName))return;
+    const grip=doc.createElement("button");
+    grip.type="button";grip.id="moon-spacing-grip";grip.textContent="↕";
+    grip.title="Drag to adjust lower spacing; arrows change 5 px, Delete restores default";
+    grip.setAttribute("aria-label","Adjust space below selected text with vertical dragging, or Up and Down arrows in five pixel steps; Delete restores the original value");
+    grip.setAttribute("role","slider");
+    grip.setAttribute("aria-valuemin","0");
+    grip.setAttribute("aria-valuemax","80");
+    grip.setAttribute("aria-orientation","vertical");
+    grip.style.cssText="position:fixed;z-index:2147483645;width:28px;height:28px;border:2px solid #27654f;border-radius:5px;background:#fff;color:#174932;cursor:ns-resize;touch-action:none;font:700 18px system-ui";
+    const value=()=>{
+      if(selection.added)return addedBlockLayout(state.additions[state.selectedAddition]).spaceBelow;
+      return parseInt(getWorking(state.selected)?.style.marginBottom,10)||0;
+    };
+    const set=(amount,history)=>{
+      const px=Math.max(0,Math.min(80,Math.round(amount/5)*5));
+      if(selection.added)setAddedBlockLayout({spaceBelow:px},history);
+      else updateSelectedStyle("marginBottom",px+"px",[px+"px"],history);
+      position();
+    };
+    const position=()=>{
+      if(!grip.isConnected)return;
+      const box=selection.node.getBoundingClientRect(),view=doc.defaultView;
+      grip.hidden=box.bottom<0||box.top>view.innerHeight;
+      grip.style.left=Math.max(0,Math.min(view.innerWidth-28,box.left+Math.min(box.width/2,80)))+"px";
+      grip.style.top=Math.max(0,Math.min(view.innerHeight-28,box.bottom+2))+"px";
+      grip.setAttribute("aria-valuenow",String(value()));
+    };
+    grip.addEventListener("click",event=>event.stopPropagation());
+    grip.addEventListener("keydown",event=>{
+      if(!["ArrowUp","ArrowDown","Home","End","Delete","Backspace"].includes(event.key))return;
+      event.preventDefault();event.stopPropagation();
+      if(event.key==="Delete"||event.key==="Backspace"){
+        if(selection.added){
+          if(value()!==0)setAddedBlockLayout({spaceBelow:0},true);
+        }else if(getWorking(state.selected)?.style.marginBottom){
+          updateSelectedStyle("marginBottom","",[""]);
+        }
+        position();return;
+      }
+      const next=event.key==="Home"?0:event.key==="End"?80:value()+(event.key==="ArrowDown"?5:-5);
+      if(next!==value())set(next,true);
+    });
+    let drag=null;
+    grip.addEventListener("pointerdown",event=>{
+      if(event.button!==0||drag)return;
+      event.preventDefault();event.stopPropagation();
+      checkpoint();drag={id:event.pointerId,y:event.clientY,initial:value(),
+        originalStyle:selection.added?null:getWorking(state.selected)?.style.marginBottom||""};
+      grip.setPointerCapture(event.pointerId);
+    });
+    grip.addEventListener("pointermove",event=>{
+      if(!drag||drag.id!==event.pointerId)return;
+      event.preventDefault();
+      set(drag.initial+event.clientY-drag.y,false);
+    });
+    const finish=event=>{
+      if(!drag||drag.id!==event.pointerId)return;
+      const {initial,originalStyle}=drag;
+      drag=null;
+      if(grip.hasPointerCapture(event.pointerId))grip.releasePointerCapture(event.pointerId);
+      // Losing pointer capture (including an interrupted touch gesture) must
+      // not accidentally leave a partially applied layout change behind.
+      if(event.type==="pointercancel"&&value()!==initial){
+        if(selection.added)set(initial,false);
+        else updateSelectedStyle("marginBottom",originalStyle,[originalStyle],false);
+      }
+      scheduleDraft();position();
+    };
+    grip.addEventListener("pointerup",finish);
+    grip.addEventListener("pointercancel",finish);
+    doc.body.append(grip);
+    doc.defaultView.addEventListener("scroll",position,{passive:true});
+    position();
+  }
+
+  function positionSourceWidthHandle(){
+    const doc=state.frameDoc,h=doc?.getElementById("moon-source-width-handle");
+    if(!h||state.sourceWidthPointer)return;
+    const node=doc.querySelector('[data-editor-key="'+state.selected+'"]');
+    if(!node||state.selectedAddition!==null||!QUICK_SOURCE_TAGS.has(node.tagName)){
+      h.remove();return;
+    }
+    const rect=node.getBoundingClientRect(),view=doc.defaultView;
+    if(rect.bottom<0||rect.right<0||rect.top>view.innerHeight||rect.left>view.innerWidth){
+      h.hidden=true;return;
+    }
+    h.hidden=false;
+    h.style.left=Math.max(0,Math.min(view.innerWidth-28,rect.right-14))+"px";
+    h.style.top=Math.max(0,Math.min(view.innerHeight-28,rect.bottom-14))+"px";
+  }
+  function createSourceWidthHandle(){
+    const doc=state.frameDoc;
+    if(!doc||state.selectedAddition!==null||doc.getElementById("moon-source-width-handle"))return;
+    const node=doc.querySelector('[data-editor-key="'+state.selected+'"]');
+    if(!node||!QUICK_SOURCE_TAGS.has(node.tagName))return;
+    const h=doc.createElement("button");
+    h.id="moon-source-width-handle";h.type="button";
+    h.textContent="↘";h.title="Drag or use arrow keys to resize; double-click to reset";
+    h.setAttribute("aria-label",
+      "Resize text width: drag, press Left or Right arrow (Shift for larger steps), Home for 30%, End for full width, or double-click to reset.");
+    h.style.cssText="position:fixed;z-index:2147483645;width:28px;height:28px;"+
+      "border:2px solid #27654f;border-radius:5px;background:#fff;color:#174932;"+
+      "cursor:nwse-resize;touch-action:none;font:700 20px/20px system-ui;box-shadow:0 1px 6px #0004";
+    h.addEventListener("click",event=>event.stopPropagation());
+    // Keyboard access to the same constrained sizing used by pointer drag.
+    // Shift increases the step for efficient large adjustments.
+    h.addEventListener("keydown",event=>{
+      if(!["ArrowLeft","ArrowRight","Home","End"].includes(event.key))return;
+      if(!state.selected||!getWorking(state.selected))return;
+      event.preventDefault();event.stopPropagation();
+      const current=getWorking(state.selected).style.maxWidth;
+      const percent=/^(?:[3-9]\d|100)%$/.test(current)?parseInt(current,10):100;
+      const delta=(event.shiftKey?20:5)*(event.key==="ArrowRight"?1:-1);
+      const next=event.key==="Home"?30:event.key==="End"?100:
+        Math.max(30,Math.min(100,Math.round((percent+delta)/5)*5));
+      if(next===percent)return;
+      updateSelectedStyle("maxWidth",next===100?"":next+"%",[next===100?"":next+"%"]);
+    });
+    h.addEventListener("dblclick",event=>{
+      event.preventDefault();event.stopPropagation();
+      if(getWorking(state.selected)?.style.maxWidth)
+        updateSelectedStyle("maxWidth","",[""]);
+    });
+    h.addEventListener("pointerdown",event=>{
+      if(event.button!==0||state.sourceWidthPointer||!state.selected)return;
+      const preview=doc.querySelector('[data-editor-key="'+state.selected+'"]');
+      const work=getWorking(state.selected);
+      const parentWidth=preview?.parentElement?.getBoundingClientRect().width;
+      if(!work||!preview||!parentWidth)return;
+      event.preventDefault();event.stopPropagation();
+      checkpoint();
+      const specified=work.style.maxWidth.endsWith("%")?
+        Number.parseInt(work.style.maxWidth,10):100;
+      state.sourceWidthPointer={id:event.pointerId,key:state.selected,
+        startX:event.clientX,startPercent:Number.isFinite(specified)?specified:100,parentWidth};
+      h.setPointerCapture(event.pointerId);
+    });
+    h.addEventListener("pointermove",event=>{
+      const drag=state.sourceWidthPointer;
+      if(!drag||drag.id!==event.pointerId||state.selected!==drag.key)return;
+      event.preventDefault();
+      const desired=Math.round((drag.startPercent+
+        100*(event.clientX-drag.startX)/drag.parentWidth)/5)*5;
+      const width=Math.max(30,Math.min(100,desired));
+      updateSelectedStyle("maxWidth",width===100?"":width+"%",
+        [width===100?"":width+"%"],false);
+    });
+    const finish=event=>{
+      const drag=state.sourceWidthPointer;
+      if(!drag||drag.id!==event.pointerId)return;
+      state.sourceWidthPointer=null;
+      if(h.hasPointerCapture(event.pointerId))h.releasePointerCapture(event.pointerId);
+      positionSourceWidthHandle();
+      scheduleDraft();
+    };
+    h.addEventListener("pointerup",finish);
+    h.addEventListener("pointercancel",finish);
+    doc.body.append(h);
+    positionSourceWidthHandle();
+  }
+
   function positionAddedWidthHandle(){
     const doc=state.frameDoc,handle=doc?.getElementById("moon-added-block-width-handle");
     if(!handle||state.addedWidthPointer)return;
@@ -1442,10 +1903,27 @@
     const handle=doc.createElement("button");
     handle.id="moon-added-block-width-handle";handle.type="button";
     handle.textContent="↘";
-    handle.title="Drag to resize this new text block";
-    handle.setAttribute("aria-label","Drag to adjust new block width. Use the block width slider in the inspector for keyboard editing.");
+    handle.title="Drag or use arrow keys to resize; double-click to reset";
+    handle.setAttribute("aria-label","Resize new block: drag or press Left/Right arrows, Shift for larger steps, Home for 30%, End for 100%, double-click to reset.");
     handle.style.cssText="position:fixed;z-index:2147483645;width:28px;height:28px;border:2px solid #27654f;border-radius:5px;background:#fff;color:#174932;cursor:nwse-resize;font:700 20px/20px system-ui;touch-action:none;box-shadow:0 1px 6px #0004";
     handle.addEventListener("click",event=>event.stopPropagation());
+    handle.addEventListener("keydown",event=>{
+      if(!["ArrowLeft","ArrowRight","Home","End"].includes(event.key))return;
+      const item=state.additions[state.selectedAddition];
+      if(!item||insertionKind(item)==="image")return;
+      event.preventDefault();event.stopPropagation();
+      const current=addedBlockLayout(item).widthPercent;
+      const delta=(event.shiftKey?20:5)*(event.key==="ArrowRight"?1:-1);
+      const next=event.key==="Home"?30:event.key==="End"?100:
+        Math.max(30,Math.min(100,Math.round((current+delta)/5)*5));
+      if(next!==current)setAddedBlockLayout({widthPercent:next},true);
+    });
+    handle.addEventListener("dblclick",event=>{
+      event.preventDefault();event.stopPropagation();
+      const item=state.additions[state.selectedAddition];
+      if(item&&addedBlockLayout(item).widthPercent!==100)
+        setAddedBlockLayout({widthPercent:100},true);
+    });
     handle.addEventListener("pointerdown",event=>{
       if(event.button!==0||state.addedWidthPointer)return;
       const item=state.additions[state.selectedAddition],target=doc.querySelector(
@@ -1751,9 +2229,19 @@
     const handle=doc.createElement("button");
     handle.id="moon-block-move-handle";handle.type="button";
     handle.textContent="⠿";
-    handle.title="Drag this original content block to a neighbouring position";
-    handle.setAttribute("aria-label","Drag selected content block. Keyboard users can use Move block up or Move block down in the inspector.");
+    handle.title="Drag or use Up/Down arrow keys to reorder this block";
+    handle.setAttribute("aria-label","Drag selected content block, or use Up and Down arrow keys to move it among eligible neighbouring blocks.");
     handle.style.cssText="position:fixed;z-index:2147483646;display:grid;place-items:center;width:30px;height:30px;border:2px solid #27654f;border-radius:5px;background:#fff;color:#174932;cursor:grab;touch-action:none;font:700 21px/1 system-ui;box-shadow:0 1px 6px #0004";
+    handle.addEventListener("keydown",event=>{
+      if(!["ArrowUp","ArrowDown"].includes(event.key))return;
+      event.preventDefault();event.stopPropagation();
+      const direction=event.key==="ArrowUp"?-1:1;
+      const candidate=blockMoveCandidate(state.selected);
+      if(!candidate?.keys[candidate.index+direction])return;
+      moveOriginalBlock(direction);
+      // Moving rerenders the iframe. Restore keyboard focus to the new grip.
+      state.frameDoc?.getElementById("moon-block-move-handle")?.focus({preventScroll:true});
+    });
     handle.addEventListener("click",event=>event.stopPropagation());
     handle.addEventListener("pointerdown",event=>{
       if(event.button!==0||state.blockPointer)return;
@@ -1960,7 +2448,7 @@
     handle.style.left=Math.max(0,Math.min(view.innerWidth-30,rr.left-21))+"px";
     handle.style.top=Math.max(0,Math.min(view.innerHeight-42,Math.max(0,rr.top+8)))+"px";
     handle.title="Drag to resize two columns · "+current.split+" / "+(12-current.split);
-    handle.setAttribute("aria-label","Resize column divider. Use the custom split slider for keyboard editing.");
+    handle.setAttribute("aria-label","Resize column divider: "+current.split+" of 12 columns on the left. Use Left or Right arrows, Shift for two-column steps, Home for minimum, End for maximum.");
   }
   function createColumnResizeHandle(){
     const doc=state.frameDoc;
@@ -1969,6 +2457,29 @@
     handle.id="moon-column-resize-handle";handle.type="button";
     handle.textContent="↔";
     handle.style.cssText="position:fixed;z-index:2147483645;display:grid;place-items:center;width:30px;height:42px;border:2px solid #27654f;border-radius:5px;background:#fff;color:#174932;cursor:ew-resize;touch-action:none;font:700 21px/1 system-ui;box-shadow:0 1px 6px #0004";
+    handle.addEventListener("keydown",event=>{
+      if(!["ArrowLeft","ArrowRight","Home","End"].includes(event.key))return;
+      const current=activeTwoColumnLayout();
+      if(!current)return;
+      event.preventDefault();event.stopPropagation();
+      const step=event.shiftKey?2:1;
+      const desired=event.key==="Home"?2:event.key==="End"?10:
+        Math.max(2,Math.min(10,current.split+(event.key==="ArrowRight"?step:-step)));
+      if(desired===current.split)return;
+      const candidate=resizeTwoColumnLayout(desired);
+      if(!candidate)return;
+      checkpoint();
+      state.responsiveGroups=candidate.proposed;
+      state.responsiveGroup=candidate.proposed.length===1?candidate.proposed[0]:null;
+      $("directLayoutPreset").value="custom";
+      $("directLayoutCustomField").hidden=false;
+      $("directLayoutCustomColumns").value=String(desired);
+      $("directLayoutCustomValue").textContent=desired+" / "+(12-desired)+" columns";
+      renderPreview(state.selected);
+      scheduleDraft();
+      updateStatus("Responsive columns resized · Not published");
+      state.frameDoc?.getElementById("moon-column-resize-handle")?.focus({preventScroll:true});
+    });
     handle.addEventListener("click",event=>event.stopPropagation());
     handle.addEventListener("pointerdown",event=>{
       if(event.button!==0||state.columnPointer)return;
@@ -2586,7 +3097,23 @@
           (item.widthPercent!==undefined&&!validImagePercent(item.widthPercent)):
           item.widthPercent!==undefined)||
         item.page!==state.page)
-        throw Error("Invalid "+kind+" insertion");
+        {
+          if(kind==="image"&&item){
+            const issues=[];
+            if(!["p","h2","h3","h4"].includes(item.tag))issues.push("unsupported anchor");
+            if(typeof item.selector!=="string"||item.selector.length>500)issues.push("anchor selector");
+            if(typeof item.before!=="string"||item.before.length>4000)issues.push("source text");
+            if(typeof item.text!=="string"||!item.text.trim()||item.text.length>200)
+              issues.push("image description");
+            if(!safeExistingImagePath(item.src))issues.push("image path");
+            if(item.headingTag!==undefined||item.href!==undefined)issues.push("unexpected fields");
+            if(item.widthPercent!==undefined&&!validImagePercent(item.widthPercent))
+              issues.push("image width");
+            if(item.page!==state.page)issues.push("page mismatch");
+            throw Error("Invalid image insertion"+(issues.length?" ("+issues.join(", ")+")":""));
+          }
+          throw Error("Invalid "+kind+" insertion");
+        }
       validateAddedLayout(item.layout);
       let matches;
       try{matches=[...root.querySelectorAll(item.selector)]}catch{throw Error("Invalid content anchor")}
@@ -3227,9 +3754,21 @@
     const handle=doc.createElement("button");
     handle.id="moon-added-block-move-handle";handle.type="button";
     handle.textContent="⠿";
-    handle.title="Drag a new block to another original heading or paragraph";
-    handle.setAttribute("aria-label","Drag the new block after another original heading or paragraph, or reorder it among additions at the same location. Location and order controls are available in the inspector.");
+    handle.title="Drag to relocate, or use Up/Down arrows to reorder at this location";
+    handle.setAttribute("aria-label","Drag this new block to another original text anchor; press Up or Down to reorder additions at the current anchor.");
     handle.style.cssText="position:fixed;z-index:2147483646;display:grid;place-items:center;width:30px;height:30px;border:2px solid #27654f;border-radius:5px;background:#fff;color:#174932;cursor:grab;touch-action:none;font:700 21px/1 system-ui;box-shadow:0 1px 6px #0004";
+    handle.addEventListener("keydown",event=>{
+      if(!["ArrowUp","ArrowDown"].includes(event.key))return;
+      const index=state.selectedAddition,item=state.additions[index];
+      if(!item)return;
+      event.preventDefault();event.stopPropagation();
+      const direction=event.key==="ArrowUp"?-1:1;
+      const peers=state.additions.map((part,i)=>part.selector===item.selector?i:-1).filter(i=>i>=0);
+      if(peers[peers.indexOf(index)+direction]===undefined)return;
+      moveReviewedAddition(index,direction);
+      // Preview is rebuilt after a move; recover the on-canvas keyboard target.
+      state.frameDoc?.getElementById("moon-added-block-move-handle")?.focus({preventScroll:true});
+    });
     handle.addEventListener("click",event=>event.stopPropagation());
     handle.addEventListener("pointerdown",event=>{
       const from=state.selectedAddition,item=state.additions[from];
@@ -3784,6 +4323,7 @@
   }
 
   function init() {
+    initialiseWorkspacePanels();
     // The full page navigator remains available lower down on mobile, while
     // a compact equivalent beside the preview makes the editor usable first.
     // Both selectors feed the same source-verified loadPage workflow.
@@ -3802,12 +4342,14 @@
     $("previewViewport").addEventListener("change",event=>{
       $("previewContainer").className="preview-frame-container "+event.target.value;
       positionQuickToolbar();
+      positionQuickSize();
       positionQuickComposer();
       positionQuickLayout();
     });
     $("previewContainer").addEventListener("transitionend",event=>{
       if(event.target!==$("previewContainer")||event.propertyName!=="max-width")return;
       positionQuickToolbar();
+      positionQuickSize();
       positionQuickComposer();
       positionQuickLayout();
     });

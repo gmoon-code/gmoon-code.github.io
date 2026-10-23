@@ -3632,7 +3632,7 @@ test('inline composer rejects unsafe link or image sources, preserves valid exis
    '<h2>Gallery</h2><p>Original gallery introduction.</p>'+
    '<img src="assets/example-photograph.webp" alt="Existing image">'+
    '</section></main></body></html>'}));
- await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html',{waitUntil:'domcontentloaded'});
  await page.frameLocator('#pageFrame').locator('main h2').click();
  const toolbar=page.frameLocator('#pageFrame').locator('#moon-quick-toolbar');
  await toolbar.getByRole('button',{name:'Add new content after this block'}).click();
@@ -3652,6 +3652,10 @@ test('inline composer rejects unsafe link or image sources, preserves valid exis
  await expect(composer.getByRole('status')).toContainText('Cannot add this content');
  await composer.getByLabel('Existing image path').fill('assets/example-photograph.webp');
  await composer.getByRole('button',{name:'Add to page'}).click();
+ if(await composer.count()){
+  const rejection=await composer.getByRole('status').textContent();
+  if(rejection?.includes('Cannot add this content'))throw new Error(rejection);
+ }
  const added=page.frameLocator('#pageFrame').locator('[data-editor-added-index]');
  await expect(added).toHaveCount(1);
  await expect(added.locator('img')).toHaveAttribute('alt','Existing fieldwork photograph');
@@ -3671,7 +3675,7 @@ test('inline image gallery selects a site asset, provides preview and exports im
    '<h2>Student project gallery</h2><p>Preserved original context.</p>'+
    '<img src="assets/editor-existing-example.webp" alt="Student investigation materials">'+
    '</section></main></body></html>'}));
- await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html',{waitUntil:'domcontentloaded'});
  await page.frameLocator('#pageFrame').locator('main h2').click();
  const toolbar=page.frameLocator('#pageFrame').locator('#moon-quick-toolbar');
  await toolbar.getByRole('button',{name:'Add new content after this block'}).click();
@@ -3696,6 +3700,10 @@ test('inline image gallery selects a site asset, provides preview and exports im
  await composer.getByLabel('Image description (alt text)').fill(
    'Student-created model during a classroom investigation');
  await composer.getByRole('button',{name:'Add to page'}).click();
+ if(await composer.count()){
+  const rejection=await composer.getByRole('status').textContent();
+  throw new Error(rejection||'The image composer stayed open after Add to page');
+ }
  const added=page.frameLocator('#pageFrame').locator('[data-editor-added-index]');
  await expect(added).toHaveCount(1);
  await expect(added.locator('img')).toHaveAttribute('alt',
@@ -3745,7 +3753,7 @@ test('section layout can be chosen directly on page with original mobile reading
    '<section id="project-section"><h2>Collaborative investigations</h2>'+
    '<p>First reasoning step.</p><p>Second reasoning step.</p>'+
    '<p>Third reasoning step.</p></section></main></body></html>'}));
- await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html',{waitUntil:'domcontentloaded'});
  const heading=page.frameLocator('#pageFrame').locator('#project-section h2');
  await heading.click();
  const toolbar=page.frameLocator('#pageFrame').locator('#moon-quick-toolbar');
@@ -3787,7 +3795,7 @@ test('section layout can be chosen directly on page with original mobile reading
  }).click();
  dialog=page.frameLocator('#pageFrame').getByRole('dialog',{name:'Arrange selected section'});
  await expect(dialog.getByRole('button',{name:'Remove layout'})).toBeEnabled();
- await dialog.getByRole('button',{name:'Remove layout'}).click();
+ await dialog.getByRole('button',{name:'Remove layout'}).click({timeout:6000});
  await expect(page.locator('#changeCount')).not.toContainText('responsive layout group');
  await expect(page.locator('#exportBtn')).toBeDisabled();
 });
