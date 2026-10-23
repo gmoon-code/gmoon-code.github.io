@@ -1338,6 +1338,7 @@
     state.frameDoc.getElementById("moon-added-block-move-handle")?.remove();
     state.frameDoc.getElementById("moon-added-block-width-handle")?.remove();
     state.frameDoc.getElementById("moon-source-width-handle")?.remove();
+    state.frameDoc.getElementById("moon-spacing-grip")?.remove();
     $("selectionDetails").hidden=true;
     $("selectionEmpty").hidden=true;
     $("selectionTag").textContent="New "+insertionKind(addition);
@@ -1699,6 +1700,10 @@
     grip.type="button";grip.id="moon-spacing-grip";grip.textContent="↕";
     grip.title="Drag vertically to adjust space below; arrow keys adjust by 5 px";
     grip.setAttribute("aria-label","Adjust space below selected text with vertical dragging, or Up and Down arrows in five pixel steps");
+    grip.setAttribute("role","slider");
+    grip.setAttribute("aria-valuemin","0");
+    grip.setAttribute("aria-valuemax","80");
+    grip.setAttribute("aria-orientation","vertical");
     grip.style.cssText="position:fixed;z-index:2147483645;width:28px;height:28px;border:2px solid #27654f;border-radius:5px;background:#fff;color:#174932;cursor:ns-resize;touch-action:none;font:700 18px system-ui";
     const value=()=>{
       if(selection.added)return addedBlockLayout(state.additions[state.selectedAddition]).spaceBelow;
