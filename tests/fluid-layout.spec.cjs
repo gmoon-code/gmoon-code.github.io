@@ -4746,3 +4746,76 @@ test('on-page image tools resize, describe, remove, and offer image insertion',a
  await expect(preview.locator('main img')).toHaveCount(0);
  await expect(page.locator('#changeCount')).toContainText('removed block');
 });
+
+
+test('PowerPoint-style selection moves and resizes source text freely with Undo and mobile fallback',async({page})=>{
+ const source='<!doctype html><html><head></head><body><main><section id="a"><h2>Research heading</h2>'+
+  '<p>First research paragraph.</p></section><section id="b"><p>Another section.</p></section></main></body></html>';
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',body:source}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html',{waitUntil:'domcontentloaded'});
+ const view=page.frameLocator('#pageFrame');
+ const target=view.locator('main #a h2');
+ await target.click();
+ await page.locator('#freeCanvasToggle').click();
+ await expect(page.locator('#freeCanvasToggle')).toHaveAttribute('aria-pressed','true');
+ const handles=view.getByRole('group',{name:'Free move and resize selected object'});
+ await expect(handles).toBeVisible();
+ await expect(handles.locator('button[data-free-direction]:not([data-free-direction="move"])')).toHaveCount(8);
+ const move=handles.getByRole('button',{name:'Drag selected object freely or use arrow keys'});
+ await move.focus();
+ await move.press('Shift+ArrowRight');
+ await move.press('ArrowDown');
+ await expect(target).toHaveCSS('translate','10px 1px');
+ const corner=handles.getByRole('button',{name:'Resize selected object from bottom-right'});
+ const rect=await corner.boundingBox();
+ await page.mouse.move(rect.x+rect.width/2,rect.y+rect.height/2);
+ await page.mouse.down();
+ await page.mouse.move(rect.x+rect.width/2+45,rect.y+rect.height/2+25,{steps:4});
+ await page.mouse.up();
+ const width=await target.evaluate(node=>Number.parseInt(node.style.width,10));
+ expect(width).toBeGreaterThan(100);
+ await expect(target).toHaveClass(/moon-free-object/);
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).toContain('moon-free-object');
+ expect(html).toContain('id="moon-free-position-css"');
+ expect(html).toContain('@media(max-width:700px)');
+ expect(html).toContain('translate: 10px 1px');
+ await page.locator('#undoBtn').click();
+ await expect(view.locator('main #a h2')).toHaveCSS('translate','10px 1px');
+ await page.locator('#undoBtn').click();
+ await expect(view.locator('main #a h2')).not.toHaveClass(/moon-free-object/);
+});
+
+test('PowerPoint-style free positioning survives local drafts for inserted images',async({page})=>{
+ const source='<!doctype html><html><head></head><body><main><section id="a">'+
+  '<h2>Image section</h2><p>Example text.</p></section></main></body></html>';
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',body:source}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html',{waitUntil:'domcontentloaded'});
+ const view=page.frameLocator('#pageFrame');
+ await view.locator('main #a h2').click();
+ await page.locator('#insertContentKind').selectOption('image');
+ await page.locator('#insertContentText').fill('A fieldwork image');
+ await page.locator('#insertImageSrc').fill('assets/editor-existing-example.webp');
+ await page.locator('#insertContentBtn').click();
+ await expect(view.locator('[data-editor-added-index]')).toHaveCount(1);
+ await view.locator('[data-editor-added-index]').click();
+ await page.locator('#freeCanvasToggle').click();
+ const move=view.locator('#moon-free-selection [data-free-direction="move"]');
+ await move.focus();await move.press('Shift+ArrowRight');await move.press('Shift+ArrowDown');
+ const added=view.locator('[data-editor-added-index]');
+ await expect(added).toHaveCSS('translate','10px 10px');
+ await expect(added).toHaveClass(/moon-free-object/);
+ await expect.poll(async()=>page.evaluate(()=>
+   JSON.parse(localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'))?.additions?.[0]?.freePosition?.x
+ )).toBe(10);
+ await page.reload();
+ await expect(view.locator('[data-editor-added-index]')).toHaveCSS('translate','10px 10px');
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).toContain('moon-free-object');
+ expect(html).toContain('translate:10px 10px');
+ expect(html).toContain('assets/editor-existing-example.webp');
+});
