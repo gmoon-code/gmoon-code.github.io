@@ -231,3 +231,14 @@ dialog form { text-align:right;margin-top:20px; }
   .direct-publish-dialog{padding:15px}
   .direct-publish-actions button{flex:1 1 150px}
 }
+
+/* PowerPoint-style precise geometry in the inspector. */
+.free-precision-fields{min-width:0;border:1px solid var(--line);padding:12px;margin-top:15px}
+.free-precision-fields[hidden]{display:none!important}
+.free-precision-fields legend{font-size:15px;font-weight:700;padding:0 4px}
+.free-precision-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.free-precision-grid label{display:grid;gap:5px;min-width:0}
+.free-precision-grid input{min-width:0;width:100%;box-sizing:border-box}
+.free-precision-actions{display:flex;gap:7px;flex-wrap:wrap}
+.free-precision-actions button{flex:1 1 125px;white-space:normal}
+@media(max-width:360px){.free-precision-grid{grid-template-columns:minmax(0,1fr)}}
