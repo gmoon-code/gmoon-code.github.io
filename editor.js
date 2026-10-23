@@ -799,7 +799,7 @@
     if(!added&&!original)return;
     const node=selected.node,dark=$("previewTheme").value==="dark";
     const previous=added?addedBlockLayout(item).widthPercent:
-      /^([3-9]\\d|100)%$/.exec(original.style.maxWidth)?.[1];
+      /^([3-9]\d|100)%$/.exec(original.style.maxWidth)?.[1];
     const value=previous?Number(previous):100;
     const form=doc.createElement("section");
     form.id="moon-quick-size";form.setAttribute("role","dialog");

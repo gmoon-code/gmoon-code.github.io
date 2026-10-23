@@ -451,6 +451,15 @@ try {
   await blockControls.frameLocator("#pageFrame").getByRole("dialog",{name:"Resize selected block"})
     .getByRole("button",{name:"75%"}).click();
   assert.equal(await originalBlocks.first().evaluate(el=>el.style.maxWidth),"75%");
+  await blockControls.frameLocator("#pageFrame").locator("#moon-quick-toolbar")
+    .getByRole("button",{name:"Resize selected text block on the page"}).click();
+  assert.equal(await blockControls.frameLocator("#pageFrame")
+    .getByRole("dialog",{name:"Resize selected block"})
+    .getByRole("slider",{name:"Block width within section"}).inputValue(),"75",
+    "Reopening Resize must reflect the committed source width");
+  await blockControls.frameLocator("#pageFrame")
+    .getByRole("dialog",{name:"Resize selected block"})
+    .getByRole("button",{name:"Cancel"}).click();
   const widthDownload=blockControls.waitForEvent("download");
   await blockControls.locator("#exportBtn").click();
   const widthFile=await widthDownload;
