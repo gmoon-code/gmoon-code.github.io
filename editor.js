@@ -387,6 +387,9 @@
         updateStagedPreview();
         d.addEventListener("click",onPreviewClick,true);
         d.addEventListener("pointerdown",onFreeObjectPointerDown,true);
+        d.addEventListener("pointermove",freeGestureMove,true);
+        d.addEventListener("pointerup",freeGestureEnd,true);
+        d.addEventListener("pointercancel",freeGestureEnd,true);
         d.addEventListener("keydown",onPreviewKeydown,true);
         d.addEventListener("input",onPreviewInput,true);
         d.addEventListener("focusin",onPreviewFocus,true);
@@ -3519,7 +3522,7 @@
   const FREE_CSS=[
     "main:has(.moon-free-object) *:has(.moon-free-object){overflow:visible!important}",
     ".moon-free-object{position:relative;z-index:3;box-sizing:border-box;max-width:none}",
-    "@media(max-width:700px){.moon-free-object{translate:none!important;width:auto!important;max-width:100%!important;min-height:0!important;height:auto!important;position:static!important}img.moon-free-object{width:auto!important;max-width:100%!important;height:auto!important}}"
+    "@media(max-width:700px){html:not(.moon-free-mode) .moon-free-object{translate:none!important;width:auto!important;max-width:100%!important;min-height:0!important;height:auto!important;position:static!important}html:not(.moon-free-mode) img.moon-free-object{width:auto!important;max-width:100%!important;height:auto!important}}"
   ].join("\n");
   function freePositionValid(p){return !!p&&typeof p==="object"&&!Array.isArray(p)&&
     Object.keys(p).length===4&&["x","y","width","height"].every(k=>Number.isInteger(p[k]))&&
