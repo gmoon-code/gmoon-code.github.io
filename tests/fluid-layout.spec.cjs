@@ -4822,6 +4822,9 @@ test('PowerPoint-style free positioning survives local drafts for inserted image
    JSON.parse(localStorage.getItem('moon-portfolio-visual-editor-v1:about.html'))?.additions?.[0]?.freePosition?.x
  )).toBe(10);
  await page.reload();
+ // The regular preview respects the published mobile stacking rule. Reopen
+ // free mode to inspect desktop spatial coordinates in the narrow iframe.
+ await page.locator('#freeCanvasToggle').click();
  await expect(view.locator('[data-editor-added-index]')).toHaveCSS('translate','10px 10px');
  const download=page.waitForEvent('download');
  await page.locator('#exportBtn').click();
