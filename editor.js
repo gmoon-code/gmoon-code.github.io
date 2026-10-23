@@ -863,10 +863,14 @@
   // editor-only markup to the exported website HTML.
   let freeCanvasActive=false,freeGesture=null;
   function freeSelected(){
-    const sel=quickSelection();
+    let sel=quickSelection();
+    if(!sel&&freeCanvasActive&&state.selected){
+      const node=state.frameDoc?.querySelector('main [data-editor-key="'+state.selected+'"]');
+      if(node)sel={node,added:false};
+    }
     if(!sel)return null;
     const kind=sel.added?insertionKind(state.additions[state.selectedAddition]):sel.node.tagName.toLowerCase();
-    if(!["p","h1","h2","h3","h4","img","blockquote","li","heading","paragraph","image","link"].includes(kind))
+    if(!["p","h1","h2","h3","h4","h5","h6","img","blockquote","li","figcaption","dt","dd","heading","paragraph","image","link"].includes(kind))
       return null;
     return sel;
   }
@@ -972,6 +976,8 @@
     event.preventDefault();event.stopPropagation();
     if(drag.key!==state.selected||drag.index!==state.selectedAddition)return;
     let dx=Math.round(event.clientX-drag.startX),dy=Math.round(event.clientY-drag.startY);
+    if(dx===0&&dy===0)return;
+    drag.moved=true;
     const next={...drag.base},d=drag.direction;
     if(d==="move"){
       next.x+=dx;next.y+=dy;
@@ -995,8 +1001,11 @@
     const drag=freeGesture;if(!drag||drag.id!==event.pointerId)return;
     event.preventDefault();event.stopPropagation();
     freeGesture=null;
-    if(event.type==="pointercancel")applyFreeGeometry(drag.base);
-    finishFreeGeometry();
+    if(event.type==="pointercancel"){
+      if(drag.moved)undo();
+      return;
+    }
+    if(drag.moved)finishFreeGeometry();
   }
   function freeNudge(dx,dy){
     const sel=freeSelected();if(!sel||!freeCanvasActive)return;
