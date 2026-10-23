@@ -696,6 +696,17 @@ try {
   assert.match(await sections.frameLocator("#pageFrame")
     .locator("#moon-responsive-group-layout").textContent(),/grid-column:7 \/ span 6/);
   assert.match(await sections.locator("#changeCount").textContent(),/1 responsive layout group/);
+  await sections.frameLocator("#pageFrame").locator("main h2").click();
+  await sections.frameLocator("#pageFrame").locator("#moon-quick-toolbar")
+    .getByRole("button",{name:"Arrange selected section into responsive columns"}).click();
+  const customArrangement=sections.frameLocator("#pageFrame")
+    .getByRole("dialog",{name:"Arrange selected section"});
+  await customArrangement.getByRole("slider",{name:"First column width in a twelve-column grid"}).fill("8");
+  await customArrangement.getByRole("button",{name:"Apply custom columns"}).click();
+  assert.equal(await sections.locator("#directLayoutPreset").inputValue(),"custom");
+  assert.match(await sections.frameLocator("#pageFrame").locator("#moon-responsive-group-layout")
+    .textContent(),/grid-column:9 \\/ span 4/);
+  console.log("PASS: on-canvas custom responsive column proportions");
   await sections.locator("#undoBtn").click();
   assert(!/responsive layout group/.test(await sections.locator("#changeCount").textContent()));
   console.log("PASS: inline source-verified section layout, original HTML and undo");
