@@ -4918,7 +4918,7 @@ test('Direct click selects a full set of handles and object drag escapes a clipp
  await page.goto('http://127.0.0.1:8765/editor.html?page=about.html',{waitUntil:'domcontentloaded'});
  const view=page.frameLocator('#pageFrame'),target=view.locator('#bounded h2');
  await target.click();
- await expect(page.locator('#freeCanvasToggle')).toHaveAttribute('aria-pressed','false');
+ await expect(page.locator('#freeCanvasToggle')).toHaveAttribute('aria-pressed','true');
  const selection=view.getByRole('group',{name:'Free move and resize selected object'});
  await expect(selection).toBeVisible();
  await expect(selection.locator('[data-free-direction]:not([data-free-direction="move"])')).toHaveCount(8);
@@ -4975,7 +4975,7 @@ test('Selected image can resize with handles despite inline important width and 
  await page.goto('http://127.0.0.1:8765/editor.html?page=about.html',{waitUntil:'domcontentloaded'});
  const view=page.frameLocator('#pageFrame'),target=view.locator('#bounded img');
  await target.click();
- await expect(page.locator('#freeCanvasToggle')).toHaveAttribute('aria-pressed','false');
+ await expect(page.locator('#freeCanvasToggle')).toHaveAttribute('aria-pressed','true');
  const handles=view.getByRole('group',{name:'Free move and resize selected object'});
  await expect(handles).toBeVisible();
  const original=await target.boundingBox();
