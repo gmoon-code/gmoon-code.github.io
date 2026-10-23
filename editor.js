@@ -386,6 +386,7 @@
         d.documentElement.classList.toggle("moon-free-mode",freeCanvasActive);
         updateStagedPreview();
         d.addEventListener("click",onPreviewClick,true);
+        d.addEventListener("dblclick",onPreviewDoubleClick,true);
         d.addEventListener("pointerdown",onFreeObjectPointerDown,true);
         d.addEventListener("pointermove",freeGestureMove,true);
         d.addEventListener("pointerup",freeGestureEnd,true);
@@ -543,6 +544,17 @@
     if (!node) return;
     selectElement(node);
     if (TEXT_TAGS.has(node.tagName)) node.focus({preventScroll:true});
+  }
+
+  function onPreviewDoubleClick(event){
+    if(!freeCanvasActive)return;
+    const node=event.target.closest?.("[data-editor-key]");
+    if(!node||!TEXT_TAGS.has(node.tagName))return;
+    // A double-click returns to inline writing after moving an object.
+    // Handles remain available when the user selects it again.
+    toggleFreeCanvas();
+    selectElement(node);
+    node.focus({preventScroll:true});
   }
 
   function onPreviewFocus(event) {
