@@ -4668,3 +4668,81 @@ test('GitHub-only publishing rejects changed GitHub source without a write',asyn
  await expect(page.locator('#directGithubStatus')).toContainText('changed on GitHub');
  expect(writes).toBe(0);
 });
+
+
+test('on-page Style editor exports verified font, size and colours for original and added text',async({page})=>{
+ const source='<!doctype html><html><head></head><body><main><section id="study">'+
+  '<h2>Methods heading</h2><p>Original paragraph.</p></section></main></body></html>';
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',body:source}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html',{waitUntil:'domcontentloaded'});
+ const preview=page.frameLocator('#pageFrame');
+ await preview.locator('main h2').click();
+ const bar=preview.locator('#moon-quick-toolbar');
+ await bar.getByRole('button',{name:'Change font, size and colours of selected text'}).click();
+ let properties=preview.getByRole('dialog',{name:'Style selected text'});
+ await properties.locator('select').selectOption('Georgia, serif');
+ await properties.getByRole('spinbutton',{name:'Font size in pixels'}).fill('32');
+ await properties.getByRole('spinbutton',{name:'Font size in pixels'}).dispatchEvent('change');
+ await properties.locator('input[type="color"]').first().fill('#225544');
+ await properties.locator('input[type="color"]').first().dispatchEvent('change');
+ await properties.getByRole('button',{name:'Done'}).click();
+ const heading=preview.locator('main h2');
+ await expect(heading).toHaveCSS('font-family','Georgia, serif');
+ await expect(heading).toHaveCSS('font-size','32px');
+ await expect(heading).toHaveCSS('color','rgb(34, 85, 68)');
+ await heading.click();
+ await bar.getByRole('button',{name:'Add new content after this block'}).click();
+ const composer=preview.getByRole('dialog',{name:'Add content to the page'});
+ await composer.getByLabel('Text',{exact:true}).fill('New styled paragraph');
+ await composer.getByRole('button',{name:'Add to page'}).click();
+ await preview.locator('[data-editor-added-index]').click();
+ await bar.getByRole('button',{name:'Change font, size and colours of selected text'}).click();
+ properties=preview.getByRole('dialog',{name:'Style selected text'});
+ await properties.locator('select').selectOption('Arial, sans-serif');
+ await properties.getByRole('spinbutton',{name:'Font size in pixels'}).fill('23');
+ await properties.getByRole('spinbutton',{name:'Font size in pixels'}).dispatchEvent('change');
+ await properties.locator('input[type="color"]').first().fill('#663399');
+ await properties.locator('input[type="color"]').first().dispatchEvent('change');
+ await properties.getByRole('button',{name:'Done'}).click();
+ const added=preview.locator('[data-editor-added-index]');
+ await expect(added).toHaveCSS('font-family','Arial, sans-serif');
+ await expect(added).toHaveCSS('font-size','23px');
+ await expect(added).toHaveCSS('color','rgb(102, 51, 153)');
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).toContain('font-family: Georgia, serif');
+ expect(html).toContain('font-size: 32px');
+ expect(html).toContain('font-family:Arial, sans-serif');
+ expect(html).toContain('font-size:23px');
+ expect(html).not.toContain('moon-quick-properties');
+});
+
+test('on-page image tools resize, describe, remove, and offer image insertion',async({page})=>{
+ const source='<!doctype html><html><head></head><body><main><section id="study">'+
+  '<h2>Gallery heading</h2><p>Some original text.</p>'+
+  '<img src="assets/editor-existing-example.webp" alt="Original description"></section></main></body></html>';
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',body:source}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html',{waitUntil:'domcontentloaded'});
+ const preview=page.frameLocator('#pageFrame');
+ await preview.locator('main img').click();
+ const bar=preview.locator('#moon-quick-toolbar');
+ await bar.getByRole('button',{name:'Edit selected image on the page'}).click();
+ const panel=preview.getByRole('dialog',{name:'Edit selected image'});
+ await panel.getByRole('button',{name:'50%'}).click();
+ await expect(preview.locator('main img')).toHaveCSS('width',/./);
+ expect(await preview.locator('main img').evaluate(img=>img.style.width)).toBe('50%');
+ await panel.getByRole('textbox',{name:'Image description for accessibility'}).fill('Updated fieldwork photo');
+ await panel.getByRole('button',{name:'Save description'}).click();
+ await expect(preview.locator('main img')).toHaveAttribute('alt','Updated fieldwork photo');
+ await preview.locator('main h2').click();
+ await bar.getByRole('button',{name:'Add an existing website image after selected content'}).click();
+ const composer=preview.getByRole('dialog',{name:'Add content to the page'});
+ await expect(composer.getByLabel('Content type')).toHaveValue('image');
+ await composer.getByRole('button',{name:'Cancel'}).click();
+ await preview.locator('main img').click();
+ page.once('dialog',dialog=>dialog.accept());
+ await bar.getByRole('button',{name:'Remove selected existing block from page'}).click();
+ await expect(preview.locator('main img')).toHaveCount(0);
+ await expect(page.locator('#changeCount')).toContainText('removed block');
+});
