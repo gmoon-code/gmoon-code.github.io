@@ -751,6 +751,9 @@ try {
   assert.deepEqual(await sections.frameLocator("#pageFrame").locator("main p").first()
     .evaluate(el=>[el.style.marginTop,el.style.marginBottom]),["10px","10px"]);
   console.log("PASS: one-click reset for both spacing margins and undo");
+  // Restore a clean baseline before testing incremental grip movement.
+  await sections.frameLocator("#pageFrame").locator("#moon-quick-toolbar")
+    .getByRole("button",{name:"Restore original spacing above and below selected block"}).click();
   await sections.frameLocator("#pageFrame").locator("main p").first().click();
   const spacingGrip=sections.frameLocator("#pageFrame").locator("#moon-spacing-grip");
   await spacingGrip.focus();
