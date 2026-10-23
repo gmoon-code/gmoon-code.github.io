@@ -3045,6 +3045,19 @@
     }catch{return false}
   }
   function insertionKind(s){return s?.kind||"paragraph"}
+  // Restrict visual styling to portable typefaces and valid CSS colours.
+  const QUICK_FONTS={
+    default:"",serif:"Georgia, serif",classic:'"Times New Roman", Times, serif',
+    sans:"Arial, sans-serif",modern:"system-ui, sans-serif",mono:"monospace"
+  };
+  function allowedAppearance(value){
+    return value&&typeof value==="object"&&!Array.isArray(value)&&
+      Object.keys(value).every(key=>["family","size","color","background"].includes(key))&&
+      (value.family===undefined||Object.values(QUICK_FONTS).includes(value.family))&&
+      (value.size===undefined||(Number.isInteger(value.size)&&value.size>=12&&value.size<=80))&&
+      ["color","background"].every(key=>value[key]===undefined||
+        (typeof value[key]==="string"&&/^#[0-9a-fA-F]{6}$/.test(value[key])));
+  }
   const ADDED_LAYOUT_DEFAULT={align:"left",widthPercent:100,spaceAbove:0,spaceBelow:0};
   function addedBlockLayout(item){return {...ADDED_LAYOUT_DEFAULT,...(item?.layout||{})};}
   function isDefaultAddedLayout(layout){
@@ -3065,7 +3078,7 @@
       throw Error("Invalid added block layout");
   }
   function addedBlockStyle(item){
-    if(!item?.layout)return "";
+    if(!item?.layout&&!item?.appearance)return "";
     const layout=addedBlockLayout(item),rules=[];
     if(layout.widthPercent!==100)rules.push("width:"+layout.widthPercent+"%","max-width:100%","box-sizing:border-box");
     if(layout.align==="center")rules.push("text-align:center","margin-left:auto","margin-right:auto");
@@ -3073,6 +3086,11 @@
     else if(layout.widthPercent!==100)rules.push("margin-left:0","margin-right:auto");
     if(layout.spaceAbove)rules.push("margin-top:"+layout.spaceAbove+"px");
     if(layout.spaceBelow)rules.push("margin-bottom:"+layout.spaceBelow+"px");
+    const a=item.appearance||{};
+    if(a.family)rules.push("font-family:"+a.family);
+    if(a.size)rules.push("font-size:"+a.size+"px");
+    if(a.color)rules.push("color:"+a.color);
+    if(a.background)rules.push("background-color:"+a.background);
     return rules.join(";");
   }
   function safeExistingImagePath(path){
@@ -3116,6 +3134,9 @@
           throw Error("Invalid "+kind+" insertion");
         }
       validateAddedLayout(item.layout);
+      if(item.appearance!==undefined&&
+         (kind==="image"||!allowedAppearance(item.appearance)))
+        throw Error("Invalid text appearance");
       let matches;
       try{matches=[...root.querySelectorAll(item.selector)]}catch{throw Error("Invalid content anchor")}
       if(matches.length!==1||matches[0].tagName.toLowerCase()!==item.tag||
@@ -3129,7 +3150,8 @@
         kind,...(kind==="heading"?{headingTag:item.headingTag}:{}),...(kind==="link"?{href:item.href}:{}),
         ...(kind==="image"?{src:item.src,...(item.widthPercent!==undefined?
           {widthPercent:item.widthPercent}:{})}:{}),
-        ...(item.layout!==undefined?{layout:{...item.layout}}:{})});
+        ...(item.layout!==undefined?{layout:{...item.layout}}:{}),
+        ...(item.appearance!==undefined?{appearance:{...item.appearance}}:{})});
     }
     return out;
   }
