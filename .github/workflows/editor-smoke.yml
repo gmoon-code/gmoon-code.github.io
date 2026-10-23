@@ -1,6 +1,15 @@
 name: Visual editor smoke test
 
 on:
+  push:
+    branches:
+      - "feature/academic-editor-canvas-controls-20261023"
+    paths:
+      - "editor.html"
+      - "editor.js"
+      - "editor.css"
+      - "tests/editor-smoke.mjs"
+      - ".github/workflows/editor-smoke.yml"
   pull_request:
     paths:
       - "editor.html"
