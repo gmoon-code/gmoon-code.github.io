@@ -2841,6 +2841,7 @@ test('image can be resized by a direct drag handle and keyboard-accessible inspe
  await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
  const image=page.frameLocator('#pageFrame').locator('main img');
  await image.click();
+ await page.locator('#freeCanvasToggle').click();
  const handle=page.frameLocator('#pageFrame').locator('#moon-image-resize-handle');
  await expect(handle).toBeVisible();
  const before=await image.evaluate(el=>el.style.width);
@@ -3368,6 +3369,7 @@ test('new content blocks can be dragged within an anchor but not across source a
   'New first','New second','New third','At a separate anchor'
  ]);
  await added.first().click();
+ await page.locator('#freeCanvasToggle').click();
  const grip=page.frameLocator('#pageFrame').locator('#moon-added-block-move-handle');
  await expect(grip).toBeVisible();
  const sourceBox=await grip.boundingBox(),targetBox=await added.nth(2).boundingBox();
@@ -3487,6 +3489,7 @@ test('new block drag grip relocates a paragraph onto a different original source
  await page.locator('#insertContentBtn').click();
  const added=page.frameLocator('#pageFrame').locator('[data-editor-added-index]');
  await added.click();
+ await page.locator('#freeCanvasToggle').click();
  const grip=page.frameLocator('#pageFrame').locator('#moon-added-block-move-handle');
  await expect(grip).toBeVisible();
  const handle=await grip.boundingBox();
@@ -3982,6 +3985,7 @@ test('new paragraph uses responsive width, centre alignment and exact spacing in
  await page.locator('#insertContentBtn').click();
  const newBlock=page.frameLocator('#pageFrame').locator('[data-editor-added-index]');
  await newBlock.click();
+ await page.locator('#freeCanvasToggle').click();
  await expect(page.locator('#addedBlockLayoutFields')).toBeVisible();
  await expect(page.locator('#addedBlockWidth')).toHaveValue('100');
  await expect(page.locator('#addedBlockAlign')).toHaveValue('left');
@@ -4040,6 +4044,7 @@ test('new heading width handle adjusts text block without changing reading order
  await page.locator('#insertContentBtn').click();
  const added=page.frameLocator('#pageFrame').locator('[data-editor-added-index]');
  await added.click();
+ await page.locator('#freeCanvasToggle').click();
  const handle=page.frameLocator('#pageFrame').locator('#moon-added-block-width-handle');
  await expect(handle).toBeVisible();
  const bounds=await handle.boundingBox();
@@ -4205,6 +4210,7 @@ test('new image width uses slider and on-image handle, with undo, reload and val
  await page.locator('#insertContentBtn').click();
  const inserted=page.frameLocator('#pageFrame').locator('[data-editor-added-index] img');
  await inserted.click();
+ await page.locator('#freeCanvasToggle').click();
  await expect(page.locator('#addedImageWidthPercent')).toBeVisible();
  await expect(page.locator('#addedImageWidthPercent')).toHaveValue('100');
  const handle=page.frameLocator('#pageFrame').locator('#moon-image-resize-handle');
@@ -4455,6 +4461,7 @@ test('original block preview drag handle reorders source paragraphs without rewr
  await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
  const blocks=page.frameLocator('#pageFrame').locator('main section > p');
  await blocks.first().click();
+ await page.locator('#freeCanvasToggle').click();
  const handle=page.frameLocator('#pageFrame').locator('#moon-block-move-handle');
  await expect(handle).toBeVisible();
  await expect(handle).toHaveCSS('touch-action','none');
@@ -4759,7 +4766,7 @@ test('PowerPoint-style selection moves and resizes source text freely with Undo 
  const view=page.frameLocator('#pageFrame');
  const target=view.locator('main #a h2');
  await target.click();
- await page.locator('#freeCanvasToggle').click();
+ // Free positioning activates automatically on selection.
  await expect(page.locator('#freeCanvasToggle')).toHaveAttribute('aria-pressed','true');
  const handles=view.getByRole('group',{name:'Free move and resize selected object'});
  await expect(handles).toBeVisible();
@@ -4849,7 +4856,7 @@ test('Precision fields apply source object positions and preserve unrelated typo
  const view=page.frameLocator('#pageFrame'),heading=view.locator('main #a h2');
  await heading.click();
  await page.locator('#textAlignment').selectOption('center');
- await page.locator('#freeCanvasToggle').click();
+ // Free positioning activates automatically on selection.
  const precision=page.locator('#freePrecisionFields');
  await expect(precision).toBeVisible();
  await expect(page.locator('#freePrecisionReset')).toBeDisabled();
@@ -4894,7 +4901,7 @@ test('Precision inspector persists new image placement with one Undo step',async
  await page.locator('#insertContentBtn').click();
  const added=view.locator('[data-editor-added-index]');
  await added.click();
- await page.locator('#freeCanvasToggle').click();
+ // Free positioning activates automatically on selection.
  await expect(page.locator('#freePrecisionFields')).toBeVisible();
  await page.locator('#freePrecisionX').fill('41');
  await page.locator('#freePrecisionY').fill('62');
