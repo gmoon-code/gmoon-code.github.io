@@ -19,6 +19,12 @@
       button.textContent=(panelPreference[key]?"Hide ":"Show ")+label;
       button.setAttribute("aria-expanded",String(panelPreference[key]));
     }
+    const focusButton=$("toggleCanvasFocus");
+    if(focusButton){
+      const focused=!panelPreference.pages&&!panelPreference.inspector;
+      focusButton.textContent=focused?"Show both panels":"Focus canvas";
+      focusButton.setAttribute("aria-pressed",String(focused));
+    }
     try{localStorage.setItem(PANEL_PREFERENCE_KEY,JSON.stringify(panelPreference));}
     catch{/* Storage may be unavailable. The controls still work. */}
   }
@@ -34,6 +40,11 @@
     setWorkspacePanel("inspector",panelPreference.inspector);
     $("togglePagesPanel").addEventListener("click",()=>setWorkspacePanel("pages",!panelPreference.pages));
     $("toggleInspectorPanel").addEventListener("click",()=>setWorkspacePanel("inspector",!panelPreference.inspector));
+    $("toggleCanvasFocus").addEventListener("click",()=>{
+      const focused=!panelPreference.pages&&!panelPreference.inspector;
+      setWorkspacePanel("pages",focused);
+      setWorkspacePanel("inspector",focused);
+    });
   }
   const PUBLISH_CONFIG=window.MoonEditorPublisherConfig||{};
   const publisher={session:null,login:"",busy:false};
