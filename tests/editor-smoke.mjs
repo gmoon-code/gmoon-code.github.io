@@ -721,7 +721,9 @@ try {
   await sections.frameLocator("#pageFrame").locator("#moon-column-resize-handle").press("ArrowRight");
   assert.equal(await sections.locator("#directLayoutCustomColumns").inputValue(),"8");
   console.log("PASS: on-canvas keyboard column divider and responsive proportions");
-  await sections.locator("#undoBtn").click();
+  // Three separate edits were made: custom layout, divider left, divider right.
+  // Undo each checkpoint before checking that the layout group is gone.
+  for(let step=0;step<3;step++)await sections.locator("#undoBtn").click();
   assert(!/responsive layout group/.test(await sections.locator("#changeCount").textContent()));
   console.log("PASS: inline source-verified section layout, original HTML and undo");
   await sections.frameLocator("#pageFrame").locator("main h2").click();
