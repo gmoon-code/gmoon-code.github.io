@@ -4907,3 +4907,61 @@ test('Precision inspector persists new image placement with one Undo step',async
  await page.locator('#undoBtn').click();
  await expect(view.locator('[data-editor-added-index]')).toHaveCSS('translate','41px 62px');
 });
+
+test('Direct click selects a full set of handles and object drag escapes a clipped parent',async({page})=>{
+ const source='<!doctype html><html><head></head><body><main><section id="bounded" style="overflow:hidden;width:220px">'+
+  '<h2>Move anywhere</h2><p>A test paragraph.</p></section></main></body></html>';
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',body:source}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html',{waitUntil:'domcontentloaded'});
+ const view=page.frameLocator('#pageFrame'),target=view.locator('#bounded h2');
+ await target.click();
+ await expect(page.locator('#freeCanvasToggle')).toHaveAttribute('aria-pressed','false');
+ const selection=view.getByRole('group',{name:'Free move and resize selected object'});
+ await expect(selection).toBeVisible();
+ await expect(selection.locator('[data-free-direction]:not([data-free-direction="move"])')).toHaveCount(8);
+ const box=await target.boundingBox();
+ await page.mouse.move(box.x+Math.min(75,box.width/2),box.y+box.height/2);
+ await page.mouse.down();
+ await page.mouse.move(box.x+Math.min(75,box.width/2)+165,box.y+box.height/2+24,{steps:7});
+ await page.mouse.up();
+ await expect(page.locator('#freeCanvasToggle')).toHaveAttribute('aria-pressed','true');
+ await expect(target).toHaveCSS('translate','165px 24px');
+ await expect(view.locator('#bounded')).toHaveCSS('overflow','visible');
+ const rect=await target.boundingBox();
+ const parent=await view.locator('#bounded').boundingBox();
+ expect(rect.x+rect.width).toBeGreaterThan(parent.x+parent.width);
+ await page.locator('#undoBtn').click();
+ await expect(view.locator('#bounded h2')).not.toHaveClass(/moon-free-object/);
+});
+
+test('Selected image can resize with handles despite inline important width and hidden container',async({page})=>{
+ const source='<!doctype html><html><head></head><body><main><section id="bounded" style="overflow:hidden;width:240px">'+
+  '<img src="assets/test-image.webp" width="240" height="180" alt="Image for resize testing" '+
+  'style="width:100%!important;max-width:100%!important;height:auto!important"></section></main></body></html>';
+ await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',body:source}));
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html',{waitUntil:'domcontentloaded'});
+ const view=page.frameLocator('#pageFrame'),target=view.locator('#bounded img');
+ await target.click();
+ await expect(page.locator('#freeCanvasToggle')).toHaveAttribute('aria-pressed','false');
+ const handles=view.getByRole('group',{name:'Free move and resize selected object'});
+ await expect(handles).toBeVisible();
+ const original=await target.boundingBox();
+ const right=handles.getByRole('button',{name:'Resize selected object from right'});
+ const position=await right.boundingBox();
+ await page.mouse.move(position.x+position.width/2,position.y+position.height/2);
+ await page.mouse.down();
+ await page.mouse.move(position.x+position.width/2+115,position.y+position.height/2,{steps:6});
+ await page.mouse.up();
+ await expect(page.locator('#freeCanvasToggle')).toHaveAttribute('aria-pressed','true');
+ const resized=await target.boundingBox();
+ expect(resized.width).toBeGreaterThan(original.width+90);
+ expect(resized.width).toBeGreaterThan((await view.locator('#bounded').boundingBox()).width);
+ await expect(view.locator('#bounded')).toHaveCSS('overflow','visible');
+ const download=page.waitForEvent('download');
+ await page.locator('#exportBtn').click();
+ const html=require('node:fs').readFileSync(await(await download).path(),'utf8');
+ expect(html).toContain('--moon-free-width:');
+ expect(html).toContain('moon-free-object');
+ expect(html).toContain('moon-free-position-css');
+ expect(html).not.toContain('moon-free-selection');
+});
