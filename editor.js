@@ -763,6 +763,23 @@
           bar.append(control);
         }
       }
+      const existingSpace=selected.added?addedBlockLayout(state.additions[state.selectedAddition]):null;
+      const workSpace=selected.added?null:getWorking(state.selected);
+      const hasCustomSpace=selected.added?
+        existingSpace.spaceAbove!==0||existingSpace.spaceBelow!==0:
+        Boolean(workSpace?.style.marginTop||workSpace?.style.marginBottom);
+      const clear=make("Reset gaps",()=>{
+        if(selected.added){
+          setAddedBlockLayout({spaceAbove:0,spaceBelow:0},true);
+        }else{
+          // A single history checkpoint covers both values.
+          checkpoint();
+          updateSelectedStyle("marginTop","",[""],false);
+          updateSelectedStyle("marginBottom","",[""],false);
+        }
+      },null,"Restore original spacing above and below selected block");
+      clear.disabled=!hasCustomSpace;
+      bar.append(clear);
     }
     if(!selected.added){
       const movable=blockMoveCandidate(state.selected);
