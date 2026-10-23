@@ -3634,7 +3634,7 @@ test('inline composer rejects unsafe link or image sources, preserves valid exis
    '<h2>Gallery</h2><p>Original gallery introduction.</p>'+
    '<img src="assets/example-photograph.webp" alt="Existing image">'+
    '</section></main></body></html>'}));
- await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html',{waitUntil:'domcontentloaded'});
  console.log('FLUID checkpoint: editor loaded');
  await page.frameLocator('#pageFrame').locator('main h2').click();
  console.log('FLUID checkpoint: heading clicked');
@@ -3679,7 +3679,7 @@ test('inline image gallery selects a site asset, provides preview and exports im
    '<h2>Student project gallery</h2><p>Preserved original context.</p>'+
    '<img src="assets/editor-existing-example.webp" alt="Student investigation materials">'+
    '</section></main></body></html>'}));
- await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html',{waitUntil:'domcontentloaded'});
  console.log('FLUID checkpoint: editor loaded');
  await page.frameLocator('#pageFrame').locator('main h2').click();
  console.log('FLUID checkpoint: heading clicked');
@@ -3759,7 +3759,7 @@ test('section layout can be chosen directly on page with original mobile reading
    '<section id="project-section"><h2>Collaborative investigations</h2>'+
    '<p>First reasoning step.</p><p>Second reasoning step.</p>'+
    '<p>Third reasoning step.</p></section></main></body></html>'}));
- await page.goto('http://127.0.0.1:8765/editor.html?page=about.html');
+ await page.goto('http://127.0.0.1:8765/editor.html?page=about.html',{waitUntil:'domcontentloaded'});
  console.log('FLUID checkpoint: editor loaded');
  const heading=page.frameLocator('#pageFrame').locator('#project-section h2');
  await heading.click();
