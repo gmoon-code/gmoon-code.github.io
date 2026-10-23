@@ -81,6 +81,20 @@ try {
   await page.locator("#togglePagesPanel").click();
   assert.equal(await page.locator("#editorNavigation").isVisible(),true);
   assert.equal(await page.locator("#exportBtn").isDisabled(),true);
+  // Resize an existing heading through its on-canvas handle using the keyboard.
+  await page.frameLocator("#pageFrame").locator("main .home-kicker").first().click();
+  const resizeHandle=page.frameLocator("#pageFrame").locator("#moon-source-width-handle");
+  await resizeHandle.focus();
+  await resizeHandle.press("Home");
+  assert.equal(await page.frameLocator("#pageFrame").locator("main .home-kicker").first()
+    .evaluate(el=>el.style.maxWidth),"30%");
+  await resizeHandle.press("ArrowRight");
+  assert.equal(await page.frameLocator("#pageFrame").locator("main .home-kicker").first()
+    .evaluate(el=>el.style.maxWidth),"35%");
+  await resizeHandle.press("End");
+  assert.equal(await page.frameLocator("#pageFrame").locator("main .home-kicker").first()
+    .evaluate(el=>el.style.maxWidth),"");
+  console.log("PASS: source text resize handle supports keyboard and reset");
   // The next browse scenario requires no selected element at page load.
   // UI panel preferences persist, but this navigation resets selection.
   await ready();
