@@ -711,6 +711,14 @@ try {
   assert.match(await sections.frameLocator("#pageFrame").locator("#moon-responsive-group-layout")
     .textContent(),/grid-column:9 \\/ span 4/);
   console.log("PASS: on-canvas custom responsive column proportions");
+  // The existing draggable divider is also operable by keyboard.
+  const divider=sections.frameLocator("#pageFrame").locator("#moon-column-resize-handle");
+  await divider.focus();
+  await divider.press("ArrowLeft");
+  assert.equal(await sections.locator("#directLayoutCustomColumns").inputValue(),"7");
+  await sections.frameLocator("#pageFrame").locator("#moon-column-resize-handle").press("ArrowRight");
+  assert.equal(await sections.locator("#directLayoutCustomColumns").inputValue(),"8");
+  console.log("PASS: on-canvas keyboard column divider and responsive proportions");
   await sections.locator("#undoBtn").click();
   assert(!/responsive layout group/.test(await sections.locator("#changeCount").textContent()));
   console.log("PASS: inline source-verified section layout, original HTML and undo");
