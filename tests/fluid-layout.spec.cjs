@@ -4686,15 +4686,18 @@ test('on-page Style editor exports verified font, size and colours for original 
  await properties.locator('input[type="color"]').first().fill('#225544');
  await properties.locator('input[type="color"]').first().dispatchEvent('change');
  await properties.getByRole('button',{name:'Done'}).click();
+ console.log('STYLE CHECKPOINT: original appearance controls closed');
  const heading=preview.locator('main h2');
  await expect(heading).toHaveCSS('font-family','Georgia, serif');
  await expect(heading).toHaveCSS('font-size','32px');
  await expect(heading).toHaveCSS('color','rgb(34, 85, 68)');
  await heading.click();
+ console.log('STYLE CHECKPOINT: reselected original heading');
  await bar.getByRole('button',{name:'Add new content after this block'}).click();
  const composer=preview.getByRole('dialog',{name:'Add content to the page'});
  await composer.getByLabel('Text',{exact:true}).fill('New styled paragraph');
  await composer.getByRole('button',{name:'Add to page'}).click();
+ console.log('STYLE CHECKPOINT: added styled paragraph');
  await preview.locator('[data-editor-added-index]').click();
  await bar.getByRole('button',{name:'Change font, size and colours of selected text'}).click();
  properties=preview.getByRole('dialog',{name:'Style selected text'});
@@ -4951,6 +4954,12 @@ test('Selected image can resize with handles despite inline important width and 
  const original=await target.boundingBox();
  const right=handles.getByRole('button',{name:'Resize selected object from right'});
  const position=await right.boundingBox();
+ console.log('IMAGE RIGHT GRIP HIT:',await right.evaluate(el=>{
+   const r=el.getBoundingClientRect(),x=r.x+r.width/2,y=r.y+r.height/2;
+   const hit=document.elementFromPoint(x,y);
+   return {x,y,width:r.width,height:r.height,hit:hit?.getAttribute('data-free-direction')||hit?.tagName,
+     captured:getComputedStyle(el).pointerEvents};
+ }));
  await page.mouse.move(position.x+position.width/2,position.y+position.height/2);
  await page.mouse.down();
  await page.mouse.move(position.x+position.width/2+115,position.y+position.height/2,{steps:6});
