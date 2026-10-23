@@ -926,6 +926,10 @@
         node.style.setProperty("--moon-free-width",geometry.width+"px");
         node.style.minHeight=geometry.height+"px";
         node.style.setProperty("--moon-free-height",geometry.height+"px");
+        if(node.tagName==="IMG"){
+          node.style.height=geometry.height+"px";
+          node.style.objectFit="contain";
+        }
         node.style.maxWidth="none";
         node.style.boxSizing="border-box";
       }
@@ -1134,7 +1138,7 @@
       const defaultStyle=original.classList.contains(FREE_CLASS)?null:original.style;
       for(const node of [source,selection.node]){
         node.classList.remove(FREE_CLASS);
-        for(const name of ["translate","width","minHeight","maxWidth","boxSizing"])
+        for(const name of ["translate","width","height","minHeight","maxWidth","boxSizing","objectFit"])
           node.style[name]=defaultStyle?.[name]||"";
         for(const name of ["--moon-free-width","--moon-free-height"])
           if(defaultStyle?.getPropertyValue(name))node.style.setProperty(name,defaultStyle.getPropertyValue(name));
