@@ -45,7 +45,7 @@ jobs:
         continue-on-error: true
         run: npx playwright test tests/academic-editor-canvas.spec.cjs --browser chromium --reporter=list --workers=1
       - name: Report browser result as a commit status
-        if: always() && github.event_name == 'push'
+        if: ${{ !cancelled() && github.event_name == 'push' }}
         env:
           GH_TOKEN: ${{ github.token }}
           TEST_OUTCOME: ${{ steps.canvas_tests.outcome }}
@@ -66,7 +66,7 @@ jobs:
             --data-binary @/tmp/canvas-status.json \
             "$API_URL/repos/$REPOSITORY/statuses/$COMMIT_SHA"
       - name: Fail workflow if browser tests failed
-        if: steps.canvas_tests.outcome != 'success'
+        if: ${{ !cancelled() && steps.canvas_tests.outcome != 'success' }}
         run: exit 1
       - name: Save failure context
         if: failure()
