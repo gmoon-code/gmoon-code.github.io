@@ -1245,6 +1245,19 @@
       Number.parseInt(getWorking(state.selected)?.style.getPropertyValue("--moon-object-layer"),10);
     return Number.isInteger(value)&&value>=1&&value<=99?value:20;
   }
+  function alignFreeObject(horizontal){
+    const sel=freeCanvasActive?freeSelected():null;
+    if(!sel||!["left","center","right"].includes(horizontal))return;
+    const main=sel.node.closest("main");
+    if(!main)return;
+    const current=freeGeometry(sel);
+    const max=main.clientWidth-current.width;
+    const x=horizontal==="left"?0:horizontal==="right"?max:Math.round(max/2);
+    const next={...current,x:Math.max(-16000,Math.min(16000,Math.round(x)))};
+    if(next.x===current.x)return;
+    checkpoint();
+    if(applyFreeGeometry(next))finishFreeGeometry();
+  }
   function changeFreeLayer(delta){
     const sel=freeCanvasActive?freeSelected():null;
     if(!sel||![-1,1].includes(delta))return;
@@ -1444,6 +1457,11 @@
       bar.append(make("Style",openQuickProperties,null,"Change font, size and colours of selected text"));
     }
     if(freeCanvasActive&&freeSelected()){
+      for(const [label,position,description] of [
+        ["⇤ Page","left","Align selected object to the left page edge"],
+        ["↔ Page","center","Centre selected object horizontally on the page"],
+        ["Page ⇥","right","Align selected object to the right page edge"]
+      ])bar.append(make(label,()=>alignFreeObject(position),null,description));
       const overlap=freeOverlapPoint(selected.node);
       if(overlap)bar.append(make("Cycle overlap",()=>{
         selectOverlappingFreeObject({
