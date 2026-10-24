@@ -530,4 +530,9 @@ test('floating figure preserves its own image dimensions while its caption stays
   const html=fs.readFileSync(await(await download).path(),'utf8');
   expect(html).toContain('p.moon-free-absolute > img');
   expect(html).toContain('<figcaption>Caption remains part of the figure</figcaption>');
+  const published=await page.context().newPage();
+  await published.setViewportSize({width:390,height:780});
+  await published.setContent(html);
+  await expect(published.locator('main figure > img')).toHaveCSS('height','80px');
+  await published.close();
 });
