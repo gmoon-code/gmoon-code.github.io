@@ -607,14 +607,16 @@ test('duplicating an added floating image offsets the copy and preserves undo an
   expect(Number(coordinates.layer)).toBeGreaterThan(20);
   await expect.poll(()=>page.evaluate(key=>
     JSON.parse(localStorage.getItem(key)||'{}').additions?.length,DRAFT)).toBe(2);
+  await page.locator('#undoBtn').click();
+  await expect(view.locator('main > .moon-free-layer > [data-editor-added-index]')).toHaveCount(1);
+  await page.locator('#redoBtn').click();
+  await expect(view.locator('main > .moon-free-layer > [data-editor-added-index]')).toHaveCount(2);
   await page.reload();
   await expect(view.locator('main > .moon-free-layer > [data-editor-added-index]')).toHaveCount(2);
   const download=page.waitForEvent('download');
   await page.locator('#exportBtn').click();
   const html=fs.readFileSync(await(await download).path(),'utf8');
   expect((html.match(/alt="Microscope illustration"/g)||[]).length).toBe(2);
-  await page.locator('#undoBtn').click();
-  await expect(view.locator('main > .moon-free-layer > [data-editor-added-index]')).toHaveCount(1);
 });
 
 test('the editor accepts more than ten additions without silently discarding a draft', async ({ page }) => {
