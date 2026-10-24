@@ -1035,9 +1035,14 @@
       updateDirty(state.selected);
     }
     positionFreeSelection();
-    // Moving an object into or out of the free layer changes the available
-    // contextual actions, including Return to layout and layer controls.
-    createQuickToolbar();
+    // Rebuild actions after the current pointer/click sequence finishes.
+    // Replacing a toolbar button synchronously inside its own click handler
+    // can strand automation and assistive input during alignment commands.
+    const doc=state.frameDoc;
+    positionQuickToolbar();
+    doc?.defaultView.requestAnimationFrame(()=>{
+      if(state.frameDoc===doc)createQuickToolbar();
+    });
     if(!verifyFreeCanvasPlacement())
       updateStatus("Positioning mismatch in this browser · Review before publishing");
   }
