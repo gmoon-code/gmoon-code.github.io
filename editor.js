@@ -1240,6 +1240,49 @@
     const dimensions=state.frameDoc?.querySelector("#moon-free-selection [data-free-dimensions]");
     if(dimensions)dimensions.hidden=true;
   }
+  function canReturnFreeObject(sel){
+    if(!sel||!sel.node.classList.contains("moon-free-absolute"))return false;
+    if(sel.added)return !!state.additions[state.selectedAddition]?.freePosition;
+    // A floating object already present in the published source may have no
+    // remaining original container. Only reverse edits made in this draft.
+    const original=state.original.get(state.selected);
+    return !!original&&!/\bmoon-free-absolute\b/.test(original);
+  }
+  function returnFreeObjectToLayout(){
+    const sel=freeCanvasActive?freeSelected():null;
+    if(!canReturnFreeObject(sel))return;
+    checkpoint();
+    if(sel.added){
+      const index=state.selectedAddition;
+      const changed={...state.additions[index]};
+      delete changed.freePosition;
+      delete changed.layer;
+      const updated=state.additions.map((item,i)=>i===index?changed:item);
+      try{validateParagraphAdditions(updated)}
+      catch(error){undo();notice(error.message,"Return to layout cancelled");return;}
+      state.additions=updated;
+      saveDraft();
+      renderPreview(null,index);
+      updateStatus("Object returned to content layout · Not published");
+      return;
+    }
+    const key=state.selected,node=getWorking(key);
+    const originalMarkup=state.original.get(key);
+    const old=new DOMParser().parseFromString(originalMarkup,"text/html").body.firstElementChild;
+    if(!node||!old)return;
+    node.classList.remove("moon-free-object","moon-free-absolute");
+    // Restore only positioning-related properties to their original values.
+    // Keep the user's other content, colours and typography adjustments.
+    for(const name of ["--moon-page-x","--moon-page-y","--moon-object-layer",
+      "left","top","width","height","min-height","max-width","box-sizing","translate"]){
+      const value=old.style.getPropertyValue(name);
+      if(value)node.style.setProperty(name,value,old.style.getPropertyPriority(name));
+      else node.style.removeProperty(name);
+    }
+    updateDirty(key);
+    renderPreview(key);
+    updateStatus("Object returned to content layout · Not published");
+  }
   function freeLayerLevel(sel){
     const value=sel.added?state.additions[state.selectedAddition]?.layer:
       Number.parseInt(getWorking(state.selected)?.style.getPropertyValue("--moon-object-layer"),10);
@@ -1457,6 +1500,9 @@
       bar.append(make("Style",openQuickProperties,null,"Change font, size and colours of selected text"));
     }
     if(freeCanvasActive&&freeSelected()){
+      if(canReturnFreeObject(selected))
+        bar.append(make("Return to layout",returnFreeObjectToLayout,null,
+          "Restore this object's original place in the content flow"));
       for(const [label,position,description] of [
         ["⇤ Page","left","Align selected object to the left page edge"],
         ["↔ Page","center","Centre selected object horizontally on the page"],
