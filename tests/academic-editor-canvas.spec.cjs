@@ -105,3 +105,31 @@ test('eight resize grips and undo remain available after moving to page layer', 
   await page.locator('#undoBtn').click();
   await expect(view.locator('main #nested h2')).toHaveCount(1);
 });
+
+test('free canvas has exact vertical size and undoable front/back order', async ({ page }) => {
+  const view = page.frameLocator('#pageFrame');
+  await view.locator('main #nested h2').click();
+  const move = view.locator('#moon-free-selection [data-free-direction="move"]');
+  await move.focus();
+  await move.press('ArrowRight');
+  const floating = view.locator('main > .moon-free-layer > h2');
+  await expect(floating).toHaveCount(1);
+  const current = await floating.evaluate(node => parseInt(node.style.getPropertyValue('--moon-object-layer'), 10) || 20);
+  await view.getByRole('button', { name: 'Place selected object one layer ahead of overlapping objects' }).click();
+  await expect(floating).toHaveCSS('z-index', String(current + 1));
+  await expect.poll(() => page.evaluate(key => JSON.parse(localStorage.getItem(key) || '{}')
+    .items?.some(item => item.markup.includes('--moon-object-layer: 21')), DRAFT)).toBe(true);
+  const downloadPromise = page.waitForEvent('download');
+  await page.locator('#exportBtn').click();
+  const html = fs.readFileSync(await (await downloadPromise).path(), 'utf8');
+  expect(html).toContain('--moon-object-layer: 21');
+  await page.locator('#undoBtn').click();
+  await expect(view.locator('main > .moon-free-layer > h2')).toHaveCSS('z-index', '20');
+  const restored = view.locator('main > .moon-free-layer > h2');
+  await expect(restored).toHaveCSS('height', /px$/);
+  const size = await restored.evaluate(node => ({
+    assigned: parseFloat(node.style.height),
+    actual: node.getBoundingClientRect().height
+  }));
+  expect(Math.abs(size.assigned - size.actual)).toBeLessThan(2);
+});
