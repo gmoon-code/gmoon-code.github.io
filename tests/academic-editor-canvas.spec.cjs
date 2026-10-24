@@ -546,3 +546,36 @@ test('floating figure preserves its own image dimensions while its caption stays
   await expect(published.locator('main figure > img')).toHaveCSS('height','80px');
   await published.close();
 });
+
+test('Shift-dragging an image moves its whole captioned figure',async({page})=>{
+  const source='<!doctype html><html><head><style>main{margin:30px;padding:20px}figure{width:250px;margin:0}'+
+    'figure img{display:block;width:150px;height:100px}</style></head><body>'+
+    '<main><section><figure><img alt="Laboratory" src="assets/example-photograph.webp">'+
+    '<figcaption>Figure stays together</figcaption></figure></section></main></body></html>';
+  const pixel=Buffer.from('R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==','base64');
+  await page.context().route('**/assets/example-photograph.webp',route=>
+    route.fulfill({status:200,contentType:'image/gif',body:pixel}));
+  await page.route('**/about.html',route=>route.fulfill({
+    status:200,contentType:'text/html',body:source}));
+  await page.reload();
+  const view=page.frameLocator('#pageFrame');
+  const image=view.locator('main figure img');
+  await expect(image).toBeVisible();
+  const rect=await image.boundingBox();
+  await page.mouse.move(rect.x+rect.width/2,rect.y+rect.height/2);
+  await page.keyboard.down('Shift');
+  await page.mouse.down();
+  await page.mouse.move(rect.x+rect.width/2+80,rect.y+rect.height/2+45,{steps:6});
+  await page.mouse.up();
+  await page.keyboard.up('Shift');
+  const figure=view.locator('main > .moon-free-layer > figure');
+  await expect(figure).toHaveCount(1);
+  await expect(figure.locator('img')).toHaveCount(1);
+  await expect(figure.locator('figcaption')).toHaveText('Figure stays together');
+  await expect(figure).toHaveClass(/moon-free-absolute/);
+  const move=await figure.evaluate(node=>({left:parseInt(node.style.left,10),top:parseInt(node.style.top,10)}));
+  expect(move.left).toBeGreaterThan(30);
+  expect(move.top).toBeGreaterThan(30);
+  await page.reload();
+  await expect(view.locator('main > .moon-free-layer > figure > figcaption')).toHaveText('Figure stays together');
+});
