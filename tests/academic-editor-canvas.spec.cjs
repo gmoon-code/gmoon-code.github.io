@@ -421,3 +421,23 @@ test('GitHub-only publish sends the reviewed floating page and retains source sa
     ...Object.entries(sessionStorage)]));
   expect(stored).not.toContain(token);
 });
+
+test('nested floating captions stay inside their parent object layer group', async ({ page }) => {
+  const source='<!doctype html><html><head></head><body><main>'+
+    '<section><figure class="moon-free-object moon-free-absolute" '+
+    'style="left:25px;top:40px;width:280px;height:160px;min-height:160px;'+
+    '--moon-page-x:25px;--moon-page-y:40px">'+
+    '<img alt="Research work" src="assets/example-photograph.webp">'+
+    '<figcaption class="moon-free-object moon-free-absolute" '+
+    'style="left:5px;top:100px;width:240px;height:40px;min-height:40px;'+
+    '--moon-page-x:5px;--moon-page-y:100px">Figure caption</figcaption>'+
+    '</figure></section></main></body></html>';
+  await page.route('**/about.html',route=>route.fulfill({
+    status:200,contentType:'text/html',body:source
+  }));
+  await page.reload();
+  const view=page.frameLocator('#pageFrame');
+  await expect(view.locator('main > .moon-free-layer > figure')).toHaveCount(1);
+  await expect(view.locator('main > .moon-free-layer > figure > figcaption')).toHaveCount(1);
+  await expect(view.locator('main > .moon-free-layer > figcaption')).toHaveCount(0);
+});
