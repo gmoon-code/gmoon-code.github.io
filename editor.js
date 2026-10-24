@@ -915,7 +915,11 @@
     if(existing&&freePositionValid(existing)&&sel.node.classList.contains("moon-free-absolute"))return {...existing};
     if(!sel.added){
       const style=getWorking(state.selected)?.style;
-      if(style&&sel.node.classList.contains(FREE_CLASS)){
+      // Nested group members use parent-relative coordinates until the
+      // user explicitly detaches them into the page-level layer.
+      const nested=sel.node.parentElement?.closest(".moon-free-absolute")&&
+        !sel.node.hasAttribute("data-moon-free-detach");
+      if(style&&sel.node.classList.contains(FREE_CLASS)&&!nested){
         const x=parseInt(style.getPropertyValue("--moon-page-x")||style.left,10);
         const y=parseInt(style.getPropertyValue("--moon-page-y")||style.top,10);
         const width=parseInt(style.width,10),height=parseInt(style.minHeight,10);
@@ -977,9 +981,11 @@
     }else{
       const source=getWorking(state.selected);
       if(!source)return false;
+      const detach=!!sel.node.parentElement?.closest(".moon-free-absolute");
       preserveFreeObjectAppearance(sel);
       for(const node of [source,sel.node]){
         node.classList.add(FREE_CLASS,"moon-free-absolute");
+        if(detach)node.setAttribute("data-moon-free-detach","true");
         node.style.translate="none";
         node.style.setProperty("--moon-page-x",geometry.x+"px");
         node.style.setProperty("--moon-page-y",geometry.y+"px");
@@ -3921,6 +3927,7 @@
     // Preserve nested floating groups. Their child elements remain attached
     // to the group, preserving captions and relative positioning.
     const objects=[...main.querySelectorAll(".moon-free-absolute")].filter(node=>
+      node.hasAttribute("data-moon-free-detach")||
       !node.parentElement?.closest(".moon-free-absolute"));
     if(!objects.length)return 0;
     let layer=[...main.children].find(node=>node.classList.contains("moon-free-layer"));
