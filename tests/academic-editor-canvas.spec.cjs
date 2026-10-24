@@ -150,7 +150,7 @@ test('published mobile page restores the original position of a floating heading
   const exported=fs.readFileSync(await (await downloadPromise).path(), 'utf8');
   // Request the published HTML from the same origin so its local runtime
   // runs exactly as it does on GitHub Pages.
-  await page.route('**/canvas-published-test.html', route => route.fulfill({
+  await page.context().route('**/canvas-published-test.html', route => route.fulfill({
     status:200,contentType:'text/html',body:exported
   }));
   const published=await page.context().newPage();
