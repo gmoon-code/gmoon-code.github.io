@@ -928,6 +928,8 @@
       for(const node of [source,sel.node]){
         node.classList.add(FREE_CLASS,"moon-free-absolute");
         node.style.translate="none";
+        node.style.setProperty("--moon-page-x",geometry.x+"px");
+        node.style.setProperty("--moon-page-y",geometry.y+"px");
         node.style.left=geometry.x+"px";
         node.style.top=geometry.y+"px";
         node.style.width=geometry.width+"px";
@@ -3563,18 +3565,19 @@
   }
   const FREE_CLASS="moon-free-object";
   const FREE_CSS=[
-    "main:has(.moon-free-absolute){position:relative!important;overflow:visible!important}",
+    "main:has(.moon-free-absolute){position:relative!important;overflow:visible!important;anchor-name:--moon-page-canvas}",
     "main:has(.moon-free-absolute) *:has(.moon-free-absolute){overflow:visible!important}",
     "main:has(.moon-free-absolute) *:has(.moon-free-absolute):not(main){transform:none!important}",
     "main .moon-free-object{position:relative;z-index:3;box-sizing:border-box;max-width:none}",
     "main .moon-free-absolute{position:absolute!important;z-index:20;transform:none!important}",
+    "@supports (position-anchor:--moon-page-canvas){main .moon-free-absolute{position-anchor:--moon-page-canvas;left:calc(anchor(left) + var(--moon-page-x,0px))!important;top:calc(anchor(top) + var(--moon-page-y,0px))!important}}",
     "@media(max-width:700px){html:not(.moon-free-mode) main .moon-free-absolute{position:static!important;left:auto!important;top:auto!important}}",
     "@media(max-width:700px){html:not(.moon-free-mode) .moon-free-object{translate:none!important;width:auto!important;max-width:100%!important;min-height:0!important;height:auto!important;position:static!important}html:not(.moon-free-mode) img.moon-free-object{width:auto!important;max-width:100%!important;height:auto!important}}"
   ].join("\n");
   function freePositionValid(p){return !!p&&typeof p==="object"&&!Array.isArray(p)&&
     Object.keys(p).length===4&&["x","y","width","height"].every(k=>Number.isInteger(p[k]))&&
     Math.abs(p.x)<=16000&&Math.abs(p.y)<=16000&&p.width>=35&&p.width<=4000&&p.height>=18&&p.height<=4000;}
-  function freeStyle(p){return "left:"+p.x+"px;top:"+p.y+"px;translate:none;width:"+p.width+
+  function freeStyle(p){return "--moon-page-x:"+p.x+"px;--moon-page-y:"+p.y+"px;left:"+p.x+"px;top:"+p.y+"px;translate:none;width:"+p.width+
     "px;min-height:"+p.height+"px;max-width:none;box-sizing:border-box"}
   const ADDED_LAYOUT_DEFAULT={align:"left",widthPercent:100,spaceAbove:0,spaceBelow:0};
   function addedBlockLayout(item){return {...ADDED_LAYOUT_DEFAULT,...(item?.layout||{})};}
