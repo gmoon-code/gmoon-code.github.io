@@ -268,3 +268,25 @@ test('page alignment commands place floating objects precisely and persist after
   await page.locator('#undoBtn').click();
   await expect(view.locator('main > .moon-free-layer > h2')).toHaveCSS('left',beforeReload+'px');
 });
+
+test('return to layout restores original container and supports undo', async ({ page }) => {
+  const view=page.frameLocator('#pageFrame');
+  await view.locator('#nested h2').click();
+  let move=view.locator('#moon-free-selection [data-free-direction="move"]');
+  await move.focus();await move.press('Shift+ArrowRight');
+  await expect(view.locator('main > .moon-free-layer > h2')).toHaveCount(1);
+  await view.getByRole('button',{
+    name:"Restore this object's original place in the content flow"
+  }).click();
+  await expect(view.locator('#nested .inner > h2')).toHaveCount(1);
+  await expect(view.locator('#nested .inner > h2')).not.toHaveClass(/moon-free-absolute/);
+  await page.locator('#undoBtn').click();
+  await expect(view.locator('main > .moon-free-layer > h2')).toHaveCount(1);
+  await page.reload();
+  await expect(view.locator('main > .moon-free-layer > h2')).toHaveCount(1);
+  await view.locator('main > .moon-free-layer > h2').click();
+  await view.getByRole('button',{
+    name:"Restore this object's original place in the content flow"
+  }).click();
+  await expect(view.locator('#nested .inner > h2')).toHaveCount(1);
+});
