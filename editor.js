@@ -534,10 +534,41 @@
     choosePageFind(next);
   }
 
+  function clearCanvasSelection(){
+    const doc=state.frameDoc;
+    if(!doc||(!state.selected&&state.selectedAddition===null))return;
+    for(const node of doc.querySelectorAll("[data-editor-selected],[data-editor-added-selected]")){
+      node.removeAttribute("data-editor-selected");
+      node.removeAttribute("data-editor-added-selected");
+      node.removeAttribute("contenteditable");
+    }
+    state.selected=null;
+    state.selectedAddition=null;
+    clearFreeSnapGuides();
+    closeQuickProperties();
+    closeQuickSize(true);
+    for(const id of ["moon-free-selection","moon-quick-toolbar",
+      "moon-image-resize-handle","moon-block-move-handle",
+      "moon-added-block-move-handle","moon-added-block-width-handle",
+      "moon-source-width-handle","moon-spacing-grip"]){
+      doc.getElementById(id)?.remove();
+    }
+    $("selectionDetails").hidden=true;
+    $("addedBlockDetails").hidden=true;
+    $("selectionEmpty").hidden=false;
+    $("selectionTag").textContent="Nothing selected";
+    updateBrowseControls();
+  }
   function onPreviewKeydown(event){
     const typing=Boolean(event.target?.closest?.("input,textarea,select,[contenteditable='true'],[role='textbox']"));
     const blocked=Boolean(event.target?.closest?.(
       "#moon-quick-properties,#moon-quick-composer,#moon-quick-layout,#moon-quick-size"));
+    if(freeCanvasActive&&!typing&&!blocked&&event.key==="Escape"&&
+      (state.selected!==null||state.selectedAddition!==null)){
+      event.preventDefault();event.stopPropagation();
+      clearCanvasSelection();
+      return;
+    }
     // Delete removes only a newly inserted, selected object. Original
     // website content still requires the explicit guarded Remove action.
     if(freeCanvasActive&&!typing&&!blocked&&!event.ctrlKey&&!event.metaKey&&
@@ -590,7 +621,12 @@
       return;
     }
     const node=event.target.closest("[data-editor-key]");
-    if (!node) return;
+    if (!node){
+      // Clicking unused canvas space dismisses selection handles without
+      // modifying the draft, matching direct-manipulation editors.
+      if(freeCanvasActive&&event.target.closest("main"))clearCanvasSelection();
+      return;
+    }
     selectElement(node);
     if (TEXT_TAGS.has(node.tagName)) node.focus({preventScroll:true});
   }
