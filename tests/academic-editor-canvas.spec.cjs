@@ -237,3 +237,34 @@ test('Ctrl-click cycles between overlapping floating objects without dragging', 
   await view.getByRole('button', {name:'Cycle between objects occupying the same area'}).click();
   await expect(floatingParagraph).toHaveAttribute('data-editor-selected','');
 });
+
+test('page alignment commands place floating objects precisely and persist after reload', async ({ page }) => {
+  const view=page.frameLocator('#pageFrame');
+  await view.locator('main #nested h2').click();
+  await view.getByRole('button',{name:'Centre selected object horizontally on the page'}).click();
+  let floating=view.locator('main > .moon-free-layer > h2');
+  await expect(floating).toHaveCount(1);
+  const placement=async()=>floating.evaluate(node=>{
+    const main=node.closest('main');
+    return {x:parseInt(node.style.left,10),right:main.clientWidth-node.offsetWidth,
+      midpoint:(main.clientWidth-node.offsetWidth)/2};
+  });
+  let x=await placement();
+  expect(Math.abs(x.x-x.midpoint)).toBeLessThan(2);
+  await view.getByRole('button',{name:'Align selected object to the right page edge'}).click();
+  x=await placement();
+  expect(Math.abs(x.x-x.right)).toBeLessThan(2);
+  await expect.poll(()=>page.evaluate(key=>
+    JSON.parse(localStorage.getItem(key)||'{}').items?.some(item=>
+      item.markup.includes('--moon-page-x')),DRAFT)).toBe(true);
+  const beforeReload=x.x;
+  await page.reload();
+  floating=view.locator('main > .moon-free-layer > h2');
+  await expect(floating).toHaveCount(1);
+  await expect(floating).toHaveCSS('left',beforeReload+'px');
+  await view.locator('main > .moon-free-layer > h2').click();
+  await view.getByRole('button',{name:'Align selected object to the left page edge'}).click();
+  await expect(floating).toHaveCSS('left','0px');
+  await page.locator('#undoBtn').click();
+  await expect(view.locator('main > .moon-free-layer > h2')).toHaveCSS('left',beforeReload+'px');
+});
