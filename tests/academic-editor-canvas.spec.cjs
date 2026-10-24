@@ -290,3 +290,34 @@ test('return to layout restores original container and supports undo', async ({ 
   }).click();
   await expect(view.locator('#nested .inner > h2')).toHaveCount(1);
 });
+
+test('published canvas reserves actual wrapped-text height below a floating object', async ({ page }) => {
+  const view=page.frameLocator('#pageFrame');
+  await view.locator('#nested h2').click();
+  const grip=view.locator('#moon-free-selection [data-free-direction="move"]');
+  await grip.focus();await grip.press('Shift+ArrowDown');
+  const downloadPromise=page.waitForEvent('download');
+  await page.locator('#exportBtn').click();
+  const exported=fs.readFileSync(await (await downloadPromise).path(),'utf8');
+  await page.context().route('**/canvas-height-test.html',route=>route.fulfill({
+    status:200,contentType:'text/html',body:exported
+  }));
+  const published=await page.context().newPage();
+  await published.setViewportSize({width:1100,height:850});
+  await published.goto('http://127.0.0.1:8765/canvas-height-test.html');
+  const object=published.locator('main > .moon-free-layer > h2');
+  await expect(object).toHaveCount(1);
+  await object.evaluate(node=>{
+    node.style.width='55px';
+    node.style.height='18px';
+    node.style.minHeight='18px';
+    node.textContent='A long heading that wraps over several lines and must not overlap the page footer';
+    window.dispatchEvent(new Event('resize'));
+  });
+  await expect.poll(()=>object.evaluate(node=>{
+    const main=node.closest('main');
+    const actual=parseFloat(getComputedStyle(main).getPropertyValue('--moon-free-canvas-height'));
+    return actual-(parseFloat(node.style.top)+node.scrollHeight);
+  })).toBeGreaterThanOrEqual(31);
+  await published.close();
+});
