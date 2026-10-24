@@ -3600,12 +3600,12 @@
   // Keep their editable source blocks in state.doc; relocate only the preview
   // copy and the final HTML. This avoids browser-specific anchor positioning.
   const FREE_CSS=[
-    "main:has(> .moon-free-layer){position:relative!important;overflow:visible!important}",
+    "main:has(> .moon-free-layer){position:relative!important;overflow:visible!important;min-height:var(--moon-free-canvas-height,0px)}",
     "main > .moon-free-layer{position:absolute!important;inset:0!important;z-index:20;overflow:visible!important;pointer-events:none!important}",
     "main .moon-free-object{position:relative;z-index:3;box-sizing:border-box;max-width:none}",
     "main .moon-free-absolute{position:absolute!important;z-index:20;box-sizing:border-box;max-width:none;margin:0!important;transform:none!important}",
     "main > .moon-free-layer > .moon-free-absolute{pointer-events:auto!important}",
-    "@media(max-width:700px){html:not(.moon-free-mode) main > .moon-free-layer{position:static!important;inset:auto!important;display:contents!important;pointer-events:auto!important}html:not(.moon-free-mode) main .moon-free-absolute{position:static!important;left:auto!important;top:auto!important;right:auto!important;bottom:auto!important;translate:none!important;width:auto!important;max-width:100%!important;min-height:0!important;height:auto!important}html:not(.moon-free-mode) img.moon-free-object{width:auto!important;max-width:100%!important;height:auto!important}}"
+    "@media(max-width:700px){html:not(.moon-free-mode) main:has(> .moon-free-layer){min-height:0!important}html:not(.moon-free-mode) main > .moon-free-layer{position:static!important;inset:auto!important;display:contents!important;pointer-events:auto!important}html:not(.moon-free-mode) main .moon-free-absolute{position:static!important;left:auto!important;top:auto!important;right:auto!important;bottom:auto!important;translate:none!important;width:auto!important;max-width:100%!important;min-height:0!important;height:auto!important}html:not(.moon-free-mode) img.moon-free-object{width:auto!important;max-width:100%!important;height:auto!important}}"
   ].join("\n");
   function relocateFreeObjects(doc){
     const main=doc.querySelector("main");
@@ -3620,10 +3620,21 @@
     }
     let moved=0;
     for(const object of objects){
-      if(object.parentElement===layer)continue;
-      layer.appendChild(object);
-      moved++;
+      if(object.parentElement!==layer){
+        layer.appendChild(object);
+        moved++;
+      }
     }
+    // Absolutely positioned children do not contribute to main's height.
+    // Reserve enough space for the lowest saved object, including a margin
+    // to keep following sections and the footer clear of the canvas.
+    const bottom=objects.reduce((max,node)=>{
+      const y=parseFloat(node.style.getPropertyValue("--moon-page-y")||node.style.top);
+      const height=parseFloat(node.style.minHeight)||parseFloat(node.style.height)||0;
+      return Number.isFinite(y)&&Number.isFinite(height)?
+        Math.max(max,y+Math.max(0,height)+32):max;
+    },0);
+    main.style.setProperty("--moon-free-canvas-height",Math.min(20064,Math.max(0,Math.ceil(bottom)))+"px");
     return moved;
   }
   function freePositionValid(p){return !!p&&typeof p==="object"&&!Array.isArray(p)&&
