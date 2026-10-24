@@ -166,3 +166,34 @@ test('published mobile page restores the original position of a floating heading
   await expect(published.locator('main > .moon-free-layer > h2')).toHaveCount(1);
   await published.close();
 });
+
+test('magnetic alignment snaps to main edge and Alt temporarily bypasses snap', async ({ page }) => {
+  const view=page.frameLocator('#pageFrame');
+  await view.locator('#nested h2').click();
+  const grip=view.locator('#moon-free-selection [data-free-direction="move"]');
+  await grip.focus();
+  await grip.press('Shift+ArrowRight');
+  const selected=view.locator('main > .moon-free-layer > h2');
+  await expect(selected).toHaveCount(1);
+  const x=await selected.evaluate(node=>Number.parseInt(node.style.left,10));
+  const box=await grip.boundingBox();
+  const cx=box.x+box.width/2,cy=box.y+box.height/2;
+  await page.mouse.move(cx,cy);
+  await page.mouse.down();
+  await page.mouse.move(cx-x+3,cy+15,{steps:5});
+  await expect(view.locator('#moon-free-snap-guides')).toHaveCount(1);
+  await page.mouse.up();
+  await expect(selected).toHaveCSS('left','0px');
+  await expect(view.locator('#moon-free-snap-guides')).toHaveCount(0);
+
+  // Alt disables magnetic snapping, useful when positioning precisely.
+  const moveAgain=view.locator('#moon-free-selection [data-free-direction="move"]');
+  const r=await moveAgain.boundingBox();
+  await page.mouse.move(r.x+r.width/2,r.y+r.height/2);
+  await page.keyboard.down('Alt');
+  await page.mouse.down();
+  await page.mouse.move(r.x+r.width/2+4,r.y+r.height/2+12,{steps:3});
+  await page.mouse.up();
+  await page.keyboard.up('Alt');
+  await expect(selected).toHaveCSS('left','4px');
+});
