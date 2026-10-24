@@ -385,6 +385,7 @@
         d.documentElement.setAttribute("data-moon-theme",$("previewTheme").value);
         d.documentElement.style.colorScheme=$("previewTheme").value;
         d.documentElement.classList.toggle("moon-free-mode",freeCanvasActive);
+        synchronizeFreeReadingOrder(d);
         updateStagedPreview();
         d.addEventListener("click",onPreviewClick,true);
         d.addEventListener("pointerdown",onFreeObjectPointerDown,true);
@@ -419,6 +420,7 @@
         d.defaultView.addEventListener("resize",positionQuickComposer);
         d.defaultView.addEventListener("resize",positionQuickLayout);
         d.defaultView.addEventListener("resize",positionColumnResizeHandle);
+        d.defaultView.addEventListener("resize",()=>synchronizeFreeReadingOrder(d));
 
         refreshPageFind();
         updateBrowseControls();
@@ -952,6 +954,7 @@
       sel.node.classList.add(FREE_CLASS,"moon-free-absolute");
       sel.node.style.cssText=addedBlockStyle(next);
       relocateFreeObjects(doc);
+      synchronizeFreeReadingOrder(doc);
       const image=sel.node.querySelector("img");
       if(image)image.style.width="100%";
     }else{
@@ -972,6 +975,7 @@
         node.style.boxSizing="border-box";
       }
       relocateFreeObjects(doc);
+      synchronizeFreeReadingOrder(doc);
     }
     positionFreeSelection();
     return true;
@@ -1217,6 +1221,7 @@
   function toggleFreeCanvas(){
     freeCanvasActive=!freeCanvasActive;
     state.frameDoc?.documentElement.classList.toggle("moon-free-mode",freeCanvasActive);
+    synchronizeFreeReadingOrder(state.frameDoc);
     const button=$("freeCanvasToggle");
     button.setAttribute("aria-pressed",String(freeCanvasActive));
     button.textContent=freeCanvasActive?"✓ Free move & resize":"Free move & resize";
@@ -3697,9 +3702,30 @@
       layer.className="moon-free-layer";
       main.appendChild(layer);
     }
-    let moved=0;
+    // Leave a comment at the object's original location. Comments have no
+    // layout footprint and survive HTML serialization. The published mobile
+    // runtime uses these markers to restore the original reading order.
+    const prefix="moon-free-slot:";
+    const occupied=new Set(objects.map(node=>node.getAttribute("data-moon-free-slot")).filter(Boolean));
+    let id=0,moved=0;
+    const markerNames=new Set();
+    const walker=doc.createTreeWalker(main,128);
+    while(walker.nextNode()){
+      const name=walker.currentNode.data;
+      if(name.startsWith(prefix))markerNames.add(name.slice(prefix.length));
+    }
     for(const object of objects){
+      let slot=object.getAttribute("data-moon-free-slot");
+      if(!slot||!/^[a-z0-9-]{1,40}$/.test(slot)){
+        do{slot="f"+(++id);}while(occupied.has(slot)||markerNames.has(slot));
+        occupied.add(slot);
+        object.setAttribute("data-moon-free-slot",slot);
+      }
       if(object.parentElement!==layer){
+        if(!markerNames.has(slot)){
+          object.before(doc.createComment(prefix+slot));
+          markerNames.add(slot);
+        }
         layer.appendChild(object);
         moved++;
       }
@@ -3715,6 +3741,26 @@
     },0);
     main.style.setProperty("--moon-free-canvas-height",Math.min(20064,Math.max(0,Math.ceil(bottom)))+"px");
     return moved;
+  }
+  function synchronizeFreeReadingOrder(doc){
+    const main=doc?.querySelector("main");
+    if(!main)return;
+    const layer=[...main.children].find(node=>node.classList.contains("moon-free-layer"));
+    if(!layer)return;
+    const narrow=doc.defaultView.innerWidth<=700&&!freeCanvasActive;
+    const markers=new Map();
+    const walker=doc.createTreeWalker(main,128);
+    while(walker.nextNode()){
+      const marker=walker.currentNode;
+      if(marker.data.startsWith("moon-free-slot:"))
+        markers.set(marker.data.slice(15),marker);
+    }
+    for(const node of [...main.querySelectorAll(".moon-free-absolute[data-moon-free-slot]")]){
+      const marker=markers.get(node.getAttribute("data-moon-free-slot"));
+      if(narrow&&marker?.parentNode){
+        if(node.nextSibling!==marker)marker.parentNode.insertBefore(node,marker);
+      }else if(node.parentElement!==layer)layer.append(node);
+    }
   }
   function freePositionValid(p){return !!p&&typeof p==="object"&&!Array.isArray(p)&&
     Object.keys(p).length===4&&["x","y","width","height"].every(k=>Number.isInteger(p[k]))&&
