@@ -517,6 +517,12 @@ test('floating figure preserves its own image dimensions while its caption stays
   await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',body:source}));
   await page.reload();
   const view=page.frameLocator('#pageFrame');
+  console.log('[figure-before]',await view.locator('figure img').evaluate(node=>({
+    html:node.outerHTML,height:getComputedStyle(node).height,
+    maxHeight:getComputedStyle(node).maxHeight,
+    parentHeight:getComputedStyle(node.parentElement).height,
+    sheets:[...node.ownerDocument.styleSheets].map(sheet=>[...sheet.cssRules].filter(r=>r.cssText.includes('img')).map(r=>r.cssText))
+  })));
   await view.locator('figure figcaption').click();
   await view.getByRole('button',{name:'Select the entire figure including its image and caption'}).click();
   const handle=view.locator('#moon-free-selection [data-free-direction="move"]');
