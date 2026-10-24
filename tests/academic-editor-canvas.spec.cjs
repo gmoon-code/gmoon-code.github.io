@@ -280,6 +280,8 @@ test('return to layout restores original container and supports undo', async ({ 
   }).click();
   await expect(view.locator('#nested .inner > h2')).toHaveCount(1);
   await expect(view.locator('#nested .inner > h2')).not.toHaveClass(/moon-free-absolute/);
+  // Restoring the sole draft movement must not leave a phantom edit.
+  await expect(page.locator('#exportBtn')).toBeDisabled();
   await page.locator('#undoBtn').click();
   await expect(view.locator('main > .moon-free-layer > h2')).toHaveCount(1);
   await page.reload();
