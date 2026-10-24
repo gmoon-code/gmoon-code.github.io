@@ -523,6 +523,13 @@ test('floating figure preserves its own image dimensions while its caption stays
   await handle.focus();await handle.press('ArrowRight');
   const figure=view.locator('main > .moon-free-layer > figure');
   await expect(figure).toHaveCount(1);
+  console.log('[figure-height-debug]',await figure.locator('img').evaluate(node=>({
+    image:node.outerHTML,parent:node.parentElement.outerHTML.slice(0,700),
+    computedHeight:getComputedStyle(node).height,
+    inlineHeight:node.style.height,
+    computedWidth:getComputedStyle(node).width,
+    naturalHeight:node.naturalHeight
+  })));
   await expect(figure.locator('img')).toHaveCSS('height','80px');
   await expect(figure.locator('figcaption')).toHaveText('Caption remains part of the figure');
   const download=page.waitForEvent('download');
