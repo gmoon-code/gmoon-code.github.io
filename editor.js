@@ -1484,12 +1484,14 @@
     // room. A toolbar below a page-top heading can cover the next paragraph
     // and prevent its selection, so use a bottom-corner fallback.
     let left,top;
-    if(rect.right+width+9<=view.innerWidth-4){
-      left=rect.right+8;top=rect.top;
-    }else if(rect.left-width-9>=4){
-      left=rect.left-width-8;top=rect.top;
-    }else if(rect.top>=height+10){
-      left=rect.left;top=rect.top-height-7;
+    if(rect.right+width+28<=view.innerWidth-4){
+      left=rect.right+24;top=rect.top;
+    }else if(rect.left-width-28>=4){
+      left=rect.left-width-24;top=rect.top;
+    }else if(rect.top>=height+28){
+      left=rect.left;top=rect.top-height-24;
+    }else if(rect.bottom+height+28<=view.innerHeight-4){
+      left=rect.left;top=rect.bottom+24;
     }else{
       // The bottom of the preview iframe may extend beyond the editor's
       // visible browser viewport. Keep the compact fallback at the top edge
@@ -1518,8 +1520,8 @@
     bar.setAttribute("role","toolbar");
     bar.setAttribute("aria-label","Selected block quick actions");
     bar.setAttribute("aria-orientation","horizontal");
-    bar.style.cssText="position:fixed;z-index:2147483644;display:flex;align-items:center;flex-wrap:wrap;gap:4px;padding:5px;"+
-      "width:min(310px,calc(100vw - 8px));box-sizing:border-box;border:1px solid "+
+    bar.style.cssText="position:fixed;z-index:2147483646;display:flex;align-items:center;flex-wrap:wrap;gap:4px;padding:5px;"+
+      "width:min(310px,calc(100vw - 8px));max-height:min(55vh,320px);overflow-y:auto;box-sizing:border-box;border:1px solid "+
       (dark?"#a7baa9":"#9cb7a9")+";border-radius:9px;background:"+
       (dark?"#1a1c1a":"#fff")+";color:"+(dark?"#f5f7f5":"#183e30")+
       ";box-shadow:0 4px 16px #0003;font:600 12px/1.25 system-ui,sans-serif;max-width:calc(100vw - 8px)";
