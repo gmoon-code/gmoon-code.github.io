@@ -889,13 +889,13 @@
   }
   function freeGeometry(sel){
     const existing=sel.added?state.additions[state.selectedAddition]?.freePosition:null;
-    if(existing&&freePositionValid(existing))return {...existing};
+    if(existing&&freePositionValid(existing)&&sel.node.classList.contains("moon-free-absolute"))return {...existing};
     if(!sel.added){
       const style=getWorking(state.selected)?.style;
       if(style&&sel.node.classList.contains(FREE_CLASS)){
         const x=parseInt(style.left,10),y=parseInt(style.top,10);
         const width=parseInt(style.width,10),height=parseInt(style.minHeight,10);
-        if(freePositionValid({x,y,width,height}))return {x,y,width,height};
+        if(sel.node.classList.contains("moon-free-absolute")&&freePositionValid({x,y,width,height}))return {x,y,width,height};
       }
     }
     // Convert untouched and legacy translated objects to coordinates within main.
@@ -918,7 +918,7 @@
       const i=state.selectedAddition,item=state.additions[i];
       const next={...item,freePosition:{...geometry}};
       state.additions[i]=next;
-      sel.node.classList.add(FREE_CLASS);
+      sel.node.classList.add(FREE_CLASS,"moon-free-absolute");
       sel.node.style.cssText=addedBlockStyle(next);
       const image=sel.node.querySelector("img");
       if(image)image.style.width="100%";
@@ -926,7 +926,7 @@
       const source=getWorking(state.selected);
       if(!source)return false;
       for(const node of [source,sel.node]){
-        node.classList.add(FREE_CLASS);
+        node.classList.add(FREE_CLASS,"moon-free-absolute");
         node.style.translate="none";
         node.style.left=geometry.x+"px";
         node.style.top=geometry.y+"px";
@@ -3563,9 +3563,10 @@
   }
   const FREE_CLASS="moon-free-object";
   const FREE_CSS=[
-    "main:has(.moon-free-object){position:relative!important;overflow:visible!important}",
-    "main:has(.moon-free-object) *:has(.moon-free-object){position:static!important;overflow:visible!important;transform:none!important}",
-    "main .moon-free-object{position:absolute!important;z-index:20;box-sizing:border-box;max-width:none;transform:none!important}",
+    "main:has(.moon-free-absolute){position:relative!important;overflow:visible!important}",
+    "main:has(.moon-free-absolute) *:has(.moon-free-absolute){position:static!important;overflow:visible!important}",
+    "main .moon-free-object{position:relative;z-index:3;box-sizing:border-box;max-width:none}",
+    "main .moon-free-absolute{position:absolute!important;z-index:20;transform:none!important}",
     "@media(max-width:700px){html:not(.moon-free-mode) .moon-free-object{translate:none!important;width:auto!important;max-width:100%!important;min-height:0!important;height:auto!important;position:static!important}html:not(.moon-free-mode) img.moon-free-object{width:auto!important;max-width:100%!important;height:auto!important}}"
   ].join("\n");
   function freePositionValid(p){return !!p&&typeof p==="object"&&!Array.isArray(p)&&
