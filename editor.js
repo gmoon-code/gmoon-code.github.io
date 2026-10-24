@@ -1004,6 +1004,19 @@
         dy=Math.min(dy,drag.base.height-18);
         next.y+=dy;next.height-=dy;
       }else if(d.includes("s"))next.height+=dy;
+      // Shift constrains corner resizing to the initial aspect ratio.
+      if(event.shiftKey&&d.length===2){
+        const ratio=drag.base.width/drag.base.height;
+        const widthChange=Math.abs(next.width-drag.base.width);
+        const heightChange=Math.abs(next.height-drag.base.height)*ratio;
+        if(widthChange>=heightChange){
+          next.height=Math.max(18,Math.round(next.width/ratio));
+          if(d.includes("n"))next.y=drag.base.y+drag.base.height-next.height;
+        }else{
+          next.width=Math.max(35,Math.round(next.height*ratio));
+          if(d.includes("w"))next.x=drag.base.x+drag.base.width-next.width;
+        }
+      }
     }
     next.x=Math.max(-16000,Math.min(16000,next.x));
     next.y=Math.max(-16000,Math.min(16000,next.y));
