@@ -3603,7 +3603,7 @@
     "main:has(> .moon-free-layer){position:relative!important;overflow:visible!important}",
     "main > .moon-free-layer{position:absolute!important;inset:0!important;z-index:20;overflow:visible!important;pointer-events:none!important}",
     "main .moon-free-object{position:relative;z-index:3;box-sizing:border-box;max-width:none}",
-    "main .moon-free-absolute{position:absolute!important;z-index:20;box-sizing:border-box;max-width:none;transform:none!important}",
+    "main .moon-free-absolute{position:absolute!important;z-index:20;box-sizing:border-box;max-width:none;margin:0!important;transform:none!important}",
     "main > .moon-free-layer > .moon-free-absolute{pointer-events:auto!important}",
     "@media(max-width:700px){html:not(.moon-free-mode) main > .moon-free-layer{position:static!important;inset:auto!important;display:contents!important;pointer-events:auto!important}html:not(.moon-free-mode) main .moon-free-absolute{position:static!important;left:auto!important;top:auto!important;right:auto!important;bottom:auto!important;translate:none!important;width:auto!important;max-width:100%!important;min-height:0!important;height:auto!important}html:not(.moon-free-mode) img.moon-free-object{width:auto!important;max-width:100%!important;height:auto!important}}"
   ].join("\n");
