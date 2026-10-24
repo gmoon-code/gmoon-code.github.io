@@ -4,6 +4,24 @@
   "use strict";
   const media=window.matchMedia("(max-width:700px)");
   const PREFIX="moon-free-slot:";
+  function reserveHeight(){
+    if(media.matches)return;
+    const main=document.querySelector("main");
+    const layer=main&&[...main.children].find(node=>node.classList.contains("moon-free-layer"));
+    if(!layer)return;
+    let lowest=0;
+    for(const node of layer.children){
+      if(!node.classList.contains("moon-free-absolute"))continue;
+      const top=parseFloat(node.style.getPropertyValue("--moon-page-y")||node.style.top);
+      if(!Number.isFinite(top))continue;
+      const height=Math.max(parseFloat(node.style.height)||0,
+        parseFloat(node.style.minHeight)||0,node.scrollHeight||0,
+        node.getBoundingClientRect().height||0);
+      lowest=Math.max(lowest,top+height+32);
+    }
+    main.style.setProperty("--moon-free-canvas-height",
+      Math.min(20064,Math.ceil(Math.max(0,lowest)))+"px");
+  }
   function rearrange(){
     const main=document.querySelector("main");
     const layer=main&&[...main.children].find(element=>element.classList.contains("moon-free-layer"));
@@ -23,10 +41,16 @@
         layer.append(node);
       }
     }
+    reserveHeight();
   }
   if(document.readyState==="loading")
     document.addEventListener("DOMContentLoaded",rearrange,{once:true});
   else rearrange();
   if(media.addEventListener)media.addEventListener("change",rearrange);
   else if(media.addListener)media.addListener(rearrange);
+  window.addEventListener("resize",reserveHeight);
+  document.addEventListener("load",event=>{
+    if(event.target?.tagName==="IMG")reserveHeight();
+  },true);
+  document.fonts?.ready?.then(reserveHeight);
 })();
