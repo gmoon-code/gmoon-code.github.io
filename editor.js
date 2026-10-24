@@ -911,6 +911,28 @@
       width:Math.max(35,Math.min(4000,Math.round(rect.width))),
       height:Math.max(18,Math.min(4000,Math.round(rect.height)))};
   }
+  function preserveFreeObjectAppearance(sel){
+    // Moving an original heading/paragraph outside its section may remove
+    // inherited typography or rules such as ".intro > p". Capture the
+    // computed typography before relocation, without freezing theme colours.
+    if(sel.added||sel.node.classList.contains("moon-free-absolute"))return;
+    const source=getWorking(state.selected);
+    if(!source)return;
+    const text=TEXT_TAGS.has(sel.node.tagName);
+    const properties=text?
+      ["font-family","font-size","font-weight","font-style","line-height",
+        "letter-spacing","text-align","text-transform"]:
+      sel.node.tagName==="IMG"?["object-fit","object-position","border-radius"]:[];
+    if(!properties.length)return;
+    const computed=sel.node.ownerDocument.defaultView.getComputedStyle(sel.node);
+    for(const property of properties){
+      if(source.style.getPropertyValue(property))continue;
+      const value=computed.getPropertyValue(property).trim();
+      if(!value||value==="normal"||value==="none"||value==="auto")continue;
+      source.style.setProperty(property,value);
+      sel.node.style.setProperty(property,value);
+    }
+  }
   function applyFreeGeometry(geometry){
     if(!freePositionValid(geometry))return false;
     const sel=freeSelected();if(!sel)return false;
@@ -931,6 +953,7 @@
     }else{
       const source=getWorking(state.selected);
       if(!source)return false;
+      preserveFreeObjectAppearance(sel);
       for(const node of [source,sel.node]){
         node.classList.add(FREE_CLASS,"moon-free-absolute");
         node.style.translate="none";
