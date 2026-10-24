@@ -3,7 +3,7 @@
 (function () {
   "use strict";
 
-  const EDITABLE = "h1,h2,h3,h4,h5,h6,p,li,figcaption,blockquote,dt,dd,a,img,th,td";
+  const EDITABLE = "h1,h2,h3,h4,h5,h6,p,li,figcaption,blockquote,dt,dd,a,img,th,td,figure";
   const TEXT_TAGS = new Set(["H1","H2","H3","H4","H5","H6","P","LI","FIGCAPTION","BLOCKQUOTE","DT","DD","A","TH","TD"]);
   const DRAFT_PREFIX = "moon-portfolio-visual-editor-v1:";
   const PANEL_PREFERENCE_KEY="moon-portfolio-editor-workspace-v1";
@@ -686,7 +686,7 @@
 
   // All contextual controls live only in the script-disabled preview iframe.
   // Source documents, draft HTML and exported pages never receive this toolbar.
-  const QUICK_SOURCE_TAGS=new Set(["P","H1","H2","H3","H4","BLOCKQUOTE","LI","IMG"]);
+  const QUICK_SOURCE_TAGS=new Set(["P","H1","H2","H3","H4","BLOCKQUOTE","LI","IMG","FIGCAPTION","FIGURE"]);
   function quickSelection(){
     const doc=state.frameDoc;
     if(!doc)return null;
@@ -1540,9 +1540,22 @@
       return button;
     };
     const chosenImage=selected.added?insertionKind(state.additions[state.selectedAddition])==="image":selected.node.tagName==="IMG";
+    const selectedFigure=!selected.added&&selected.node.tagName==="FIGURE";
+    const enclosingFigure=!selected.added&&selected.node.closest("figure[data-editor-key]");
+    if(enclosingFigure&&enclosingFigure!==selected.node)
+      bar.append(make("Select figure",()=>selectElement(enclosingFigure),null,
+        "Select the entire figure including its image and caption"));
+    if(selectedFigure){
+      const image=selected.node.querySelector("img[data-editor-key]");
+      const caption=selected.node.querySelector("figcaption[data-editor-key]");
+      if(image)bar.append(make("Edit image",()=>selectElement(image),null,
+        "Select the image within this figure"));
+      if(caption)bar.append(make("Edit caption",()=>selectElement(caption),null,
+        "Select the caption within this figure"));
+    }
     if(chosenImage){
       bar.append(make("Image",openQuickProperties,null,"Edit selected image on the page"));
-    }else{
+    }else if(!selectedFigure){
       bar.append(make("Style",openQuickProperties,null,"Change font, size and colours of selected text"));
     }
     if(freeCanvasActive&&freeSelected()){
@@ -1571,7 +1584,7 @@
       bar.append(back,front);
     }
     const current=quickAlignment();
-    if(!chosenImage)for(const [label,value] of [["Left","left"],["Centre","center"],["Right","right"]]){
+    if(!chosenImage&&!selectedFigure)for(const [label,value] of [["Left","left"],["Centre","center"],["Right","right"]]){
       bar.append(make(label,()=>{
         if(state.selectedAddition!==null)setAddedBlockLayout({align:value},true);
         else updateSelectedStyle("textAlign",value,["left","center","right"]);
@@ -2332,11 +2345,12 @@
     $("selectionEmpty").hidden=true;
     $("selectionTag").textContent=node.tagName.toLowerCase();
     const isImage=node.tagName==="IMG";
+    const isFigure=node.tagName==="FIGURE";
     const isLink=node.tagName==="A";
     $("imageFields").hidden=!isImage;
     $("linkFields").hidden=!isLink;
-    $("textAppearanceFields").hidden=isImage;
-    $("selectionText").closest(".inspector-group").hidden=isImage;
+    $("textAppearanceFields").hidden=isImage||isFigure;
+    $("selectionText").closest(".inspector-group").hidden=isImage||isFigure;
     $("revertElementBtn").disabled=!state.dirty.has(state.selected);
     const move=blockMoveCandidate(state.selected);
     const movedSource=state.blockOrders.some(group=>group.originalKeys.includes(state.selected));
