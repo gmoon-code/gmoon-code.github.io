@@ -888,22 +888,22 @@
     return sel;
   }
   function freeGeometry(sel){
-    if(sel.added){
-      const saved=state.additions[state.selectedAddition]?.freePosition;
-      if(saved)return {...saved};
-    }else{
-      const source=getWorking(state.selected),style=source?.style;
-      if(style&&source.classList.contains(FREE_CLASS)){
-        // CSS may normalize "10px 0px" to the shorter "10px" form.
-        const parts=/^(-?\d+)px(?:\s+(-?\d+)px)?$/.exec(style.translate||"");
+    const existing=sel.added?state.additions[state.selectedAddition]?.freePosition:null;
+    if(existing&&freePositionValid(existing))return {...existing};
+    if(!sel.added){
+      const style=getWorking(state.selected)?.style;
+      if(style&&sel.node.classList.contains(FREE_CLASS)){
+        const x=parseInt(style.left,10),y=parseInt(style.top,10);
         const width=parseInt(style.width,10),height=parseInt(style.minHeight,10);
-        const x=parts?Number(parts[1]):0,y=parts?Number(parts[2]||0):0;
-        if(parts&&freePositionValid({x,y,width,height}))
-          return {x,y,width,height};
+        if(freePositionValid({x,y,width,height}))return {x,y,width,height};
       }
     }
+    // Convert untouched and legacy translated objects to coordinates within main.
     const rect=sel.node.getBoundingClientRect();
-    return {x:0,y:0,width:Math.max(35,Math.min(4000,Math.round(rect.width))),
+    const main=sel.node.closest("main");
+    const origin=main?.getBoundingClientRect()||{left:0,top:0};
+    return {x:Math.round(rect.left-origin.left),y:Math.round(rect.top-origin.top),
+      width:Math.max(35,Math.min(4000,Math.round(rect.width))),
       height:Math.max(18,Math.min(4000,Math.round(rect.height)))};
   }
   function applyFreeGeometry(geometry){
@@ -927,7 +927,9 @@
       if(!source)return false;
       for(const node of [source,sel.node]){
         node.classList.add(FREE_CLASS);
-        node.style.translate=geometry.x+"px "+geometry.y+"px";
+        node.style.translate="none";
+        node.style.left=geometry.x+"px";
+        node.style.top=geometry.y+"px";
         node.style.width=geometry.width+"px";
         node.style.minHeight=geometry.height+"px";
         node.style.maxWidth="none";
@@ -3561,14 +3563,15 @@
   }
   const FREE_CLASS="moon-free-object";
   const FREE_CSS=[
-    "main:has(.moon-free-object),main:has(.moon-free-object) *:has(.moon-free-object){overflow:visible!important}",
-    ".moon-free-object{position:relative;z-index:3;box-sizing:border-box;max-width:none}",
+    "main:has(.moon-free-object){position:relative!important;overflow:visible!important}",
+    "main:has(.moon-free-object) *:has(.moon-free-object){position:static!important;overflow:visible!important;transform:none!important}",
+    "main .moon-free-object{position:absolute!important;z-index:20;box-sizing:border-box;max-width:none;transform:none!important}",
     "@media(max-width:700px){html:not(.moon-free-mode) .moon-free-object{translate:none!important;width:auto!important;max-width:100%!important;min-height:0!important;height:auto!important;position:static!important}html:not(.moon-free-mode) img.moon-free-object{width:auto!important;max-width:100%!important;height:auto!important}}"
   ].join("\n");
   function freePositionValid(p){return !!p&&typeof p==="object"&&!Array.isArray(p)&&
     Object.keys(p).length===4&&["x","y","width","height"].every(k=>Number.isInteger(p[k]))&&
     Math.abs(p.x)<=16000&&Math.abs(p.y)<=16000&&p.width>=35&&p.width<=4000&&p.height>=18&&p.height<=4000;}
-  function freeStyle(p){return "translate:"+p.x+"px "+p.y+"px;width:"+p.width+
+  function freeStyle(p){return "left:"+p.x+"px;top:"+p.y+"px;translate:none;width:"+p.width+
     "px;min-height:"+p.height+"px;max-width:none;box-sizing:border-box"}
   const ADDED_LAYOUT_DEFAULT={align:"left",widthPercent:100,spaceAbove:0,spaceBelow:0};
   function addedBlockLayout(item){return {...ADDED_LAYOUT_DEFAULT,...(item?.layout||{})};}
