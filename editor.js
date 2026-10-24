@@ -1113,6 +1113,39 @@
     const dimensions=state.frameDoc?.querySelector("#moon-free-selection [data-free-dimensions]");
     if(dimensions)dimensions.hidden=true;
   }
+  function freeLayerLevel(sel){
+    const value=sel.added?state.additions[state.selectedAddition]?.layer:
+      Number.parseInt(getWorking(state.selected)?.style.getPropertyValue("--moon-object-layer"),10);
+    return Number.isInteger(value)&&value>=1&&value<=99?value:20;
+  }
+  function changeFreeLayer(delta){
+    const sel=freeCanvasActive?freeSelected():null;
+    if(!sel||![-1,1].includes(delta))return;
+    const before=freeLayerLevel(sel),level=Math.max(1,Math.min(99,before+delta));
+    if(level===before)return;
+    const geometry=freeGeometry(sel);
+    checkpoint();
+    if(!applyFreeGeometry(geometry))return;
+    if(sel.added){
+      const index=state.selectedAddition;
+      const revised={...state.additions[index],layer:level};
+      const proposals=state.additions.map((item,i)=>i===index?revised:item);
+      try{validateParagraphAdditions(proposals)}catch(error){
+        undo();notice(error.message,"Layer change cancelled");return;
+      }
+      state.additions=proposals;
+      sel.node.style.setProperty("--moon-object-layer",String(level));
+      saveDraft();
+    }else{
+      const source=getWorking(state.selected);
+      source?.style.setProperty("--moon-object-layer",String(level));
+      sel.node.style.setProperty("--moon-object-layer",String(level));
+      updateDirty(state.selected);
+    }
+    updateStatus("Layer "+level+" saved · Not published");
+    createQuickToolbar();
+    positionFreeSelection();
+  }
   function freeNudge(dx,dy){
     const sel=freeSelected();if(!sel||!freeCanvasActive)return;
     const base=freeGeometry(sel);
@@ -1202,6 +1235,7 @@
         state.frameDoc?.getElementById(id)?.remove();
       createFreeSelection();
     }
+    createQuickToolbar();
   }
 
   function positionQuickToolbar(){
@@ -1280,6 +1314,16 @@
       bar.append(make("Image",openQuickProperties,null,"Edit selected image on the page"));
     }else{
       bar.append(make("Style",openQuickProperties,null,"Change font, size and colours of selected text"));
+    }
+    if(freeCanvasActive&&freeSelected()){
+      const level=freeLayerLevel(selected);
+      const back=make("Send back",()=>changeFreeLayer(-1),null,
+        "Place selected object one layer behind overlapping objects");
+      const front=make("Bring front",()=>changeFreeLayer(1),null,
+        "Place selected object one layer ahead of overlapping objects");
+      back.disabled=level<=1;
+      front.disabled=level>=99;
+      bar.append(back,front);
     }
     const current=quickAlignment();
     if(!chosenImage)for(const [label,value] of [["Left","left"],["Centre","center"],["Right","right"]]){
@@ -3697,7 +3741,7 @@
       throw Error("Invalid added block layout");
   }
   function addedBlockStyle(item){
-    if(!item?.layout&&!item?.appearance&&!item?.freePosition)return "";
+    if(!item?.layout&&!item?.appearance&&!item?.freePosition&&item?.layer===undefined)return "";
     const layout=addedBlockLayout(item),rules=[];
     if(layout.widthPercent!==100)rules.push("width:"+layout.widthPercent+"%","max-width:100%","box-sizing:border-box");
     if(layout.align==="center")rules.push("text-align:center","margin-left:auto","margin-right:auto");
@@ -3711,6 +3755,7 @@
     if(a.color)rules.push("color:"+a.color);
     if(a.background)rules.push("background-color:"+a.background);
     if(item.freePosition)rules.push(freeStyle(item.freePosition));
+    if(item.layer!==undefined)rules.push("--moon-object-layer:"+item.layer);
     return rules.join(";");
   }
   function safeExistingImagePath(path){
@@ -3755,6 +3800,8 @@
         }
       validateAddedLayout(item.layout);
       if(item.freePosition!==undefined&&!freePositionValid(item.freePosition))throw Error("Invalid free canvas position");
+      if(item.layer!==undefined&&(!Number.isInteger(item.layer)||item.layer<1||item.layer>99||!item.freePosition))
+        throw Error("Invalid free canvas stacking level");
       if(item.appearance!==undefined&&
          (kind==="image"||!allowedAppearance(item.appearance)))
         throw Error("Invalid text appearance");
@@ -3773,7 +3820,8 @@
           {widthPercent:item.widthPercent}:{})}:{}),
         ...(item.layout!==undefined?{layout:{...item.layout}}:{}),
         ...(item.appearance!==undefined?{appearance:{...item.appearance}}:{}),
-        ...(item.freePosition!==undefined?{freePosition:{...item.freePosition}}:{})});
+        ...(item.freePosition!==undefined?{freePosition:{...item.freePosition}}:{}),
+        ...(item.layer!==undefined?{layer:item.layer}:{})});
     }
     return out;
   }
