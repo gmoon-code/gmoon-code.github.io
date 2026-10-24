@@ -241,9 +241,12 @@ test('Ctrl-click cycles between overlapping floating objects without dragging', 
 test('page alignment commands place floating objects precisely and persist after reload', async ({ page }) => {
   const view=page.frameLocator('#pageFrame');
   await view.locator('main #nested h2').click();
+  console.log('[align] selected heading');
   await view.getByRole('button',{name:'Centre selected object horizontally on the page'}).click();
+  console.log('[align] clicked centre');
   let floating=view.locator('main > .moon-free-layer > h2');
   await expect(floating).toHaveCount(1);
+  console.log('[align] floating located');
   const placement=async()=>floating.evaluate(node=>{
     const main=node.closest('main');
     return {x:parseInt(node.style.left,10),right:main.clientWidth-node.offsetWidth,
@@ -252,20 +255,26 @@ test('page alignment commands place floating objects precisely and persist after
   let x=await placement();
   expect(Math.abs(x.x-x.midpoint)).toBeLessThan(2);
   await view.getByRole('button',{name:'Align selected object to the right page edge'}).click();
+  console.log('[align] clicked right');
   x=await placement();
   expect(Math.abs(x.x-x.right)).toBeLessThan(2);
   await expect.poll(()=>page.evaluate(key=>
     JSON.parse(localStorage.getItem(key)||'{}').items?.some(item=>
       item.markup.includes('--moon-page-x')),DRAFT)).toBe(true);
   const beforeReload=x.x;
+  console.log('[align] saved draft confirmed');
   await page.reload();
+  console.log('[align] reloaded');
   floating=view.locator('main > .moon-free-layer > h2');
   await expect(floating).toHaveCount(1);
   await expect(floating).toHaveCSS('left',beforeReload+'px');
   await view.locator('main > .moon-free-layer > h2').click();
+  console.log('[align] clicked restored heading');
   await view.getByRole('button',{name:'Align selected object to the left page edge'}).click();
+  console.log('[align] clicked left');
   await expect(floating).toHaveCSS('left','0px');
   await page.locator('#undoBtn').click();
+  console.log('[align] undo finished');
   await expect(view.locator('main > .moon-free-layer > h2')).toHaveCSS('left',beforeReload+'px');
 });
 
