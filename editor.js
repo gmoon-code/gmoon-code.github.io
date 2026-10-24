@@ -1281,13 +1281,33 @@
     const old=new DOMParser().parseFromString(originalMarkup,"text/html").body.firstElementChild;
     if(!node||!old)return;
     node.classList.remove("moon-free-object","moon-free-absolute");
-    // Restore only positioning-related properties to their original values.
-    // Keep the user's other content, colours and typography adjustments.
+    // Restore free-positioning properties and the typography automatically
+    // captured when leaving the original section. Retain content, colours,
+    // backgrounds and any other independent edits.
     for(const name of ["--moon-page-x","--moon-page-y","--moon-object-layer",
-      "left","top","width","height","min-height","max-width","box-sizing","translate"]){
+      "left","top","width","height","min-height","max-width","box-sizing","translate",
+      "font-family","font-size","font-weight","font-style","line-height",
+      "letter-spacing","text-align","text-transform",
+      "object-fit","object-position","border-radius"]){
       const value=old.style.getPropertyValue(name);
       if(value)node.style.setProperty(name,value,old.style.getPropertyPriority(name));
       else node.style.removeProperty(name);
+    }
+    // class="" and style="" also count as edits in the source verifier.
+    // Recover the original serialized attributes when their values match.
+    const originalClasses=[...old.classList],nowClasses=[...node.classList];
+    if(originalClasses.length===nowClasses.length&&
+      originalClasses.every(name=>nowClasses.includes(name))){
+      if(old.hasAttribute("class"))node.setAttribute("class",old.getAttribute("class"));
+      else node.removeAttribute("class");
+    }
+    const names=new Set([...old.style,...node.style]);
+    const stylesEqual=[...names].every(name=>
+      old.style.getPropertyValue(name)===node.style.getPropertyValue(name)&&
+      old.style.getPropertyPriority(name)===node.style.getPropertyPriority(name));
+    if(stylesEqual){
+      if(old.hasAttribute("style"))node.setAttribute("style",old.getAttribute("style"));
+      else node.removeAttribute("style");
     }
     updateDirty(key);
     renderPreview(key);
