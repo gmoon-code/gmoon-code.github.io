@@ -3912,6 +3912,7 @@
     const prefix="moon-free-slot:";
     const occupied=new Set(objects.map(node=>node.getAttribute("data-moon-free-slot")).filter(Boolean));
     let id=0,moved=0;
+    const encounteredSlots=new Set();
     const markerNames=new Set();
     const walker=doc.createTreeWalker(main,128);
     while(walker.nextNode()){
@@ -3920,11 +3921,12 @@
     }
     for(const object of objects){
       let slot=object.getAttribute("data-moon-free-slot");
-      if(!slot||!/^[a-z0-9-]{1,40}$/.test(slot)){
+      if(!slot||!/^[a-z0-9-]{1,40}$/.test(slot)||encounteredSlots.has(slot)){
         do{slot="f"+(++id);}while(occupied.has(slot)||markerNames.has(slot));
         occupied.add(slot);
         object.setAttribute("data-moon-free-slot",slot);
       }
+      encounteredSlots.add(slot);
       if(object.parentElement!==layer){
         if(!markerNames.has(slot)){
           object.before(doc.createComment(prefix+slot));
