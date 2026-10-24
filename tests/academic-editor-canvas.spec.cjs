@@ -508,3 +508,26 @@ test('a source figure moves with its image and caption as one editable object', 
   expect(html).toContain('<figcaption>Scientific tools in our classroom</figcaption>');
   expect(html).not.toContain('data-editor-key=');
 });
+
+test('floating figure preserves its own image dimensions while its caption stays inside', async ({ page }) => {
+  const source='<!doctype html><html><head><style>main{padding:25px}figure{margin:0}</style></head><body>'+
+    '<main><section><figure><img src="assets/example-photograph.webp" alt="Lab photograph" '+
+    'style="width:120px;height:80px"><figcaption>Caption remains part of the figure</figcaption>'+
+    '</figure><p>Following paragraph</p></section></main></body></html>';
+  await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',body:source}));
+  await page.reload();
+  const view=page.frameLocator('#pageFrame');
+  await view.locator('figure figcaption').click();
+  await view.getByRole('button',{name:'Select the entire figure including its image and caption'}).click();
+  const handle=view.locator('#moon-free-selection [data-free-direction="move"]');
+  await handle.focus();await handle.press('ArrowRight');
+  const figure=view.locator('main > .moon-free-layer > figure');
+  await expect(figure).toHaveCount(1);
+  await expect(figure.locator('img')).toHaveCSS('height','80px');
+  await expect(figure.locator('figcaption')).toHaveText('Caption remains part of the figure');
+  const download=page.waitForEvent('download');
+  await page.locator('#exportBtn').click();
+  const html=fs.readFileSync(await(await download).path(),'utf8');
+  expect(html).toContain('p.moon-free-absolute > img');
+  expect(html).toContain('<figcaption>Caption remains part of the figure</figcaption>');
+});
