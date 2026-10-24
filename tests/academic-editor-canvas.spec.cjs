@@ -579,3 +579,55 @@ test('Shift-dragging an image moves its whole captioned figure',async({page})=>{
   await page.reload();
   await expect(view.locator('main > .moon-free-layer > figure > figcaption')).toHaveText('Figure stays together');
 });
+
+test('duplicating an added floating image offsets the copy and preserves undo and export', async ({ page }) => {
+  const view=page.frameLocator('#pageFrame');
+  await view.locator('#nested h2').click();
+  await page.locator('#insertContentKind').selectOption('image');
+  await page.locator('#insertContentText').fill('Microscope illustration');
+  await page.locator('#insertImageSrc').fill('assets/example-photograph.webp');
+  await page.locator('#insertContentBtn').click();
+  const first=view.locator('[data-editor-added-index="0"]');
+  await first.click();
+  const move=view.locator('#moon-free-selection [data-free-direction="move"]');
+  await move.focus();
+  await move.press('ArrowRight');
+  const original=await first.evaluate(node=>({
+    x:parseFloat(node.style.left),y:parseFloat(node.style.top)
+  }));
+  await view.getByRole('button',{name:'Duplicate selected new block'}).click();
+  const copied=view.locator('main > .moon-free-layer > [data-editor-added-index="1"]');
+  await expect(copied).toHaveCount(1);
+  const coordinates=await copied.evaluate(node=>({
+    x:parseFloat(node.style.left),y:parseFloat(node.style.top),
+    layer:getComputedStyle(node).zIndex
+  }));
+  expect(coordinates.x).toBe(original.x+24);
+  expect(coordinates.y).toBe(original.y+24);
+  expect(Number(coordinates.layer)).toBeGreaterThan(20);
+  await expect.poll(()=>page.evaluate(key=>
+    JSON.parse(localStorage.getItem(key)||'{}').additions?.length,DRAFT)).toBe(2);
+  await page.reload();
+  await expect(view.locator('main > .moon-free-layer > [data-editor-added-index]')).toHaveCount(2);
+  const download=page.waitForEvent('download');
+  await page.locator('#exportBtn').click();
+  const html=fs.readFileSync(await(await download).path(),'utf8');
+  expect((html.match(/alt="Microscope illustration"/g)||[]).length).toBe(2);
+  await page.locator('#undoBtn').click();
+  await expect(view.locator('main > .moon-free-layer > [data-editor-added-index]')).toHaveCount(1);
+});
+
+test('the editor accepts more than ten additions without silently discarding a draft', async ({ page }) => {
+  await page.frameLocator('#pageFrame').locator('#nested h2').click();
+  await page.locator('#insertContentText').fill('A new block');
+  await page.locator('#insertContentBtn').click();
+  const view=page.frameLocator('#pageFrame');
+  await view.locator('[data-editor-added-index="0"]').click();
+  for(let i=1;i<12;i++){
+    await view.getByRole('button',{name:'Duplicate selected new block'}).click();
+  }
+  await expect.poll(()=>page.evaluate(key=>
+    JSON.parse(localStorage.getItem(key)||'{}').additions?.length,DRAFT)).toBe(12);
+  await page.reload();
+  await expect(view.locator('[data-editor-added-index]')).toHaveCount(12);
+});
