@@ -663,3 +663,22 @@ test('keyboard duplicate and Delete act only on inserted objects, with undo safe
   await expect(original).toHaveCount(1);
   await expect(view.locator('[data-editor-added-index]')).toHaveCount(2);
 });
+
+test('Escape and an empty-canvas click dismiss selection without changing the draft',async({page})=>{
+  const view=page.frameLocator('#pageFrame');
+  const heading=view.locator('main #nested h2');
+  await heading.click();
+  await expect(view.locator('#moon-free-selection')).toHaveCount(1);
+  const handle=view.locator('#moon-free-selection [data-free-direction="move"]');
+  await handle.focus();
+  await handle.press('Escape');
+  await expect(view.locator('#moon-free-selection')).toHaveCount(0);
+  await expect(view.locator('#moon-quick-toolbar')).toHaveCount(0);
+  await expect(page.locator('#selectionTag')).toHaveText('Nothing selected');
+  await expect(page.locator('#exportBtn')).toBeDisabled();
+  await heading.click();
+  await expect(view.locator('#moon-free-selection')).toHaveCount(1);
+  await view.locator('main').click({position:{x:5,y:5}});
+  await expect(view.locator('#moon-free-selection')).toHaveCount(0);
+  await expect(page.locator('#exportBtn')).toBeDisabled();
+});
