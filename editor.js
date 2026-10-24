@@ -3571,10 +3571,9 @@
   const FREE_CSS=[
     "main:has(.moon-free-absolute){position:relative!important;overflow:visible!important;anchor-name:--moon-page-canvas}",
     "main:has(.moon-free-absolute) *:has(.moon-free-absolute){overflow:visible!important}",
-    "main:has(.moon-free-absolute) *:has(.moon-free-absolute):not(main){transform:none!important}",
     "main .moon-free-object{position:relative;z-index:3;box-sizing:border-box;max-width:none}",
     "main .moon-free-absolute{position:absolute!important;z-index:20;transform:none!important}",
-    "@supports not (position-anchor:--moon-page-canvas){main:has(.moon-free-absolute) *:has(.moon-free-absolute){position:static!important}main:has(.moon-free-absolute){position:relative!important}}",
+    "@supports not (position-anchor:--moon-page-canvas){main:has(.moon-free-absolute){position:relative!important}}",
     "@supports (position-anchor:--moon-page-canvas){main .moon-free-absolute[style*='--moon-page-x']{position-anchor:--moon-page-canvas;left:calc(anchor(left) + var(--moon-page-x,0px))!important;top:calc(anchor(top) + var(--moon-page-y,0px))!important}}",
     "@supports (position-anchor:--moon-page-canvas){@media(max-width:700px){html:not(.moon-free-mode) main .moon-free-absolute[style*='--moon-page-x']{position-anchor:auto!important;left:auto!important;top:auto!important}}}",
     "@media(max-width:700px){html:not(.moon-free-mode) main .moon-free-absolute{position:static!important;position-anchor:auto!important;left:auto!important;top:auto!important;right:auto!important;bottom:auto!important}}",
