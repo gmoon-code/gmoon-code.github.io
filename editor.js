@@ -3941,7 +3941,7 @@
     "main > .moon-free-layer{position:absolute!important;inset:0!important;z-index:20;overflow:visible!important;pointer-events:none!important}",
     "main .moon-free-object{position:relative;z-index:3;box-sizing:border-box;max-width:none}",
     "main .moon-free-absolute{position:absolute!important;z-index:var(--moon-object-layer,20)!important;box-sizing:border-box;max-width:none;margin:0!important;transform:none!important;overflow:visible}",
-    "main > .moon-free-layer > .moon-free-absolute > img{max-width:100%;max-height:100%;width:100%;height:100%;object-fit:contain}",
+    "main > .moon-free-layer > p.moon-free-absolute > img{max-width:100%;max-height:100%;width:100%;height:100%;object-fit:contain}",
     "main > .moon-free-layer > .moon-free-absolute{pointer-events:auto!important}",
     "@media(max-width:700px){html:not(.moon-free-mode) main:has(> .moon-free-layer){min-height:0!important}html:not(.moon-free-mode) main > .moon-free-layer{position:static!important;inset:auto!important;display:contents!important;pointer-events:auto!important}html:not(.moon-free-mode) main .moon-free-absolute{position:static!important;left:auto!important;top:auto!important;right:auto!important;bottom:auto!important;translate:none!important;width:auto!important;max-width:100%!important;min-height:0!important;height:auto!important}html:not(.moon-free-mode) main .moon-free-absolute > img{height:auto!important;max-height:none!important}html:not(.moon-free-mode) img.moon-free-object{width:auto!important;max-width:100%!important;height:auto!important}}"
   ].join("\n");
