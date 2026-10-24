@@ -320,8 +320,11 @@
       style.textContent=css;copy.head.append(style);
     }
     if(copy.querySelector("main ."+FREE_CLASS)||state.additions.some(item=>item.freePosition)){
-      const style=copy.createElement("style");style.id="moon-free-position-css";
-      style.textContent=FREE_CSS;copy.head.append(style);
+      const styles=[...copy.querySelectorAll('style[id="moon-free-position-css"]')];
+      const style=styles.shift()||copy.createElement("style");
+      style.id="moon-free-position-css";style.textContent=FREE_CSS;
+      if(!style.parentElement)copy.head.append(style);
+      for(const duplicate of styles)duplicate.remove();
     }
     const additionsByAnchor=new Map();
     state.additions.forEach((addition,index)=>{
@@ -4223,6 +4226,14 @@
       style.textContent=FREE_CSS;
       if(!style.parentElement)publishedDoc.head.append(style);
       for(const duplicate of styles)duplicate.remove();
+      // GitHub Pages serves this tiny, local runtime along with the editor.
+      // It restores the original semantic reading order on narrow screens.
+      const scripts=[...publishedDoc.querySelectorAll('script[id="moon-free-responsive-runtime"]')];
+      const runtime=scripts.shift()||publishedDoc.createElement("script");
+      runtime.id="moon-free-responsive-runtime";
+      runtime.src="moon-free-responsive.js";runtime.defer=true;
+      if(!runtime.parentElement)publishedDoc.body.append(runtime);
+      for(const duplicate of scripts)duplicate.remove();
       next="<!doctype html>\n"+publishedDoc.documentElement.outerHTML;
     }
     if (next===state.source) throw new Error("There are no exportable changes.");
