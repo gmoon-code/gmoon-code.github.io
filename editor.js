@@ -342,6 +342,7 @@
       if(!target)throw Error("Removed source element is missing");
       target.remove();
     }
+    relocateFreeObjects(copy);
     const overlay=copy.createElement("style");
     overlay.textContent=[
       "[data-editor-key]{cursor:text;outline-offset:3px;}",
@@ -924,6 +925,7 @@
       state.additions[i]=next;
       sel.node.classList.add(FREE_CLASS,"moon-free-absolute");
       sel.node.style.cssText=addedBlockStyle(next);
+      relocateFreeObjects(doc);
       const image=sel.node.querySelector("img");
       if(image)image.style.width="100%";
     }else{
@@ -941,6 +943,7 @@
         node.style.maxWidth="none";
         node.style.boxSizing="border-box";
       }
+      relocateFreeObjects(doc);
     }
     positionFreeSelection();
     return true;
@@ -1019,7 +1022,10 @@
     const base=freeGeometry(sel);
     freeGesture={id:event.pointerId,direction,startX:event.clientX,startY:event.clientY,
       base,added:sel.added,key:state.selected,index:state.selectedAddition,moved:false};
-    try{handle.setPointerCapture(event.pointerId)}catch(error){freeGesture=null;}
+    // Capture on a stable ancestor: the dragged node moves into the canvas
+    // layer after the first pointer movement and would otherwise lose capture.
+    try{state.frameDoc.documentElement.setPointerCapture(event.pointerId)}
+    catch(error){freeGesture=null;}
   }
   function freeGestureMove(event){
     const drag=freeGesture;if(!drag||drag.id!==event.pointerId)return;
@@ -3590,17 +3596,36 @@
         (typeof value[key]==="string"&&/^#[0-9a-fA-F]{6}$/.test(value[key])));
   }
   const FREE_CLASS="moon-free-object";
+  // Freely placed objects live under main, outside the original grid/section.
+  // Keep their editable source blocks in state.doc; relocate only the preview
+  // copy and the final HTML. This avoids browser-specific anchor positioning.
   const FREE_CSS=[
-    "main:has(.moon-free-absolute){position:relative!important;overflow:visible!important;anchor-name:--moon-page-canvas}",
-    "main:has(.moon-free-absolute) *:has(.moon-free-absolute){overflow:visible!important}",
+    "main:has(> .moon-free-layer){position:relative!important;overflow:visible!important}",
+    "main > .moon-free-layer{position:absolute!important;inset:0!important;z-index:20;overflow:visible!important;pointer-events:none!important}",
     "main .moon-free-object{position:relative;z-index:3;box-sizing:border-box;max-width:none}",
-    "main .moon-free-absolute{position:absolute!important;z-index:20;transform:none!important}",
-    "@supports not (position-anchor:--moon-page-canvas){main:has(.moon-free-absolute){position:relative!important}}",
-    "@supports (position-anchor:--moon-page-canvas){main .moon-free-absolute[style*='--moon-page-x']{position-anchor:--moon-page-canvas;left:calc(anchor(left) + var(--moon-page-x,0px))!important;top:calc(anchor(top) + var(--moon-page-y,0px))!important}}",
-    "@supports (position-anchor:--moon-page-canvas){@media(max-width:700px){html:not(.moon-free-mode) main .moon-free-absolute[style*='--moon-page-x']{position-anchor:auto!important;left:auto!important;top:auto!important}}}",
-    "@media(max-width:700px){html:not(.moon-free-mode) main .moon-free-absolute{position:static!important;position-anchor:auto!important;left:auto!important;top:auto!important;right:auto!important;bottom:auto!important}}",
-    "@media(max-width:700px){html:not(.moon-free-mode) .moon-free-object{translate:none!important;width:auto!important;max-width:100%!important;min-height:0!important;height:auto!important;position:static!important}html:not(.moon-free-mode) img.moon-free-object{width:auto!important;max-width:100%!important;height:auto!important}}"
+    "main .moon-free-absolute{position:absolute!important;z-index:20;box-sizing:border-box;max-width:none;transform:none!important}",
+    "main > .moon-free-layer > .moon-free-absolute{pointer-events:auto!important}",
+    "@media(max-width:700px){html:not(.moon-free-mode) main > .moon-free-layer{position:static!important;inset:auto!important;display:contents!important;pointer-events:auto!important}html:not(.moon-free-mode) main .moon-free-absolute{position:static!important;left:auto!important;top:auto!important;right:auto!important;bottom:auto!important;translate:none!important;width:auto!important;max-width:100%!important;min-height:0!important;height:auto!important}html:not(.moon-free-mode) img.moon-free-object{width:auto!important;max-width:100%!important;height:auto!important}}"
   ].join("\n");
+  function relocateFreeObjects(doc){
+    const main=doc.querySelector("main");
+    if(!main)return 0;
+    const objects=[...main.querySelectorAll(".moon-free-absolute")];
+    if(!objects.length)return 0;
+    let layer=[...main.children].find(node=>node.classList.contains("moon-free-layer"));
+    if(!layer){
+      layer=doc.createElement("div");
+      layer.className="moon-free-layer";
+      main.appendChild(layer);
+    }
+    let moved=0;
+    for(const object of objects){
+      if(object.parentElement===layer)continue;
+      layer.appendChild(object);
+      moved++;
+    }
+    return moved;
+  }
   function freePositionValid(p){return !!p&&typeof p==="object"&&!Array.isArray(p)&&
     Object.keys(p).length===4&&["x","y","width","height"].every(k=>Number.isInteger(p[k]))&&
     Math.abs(p.x)<=16000&&Math.abs(p.y)<=16000&&p.width>=35&&p.width<=4000&&p.height>=18&&p.height<=4000;}
@@ -4045,6 +4070,13 @@
     }
     const floating=[...state.doc.querySelectorAll("main ."+FREE_CLASS)].length||
       state.additions.some(item=>item.freePosition);
+    if(floating){
+      const publishedDoc=new DOMParser().parseFromString(next,"text/html");
+      const moved=relocateFreeObjects(publishedDoc);
+      // DOM relocation is necessary on the live page too, otherwise its
+      // nested containing blocks would still control absolute placement.
+      if(moved)next="<!doctype html>\n"+publishedDoc.documentElement.outerHTML;
+    }
     if(floating&&!next.includes('id="moon-free-position-css"')){
       if(!/<\/head>/i.test(next))throw Error("Cannot add responsive mobile behaviour");
       next=next.replace(/<\/head>/i,'<style id="moon-free-position-css">\n'+FREE_CSS+'\n</style>\n</head>');
