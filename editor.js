@@ -3564,7 +3564,8 @@
   const FREE_CLASS="moon-free-object";
   const FREE_CSS=[
     "main:has(.moon-free-absolute){position:relative!important;overflow:visible!important}",
-    "main:has(.moon-free-absolute) *:has(.moon-free-absolute){position:static!important;overflow:visible!important}",
+    "main:has(.moon-free-absolute) *:has(.moon-free-absolute){overflow:visible!important}",
+    "main:has(.moon-free-absolute) *:has(.moon-free-absolute):not(main){transform:none!important}",
     "main .moon-free-object{position:relative;z-index:3;box-sizing:border-box;max-width:none}",
     "main .moon-free-absolute{position:absolute!important;z-index:20;transform:none!important}",
     "@media(max-width:700px){html:not(.moon-free-mode) .moon-free-object{translate:none!important;width:auto!important;max-width:100%!important;min-height:0!important;height:auto!important;position:static!important}html:not(.moon-free-mode) img.moon-free-object{width:auto!important;max-width:100%!important;height:auto!important}}"
