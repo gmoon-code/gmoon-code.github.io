@@ -1445,7 +1445,7 @@
     }
     if(freeCanvasActive&&freeSelected()){
       const overlap=freeOverlapPoint(selected.node);
-      if(overlap)bar.append(make("Select underneath",()=>{
+      if(overlap)bar.append(make("Cycle overlap",()=>{
         selectOverlappingFreeObject({
           clientX:overlap.x,clientY:overlap.y,
           preventDefault(){},stopPropagation(){}
