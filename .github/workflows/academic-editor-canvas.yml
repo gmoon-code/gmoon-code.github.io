@@ -21,6 +21,7 @@ on:
 
 permissions:
   contents: read
+  statuses: write
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -40,7 +41,32 @@ jobs:
       - name: Start local website server
         run: python3 -m http.server 8765 --bind 127.0.0.1 > /tmp/academic-editor-http.log 2>&1 &
       - name: Run real academic editor regression tests
+        id: canvas_tests
+        continue-on-error: true
         run: npx playwright test tests/academic-editor-canvas.spec.cjs --browser chromium --reporter=list --workers=1
+      - name: Report browser result as a commit status
+        if: always() && github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TEST_OUTCOME: ${{ steps.canvas_tests.outcome }}
+          COMMIT_SHA: ${{ github.sha }}
+          REPOSITORY: ${{ github.repository }}
+          API_URL: ${{ github.api_url }}
+        run: |
+          if [ "$TEST_OUTCOME" = "success" ]; then RESULT=success; else RESULT=failure; fi
+          jq -n --arg state "$RESULT" \
+            --arg context "academic-editor-canvas/chromium" \
+            --arg description "Real academic editor Chromium regression tests" \
+            '{state:$state,context:$context,description:$description}' > /tmp/canvas-status.json
+          curl --fail --silent --show-error -X POST \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            --data-binary @/tmp/canvas-status.json \
+            "$API_URL/repos/$REPOSITORY/statuses/$COMMIT_SHA"
+      - name: Fail workflow if browser tests failed
+        if: steps.canvas_tests.outcome != 'success'
+        run: exit 1
       - name: Save failure context
         if: failure()
         uses: actions/upload-artifact@v4
