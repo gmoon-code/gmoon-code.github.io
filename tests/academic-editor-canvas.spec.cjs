@@ -1,7 +1,7 @@
 const { test, expect } = require('@playwright/test');
 const fs = require('node:fs');
 
-const URL = 'http://127.0.0.1:8765/editor.html?page=about.html';
+const EDITOR_URL = 'http://127.0.0.1:8765/editor.html?page=about.html';
 const DRAFT = 'moon-portfolio-visual-editor-v1:about.html';
 const fixture = `<!doctype html><html><head><meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
@@ -17,7 +17,7 @@ test.beforeEach(async ({ page }) => {
   await page.route('**/about.html', route => route.fulfill({
     status: 200, contentType: 'text/html', body: fixture
   }));
-  await page.goto(URL, { waitUntil: 'domcontentloaded' });
+  await page.goto(EDITOR_URL, { waitUntil: 'domcontentloaded' });
   await page.evaluate(key => localStorage.removeItem(key), DRAFT);
   await page.reload();
   await expect(page.locator('#freeCanvasToggle')).toHaveAttribute('aria-pressed', 'true');
