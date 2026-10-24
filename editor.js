@@ -948,6 +948,7 @@
   function verifyFreeCanvasPlacement(){
     const doc=state.frameDoc;
     if(!doc)return true;
+    if(doc.defaultView.innerWidth<=700&&!freeCanvasActive)return true;
     const main=doc.querySelector("main");
     if(!main)return true;
     const candidates=[...main.querySelectorAll(".moon-free-absolute[style*='--moon-page-x']")];
