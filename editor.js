@@ -1044,6 +1044,28 @@
       dimensions.hidden=!freeGesture||freeGesture.direction==="move";
     }
   }
+  function freeOverlapPoint(node){
+    const main=node?.closest("main"),doc=node?.ownerDocument;
+    if(!main||!doc)return null;
+    const r=node.getBoundingClientRect();
+    let point=null,area=0;
+    for(const other of main.querySelectorAll(".moon-free-absolute")){
+      if(other===node)continue;
+      const b=other.getBoundingClientRect();
+      const left=Math.max(r.left,b.left),right=Math.min(r.right,b.right);
+      const top=Math.max(r.top,b.top),bottom=Math.min(r.bottom,b.bottom);
+      const size=Math.max(0,right-left)*Math.max(0,bottom-top);
+      if(size>area&&size>16){
+        const x=(left+right)/2,y=(top+bottom)/2;
+        const visible=doc.elementsFromPoint(x,y)
+          .map(el=>el.closest?.(".moon-free-absolute")).filter(Boolean);
+        if(visible.includes(node)&&visible.includes(other)){
+          point={x,y};area=size;
+        }
+      }
+    }
+    return point;
+  }
   function selectOverlappingFreeObject(event){
     const doc=state.frameDoc;
     if(!doc||typeof doc.elementsFromPoint!=="function")return false;
@@ -1422,6 +1444,13 @@
       bar.append(make("Style",openQuickProperties,null,"Change font, size and colours of selected text"));
     }
     if(freeCanvasActive&&freeSelected()){
+      const overlap=freeOverlapPoint(selected.node);
+      if(overlap)bar.append(make("Select underneath",()=>{
+        selectOverlappingFreeObject({
+          clientX:overlap.x,clientY:overlap.y,
+          preventDefault(){},stopPropagation(){}
+        });
+      },null,"Cycle between objects occupying the same area"));
       const level=freeLayerLevel(selected);
       const back=make("Backward",()=>changeFreeLayer(-1),null,
         "Place selected object one layer behind overlapping objects");
