@@ -422,6 +422,10 @@
 
         refreshPageFind();
         updateBrowseControls();
+        // Previously saved free positions must be checked after every load,
+        // not just after a user finishes a new drag in this session.
+        if(!verifyFreeCanvasPlacement())
+          updateStatus("Canvas placement mismatch · Review this layout before publishing");
         if(reselectKey){
           const target=d.querySelector('[data-editor-key="'+reselectKey+'"]');
           if(target){selectElement(target);target.scrollIntoView({block:"center"});}
@@ -1043,7 +1047,9 @@
     if(!sel||event.button!==0||freeGesture)return;
     event.preventDefault();event.stopPropagation();
     const base=freeGeometry(sel);
+    const view=state.frameDoc.defaultView;
     freeGesture={id:event.pointerId,direction,startX:event.clientX,startY:event.clientY,
+      startScrollX:view.scrollX,startScrollY:view.scrollY,
       base,added:sel.added,key:state.selected,index:state.selectedAddition,moved:false};
     // Capture on a stable ancestor: the dragged node moves into the canvas
     // layer after the first pointer movement and would otherwise lose capture.
@@ -1054,7 +1060,11 @@
     const drag=freeGesture;if(!drag||drag.id!==event.pointerId)return;
     event.preventDefault();event.stopPropagation();
     if(drag.key!==state.selected||drag.index!==state.selectedAddition)return;
-    let dx=Math.round(event.clientX-drag.startX),dy=Math.round(event.clientY-drag.startY);
+    const view=state.frameDoc.defaultView;
+    // Use page-relative displacement. The iframe may scroll during a drag,
+    // which must not change the element's position relative to the page.
+    let dx=Math.round(event.clientX-drag.startX+view.scrollX-drag.startScrollX);
+    let dy=Math.round(event.clientY-drag.startY+view.scrollY-drag.startScrollY);
     if(Math.abs(dx)<3&&Math.abs(dy)<3&&!drag.moved)return;
     if(!drag.moved){checkpoint();drag.moved=true;}
     const next={...drag.base},d=drag.direction;
