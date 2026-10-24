@@ -441,3 +441,29 @@ test('nested floating captions stay inside their parent object layer group', asy
   await expect(view.locator('main > .moon-free-layer > figure > figcaption')).toHaveCount(1);
   await expect(view.locator('main > .moon-free-layer > figcaption')).toHaveCount(0);
 });
+
+test('moving a nested floating caption detaches only the selected child',async({page})=>{
+  const source='<!doctype html><html><head></head><body><main>'+
+    '<section><figure class="moon-free-object moon-free-absolute" '+
+    'style="left:25px;top:40px;width:280px;height:160px;min-height:160px;'+
+    '--moon-page-x:25px;--moon-page-y:40px">'+
+    '<img alt="Research work" src="assets/example-photograph.webp">'+
+    '<figcaption class="moon-free-object moon-free-absolute" '+
+    'style="left:5px;top:100px;width:240px;height:40px;min-height:40px;'+
+    '--moon-page-x:5px;--moon-page-y:100px">Figure caption</figcaption>'+
+    '</figure></section></main></body></html>';
+  await page.route('**/about.html',route=>route.fulfill({
+    status:200,contentType:'text/html',body:source
+  }));
+  await page.reload();
+  const view=page.frameLocator('#pageFrame');
+  const caption=view.locator('main .moon-free-layer > figure > figcaption');
+  await caption.click();
+  const move=view.locator('#moon-free-selection [data-free-direction="move"]');
+  await move.focus();await move.press('ArrowRight');
+  await expect(view.locator('main > .moon-free-layer > figcaption')).toHaveCount(1);
+  await expect(view.locator('main > .moon-free-layer > figure')).toHaveCount(1);
+  await expect(view.locator('main > .moon-free-layer > figure > figcaption')).toHaveCount(0);
+  await expect(view.locator('main > .moon-free-layer > figcaption'))
+    .toHaveAttribute('data-moon-free-detach','true');
+});
