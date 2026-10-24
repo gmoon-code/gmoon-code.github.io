@@ -945,6 +945,25 @@
     positionFreeSelection();
     return true;
   }
+  function verifyFreeCanvasPlacement(){
+    const doc=state.frameDoc;
+    if(!doc)return true;
+    const main=doc.querySelector("main");
+    if(!main)return true;
+    const candidates=[...main.querySelectorAll(".moon-free-absolute[style*='--moon-page-x']")];
+    if(!candidates.length)return true;
+    const origin=main.getBoundingClientRect();
+    const cs=doc.defaultView.getComputedStyle(main);
+    const left=origin.left+(parseFloat(cs.borderLeftWidth)||0);
+    const top=origin.top+(parseFloat(cs.borderTopWidth)||0);
+    return candidates.every(node=>{
+      const computed=node.getBoundingClientRect();
+      const x=parseFloat(node.style.getPropertyValue("--moon-page-x"));
+      const y=parseFloat(node.style.getPropertyValue("--moon-page-y"));
+      return Number.isFinite(x)&&Number.isFinite(y)&&
+        Math.abs(computed.left-left-x)<4&&Math.abs(computed.top-top-y)<4;
+    });
+  }
   function finishFreeGeometry(){
     if(state.selectedAddition!==null){
       try{validateParagraphAdditions(state.additions)}catch(error){
@@ -957,6 +976,8 @@
     }
     positionFreeSelection();
     positionQuickToolbar();
+    if(!verifyFreeCanvasPlacement())
+      updateStatus("Positioning mismatch in this browser · Review before publishing");
   }
   function positionFreeSelection(){
     const doc=state.frameDoc,frame=doc?.getElementById("moon-free-selection");
