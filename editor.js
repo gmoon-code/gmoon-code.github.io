@@ -864,7 +864,7 @@
 
   // Free mode uses viewport-positioned selection controls without adding
   // editor-only markup to the exported website HTML.
-  let freeCanvasActive=false,freeGesture=null;
+  let freeCanvasActive=true,freeGesture=null;
   function freeSelected(){
     let sel=quickSelection();
     if(!sel&&freeCanvasActive&&state.selected){
@@ -873,7 +873,7 @@
     }
     if(!sel)return null;
     const kind=sel.added?insertionKind(state.additions[state.selectedAddition]):sel.node.tagName.toLowerCase();
-    if(!["p","h1","h2","h3","h4","h5","h6","img","blockquote","li","figcaption","dt","dd","heading","paragraph","image","link"].includes(kind))
+    if(!["p","h1","h2","h3","h4","h5","h6","img","blockquote","li","figcaption","dt","dd","heading","paragraph","image","link","figure","ul","ol","section"].includes(kind))
       return null;
     return sel;
   }
@@ -1011,6 +1011,7 @@
       return;
     }
     if(drag.moved)finishFreeGeometry();
+    else positionFreeSelection();
   }
   function freeNudge(dx,dy){
     const sel=freeSelected();if(!sel||!freeCanvasActive)return;
@@ -5187,6 +5188,8 @@
     $("downloadStagedImage").addEventListener("click",downloadStagedImage);
     $("reviewBtn").addEventListener("click",reviewChanges);
     $("freeCanvasToggle").addEventListener("click",toggleFreeCanvas);
+    $("freeCanvasToggle").setAttribute("aria-pressed","true");
+    $("freeCanvasToggle").textContent="✓ Free move & resize";
     $("chooseExistingImage").addEventListener("click",()=>openMediaLibrary(false));
     $("chooseInsertImageBtn").addEventListener("click",()=>openMediaLibrary(true));
     $("chooseAddedImageBtn").addEventListener("click",()=>openMediaLibrary("added"));
