@@ -197,3 +197,40 @@ test('magnetic alignment snaps to main edge and Alt temporarily bypasses snap', 
   await page.keyboard.up('Alt');
   await expect(selected).toHaveCSS('left','4px');
 });
+
+test('Ctrl-click cycles between overlapping floating objects without dragging', async ({ page }) => {
+  const view=page.frameLocator('#pageFrame');
+  const heading=view.locator('#nested h2');
+  await heading.click();
+  let grip=view.locator('#moon-free-selection [data-free-direction="move"]');
+  await grip.focus();
+  await grip.press('ArrowRight');
+  const floatingHeading=view.locator('main > .moon-free-layer > h2');
+  await expect(floatingHeading).toHaveCount(1);
+
+  const paragraph=view.locator('#nested .inner p');
+  await paragraph.click();
+  grip=view.locator('#moon-free-selection [data-free-direction="move"]');
+  await grip.focus();
+  await grip.press('ArrowRight');
+  const floatingParagraph=view.locator('main > .moon-free-layer > p');
+  await expect(floatingParagraph).toHaveCount(1);
+  const place=await floatingHeading.evaluate(node=>({
+    left:node.style.left,top:node.style.top,width:node.style.width,height:node.style.height
+  }));
+  await floatingParagraph.evaluate((node,place)=>{
+    node.style.left=place.left;
+    node.style.top=place.top;
+    node.style.width=place.width;
+    node.style.height=place.height;
+    node.style.setProperty('--moon-object-layer','30');
+  },place);
+  const rect=await floatingHeading.boundingBox();
+  const atX=rect.x+Math.min(rect.width/2,65),atY=rect.y+Math.min(rect.height/2,10);
+  await page.mouse.move(atX,atY);
+  await page.keyboard.down('Control');
+  await page.mouse.down();await page.mouse.up();
+  await page.keyboard.up('Control');
+  await expect(floatingHeading).toHaveAttribute('data-editor-selected','');
+  await expect(floatingHeading).toHaveCSS('left',place.left);
+});
