@@ -1287,6 +1287,7 @@
     const old=new DOMParser().parseFromString(originalMarkup,"text/html").body.firstElementChild;
     if(!node||!old)return;
     node.classList.remove("moon-free-object","moon-free-absolute");
+    node.removeAttribute("data-moon-free-detach");
     // Restore free-positioning properties and the typography automatically
     // captured when leaving the original section. Retain content, colours,
     // backgrounds and any other independent edits.
