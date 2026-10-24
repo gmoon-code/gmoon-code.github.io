@@ -971,18 +971,17 @@
     if(!sel||event.button!==0||freeGesture)return;
     event.preventDefault();event.stopPropagation();
     const base=freeGeometry(sel);
-    checkpoint();
     freeGesture={id:event.pointerId,direction,startX:event.clientX,startY:event.clientY,
-      base,added:sel.added,key:state.selected,index:state.selectedAddition};
-    handle.setPointerCapture(event.pointerId);
+      base,added:sel.added,key:state.selected,index:state.selectedAddition,moved:false};
+    try{handle.setPointerCapture(event.pointerId)}catch(error){freeGesture=null;}
   }
   function freeGestureMove(event){
     const drag=freeGesture;if(!drag||drag.id!==event.pointerId)return;
     event.preventDefault();event.stopPropagation();
     if(drag.key!==state.selected||drag.index!==state.selectedAddition)return;
     let dx=Math.round(event.clientX-drag.startX),dy=Math.round(event.clientY-drag.startY);
-    if(dx===0&&dy===0)return;
-    drag.moved=true;
+    if(Math.abs(dx)<3&&Math.abs(dy)<3&&!drag.moved)return;
+    if(!drag.moved){checkpoint();drag.moved=true;}
     const next={...drag.base},d=drag.direction;
     if(d==="move"){
       next.x+=dx;next.y+=dy;
