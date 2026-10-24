@@ -3568,6 +3568,7 @@
     "main:has(.moon-free-absolute) *:has(.moon-free-absolute):not(main){transform:none!important}",
     "main .moon-free-object{position:relative;z-index:3;box-sizing:border-box;max-width:none}",
     "main .moon-free-absolute{position:absolute!important;z-index:20;transform:none!important}",
+    "@media(max-width:700px){html:not(.moon-free-mode) main .moon-free-absolute{position:static!important;left:auto!important;top:auto!important}}",
     "@media(max-width:700px){html:not(.moon-free-mode) .moon-free-object{translate:none!important;width:auto!important;max-width:100%!important;min-height:0!important;height:auto!important;position:static!important}html:not(.moon-free-mode) img.moon-free-object{width:auto!important;max-width:100%!important;height:auto!important}}"
   ].join("\n");
   function freePositionValid(p){return !!p&&typeof p==="object"&&!Array.isArray(p)&&
