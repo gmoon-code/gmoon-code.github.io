@@ -964,6 +964,12 @@
     frame.style.top=rect.top+"px";
     frame.style.width=Math.max(1,rect.width)+"px";
     frame.style.height=Math.max(1,rect.height)+"px";
+    const dimensions=frame.querySelector("[data-free-dimensions]");
+    if(dimensions){
+      const saved=freeGeometry(sel);
+      dimensions.textContent=saved.width+" × "+saved.height+" px";
+      dimensions.hidden=!freeGesture||freeGesture.direction==="move";
+    }
   }
   function onFreeObjectPointerDown(event){
     if(!freeCanvasActive||event.button!==0||event.defaultPrevented)return;
@@ -1034,6 +1040,8 @@
     }
     if(drag.moved)finishFreeGeometry();
     else positionFreeSelection();
+    const dimensions=state.frameDoc?.querySelector("#moon-free-selection [data-free-dimensions]");
+    if(dimensions)dimensions.hidden=true;
   }
   function freeNudge(dx,dy){
     const sel=freeSelected();if(!sel||!freeCanvasActive)return;
@@ -1092,6 +1100,14 @@
       state.frameDoc?.querySelector('#moon-free-selection [data-free-direction="move"]')
         ?.focus({preventScroll:true});
     });
+    const dimensions=doc.createElement("output");
+    dimensions.dataset.freeDimensions="";
+    dimensions.hidden=true;
+    dimensions.setAttribute("aria-live","off");
+    dimensions.style.cssText="position:absolute;left:50%;bottom:-31px;transform:translateX(-50%);"+
+      "background:#163e79;color:#fff;font:600 12px system-ui,sans-serif;padding:4px 8px;"+
+      "border-radius:4px;white-space:nowrap;pointer-events:none";
+    frame.append(dimensions);
     doc.body.append(frame);
     positionFreeSelection();
   }
