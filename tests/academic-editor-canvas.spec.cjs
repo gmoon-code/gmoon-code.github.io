@@ -511,7 +511,7 @@ test('a source figure moves with its image and caption as one editable object', 
 
 test('floating figure preserves its own image dimensions while its caption stays inside', async ({ page }) => {
   const source='<!doctype html><html><head><style>main{padding:25px}figure{margin:0}</style></head><body>'+
-    '<main><section><figure><img src="assets/example-photograph.webp" alt="Lab photograph" '+
+    '<main><section><figure><img src="assets/profile-portrait.webp" alt="Lab photograph" '+
     'style="width:120px;height:80px"><figcaption>Caption remains part of the figure</figcaption>'+
     '</figure><p>Following paragraph</p></section></main></body></html>';
   // The missing asset in a prior fixture produced Chromium's 18px broken
