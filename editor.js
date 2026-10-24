@@ -4083,14 +4083,18 @@
       state.additions.some(item=>item.freePosition);
     if(floating){
       const publishedDoc=new DOMParser().parseFromString(next,"text/html");
-      const moved=relocateFreeObjects(publishedDoc);
-      // DOM relocation is necessary on the live page too, otherwise its
-      // nested containing blocks would still control absolute placement.
-      if(moved)next="<!doctype html>\n"+publishedDoc.documentElement.outerHTML;
-    }
-    if(floating&&!next.includes('id="moon-free-position-css"')){
-      if(!/<\/head>/i.test(next))throw Error("Cannot add responsive mobile behaviour");
-      next=next.replace(/<\/head>/i,'<style id="moon-free-position-css">\n'+FREE_CSS+'\n</style>\n</head>');
+      if(!publishedDoc.querySelector("main")||!publishedDoc.head)
+        throw Error("Cannot safely assemble floating content for publishing.");
+      // The published page uses the exact same object layer and canvas
+      // dimensions as the preview, including on subsequent publications.
+      relocateFreeObjects(publishedDoc);
+      const styles=[...publishedDoc.querySelectorAll('style[id="moon-free-position-css"]')];
+      const style=styles.shift()||publishedDoc.createElement("style");
+      style.id="moon-free-position-css";
+      style.textContent=FREE_CSS;
+      if(!style.parentElement)publishedDoc.head.append(style);
+      for(const duplicate of styles)duplicate.remove();
+      next="<!doctype html>\n"+publishedDoc.documentElement.outerHTML;
     }
     if (next===state.source) throw new Error("There are no exportable changes.");
     return next;
