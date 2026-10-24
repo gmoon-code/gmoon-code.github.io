@@ -514,28 +514,22 @@ test('floating figure preserves its own image dimensions while its caption stays
     '<main><section><figure><img src="assets/example-photograph.webp" alt="Lab photograph" '+
     'style="width:120px;height:80px"><figcaption>Caption remains part of the figure</figcaption>'+
     '</figure><p>Following paragraph</p></section></main></body></html>';
+  // The missing asset in a prior fixture produced Chromium's 18px broken
+  // image placeholder, which made the test falsely report a resize bug.
+  const pixel=Buffer.from('R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==','base64');
+  await page.context().route('**/assets/example-photograph.webp',route=>
+    route.fulfill({status:200,contentType:'image/gif',body:pixel}));
   await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',body:source}));
   await page.reload();
   const view=page.frameLocator('#pageFrame');
-  console.log('[figure-before]',await view.locator('figure img').evaluate(node=>({
-    html:node.outerHTML,height:getComputedStyle(node).height,
-    maxHeight:getComputedStyle(node).maxHeight,
-    parentHeight:getComputedStyle(node.parentElement).height,
-    sheets:[...node.ownerDocument.styleSheets].map(sheet=>[...sheet.cssRules].filter(r=>r.cssText.includes('img')).map(r=>r.cssText))
-  })));
+  await expect.poll(()=>view.locator('figure img').evaluate(node=>node.naturalHeight)).toBe(1);
+  await expect(view.locator('figure img')).toHaveCSS('height','80px');
   await view.locator('figure figcaption').click();
   await view.getByRole('button',{name:'Select the entire figure including its image and caption'}).click();
   const handle=view.locator('#moon-free-selection [data-free-direction="move"]');
   await handle.focus();await handle.press('ArrowRight');
   const figure=view.locator('main > .moon-free-layer > figure');
   await expect(figure).toHaveCount(1);
-  console.log('[figure-height-debug]',await figure.locator('img').evaluate(node=>({
-    image:node.outerHTML,parent:node.parentElement.outerHTML.slice(0,700),
-    computedHeight:getComputedStyle(node).height,
-    inlineHeight:node.style.height,
-    computedWidth:getComputedStyle(node).width,
-    naturalHeight:node.naturalHeight
-  })));
   await expect(figure.locator('img')).toHaveCSS('height','80px');
   await expect(figure.locator('figcaption')).toHaveText('Caption remains part of the figure');
   const download=page.waitForEvent('download');
@@ -543,9 +537,12 @@ test('floating figure preserves its own image dimensions while its caption stays
   const html=fs.readFileSync(await(await download).path(),'utf8');
   expect(html).toContain('p.moon-free-absolute > img');
   expect(html).toContain('<figcaption>Caption remains part of the figure</figcaption>');
+  await page.context().route('**/canvas-figure-published.html',route=>
+    route.fulfill({status:200,contentType:'text/html',body:html}));
   const published=await page.context().newPage();
   await published.setViewportSize({width:390,height:780});
-  await published.setContent(html);
+  await published.goto('http://127.0.0.1:8765/canvas-figure-published.html');
+  await expect.poll(()=>published.locator('main figure > img').evaluate(node=>node.naturalHeight)).toBe(1);
   await expect(published.locator('main figure > img')).toHaveCSS('height','80px');
   await published.close();
 });
