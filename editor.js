@@ -1039,9 +1039,32 @@
       dimensions.hidden=!freeGesture||freeGesture.direction==="move";
     }
   }
+  function selectOverlappingFreeObject(event){
+    const doc=state.frameDoc;
+    if(!doc||typeof doc.elementsFromPoint!=="function")return false;
+    const objects=[],seen=new Set();
+    for(const hit of doc.elementsFromPoint(event.clientX,event.clientY)){
+      const object=hit.closest?.(".moon-free-absolute");
+      if(!object||!object.closest("main")||seen.has(object))continue;
+      seen.add(object);objects.push(object);
+    }
+    if(objects.length<2)return false;
+    const selected=freeSelected()?.node;
+    const index=objects.indexOf(selected);
+    const next=objects[(index+1+objects.length)%objects.length];
+    if(!next)return false;
+    const added=next.getAttribute("data-editor-added-index");
+    if(added!==null)selectAddedBlock(Number(added));
+    else if(next.hasAttribute("data-editor-key"))selectElement(next);
+    else return false;
+    event.preventDefault();event.stopPropagation();
+    return true;
+  }
   function onFreeObjectPointerDown(event){
     if(!freeCanvasActive||event.button!==0||event.defaultPrevented)return;
     if(event.target.closest("#moon-free-selection,#moon-quick-toolbar,#moon-quick-composer,#moon-quick-layout,#moon-quick-size,#moon-quick-properties"))return;
+    // Ctrl/Command-click cycles overlapping floating objects without dragging.
+    if((event.ctrlKey||event.metaKey)&&selectOverlappingFreeObject(event))return;
     const added=event.target.closest("[data-editor-added-index]");
     const original=added?null:event.target.closest("[data-editor-key]");
     const node=added||original;
