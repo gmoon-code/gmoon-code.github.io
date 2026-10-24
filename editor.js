@@ -893,7 +893,8 @@
     if(!sel.added){
       const style=getWorking(state.selected)?.style;
       if(style&&sel.node.classList.contains(FREE_CLASS)){
-        const x=parseInt(style.left,10),y=parseInt(style.top,10);
+        const x=parseInt(style.getPropertyValue("--moon-page-x")||style.left,10);
+        const y=parseInt(style.getPropertyValue("--moon-page-y")||style.top,10);
         const width=parseInt(style.width,10),height=parseInt(style.minHeight,10);
         if(sel.node.classList.contains("moon-free-absolute")&&freePositionValid({x,y,width,height}))return {x,y,width,height};
       }
@@ -902,7 +903,10 @@
     const rect=sel.node.getBoundingClientRect();
     const main=sel.node.closest("main");
     const origin=main?.getBoundingClientRect()||{left:0,top:0};
-    return {x:Math.round(rect.left-origin.left),y:Math.round(rect.top-origin.top),
+    // Anchor coordinates use the main border-box origin, including its border.
+    const borderLeft=main?parseFloat(sel.node.ownerDocument.defaultView.getComputedStyle(main).borderLeftWidth)||0:0;
+    const borderTop=main?parseFloat(sel.node.ownerDocument.defaultView.getComputedStyle(main).borderTopWidth)||0:0;
+    return {x:Math.round(rect.left-origin.left-borderLeft),y:Math.round(rect.top-origin.top-borderTop),
       width:Math.max(35,Math.min(4000,Math.round(rect.width))),
       height:Math.max(18,Math.min(4000,Math.round(rect.height)))};
   }
