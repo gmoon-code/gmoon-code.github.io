@@ -1139,7 +1139,7 @@
     const x=[0,main.clientWidth/2,main.clientWidth];
     const y=[0,main.clientHeight/2,main.clientHeight];
     for(const other of main.querySelectorAll(".moon-free-absolute")){
-      if(other===sel.node)continue;
+      if(other===sel.node||sel.node.contains(other)||other.contains(sel.node))continue;
       const bounds=other.getBoundingClientRect();
       const left=bounds.left-ox,top=bounds.top-oy;
       x.push(left,left+bounds.width/2,left+bounds.width);
@@ -3918,7 +3918,10 @@
   function relocateFreeObjects(doc){
     const main=doc.querySelector("main");
     if(!main)return 0;
-    const objects=[...main.querySelectorAll(".moon-free-absolute")];
+    // Preserve nested floating groups. Their child elements remain attached
+    // to the group, preserving captions and relative positioning.
+    const objects=[...main.querySelectorAll(".moon-free-absolute")].filter(node=>
+      !node.parentElement?.closest(".moon-free-absolute"));
     if(!objects.length)return 0;
     let layer=[...main.children].find(node=>node.classList.contains("moon-free-layer"));
     if(!layer){
