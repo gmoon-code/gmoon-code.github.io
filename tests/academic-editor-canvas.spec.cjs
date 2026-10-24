@@ -71,6 +71,8 @@ test('free drag escapes its transformed column, persists and exports the page la
   expect(exported).toContain('class="moon-free-object moon-free-absolute"');
   expect(exported).toContain('--moon-free-canvas-height');
   expect(exported).toContain('id="moon-free-position-css"');
+  expect(exported).toContain('id="moon-free-responsive-runtime"');
+  expect(exported).toContain('<!--moon-free-slot:');
   expect(exported).not.toContain('data-editor-key=');
 
   // The published file must contain the same page-level structure.
@@ -132,4 +134,35 @@ test('free canvas has exact vertical size and undoable front/back order', async 
     actual: node.getBoundingClientRect().height
   }));
   expect(Math.abs(size.assigned - size.actual)).toBeLessThan(2);
+});
+
+test('published mobile page restores the original position of a floating heading', async ({ page }) => {
+  const view=page.frameLocator('#pageFrame');
+  const heading=view.locator('#nested h2');
+  await heading.click();
+  const handle=view.locator('#moon-free-selection [data-free-direction="move"]');
+  await handle.focus();
+  await handle.press('Shift+ArrowRight');
+  await expect(view.locator('main > .moon-free-layer > h2')).toHaveCount(1);
+
+  const downloadPromise=page.waitForEvent('download');
+  await page.locator('#exportBtn').click();
+  const exported=fs.readFileSync(await (await downloadPromise).path(), 'utf8');
+  // Request the published HTML from the same origin so its local runtime
+  // runs exactly as it does on GitHub Pages.
+  await page.route('**/canvas-published-test.html', route => route.fulfill({
+    status:200,contentType:'text/html',body:exported
+  }));
+  const published=await page.context().newPage();
+  await published.setViewportSize({width:1100,height:850});
+  await published.goto('http://127.0.0.1:8765/canvas-published-test.html');
+  await expect(published.locator('main > .moon-free-layer > h2')).toHaveCount(1);
+  await published.setViewportSize({width:390,height:850});
+  await expect(published.locator('#nested .inner > h2')).toHaveCount(1);
+  const order=await published.locator('#nested .inner').evaluate(node =>
+    [...node.children].map(child=>child.tagName));
+  expect(order).toEqual(['H2','P']);
+  await published.setViewportSize({width:1100,height:850});
+  await expect(published.locator('main > .moon-free-layer > h2')).toHaveCount(1);
+  await published.close();
 });
