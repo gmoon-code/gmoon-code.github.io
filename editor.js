@@ -4452,7 +4452,7 @@
       const scripts=[...publishedDoc.querySelectorAll('script[id="moon-free-responsive-runtime"]')];
       const runtime=scripts.shift()||publishedDoc.createElement("script");
       runtime.id="moon-free-responsive-runtime";
-      runtime.src="moon-free-responsive.js";runtime.defer=true;
+      runtime.src="moon-free-responsive.js?v=20261024-canvas-height-1";runtime.defer=true;
       if(!runtime.parentElement)publishedDoc.body.append(runtime);
       for(const duplicate of scripts)duplicate.remove();
       next="<!doctype html>\n"+publishedDoc.documentElement.outerHTML;
