@@ -343,3 +343,28 @@ test('return to layout also reverses freely positioned new image blocks', async 
   await page.locator('#undoBtn').click();
   await expect(view.locator('main > .moon-free-layer > [data-editor-added-index="0"]')).toHaveCount(1);
 });
+
+test('legacy duplicated slot identifiers do not merge distinct floating blocks', async ({ page }) => {
+  const floatingSource='<!doctype html><html><head></head><body><main>'+
+    '<section id="original"><h2 class="moon-free-object moon-free-absolute" '+
+    'data-moon-free-slot="same" style="left:20px;top:20px;width:220px;height:50px;'+
+    'min-height:50px;--moon-page-x:20px;--moon-page-y:20px">One</h2>'+
+    '<p class="moon-free-object moon-free-absolute" data-moon-free-slot="same" '+
+    'style="left:40px;top:100px;width:220px;height:50px;min-height:50px;'+
+    '--moon-page-x:40px;--moon-page-y:100px">Two</p></section></main></body></html>';
+  await page.route('**/about.html',route=>route.fulfill({
+    status:200,contentType:'text/html',body:floatingSource
+  }));
+  await page.reload();
+  const view=page.frameLocator('#pageFrame');
+  const nodes=view.locator('main > .moon-free-layer > .moon-free-absolute');
+  await expect(nodes).toHaveCount(2);
+  const slots=await nodes.evaluateAll(list=>list.map(node=>node.getAttribute('data-moon-free-slot')));
+  expect(new Set(slots).size).toBe(2);
+  // Already-published floating blocks must not offer a misleading reset
+  // if their original semantic container is no longer available.
+  await nodes.first().click();
+  await expect(view.getByRole('button',{
+    name:"Restore this object's original place in the content flow"
+  })).toHaveCount(0);
+});
