@@ -370,3 +370,54 @@ test('legacy duplicated slot identifiers do not merge distinct floating blocks',
     name:"Restore this object's original place in the content flow"
   })).toHaveCount(0);
 });
+
+test('GitHub-only publish sends the reviewed floating page and retains source safety', async ({ page }) => {
+  const token='github_pat_test_canvas_publish';
+  const writes=[];
+  await page.route('https://api.github.com/**', async route => {
+    const req=route.request(),url=new URL(req.url());
+    expect(req.headers().authorization).toBe('Bearer '+token);
+    if(url.pathname==='/user'){
+      return route.fulfill({status:200,contentType:'application/json',
+        body:JSON.stringify({login:'gmoon-code'})});
+    }
+    if(url.pathname.endsWith('/contents/index.html')){
+      return route.fulfill({status:200,contentType:'application/json',body:'{}'});
+    }
+    if(url.pathname.endsWith('/contents/about.html')&&req.method()==='GET'){
+      return route.fulfill({status:200,contentType:'application/json',
+        body:JSON.stringify({type:'file',encoding:'base64',sha:'original-sha',
+          content:Buffer.from(fixture,'utf8').toString('base64')})});
+    }
+    if(url.pathname.endsWith('/contents/about.html')&&req.method()==='PUT'){
+      writes.push(JSON.parse(req.postData()));
+      return route.fulfill({status:200,contentType:'application/json',
+        body:JSON.stringify({commit:{sha:'f'.repeat(40)}})});
+    }
+    throw Error('Unexpected request '+req.url());
+  });
+
+  const view=page.frameLocator('#pageFrame');
+  await view.locator('#nested h2').click();
+  const grip=view.locator('#moon-free-selection [data-free-direction="move"]');
+  await grip.focus();await grip.press('Shift+ArrowRight');
+  await expect(view.locator('main > .moon-free-layer > h2')).toHaveCount(1);
+  await page.locator('#directPublishOpen').click();
+  await page.locator('#directGithubToken').fill(token);
+  await page.locator('#directGithubConnect').click();
+  await expect(page.locator('#directGithubStatus')).toContainText('Connected');
+  await page.locator('#directPublishConfirm').click();
+  await expect(page.locator('#directGithubStatus')).toContainText('Committed to GitHub');
+  expect(writes).toHaveLength(1);
+  expect(writes[0]).toMatchObject({branch:'main',sha:'original-sha'});
+  const published=Buffer.from(writes[0].content,'base64').toString('utf8');
+  expect(published).toContain('class="moon-free-layer"');
+  expect(published).toContain('<!--moon-free-slot:');
+  expect(published).toContain('moon-free-responsive.js');
+  expect(published).toContain('--moon-page-x');
+  expect(published).not.toContain('data-editor-key=');
+  expect(published).not.toContain(token);
+  const stored=await page.evaluate(()=>JSON.stringify([...Object.entries(localStorage),
+    ...Object.entries(sessionStorage)]));
+  expect(stored).not.toContain(token);
+});
