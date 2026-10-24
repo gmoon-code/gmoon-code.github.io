@@ -5,6 +5,7 @@
 
   const EDITABLE = "h1,h2,h3,h4,h5,h6,p,li,figcaption,blockquote,dt,dd,a,img,th,td,figure";
   const TEXT_TAGS = new Set(["H1","H2","H3","H4","H5","H6","P","LI","FIGCAPTION","BLOCKQUOTE","DT","DD","A","TH","TD"]);
+  const MAX_ADDED_BLOCKS = 40;
   const DRAFT_PREFIX = "moon-portfolio-visual-editor-v1:";
   const PANEL_PREFERENCE_KEY="moon-portfolio-editor-workspace-v1";
   const panelPreference={pages:true,inspector:true};
@@ -1655,7 +1656,7 @@
         down.disabled=movable.index===movable.keys.length-1;
         bar.append(up,down);
       }
-      if(!$("duplicateSourceBtn").disabled&&state.additions.length<10){
+      if(!$("duplicateSourceBtn").disabled&&state.additions.length<MAX_ADDED_BLOCKS){
         bar.append(make("Copy",()=>duplicateSelectedSource(),null,
           "Duplicate selected original paragraph or heading"));
       }
@@ -1666,7 +1667,7 @@
       }
     }
     const addAnchor=quickInsertAnchor();
-    if(addAnchor&&state.additions.length<10){
+    if(addAnchor&&state.additions.length<MAX_ADDED_BLOCKS){
       bar.append(make("+ Add",()=>openQuickComposer(addAnchor),null,
         "Add new content after this block"));
       bar.append(make("+ Image",()=>openQuickComposer(addAnchor,"image"),null,
@@ -1678,7 +1679,7 @@
       divider.style.cssText="height:22px;border-left:1px solid "+(dark?"#78887d":"#b8cac0");
       bar.append(divider);
       const duplicate=make("Copy",()=>duplicateAddedBlock(),null,"Duplicate selected new block");
-      duplicate.disabled=state.additions.length>=10;
+      duplicate.disabled=state.additions.length>=MAX_ADDED_BLOCKS;
       if(duplicate.disabled)duplicate.style.opacity=".45";
       bar.append(duplicate);
     }
@@ -2005,7 +2006,7 @@
   }
   function openQuickComposer(anchor,initialKind="paragraph"){
     const doc=state.frameDoc;
-    if(!doc||!sourceMoveAnchors().some(a=>a.key===anchor.key)||state.additions.length>=10)return;
+    if(!doc||!sourceMoveAnchors().some(a=>a.key===anchor.key)||state.additions.length>=MAX_ADDED_BLOCKS)return;
     doc.getElementById("moon-quick-composer")?.remove();
     const dark=$("previewTheme").value==="dark";
     const form=doc.createElement("form");
@@ -2277,7 +2278,7 @@
     const position=siblings.indexOf(index);
     $("moveAddedEarlierBtn").disabled=position<=0;
     $("moveAddedLaterBtn").disabled=position>=siblings.length-1;
-    $("duplicateAddedBlockBtn").disabled=state.additions.length>=10;
+    $("duplicateAddedBlockBtn").disabled=state.additions.length>=MAX_ADDED_BLOCKS;
     $("addedBlockStatus").textContent="New "+kind+" · block "+(index+1)+
       " of "+state.additions.length+" · Local draft";
     updateBrowseControls();
@@ -2337,9 +2338,18 @@
   }
   function duplicateAddedBlock(){
     const index=state.selectedAddition,item=state.additions[index];
-    if(!item||state.additions.length>=10)return;
+    if(!item||state.additions.length>=MAX_ADDED_BLOCKS)return;
     const next=state.additions.slice();
-    next.splice(index+1,0,{...item});
+    // Offset floating duplicates so their selection handles are visible and
+    // the copy can immediately be moved without obscuring the original.
+    const copied={...item};
+    if(item.freePosition){
+      copied.freePosition={...item.freePosition,
+        x:Math.max(-16000,Math.min(16000,item.freePosition.x+24)),
+        y:Math.max(-16000,Math.min(16000,item.freePosition.y+24))};
+      copied.layer=Math.min(99,(Number.isInteger(item.layer)?item.layer:20)+1);
+    }
+    next.splice(index+1,0,copied);
     try{validateParagraphAdditions(next)}catch(error){
       $("addedBlockStatus").textContent="Duplicate not applied. "+error.message;
       return;
@@ -2411,7 +2421,7 @@
     const sourceText=node.textContent.trim();
     $("duplicateSourceBtn").disabled=!canInsert||!["P","H2","H3"].includes(node.tagName)||
       !!node.children.length||!sourceText||
-      sourceText.length>(node.tagName==="P"?2000:140)||state.additions.length>=10;
+      sourceText.length>(node.tagName==="P"?2000:140)||state.additions.length>=MAX_ADDED_BLOCKS;
     if(canInsert){
       const kind=$("insertContentKind").value;
       $("insertHeadingField").hidden=kind!=="heading";
@@ -4100,7 +4110,7 @@
       !path.includes("..")&&!path.includes("//");
   }
   function validateParagraphAdditions(incoming){
-    if(!Array.isArray(incoming)||incoming.length>10)throw Error("Invalid content additions");
+    if(!Array.isArray(incoming)||incoming.length>MAX_ADDED_BLOCKS)throw Error("Invalid content additions");
     const original=new DOMParser().parseFromString(state.source,"text/html");
     const root=original.querySelector("main"),out=[];
     for(const item of incoming){
