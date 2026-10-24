@@ -1317,9 +1317,9 @@
     }
     if(freeCanvasActive&&freeSelected()){
       const level=freeLayerLevel(selected);
-      const back=make("Send back",()=>changeFreeLayer(-1),null,
+      const back=make("Backward",()=>changeFreeLayer(-1),null,
         "Place selected object one layer behind overlapping objects");
-      const front=make("Bring front",()=>changeFreeLayer(1),null,
+      const front=make("Forward",()=>changeFreeLayer(1),null,
         "Place selected object one layer ahead of overlapping objects");
       back.disabled=level<=1;
       front.disabled=level>=99;
