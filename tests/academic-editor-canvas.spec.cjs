@@ -233,4 +233,7 @@ test('Ctrl-click cycles between overlapping floating objects without dragging', 
   await page.keyboard.up('Control');
   await expect(floatingHeading).toHaveAttribute('data-editor-selected','');
   await expect(floatingHeading).toHaveCSS('left',place.left);
+  // Accessible alternative for selecting an overlapping object.
+  await view.getByRole('button', {name:'Cycle between objects occupying the same area'}).click();
+  await expect(floatingParagraph).toHaveAttribute('data-editor-selected','');
 });
