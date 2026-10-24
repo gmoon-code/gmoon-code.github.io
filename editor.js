@@ -389,6 +389,7 @@
         d.documentElement.style.colorScheme=$("previewTheme").value;
         d.documentElement.classList.toggle("moon-free-mode",freeCanvasActive);
         synchronizeFreeReadingOrder(d);
+        refreshFreeCanvasExtent(d);
         updateStagedPreview();
         d.addEventListener("click",onPreviewClick,true);
         d.addEventListener("pointerdown",onFreeObjectPointerDown,true);
@@ -423,7 +424,14 @@
         d.defaultView.addEventListener("resize",positionQuickComposer);
         d.defaultView.addEventListener("resize",positionQuickLayout);
         d.defaultView.addEventListener("resize",positionColumnResizeHandle);
-        d.defaultView.addEventListener("resize",()=>synchronizeFreeReadingOrder(d));
+        d.defaultView.addEventListener("resize",()=>{
+          synchronizeFreeReadingOrder(d);
+          refreshFreeCanvasExtent(d);
+        });
+        d.addEventListener("load",event=>{
+          if(event.target?.tagName==="IMG")refreshFreeCanvasExtent(d);
+        },true);
+        d.fonts?.ready?.then(()=>refreshFreeCanvasExtent(d));
 
         refreshPageFind();
         updateBrowseControls();
@@ -963,6 +971,7 @@
       sel.node.style.cssText=addedBlockStyle(next);
       relocateFreeObjects(doc);
       synchronizeFreeReadingOrder(doc);
+      refreshFreeCanvasExtent(doc);
       const image=sel.node.querySelector("img");
       if(image)image.style.width="100%";
     }else{
@@ -984,6 +993,7 @@
       }
       relocateFreeObjects(doc);
       synchronizeFreeReadingOrder(doc);
+      refreshFreeCanvasExtent(doc);
     }
     positionFreeSelection();
     return true;
@@ -3935,6 +3945,26 @@
     },0);
     main.style.setProperty("--moon-free-canvas-height",Math.min(20064,Math.max(0,Math.ceil(bottom)))+"px");
     return moved;
+  }
+  function refreshFreeCanvasExtent(doc){
+    const main=doc?.querySelector("main");
+    if(!main)return;
+    const layer=[...main.children].find(node=>node.classList.contains("moon-free-layer"));
+    if(!layer)return;
+    let lowest=0;
+    for(const node of layer.children){
+      if(!node.classList.contains("moon-free-absolute"))continue;
+      const y=parseFloat(node.style.getPropertyValue("--moon-page-y")||node.style.top);
+      if(!Number.isFinite(y))continue;
+      const height=Math.max(parseFloat(node.style.height)||0,
+        parseFloat(node.style.minHeight)||0,node.scrollHeight||0,
+        node.getBoundingClientRect().height||0);
+      lowest=Math.max(lowest,y+height+32);
+    }
+    // An object's rendered text may exceed the height set with its handles.
+    // Reserve the actual occupied space as well as its saved dimensions.
+    main.style.setProperty("--moon-free-canvas-height",
+      Math.min(20064,Math.max(0,Math.ceil(lowest)))+"px");
   }
   function synchronizeFreeReadingOrder(doc){
     const main=doc?.querySelector("main");
