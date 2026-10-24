@@ -516,6 +516,16 @@
   }
 
   function onPreviewKeydown(event){
+    if(freeCanvasActive&&["ArrowLeft","ArrowRight","ArrowUp","ArrowDown"].includes(event.key)&&
+      !event.altKey&&!event.ctrlKey&&!event.metaKey&&
+      !event.target.closest?.("input,textarea,select,[contenteditable=true],#moon-free-selection,#moon-quick-toolbar,#moon-quick-properties,#moon-quick-composer,#moon-quick-layout,#moon-quick-size")&&
+      freeSelected()){
+      event.preventDefault();event.stopPropagation();
+      const step=event.shiftKey?10:1;
+      freeNudge(event.key==="ArrowLeft"?-step:event.key==="ArrowRight"?step:0,
+        event.key==="ArrowUp"?-step:event.key==="ArrowDown"?step:0);
+      return;
+    }
     if(handleEditorShortcuts(event))return;
     if(!["Enter"," "].includes(event.key))return;
     const added=event.target.closest?.("[data-editor-added-index]");
