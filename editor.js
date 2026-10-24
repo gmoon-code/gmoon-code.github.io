@@ -546,6 +546,11 @@
   }
 
   function onPreviewClick(event) {
+    // Pointer-down already cycles overlapping objects. Do not let the
+    // subsequent Ctrl/Command-click reselect the topmost target.
+    if(freeCanvasActive&&(event.ctrlKey||event.metaKey)){
+      event.preventDefault();event.stopPropagation();return;
+    }
     // In-preview controls must never be interpreted as selected page content.
     if(event.target.closest("#moon-free-selection,#moon-quick-toolbar,#moon-quick-composer,#moon-quick-layout,#moon-quick-size,#moon-source-width-handle,#moon-quick-properties"))return;
     /* Stop navigation, but keep normal selection behaviour for editable text. */
