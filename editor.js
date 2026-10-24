@@ -535,6 +535,20 @@
   }
 
   function onPreviewKeydown(event){
+    const typing=Boolean(event.target?.closest?.("input,textarea,select,[contenteditable='true'],[role='textbox']"));
+    const blocked=Boolean(event.target?.closest?.(
+      "#moon-quick-properties,#moon-quick-composer,#moon-quick-layout,#moon-quick-size"));
+    // Delete removes only a newly inserted, selected object. Original
+    // website content still requires the explicit guarded Remove action.
+    if(freeCanvasActive&&!typing&&!blocked&&!event.ctrlKey&&!event.metaKey&&
+      !event.altKey&&["Delete","Backspace"].includes(event.key)&&
+      state.selectedAddition!==null&&
+      (event.target.closest?.("[data-editor-added-selected],#moon-free-selection")||
+       event.target===state.frameDoc?.body)){
+      event.preventDefault();event.stopPropagation();
+      removeAddedBlock();
+      return;
+    }
     if(freeCanvasActive&&["ArrowLeft","ArrowRight","ArrowUp","ArrowDown"].includes(event.key)&&
       !event.altKey&&!event.ctrlKey&&!event.metaKey&&
       !event.target.closest?.("input,textarea,select,[contenteditable=true],#moon-free-selection,#moon-quick-toolbar,#moon-quick-properties,#moon-quick-composer,#moon-quick-layout,#moon-quick-size")&&
@@ -674,6 +688,14 @@
     }
     if(!(event.ctrlKey||event.metaKey)||event.altKey)return false;
     const key=event.key.toLowerCase();
+    // Ctrl/Command+D mirrors PowerPoint's Duplicate command for added
+    // elements, without duplicating or changing existing source blocks.
+    if(freeCanvasActive&&key==="d"&&!event.shiftKey&&!typing&&
+      state.selectedAddition!==null&&state.additions[state.selectedAddition]){
+      event.preventDefault();event.stopPropagation();
+      duplicateAddedBlock();
+      return true;
+    }
     if(key==="s"&&!event.shiftKey){
       event.preventDefault();
       saveDraft();
