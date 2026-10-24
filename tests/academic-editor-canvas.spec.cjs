@@ -321,3 +321,25 @@ test('published canvas reserves actual wrapped-text height below a floating obje
   })).toBeGreaterThanOrEqual(31);
   await published.close();
 });
+
+test('return to layout also reverses freely positioned new image blocks', async ({ page }) => {
+  const view=page.frameLocator('#pageFrame');
+  await view.locator('#nested h2').click();
+  await page.locator('#insertContentKind').selectOption('image');
+  await page.locator('#insertContentText').fill('Example image description');
+  await page.locator('#insertImageSrc').fill('assets/example-photograph.webp');
+  await page.locator('#insertContentBtn').click();
+  const added=view.locator('[data-editor-added-index="0"]');
+  await expect(added).toHaveCount(1);
+  await added.click();
+  let move=view.locator('#moon-free-selection [data-free-direction="move"]');
+  await move.focus();await move.press('Shift+ArrowRight');
+  await expect(view.locator('main > .moon-free-layer > [data-editor-added-index="0"]')).toHaveCount(1);
+  await view.getByRole('button',{
+    name:"Restore this object's original place in the content flow"
+  }).click();
+  await expect(view.locator('#nested [data-editor-added-index="0"]')).toHaveCount(1);
+  await expect(view.locator('[data-editor-added-index="0"]')).not.toHaveClass(/moon-free-absolute/);
+  await page.locator('#undoBtn').click();
+  await expect(view.locator('main > .moon-free-layer > [data-editor-added-index="0"]')).toHaveCount(1);
+});
