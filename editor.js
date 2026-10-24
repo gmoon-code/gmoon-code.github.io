@@ -1064,6 +1064,71 @@
     try{state.frameDoc.documentElement.setPointerCapture(event.pointerId)}
     catch(error){freeGesture=null;}
   }
+  // Snap free-moving objects to page edges/centre or neighbouring objects.
+  // Guides live only in the sandboxed preview document, never in page HTML.
+  function clearFreeSnapGuides(){
+    state.frameDoc?.getElementById("moon-free-snap-guides")?.remove();
+  }
+  function freeSnapTargets(sel){
+    const main=sel.node.closest("main");
+    if(!main)return null;
+    const doc=main.ownerDocument,rect=main.getBoundingClientRect();
+    const cs=doc.defaultView.getComputedStyle(main);
+    const ox=rect.left+(parseFloat(cs.borderLeftWidth)||0);
+    const oy=rect.top+(parseFloat(cs.borderTopWidth)||0);
+    const x=[0,main.clientWidth/2,main.clientWidth];
+    const y=[0,main.clientHeight/2,main.clientHeight];
+    for(const other of main.querySelectorAll(".moon-free-absolute")){
+      if(other===sel.node)continue;
+      const bounds=other.getBoundingClientRect();
+      const left=bounds.left-ox,top=bounds.top-oy;
+      x.push(left,left+bounds.width/2,left+bounds.width);
+      y.push(top,top+bounds.height/2,top+bounds.height);
+    }
+    return {main,x,y,ox,oy};
+  }
+  function snapFreeMove(geometry,sel,disabled){
+    clearFreeSnapGuides();
+    if(disabled)return geometry;
+    const targets=freeSnapTargets(sel);
+    if(!targets)return geometry;
+    const snapAxis=(edges,lines)=>{
+      let best=null;
+      for(const edge of edges){
+        for(const line of lines){
+          const distance=Math.abs(edge.value-line);
+          if(distance<=7&&(!best||distance<best.distance))
+            best={delta:line-edge.value,line,distance};
+        }
+      }
+      return best;
+    };
+    const sx=snapAxis([{value:geometry.x},{value:geometry.x+geometry.width/2},
+      {value:geometry.x+geometry.width}],targets.x);
+    const sy=snapAxis([{value:geometry.y},{value:geometry.y+geometry.height/2},
+      {value:geometry.y+geometry.height}],targets.y);
+    if(sx)geometry.x+=Math.round(sx.delta);
+    if(sy)geometry.y+=Math.round(sy.delta);
+    if(sx||sy){
+      const doc=targets.main.ownerDocument,win=doc.defaultView;
+      const guides=doc.createElement("div");
+      guides.id="moon-free-snap-guides";
+      guides.setAttribute("aria-hidden","true");
+      guides.style.cssText="position:fixed;inset:0;pointer-events:none;z-index:2147483643";
+      const line=(vertical,at)=>{
+        const el=doc.createElement("div");
+        const coordinate=Math.round(at);
+        el.style.cssText=vertical?
+          "position:absolute;left:"+coordinate+"px;top:0;height:100%;border-left:1px dashed #e05b91":
+          "position:absolute;top:"+coordinate+"px;left:0;width:100%;border-top:1px dashed #e05b91";
+        guides.append(el);
+      };
+      if(sx)line(true,targets.ox+sx.line);
+      if(sy)line(false,targets.oy+sy.line);
+      doc.body.append(guides);
+    }
+    return geometry;
+  }
   function freeGestureMove(event){
     const drag=freeGesture;if(!drag||drag.id!==event.pointerId)return;
     event.preventDefault();event.stopPropagation();
@@ -1105,12 +1170,17 @@
     next.y=Math.max(-16000,Math.min(16000,next.y));
     next.width=Math.max(35,Math.min(4000,next.width));
     next.height=Math.max(18,Math.min(4000,next.height));
+    if(d==="move"){
+      const sel=freeSelected();
+      if(sel)snapFreeMove(next,sel,event.altKey);
+    }else clearFreeSnapGuides();
     applyFreeGeometry(next);
   }
   function freeGestureEnd(event){
     const drag=freeGesture;if(!drag||drag.id!==event.pointerId)return;
     event.preventDefault();event.stopPropagation();
     freeGesture=null;
+    clearFreeSnapGuides();
     if(event.type==="pointercancel"){
       if(drag.moved)undo();
       return;
@@ -1235,7 +1305,7 @@
         else node.setAttribute("contenteditable","true");
       }
     }
-    if(!freeCanvasActive){freeGesture=null;state.frameDoc?.getElementById("moon-free-selection")?.remove();}
+    if(!freeCanvasActive){freeGesture=null;clearFreeSnapGuides();state.frameDoc?.getElementById("moon-free-selection")?.remove();}
     else{
       for(const id of ["moon-image-resize-handle","moon-block-move-handle",
         "moon-added-block-move-handle","moon-added-block-width-handle",
