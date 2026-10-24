@@ -1035,7 +1035,9 @@
       updateDirty(state.selected);
     }
     positionFreeSelection();
-    positionQuickToolbar();
+    // Moving an object into or out of the free layer changes the available
+    // contextual actions, including Return to layout and layer controls.
+    createQuickToolbar();
     if(!verifyFreeCanvasPlacement())
       updateStatus("Positioning mismatch in this browser · Review before publishing");
   }
