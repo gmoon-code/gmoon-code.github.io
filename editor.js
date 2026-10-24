@@ -559,6 +559,12 @@
     if(freeCanvasActive&&(event.ctrlKey||event.metaKey)){
       event.preventDefault();event.stopPropagation();return;
     }
+    // Preserve the enclosing figure selected by Shift+pointerdown.
+    if(freeCanvasActive&&event.shiftKey&&
+      event.target.closest("figure[data-editor-key]")&&
+      event.target.closest("img,figcaption")){
+      event.preventDefault();event.stopPropagation();return;
+    }
     // In-preview controls must never be interpreted as selected page content.
     if(event.target.closest("#moon-free-selection,#moon-quick-toolbar,#moon-quick-composer,#moon-quick-layout,#moon-quick-size,#moon-source-width-handle,#moon-quick-properties"))return;
     /* Stop navigation, but keep normal selection behaviour for editable text. */
@@ -1117,10 +1123,15 @@
     if((event.ctrlKey||event.metaKey)&&selectOverlappingFreeObject(event))return;
     const added=event.target.closest("[data-editor-added-index]");
     const original=added?null:event.target.closest("[data-editor-key]");
-    const node=added||original;
+    // Shift-dragging an image or caption selects its containing figure so
+    // both travel together. Normal dragging keeps child-level editing.
+    const group=event.shiftKey&&!added&&original&&
+      ["IMG","FIGCAPTION"].includes(original.tagName)?
+      original.closest("figure[data-editor-key]"):null;
+    const node=added||group||original;
     if(!node||!node.closest("main"))return;
     if(added)selectAddedBlock(Number(added.getAttribute("data-editor-added-index")));
-    else selectElement(original);
+    else selectElement(node);
     freeGestureStart(event,"move",node);
   }
   function freeGestureStart(event,direction,handle){
