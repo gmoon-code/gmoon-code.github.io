@@ -633,3 +633,33 @@ test('the editor accepts more than ten additions without silently discarding a d
   await page.reload();
   await expect(view.locator('[data-editor-added-index]')).toHaveCount(12);
 });
+
+test('keyboard duplicate and Delete act only on inserted objects, with undo safety', async ({ page }) => {
+  const view=page.frameLocator('#pageFrame');
+  await view.locator('main #nested h2').click();
+  await page.locator('#insertContentText').fill('Keyboard shortcut object');
+  await page.locator('#insertContentBtn').click();
+  const first=view.locator('[data-editor-added-index="0"]');
+  await expect(first).toHaveCount(1);
+  await first.click();
+  await first.press('Control+d');
+  const duplicated=view.locator('[data-editor-added-index="1"]');
+  await expect(duplicated).toHaveCount(1);
+  await expect.poll(()=>page.evaluate(key=>
+    JSON.parse(localStorage.getItem(key)||'{}').additions?.length,DRAFT)).toBe(2);
+  await duplicated.focus();
+  await duplicated.press('Delete');
+  await expect(duplicated).toHaveCount(0);
+  await expect(first).toHaveCount(1);
+  await page.locator('#undoBtn').click();
+  await expect(view.locator('[data-editor-added-index="1"]')).toHaveCount(1);
+
+  // Existing site elements must never be removed or duplicated by the
+  // convenience shortcuts. Their deletion uses explicit guarded controls.
+  const original=view.locator('main #nested h2');
+  await original.click();
+  await original.press('Delete');
+  await original.press('Control+d');
+  await expect(original).toHaveCount(1);
+  await expect(view.locator('[data-editor-added-index]')).toHaveCount(2);
+});
