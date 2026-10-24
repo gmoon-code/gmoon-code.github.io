@@ -467,3 +467,44 @@ test('moving a nested floating caption detaches only the selected child',async({
   await expect(view.locator('main > .moon-free-layer > figcaption'))
     .toHaveAttribute('data-moon-free-detach','true');
 });
+
+test('a source figure moves with its image and caption as one editable object', async ({ page }) => {
+  const source='<!doctype html><html><head><meta name="viewport" content="width=device-width, initial-scale=1">'+
+    '<style>main{margin:24px;padding:20px}figure{margin:10px;width:260px}figcaption{font:16px Arial}</style></head><body>'+
+    '<main><section id="figure-work"><figure><img alt="Lab instruments" src="assets/example-photograph.webp" width="220" height="120">'+
+    '<figcaption>Scientific tools in our classroom</figcaption></figure><p>Text after figure</p></section></main></body></html>';
+  await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',body:source}));
+  await page.reload();
+  const view=page.frameLocator('#pageFrame');
+  await view.locator('#figure-work figcaption').click();
+  await view.getByRole('button',{name:'Select the entire figure including its image and caption'}).click();
+  await expect(view.locator('#moon-free-selection button[data-free-direction]')).toHaveCount(9);
+  const move=view.locator('#moon-free-selection [data-free-direction="move"]');
+  await move.focus();await move.press('Shift+ArrowRight');
+  const group=view.locator('main > .moon-free-layer > figure');
+  await expect(group).toHaveCount(1);
+  await expect(group.locator('img')).toHaveCount(1);
+  await expect(group.locator('figcaption')).toHaveText('Scientific tools in our classroom');
+  const x=await group.evaluate(el=>el.style.left);
+  await expect.poll(()=>page.evaluate(key=>
+    JSON.parse(localStorage.getItem(key)||'{}').items?.some(item=>
+      item.markup.startsWith('<figure')&&item.markup.includes('moon-free-absolute')),DRAFT)).toBe(true);
+  await page.reload();
+  const restored=view.locator('main > .moon-free-layer > figure');
+  await expect(restored).toHaveCount(1);
+  await expect(restored).toHaveCSS('left',x);
+  await restored.locator('figcaption').click();
+  await view.getByRole('button',{name:'Select the entire figure including its image and caption'}).click();
+  await view.getByRole('button',{name:'Select the caption within this figure'}).click();
+  await expect(view.locator('figcaption[data-editor-selected]')).toHaveCount(1);
+  await view.getByRole('button',{name:'Select the entire figure including its image and caption'}).click();
+  await view.getByRole('button',{name:'Select the image within this figure'}).click();
+  await expect(view.locator('img[data-editor-selected]')).toHaveCount(1);
+  const download=page.waitForEvent('download');
+  await page.locator('#exportBtn').click();
+  const html=fs.readFileSync(await(await download).path(),'utf8');
+  expect(html).toContain('<figure');
+  expect(html).toContain('moon-free-layer');
+  expect(html).toContain('<figcaption>Scientific tools in our classroom</figcaption>');
+  expect(html).not.toContain('data-editor-key=');
+});
