@@ -25,13 +25,19 @@ const base="http://127.0.0.1:"+address.port;
 const browser=await chromium.launch({headless:true,args:["--no-sandbox"]});
 const page=await browser.newPage({viewport:{width:1680,height:1000}});
 function closeTo(a,b){return Math.abs(a-b)<=5}
+async function pagePoint(element){
+  return element.evaluate(node=>{
+    const r=node.getBoundingClientRect(),win=node.ownerDocument.defaultView;
+    return {x:r.left+win.scrollX,y:r.top+win.scrollY};
+  });
+}
 async function resize(label,subject,neighbor){
   await subject.scrollIntoViewIfNeeded();
   await subject.click();
   const handle=page.frameLocator("#pageFrame")
     .locator('#moon-free-selection [data-free-direction="se"]');
   await handle.waitFor({state:"visible"});
-  const oldBox=await subject.boundingBox(),fixedBefore=await neighbor.boundingBox();
+  const oldBox=await subject.boundingBox(),fixedBefore=await pagePoint(neighbor);
   assert(oldBox&&fixedBefore,label+" must be visible");
   const control=await handle.boundingBox();
   assert(control,label+" resize handle missing");
@@ -40,7 +46,7 @@ async function resize(label,subject,neighbor){
   await page.mouse.move(control.x+control.width/2+42,
     control.y+control.height/2+30,{steps:9});
   await page.mouse.up();
-  const now=await subject.boundingBox(),fixedAfter=await neighbor.boundingBox();
+  const now=await subject.boundingBox(),fixedAfter=await pagePoint(neighbor);
   assert(now&&fixedAfter,label+" vanished during resize");
   assert(now.width>=oldBox.width+20,label+" did not grow as requested");
   assert(closeTo(fixedAfter.x,fixedBefore.x)&&closeTo(fixedAfter.y,fixedBefore.y),
@@ -55,6 +61,8 @@ try{
   await frame.locator("main .home-lead").waitFor({state:"visible",timeout:25000});
   await resize("paragraph",frame.locator("main .home-lead").first(),
     frame.locator("main h1").first());
+  // Start the image test from the original content, not the text test draft.
+  await page.evaluate(()=>localStorage.clear());
   await page.reload({waitUntil:"domcontentloaded"});
   await frame.locator('main img[src*="profile-portrait"]')
     .waitFor({state:"visible",timeout:25000});
