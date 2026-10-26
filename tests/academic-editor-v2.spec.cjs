@@ -359,7 +359,7 @@ test('visual image library inserts site assets and replaces selected pictures',a
 test('shape inspector switches rectangle to ellipse and line, including export',async({page})=>{
   await importScene(page);
   await page.locator('#addShape').click();
-  const shape=page.locator('#stage [data-kind="shape"][aria-selected=true]');
+  const shape=page.locator('#stage [data-kind="shape"]').last();
   await expect(shape).toHaveCount(1);
   await page.locator('#propShapeKind').selectOption('ellipse');
   await expect(shape).toHaveCSS('border-radius','50%');
@@ -374,4 +374,23 @@ test('shape inspector switches rectangle to ellipse and line, including export',
   await page.locator('#undo').click();
   await expect(shape).not.toHaveClass(/line-shape/);
   await expect(shape).toHaveCSS('border-radius','50%');
+});
+
+test('fit-to-text expands long paragraphs without moving neighbouring objects',async({page})=>{
+  await importScene(page);
+  await page.locator('#layers [data-layer-id="1"]').click();
+  const heading=page.locator('#stage [data-id="1"]');
+  const neighbour=page.locator('#stage [data-id="2"]');
+  const untouched=await neighbour.evaluate(node=>node.getAttribute('style'));
+  await page.locator('#propH').fill('24');
+  await page.locator('#propH').press('Tab');
+  const longText=Array.from({length:15},()=> 'Students revise scientific explanations from evidence.').join(' ');
+  await page.locator('#propText').fill(longText);
+  await page.locator('#propText').press('Tab');
+  await page.locator('#fitText').click();
+  const height=await heading.evaluate(node=>parseInt(node.style.height));
+  expect(height).toBeGreaterThan(24);
+  expect(await neighbour.evaluate(node=>node.getAttribute('style'))).toBe(untouched);
+  await page.locator('#undo').click();
+  expect(await heading.evaluate(node=>parseInt(node.style.height))).toBe(24);
 });
