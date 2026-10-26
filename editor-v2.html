@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Academic Website Editor 2 | Ye Eun Moon</title>
+<link rel="stylesheet" href="editor-v2.css?v=1">
+<script src="editor-v2.js?v=1" defer></script>
+</head>
+<body>
+<a class="skip" href="#workspace">Skip to editor canvas</a>
+<div class="application">
+  <header class="topbar">
+    <div class="identity"><span class="brand-mark" aria-hidden="true"></span><span><strong>Academic Editor <small>2.0</small></strong><em>Independent canvas · draft only</em></span></div>
+    <div class="actions">
+      <span class="saving" id="status" role="status" aria-live="polite">Preparing editor</span>
+      <button id="undo" title="Undo (Ctrl+Z)" disabled>↶ Undo</button>
+      <button id="redo" title="Redo (Ctrl+Shift+Z)" disabled>↷ Redo</button>
+      <button id="save" class="subtle">Save draft</button>
+      <button id="exportScene" class="subtle">Export JSON</button>
+      <button id="preview" class="primary">Preview page</button>
+      <button id="publish" class="primary outline">Publish staging preview</button>
+    </div>
+  </header>
+  <section class="tools" aria-label="Canvas tools">
+    <button id="selectTool" class="active" aria-pressed="true">↖ Select</button>
+    <button id="addText">T Text</button>
+    <button id="addImage">▧ Image</button>
+    <button id="addShape">▢ Shape</button>
+    <span class="divider"></span>
+    <button id="duplicate">Duplicate</button>
+    <button id="front">Bring forward</button>
+    <button id="back">Send backward</button>
+    <button id="remove">Delete</button>
+    <span class="push"></span>
+    <label class="zoom-label" for="zoom">Zoom</label>
+    <input id="zoom" type="range" min="40" max="150" step="5" value="80">
+    <span id="zoomValue" class="zoom-value">80%</span>
+  </section>
+  <div class="editor-body">
+    <aside class="left-panel">
+      <section class="panel-section">
+        <h2>Website pages</h2>
+        <label for="page">Choose an existing page</label>
+        <select id="page">
+          <option value="index.html">Home</option>
+          <option value="research.html">Research</option>
+          <option value="projects.html">Projects</option>
+          <option value="teaching.html">Teaching</option>
+          <option value="interests.html">Interests</option>
+          <option value="about.html">About</option>
+          <option value="cv.html">CV</option>
+          <option value="pungmul.html">Pungmul</option>
+          <option value="research-action.html">Action research</option>
+          <option value="research-scoping.html">Scoping review</option>
+          <option value="writing-biological-classification.html">Biological classification</option>
+          <option value="teaching-ap-biology.html">AP Biology case</option>
+          <option value="teaching-ap-chemistry.html">AP Chemistry case</option>
+        </select>
+        <div class="inline-actions">
+          <button id="importPage" class="primary">Import page layout</button>
+          <button id="sourcePage">View original</button>
+        </div>
+        <p class="help">Imports a separate editable copy of the existing page. The original website is never edited by this canvas.</p>
+      </section>
+      <section class="panel-section">
+        <div class="panel-title"><h2>Layers</h2><span id="layerCount">0</span></div>
+        <div id="layers" class="layers" aria-label="Page objects"></div>
+        <p class="help">Click an object or its layer to select it. Drag on the canvas, or use the arrow keys for precise movement.</p>
+      </section>
+    </aside>
+    <main id="workspace" class="workspace" tabindex="-1">
+      <div class="workspace-heading"><span>Design canvas</span><span class="workspace-pill">Desktop · independent objects</span></div>
+      <div class="scrollspace" id="scrollspace">
+        <div class="stage-wrapper" id="stageWrapper">
+          <div id="stage" class="stage" role="region" aria-label="Editable website canvas" tabindex="0"></div>
+        </div>
+      </div>
+      <div class="workspace-footer">Click to select · Drag to move · Eight resize handles · Double-click text to edit · Shift-click to select multiple objects</div>
+    </main>
+    <aside class="right-panel">
+      <section class="panel-section">
+        <h2>Object properties</h2>
+        <div id="emptySelection" class="empty-selection">Select an object to edit its position, dimensions, text, colour, and layering.</div>
+        <div id="properties" hidden>
+          <label for="objectName">Layer name</label>
+          <input id="objectName" maxlength="90">
+          <div class="property-grid">
+            <label>X <input type="number" id="propX" step="1"></label>
+            <label>Y <input type="number" id="propY" step="1"></label>
+            <label>Width <input type="number" id="propW" min="40" step="1"></label>
+            <label>Height <input type="number" id="propH" min="24" step="1"></label>
+          </div>
+          <label for="propText" id="textLabel">Text</label>
+          <textarea id="propText" rows="5"></textarea>
+          <label for="propSrc" id="srcLabel" hidden>Image path</label>
+          <input id="propSrc" placeholder="assets/photo.webp" hidden>
+          <label for="propAlt" id="altLabel" hidden>Image description</label>
+          <textarea id="propAlt" rows="2" hidden></textarea>
+          <div class="property-grid">
+            <label>Text size <input type="number" id="propFont" min="10" max="120"></label>
+            <label>Alignment <select id="propAlign"><option value="left">Left</option><option value="center">Centre</option><option value="right">Right</option></select></label>
+            <label>Text colour <input type="color" id="propColor"></label>
+            <label>Background <input type="color" id="propBg"></label>
+          </div>
+          <div class="inline-actions"><button id="lock">Lock</button><button id="hide">Hide</button></div>
+        </div>
+      </section>
+      <section class="panel-section">
+        <h2>Publishing safeguards</h2>
+        <p class="help">The new editor creates a separate canvas document. Its preview and GitHub staging publication never overwrite existing website pages. Migration fidelity, links, and mobile layout must be reviewed before any live-site replacement.</p>
+        <button id="exportHtml">Export standalone HTML</button>
+        <button id="resetScene" class="danger">Discard local canvas draft</button>
+      </section>
+    </aside>
+  </div>
+</div>
+<dialog id="publishDialog">
+  <form method="dialog" id="publishForm">
+    <h2>Publish a staging preview</h2>
+    <p>This creates <code id="stagePath">editor-v2-previews/index.html</code> in your GitHub Pages repository. It will <strong>not</strong> replace any live website page.</p>
+    <label for="githubToken">GitHub fine-grained personal access token (Contents: Read and write)</label>
+    <input id="githubToken" type="password" autocomplete="off" spellcheck="false" placeholder="github_pat_…">
+    <p class="help">Used only for this publication. The token is not stored or included in the exported page.</p>
+    <div class="dialog-actions"><button value="cancel">Cancel</button><button id="confirmPublish" class="primary" value="publish">Publish staging page</button></div>
+  </form>
+</dialog>
+<dialog id="previewDialog"><div class="preview-top"><strong>Independent responsive preview</strong><button id="closePreview" aria-label="Close preview">Close</button></div><iframe id="previewFrame" title="Standalone editor preview" sandbox="allow-same-origin"></iframe></dialog>
+<iframe id="importFrame" aria-hidden="true" tabindex="-1" sandbox="allow-same-origin"></iframe>
+</body>
+</html>
