@@ -124,3 +124,9 @@
 .live-arrange-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-top:11px}
 .live-arrange-grid button{min-width:0;white-space:normal;line-height:1.35;min-height:35px;text-align:center}
 #liveElementList button[aria-selected="true"]{background:#e5f0fc;box-shadow:inset 3px 0 #2d75b7}
+
+/* Canvas smart guides use unscaled scene coordinates and do not intercept grabs. */
+#stage .canvas-snap-guide{
+  position:absolute;z-index:2147483000;pointer-events:none;
+  background:#d52880;box-shadow:0 0 0 .35px #fff;
+}

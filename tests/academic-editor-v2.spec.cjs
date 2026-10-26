@@ -1201,3 +1201,42 @@ test('overflow warning and explicit fit height prevent hidden wrapped text witho
   const restored=await neighbour.boundingBox();
   expect(Math.abs(restored.y-beforeFit.y)).toBeLessThan(1.2);
 });
+
+test('free canvas snaps movement to peer objects and Alt allows precise bypass',async({page})=>{
+  await importScene(page);
+  await page.locator('#addShape').click();
+  await page.locator('#addShape').click();
+  async function setPosition(id,x,y){
+    await page.locator('#layers [data-layer-id="'+id+'"]').click();
+    await page.locator('#propX').fill(String(x));
+    await page.locator('#propX').press('Tab');
+    await page.locator('#propY').fill(String(y));
+    await page.locator('#propY').press('Tab');
+  }
+  await setPosition(4,180,320);
+  await setPosition(5,450,320);
+  const first=page.locator('#stage [data-id="4"]');
+  await page.locator('#layers [data-layer-id="4"]').click();
+  const canvas=page.locator('#stage');
+  const scale=await canvas.evaluate(node=>node.getBoundingClientRect().width/parseFloat(node.style.width));
+  async function dragTo(desiredX,alt=false){
+    const box=await first.boundingBox();
+    const fromX=box.x+box.width*.4,fromY=box.y+box.height*.5;
+    await page.mouse.move(fromX,fromY);
+    if(alt)await page.keyboard.down('Alt');
+    await page.mouse.down();
+    await page.mouse.move(fromX+(desiredX-180)*scale,fromY,{steps:10});
+    if(!alt)await expect(canvas.locator('[data-v2-guide="x"]')).toHaveCount(1);
+    await page.mouse.up();
+    if(alt)await page.keyboard.up('Alt');
+  }
+  await dragTo(447);
+  await expect(first).toHaveCSS('left','450px');
+  await expect(canvas.locator('[data-v2-guide]')).toHaveCount(0);
+  await page.locator('#undo').click();
+  await expect(first).toHaveCSS('left','180px');
+  await dragTo(447,true);
+  const actual=await first.evaluate(node=>parseInt(node.style.left));
+  expect(Math.abs(actual-447)).toBeLessThanOrEqual(2);
+  await expect(canvas.locator('[data-v2-guide]')).toHaveCount(0);
+});

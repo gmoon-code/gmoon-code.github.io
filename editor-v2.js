@@ -2858,6 +2858,69 @@ function refreshLiveBoxes(){
   const obj=lookup(activeId);
   if(obj)for(const key of ["x","y","w","h"])$(propertyIds[key]).value=Math.round(obj[key]);
 }
+// Free-canvas smart guides. Use scene coordinates, independent of browser zoom.
+// Guides are editor-only DOM elements and never enter saved scenes or exports.
+function canvasGuideCandidates(ids){
+  const exclude=new Set(ids);
+  const x=[0,scene.width/2,scene.width],y=[0];
+  for(const obj of scene.objects){
+    if(exclude.has(obj.id)||obj.hidden||obj.backdrop)continue;
+    x.push(obj.x,obj.x+obj.w/2,obj.x+obj.w);
+    y.push(obj.y,obj.y+obj.h/2,obj.y+obj.h);
+  }
+  return {x,y};
+}
+function canvasGroupBounds(baselines){
+  const x=Math.min(...baselines.map(obj=>obj.x));
+  const y=Math.min(...baselines.map(obj=>obj.y));
+  return {x,y,w:Math.max(...baselines.map(obj=>obj.x+obj.w))-x,
+    h:Math.max(...baselines.map(obj=>obj.y+obj.h))-y};
+}
+function snapCanvasMove(dx,dy,g,disabled,lockAxis=null){
+  if(disabled)return {dx,dy,x:null,y:null};
+  const tolerance=Math.min(16,7/Math.max(.25,zoom));
+  const {x,y,w,h}=g.groupBounds;
+  function closest(lines,edges){
+    let best=null;
+    for(const line of lines)for(const edge of edges){
+      const diff=line-edge;
+      if(Math.abs(diff)<=tolerance&&
+         (!best||Math.abs(diff)<Math.abs(best.diff)))
+        best={diff,line};
+    }
+    return best;
+  }
+  const matchX=lockAxis==="y"?null:
+    closest(g.snapLines.x,[x+dx,x+dx+w/2,x+dx+w]);
+  const matchY=lockAxis==="x"?null:
+    closest(g.snapLines.y,[y+dy,y+dy+h/2,y+dy+h]);
+  return {dx:dx+Math.round(matchX?.diff||0),
+    dy:dy+Math.round(matchY?.diff||0),
+    x:matchX?.line??null,y:matchY?.line??null};
+}
+function clearCanvasGuides(){
+  $("stage")?.querySelectorAll("[data-v2-guide]").forEach(node=>node.remove());
+}
+function drawCanvasGuides(x,y){
+  const stage=$("stage");
+  clearCanvasGuides();
+  for(const [axis,position] of [["x",x],["y",y]]){
+    if(position===null)continue;
+    const line=document.createElement("div");
+    line.className="canvas-snap-guide";
+    line.dataset.v2Guide=axis;
+    line.setAttribute("aria-hidden","true");
+    const thickness=1/Math.max(.25,zoom);
+    if(axis==="x"){
+      line.style.left=position+"px";line.style.top="0";
+      line.style.width=thickness+"px";line.style.height="100%";
+    }else{
+      line.style.left="0";line.style.top=position+"px";
+      line.style.width="100%";line.style.height=thickness+"px";
+    }
+    stage.append(line);
+  }
+}
 function startGesture(event,id,dir){
   const obj=lookup(id);
   if(!obj||obj.locked||editingId!==null)return;
@@ -2872,16 +2935,27 @@ function startGesture(event,id,dir){
   const ids=dir?[id]:[...selected];
   const baselines=ids.map(key=>({id:key,...copy(lookup(key))}));
   gesture={pointer:event.pointerId,clickedId:id,dir:dir||"move",x:event.clientX,y:event.clientY,
-    ids,baselines,snapshot:copy(scene),moved:false,aspect:obj.w/obj.h,kind:obj.type};
+    ids,baselines,snapshot:copy(scene),moved:false,aspect:obj.w/obj.h,kind:obj.type,
+    groupBounds:canvasGroupBounds(baselines),snapLines:canvasGuideCandidates(ids)};
   $("stage").setPointerCapture(event.pointerId);
 }
 function gestureMove(event){
   if(!gesture||event.pointerId!==gesture.pointer)return;
   event.preventDefault();
-  const g=gesture,dx=Math.round((event.clientX-g.x)/zoom),dy=Math.round((event.clientY-g.y)/zoom);
+  const g=gesture;
+  let dx=Math.round((event.clientX-g.x)/zoom);
+  let dy=Math.round((event.clientY-g.y)/zoom);
   if(Math.abs(dx)<2&&Math.abs(dy)<2&&!g.moved)return;
   g.moved=true;
   if(g.dir==="move"){
+    let axis=null;
+    if(event.shiftKey){
+      if(Math.abs(dx)>=Math.abs(dy)){dy=0;axis="x";}
+      else{dx=0;axis="y";}
+    }
+    const snap=snapCanvasMove(dx,dy,g,event.altKey,axis);
+    dx=snap.dx;dy=snap.dy;
+    drawCanvasGuides(snap.x,snap.y);
     for(const base of g.baselines){
       const obj=lookup(base.id);
       if(!obj)continue;
@@ -2913,6 +2987,7 @@ function cancelCanvasGesture(){
   const pending=gesture;
   if(!pending)return;
   gesture=null;lastTap=null;
+  clearCanvasGuides();
   scene=pending.snapshot;
   try{
     const stage=$("stage");
@@ -2925,6 +3000,7 @@ function cancelCanvasGesture(){
 function endGesture(event){
   if(!gesture||event.pointerId!==gesture.pointer)return;
   const g=gesture;gesture=null;
+  clearCanvasGuides();
   if(event.type==="pointercancel"){lastTap=null;scene=g.snapshot;render();return;}
   if(g.moved&&JSON.stringify(g.snapshot)!==JSON.stringify(scene)){
     const bottom=Math.max(...scene.objects.map(o=>o.y+o.h+70),900);
