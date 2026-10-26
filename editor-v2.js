@@ -453,10 +453,16 @@ function resetSelectedLiveLayout(){
   const before=liveSnapshot();
   delete patch.layout[liveDevice()];
   if(!Object.keys(patch.layout).length)delete patch.layout;
-  if(patch.kind==="text"&&patch.html===cleanRich(liveSelected.node.innerHTML)&&
-     !patch.layout&&patch.expected===(liveSelected.node.textContent||"").trim().slice(0,300)){
+  const selectedNode=liveSelected.node;
+  const unchangedText=patch.kind==="text"&&
+    patch.html===cleanRich(selectedNode.innerHTML)&&
+    patch.expected===(selectedNode.textContent||"").trim().slice(0,300);
+  const unchangedImage=patch.kind==="image"&&
+    patch.src===(selectedNode.getAttribute("src")||"")&&
+    patch.alt===(selectedNode.alt||"");
+  if(!patch.layout&&(patch.kind==="layout"||unchangedText||unchangedImage))
     livePatches.delete(patch.selector);
-  }else livePatches.set(patch.selector,patch);
+  else livePatches.set(patch.selector,patch);
   if(recordLiveHistory(before)){refreshLiveLayoutRules();renderLiveInspector();syncLiveOverlay();}
 }
 function validLivePatch(p){
