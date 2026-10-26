@@ -8,3 +8,5 @@
 .stage.drag-target{outline:3px dashed var(--focus);outline-offset:-6px;background:#f6fbf8}
 
 .image-library{display:grid;grid-template-columns:1fr 1fr;gap:7px}.image-library button{padding:5px;text-align:left;white-space:normal;overflow:hidden;min-width:0}.image-library img{display:block;width:100%;height:90px;object-fit:contain;background:#f1f5f1;border-radius:3px}.image-library span{display:block;margin-top:5px;font-size:10px;line-height:1.2;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.scene-object[data-kind=shape].line-shape{border:0!important}.scene-object[data-kind=shape].line-shape::after{content:"";position:absolute;left:0;right:0;top:50%;height:2px;background:var(--shape-line-colour,#81968c);pointer-events:none}
