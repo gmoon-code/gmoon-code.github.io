@@ -22,6 +22,7 @@ let reconnectImages=[],reconnectForPage="";
 const liveGithubSources=new Map();
 let liveSourceProvenance="loading"; // verified GitHub main or fallback deployed HTML
 let liveDisplayedSourceHtml=null; // Exact original HTML used to build the open editor
+let pendingLiveViewRestore=null; // Preserve long-page scroll and selection across undo/redo
 const copy=data=>JSON.parse(JSON.stringify(data));
 const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
 const number=v=>Number.isFinite(Number(v))?Number(v):0;
@@ -695,6 +696,15 @@ function liveUndoAction(again=false){
   const from=again?liveRedo:liveHistory,to=again?liveHistory:liveRedo;
   if(!from.length)return;
   if(liveEditing)saveLiveText();
+  const view=$("livePageFrame").contentWindow;
+  const selectedNode=liveSelected?.node;
+  pendingLiveViewRestore={
+    page:currentPage,x:view?.scrollX||0,y:view?.scrollY||0,
+    selector:selectedNode&&liveSelector(selectedNode),
+    tag:selectedNode?.tagName,
+    text:selectedNode?.tagName==="IMG"?
+      selectedNode.getAttribute("src"):(selectedNode?.textContent||"").trim().slice(0,300)
+  };
   to.push(liveSnapshot());
   livePatches=new Map(from.pop().map(p=>[p.selector,p]));
   storeLiveDraft();refreshUndo();loadLivePage();
@@ -1695,6 +1705,18 @@ function bindLiveDocument(){
     }
   }
   fitLivePage();reportLiveAssets();renderLiveLayers();
+  const restore=pendingLiveViewRestore;
+  pendingLiveViewRestore=null;
+  if(restore?.page===currentPage){
+    const candidate=restore.selector&&doc.querySelector(restore.selector);
+    const same=candidate&&candidate.tagName===restore.tag&&
+      (candidate.tagName==="IMG"?
+        candidate.getAttribute("src")===restore.text:
+        (candidate.textContent||"").trim().slice(0,300)===restore.text);
+    if(same)selectLiveElement(candidate);
+    doc.defaultView.scrollTo(restore.x,restore.y);
+    requestAnimationFrame(()=>doc.defaultView?.scrollTo(restore.x,restore.y));
+  }
 }
 async function loadLivePage(page=currentPage,{force=false}={}){
   if(!PAGES.has(page))return;
@@ -2554,6 +2576,7 @@ function attachEvents(){
     }catch(error){status(error.message||"Could not prepare original-layout preview");}
   });
   $("exportLiveEdits").addEventListener("click",async()=>{
+    if(liveEditing)saveLiveText();
     try{
       const html=await sourcePreservingHtml("https://gmoon-code.github.io/");
       download(currentPage.replace(".html","-original-layout-draft.html"),html,"text/html");
@@ -2817,6 +2840,7 @@ function attachEvents(){
   $("exportScene").addEventListener("click",()=>download(currentPage+".canvas.json",JSON.stringify(scene,null,2),"application/json"));
   $("exportHtml").addEventListener("click",()=>download(currentPage.replace(".html","-canvas-preview.html"),standaloneHtml(),"text/html"));
   $("preview").addEventListener("click",async()=>{
+    if(workspaceMode==="live"&&liveEditing)saveLiveText();
     const button=$("preview"),page=currentPage,mode=workspaceMode;
     button.disabled=true;
     try{
@@ -2839,6 +2863,7 @@ function attachEvents(){
     finally{button.disabled=false;}
   });
   $("compare").addEventListener("click",async()=>{
+    if(workspaceMode==="live"&&liveEditing)saveLiveText();
     const button=$("compare"),page=currentPage,mode=workspaceMode;
     button.disabled=true;
     try{
@@ -2914,6 +2939,7 @@ function attachEvents(){
     status("Saved edit removed from draft · Undo available · Website unchanged");
   });
   $("checkPublishEdits").addEventListener("click",async()=>{
+    if(liveEditing)saveLiveText();
     const button=$("checkPublishEdits"),message=$("publishError");
     if(workspaceMode!=="live")return;
     button.disabled=true;message.hidden=true;
