@@ -1667,30 +1667,118 @@ function utf8Base64(value){
     result+=String.fromCharCode(...data.subarray(i,i+32768));
   return btoa(result);
 }
-async function publishStaging(token){
-  const sourceMode=workspaceMode==="live";
-  if(!token)throw Error("A GitHub token is required for staging");
-  if(sourceMode&&!livePatches.size)throw Error("Make at least one original-layout edit before publishing");
-  if(!sourceMode&&!scene.objects.length)throw Error("Import or add objects first");
-  const path="editor-v2-previews/"+(sourceMode?"source-":"")+currentPage;
-  const content=sourceMode?
-    await sourcePreservingHtml("https://gmoon-code.github.io/"):
-    standaloneHtml("../");
-  const endpoint="https://api.github.com/repos/"+REPO+"/contents/"+path;
-  const headers={Accept:"application/vnd.github+json",Authorization:"Bearer "+token,
+// GitHub's Contents API is used directly from this static GitHub Pages editor.
+// Authentication is supplied by the user and never stored in localStorage.
+function githubHeaders(token){
+  return {Accept:"application/vnd.github+json",Authorization:"Bearer "+token,
     "X-GitHub-Api-Version":"2022-11-28"};
-  const current=await fetch(endpoint,{headers,cache:"no-store"});
-  if(!current.ok&&current.status!==404)throw Error("GitHub access failed ("+current.status+")");
-  const info=current.ok?await current.json():null;
-  const body={message:"Update visual editor 2 staging preview of "+currentPage,
-    content:utf8Base64(content),branch:"main"};
-  if(info?.sha)body.sha=info.sha;
-  const result=await fetch(endpoint,{method:"PUT",headers:{...headers,"Content-Type":"application/json"},
-    body:JSON.stringify(body)});
-  if(!result.ok)throw Error("GitHub refused staging publication ("+result.status+")");
-  status("Staging preview published · Original website unchanged");
-  return "https://gmoon-code.github.io/"+path;
 }
+async function githubFile(path,token,allowMissing=false){
+  const endpoint="https://api.github.com/repos/"+REPO+"/contents/"+path;
+  const response=await fetch(endpoint+"?ref=main",{headers:githubHeaders(token),cache:"no-store"});
+  if(allowMissing&&response.status===404)return {endpoint,info:null};
+  if(!response.ok){
+    if(response.status===401||response.status===403)
+      throw Error("GitHub denied access. Check that the token has Contents read/write permission for this repository.");
+    throw Error("Could not read the latest GitHub file (HTTP "+response.status+").");
+  }
+  const info=await response.json();
+  if(!info||info.type!=="file"||typeof info.sha!=="string")
+    throw Error("GitHub did not return an editable file.");
+  return {endpoint,info};
+}
+function decodeGithubHtml(info){
+  if(info.encoding!=="base64"||typeof info.content!=="string"||!info.content.trim())
+    throw Error("GitHub did not supply the current file contents. Publication stopped.");
+  const bytes=Uint8Array.from(atob(info.content.replace(/\\s/g,"")),char=>char.charCodeAt(0));
+  return new TextDecoder("utf-8",{fatal:true}).decode(bytes);
+}
+function applyLiveEditsToGithubHtml(html){
+  if(!/<main\\b/i.test(html))throw Error("The GitHub page has no main section. No changes were published.");
+  const doc=new DOMParser().parseFromString(html,"text/html");
+  if(applyPatchesToDocument(doc,true)!==livePatches.size)
+    throw Error("Some edits did not match the latest GitHub page. Nothing was published.");
+  // Keep all the website's existing relative assets and links in place.
+  // In particular, do not export editor-only selection outlines or staging URLs.
+  return "<!doctype html>\\n"+doc.documentElement.outerHTML;
+}
+async function publishGithub(token,target){
+  if(!token)throw Error("Enter your GitHub token to publish.");
+  if(!["live","staging"].includes(target))throw Error("Choose a valid publishing destination.");
+  const sourceMode=workspaceMode==="live";
+  if(target==="live"&&!sourceMode)
+    throw Error("Only original-layout edits can be published to the live website.");
+  if(sourceMode&&!livePatches.size)
+    throw Error("Make and save at least one original-layout edit before publishing.");
+  if(!sourceMode&&!scene.objects.length)
+    throw Error("Import or add objects before publishing a staging preview.");
+  if(!PAGES.has(currentPage))throw Error("Unknown page; publication cancelled.");
+
+  const path=target==="live"?currentPage:
+    "editor-v2-previews/"+(sourceMode?"source-":"")+currentPage;
+  const {endpoint,info}=await githubFile(path,token,target==="staging");
+  if(target==="live"&&!info)
+    throw Error("The public page is missing from GitHub. Publication cancelled.");
+
+  // Production HTML is based on the latest GitHub blob, not a stale page
+  // obtained through the Pages CDN. Unrelated changes are retained; changed
+  // target elements fail the strict expected-text/image checks.
+  const html=target==="live"?
+    applyLiveEditsToGithubHtml(decodeGithubHtml(info)):
+    sourceMode?await sourcePreservingHtml("https://gmoon-code.github.io/"):
+    standaloneHtml("../");
+  const body={
+    message:(target==="live"?"Publish verified Editor V2 edits to ":"Update Editor V2 staging preview of ")+currentPage,
+    content:utf8Base64(html),branch:"main"
+  };
+  if(info?.sha)body.sha=info.sha;
+  const response=await fetch(endpoint,{
+    method:"PUT",headers:{...githubHeaders(token),"Content-Type":"application/json"},
+    body:JSON.stringify(body)
+  });
+  if(!response.ok){
+    if(response.status===409||response.status===422)
+      throw Error("The file changed on GitHub during publication. No changes were published. Review the page and retry.");
+    if(response.status===401||response.status===403)
+      throw Error("GitHub refused the update. Check your token's repository permissions.");
+    throw Error("GitHub did not accept this publication (HTTP "+response.status+").");
+  }
+  const result=await response.json();
+  if(!result?.commit?.sha)throw Error("GitHub did not confirm a commit.");
+  return {url:"https://gmoon-code.github.io/"+path,
+    commit:result.commit.sha,target,path};
+}
+function updatePublishTarget(){
+  const target=$("publishTarget").value,live=target==="live";
+  $("publishTitle").textContent=live?"Publish changes to the live website":"Publish staging preview";
+  $("publishDescription").textContent=live?
+    "This updates the actual public webpage after checking the latest GitHub source. The independent design canvas is not published.":
+    "This creates a preview at a separate public URL without replacing the existing webpage.";
+  $("stagePath").textContent=live?currentPage:
+    "editor-v2-previews/"+(workspaceMode==="live"?"source-":"")+currentPage;
+  $("acknowledgeLive").closest("label").hidden=!live;
+  $("acknowledgeLive").required=live;
+  $("confirmPublish").textContent=live?"Publish live page":"Publish staging preview";
+  $("publishError").hidden=true;
+}
+function showPublishResult(result){
+  const panel=$("publishResult");
+  panel.replaceChildren();
+  const intro=document.createElement("span");
+  intro.textContent=result.target==="live"?
+    "GitHub confirmed the live-page update. GitHub Pages may take a little time to deploy. ":
+    "GitHub confirmed the staging preview. GitHub Pages may take a little time to deploy. ";
+  const link=document.createElement("a");
+  link.href=result.url;link.target="_blank";link.rel="noopener noreferrer";
+  link.textContent="Open published page";
+  const commit=document.createElement("a");
+  commit.href="https://github.com/"+REPO+"/commit/"+result.commit;
+  commit.target="_blank";commit.rel="noopener noreferrer";
+  commit.textContent="View GitHub commit";
+  panel.append(intro,link,document.createTextNode(" · "),commit);
+  panel.hidden=false;
+}
+
 function attachEvents(){
   $("page").addEventListener("change",event=>changePage(event.target.value));
   $("liveMode").addEventListener("click",()=>setWorkspaceMode("live"));
@@ -1977,26 +2065,54 @@ function attachEvents(){
   });
   $("closePreview").addEventListener("click",()=>$("previewDialog").close());
   $("publish").addEventListener("click",()=>{
+    if(liveEditing)saveLiveText();
     if(workspaceMode==="live"&&!livePatches.size){
-      status("Select text or an image and save a live-page edit before publishing");return;
+      status("Save a live-page text, image, appearance, or layout edit before publishing.");return;
     }
     if(workspaceMode==="design"&&!scene.objects.length){
-      status("Import or add objects first");return;
+      status("Import or add objects first.");return;
     }
-    $("stagePath").textContent="editor-v2-previews/"+
-      (workspaceMode==="live"?"source-":"")+currentPage;
-    $("githubToken").value="";$("publishDialog").showModal();
+    $("publishTarget").value=workspaceMode==="live"?"live":"staging";
+    $("publishTarget").querySelector('[value="live"]').disabled=workspaceMode!=="live";
+    $("acknowledgeLive").checked=false;
+    $("githubToken").value="";
+    updatePublishTarget();
+    $("publishDialog").showModal();
+  });
+  $("publishTarget").addEventListener("change",updatePublishTarget);
+  $("cancelPublish").addEventListener("click",()=>{
+    if($("confirmPublish").disabled)return;
+    $("githubToken").value="";$("publishDialog").close();
   });
   $("publishForm").addEventListener("submit",async event=>{
     if(event.submitter?.value!=="publish")return;
-    event.preventDefault();const token=$("githubToken").value.trim();
-    $("confirmPublish").disabled=true;
+    event.preventDefault();
+    const token=$("githubToken").value.trim(),target=$("publishTarget").value;
+    const message=$("publishError");
+    if(target==="live"&&!$("acknowledgeLive").checked){
+      message.textContent="Confirm you reviewed this page before publishing live.";
+      message.hidden=false;return;
+    }
+    $("confirmPublish").disabled=true;$("cancelPublish").disabled=true;
+    message.hidden=true;
+    status("Checking the latest GitHub file before publishing…");
     try{
-      const url=await publishStaging(token);
-      $("publishDialog").close();$("githubToken").value="";
-      status("Staging published · "+url);
-    }catch(error){status(error.message||"Staging publication failed");}
-    finally{$("confirmPublish").disabled=false;}
+      const result=await publishGithub(token,target);
+      $("publishDialog").close();
+      showPublishResult(result);
+      status(result.target==="live"?
+        "Live page committed to GitHub · Deployment may be pending":
+        "Staging page committed to GitHub · Deployment may be pending");
+      // Keep the browser draft available until the user verifies the
+      // deployed page. Never erase their changes merely on a successful PUT.
+    }catch(error){
+      message.textContent=error.message||"GitHub publication failed.";
+      message.hidden=false;
+      status("Publication stopped · No changes were confirmed");
+    }finally{
+      $("githubToken").value="";
+      $("confirmPublish").disabled=false;$("cancelPublish").disabled=false;
+    }
   });
   document.addEventListener("keydown",event=>{
     if(editingId!==null){
