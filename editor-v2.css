@@ -117,3 +117,10 @@
   border:0;background:white;transform-origin:top left;box-shadow:0 0 0 1px #c8d6cd}
 #previewFrame{height:auto;width:auto}
 #compareDialog .verified-frame-shell>iframe{flex:none;width:auto;height:auto}
+
+/* Live webpage multi-selection and PowerPoint-style arrangement */
+.live-arrange{border-top:1px solid var(--rule,#d7dfe0);margin-top:13px;padding-top:12px}
+.live-arrange .panel-title h3{font-size:13px;margin:0}
+.live-arrange-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-top:11px}
+.live-arrange-grid button{min-width:0;white-space:normal;line-height:1.35;min-height:35px;text-align:center}
+#liveElementList button[aria-selected="true"]{background:#e5f0fc;box-shadow:inset 3px 0 #2d75b7}
