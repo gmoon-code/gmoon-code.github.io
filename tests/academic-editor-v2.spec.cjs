@@ -531,3 +531,30 @@ test('original-layout image edit publishes to source-only staging path',async({p
   expect(published).toContain('main{margin:30px;width:950px;}');
   expect(await page.evaluate(()=>JSON.stringify(localStorage))).not.toContain('staging-test-token');
 });
+
+test('live preview retains true 100vh viewport height and scrolls long pages',async({page})=>{
+  const source='<!doctype html><html><body><main>'+
+    '<h2>Viewport height test</h2><section id="fullHero" style="height:100vh;background:lavender">Hero</section>'+
+    '<p id="afterHero">Content after first viewport</p></main></body></html>';
+  await page.route('**/about.html',route=>route.fulfill({
+    status:200,contentType:'text/html',body:source
+  }));
+  await page.locator('#reloadLive').click();
+  const live=page.frameLocator('#livePageFrame');
+  await expect(live.locator('#fullHero')).toBeVisible();
+  await expect(page.locator('#livePageFrame')).toHaveCSS('height','900px');
+  const size=await live.locator('#fullHero').evaluate(node=>node.getBoundingClientRect().height);
+  expect(size).toBeGreaterThanOrEqual(895);
+  expect(size).toBeLessThanOrEqual(905);
+  const scrolled=await live.locator('#afterHero').evaluate(node=>{
+    window.scrollTo(0,document.body.scrollHeight);
+    return window.scrollY;
+  });
+  expect(scrolled).toBeGreaterThan(0);
+  await page.locator('#devicePreview').selectOption('phone');
+  await expect(page.locator('#livePageFrame')).toHaveCSS('width','390px');
+  await expect(page.locator('#livePageFrame')).toHaveCSS('height','844px');
+  const phoneHeroHeight=await live.locator('#fullHero').evaluate(node=>node.getBoundingClientRect().height);
+  expect(phoneHeroHeight).toBeGreaterThanOrEqual(839);
+  expect(phoneHeroHeight).toBeLessThanOrEqual(849);
+});
