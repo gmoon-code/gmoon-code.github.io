@@ -3020,6 +3020,8 @@ function startGesture(event,id,dir){
   const obj=lookup(id);
   if(!obj||obj.locked||editingId!==null)return;
   event.preventDefault();event.stopPropagation();
+  // Return keyboard shortcuts to the canvas even after editing inspector fields.
+  $("stage").focus({preventScroll:true});
   const wasSelected=selected.has(id);
   if(event.shiftKey&&!dir){
     select(id,true);
