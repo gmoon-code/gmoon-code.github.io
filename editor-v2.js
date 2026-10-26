@@ -476,14 +476,21 @@ function liveLayoutRules(patches=[...livePatches.values()]){
   }
   return result.join("\n");
 }
+// Remember the CSS already committed to this source document. Draft
+// updates may override it, but never erase unrelated previously published
+// layout rules when editing a new page element.
+const liveSourceCss=new WeakMap();
 function refreshLiveLayoutRules(doc=$("livePageFrame").contentDocument,patches=[...livePatches.values()]){
   if(!doc?.head)return;
   let sheet=doc.getElementById("moon-v2-live-layout");
+  if(!liveSourceCss.has(doc))
+    liveSourceCss.set(doc,sheet?.textContent||"");
   if(!sheet){
     sheet=doc.createElement("style");sheet.id="moon-v2-live-layout";
     doc.head.append(sheet);
   }
-  sheet.textContent=liveLayoutRules(patches);
+  const existing=liveSourceCss.get(doc),next=liveLayoutRules(patches);
+  sheet.textContent=[existing,next].filter(Boolean).join("\n");
 }
 function livePatchForSelected(){
   const node=liveSelected?.node,selector=node&&liveSelector(node);
