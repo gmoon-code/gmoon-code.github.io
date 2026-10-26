@@ -155,10 +155,8 @@ try{
     assert(mobileImageBox&&mobileImageBox.width<=390,
       "Published image overflows the mobile screen");
     const placeholder=mobile.locator('main [data-moon-free-placeholder]');
-    assert(await placeholder.count()>=1,"Missing published layout marker");
-    assert.equal(await placeholder.first().evaluate(node=>
-      getComputedStyle(node).display),"none",
-      "Layout placeholder occupies space on mobile");
+    assert.equal(await placeholder.count(),0,
+      "Invisible layout holder should be detached from mobile reading order");
     console.log("PASS published mobile sizing and reading order");
   }finally{await mobile.close();}
 }catch(error){
