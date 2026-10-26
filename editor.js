@@ -1364,15 +1364,16 @@
       .filter(node=>node!==selected&&!node.contains(selected)&&
         !selected.contains(node)&&!node.closest(".moon-free-layer"))
       .slice(0,180).map(node=>{
-        const r=node.getBoundingClientRect();
-        return {node,x:r.left,y:r.top};
+        const r=node.getBoundingClientRect(),win=node.ownerDocument.defaultView;
+        return {node,x:r.left+win.scrollX,y:r.top+win.scrollY};
       });
   }
   function freeLayoutShifted(snapshot){
     return snapshot.some(({node,x,y})=>{
       if(!node.isConnected)return true;
-      const r=node.getBoundingClientRect();
-      return Math.abs(r.left-x)>3||Math.abs(r.top-y)>3;
+      const r=node.getBoundingClientRect(),win=node.ownerDocument.defaultView;
+      return Math.abs(r.left+win.scrollX-x)>3||
+        Math.abs(r.top+win.scrollY-y)>3;
     });
   }
   function freeGestureMove(event){
