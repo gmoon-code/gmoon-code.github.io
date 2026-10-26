@@ -551,6 +551,7 @@ function applyAddedPatch(doc,p){
     layer.append(node);
   }
   node.setAttribute("data-moon-v2-object-type",p.objectType);
+  if(p.objectType==="shape")node.setAttribute("data-moon-v2-shape-fill",p.fill);
   node.setAttribute("data-moon-v2-added-geometry",JSON.stringify(p.geometry));
   node.setAttribute("data-moon-v2-added-appearance",JSON.stringify(p.appearance||{}));
   if(p.objectType==="image"){
@@ -898,7 +899,7 @@ function livePatchForSelected(){
       geometry,appearance,
       ...(node.tagName==="IMG"?{src:node.getAttribute("src")||"",alt:node.alt||""}:
         node.tagName==="P"?{html:cleanRich(node.innerHTML)}:
-        {fill:"#e1eee4"})};
+        {fill:node.getAttribute("data-moon-v2-shape-fill")||"#e1eee4"})};
     return validAddedPatch(patch)?patch:null;
   }
   if(node.tagName==="IMG")
@@ -979,6 +980,20 @@ function normaliseTextBoxLayout(node,layout){
   next.sx=clamp(1/(next.osx||1),.2,5);
   next.sy=clamp(1/(next.osy||1),.2,5);
   return next;
+}
+function setAddedDimension(key,value){
+  const node=liveSelected?.node,patch=livePatchForSelected();
+  if(!node||patch?.kind!=="insert"||!["w","h"].includes(key))return;
+  const parsed=Number(value);
+  if(!Number.isFinite(parsed))return;
+  const previous=liveSnapshot(),geo={...addedDeviceGeometry(patch,liveDevice())};
+  geo[key]=Math.round(clamp(parsed,key==="w"?40:24,key==="w"?4000:5000));
+  patch.geometry={...patch.geometry,[liveDevice()]:geo};
+  livePatches.set(patch.selector,patch);
+  if(recordLiveHistory(previous)){
+    refreshAddedObject(node.ownerDocument,patch);
+    renderLiveInspector();syncLiveOverlay();
+  }
 }
 function setLiveReflow(enabled){
   const node=liveSelected?.node;
@@ -1121,6 +1136,13 @@ function renderLiveInspector(){
   $("deleteLiveElement").disabled=!node||!selector||!!liveEditing;
   refreshUndo();
   $("liveLayoutControls").hidden=!node;
+  const added=!!selector&&LIVE_ADDED_ID.test(selector);
+  $("liveAddedDimensions").hidden=!added;
+  if(added){
+    const data=livePatchForSelected(),g=data&&addedDeviceGeometry(data,liveDevice());
+    $("liveAddedWidth").value=String(g?.w||Math.round(node.getBoundingClientRect().width));
+    $("liveAddedHeight").value=String(g?.h||Math.round(node.getBoundingClientRect().height));
+  }
   $("liveBringFront").disabled=!node||!!liveEditing;
   $("liveSendBack").disabled=!node||!!liveEditing;
   $("liveResetStack").disabled=!node||!!liveEditing||
@@ -1151,10 +1173,10 @@ function renderLiveInspector(){
     // fields remain available for images and section containers.
     $("liveScaleX").value=String(Math.round(entry.sx*100));
     $("liveScaleY").value=String(Math.round(entry.sy*100));
-    $("liveScaleX").disabled=canReflow;
-    $("liveScaleY").disabled=canReflow;
-    $("liveScaleX").closest("label").hidden=canReflow;
-    $("liveScaleY").closest("label").hidden=canReflow;
+    $("liveScaleX").disabled=canReflow||added;
+    $("liveScaleY").disabled=canReflow||added;
+    $("liveScaleX").closest("label").hidden=canReflow||added;
+    $("liveScaleY").closest("label").hidden=canReflow||added;
     $("liveTextReflowControls").hidden=!canReflow;
     const on=canReflow;
     $("liveTextReflow").checked=on;
@@ -2928,6 +2950,10 @@ function attachEvents(){
   $("liveResetStack").addEventListener("click",()=>setLiveLayer(false,true));
   $("liveTextReflow").addEventListener("change",event=>
     setLiveReflow(event.target.checked));
+  $("liveAddedWidth").addEventListener("change",event=>
+    setAddedDimension("w",event.target.value));
+  $("liveAddedHeight").addEventListener("change",event=>
+    setAddedDimension("h",event.target.value));
   $("liveTextBoxWidth").addEventListener("change",event=>
     setLiveReflowDimension("wrapWidth",event.target.value));
   $("liveTextBoxHeight").addEventListener("change",event=>
