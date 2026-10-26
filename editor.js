@@ -1579,13 +1579,19 @@
       button.addEventListener("pointercancel",freeGestureEnd);
       frame.append(button);return button;
     };
-    for(const [direction,label,x,y,cursor] of [
-      ["nw","top-left","0%","0%","nwse-resize"],["n","top","50%","0%","ns-resize"],
-      ["ne","top-right","100%","0%","nesw-resize"],["e","right","100%","50%","ew-resize"],
-      ["se","bottom-right","100%","100%","nwse-resize"],
-      ["s","bottom","50%","100%","ns-resize"],["sw","bottom-left","0%","100%","nesw-resize"],
-      ["w","left","0%","50%","ew-resize"]
-    ])grip(direction,"Resize selected object from "+label,x,y,cursor);
+    // Avoid displaying active resize handles on elements that would be
+    // reparented on the first drag. The earlier UI invited destructive gestures.
+    const canResize=sel.node.classList.contains("moon-free-absolute")&&
+      sel.node.parentElement?.classList.contains("moon-free-layer");
+    if(canResize){
+      for(const [direction,label,x,y,cursor] of [
+        ["nw","top-left","0%","0%","nwse-resize"],["n","top","50%","0%","ns-resize"],
+        ["ne","top-right","100%","0%","nesw-resize"],["e","right","100%","50%","ew-resize"],
+        ["se","bottom-right","100%","100%","nwse-resize"],
+        ["s","bottom","50%","100%","ns-resize"],["sw","bottom-left","0%","100%","nesw-resize"],
+        ["w","left","0%","50%","ew-resize"]
+      ])grip(direction,"Resize selected object from "+label,x,y,cursor);
+    }
     const move=grip("move","Drag selected object freely or use arrow keys","50%","0%","grab");
     move.textContent="⠿ Move";
     move.style.width="82px";move.style.height="27px";
@@ -1608,6 +1614,15 @@
       "background:#163e79;color:#fff;font:600 12px system-ui,sans-serif;padding:4px 8px;"+
       "border-radius:4px;white-space:nowrap;pointer-events:none";
     frame.append(dimensions);
+    if(!canResize){
+      const status=doc.createElement("span");
+      status.textContent="Move to canvas to enable resizing";
+      status.setAttribute("role","status");
+      status.style.cssText="position:absolute;left:50%;bottom:-35px;transform:translateX(-50%);"+
+        "font:600 11px system-ui,sans-serif;color:#fff;background:#163e79;"+
+        "white-space:nowrap;padding:5px 8px;border-radius:5px;pointer-events:none";
+      frame.append(status);
+    }
     doc.body.append(frame);
     positionFreeSelection();
   }
