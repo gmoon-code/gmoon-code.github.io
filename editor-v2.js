@@ -502,6 +502,8 @@ function bindLiveDocument(){
 function loadLivePage(page=currentPage){
   if(!PAGES.has(page))return;
   ++liveSerial;
+  // Keep the image library in sync when the original website is refreshed.
+  loadPageImageLibrary(page,loadSerial);
   if(liveObserver){liveObserver.disconnect();liveObserver=null;}
   clearLiveSelection();
   const frame=$("livePageFrame");
