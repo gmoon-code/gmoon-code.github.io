@@ -32,7 +32,9 @@ function validateScene(value,page){
     if(obj.w<MIN_W||obj.h<MIN_H||obj.w>8000||obj.h>20000||
        typeof obj.name!=="string"||obj.name.length>120)throw Error("Invalid object size");
     if(obj.type==="image"&&!safeImageSource(obj.src))throw Error("Invalid image reference");
-    if(obj.type==="text"&&(typeof obj.text!=="string"||obj.text.length>30000))
+    if(obj.type==="text"&&(typeof obj.text!=="string"||obj.text.length>30000||
+      obj.rich!==undefined&&(typeof obj.rich!=="string"||obj.rich.length>70000)||
+      obj.tag!==undefined&&!/^(?:h[1-6]|p|li|blockquote|figcaption)$/.test(obj.tag)))
       throw Error("Invalid text content");
   }
   if(!Number.isInteger(value.nextId)||value.nextId<1||value.nextId>999999)throw Error("Invalid object counter");
@@ -42,6 +44,49 @@ function safeImageSource(value){
   return typeof value==="string"&&(
     /^assets\/[a-zA-Z0-9_./-]+\.(?:png|jpg|jpeg|webp|svg)$/i.test(value)&&!value.includes("..")&&!value.includes("//")||
     /^data:image\/(?:png|jpeg|webp);base64,[a-zA-Z0-9+/=]+$/i.test(value)&&value.length<4300000);
+}
+function safeLink(value){
+  if(typeof value!=="string"||value.length>1600)return null;
+  const url=value.trim();
+  if(!url||/[\u0000-\u001f<>"]/.test(url))return null;
+  if(/^https:\/\/[^\s/]+/i.test(url)||/^mailto:[^\s@]+@[^\s@]+$/i.test(url))return url;
+  if(url.startsWith("#")&&/^#[a-zA-Z0-9_-]+$/.test(url))return url;
+  if(!url.startsWith("/")&&!url.includes("..")&&!url.includes("//")&&
+     /^(?:\.\/)?[a-zA-Z0-9_.\/-]+(?:[?#][a-zA-Z0-9_.%&=+#-]*)?$/.test(url))return url;
+  return null;
+}
+function cleanRich(value,prefix=""){
+  if(typeof value!=="string"||value.length>70000)return "";
+  const template=document.createElement("template");
+  template.innerHTML=value;
+  const out=document.createElement("div");
+  const allowed=new Set(["A","EM","STRONG","B","I","U","S","SMALL","MARK","SUB","SUP","CODE","SPAN","BR"]);
+  const blocked=new Set(["SCRIPT","STYLE","IFRAME","OBJECT","EMBED","SVG","MATH","TEMPLATE","FORM"]);
+  const visit=(node,parent)=>{
+    if(node.nodeType===3){parent.append(document.createTextNode(node.nodeValue));return;}
+    if(node.nodeType!==1||blocked.has(node.tagName))return;
+    const keep=allowed.has(node.tagName);
+    const child=keep?document.createElement(node.tagName.toLowerCase()):parent;
+    if(keep){
+      if(node.tagName==="A"){
+        const link=safeLink(node.getAttribute("href"));
+        if(link){
+          const relative=!/^(?:https?:|mailto:|#|\/)/i.test(link);
+          child.setAttribute("href",relative?prefix+link:link);
+          if(/^https?:\/\//i.test(link))child.setAttribute("rel","noopener noreferrer");
+        }
+      }
+      parent.append(child);
+    }
+    if(node.tagName==="BR")return;
+    for(const nested of [...node.childNodes])visit(nested,child);
+  };
+  for(const node of [...template.content.childNodes])visit(node,out);
+  return out.innerHTML;
+}
+function exportedTag(value){
+  return /^h[1-6]$/.test(value||"")?value:
+    value==="blockquote"?"blockquote":"p";
 }
 function save(){
   clearTimeout(saveTimer);
@@ -86,7 +131,7 @@ function makeObject(type,attrs={}){
   const z=scene.objects.reduce((m,o)=>Math.max(o.z,m),0)+1;
   const common={id:scene.nextId++,type,name:type==="text"?"Text":type==="shape"?"Shape":"Image",
     x:60,y:60,w:type==="shape"?230:380,h:type==="text"?90:260,z,
-    text:"",src:"",alt:"",font:20,family:"Georgia, serif",color:"#1c2622",
+    text:"",rich:"",tag:"p",order:scene.objects.length,src:"",alt:"",font:20,family:"Georgia, serif",color:"#1c2622",
     bg:type==="shape"?"#e5f5e7":"#ffffff",transparent:type!=="shape",
     align:"left",locked:false,hidden:false};
   return Object.assign(common,attrs);
@@ -139,7 +184,12 @@ function makeSceneElement(obj){
   }else if(obj.type==="text"){
     const content=document.createElement("div");
     content.className="scene-content";
-    content.textContent=obj.text;
+    if(obj.rich)content.innerHTML=cleanRich(obj.rich);
+    else content.textContent=obj.text;
+    if(/^h[1-6]$/.test(obj.tag||"")){
+      node.setAttribute("role","heading");
+      node.setAttribute("aria-level",obj.tag.slice(1));
+    }
     node.append(content);
   }
   if(selected.has(obj.id)&&!obj.locked){
@@ -336,7 +386,8 @@ function finishTextEdit(){
   if(!node)return;
   const content=node.querySelector(".scene-content");
   const text=(content?.textContent||"").slice(0,30000);
-  mutate(()=>{const obj=lookup(id);if(obj)obj.text=text;});
+  const rich=cleanRich(content?.innerHTML||"");
+  mutate(()=>{const obj=lookup(id);if(obj){obj.text=text;obj.rich=rich;}});
   if(content)content.contentEditable="false";
   render();
 }
@@ -394,7 +445,9 @@ async function importPage(force=false){
         (node.alt||"Image").slice(0,95):(node.tagName.toLowerCase()+" · "+text.replace(/\s+/g," ").slice(0,65)),
         x:Math.round(rect.left-base.left),y:Math.round(rect.top-base.top),
         w:Math.round(rect.width),h:Math.round(rect.height),z:next.nextId,
-        text:text.slice(0,30000),src,alt:image?node.alt||"":"",
+        text:text.slice(0,30000),rich:image?"":cleanRich(node.innerHTML),
+        tag:image?"p":node.tagName.toLowerCase(),order:next.objects.length,
+        src,alt:image?node.alt||"":"",
         font:clamp(Math.round(parseFloat(css.fontSize)||18),10,120),
         family:css.fontFamily||"Georgia,serif",color:hexColour(css.color,"#1c2622"),
         bg:"#ffffff",transparent:true,align:["left","center","right"].includes(css.textAlign)?css.textAlign:"left",
@@ -519,6 +572,9 @@ function attachEvents(){
     if(!node){select(null);return;}
     startGesture(event,Number(node.dataset.id),event.target.closest(".handle")?.dataset.dir||null);
   });
+  $("stage").addEventListener("click",event=>{
+    if(event.target.closest("a"))event.preventDefault();
+  });
   $("stage").addEventListener("pointermove",gestureMove);
   $("stage").addEventListener("pointerup",endGesture);
   $("stage").addEventListener("pointercancel",endGesture);
@@ -560,6 +616,7 @@ function attachEvents(){
       if(prop==="alt")value=value.slice(0,300);
       mutate(()=>{
         obj[prop]=value;
+        if(prop==="text")obj.rich="";
         if(prop==="bg")obj.transparent=false;
         scene.height=Math.max(scene.height,obj.y+obj.h+70);
       });
