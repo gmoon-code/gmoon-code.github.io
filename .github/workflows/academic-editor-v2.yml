@@ -8,6 +8,13 @@ on:
       - 'editor-v2.js'
       - 'tests/academic-editor-v2.spec.cjs'
       - '.github/workflows/academic-editor-v2.yml'
+  pull_request:
+    paths:
+      - 'editor-v2.html'
+      - 'editor-v2.css'
+      - 'editor-v2.js'
+      - 'tests/academic-editor-v2.spec.cjs'
+      - '.github/workflows/academic-editor-v2.yml'
   workflow_dispatch:
 permissions:
   contents: read
