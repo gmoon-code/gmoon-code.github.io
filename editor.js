@@ -4514,8 +4514,10 @@
   function additionHtml(item){
     const text=escapePlainText(item.text),css=addedBlockStyle(item);
     const style=css?' style="'+css+'"':"";
-    const footprint=item.freeFootprint?
-      ' data-moon-free-footprint="'+item.freeFootprint+'"':"";
+    // Serialize only canonical URI-encoded JSON into HTML attributes.
+    const measured=readFreeFootprint(item.freeFootprint);
+    const footprint=measured?
+      ' data-moon-free-footprint="'+encodeURIComponent(JSON.stringify(measured))+'"':"";
     if(insertionKind(item)==="image")return '<p'+(item.freePosition?' class="moon-free-object moon-free-absolute"':"")+footprint+style+'><img src="'+item.src+
       '" alt="'+text.replace(/"/g,"&quot;").replace(/'/g,"&#39;")+
       '" loading="lazy" style="max-width:100%;height:auto'+
