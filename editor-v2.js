@@ -2329,9 +2329,7 @@ function selectedSourcePatches(){
   return [...liveSourceMulti].map(selector=>{
     if(LIVE_ADDED_ID.test(selector))return null;
     let node;
-    try{node=main.querySelector(selector);}catch{return null;}
-    // main.querySelector("main > ...") does not match a main-rooted selector.
-    node=doc.querySelector(selector);
+    try{node=doc.querySelector(selector);}catch{return null;}
     if(!node||!main.contains(node))return null;
     const stored=livePatches.get(selector);
     if(stored?.kind==="delete"||stored?.kind==="remove-added")return null;
@@ -2638,9 +2636,12 @@ function bindLiveDocument(){
       selectLiveElement(target,true);
       return;
     }
-    if(target!==liveSelected?.node)
-      selectLiveElement(target,false,LIVE_ADDED_ID.test(liveSelector(target))&&
-        liveAddedMulti.has(liveSelector(target)));
+    if(target!==liveSelected?.node){
+      const key=liveSelector(target);
+      const keep=LIVE_ADDED_ID.test(key)?
+        liveAddedMulti.has(key):liveSourceMulti.has(key);
+      selectLiveElement(target,false,keep);
+    }
     // A touch tap selects without capturing the pointer, so users can still
     // scroll the responsive webpage. Mouse/pen can drag immediately.
     if(event.pointerType!=="touch")startLiveGesture(event,"move",target);
@@ -2725,6 +2726,20 @@ function bindLiveDocument(){
         liveAddedMulti=new Set(retained);
         const primary=same&&LIVE_ADDED_ID.test(restore.selector)?
           candidate:findAddedNode(doc,retained.at(-1));
+        if(primary)selectLiveElement(primary,false,true);
+      }
+    }
+    if(restore.sourceSelection?.length){
+      const retained=restore.sourceSelection.filter(key=>{
+        try{return !LIVE_ADDED_ID.test(key)&&
+          !!doc.querySelector("main")?.contains(doc.querySelector(key));}
+        catch{return false;}
+      });
+      if(retained.length){
+        liveAddedMulti.clear();
+        liveSourceMulti=new Set(retained);
+        const primary=same&&!LIVE_ADDED_ID.test(restore.selector)?
+          candidate:doc.querySelector(retained.at(-1));
         if(primary)selectLiveElement(primary,false,true);
       }
     }

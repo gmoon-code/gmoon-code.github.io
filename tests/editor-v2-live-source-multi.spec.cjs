@@ -22,7 +22,7 @@ test('Shift-click selects two existing paragraphs and nudges them without rewrit
   const live=page.frameLocator('#livePageFrame');
   const first=live.locator('main p.first'),second=live.locator('main p.second');
   const third=live.locator('main p.third');
-  await first.click();
+  await first.click({position:{x:12,y:65}});
   await second.click({modifiers:['Shift']});
   await expect(first).toHaveAttribute('data-moon-v2-source-selected','');
   await expect(second).toHaveAttribute('data-moon-v2-source-selected','');
@@ -45,7 +45,7 @@ test('overlay grip drags selected original paragraphs as one undoable gesture',a
   const live=page.frameLocator('#livePageFrame');
   const first=live.locator('main p.first'),second=live.locator('main p.second');
   const third=live.locator('main p.third');
-  await first.click();await second.click({modifiers:['Shift']});
+  await first.click({position:{x:12,y:65}});await second.click({modifiers:['Shift']});
   const firstBefore=await first.boundingBox(),secondBefore=await second.boundingBox();
   const neighbourBefore=await third.boundingBox();
   const handle=live.locator('#moon-v2-live-overlay [data-direction="move"]');
@@ -69,4 +69,21 @@ test('Shift-clicking a link adds its paragraph to selection without navigating',
   await expect(page.locator('#page')).toHaveValue('research.html');
   await expect(page.locator('#liveMultiCount')).toHaveText('2 selected');
   await expect(live.locator('main p.first')).toHaveAttribute('data-moon-v2-source-selected','');
+});
+
+test('dragging a different selected source member retains the original group',async({page})=>{
+  const live=page.frameLocator('#livePageFrame');
+  const first=live.locator('main p.first'),second=live.locator('main p.second');
+  await first.click({position:{x:12,y:65}});
+  await second.click({modifiers:['Shift']});
+  const firstBefore=await first.boundingBox(),secondBefore=await second.boundingBox();
+  const start={x:firstBefore.x+12,y:firstBefore.y+65};
+  await page.mouse.move(start.x,start.y);
+  await page.mouse.down();
+  await page.mouse.move(start.x+38,start.y+22,{steps:9});
+  await page.mouse.up();
+  const firstAfter=await first.boundingBox(),secondAfter=await second.boundingBox();
+  expect(firstAfter.x).toBeGreaterThan(firstBefore.x+20);
+  expect(secondAfter.x).toBeGreaterThan(secondBefore.x+20);
+  await expect(page.locator('#liveMultiCount')).toHaveText('2 selected');
 });
