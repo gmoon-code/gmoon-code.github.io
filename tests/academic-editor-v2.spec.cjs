@@ -499,7 +499,7 @@ test('source-preserving HTML export keeps original CSS and rich structure',async
   const html=fs.readFileSync(await (await pending).path(),'utf8');
   expect(html).toContain('Original-layout title edited');
   expect(html).toContain('main{margin:30px;width:950px;}');
-  expect(html).toContain('<base href="https://gmoon-code.github.io/">');
+  expect(html).not.toContain('<base ');
   expect(html).toContain('Students investigate scientific explanations together.');
   await page.locator('#previewLiveEdits').click();
   const preview=page.frameLocator('#previewFrame');
@@ -526,7 +526,7 @@ test('original-layout image edit publishes to source-only staging path',async({p
   await page.locator('#confirmPublish').click();
   await expect(page.locator('#status')).toContainText('Staging published');
   const published=Buffer.from(sent.content,'base64').toString('utf8');
-  expect(published).toContain('src="assets/replaced-photo.webp"');
+  expect(published).toContain('src="https://gmoon-code.github.io/assets/replaced-photo.webp"');
   expect(published).toContain('alt="Replacement description"');
   expect(published).toContain('main{margin:30px;width:950px;}');
   expect(await page.evaluate(()=>JSON.stringify(localStorage))).not.toContain('staging-test-token');
@@ -699,4 +699,24 @@ test('internal links in live site navigate pages through editor without stale if
   await expect(page.locator('#page')).toHaveValue('research.html');
   await expect(live.locator('main h1')).toHaveText('Destination research page');
   await expect(page.locator('#liveViewport')).toBeVisible();
+});
+
+test('source-preserving export keeps reference anchors local and resolves site assets',async({page})=>{
+  const original='<!doctype html><html><head>'+
+    '<link rel="stylesheet" href="styles-20261013.css">'+
+    '<style>.photo{background-image:url(assets/portrait.webp)}</style>'+
+    '</head><body><main><p><a href="#citation-1">See citation</a></p>'+
+    '<p id="citation-1">Published reference</p>'+
+    '<img src="assets/portrait.webp" alt="Portrait"></main></body></html>';
+  await page.route('**/about.html',route=>route.fulfill({
+    status:200,contentType:'text/html',body:original
+  }));
+  const pending=page.waitForEvent('download');
+  await page.locator('#exportLiveEdits').click();
+  const html=fs.readFileSync(await (await pending).path(),'utf8');
+  expect(html).toContain('href="#citation-1"');
+  expect(html).not.toContain('<base ');
+  expect(html).toContain('href="https://gmoon-code.github.io/styles-20261013.css"');
+  expect(html).toContain('src="https://gmoon-code.github.io/assets/portrait.webp"');
+  expect(html).toContain('url(https://gmoon-code.github.io/assets/portrait.webp)');
 });
