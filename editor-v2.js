@@ -1145,7 +1145,7 @@ async function fetchGithubPageSource(page,{force=false}={}){
   const info=await response.json();
   if(info.type!=="file"||typeof info.sha!=="string")throw Error("GitHub supplied no source file.");
   const data={html:decodeGithubHtml(info),sha:info.sha,verified:true};
-  if(!/<main\\b/i.test(data.html))throw Error("The GitHub source page has no main element.");
+  if(!/<main\b/i.test(data.html))throw Error("The GitHub source page has no main element.");
   liveGithubSources.set(page,data);
   return data;
 }
@@ -1461,11 +1461,11 @@ function reportLiveAssets(){
   const warnings=[];
   if(missingImages.length)warnings.push(missingImages.length+" missing image"+(missingImages.length===1?"":"s"));
   if(missingStyles.length)warnings.push(missingStyles.length+" missing stylesheet"+(missingStyles.length===1?"":"s"));
-  label.textContent=warnings.length?
-    "Original-page resource warning · "+warnings.join(" · "):
-    (liveSourceProvenance==="github"?"GitHub main source verified · ":
-      "Deployed-page fallback (not GitHub verified) · ")+liveWidth+"px viewport";
-  label.classList.toggle("has-warning",!!warnings.length);
+  const sourceLabel=liveSourceProvenance==="github"?"GitHub main source verified":
+    "Deployed-page fallback · GitHub source unverified";
+  label.textContent=sourceLabel+" · "+liveWidth+"px viewport"+
+    (warnings.length?" · "+warnings.join(" · "):"");
+  label.classList.toggle("has-warning",!!warnings.length||liveSourceProvenance!=="github");
 }
 function bindLiveDocument(){
   const frame=$("livePageFrame"),doc=frame.contentDocument;
@@ -1590,7 +1590,6 @@ async function loadLivePage(page=currentPage,{force=false}={}){
   const serial=++liveSerial;
   $("liveAssetStatus").textContent="Loading GitHub main source…";
   $("liveAssetStatus").classList.remove("has-warning");
-  loadPageImageLibrary(page,loadSerial);
   if(liveObserver){liveObserver.disconnect();liveObserver=null;}
   clearLiveSelection();
   const frame=$("livePageFrame");
@@ -1613,6 +1612,18 @@ async function loadLivePage(page=currentPage,{force=false}={}){
   }
   if(serial!==liveSerial||page!==currentPage)return;
   liveSourceProvenance=source.verified?"github":"fallback";
+  // Image choices are collected from the exact HTML being edited, not from
+  // a potentially delayed copy on GitHub Pages.
+  const imageDoc=new DOMParser().parseFromString(source.html,"text/html");
+  const assets=new Map();
+  for(const img of imageDoc.querySelectorAll("main img[src]")){
+    const path=img.getAttribute("src")||"";
+    if(safeImageSource(path)&&!assets.has(path))
+      assets.set(path,{src:path,alt:img.alt||"",
+        w:Number(img.getAttribute("width"))||260,h:Number(img.getAttribute("height"))||190});
+    if(assets.size>=75)break;
+  }
+  pageImages=[...assets.values()];renderImageLibrary();
   frame.onload=()=>{
     if(serial===liveSerial&&page===currentPage)bindLiveDocument();
   };
