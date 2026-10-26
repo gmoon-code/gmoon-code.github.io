@@ -1272,14 +1272,8 @@
     const sel=freeSelected();
     if(!sel||event.button!==0||freeGesture)return;
     event.preventDefault();event.stopPropagation();
-    // Resizing an element that is still in normal document flow can lift it
-    // into another parent and cause the rest of the page to jump. Only resize
-    // objects that are already detached in the dedicated page canvas.
-    if(direction!=="move"&&(!sel.node.classList.contains("moon-free-absolute")||
-      !sel.node.parentElement?.classList.contains("moon-free-layer"))){
-      notice("This object is still part of the page layout. Resizing it here is disabled to protect nearby content. Already free-positioned objects can be resized safely.","Resize protection");
-      return;
-    }
+    // Every draggable object can be resized. Its original footprint is
+    // captured before the first mutation and nearby layout is then checked.
     const base=freeGeometry(sel);
     const isImage=sel.node.tagName==="IMG"||
       (sel.added&&insertionKind(state.additions[state.selectedAddition])==="image");
@@ -1388,15 +1382,8 @@
     let dy=Math.round(event.clientY-drag.startY+view.scrollY-drag.startScrollY);
     if(Math.abs(dx)<3&&Math.abs(dy)<3&&!drag.moved)return;
     if(!drag.moved){
-      // Guard again before the very first mutation, as selection can change
-      // after pointerdown in a live document.
-      if(drag.direction!=="move"){
-        const selected=freeSelected();
-        if(!selected?.node.classList.contains("moon-free-absolute")||
-          !selected.node.parentElement?.classList.contains("moon-free-layer")){
-          freeGesture=null;return;
-        }
-      }
+      // The selected element may still be in normal flow. Capture its
+      // neighbours before creating the fixed original-layout footprint.
       drag.layoutSnapshot=freeLayoutSnapshot(freeSelected()?.node);
       checkpoint();
       drag.moved=true;
@@ -1436,11 +1423,21 @@
     next.y=Math.max(-16000,Math.min(16000,next.y));
     next.width=Math.max(35,Math.min(4000,next.width));
     next.height=Math.max(18,Math.min(4000,next.height));
+    // Keep the opposite edge anchored when a drag reaches size limits.
+    if(d!=="move"){
+      if(d.includes("w"))next.x=drag.base.x+drag.base.width-next.width;
+      if(d.includes("n"))next.y=drag.base.y+drag.base.height-next.height;
+    }
     if(d==="move"){
       const sel=freeSelected();
       if(sel)snapFreeMove(next,sel,event.altKey);
     }else clearFreeSnapGuides();
-    if(!applyFreeGeometry(next))return;
+    if(!applyFreeGeometry(next)){
+      freeGesture=null;
+      undo();
+      notice("This element could not be measured safely. Its previous layout has been restored.","Resize cancelled");
+      return;
+    }
     if(drag.layoutSnapshot){
       const snapshot=drag.layoutSnapshot;
       drag.layoutSnapshot=null;
@@ -1616,10 +1613,9 @@
       button.addEventListener("pointercancel",freeGestureEnd);
       frame.append(button);return button;
     };
-    // Avoid displaying active resize handles on elements that would be
-    // reparented on the first drag. The earlier UI invited destructive gestures.
-    const canResize=sel.node.classList.contains("moon-free-absolute")&&
-      sel.node.parentElement?.classList.contains("moon-free-layer");
+    // Resize handles are available for both original and floating objects.
+    // First-time detachment is protected by footprint and rollback checks.
+    const canResize=true;
     if(canResize){
       for(const [direction,label,x,y,cursor] of [
         ["nw","top-left","0%","0%","nwse-resize"],["n","top","50%","0%","ns-resize"],
@@ -1651,15 +1647,6 @@
       "background:#163e79;color:#fff;font:600 12px system-ui,sans-serif;padding:4px 8px;"+
       "border-radius:4px;white-space:nowrap;pointer-events:none";
     frame.append(dimensions);
-    if(!canResize){
-      const status=doc.createElement("span");
-      status.textContent="Move to canvas to enable resizing";
-      status.setAttribute("role","status");
-      status.style.cssText="position:absolute;left:50%;bottom:-35px;transform:translateX(-50%);"+
-        "font:600 11px system-ui,sans-serif;color:#fff;background:#163e79;"+
-        "white-space:nowrap;padding:5px 8px;border-radius:5px;pointer-events:none";
-      frame.append(status);
-    }
     doc.body.append(frame);
     positionFreeSelection();
   }
