@@ -238,6 +238,28 @@
             </div>
             <p class="help">Exact width and height for the selected screen. These resize the element without stretching its content.</p>
           </div>
+          <div id="liveObjectDesign" class="live-layout-controls" hidden>
+            <h3>Object appearance</h3>
+            <p class="help">Style independent webpage objects with PowerPoint-like controls. Changes are saved in the real webpage draft and appear in publication previews.</p>
+            <div id="liveShapeOptions" hidden>
+              <label for="liveShapeType">Shape
+                <select id="liveShapeType">
+                  <option value="rectangle">Rectangle</option>
+                  <option value="ellipse">Ellipse / circle</option>
+                  <option value="line">Line</option>
+                </select>
+              </label>
+              <label>Fill colour <input id="liveShapeFill" type="color" value="#e1eee4"></label>
+            </div>
+            <div class="property-grid">
+              <label>Rotation (°) <input id="liveObjectRotation" type="number" min="-180" max="180" step="1" value="0"></label>
+              <label>Opacity (%) <input id="liveObjectOpacity" type="number" min="0" max="100" step="1" value="100"></label>
+              <label>Corner radius (px) <input id="liveObjectRadius" type="number" min="0" max="200" step="1" value="0"></label>
+              <label>Border width (px) <input id="liveObjectBorderWidth" type="number" min="0" max="30" step="1" value="0"></label>
+              <label>Border colour <input id="liveObjectBorderColour" type="color" value="#394e46"></label>
+            </div>
+            <button id="resetLiveObjectDesign" type="button">Reset object appearance</button>
+          </div>
           <div id="liveTextReflowControls" hidden>
             <label class="checkbox-line" hidden>
               <input type="checkbox" id="liveTextReflow" checked disabled> Rewrap text inside a resizable box
