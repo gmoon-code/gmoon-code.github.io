@@ -37,7 +37,8 @@ function validateScene(value,page){
       typeof obj.family!=="string"||!/^[a-zA-Z0-9_ ,"'.()\-]{1,180}$/.test(obj.family)||
       !/^#[0-9a-f]{6}$/i.test(obj.color)||!/^#[0-9a-f]{6}$/i.test(obj.bg)||
       !["left","center","right"].includes(obj.align)||
-      obj.order!==undefined&&(!Number.isInteger(obj.order)||obj.order<0||obj.order>999999))
+      obj.order!==undefined&&(!Number.isInteger(obj.order)||obj.order<0||obj.order>999999)||
+      obj.backdrop!==undefined&&typeof obj.backdrop!=="boolean")
       throw Error("Invalid object styling");
     if(obj.type==="image"&&!safeImageSource(obj.src))throw Error("Invalid image reference");
     if(obj.type==="text"&&(typeof obj.text!=="string"||obj.text.length>30000||
@@ -182,6 +183,7 @@ function makeSceneElement(obj){
   const node=document.createElement("div");
   node.className="scene-object"+(obj.locked?" locked":"");
   node.dataset.id=String(obj.id);node.dataset.kind=obj.type;
+  if(obj.backdrop)node.classList.add("imported-backdrop");
   node.tabIndex=0;node.setAttribute("role","group");
   node.setAttribute("aria-label",obj.name);node.setAttribute("aria-selected",String(selected.has(obj.id)));
   applyBox(node,obj);
@@ -436,6 +438,33 @@ async function importPage(force=false){
     const main=doc.querySelector("main"),base=main.getBoundingClientRect();
     const next={version:VERSION,page,width:STANDARD_WIDTH,height:Math.max(980,Math.ceil(main.scrollHeight+90)),
       objects:[],nextId:1};
+    // Import coloured cards and section panels as editable background
+    // shapes first. Their lower z-index keeps their text and images accessible.
+    const backgrounds=[...main.querySelectorAll("section,article,aside,figure,div")];
+    for(const node of backgrounds){
+      if(next.objects.length>=Math.min(110,Math.floor(MAX_OBJECTS/3)))break;
+      if(node.closest(".moon-free-placeholder,[data-moon-free-placeholder]"))continue;
+      const css=doc.defaultView.getComputedStyle(node);
+      const colour=css.backgroundColor;
+      const match=/^rgba?\\(\\s*(\\d+)\\s*,\\s*(\\d+)\\s*,\\s*(\\d+)(?:\\s*,\\s*([\\d.]+))?\\)/.exec(colour);
+      if(!match||match[5]!==undefined&&Number(match[5])<.7)continue;
+      const [red,green,blue]=match.slice(1,4).map(Number);
+      if(red>245&&green>245&&blue>245)continue;
+      const rect=node.getBoundingClientRect();
+      if(rect.width<80||rect.height<35||!Number.isFinite(rect.width)||!Number.isFinite(rect.height)||
+        css.display==="none"||css.visibility==="hidden")continue;
+      const label=(node.className&&typeof node.className==="string"?
+        node.className.split(/\\s+/).slice(0,2).join(" "):node.tagName.toLowerCase());
+      next.objects.push({
+        id:next.nextId++,type:"shape",name:("Background · "+label).slice(0,120),
+        x:Math.round(rect.left-base.left),y:Math.round(rect.top-base.top),
+        w:Math.max(MIN_W,Math.round(rect.width)),h:Math.max(MIN_H,Math.round(rect.height)),
+        z:next.nextId,order:next.objects.length,
+        backdrop:true,text:"",src:"",alt:"",font:20,family:"Georgia, serif",
+        color:"#1c2622",bg:hexColour(colour,"#ffffff"),transparent:false,
+        align:"left",locked:false,hidden:false
+      });
+    }
     const candidates=[...main.querySelectorAll("h1,h2,h3,h4,h5,h6,p,blockquote,figcaption,li,img")];
     for(const node of candidates){
       if(next.objects.length>=MAX_OBJECTS)break;
@@ -504,7 +533,8 @@ function standaloneHtml(assetPrefix=""){
       return '<figure '+base+'"><img src="'+esc(path)+
         '" alt="'+esc(o.alt)+'" loading="lazy"></figure>';
     }
-    if(o.type==="shape")return '<div aria-hidden="true" '+base+'"></div>';
+    if(o.type==="shape")return '<div aria-hidden="true" '+base+
+      (o.backdrop?'border:0;':'border:1px solid #81968c;')+'"></div>';
     const tag=exportedTag(o.tag);
     const rich=o.rich?cleanRich(o.rich,assetPrefix):esc(o.text);
     return '<'+tag+' '+base+'font-family:'+esc(o.family)+';font-size:'+o.font+
