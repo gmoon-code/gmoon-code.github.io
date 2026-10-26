@@ -280,6 +280,13 @@ function setWorkspaceMode(mode){
   }
 }
 const LIVE_HEIGHTS={desktop:900,tablet:1024,phone:844};
+function togglePageFocus(){
+  const app=document.querySelector(".application");
+  const focused=app.classList.toggle("focus-view");
+  $("focusPage").setAttribute("aria-pressed",String(focused));
+  $("focusPage").textContent=focused?"Restore panels":"Focus page";
+  requestAnimationFrame(()=>fitLivePage());
+}
 function fitLivePage(){
   if(workspaceMode!=="live")return;
   const area=$("liveViewport"),frame=$("livePageFrame"),shell=$("livePageShell");
@@ -1014,6 +1021,7 @@ function attachEvents(){
   $("devicePreview").addEventListener("change",()=>{
     liveManualScale=null;fitLivePage();
   });
+  $("focusPage").addEventListener("click",togglePageFocus);
   $("reloadLive").addEventListener("click",()=>loadLivePage());
   $("copyLiveObject").addEventListener("click",copySelectedLiveElement);
   $("editLiveText").addEventListener("click",editLiveText);
@@ -1034,6 +1042,8 @@ function attachEvents(){
     }catch(error){status(error.message||"Could not export original-layout draft");}
   });
   window.addEventListener("resize",()=>{if(workspaceMode==="live")fitLivePage();});
+  const workspaceObserver=new ResizeObserver(()=>{if(workspaceMode==="live")fitLivePage();});
+  workspaceObserver.observe($("liveViewport"));
   $("importScene").addEventListener("click",()=>$("sceneFile").click());
   $("sceneFile").addEventListener("change",async event=>{
     const file=event.target.files?.[0];event.target.value="";
