@@ -21,6 +21,7 @@ let githubTabToken=""; // In-memory only. Never written to storage or page files
 let reconnectImages=[],reconnectForPage="";
 const liveGithubSources=new Map();
 let liveSourceProvenance="loading"; // verified GitHub main or fallback deployed HTML
+let liveDisplayedSourceHtml=null; // Exact original HTML used to build the open editor
 const copy=data=>JSON.parse(JSON.stringify(data));
 const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
 const number=v=>Number.isFinite(Number(v))?Number(v):0;
@@ -1212,6 +1213,8 @@ async function verifiedSourcePreviewPair(){
   const source=await fetchGithubPageSource(page,{force:true});
   if(page!==currentPage||JSON.stringify(liveSnapshot())!==revision)
     throw Error("The page or edits changed while preparing preview. Try again.");
+  if(liveDisplayedSourceHtml!==null&&liveDisplayedSourceHtml!==source.html&&livePatches.size)
+    throw Error("The GitHub source has changed since the editor loaded this page. Your draft is preserved. Select Reload live page to review the updated source before previewing or publishing.");
   const published=applyLiveEditsToGithubHtml(source.html);
   return {original:source.html,edited:published.html,sha:source.sha,page};
 }
@@ -1721,6 +1724,7 @@ async function loadLivePage(page=currentPage,{force=false}={}){
   }
   if(serial!==liveSerial||page!==currentPage)return;
   liveSourceProvenance=source.verified?"github":"fallback";
+  liveDisplayedSourceHtml=source.html;
   // Image choices are collected from the exact HTML being edited, not from
   // a potentially delayed copy on GitHub Pages.
   const imageDoc=new DOMParser().parseFromString(source.html,"text/html");
