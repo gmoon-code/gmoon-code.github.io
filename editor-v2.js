@@ -747,6 +747,16 @@ function attachEvents(){
   $("preview").addEventListener("click",()=>{
     $("previewFrame").srcdoc=standaloneHtml();$("previewDialog").showModal();
   });
+  $("compare").addEventListener("click",()=>{
+    $("originalFrame").src=new URL(currentPage,location.href).href;
+    $("sceneFrame").srcdoc=standaloneHtml();
+    $("compareDialog").showModal();
+  });
+  $("closeCompare").addEventListener("click",()=>{
+    $("compareDialog").close();
+    $("originalFrame").removeAttribute("src");
+    $("sceneFrame").removeAttribute("srcdoc");
+  });
   $("closePreview").addEventListener("click",()=>$("previewDialog").close());
   $("publish").addEventListener("click",()=>{
     if(!scene.objects.length){status("Import or add objects first");return;}
