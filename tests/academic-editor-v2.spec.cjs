@@ -735,3 +735,29 @@ test('live-page asset status identifies missing original resources',async({page}
   await expect(page.locator('#liveAssetStatus')).toContainText('missing image');
   await expect(page.locator('#liveAssetStatus')).toHaveClass(/has-warning/);
 });
+
+test('live text in progress is saved when switching modes, reloading or changing pages',async({page})=>{
+  const live=page.frameLocator('#livePageFrame');
+  await live.locator('main h2').click();
+  await page.locator('#editLiveText').click();
+  await live.locator('main h2').fill('Draft saved on mode change');
+  await page.locator('#designMode').click();
+  await expect(page.locator('#scrollspace')).toBeVisible();
+  await page.locator('#liveMode').click();
+  await expect(live.locator('main h2')).toHaveText('Draft saved on mode change');
+  await live.locator('main h2').click();
+  await page.locator('#editLiveText').click();
+  await live.locator('main h2').fill('Draft saved on reload');
+  await page.locator('#reloadLive').click();
+  await expect(live.locator('main h2')).toHaveText('Draft saved on reload');
+  await page.route('**/research.html',route=>route.fulfill({
+    status:200,contentType:'text/html',body:'<!doctype html><html><body><main><h1>Research</h1></main></body></html>'
+  }));
+  await live.locator('main h2').click();
+  await page.locator('#editLiveText').click();
+  await live.locator('main h2').fill('Draft saved on navigation');
+  await page.locator('#page').selectOption('research.html');
+  await expect(live.locator('main h1')).toHaveText('Research');
+  await page.locator('#page').selectOption('about.html');
+  await expect(live.locator('main h2')).toHaveText('Draft saved on navigation');
+});
