@@ -203,6 +203,42 @@ function renderProperties(){
   for(const id of ["srcLabel","propSrc","altLabel","propAlt"])$(id).hidden=!isImage;
   $("lock").textContent=obj.locked?"Unlock":"Lock";
   $("hide").textContent=obj.hidden?"Show":"Hide";
+  const moveable=scene.objects.filter(item=>selected.has(item.id)&&!item.locked).length;
+  for(const id of ["alignLeft","alignCenter","alignTop"])$(id).disabled=moveable<2;
+  for(const id of ["distributeH","distributeV"])$(id).disabled=moveable<3;
+}
+function arrangeSelection(mode){
+  const objects=scene.objects.filter(obj=>selected.has(obj.id)&&!obj.locked);
+  if(objects.length<2)return;
+  if(mode.startsWith("distribute")&&objects.length<3)return;
+  mutate(()=>{
+    if(mode==="alignLeft"){
+      const x=Math.min(...objects.map(obj=>obj.x));
+      for(const obj of objects)obj.x=x;
+    }else if(mode==="alignCenter"){
+      const left=Math.min(...objects.map(obj=>obj.x));
+      const right=Math.max(...objects.map(obj=>obj.x+obj.w));
+      const centre=(left+right)/2;
+      for(const obj of objects)obj.x=Math.round(centre-obj.w/2);
+    }else if(mode==="alignTop"){
+      const y=Math.min(...objects.map(obj=>obj.y));
+      for(const obj of objects)obj.y=y;
+    }else{
+      const horizontal=mode==="distributeH";
+      const ordered=[...objects].sort((a,b)=>
+        horizontal?a.x-b.x:a.y-b.y);
+      const first=ordered[0],last=ordered.at(-1);
+      const end=horizontal?last.x+last.w:last.y+last.h;
+      const start=horizontal?first.x:first.y;
+      const total=ordered.reduce((sum,obj)=>sum+(horizontal?obj.w:obj.h),0);
+      const gap=(end-start-total)/(ordered.length-1);
+      let cursor=start;
+      for(const obj of ordered){
+        if(horizontal){obj.x=Math.round(cursor);cursor+=obj.w+gap;}
+        else{obj.y=Math.round(cursor);cursor+=obj.h+gap;}
+      }
+    }
+  });
 }
 function refreshLiveBoxes(){
   for(const obj of scene.objects){
@@ -489,8 +525,18 @@ function attachEvents(){
   });
   $("layers").addEventListener("click",event=>{
     const node=event.target.closest("[data-layer-id]");
-    if(node)select(Number(node.dataset.layerId),event.shiftKey);
+    if(!node)return;
+    const id=Number(node.dataset.layerId);
+    select(id,event.shiftKey);
+    requestAnimationFrame(()=>{
+      $("stage").querySelector('[data-id="'+id+'"]')?.scrollIntoView({
+        block:"nearest",inline:"nearest",behavior:"instant"
+      });
+    });
   });
+  for(const mode of ["alignLeft","alignCenter","alignTop","distributeH","distributeV"]){
+    $(mode).addEventListener("click",()=>arrangeSelection(mode));
+  }
   for(const [prop,id] of Object.entries(propertyIds)){
     $(id).addEventListener("change",event=>{
       const obj=lookup(activeId);if(!obj)return;
