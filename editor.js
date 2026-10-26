@@ -1484,6 +1484,7 @@
       const index=state.selectedAddition;
       const changed={...state.additions[index]};
       delete changed.freePosition;
+      delete changed.freeFootprint;
       delete changed.layer;
       const updated=state.additions.map((item,i)=>i===index?changed:item);
       try{validateParagraphAdditions(updated)}
@@ -1500,6 +1501,7 @@
     if(!node||!old)return;
     node.classList.remove("moon-free-object","moon-free-absolute");
     node.removeAttribute("data-moon-free-detach");
+    node.removeAttribute("data-moon-free-footprint");
     // Restore free-positioning properties and the typography automatically
     // captured when leaving the original section. Retain content, colours,
     // backgrounds and any other independent edits.
@@ -4436,6 +4438,8 @@
         }
       validateAddedLayout(item.layout);
       if(item.freePosition!==undefined&&!freePositionValid(item.freePosition))throw Error("Invalid free canvas position");
+      if(item.freeFootprint!==undefined&&!readFreeFootprint(item.freeFootprint))
+        throw Error("Invalid saved layout footprint");
       if(item.layer!==undefined&&(!Number.isInteger(item.layer)||item.layer<1||item.layer>99||!item.freePosition))
         throw Error("Invalid free canvas stacking level");
       if(item.appearance!==undefined&&
@@ -4457,6 +4461,7 @@
         ...(item.layout!==undefined?{layout:{...item.layout}}:{}),
         ...(item.appearance!==undefined?{appearance:{...item.appearance}}:{}),
         ...(item.freePosition!==undefined?{freePosition:{...item.freePosition}}:{}),
+        ...(item.freeFootprint!==undefined?{freeFootprint:item.freeFootprint}:{}),
         ...(item.layer!==undefined?{layer:item.layer}:{})});
     }
     return out;
@@ -4469,11 +4474,13 @@
     if(kind==="heading"){
       const node=doc.createElement(item.headingTag);node.textContent=item.text;
       if(item.freePosition)node.classList.add(FREE_CLASS,"moon-free-absolute");
+      if(item.freeFootprint)node.setAttribute("data-moon-free-footprint",item.freeFootprint);
       if(addedBlockStyle(item))node.setAttribute("style",addedBlockStyle(item));
       return node;
     }
     const node=doc.createElement("p");
     if(item.freePosition)node.classList.add(FREE_CLASS,"moon-free-absolute");
+    if(item.freeFootprint)node.setAttribute("data-moon-free-footprint",item.freeFootprint);
     if(addedBlockStyle(item))node.setAttribute("style",addedBlockStyle(item));
     if(kind==="image"){
       const img=doc.createElement("img");
@@ -4497,14 +4504,16 @@
   function additionHtml(item){
     const text=escapePlainText(item.text),css=addedBlockStyle(item);
     const style=css?' style="'+css+'"':"";
-    if(insertionKind(item)==="image")return '<p'+(item.freePosition?' class="moon-free-object moon-free-absolute"':"")+style+'><img src="'+item.src+
+    const footprint=item.freeFootprint?
+      ' data-moon-free-footprint="'+item.freeFootprint+'"':"";
+    if(insertionKind(item)==="image")return '<p'+(item.freePosition?' class="moon-free-object moon-free-absolute"':"")+footprint+style+'><img src="'+item.src+
       '" alt="'+text.replace(/"/g,"&quot;").replace(/'/g,"&#39;")+
       '" loading="lazy" style="max-width:100%;height:auto'+
         (item.freePosition?";width:100%":item.widthPercent===undefined?"":";width:"+item.widthPercent+"%")+'"></p>';
-    if(insertionKind(item)==="heading")return "<"+item.headingTag+(item.freePosition?' class="moon-free-object moon-free-absolute"':"")+style+">"+text+"</"+item.headingTag+">";
-    if(insertionKind(item)==="link")return "<p"+(item.freePosition?' class="moon-free-object moon-free-absolute"':"")+style+"><a href=\""+escapePlainText(item.href)+"\""+
+    if(insertionKind(item)==="heading")return "<"+item.headingTag+(item.freePosition?' class="moon-free-object moon-free-absolute"':"")+footprint+style+">"+text+"</"+item.headingTag+">";
+    if(insertionKind(item)==="link")return "<p"+(item.freePosition?' class="moon-free-object moon-free-absolute"':"")+footprint+style+"><a href=\""+escapePlainText(item.href)+"\""+
       (/^https:\/\//i.test(item.href)?" rel=\"noopener noreferrer\"":"")+">"+text+"</a></p>";
-    return "<p"+(item.freePosition?' class="moon-free-object moon-free-absolute"':"")+style+">"+text+"</p>";
+    return "<p"+(item.freePosition?' class="moon-free-object moon-free-absolute"':"")+footprint+style+">"+text+"</p>";
   }
 
   // Removal proposals retain the original source in the working document.
