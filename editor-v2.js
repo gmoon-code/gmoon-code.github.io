@@ -333,15 +333,39 @@ function validLiveLayout(layout){
   if(!layout||typeof layout!=="object"||Array.isArray(layout))return false;
   for(const [device,values] of Object.entries(layout)){
     if(!LIVE_DEVICE_RULES[device]||!values||typeof values!=="object")return false;
-    for(const [key,min,max] of [["dx",-4000,4000],["dy",-4000,4000],["sx",.2,5],["sy",.2,5]]){
+    for(const [key,min,max] of [["dx",-4000,4000],["dy",-4000,4000],
+      ["sx",.2,5],["sy",.2,5],["ox",-10000,10000],["oy",-10000,10000],
+      ["osx",.01,10],["osy",.01,10]]){
       if(!Number.isFinite(values[key])||values[key]<min||values[key]>max)return false;
     }
   }
   return true;
 }
 function liveDevice(){return $("devicePreview").value;}
+function originalLiveTransform(node){
+  if(!node?.isConnected)return {ox:0,oy:0,osx:1,osy:1};
+  const sheet=node.ownerDocument.getElementById("moon-v2-live-layout");
+  const wasDisabled=sheet?.disabled;
+  if(sheet)sheet.disabled=true;
+  try{
+    const style=node.ownerDocument.defaultView.getComputedStyle(node);
+    const translate=style.translate;
+    const match=translate.match(/^(-?(?:\d+\.?\d*|\.\d+))px(?:\s+(-?(?:\d+\.?\d*|\.\d+))px)?$/);
+    const scale=style.scale==="none"?[]:style.scale.split(/\s+/).map(Number);
+    return {
+      ox:match?Number(match[1]):0,oy:match?Number(match[2]||0):0,
+      osx:Number.isFinite(scale[0])?scale[0]:1,
+      osy:Number.isFinite(scale[1])?scale[1]:Number.isFinite(scale[0])?scale[0]:1
+    };
+  }finally{if(sheet)sheet.disabled=wasDisabled;}
+}
 function liveLayoutFor(selector,device=liveDevice()){
-  return {...defaultLiveLayout(),...(livePatches.get(selector)?.layout?.[device]||{})};
+  const current=livePatches.get(selector)?.layout?.[device]||{};
+  const selectedNode=liveSelected?.node;
+  const origin=current.ox!==undefined&&current.oy!==undefined?
+    {}:selectedNode&&liveSelector(selectedNode)===selector?
+      originalLiveTransform(selectedNode):{ox:0,oy:0,osx:1,osy:1};
+  return {...defaultLiveLayout(),...origin,...current};
 }
 function liveLayoutRules(){
   const result=[];
@@ -352,8 +376,11 @@ function liveLayoutRules(){
       if(!entry||!validLiveLayout({[device]:entry}))continue;
       // Both values are bounded, strictly numeric data. Selectors are
       // validated source-rooted nth-of-type paths; no arbitrary CSS allowed.
-      selectors.push(patch.selector+"{translate:"+entry.dx+"px "+entry.dy+
-        "px!important;scale:"+entry.sx+" "+entry.sy+
+      selectors.push(patch.selector+"{translate:"+
+        (Math.round(((entry.ox||0)+entry.dx)*1000)/1000)+"px "+
+        (Math.round(((entry.oy||0)+entry.dy)*1000)/1000)+"px!important;scale:"+
+        (Math.round(((entry.osx||1)*entry.sx)*1000)/1000)+" "+
+        (Math.round(((entry.osy||1)*entry.sy)*1000)/1000)+
         "!important;transform-origin:top left!important;}");
     }
     if(selectors.length)result.push("@media "+media+"{"+selectors.join("")+"}");
