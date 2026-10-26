@@ -37,7 +37,7 @@
     <span class="push"></span>
     <button id="fitCanvas" title="Fit the whole page width to the editor workspace">Fit page</button>
     <label class="zoom-label" for="zoom">Zoom</label>
-    <input id="zoom" type="range" min="40" max="150" step="5" value="80">
+    <input id="zoom" type="range" min="25" max="150" step="5" value="80">
     <span id="zoomValue" class="zoom-value">80%</span>
   </section>
   <div class="editor-body">
@@ -61,11 +61,11 @@
           <option value="teaching-ap-chemistry.html">AP Chemistry case</option>
         </select>
         <div class="inline-actions">
-          <button id="importPage" class="primary">Import page layout</button>
+          <button id="importPage" class="primary">Convert to free design objects</button>
           <button id="sourcePage">View original</button>
         </div>
         <button id="importScene" class="subtle">Restore canvas from JSON backup</button>
-        <p class="help">Imports a separate editable copy of the existing page. The original website is never edited by this canvas.</p>
+        <p class="help">Creates a simplified, free-form reconstruction. For a faithful appearance and small content edits, use Live website. The original website remains unchanged.</p>
       </section>
       <section class="panel-section">
         <div class="panel-title"><h2>Layers</h2><span id="layerCount">0</span></div>
