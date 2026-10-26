@@ -1149,15 +1149,21 @@ async function fetchGithubPageSource(page,{force=false}={}){
   liveGithubSources.set(page,data);
   return data;
 }
-async function sourcePreservingHtml(rootHref){
-  // The original HTML used for the draft preview is read from the same
-  // GitHub Contents API as production publication. Never silently fall
-  // back to a potentially stale Pages deployment for a verified preview.
-  const page=currentPage;
+async function verifiedSourcePreviewPair(){
+  const page=currentPage,revision=JSON.stringify(liveSnapshot());
+  // Both before and after come from one immutable GitHub blob. Its edited
+  // version uses the exact patch assembler used by Publish Live.
   const source=await fetchGithubPageSource(page,{force:true});
-  if(page!==currentPage)throw Error("The selected page changed during preview. Try again.");
+  if(page!==currentPage||JSON.stringify(liveSnapshot())!==revision)
+    throw Error("The page or edits changed while preparing preview. Try again.");
   const published=applyLiveEditsToGithubHtml(source.html);
-  const doc=new DOMParser().parseFromString(published.html,"text/html");
+  return {original:source.html,edited:published.html,sha:source.sha,page};
+}
+async function sourcePreservingHtml(rootHref){
+  // Export/staging require root-relative asset references to work outside
+  // the page's folder. Verification and publishing use the same assembler.
+  const pair=await verifiedSourcePreviewPair();
+  const doc=new DOMParser().parseFromString(pair.edited,"text/html");
   for(const base of doc.querySelectorAll("base"))base.remove();
   rewriteSourceReferences(doc,rootHref);
   return "<!doctype html>\n"+doc.documentElement.outerHTML;
@@ -2675,27 +2681,51 @@ function attachEvents(){
   $("exportScene").addEventListener("click",()=>download(currentPage+".canvas.json",JSON.stringify(scene,null,2),"application/json"));
   $("exportHtml").addEventListener("click",()=>download(currentPage.replace(".html","-canvas-preview.html"),standaloneHtml(),"text/html"));
   $("preview").addEventListener("click",async()=>{
+    const button=$("preview"),page=currentPage,mode=workspaceMode;
+    button.disabled=true;
     try{
-      $("previewFrame").srcdoc=workspaceMode==="live"?
-        await sourcePreservingHtml(new URL(".",location.href).href):
-        standaloneHtml();
+      if(mode==="live"){
+        status("Building publication-identical preview from the latest GitHub HTML…");
+        const pair=await verifiedSourcePreviewPair();
+        if(currentPage!==page||workspaceMode!==mode)return;
+        $("previewFrame").srcdoc=pair.edited;
+        $("previewSourceStatus").textContent="Verified against GitHub main · "+
+          pair.page+" · source "+pair.sha.slice(0,10)+
+          " · This is the HTML produced by the live-publishing assembler.";
+      }else{
+        $("previewFrame").srcdoc=standaloneHtml();
+        $("previewSourceStatus").textContent="Free design canvas · staging-only preview";
+      }
       $("previewDialog").showModal();
-    }catch(error){status(error.message||"Could not create the selected page preview");}
+    }catch(error){status(error.message||"Could not create verified page preview");}
+    finally{button.disabled=false;}
   });
   $("compare").addEventListener("click",async()=>{
+    const button=$("compare"),page=currentPage,mode=workspaceMode;
+    button.disabled=true;
     try{
-      const mode=workspaceMode;
-      const output=mode==="live"?
-        await sourcePreservingHtml(new URL(".",location.href).href):
-        standaloneHtml();
-      $("originalFrame").src=new URL(currentPage,location.href).href;
-      $("sceneFrame").srcdoc=output;
+      if(mode==="live"){
+        const pair=await verifiedSourcePreviewPair();
+        if(page!==currentPage||mode!==workspaceMode)return;
+        $("originalFrame").srcdoc=pair.original;
+        $("sceneFrame").srcdoc=pair.edited;
+        $("compareSourceStatus").textContent="Both views use GitHub source "+
+          pair.sha.slice(0,10)+". Resize the comparison to inspect layout changes.";
+      }else{
+        const source=await fetchGithubPageSource(page,{force:true});
+        if(page!==currentPage)return;
+        $("originalFrame").srcdoc=source.html;
+        $("sceneFrame").srcdoc=standaloneHtml();
+        $("compareSourceStatus").textContent=
+          "Original GitHub page versus independent staging-only canvas";
+      }
       $("compareDialog").showModal();
     }catch(error){status(error.message||"Could not compare the selected page");}
+    finally{button.disabled=false;}
   });
   $("closeCompare").addEventListener("click",()=>{
     $("compareDialog").close();
-    $("originalFrame").removeAttribute("src");
+    $("originalFrame").removeAttribute("srcdoc");
     $("sceneFrame").removeAttribute("srcdoc");
   });
   $("closePreview").addEventListener("click",()=>$("previewDialog").close());
@@ -2816,7 +2846,13 @@ function attachEvents(){
         }
         livePatches=rebased;
         liveHistory=[];liveRedo=[];
+        // Use the exact HTML just confirmed by GitHub. Its Pages deployment
+        // may still be serving an older version while the CDN catches up.
+        liveGithubSources.set(result.page,{
+          html:result.publishedHtml,sha:result.commit,verified:true
+        });
         storeLiveDraft();refreshUndo();
+        loadLivePage(result.page);
       }
       status(result.target==="live"?
         "GitHub confirmed publication of "+result.page+" · Deployment may be pending":
