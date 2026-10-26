@@ -1843,8 +1843,12 @@ function startLiveGesture(event,direction,anchor){
   if(direction!=="move"||anchor.closest?.("#moon-v2-live-overlay"))
     event.preventDefault();
   event.stopPropagation();
+  const group=direction==="move"&&LIVE_ADDED_ID.test(selector)&&
+    liveAddedMulti.has(selector)&&selectedAddedPatches().length>1?
+    selectedAddedPatches().map(item=>({selector:item.selector,node:item.node,
+      patch:copy(item.patch)})):null;
   liveGesture={pointer:event.pointerId,anchor,dir:direction,
-    startX:event.clientX,startY:event.clientY,rect,
+    startX:event.clientX,startY:event.clientY,rect,group,
     patch,layout:liveLayoutFor(selector),snapshot:liveSnapshot(),
     moved:false,selector,node,snapLines:candidateLiveSnapLines(node)};
   anchor.setPointerCapture?.(event.pointerId);
@@ -1856,6 +1860,18 @@ function moveLiveGesture(event){
   const deltaX=event.clientX-g.startX,deltaY=event.clientY-g.startY;
   if(!g.moved&&Math.hypot(deltaX,deltaY)<3)return;
   g.moved=true;
+  if(g.group&&g.dir==="move"){
+    const device=liveDevice();
+    for(const item of g.group){
+      const patch=copy(item.patch),original=addedDeviceGeometry(patch,device);
+      patch.geometry={...patch.geometry,[device]:{...original,
+        x:Math.round(clamp(original.x+deltaX,-4000,10000)),
+        y:Math.round(clamp(original.y+deltaY,-4000,40000))}};
+      livePatches.set(item.selector,patch);
+      refreshAddedObject(item.node.ownerDocument,patch);
+    }
+    syncLiveOverlay();return;
+  }
   if(g.patch.kind==="insert"){
     const patch=copy(g.patch),device=liveDevice();
     const base=addedDeviceGeometry(g.patch,device);
@@ -1962,7 +1978,12 @@ function cancelLiveGesture(){
   // Interrupted drags must not leave an unrecorded edit in the draft.
   livePatches=new Map(g.snapshot.map(p=>[p.selector,p]));
   if(g.node?.ownerDocument?.defaultView){
-    if(g.patch.kind==="insert"){
+    if(g.group){
+      for(const item of g.group){
+        const patch=livePatches.get(item.selector);
+        if(patch)refreshAddedObject(g.node.ownerDocument,patch);
+      }
+    }else if(g.patch.kind==="insert"){
       const original=livePatches.get(g.selector);
       if(original)refreshAddedObject(g.node.ownerDocument,original);
     }else refreshLiveLayoutRules(g.node.ownerDocument);
@@ -1981,7 +2002,12 @@ function finishLiveGesture(event){
   removeLiveSnapGuides();
   if(event.type==="pointercancel"){
     livePatches=new Map(g.snapshot.map(p=>[p.selector,p]));
-    if(g.patch.kind==="insert"){
+    if(g.group){
+      for(const item of g.group){
+        const restored=livePatches.get(item.selector);
+        if(restored)refreshAddedObject(g.node.ownerDocument,restored);
+      }
+    }else if(g.patch.kind==="insert"){
       const restored=livePatches.get(g.selector);
       if(restored)refreshAddedObject(g.node.ownerDocument,restored);
     }else refreshLiveLayoutRules(g.node.ownerDocument);
@@ -2080,6 +2106,30 @@ function selectAllLiveAdded(){
   if(node)selectLiveElement(node,false,true);
   else clearLiveSelection();
   status(liveAddedMulti.size+" independent webpage objects selected");
+}
+function nudgeLiveSelection(dx,dy){
+  const selected=selectedAddedPatches();
+  if(selected.length<2){
+    const node=liveSelected?.node;
+    if(!node)return;
+    const selector=liveSelector(node),layout=liveLayoutFor(selector);
+    if(dx)applyLiveLayoutInput("dx",layout.dx+dx);
+    if(dy)applyLiveLayoutInput("dy",layout.dy+dy);
+    return;
+  }
+  const before=liveSnapshot(),device=liveDevice();
+  for(const item of selected){
+    const g={...addedDeviceGeometry(item.patch,device)};
+    g.x=Math.round(clamp(g.x+dx,-4000,10000));
+    g.y=Math.round(clamp(g.y+dy,-4000,40000));
+    item.patch.geometry={...item.patch.geometry,[device]:g};
+    livePatches.set(item.selector,item.patch);
+    refreshAddedObject(item.node.ownerDocument,item.patch);
+  }
+  if(recordLiveHistory(before)){
+    syncLiveOverlay();renderLiveInspector();syncLiveMultiSelection();
+    status(selected.length+" webpage objects nudged together · Undo available");
+  }
 }
 function arrangeSelectedLive(mode){
   if(workspaceMode!=="live"||liveEditing||liveGesture)return;
@@ -2251,10 +2301,8 @@ function bindLiveDocument(){
     const change=moves[event.key];
     if(change&&liveSelected?.node){
       event.preventDefault();
-      const selector=liveSelector(liveSelected.node),layout=liveLayoutFor(selector);
       const step=event.shiftKey?10:1;
-      applyLiveLayoutInput("dx",layout.dx+change[0]*step);
-      if(change[1])applyLiveLayoutInput("dy",layout.dy+change[1]*step);
+      nudgeLiveSelection(change[0]*step,change[1]*step);
       syncLiveOverlay();
     }
   },true);
@@ -2273,7 +2321,9 @@ function bindLiveDocument(){
       selectLiveElement(target,true);
       return;
     }
-    if(target!==liveSelected?.node)selectLiveElement(target);
+    if(target!==liveSelected?.node)
+      selectLiveElement(target,false,LIVE_ADDED_ID.test(liveSelector(target))&&
+        liveAddedMulti.has(liveSelector(target)));
     // A touch tap selects without capturing the pointer, so users can still
     // scroll the responsive webpage. Mouse/pen can drag immediately.
     if(event.pointerType!=="touch")startLiveGesture(event,"move",target);
