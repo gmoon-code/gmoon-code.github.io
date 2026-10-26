@@ -334,9 +334,13 @@ function validLiveLayout(layout){
   for(const [device,values] of Object.entries(layout)){
     if(!LIVE_DEVICE_RULES[device]||!values||typeof values!=="object")return false;
     for(const [key,min,max] of [["dx",-4000,4000],["dy",-4000,4000],
-      ["sx",.2,5],["sy",.2,5],["ox",-10000,10000],["oy",-10000,10000],
-      ["osx",.01,10],["osy",.01,10]]){
+      ["sx",.2,5],["sy",.2,5]]){
       if(!Number.isFinite(values[key])||values[key]<min||values[key]>max)return false;
+    }
+    for(const [key,min,max] of [["ox",-10000,10000],["oy",-10000,10000],
+      ["osx",.01,10],["osy",.01,10]]){
+      if(values[key]!==undefined&&
+        (!Number.isFinite(values[key])||values[key]<min||values[key]>max))return false;
     }
   }
   return true;
