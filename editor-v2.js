@@ -838,7 +838,9 @@ function originalLiveTransform(node){
   }finally{if(sheet)sheet.disabled=wasDisabled;}
 }
 function liveLayoutFor(selector,device=liveDevice()){
-  const added=livePatches.get(selector);
+  const added=livePatches.get(selector)||
+    (LIVE_ADDED_ID.test(selector)&&liveSelected?.node?
+      livePatchForSelected():null);
   if(added?.kind==="insert"){
     const v=addedDeviceGeometry(added,device);
     return {...defaultLiveLayout(),dx:v.x,dy:v.y,
@@ -2129,7 +2131,9 @@ function bindLiveDocument(){
   const restore=pendingLiveViewRestore;
   pendingLiveViewRestore=null;
   if(restore?.page===currentPage){
-    const candidate=restore.selector&&doc.querySelector(restore.selector);
+    const candidate=restore.selector&&
+      (LIVE_ADDED_ID.test(restore.selector)?
+        findAddedNode(doc,restore.selector):doc.querySelector(restore.selector));
     const same=candidate&&candidate.tagName===restore.tag&&
       (candidate.tagName==="IMG"?
         candidate.getAttribute("src")===restore.text:
