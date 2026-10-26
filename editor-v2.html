@@ -107,6 +107,31 @@
       <div class="workspace-footer" id="workspaceFooter">Live website is read-only · Click a heading, paragraph or image to select it · Use Copy selected element to canvas to edit an independent copy</div>
     </main>
     <aside class="right-panel">
+      <section id="liveInspector" class="panel-section" hidden>
+        <h2>Original-page editing</h2>
+        <p class="help">Changes here preserve the existing webpage layout and CSS. They are saved as local draft edits and can be exported or published to staging.</p>
+        <p id="liveSelectionLabel" class="live-selection-label">Choose a heading, paragraph or image in the live page.</p>
+        <div id="liveTextControls" hidden>
+          <button id="editLiveText" type="button">Edit text directly on page</button>
+          <div class="inline-actions">
+            <button id="saveLiveText" type="button" disabled>Save text changes</button>
+            <button id="cancelLiveText" type="button" disabled>Cancel edit</button>
+          </div>
+        </div>
+        <div id="liveImageControls" hidden>
+          <label for="liveImageSrc">Image path</label>
+          <input id="liveImageSrc" placeholder="assets/example.webp">
+          <label for="liveImageAlt">Image description</label>
+          <textarea id="liveImageAlt" rows="2"></textarea>
+          <button id="applyLiveImage" type="button">Apply image change</button>
+        </div>
+        <div class="inline-actions">
+          <button id="revertLiveElement" type="button" disabled>Revert this element</button>
+          <button id="previewLiveEdits" type="button">Preview live-page draft</button>
+        </div>
+        <button id="exportLiveEdits" type="button">Export original-layout HTML</button>
+        <p id="liveEditCount" class="help">No saved live-page edits.</p>
+      </section>
       <section class="panel-section">
         <h2>Object properties</h2>
         <div id="emptySelection" class="empty-selection">Select an object to edit its position, dimensions, text, colour, and layering.</div>
