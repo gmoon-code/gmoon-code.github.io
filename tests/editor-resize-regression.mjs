@@ -30,6 +30,10 @@ const address=server.address();
 const base="http://127.0.0.1:"+address.port;
 const browser=await chromium.launch({headless:true,args:["--no-sandbox"]});
 const page=await browser.newPage({viewport:{width:1680,height:1000}});
+page.on("console",message=>{
+  if(message.type()==="warning"||message.type()==="error")
+    console.log("BROWSER",message.type(),message.text().slice(0,2500));
+});
 function closeTo(a,b){return Math.abs(a-b)<=5}
 async function pagePoint(element){
   return element.evaluate(node=>{
