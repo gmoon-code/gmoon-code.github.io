@@ -558,3 +558,23 @@ test('live preview retains true 100vh viewport height and scrolls long pages',as
   expect(phoneHeroHeight).toBeGreaterThanOrEqual(839);
   expect(phoneHeroHeight).toBeLessThanOrEqual(849);
 });
+
+test('live image library replaces source image without creating a canvas object',async({page})=>{
+  const site='<!doctype html><html><body><main>'+
+    '<img src="assets/first.webp" alt="First" width="180" height="120">'+
+    '<img src="assets/second.webp" alt="Second" width="180" height="120">'+
+    '</main></body></html>';
+  await page.route('**/about.html',route=>route.fulfill({
+    status:200,contentType:'text/html',body:site
+  }));
+  await page.locator('#reloadLive').click();
+  const live=page.frameLocator('#livePageFrame');
+  await live.locator('main img').first().click();
+  await expect(page.locator('#liveImageControls')).toBeVisible();
+  await expect(page.locator('#imageLibrary button')).toHaveCount(2);
+  await page.locator('#imageLibrary button').nth(1).click();
+  await expect(live.locator('main img').first()).toHaveAttribute('src','assets/second.webp');
+  await expect(page.locator('#liveViewport')).toBeVisible();
+  await expect(page.locator('#stage .scene-object')).toHaveCount(0);
+  await expect(page.locator('#liveEditCount')).toContainText('1 saved edit');
+});
