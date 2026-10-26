@@ -170,3 +170,29 @@ test('original-element alignment applies only to selected device and survives a 
   expect(Math.abs(afterA.x-afterB.x)).toBeLessThan(1.5);
   await expect(live.locator('main p.first a')).toHaveAttribute('href','teaching.html');
 });
+
+test('original multi-selection draws one group outline and exposes only a group move handle',async({page})=>{
+  const live=await selectSourceGroup(page,['first','second']);
+  const first=await localRect(live.locator('main p.first'));
+  const second=await localRect(live.locator('main p.second'));
+  const overlay=live.locator('#moon-v2-live-overlay');
+  await expect(overlay).toHaveAttribute('data-group-count','2');
+  const frameBounds=await overlay.evaluate(node=>{
+    const b=node.getBoundingClientRect();
+    return {x:b.left,y:b.top,w:b.width,h:b.height};
+  });
+  expect(Math.abs(frameBounds.x-Math.min(first.x,second.x))).toBeLessThan(1.5);
+  expect(frameBounds.w).toBeGreaterThan(second.x-first.x+second.w-2);
+  await expect(overlay.locator('.moon-v2-move')).toHaveText('Move group');
+  await expect(overlay.locator('.moon-v2-grip')).toHaveCount(0);
+  await expect(overlay.locator('.moon-v2-delete')).toHaveCount(0);
+  await page.locator('#liveClearAdded').click();
+  await expect(overlay).toHaveCount(0);
+});
+test('one selected original element retains its resize handles',async({page})=>{
+  const live=page.frameLocator('#livePageFrame');
+  await live.locator('main p.second').click();
+  const overlay=live.locator('#moon-v2-live-overlay');
+  await expect(overlay).toHaveAttribute('data-group-count','1');
+  await expect(overlay.locator('.moon-v2-grip')).toHaveCount(8);
+});

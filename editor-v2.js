@@ -1925,11 +1925,23 @@ function removeLiveOverlay(){
   if(liveOverlay?.isConnected)liveOverlay.remove();
   liveOverlay=null;
 }
+function liveSourceSelectionBounds(node,items=selectedSourcePatches()){
+  if(items.length<2||!items.some(item=>item.node===node))
+    return node.getBoundingClientRect();
+  const boxes=items.map(item=>item.node.getBoundingClientRect());
+  const left=Math.min(...boxes.map(box=>box.left));
+  const top=Math.min(...boxes.map(box=>box.top));
+  const right=Math.max(...boxes.map(box=>box.right));
+  const bottom=Math.max(...boxes.map(box=>box.bottom));
+  return {left,top,right,bottom,x:left,y:top,width:right-left,height:bottom-top};
+}
 function syncLiveOverlay(){
   if(workspaceMode!=="live"||!liveSelected?.node?.isConnected||liveEditing){
     removeLiveOverlay();return;
   }
   const node=liveSelected.node,doc=node.ownerDocument;
+  const sourceGroup=selectedSourcePatches();
+  const grouped=sourceGroup.length>1&&sourceGroup.some(item=>item.node===node);
   if(!liveOverlay||!liveOverlay.isConnected||liveOverlay.ownerDocument!==doc){
     removeLiveOverlay();
     liveOverlay=doc.createElement("div");
@@ -1955,8 +1967,11 @@ function syncLiveOverlay(){
       "white-space:nowrap!important;border-color:#a33!important;color:#a33!important;}";
     doc.head.append(css);
     const move=doc.createElement("button");
-    move.className="moon-v2-move";move.type="button";move.textContent="Move";
-    move.setAttribute("aria-label","Move selected live-page object");
+    move.className="moon-v2-move";move.type="button";
+    move.textContent=grouped?"Move group":"Move";
+    move.setAttribute("aria-label",grouped?
+      "Move selected original webpage elements together":
+      "Move selected live-page object");
     move.dataset.direction="move";
     liveOverlay.append(move);
     const remove=doc.createElement("button");
@@ -1966,8 +1981,13 @@ function syncLiveOverlay(){
       event.preventDefault();event.stopPropagation();
       deleteSelectedLiveElement();
     });
-    liveOverlay.append(remove);
-    if(node.matches(LIVE_SELECTABLE_TAGS)){
+    // Deleting an original multi-selection currently removes only its
+    // primary object. Hide that misleading control until group deletion
+    // is explicitly supported for original source elements.
+    if(!grouped)liveOverlay.append(remove);
+    // Single-object resize remains available. Group edges show move only,
+    // never grips that would resize just one of the selected elements.
+    if(!grouped&&node.matches(LIVE_SELECTABLE_TAGS)){
       for(const dir of ["nw","n","ne","e","se","s","sw","w"]){
         const grip=doc.createElement("button");
         grip.type="button";grip.className="moon-v2-grip";
@@ -1988,23 +2008,25 @@ function syncLiveOverlay(){
       if(button)startLiveGesture(event,button.dataset.direction,button);
     });
   }
-  const rect=node.getBoundingClientRect();
+  const rect=liveSourceSelectionBounds(node,sourceGroup);
   liveOverlay.style.left=rect.left+"px";
   liveOverlay.style.top=rect.top+"px";
   liveOverlay.style.width=rect.width+"px";
   liveOverlay.style.height=rect.height+"px";
+  liveOverlay.dataset.groupCount=grouped?String(sourceGroup.length):"1";
 }
 function removeLiveSnapGuides(){
   const doc=$("livePageFrame")?.contentDocument;
   doc?.getElementById("moon-v2-snap-x")?.remove();
   doc?.getElementById("moon-v2-snap-y")?.remove();
 }
-function candidateLiveSnapLines(node){
+function candidateLiveSnapLines(node,excluded=[node]){
   const doc=node.ownerDocument,root=doc.querySelector("main");
   const x=[],y=[];
   if(!root)return {x,y};
   for(const other of [...root.querySelectorAll(LIVE_SELECTABLE_TAGS)].slice(0,180)){
-    if(other===node||other.contains(node)||node.contains(other))continue;
+    if(excluded.some(member=>other===member||
+      other.contains(member)||member.contains(other)))continue;
     const style=doc.defaultView.getComputedStyle(other);
     if(style.display==="none"||style.visibility==="hidden")continue;
     const box=other.getBoundingClientRect();
@@ -2072,8 +2094,6 @@ function startLiveGesture(event,direction,anchor){
   const node=liveSelected.node,selector=liveSelector(node);
   const patch=livePatchForSelected();
   if(!patch||!validLivePatch(patch))return;
-  const rect=node.getBoundingClientRect();
-  if(rect.width<2||rect.height<2)return;
   // A normal click/double-click must retain its native behaviour. Prevent
   // pointer defaults immediately only for overlay grips; a body drag calls
   // preventDefault after it crosses the movement threshold.
@@ -2087,10 +2107,14 @@ function startLiveGesture(event,direction,anchor){
   const sourceGroup=direction==="move"&&!LIVE_ADDED_ID.test(selector)&&
     liveSourceMulti.has(selector)&&selectedSourcePatches().length>1?
     selectedSourcePatches():null;
+  const rect=sourceGroup?liveSourceSelectionBounds(node,sourceGroup):
+    node.getBoundingClientRect();
+  if(rect.width<2||rect.height<2)return;
   liveGesture={pointer:event.pointerId,anchor,dir:direction,
     startX:event.clientX,startY:event.clientY,rect,group,sourceGroup,
     patch,layout:liveLayoutFor(selector),snapshot:liveSnapshot(),
-    moved:false,selector,node,snapLines:candidateLiveSnapLines(node)};
+    moved:false,selector,node,snapLines:candidateLiveSnapLines(node,
+      sourceGroup?.map(item=>item.node)||[node])};
   anchor.setPointerCapture?.(event.pointerId);
 }
 function moveLiveGesture(event){
