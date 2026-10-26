@@ -31,13 +31,22 @@ function validateScene(value,page){
       if(!Number.isFinite(obj[prop])||Math.abs(obj[prop])>40000)throw Error("Invalid object dimension");
     if(obj.w<MIN_W||obj.h<MIN_H||obj.w>8000||obj.h>20000||
        typeof obj.name!=="string"||obj.name.length>120)throw Error("Invalid object size");
+    if(typeof obj.locked!=="boolean"||typeof obj.hidden!=="boolean"||
+      typeof obj.transparent!=="boolean"||
+      !Number.isFinite(obj.font)||obj.font<10||obj.font>120||
+      typeof obj.family!=="string"||!/^[a-zA-Z0-9_ ,"'.()\-]{1,180}$/.test(obj.family)||
+      !/^#[0-9a-f]{6}$/i.test(obj.color)||!/^#[0-9a-f]{6}$/i.test(obj.bg)||
+      !["left","center","right"].includes(obj.align)||
+      obj.order!==undefined&&(!Number.isInteger(obj.order)||obj.order<0||obj.order>999999))
+      throw Error("Invalid object styling");
     if(obj.type==="image"&&!safeImageSource(obj.src))throw Error("Invalid image reference");
     if(obj.type==="text"&&(typeof obj.text!=="string"||obj.text.length>30000||
       obj.rich!==undefined&&(typeof obj.rich!=="string"||obj.rich.length>70000)||
       obj.tag!==undefined&&!/^(?:h[1-6]|p|li|blockquote|figcaption)$/.test(obj.tag)))
       throw Error("Invalid text content");
   }
-  if(!Number.isInteger(value.nextId)||value.nextId<1||value.nextId>999999)throw Error("Invalid object counter");
+  if(!Number.isInteger(value.nextId)||value.nextId<1||value.nextId>999999||
+     (ids.size&&value.nextId<=Math.max(...ids)))throw Error("Invalid object counter");
   return copy(value);
 }
 function safeImageSource(value){
@@ -515,8 +524,8 @@ function standaloneHtml(assetPrefix=""){
     '.item{position:static!important;width:100%!important;height:auto!important;max-width:100%!important;min-height:24px}'+
     '.item img{width:100%;height:auto;max-height:500px;object-fit:contain}}'+
     '</style></head><body><header class="site-bar"><strong>Ye Eun Moon</strong>'+
-    '<nav><a href="../index.html">Home</a><a href="../research.html">Research</a>'+
-    '<a href="../teaching.html">Teaching</a><a href="../about.html">About</a></nav></header>'+
+    '<nav><a href="'+assetPrefix+'index.html">Home</a><a href="'+assetPrefix+'research.html">Research</a>'+
+    '<a href="'+assetPrefix+'teaching.html">Teaching</a><a href="'+assetPrefix+'about.html">About</a></nav></header>'+
     '<main class="canvas" aria-label="'+esc(name)+'">'+items+'</main></body></html>';
 }
 function download(name,contents,type){
