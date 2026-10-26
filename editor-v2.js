@@ -12,6 +12,7 @@ const NEW_DRAFT="moon-academic-editor-v2:";
 let currentPage="index.html";
 let scene={version:VERSION,page:currentPage,width:STANDARD_WIDTH,height:1080,objects:[],nextId:1};
 let selected=new Set(),activeId=null,history=[],redo=[],zoom=.8,gesture=null,editingId=null,saveTimer=null,loadSerial=0,lastTap=null,pageImages=[];
+let workspaceMode="live",liveWidth=1160,liveScale=1,liveSelected=null,liveObserver=null,liveSerial=0;
 const copy=data=>JSON.parse(JSON.stringify(data));
 const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
 const number=v=>Number.isFinite(Number(v))?Number(v):0;
@@ -243,6 +244,136 @@ function makeSceneElement(obj){
     }
   }
   return node;
+}
+const LIVE_WIDTHS={desktop:1160,tablet:768,phone:390};
+function setWorkspaceMode(mode){
+  if(mode!=="live"&&mode!=="design")return;
+  workspaceMode=mode;
+  const isLive=mode==="live";
+  $("liveViewport").hidden=!isLive;
+  $("scrollspace").hidden=isLive;
+  $("liveMode").classList.toggle("active",isLive);
+  $("designMode").classList.toggle("active",!isLive);
+  $("liveMode").setAttribute("aria-pressed",String(isLive));
+  $("designMode").setAttribute("aria-pressed",String(!isLive));
+  $("devicePreview").disabled=!isLive;
+  $("reloadLive").disabled=!isLive;
+  $("copyLiveObject").disabled=!isLive||!liveSelected;
+  $("workspaceTitle").textContent=isLive?"Live website":"Free design canvas";
+  $("workspacePill").textContent=isLive?"Original HTML and CSS · read-only":"Independent objects · staging only";
+  $("workspaceExplanation").textContent=isLive?
+    "This displays the existing page with its real styles, images and responsive layout. Click a text block or image to select it. Copy creates a separate canvas object and does not change the original.":
+    "This canvas is a simplified, independent reconstruction. It does not yet reproduce every original section or responsive rule. Use Live website to verify the real page; only the staging preview can be published.";
+  $("workspaceFooter").textContent=isLive?
+    "Original page · read-only · Choose Desktop, Tablet or Phone · Click a text block or image to copy into the free canvas":
+    "Drag to move · Eight resize handles · Double-click text to edit · Double-click empty canvas to add text · Drop images · Shift-click for multiple selection";
+  if(isLive)fitLivePage();
+  else fitCanvas();
+}
+function liveDimensions(){
+  const doc=$("livePageFrame").contentDocument;
+  if(!doc?.documentElement||!doc.body)return 950;
+  const body=doc.body,root=doc.documentElement;
+  return Math.min(50000,Math.max(700,
+    root.scrollHeight,body.scrollHeight,root.offsetHeight,body.offsetHeight));
+}
+function fitLivePage(){
+  if(workspaceMode!=="live")return;
+  const area=$("liveViewport"),frame=$("livePageFrame"),shell=$("livePageShell");
+  if(!area?.clientWidth)return;
+  const width=LIVE_WIDTHS[$("devicePreview").value]||1160;
+  liveWidth=width;
+  // The iframe has a real device viewport. Only its visual presentation is
+  // scaled, so its site CSS media queries still match the selected width.
+  liveScale=Math.min(1,Math.max(.25,(area.clientWidth-48)/width));
+  const height=liveDimensions();
+  frame.style.width=width+"px";
+  frame.style.height=height+"px";
+  frame.style.transform="scale("+liveScale+")";
+  shell.style.width=Math.ceil(width*liveScale)+"px";
+  shell.style.height=Math.ceil(height*liveScale)+"px";
+}
+function clearLiveSelection(){
+  if(liveSelected?.node?.isConnected)
+    liveSelected.node.removeAttribute("data-moon-v2-live-selected");
+  liveSelected=null;
+  $("copyLiveObject").disabled=true;
+}
+function selectLiveElement(node){
+  clearLiveSelection();
+  const doc=$("livePageFrame").contentDocument;
+  if(!node||!doc?.querySelector("main")?.contains(node))return;
+  liveSelected={node,page:currentPage};
+  node.setAttribute("data-moon-v2-live-selected","");
+  $("copyLiveObject").disabled=false;
+  const label=(node.tagName==="IMG"?node.alt||"image":node.textContent||"text")
+    .trim().replace(/\s+/g," ").slice(0,80);
+  status("Live element selected: "+label+" · Original website unchanged");
+}
+function bindLiveDocument(){
+  const frame=$("livePageFrame"),doc=frame.contentDocument;
+  if(liveObserver){liveObserver.disconnect();liveObserver=null;}
+  clearLiveSelection();
+  if(!doc?.body||!doc.querySelector("main")){
+    $("workspaceExplanation").textContent=
+      "This page could not be displayed. Check that the selected HTML page exists in the site repository.";
+    fitLivePage();return;
+  }
+  const sheet=doc.createElement("style");
+  sheet.textContent='[data-moon-v2-live-selected]{outline:2px solid #287dbb!important;outline-offset:2px!important;cursor:crosshair!important}';
+  (doc.head||doc.documentElement).append(sheet);
+  doc.addEventListener("click",event=>{
+    if(workspaceMode!=="live")return;
+    const link=event.target.closest?.("a[href]");
+    if(link){event.preventDefault();}
+    const node=event.target.closest?.("h1,h2,h3,h4,h5,h6,p,li,figcaption,blockquote,img");
+    if(node)selectLiveElement(node);
+    else clearLiveSelection();
+  },true);
+  liveObserver=new ResizeObserver(()=>fitLivePage());
+  liveObserver.observe(doc.documentElement);
+  liveObserver.observe(doc.body);
+  doc.fonts?.ready?.then(()=>fitLivePage());
+  for(const image of doc.querySelectorAll("img")){
+    if(!image.complete)image.addEventListener("load",()=>fitLivePage(),{once:true});
+  }
+  fitLivePage();
+}
+function loadLivePage(page=currentPage){
+  if(!PAGES.has(page))return;
+  ++liveSerial;
+  if(liveObserver){liveObserver.disconnect();liveObserver=null;}
+  clearLiveSelection();
+  const frame=$("livePageFrame");
+  frame.onload=()=>bindLiveDocument();
+  frame.src=new URL(page,location.href).href;
+}
+function copySelectedLiveElement(){
+  const selection=liveSelected;
+  if(!selection||selection.page!==currentPage||!selection.node?.isConnected)return;
+  const node=selection.node,doc=node.ownerDocument,main=doc.querySelector("main");
+  if(!main||!main.contains(node))return;
+  const rect=node.getBoundingClientRect(),base=main.getBoundingClientRect();
+  const css=doc.defaultView.getComputedStyle(node);
+  const image=node.tagName==="IMG";
+  const src=image?(node.getAttribute("src")||""):"";
+  if(image&&!safeImageSource(src)){
+    status("This image uses an unsupported source URL. Choose a local site asset.");return;
+  }
+  const text=image?"":node.innerText?.trim()||node.textContent?.trim()||"";
+  const attrs={
+    name:(image?node.alt||"Image":node.tagName.toLowerCase()+" · "+text).slice(0,120),
+    x:Math.round(rect.left-base.left),y:Math.round(rect.top-base.top),
+    w:clamp(Math.round(rect.width),MIN_W,8000),h:clamp(Math.round(rect.height),MIN_H,20000),
+    font:clamp(Math.round(parseFloat(css.fontSize)||18),10,120),
+    color:hexColour(css.color,"#1c2622"),family:css.fontFamily||"Georgia, serif",
+    align:["left","center","right"].includes(css.textAlign)?css.textAlign:"left"
+  };
+  if(image){attrs.src=src;attrs.alt=node.alt||"";}
+  else{attrs.text=text.slice(0,30000);attrs.rich=cleanRich(node.innerHTML);
+    attrs.tag=node.tagName.toLowerCase();}
+  add(image?"image":"text",attrs);
+  status("Copied selected live element into an independent editable object · Original unchanged");
 }
 function fitCanvas(){
   const viewport=$("scrollspace");
