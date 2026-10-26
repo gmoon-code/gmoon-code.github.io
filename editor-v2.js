@@ -14,6 +14,7 @@ let currentPage="index.html";
 let scene={version:VERSION,page:currentPage,width:STANDARD_WIDTH,height:1080,objects:[],nextId:1};
 let selected=new Set(),activeId=null,history=[],redo=[],zoom=.8,gesture=null,editingId=null,saveTimer=null,loadSerial=0,lastTap=null,pageImages=[];
 let canvasClipboard=[],canvasPasteCount=0;
+let canvasMarquee=null; // Non-persistent rubber-band selection; no scene changes.
 let liveObjectClipboard=null,livePasteCount=0;
 let liveAddedMulti=new Set(); // Selected stable IDs for objects on the actual webpage
 let liveLockImageRatio=true;
@@ -383,7 +384,10 @@ function setWorkspaceMode(mode){
   if(mode!=="live"){
     if(liveGesture)cancelLiveGesture();
     removeLiveOverlay();removeLiveSnapGuides();
-  }else if(gesture)cancelCanvasGesture();
+  }else{
+    if(gesture)cancelCanvasGesture();
+    cancelCanvasMarquee();
+  }
   workspaceMode=mode;
   const isLive=mode==="live";
   $("liveViewport").hidden=!isLive;
@@ -2921,6 +2925,92 @@ function drawCanvasGuides(x,y){
     stage.append(line);
   }
 }
+// Rubber-band selection, built in scene coordinates so zoom never affects hits.
+// Left-to-right encloses objects, right-to-left also selects intersections.
+function marqueePoint(event){
+  const rect=$("stage").getBoundingClientRect();
+  return {x:clamp((event.clientX-rect.left)/zoom,0,scene.width),
+    y:clamp((event.clientY-rect.top)/zoom,0,scene.height)};
+}
+function marqueeBounds(a,b){
+  return {x:Math.min(a.x,b.x),y:Math.min(a.y,b.y),
+    w:Math.abs(b.x-a.x),h:Math.abs(b.y-a.y)};
+}
+function clearCanvasMarquee(){
+  $("stage")?.querySelector("[data-v2-marquee]")?.remove();
+}
+function cancelCanvasMarquee(){
+  const pending=canvasMarquee;
+  if(!pending)return;
+  canvasMarquee=null;
+  try{
+    const stage=$("stage");
+    if(stage.hasPointerCapture?.(pending.pointer))
+      stage.releasePointerCapture(pending.pointer);
+  }catch{/* The capture may have been lost when leaving the application. */}
+  clearCanvasMarquee();
+}
+function startCanvasMarquee(event){
+  if(workspaceMode!=="design"||editingId!==null||gesture||
+     canvasMarquee||event.button!==0)return;
+  const start=marqueePoint(event);
+  canvasMarquee={pointer:event.pointerId,start,current:start,
+    additive:event.shiftKey,previous:new Set(selected),moved:false};
+  lastTap=null;
+  event.preventDefault();
+  $("stage").setPointerCapture(event.pointerId);
+}
+function moveCanvasMarquee(event){
+  const g=canvasMarquee;
+  if(!g||event.pointerId!==g.pointer)return;
+  const current=marqueePoint(event);
+  g.current=current;
+  if(!g.moved&&Math.hypot((current.x-g.start.x)*zoom,
+     (current.y-g.start.y)*zoom)<4)return;
+  g.moved=true;
+  const rect=marqueeBounds(g.start,current);
+  let node=$("stage").querySelector("[data-v2-marquee]");
+  if(!node){
+    node=document.createElement("div");
+    node.className="canvas-marquee";
+    node.dataset.v2Marquee="";
+    node.setAttribute("aria-hidden","true");
+    $("stage").append(node);
+  }
+  node.style.left=rect.x+"px";node.style.top=rect.y+"px";
+  node.style.width=rect.w+"px";node.style.height=rect.h+"px";
+  node.classList.toggle("intersect",current.x<g.start.x);
+  const hits=canvasMarqueeHits(g.start,current);
+  for(const item of $("stage").querySelectorAll(".scene-object")){
+    const id=Number(item.dataset.id);
+    item.classList.toggle("marquee-preview",hits.has(id)||g.additive&&g.previous.has(id));
+  }
+}
+function canvasMarqueeHits(start,end){
+  const box=marqueeBounds(start,end),crossing=end.x<start.x;
+  const result=new Set();
+  for(const obj of scene.objects){
+    if(obj.hidden||obj.locked)continue;
+    const hit=crossing?
+      obj.x<box.x+box.w&&obj.x+obj.w>box.x&&
+      obj.y<box.y+box.h&&obj.y+obj.h>box.y:
+      obj.x>=box.x&&obj.y>=box.y&&
+      obj.x+obj.w<=box.x+box.w&&obj.y+obj.h<=box.y+box.h;
+    if(hit)result.add(obj.id);
+  }
+  return result;
+}
+function finishCanvasMarquee(event){
+  const g=canvasMarquee;
+  if(!g||event.pointerId!==g.pointer)return;
+  if(event.type==="pointercancel"){cancelCanvasMarquee();return;}
+  const ids=g.moved?canvasMarqueeHits(g.start,marqueePoint(event)):new Set();
+  if(g.additive)for(const id of g.previous)ids.add(id);
+  canvasMarquee=null;
+  clearCanvasMarquee();
+  setSelection([...ids],[...ids].at(-1)||null);
+  if(g.moved)status(ids.size+" canvas objects selected · Drag a selected object to move together");
+}
 function startGesture(event,id,dir){
   const obj=lookup(id);
   if(!obj||obj.locked||editingId!==null)return;
@@ -3680,19 +3770,31 @@ function attachEvents(){
   $("stage").addEventListener("pointerdown",event=>{
     if(editingId!==null)return;
     const node=event.target.closest(".scene-object");
-    if(!node){select(null);return;}
+    if(!node){startCanvasMarquee(event);return;}
     startGesture(event,Number(node.dataset.id),event.target.closest(".handle")?.dataset.dir||null);
   });
   $("stage").addEventListener("click",event=>{
     if(event.target.closest("a"))event.preventDefault();
   });
-  $("stage").addEventListener("pointermove",gestureMove);
-  $("stage").addEventListener("pointerup",endGesture);
-  $("stage").addEventListener("pointercancel",endGesture);
+  $("stage").addEventListener("pointermove",event=>{
+    if(canvasMarquee)moveCanvasMarquee(event);
+    else gestureMove(event);
+  });
+  $("stage").addEventListener("pointerup",event=>{
+    if(canvasMarquee)finishCanvasMarquee(event);
+    else endGesture(event);
+  });
+  $("stage").addEventListener("pointercancel",event=>{
+    if(canvasMarquee)finishCanvasMarquee(event);
+    else endGesture(event);
+  });
   $("stage").addEventListener("lostpointercapture",event=>{
     if(gesture?.pointer===event.pointerId)cancelCanvasGesture();
+    if(canvasMarquee?.pointer===event.pointerId)cancelCanvasMarquee();
   });
-  window.addEventListener("blur",cancelCanvasGesture);
+  window.addEventListener("blur",()=>{
+    cancelCanvasGesture();cancelCanvasMarquee();
+  });
   $("selectTool").addEventListener("click",()=>{
     if(workspaceMode==="live"){
       if(liveEditing)saveLiveText();
@@ -4119,6 +4221,9 @@ function attachEvents(){
     if(isTextField(event.target))return;
     if(event.key==="Escape"&&gesture){
       event.preventDefault();cancelCanvasGesture();return;
+    }
+    if(event.key==="Escape"&&canvasMarquee){
+      event.preventDefault();cancelCanvasMarquee();return;
     }
     if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==="z"){
       event.preventDefault();if(event.shiftKey)redoAction();else undo();return;

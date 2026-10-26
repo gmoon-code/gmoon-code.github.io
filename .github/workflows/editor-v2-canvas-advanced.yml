@@ -1,0 +1,45 @@
+name: Editor V2 advanced canvas interactions
+on:
+  pull_request:
+    paths:
+      - 'editor-v2.js'
+      - 'editor-v2.css'
+      - 'editor-v2.html'
+      - 'tests/editor-v2-canvas-advanced.spec.cjs'
+      - '.github/workflows/editor-v2-canvas-advanced.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'editor-v2.js'
+      - 'editor-v2.css'
+      - 'editor-v2.html'
+      - 'tests/editor-v2-canvas-advanced.spec.cjs'
+      - '.github/workflows/editor-v2-canvas-advanced.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  advanced-canvas:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate editor and test syntax
+        run: |
+          node --check editor-v2.js
+          node --check tests/editor-v2-canvas-advanced.spec.cjs
+      - run: npm install --no-save --no-package-lock @playwright/test
+      - run: npx playwright install --with-deps chromium
+      - name: Start local site
+        run: python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/editor-v2-advanced.log 2>&1 &
+      - name: Run drag-selection regression tests
+        run: npx playwright test tests/editor-v2-canvas-advanced.spec.cjs --browser chromium --workers=1 --reporter=list
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: canvas-advanced-failure
+          path: test-results/
+          retention-days: 7

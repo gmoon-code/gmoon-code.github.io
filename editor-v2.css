@@ -135,3 +135,16 @@
 .identity h1{margin:0;font-size:15px;font-weight:700;line-height:normal}
 .identity h1 small{font-size:10px;color:var(--accent);margin-left:3px}
 #liveViewport:focus-visible{outline:3px solid var(--focus);outline-offset:-3px}
+
+/* Drag-selection stays inside the canvas and does not affect saved content. */
+#stage .canvas-marquee{
+  position:absolute;z-index:2147483000;pointer-events:none;
+  box-sizing:border-box;border:1.5px solid #2977bd;
+  background:rgba(41,119,189,.12);
+}
+#stage .canvas-marquee.intersect{
+  border-style:dashed;background:rgba(41,119,189,.18);
+}
+#stage .scene-object.marquee-preview{
+  outline:2px solid #2977bd;outline-offset:1px;
+}
