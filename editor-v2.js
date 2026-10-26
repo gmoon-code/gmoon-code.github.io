@@ -1704,6 +1704,45 @@ function moveLiveGesture(event){
   const deltaX=event.clientX-g.startX,deltaY=event.clientY-g.startY;
   if(!g.moved&&Math.hypot(deltaX,deltaY)<3)return;
   g.moved=true;
+  if(g.patch.kind==="insert"){
+    const patch=copy(g.patch),device=liveDevice();
+    const base=addedDeviceGeometry(g.patch,device);
+    const geom={...base};
+    if(g.dir==="move"){
+      const snap=snapLiveMove(deltaX,deltaY,g,event.altKey);
+      geom.x=Math.round(clamp(base.x+snap.dx,-4000,10000));
+      geom.y=Math.round(clamp(base.y+snap.dy,-4000,40000));
+      drawLiveSnapGuides(snap.x,snap.y,g.node.ownerDocument);
+    }else{
+      const direction=g.dir;
+      geom.w=Math.round(clamp(base.w+
+        (direction.includes("e")?deltaX:0)-(direction.includes("w")?deltaX:0),40,4000));
+      geom.h=Math.round(clamp(base.h+
+        (direction.includes("s")?deltaY:0)-(direction.includes("n")?deltaY:0),24,5000));
+      if(g.patch.objectType==="image"&&direction.length===2&&!event.altKey){
+        const ratio=base.w/base.h;
+        if(Math.abs(geom.w-base.w)>=Math.abs(geom.h-base.h)*ratio)
+          geom.h=Math.round(clamp(geom.w/ratio,24,5000));
+        else geom.w=Math.round(clamp(geom.h*ratio,40,4000));
+      }
+      if(direction.includes("w"))geom.x=Math.round(clamp(
+        base.x+base.w-geom.w,-4000,10000));
+      if(direction.includes("n"))geom.y=Math.round(clamp(
+        base.y+base.h-geom.h,-4000,40000));
+    }
+    patch.geometry={...patch.geometry,[device]:geom};
+    livePatches.set(g.selector,patch);
+    refreshAddedObject(g.node.ownerDocument,patch);
+    if(g.patch.objectType==="text"&&(g.dir==="e"||g.dir==="w")){
+      const needed=Math.ceil(g.node.scrollHeight+2);
+      if(Number.isFinite(needed)&&needed>geom.h&&needed<=5000){
+        geom.h=needed;patch.geometry[device]=geom;
+        livePatches.set(g.selector,patch);
+        refreshAddedObject(g.node.ownerDocument,patch);
+      }
+    }
+    syncLiveOverlay();return;
+  }
   const next={...g.layout};
   if(g.dir==="move"){
     const snap=snapLiveMove(deltaX,deltaY,g,event.altKey);
@@ -1771,7 +1810,10 @@ function cancelLiveGesture(){
   // Interrupted drags must not leave an unrecorded edit in the draft.
   livePatches=new Map(g.snapshot.map(p=>[p.selector,p]));
   if(g.node?.ownerDocument?.defaultView){
-    refreshLiveLayoutRules(g.node.ownerDocument);
+    if(g.patch.kind==="insert"){
+      const original=livePatches.get(g.selector);
+      if(original)refreshAddedObject(g.node.ownerDocument,original);
+    }else refreshLiveLayoutRules(g.node.ownerDocument);
   }
   try{
     if(g.anchor?.hasPointerCapture?.(g.pointer))
@@ -1787,7 +1829,10 @@ function finishLiveGesture(event){
   removeLiveSnapGuides();
   if(event.type==="pointercancel"){
     livePatches=new Map(g.snapshot.map(p=>[p.selector,p]));
-    refreshLiveLayoutRules(g.node.ownerDocument);
+    if(g.patch.kind==="insert"){
+      const restored=livePatches.get(g.selector);
+      if(restored)refreshAddedObject(g.node.ownerDocument,restored);
+    }else refreshLiveLayoutRules(g.node.ownerDocument);
   }else if(g.moved){
     // Mouseup still generates a click; keep it from navigating to a nearby
     // link or selecting a different element after a drag.
@@ -1797,7 +1842,7 @@ function finishLiveGesture(event){
   }
   renderLiveInspector();syncLiveOverlay();
 }
-const LIVE_PANE_TAGS="h1,h2,h3,h4,h5,h6,p,li,figcaption,blockquote,img,section,article,figure,aside";
+const LIVE_PANE_TAGS="h1,h2,h3,h4,h5,h6,p,li,figcaption,blockquote,img,section,article,figure,aside,[data-moon-v2-added-id]";
 function renderLiveLayers(){
   const host=$("liveElementList"),doc=$("livePageFrame").contentDocument;
   host.replaceChildren();
@@ -1826,7 +1871,9 @@ function renderLiveLayers(){
     const type=document.createElement("span"),label=document.createElement("span");
     type.className="layer-type";type.textContent=node.tagName.toLowerCase();
     label.className="layer-name";
-    label.textContent=(node.tagName==="IMG"?
+    label.textContent=(node.hasAttribute("data-moon-v2-added-id")?
+      "Added "+(node.getAttribute("data-moon-v2-object-type")||"object")+" · ":"")+
+      (node.tagName==="IMG"?
       node.alt||node.getAttribute("src")||"Image":
       node.textContent?.trim()||"Container").replace(/\s+/g," ").slice(0,105);
     button.title=label.textContent;
@@ -2837,7 +2884,10 @@ function attachEvents(){
   $("liveElementList").addEventListener("click",event=>{
     const button=event.target.closest?.("button[data-live-selector]");
     if(!button||workspaceMode!=="live")return;
-    const node=$("livePageFrame").contentDocument?.querySelector(button.dataset.liveSelector);
+    const doc=$("livePageFrame").contentDocument;
+    const key=button.dataset.liveSelector;
+    const node=LIVE_ADDED_ID.test(key)?findAddedNode(doc,key):
+      doc?.querySelector(key);
     if(!node)return;
     selectLiveElement(node);
     node.scrollIntoView({block:"center",inline:"nearest"});
