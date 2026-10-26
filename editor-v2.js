@@ -432,6 +432,20 @@ async function publishStaging(token){
 }
 function attachEvents(){
   $("page").addEventListener("change",event=>changePage(event.target.value));
+  $("importScene").addEventListener("click",()=>$("sceneFile").click());
+  $("sceneFile").addEventListener("change",async event=>{
+    const file=event.target.files?.[0];event.target.value="";
+    if(!file)return;
+    if(file.size>3000000){status("JSON backup exceeds 3 MB");return;}
+    try{
+      const restored=validateScene(JSON.parse(await file.text()),currentPage);
+      if(scene.objects.length&&!confirm("Replace this page's local canvas with the selected JSON backup?"))return;
+      const before=copy(scene);
+      scene=restored;selected.clear();activeId=null;
+      remember(before);render();save();
+      status("Canvas restored from JSON · Original website unchanged");
+    }catch(error){status("JSON import rejected · "+(error.message||error));}
+  });
   $("importPage").addEventListener("click",()=>importPage());
   $("sourcePage").addEventListener("click",()=>window.open(new URL(currentPage,location.href).href,"_blank","noopener"));
   $("zoom").addEventListener("input",event=>{zoom=Number(event.target.value)/100;$("zoomValue").textContent=Math.round(zoom*100)+"%";render();});
@@ -608,6 +622,9 @@ fileInput.id="imageFile";fileInput.hidden=true;document.body.append(fileInput);
 const replaceInput=document.createElement("input");
 replaceInput.type="file";replaceInput.accept="image/png,image/jpeg,image/webp";
 replaceInput.id="replaceFile";replaceInput.hidden=true;document.body.append(replaceInput);
+const sceneInput=document.createElement("input");
+sceneInput.type="file";sceneInput.accept=".json,application/json";
+sceneInput.id="sceneFile";sceneInput.hidden=true;document.body.append(sceneInput);
 const params=new URLSearchParams(location.search);
 const start=params.get("page");
 if(start&&PAGES.has(start))$("page").value=start;
