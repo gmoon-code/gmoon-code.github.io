@@ -11,7 +11,7 @@ const HANDLES=["nw","n","ne","e","se","s","sw","w"];
 const NEW_DRAFT="moon-academic-editor-v2:";
 let currentPage="index.html";
 let scene={version:VERSION,page:currentPage,width:STANDARD_WIDTH,height:1080,objects:[],nextId:1};
-let selected=new Set(),activeId=null,history=[],redo=[],zoom=.8,gesture=null,editingId=null,saveTimer=null,loadSerial=0;
+let selected=new Set(),activeId=null,history=[],redo=[],zoom=.8,gesture=null,editingId=null,saveTimer=null,loadSerial=0,lastTap=null;
 const copy=data=>JSON.parse(JSON.stringify(data));
 const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
 const number=v=>Number.isFinite(Number(v))?Number(v):0;
@@ -300,7 +300,7 @@ function gestureMove(event){
 function endGesture(event){
   if(!gesture||event.pointerId!==gesture.pointer)return;
   const g=gesture;gesture=null;
-  if(event.type==="pointercancel"){scene=g.snapshot;render();return;}
+  if(event.type==="pointercancel"){lastTap=null;scene=g.snapshot;render();return;}
   if(g.moved&&JSON.stringify(g.snapshot)!==JSON.stringify(scene)){
     const bottom=Math.max(...scene.objects.map(o=>o.y+o.h+70),900);
     if(bottom>scene.height)scene.height=Math.ceil(bottom);
@@ -309,6 +309,13 @@ function endGesture(event){
     remember(g.snapshot);
   }
   render();
+  if(g.moved||g.dir!=="move"){lastTap=null;return;}
+  const current={id:g.ids[0],x:event.clientX,y:event.clientY,time:performance.now()};
+  if(lastTap&&lastTap.id===current.id&&current.time-lastTap.time<440&&
+     Math.hypot(current.x-lastTap.x,current.y-lastTap.y)<10){
+    lastTap=null;
+    beginTextEdit(current.id);
+  }else lastTap=current;
 }
 function beginTextEdit(id){
   const obj=lookup(id);
@@ -406,7 +413,7 @@ async function importPage(force=false){
 }
 function changePage(page){
   if(!PAGES.has(page))return;
-  ++loadSerial;clearTimeout(saveTimer);
+  ++loadSerial;clearTimeout(saveTimer);lastTap=null;
   currentPage=page;
   history=[];redo=[];selected.clear();activeId=null;
   const empty={version:VERSION,page,width:STANDARD_WIDTH,height:1080,objects:[],nextId:1};
