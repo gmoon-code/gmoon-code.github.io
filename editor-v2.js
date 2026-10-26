@@ -797,6 +797,7 @@ function bindLiveDocument(){
   doc.defaultView.addEventListener("resize",syncLiveOverlay);
   doc.addEventListener("click",event=>{
     if(workspaceMode!=="live")return;
+    if(event.target.closest?.("#moon-v2-live-overlay"))return;
     if(liveEditing)return;
     const link=event.target.closest?.("a[href]");
     if(link){
