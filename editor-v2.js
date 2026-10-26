@@ -1960,10 +1960,18 @@ async function publishGithub(token,target){
   if(!sourceMode&&!scene.objects.length)
     throw Error("Import or add objects before publishing a staging preview.");
   if(!PAGES.has(currentPage))throw Error("Unknown page; publication cancelled.");
-
-  const path=target==="live"?currentPage:
-    "editor-v2-previews/"+(sourceMode?"source-":"")+currentPage;
+  const publicationPage=currentPage,publicationMode=workspaceMode;
+  const draftSignature=JSON.stringify(sourceMode?liveSnapshot():scene);
+  const requireUnchangedDraft=()=>{
+    const state=JSON.stringify(sourceMode?liveSnapshot():scene);
+    if(currentPage!==publicationPage||workspaceMode!==publicationMode||
+       state!==draftSignature)
+      throw Error("The selected page or saved edits changed during publishing. Nothing was submitted. Return to the intended page and try again.");
+  };
+  const path=target==="live"?publicationPage:
+    "editor-v2-previews/"+(sourceMode?"source-":"")+publicationPage;
   const {endpoint,info}=await githubFile(path,token,target==="staging");
+  requireUnchangedDraft();
   if(target==="live"&&!info)
     throw Error("The public page is missing from GitHub. Publication cancelled.");
 
@@ -1975,8 +1983,9 @@ async function publishGithub(token,target){
   const html=production?.html||
     (sourceMode?await sourcePreservingHtml("https://gmoon-code.github.io/"):
       standaloneHtml("../"));
+  requireUnchangedDraft(); // Keep the output and target page paired up.
   const body={
-    message:(target==="live"?"Publish verified Editor V2 edits to ":"Update Editor V2 staging preview of ")+currentPage,
+    message:(target==="live"?"Publish verified Editor V2 edits to ":"Update Editor V2 staging preview of ")+publicationPage,
     content:utf8Base64(html),branch:"main"
   };
   if(info?.sha)body.sha=info.sha;
@@ -1994,7 +2003,7 @@ async function publishGithub(token,target){
   const result=await response.json();
   if(!result?.commit?.sha)throw Error("GitHub did not confirm a commit.");
   return {url:"https://gmoon-code.github.io/"+path,
-    commit:result.commit.sha,target,path,
+    commit:result.commit.sha,target,path,page:publicationPage,draftSignature,
     publishedHtml:production?.html||null,
     publishedMatches:production?.resolved||[],
     publishedNormalized:production?.normalized||[]};
@@ -2573,7 +2582,8 @@ function attachEvents(){
       $("forgetGithubToken").hidden=!githubTabToken;
       $("publishDialog").close();
       showPublishResult(result);
-      if(result.target==="live"&&result.publishedHtml){
+      if(result.target==="live"&&result.publishedHtml&&currentPage===result.page&&
+        JSON.stringify(liveSnapshot())===result.draftSignature){
         // Rebase draft expectations on the *confirmed* GitHub commit. Future
         // changes in the same tab then compare with what was just published,
         // even if GitHub Pages is still serving the previous deployed build.
@@ -2592,8 +2602,8 @@ function attachEvents(){
         storeLiveDraft();refreshUndo();
       }
       status(result.target==="live"?
-        "Live page committed to GitHub · Deployment may be pending":
-        "Staging page committed to GitHub · Deployment may be pending");
+        "GitHub confirmed publication of "+result.page+" · Deployment may be pending":
+        "GitHub confirmed staging preview of "+result.page+" · Deployment may be pending");
       // Keep the browser draft available until the user verifies the
       // deployed page. Never erase their changes merely on a successful PUT.
     }catch(error){
