@@ -692,15 +692,15 @@ function livePatchExcerpt(patch){
   return excerpt||patch.selector.split(" > ").at(-1)||"Unnamed element";
 }
 function equivalentSiteImageSource(actual,expected){
-  if(actual===expected)return true;
-  // A source image can be written as assets/photo.webp, ./assets/photo.webp,
-  // or a same-origin absolute URL. Their URL paths identify the same file.
-  // Never match on filename alone or against a different origin.
+  const left=String(actual||"").trim(),right=String(expected||"").trim();
+  if(left===right&&left!=="")return true;
+  // Compare complete same-origin paths, not basenames. Ignore image cache
+  // query parameters but never accept images from a different origin.
   try{
     const base=new URL(currentPage,location.href);
-    const left=new URL(actual,base),right=new URL(expected,base);
-    return left.origin===base.origin&&right.origin===base.origin&&
-      left.pathname===right.pathname;
+    const x=new URL(left,base),y=new URL(right,base);
+    return !!left&&!!right&&x.origin===base.origin&&y.origin===base.origin&&
+      x.pathname===y.pathname;
   }catch{return false;}
 }
 function livePatchNodeMatches(node,patch){
@@ -713,15 +713,18 @@ function livePatchNodeMatches(node,patch){
   return patch.kind==="image"?
     equivalentSiteImageSource(original,patch.expected):original===patch.expected;
 }
-function resolveLivePatchTarget(doc,patch,claimed){
+function resolveLivePatchTarget(doc,patch){
   const direct=doc.querySelector(patch.selector);
-  if(direct&&!claimed.has(direct)&&livePatchNodeMatches(direct,patch))return direct;
+  if(direct&&livePatchNodeMatches(direct,patch))return direct;
   const tag=patch.kind==="image"?"img":
     patch.selector.match(/ > ([a-z][a-z0-9-]*):nth-of-type\(\d{1,4}\)$/)?.[1];
   if(!tag||!patch.expected||patch.expected.trim().length<5)
     throw Error("Could not match saved edit \""+livePatchExcerpt(patch)+"\" to the original webpage. The draft is preserved.");
+  // Do not exclude elements already associated with another saved edit.
+  // Reparented images can carry an image replacement and positioning edit
+  // with different historical selectors. Those edits refer to ONE image.
   const matches=[...doc.querySelectorAll("main "+tag)].filter(node=>
-    !claimed.has(node)&&livePatchNodeMatches(node,patch));
+    livePatchNodeMatches(node,patch));
   if(matches.length!==1){
     const reason=matches.length?"Multiple matching elements":"No matching original element";
     const images=patch.kind==="image"?
@@ -730,18 +733,45 @@ function resolveLivePatchTarget(doc,patch,claimed){
     throw Error(reason+" for saved edit \""+livePatchExcerpt(patch)+
       "\" on "+currentPage+". "+(patch.kind==="image"?
         "Images in this page: "+(images||"none")+". ":"")+
-      "The draft is preserved. Use the image-reconnection tool if the source was updated.");
+      "The draft is preserved. Review the original-image mapping before publishing.");
   }
   return matches[0];
 }
-function applyPatchesToDocument(doc,strict=false,resolved=[]){
-  const changes=[],claimed=new Set();
+function mergeLiveTargetPatches(first,second,node){
+  if(first.kind==="text"||second.kind==="text")
+    throw Error("Two saved text edits target the same element. Review those edits before publishing.");
+  const merged={...first,...second,selector:first.selector,expected:first.expected};
+  if(node.tagName==="IMG"){
+    const source=node.getAttribute("src")||"";
+    const candidates=[first,second].filter(p=>p.kind==="image");
+    const replacements=candidates.filter(p=>!equivalentSiteImageSource(p.src,source));
+    if(replacements.length>1&&!equivalentSiteImageSource(replacements[0].src,replacements[1].src))
+      throw Error("Two different image replacements target "+source+". Remove one conflicting saved edit.");
+    const newAlts=candidates.filter(p=>p.alt!==(node.alt||""));
+    if(newAlts.length>1&&newAlts[0].alt!==newAlts[1].alt)
+      throw Error("Two different image descriptions target "+source+". Review the duplicate saved edits.");
+    merged.kind="image";
+    merged.src=(replacements.at(-1)||candidates.at(-1))?.src||source;
+    merged.alt=(newAlts.at(-1)||candidates.at(-1))?.alt||"";
+  }
+  // A newer interaction with the same object supersedes previous geometry
+  // on that device, while changes on other devices are retained.
+  const layouts={...(first.layout||{}),...(second.layout||{})};
+  if(Object.keys(layouts).length)merged.layout=layouts;
+  else delete merged.layout;
+  const appearance={...(first.appearance||{}),...(second.appearance||{})};
+  if(Object.keys(appearance).length)merged.appearance=appearance;
+  else delete merged.appearance;
+  return merged;
+}
+function applyPatchesToDocument(doc,strict=false,resolved=[],normalized=[]){
+  const changes=[],byNode=new Map();
   for(const patch of livePatches.values()){
     if(!validLivePatch(patch)){
       if(strict)throw Error("An invalid live-page edit needs review.");continue;
     }
     let node;
-    try{node=resolveLivePatchTarget(doc,patch,claimed);}
+    try{node=resolveLivePatchTarget(doc,patch);}
     catch(error){if(strict)throw error;continue;}
     const selector=liveSelector(node);
     if(!selector){
@@ -749,12 +779,19 @@ function applyPatchesToDocument(doc,strict=false,resolved=[]){
         "\" is inside a structure too deeply nested for safe publishing.");
       continue;
     }
-    claimed.add(node);
-    changes.push({patch,node,selector});
+    const existing=byNode.get(node);
+    if(existing){
+      try{
+        existing.patch=mergeLiveTargetPatches(existing.patch,patch,node);
+        existing.originals.push(patch.selector);
+      }catch(error){if(strict)throw error;continue;}
+    }else{
+      const item={patch:{...patch},node,selector,originals:[patch.selector]};
+      changes.push(item);byNode.set(node,item);
+    }
   }
   if(strict){
-    // Replacing a parent's innerHTML would discard a nested edited element.
-    // Reject those conflicting edits before making any changes to the copy.
+    // Editing a parent's innerHTML would erase a separate nested edit.
     for(const a of changes){
       if(a.patch.kind!=="text")continue;
       if(changes.some(b=>b!==a&&a.node.contains(b.node)))
@@ -762,18 +799,16 @@ function applyPatchesToDocument(doc,strict=false,resolved=[]){
           livePatchExcerpt(a.patch)+"\". Review those edits before publishing.");
     }
   }
-  for(const {patch,node,selector} of changes){
+  for(const {patch,node,selector,originals} of changes){
     if(patch.kind==="image"){
       node.setAttribute("src",patch.src);
       node.setAttribute("alt",patch.alt);
     }else if(patch.kind==="text")node.innerHTML=cleanRich(patch.html);
-    // Layout CSS uses the verified source selector, not an outdated iframe
-    // path that could silently style another source element.
-    resolved.push({from:patch.selector,to:selector});
+    for(const from of originals)resolved.push({from,to:selector});
+    normalized.push({...patch,selector});
   }
-  const sourcePatches=changes.map(({patch,selector})=>({...patch,selector}));
-  refreshLiveLayoutRules(doc,sourcePatches);
-  return changes.length;
+  refreshLiveLayoutRules(doc,normalized);
+  return resolved.length;
 }
 
 function editLiveText(){
