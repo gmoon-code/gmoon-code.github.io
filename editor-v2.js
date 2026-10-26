@@ -2978,6 +2978,11 @@ function gestureMove(event){
     obj.w=w;obj.h=h;
     obj.x=d.includes("w")?base.x+base.w-w:base.x;
     obj.y=d.includes("n")?base.y+base.h-h:base.y;
+    // As in PowerPoint text boxes, narrowing a horizontal text frame wraps
+    // words and adds the needed height. Font geometry remains unchanged.
+    // A deliberate north/south height resize remains fully under user control.
+    if(g.kind==="text"&&(d==="e"||d==="w"))
+      obj.h=Math.max(obj.h,measuredTextHeight(obj));
   }
   refreshLiveBoxes();
 }

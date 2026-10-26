@@ -1250,3 +1250,29 @@ test('free canvas snaps movement to peer objects and Alt allows precise bypass',
   expect(Math.abs(actual-447)).toBeLessThanOrEqual(2);
   await expect(canvas.locator('[data-v2-guide]')).toHaveCount(0);
 });
+
+test('canvas text frames reflow and grow vertically when made narrower',async({page})=>{
+  await importScene(page);
+  await page.locator('#layers [data-layer-id="1"]').click();
+  await page.locator('#propText').fill(
+    'Scientific explanations are developed by tracing mechanisms, discussing evidence, '+
+    'and revisiting how representations describe biological variation. '.repeat(3));
+  await page.locator('#propText').press('Tab');
+  for(const [id,value] of [['propW','320'],['propH','44'],['propFont','28']]){
+    await page.locator('#'+id).fill(value);
+    await page.locator('#'+id).press('Tab');
+  }
+  const text=page.locator('#stage [data-id="1"]');
+  const before=await text.evaluate(node=>({w:parseInt(node.style.width),
+    h:parseInt(node.style.height),font:node.style.fontSize}));
+  const grip=await text.locator('[data-dir=e]').boundingBox();
+  await page.mouse.move(grip.x+grip.width/2,grip.y+grip.height/2);
+  await page.mouse.down();
+  await page.mouse.move(grip.x+grip.width/2-50,grip.y+grip.height/2,{steps:8});
+  await page.mouse.up();
+  const after=await text.evaluate(node=>({w:parseInt(node.style.width),
+    h:parseInt(node.style.height),font:node.style.fontSize}));
+  expect(after.w).toBeLessThan(before.w-50);
+  expect(after.h).toBeGreaterThan(before.h);
+  expect(after.font).toBe(before.font);
+});
