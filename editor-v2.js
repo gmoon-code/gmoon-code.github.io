@@ -2262,6 +2262,12 @@ function finishLiveGesture(event){
     status(g.sourceGroup?
       g.sourceGroup.length+" original webpage objects moved together · Review before publishing":
       "Moved/resized live-page draft saved · Review changes before publishing");
+  }else{
+    // Pointer capture re-targets the trailing click to the captured node.
+    // Re-selecting on that click, particularly during Alt+click, can choose
+    // a parent section even though pointerdown correctly chose a paragraph.
+    // Uncaptured links still use the normal click handler to navigate.
+    liveSuppressClickUntil=performance.now()+200;
   }
   renderLiveInspector();syncLiveOverlay();
 }
