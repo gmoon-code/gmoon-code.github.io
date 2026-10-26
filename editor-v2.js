@@ -198,21 +198,52 @@ function pagePoint(event){
   return {x:clamp(Math.round((event.clientX-rect.left)/zoom),0,scene.width-60),
     y:clamp(Math.round((event.clientY-rect.top)/zoom),0,scene.height-40)};
 }
-function insertImageFile(file,position={}){
+async function compactLiveImage(file){
+  // Store uploaded photos efficiently within the browser draft and a static
+  // GitHub HTML file. WebP keeps transparency, and original files remain
+  // untouched on the user's computer.
+  if(!("createImageBitmap" in window))
+    throw Error("This browser cannot prepare a compact webpage image. Use an existing site image.");
+  const bitmap=await createImageBitmap(file);
+  try{
+    for(const [limit,quality] of [[1600,.82],[1200,.7],[900,.6]]){
+      const scale=Math.min(1,limit/Math.max(bitmap.width,bitmap.height));
+      const canvas=document.createElement("canvas");
+      canvas.width=Math.max(1,Math.round(bitmap.width*scale));
+      canvas.height=Math.max(1,Math.round(bitmap.height*scale));
+      const context=canvas.getContext("2d");
+      if(!context)throw Error("Image compression is unavailable in this browser.");
+      context.drawImage(bitmap,0,0,canvas.width,canvas.height);
+      const encoded=canvas.toDataURL("image/webp",quality);
+      if(/^data:image\/webp;base64,/.test(encoded)&&encoded.length<=1400000)
+        return encoded;
+    }
+    throw Error("This image is too large for a reliable webpage draft. Please use a smaller image.");
+  }finally{bitmap.close?.();}
+}
+async function insertImageFile(file,position={}){
   if(!file)return;
-  const requestedPage=currentPage;
+  const requestedPage=currentPage,requestedMode=workspaceMode;
   if(file.size>3000000||!["image/png","image/jpeg","image/webp"].includes(file.type)){
     status("Choose PNG, JPEG or WebP under 3 MB");return;
   }
+  if(requestedMode==="live"){
+    try{
+      status("Preparing a compact image for the real webpage…");
+      const src=await compactLiveImage(file);
+      if(currentPage!==requestedPage||workspaceMode!==requestedMode){
+        status("Image insertion cancelled because the selected page or mode changed");return;
+      }
+      addLiveObject("image",{src,alt:file.name.replace(/\.[^.]+$/,"")});
+    }catch(error){status("Image was not added · "+error.message);}
+    return;
+  }
   const reader=new FileReader();
   reader.onload=()=>{
-    if(currentPage!==requestedPage){
-      status("Image insertion cancelled because the selected website page changed");return;
+    if(currentPage!==requestedPage||workspaceMode!==requestedMode){
+      status("Image insertion cancelled because the page or mode changed");return;
     }
-    if(workspaceMode==="live")addLiveObject("image",{
-      src:String(reader.result),alt:file.name.replace(/\.[^.]+$/,"")
-    });
-    else add("image",{src:String(reader.result),alt:file.name.replace(/\.[^.]+$/,""),
+    add("image",{src:String(reader.result),alt:file.name.replace(/\.[^.]+$/,""),
       name:file.name,w:340,h:260,...position});
   };
   reader.onerror=()=>status("Could not read the selected image file");
