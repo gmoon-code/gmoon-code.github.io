@@ -422,3 +422,49 @@ test('image library is available without replacing or importing a saved page',as
   await expect(page.locator('#stage [data-kind="image"] img')).toHaveAttribute('src','assets/profile-portrait.webp');
   expect(await page.locator('#stage .scene-object').count()).toBe(1);
 });
+
+test('live website mode shows actual source CSS and complete content, separate from scene',async({page})=>{
+  await expect(page.locator('#liveViewport')).toBeVisible();
+  await expect(page.locator('#scrollspace')).toBeHidden();
+  await expect(page.locator('#liveMode')).toHaveAttribute('aria-pressed','true');
+  const original=page.frameLocator('#livePageFrame');
+  await expect(original.locator('main h2')).toHaveText('Research overview');
+  await expect(original.locator('main h2')).toHaveCSS('font-size','30px');
+  await expect(original.locator('main p')).toContainText('Students investigate');
+  await page.locator('#devicePreview').selectOption('phone');
+  await expect(page.locator('#livePageFrame')).toHaveCSS('width','390px');
+  await page.locator('#devicePreview').selectOption('tablet');
+  await expect(page.locator('#livePageFrame')).toHaveCSS('width','768px');
+  await page.locator('#devicePreview').selectOption('desktop');
+  await expect(page.locator('#livePageFrame')).toHaveCSS('width','1160px');
+  await expect(original.locator('main h2')).toHaveCSS('font-size','30px');
+  await expect(page.locator('#stage .scene-object')).toHaveCount(0);
+});
+test('live text selection copies a separate object without altering the source',async({page})=>{
+  const live=page.frameLocator('#livePageFrame');
+  await live.locator('main h2').click();
+  await expect(page.locator('#copyLiveObject')).toBeEnabled();
+  await page.locator('#copyLiveObject').click();
+  await expect(page.locator('#scrollspace')).toBeVisible();
+  await expect(page.locator('#liveViewport')).toBeHidden();
+  await expect(page.locator('#stage [data-kind="text"]')).toHaveCount(1);
+  await expect(page.locator('#stage [data-kind="text"] .scene-content')).toHaveText('Research overview');
+  await page.locator('#liveMode').click();
+  await expect(live.locator('main h2')).toHaveText('Research overview');
+  await expect(live.locator('main h2')).toHaveCSS('font-size','30px');
+  await expect(page.locator('#stage [data-kind="text"]')).toHaveCount(1);
+  await page.reload({waitUntil:'domcontentloaded'});
+  await expect(page.locator('#liveViewport')).toBeVisible();
+  await page.locator('#designMode').click();
+  await expect(page.locator('#stage [data-kind="text"]')).toHaveCount(1);
+});
+test('new page selection loads the correct live original, not a stale canvas',async({page})=>{
+  await page.route('**/research.html',route=>route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<!doctype html><html><body><main><h1>Research page original</h1></main></body></html>'
+  }));
+  await page.locator('#page').selectOption('research.html');
+  await expect(page.frameLocator('#livePageFrame').locator('main h1')).toHaveText('Research page original');
+  await expect(page.locator('#liveViewport')).toBeVisible();
+  await expect(page.locator('#stage .scene-object')).toHaveCount(0);
+});
