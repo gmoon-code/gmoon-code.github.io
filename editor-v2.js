@@ -175,7 +175,8 @@ function renderLayers(){
   $("layerCount").textContent=scene.objects.length+" objects";
 }
 const propertyIds={x:"propX",y:"propY",w:"propW",h:"propH",name:"objectName",
-  text:"propText",src:"propSrc",alt:"propAlt",font:"propFont",align:"propAlign",color:"propColor",bg:"propBg"};
+  text:"propText",src:"propSrc",alt:"propAlt",font:"propFont",family:"propFamily",
+  align:"propAlign",color:"propColor",bg:"propBg"};
 function renderProperties(){
   const obj=lookup(activeId);
   $("properties").hidden=!obj;$("emptySelection").hidden=!!obj;
@@ -185,6 +186,8 @@ function renderProperties(){
     else $(id).value=obj[key]??"";
   }
   const isText=obj.type==="text",isImage=obj.type==="image";
+  $("propTransparent").checked=obj.transparent;
+  $("replaceImage").hidden=!isImage;
   for(const id of ["textLabel","propText"])$(id).hidden=!isText;
   for(const id of ["srcLabel","propSrc","altLabel","propAlt"])$(id).hidden=!isImage;
   $("lock").textContent=obj.locked?"Unlock":"Lock";
@@ -467,9 +470,38 @@ function attachEvents(){
       if(prop==="name")value=value.slice(0,120);
       if(prop==="text")value=value.slice(0,30000);
       if(prop==="alt")value=value.slice(0,300);
-      mutate(()=>{obj[prop]=value;scene.height=Math.max(scene.height,obj.y+obj.h+70);});
+      mutate(()=>{
+        obj[prop]=value;
+        if(prop==="bg")obj.transparent=false;
+        scene.height=Math.max(scene.height,obj.y+obj.h+70);
+      });
     });
   }
+  $("propTransparent").addEventListener("change",event=>{
+    const obj=lookup(activeId);if(!obj)return;
+    const transparent=event.target.checked;
+    mutate(()=>{obj.transparent=transparent;});
+  });
+  $("replaceImage").addEventListener("click",()=>{
+    if(lookup(activeId)?.type!=="image")return;
+    $("replaceFile").dataset.target=String(activeId);
+    $("replaceFile").click();
+  });
+  $("replaceFile").addEventListener("change",event=>{
+    const file=event.target.files?.[0];
+    const target=Number(event.target.dataset.target);
+    event.target.value="";
+    if(!file)return;
+    if(file.size>3000000||!["image/png","image/jpeg","image/webp"].includes(file.type)){
+      status("Choose PNG, JPEG or WebP under 3 MB");return;
+    }
+    const reader=new FileReader();
+    reader.onload=()=>{
+      const obj=lookup(target);if(!obj||obj.type!=="image")return;
+      mutate(()=>{obj.src=String(reader.result);obj.alt=file.name.replace(/\.[^.]+$/,"");});
+    };
+    reader.readAsDataURL(file);
+  });
   $("undo").addEventListener("click",undo);$("redo").addEventListener("click",redoAction);
   $("save").addEventListener("click",save);
   $("addText").addEventListener("click",()=>add("text",{text:"Double-click to edit text",name:"New text"}));
@@ -573,6 +605,9 @@ function attachEvents(){
 const fileInput=document.createElement("input");
 fileInput.type="file";fileInput.accept="image/png,image/jpeg,image/webp";
 fileInput.id="imageFile";fileInput.hidden=true;document.body.append(fileInput);
+const replaceInput=document.createElement("input");
+replaceInput.type="file";replaceInput.accept="image/png,image/jpeg,image/webp";
+replaceInput.id="replaceFile";replaceInput.hidden=true;document.body.append(replaceInput);
 const params=new URLSearchParams(location.search);
 const start=params.get("page");
 if(start&&PAGES.has(start))$("page").value=start;
