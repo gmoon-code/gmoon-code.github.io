@@ -531,6 +531,9 @@ function applyAddedPatch(doc,p){
     node.setAttribute("data-moon-v2-added-id",id);
     layer.append(node);
   }
+  node.setAttribute("data-moon-v2-object-type",p.objectType);
+  node.setAttribute("data-moon-v2-added-geometry",JSON.stringify(p.geometry));
+  node.setAttribute("data-moon-v2-added-appearance",JSON.stringify(p.appearance||{}));
   if(p.objectType==="image"){
     node.setAttribute("src",p.src);node.setAttribute("alt",p.alt);
   }else if(p.objectType==="text")node.innerHTML=cleanRich(p.html);
@@ -799,6 +802,21 @@ function livePatchForSelected(){
   if(!selector)return null;
   const existing=livePatches.get(selector);
   if(existing)return copy(existing);
+  if(LIVE_ADDED_ID.test(selector)){
+    let geometry,appearance;
+    try{geometry=JSON.parse(node.getAttribute("data-moon-v2-added-geometry")||"{}");}
+    catch{geometry={};}
+    try{appearance=JSON.parse(node.getAttribute("data-moon-v2-added-appearance")||"{}");}
+    catch{appearance={};}
+    const patch={selector,kind:"insert",expected:"",
+      objectType:node.getAttribute("data-moon-v2-object-type")||
+        (node.tagName==="IMG"?"image":node.tagName==="P"?"text":"shape"),
+      geometry,appearance,
+      ...(node.tagName==="IMG"?{src:node.getAttribute("src")||"",alt:node.alt||""}:
+        node.tagName==="P"?{html:cleanRich(node.innerHTML)}:
+        {fill:"#e1eee4"})};
+    return validAddedPatch(patch)?patch:null;
+  }
   if(node.tagName==="IMG")
     return {selector,kind:"image",expected:node.getAttribute("src")||"",
       src:node.getAttribute("src")||"",alt:node.alt||""};
@@ -917,6 +935,8 @@ function resetSelectedLiveLayout(){
 }
 function validLivePatch(p){
   if(p?.kind==="insert")return validAddedPatch(p);
+  if(p?.kind==="remove-added")
+    return LIVE_ADDED_ID.test(p.selector)&&p.expected==="";
   return p&&typeof p.selector==="string"&&p.selector.length<800&&
     /^main(?: > [a-z][a-z0-9-]*:nth-of-type\(\d{1,4}\)){1,12}$/.test(p.selector)&&
     typeof p.expected==="string"&&p.expected.length<=350&&
@@ -1143,9 +1163,13 @@ function rebaseExistingLiveStyles(doc,state){
 }
 function applyPatchesToDocument(doc,strict=false,resolved=[],normalized=[]){
   const changes=[],byNode=new Map();
+  const addedChanges=[];
   for(const patch of livePatches.values()){
     if(!validLivePatch(patch)){
       if(strict)throw Error("An invalid live-page edit needs review.");continue;
+    }
+    if(patch.kind==="insert"||patch.kind==="remove-added"){
+      addedChanges.push(patch);continue;
     }
     let node;
     try{node=resolveLivePatchTarget(doc,patch);}
@@ -1201,6 +1225,14 @@ function applyPatchesToDocument(doc,strict=false,resolved=[],normalized=[]){
     normalized.push({...patch,selector:finalSelector});
   }
   refreshLiveLayoutRules(doc,normalized.filter(p=>p.kind!=="delete"));
+  for(const patch of addedChanges){
+    try{
+      if(patch.kind==="insert")applyAddedPatch(doc,patch);
+      else removeAddedPatchFromDoc(doc,patch.selector);
+      resolved.push({from:patch.selector,to:patch.selector});
+      normalized.push(copy(patch));
+    }catch(error){if(strict)throw error;}
+  }
   return resolved.length;
 }
 
