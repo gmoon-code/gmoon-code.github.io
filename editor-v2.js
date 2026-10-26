@@ -16,6 +16,7 @@ let selected=new Set(),activeId=null,history=[],redo=[],zoom=.8,gesture=null,edi
 let canvasClipboard=[],canvasPasteCount=0;
 let liveObjectClipboard=null,livePasteCount=0;
 let liveAddedMulti=new Set(); // Selected stable IDs for objects on the actual webpage
+let liveLockImageRatio=true;
 let workspaceMode="live",liveWidth=1160,liveScale=1,liveManualScale=null,liveSelected=null,liveObserver=null,liveSerial=0;
 let liveSuppressClickUntil=0;
 const LIVE_DRAFT_KEY="moon-academic-editor-v2:source:";
@@ -1007,7 +1008,9 @@ function liveLayoutRules(patches=[...livePatches.values()]){
       const reflow=entry.wrapWidth!==undefined?
         "width:"+entry.wrapWidth+"px!important;height:"+entry.reserveHeight+
         "px!important;box-sizing:border-box!important;min-width:0!important;"+
-        "max-width:none!important;max-height:none!important;overflow:visible!important;":"";
+        "max-width:none!important;max-height:none!important;overflow:visible!important;"+
+        (patch.kind==="image"||patch.tag==="img"?
+          "object-fit:contain!important;":""):"";
       selectors.push(patch.selector+"{translate:"+
         (Math.round(((entry.ox||0)+entry.dx)*1000)/1000)+"px "+
         (Math.round(((entry.oy||0)+entry.dy)*1000)/1000)+"px!important;scale:"+
@@ -1126,18 +1129,48 @@ function applyLiveLayoutInput(key,value){
   livePatches.set(patch.selector,patch);
   if(recordLiveHistory(before)){refreshLiveLayoutRules();renderLiveInspector();syncLiveOverlay();}
 }
+function resizableBoxFromDrag(base,direction,dx,dy,lockRatio=false,
+  minW=40,minH=24,maxW=4000,maxH=5000){
+  // Geometry-based resizing. No scaleX/scaleY and no glyph distortion.
+  const west=direction.includes("w"),east=direction.includes("e");
+  const north=direction.includes("n"),south=direction.includes("s");
+  const width=clamp(base.w+(east?dx:0)-(west?dx:0),minW,maxW);
+  const height=clamp(base.h+(south?dy:0)-(north?dy:0),minH,maxH);
+  let w=width,h=height;
+  if(lockRatio&&base.w>0&&base.h>0){
+    const ratio=base.w/base.h;
+    if((west||east)&&(north||south)){
+      if(Math.abs(width-base.w)>=Math.abs(height-base.h)*ratio)
+        h=clamp(Math.round(width/ratio),minH,maxH);
+      else w=clamp(Math.round(height*ratio),minW,maxW);
+    }else if(west||east)h=clamp(Math.round(w/ratio),minH,maxH);
+    else if(north||south)w=clamp(Math.round(h*ratio),minW,maxW);
+    // Clamp again together to preserve the aspect ratio at size limits.
+    if(w/h>ratio+0.01)w=clamp(Math.round(h*ratio),minW,maxW);
+    if(w/h<ratio-0.01)h=clamp(Math.round(w/ratio),minH,maxH);
+  }
+  let x=base.x+(west?base.w-w:0),y=base.y+(north?base.h-h:0);
+  if(lockRatio){
+    if(!(west||east))x+=Math.round((base.w-w)/2);
+    if(!(north||south))y+=Math.round((base.h-h)/2);
+  }
+  return {x:Math.round(x),y:Math.round(y),
+    w:Math.round(w),h:Math.round(h)};
+}
+function normaliseElementBoxLayout(node,layout){
+  const rect=node.getBoundingClientRect();
+  return {...layout,
+    wrapWidth:Math.round(clamp(layout.wrapWidth??rect.width,64,4000)),
+    reserveHeight:Math.round(clamp(layout.reserveHeight??rect.height,24,5000)),
+    sx:clamp(1/(layout.osx||1),.2,5),
+    sy:clamp(1/(layout.osy||1),.2,5)};
+}
 const LIVE_REFLOW_TEXT="h1,h2,h3,h4,h5,h6,p,blockquote,figcaption";
 function normaliseTextBoxLayout(node,layout){
   // Preserve the rendered text-box dimensions when migrating an old
   // scale-based edit to a real width/height edit. Clear CSS scale on both
   // axes so glyphs are never stretched by future text resizing.
-  const rect=node.getBoundingClientRect();
-  const next={...layout};
-  next.wrapWidth=Math.round(clamp(next.wrapWidth??rect.width,64,4000));
-  next.reserveHeight=Math.round(clamp(next.reserveHeight??rect.height,24,5000));
-  next.sx=clamp(1/(next.osx||1),.2,5);
-  next.sy=clamp(1/(next.osy||1),.2,5);
-  return next;
+  return normaliseElementBoxLayout(node,layout);
 }
 function setLiveObjectDesign(key,value){
   if(workspaceMode!=="live"||liveEditing)return;
