@@ -338,8 +338,7 @@
       }
       select.value=$("previewTheme").value;
       select.disabled=true;
-      label.append(select);
-      holder.append(label);
+      holder.append(label,select);
       container.append(holder);
     }
     const base=copy.createElement("base");
