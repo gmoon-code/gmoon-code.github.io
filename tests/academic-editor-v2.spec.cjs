@@ -99,3 +99,53 @@ test('responsive HTML export and staging publication only, with no saved token',
   expect(stagedHtml).toContain('../assets/profile-portrait.webp');
   expect(await page.evaluate(()=>JSON.stringify(localStorage))).not.toContain('testing-token-only');
 });
+
+test('inspector geometry, typography and locking change only the selected object',async({page})=>{
+  await importScene(page);
+  await page.locator('#stage [data-id="1"]').click();
+  await page.locator('#propX').fill('175');
+  await page.locator('#propX').press('Tab');
+  await expect(page.locator('#stage [data-id="1"]')).toHaveCSS('left','175px');
+  const neighbour=await page.locator('#stage [data-id="2"]').evaluate(node=>node.style.left);
+  await page.locator('#propFont').fill('34');
+  await page.locator('#propFont').press('Tab');
+  await expect(page.locator('#stage [data-id="1"]')).toHaveCSS('font-size','34px');
+  await page.locator('#lock').click();
+  await expect(page.locator('#stage [data-id="1"]')).toHaveClass(/locked/);
+  expect(await page.locator('#stage [data-id="2"]').evaluate(node=>node.style.left)).toBe(neighbour);
+  await page.locator('#lock').click();
+  await expect(page.locator('#stage [data-id="1"]')).not.toHaveClass(/locked/);
+});
+test('multiple selected objects move as one, retaining spacing',async({page})=>{
+  await importScene(page);
+  await page.locator('#layers [data-layer-id="1"]').click();
+  await page.locator('#layers [data-layer-id="2"]').click({modifiers:['Shift']});
+  await expect(page.locator('#stage [aria-selected=true]')).toHaveCount(2);
+  const left=page.locator('#stage [data-id="1"]');
+  const right=page.locator('#stage [data-id="2"]');
+  const before=await Promise.all([left,right].map(node=>node.evaluate(n=>({x:parseInt(n.style.left),y:parseInt(n.style.top)}))));
+  const rect=await left.boundingBox();
+  await page.mouse.move(rect.x+28,rect.y+12);
+  await page.mouse.down();await page.mouse.move(rect.x+66,rect.y+40,{steps:6});await page.mouse.up();
+  const after=await Promise.all([left,right].map(node=>node.evaluate(n=>({x:parseInt(n.style.left),y:parseInt(n.style.top)}))));
+  expect(after[0].x-before[0].x).toBeGreaterThan(20);
+  expect(after[1].x-before[1].x).toBe(after[0].x-before[0].x);
+  expect(after[1].y-before[1].y).toBe(after[0].y-before[0].y);
+});
+test('portable JSON export restores the validated scene',async({page})=>{
+  await importScene(page);
+  const pending=page.waitForEvent('download');
+  await page.locator('#exportScene').click();
+  const download=await pending;
+  const original=fs.readFileSync(await download.path());
+  const parsed=JSON.parse(original.toString('utf8'));
+  expect(parsed.version).toBe(2);
+  expect(parsed.objects).toHaveLength(3);
+  await page.locator('#layers [data-layer-id="1"]').click();
+  await page.locator('#remove').click();
+  await expect(page.locator('#stage .scene-object')).toHaveCount(2);
+  await page.locator('#sceneFile').setInputFiles({name:'backup.json',mimeType:'application/json',buffer:original});
+  page.once('dialog',dialog=>dialog.accept());
+  await expect(page.locator('#stage .scene-object')).toHaveCount(3);
+  await expect(page.locator('#status')).toContainText('Canvas restored from JSON');
+});
