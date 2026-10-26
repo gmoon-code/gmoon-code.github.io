@@ -149,3 +149,19 @@ test('portable JSON export restores the validated scene',async({page})=>{
   await expect(page.locator('#stage .scene-object')).toHaveCount(3);
   await expect(page.locator('#status')).toContainText('Canvas restored from JSON');
 });
+
+test('alignment tools keep independent objects aligned and undoable',async({page})=>{
+  await importScene(page);
+  await page.locator('#layers [data-layer-id="1"]').click();
+  await page.locator('#layers [data-layer-id="2"]').click({modifiers:['Shift']});
+  const a=page.locator('#stage [data-id="1"]'),b=page.locator('#stage [data-id="2"]');
+  const originalY=await b.evaluate(node=>parseInt(node.style.top));
+  await page.locator('#alignLeft').click();
+  const left=await a.evaluate(node=>node.style.left);
+  await expect(b).toHaveCSS('left',left);
+  await page.locator('#alignTop').click();
+  const top=await a.evaluate(node=>node.style.top);
+  await expect(b).toHaveCSS('top',top);
+  await page.locator('#undo').click();
+  expect(await b.evaluate(node=>parseInt(node.style.top))).toBe(originalY);
+});
