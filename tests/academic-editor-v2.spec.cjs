@@ -634,3 +634,48 @@ test('Focus page expands actual live website without changing its viewport or dr
   await expect(page.locator('.right-panel')).toBeVisible();
   await expect(live.locator('main h2')).toHaveText('Research overview');
 });
+
+test('real website rendering matches standalone pages at desktop and phone widths',async({page,browser})=>{
+  test.setTimeout(90000);
+  const root='http://127.0.0.1:8765/';
+  await page.unroute('**/about.html');
+  const summary=async handle=>handle.evaluate(doc=>{
+    const main=doc.querySelector('main');
+    const heading=main?.querySelector('h1,h2');
+    const css=heading?doc.defaultView.getComputedStyle(heading):null;
+    return {
+      title:doc.title,
+      heading:heading?.textContent?.replace(/\s+/g,' ').trim().slice(0,130),
+      fontSize:css?.fontSize,
+      fontFamily:css?.fontFamily,
+      colour:css?.color,
+      imageCount:main?.querySelectorAll('img').length||0,
+      viewportWidth:doc.defaultView.innerWidth,
+      viewportHeight:doc.defaultView.innerHeight
+    };
+  });
+  for(const filename of ['index.html','research.html','teaching.html']){
+    for(const device of [{label:'desktop',width:1160,height:900},{label:'phone',width:390,height:844}]){
+      const direct=await browser.newPage({viewport:{width:device.width,height:device.height}});
+      try{
+        await direct.goto(root+filename,{waitUntil:'load'});
+        await direct.evaluate(()=>document.fonts?.ready);
+        await page.locator('#page').selectOption(filename);
+        await page.locator('#devicePreview').selectOption(device.label);
+        const iframe=page.frameLocator('#livePageFrame');
+        await iframe.locator('main').waitFor({state:'attached',timeout:15000});
+        await iframe.locator('body').evaluate(node=>node.ownerDocument.fonts?.ready);
+        const actual=await direct.locator('html').evaluate(node=>{
+          const doc=node.ownerDocument,main=doc.querySelector('main'),h=main?.querySelector('h1,h2');
+          const css=h?doc.defaultView.getComputedStyle(h):null;
+          return {title:doc.title,heading:h?.textContent?.replace(/\s+/g,' ').trim().slice(0,130),
+            fontSize:css?.fontSize,fontFamily:css?.fontFamily,colour:css?.color,
+            imageCount:main?.querySelectorAll('img').length||0,
+            viewportWidth:doc.defaultView.innerWidth,viewportHeight:doc.defaultView.innerHeight};
+        });
+        const seen=await summary(iframe.locator('html'));
+        expect(seen).toEqual(actual);
+      }finally{await direct.close();}
+    }
+  }
+});
