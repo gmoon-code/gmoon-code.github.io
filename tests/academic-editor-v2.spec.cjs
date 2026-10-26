@@ -468,3 +468,66 @@ test('new page selection loads the correct live original, not a stale canvas',as
   await expect(page.locator('#liveViewport')).toBeVisible();
   await expect(page.locator('#stage .scene-object')).toHaveCount(0);
 });
+
+test('live text edit preserves source styling, reloads from draft, and can be reverted',async({page})=>{
+  const live=page.frameLocator('#livePageFrame');
+  await live.locator('main h2').click();
+  await expect(page.locator('#liveTextControls')).toBeVisible();
+  await page.locator('#editLiveText').click();
+  await expect(live.locator('main h2')).toHaveAttribute('contenteditable','true');
+  await live.locator('main h2').fill('Edited heading from original webpage');
+  await page.locator('#saveLiveText').click();
+  await expect(live.locator('main h2')).toHaveText('Edited heading from original webpage');
+  await expect(live.locator('main h2')).toHaveCSS('font-size','30px');
+  await page.reload({waitUntil:'domcontentloaded'});
+  await expect(live.locator('main h2')).toHaveText('Edited heading from original webpage');
+  const source=await page.evaluate(()=>fetch('/about.html').then(res=>res.text()));
+  expect(source).toContain('Research overview');
+  expect(source).not.toContain('Edited heading from original webpage');
+  await live.locator('main h2').click();
+  await page.locator('#revertLiveElement').click();
+  await expect(live.locator('main h2')).toHaveText('Research overview');
+});
+test('source-preserving HTML export keeps original CSS and rich structure',async({page})=>{
+  const live=page.frameLocator('#livePageFrame');
+  await live.locator('main h2').click();
+  await page.locator('#editLiveText').click();
+  await live.locator('main h2').fill('Original-layout title edited');
+  await page.locator('#saveLiveText').click();
+  const pending=page.waitForEvent('download');
+  await page.locator('#exportLiveEdits').click();
+  const html=fs.readFileSync(await (await pending).path(),'utf8');
+  expect(html).toContain('Original-layout title edited');
+  expect(html).toContain('main{margin:30px;width:950px;}');
+  expect(html).toContain('<base href="https://gmoon-code.github.io/">');
+  expect(html).toContain('Students investigate scientific explanations together.');
+  await page.locator('#previewLiveEdits').click();
+  const preview=page.frameLocator('#previewFrame');
+  await expect(preview.locator('main h2')).toHaveText('Original-layout title edited');
+  await expect(preview.locator('main h2')).toHaveCSS('font-size','30px');
+});
+test('original-layout image edit publishes to source-only staging path',async({page})=>{
+  const live=page.frameLocator('#livePageFrame');
+  await live.locator('main img').click();
+  await expect(page.locator('#liveImageControls')).toBeVisible();
+  await page.locator('#liveImageSrc').fill('assets/replaced-photo.webp');
+  await page.locator('#liveImageAlt').fill('Replacement description');
+  await page.locator('#applyLiveImage').click();
+  await expect(live.locator('main img')).toHaveAttribute('src','assets/replaced-photo.webp');
+  let sent;
+  await page.route('https://api.github.com/repos/gmoon-code/gmoon-code.github.io/contents/editor-v2-previews/source-about.html',route=>{
+    if(route.request().method()==='GET')return route.fulfill({status:404,body:'{}'});
+    sent=JSON.parse(route.request().postData());
+    return route.fulfill({status:201,body:'{}'});
+  });
+  await page.locator('#publish').click();
+  await expect(page.locator('#stagePath')).toHaveText('editor-v2-previews/source-about.html');
+  await page.locator('#githubToken').fill('staging-test-token');
+  await page.locator('#confirmPublish').click();
+  await expect(page.locator('#status')).toContainText('Staging published');
+  const published=Buffer.from(sent.content,'base64').toString('utf8');
+  expect(published).toContain('src="assets/replaced-photo.webp"');
+  expect(published).toContain('alt="Replacement description"');
+  expect(published).toContain('main{margin:30px;width:950px;}');
+  expect(await page.evaluate(()=>JSON.stringify(localStorage))).not.toContain('staging-test-token');
+});
