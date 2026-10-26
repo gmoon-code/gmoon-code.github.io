@@ -21,9 +21,10 @@
       <button id="exportScene" class="subtle">Export JSON</button>
       <button id="preview" class="primary">Preview page</button>
       <button id="compare" class="subtle">Compare original</button>
-      <button id="publish" class="primary outline">Publish staging preview</button>
+      <button id="publish" class="primary outline">Publish live website</button>
     </div>
   </header>
+  <div id="publishResult" class="publish-result" role="status" aria-live="polite" hidden></div>
   <section class="tools" aria-label="Canvas tools">
     <button id="selectTool" class="active" aria-pressed="true">↖ Select</button>
     <button id="addText">T Text</button>
@@ -111,7 +112,7 @@
     <aside class="right-panel">
       <section id="liveInspector" class="panel-section" hidden>
         <h2>Original-page editing</h2>
-        <p class="help">Changes here preserve the existing webpage layout and CSS. They are saved as local draft edits and can be exported or published to staging.</p>
+        <p class="help">Edits to the original webpage are saved locally until you review and publish them to the live website. Publishing checks the latest GitHub version for conflicts.</p>
         <p id="liveSelectionLabel" class="live-selection-label">Choose a heading, paragraph or image in the live page.</p>
         <div id="liveTextControls" hidden>
           <button id="editLiveText" type="button">Edit text directly on page</button>
@@ -236,7 +237,7 @@
       </section>
       <section class="panel-section">
         <h2>Publishing safeguards</h2>
-        <p class="help">The new editor creates a separate canvas document. Its preview and GitHub staging publication never overwrite existing website pages. Migration fidelity, links, and mobile layout must be reviewed before any live-site replacement.</p>
+        <p class="help">Live website mode can publish source-preserving edits to the public page after review. The independent design canvas remains staging-only until its layout matches the original site.</p>
         <button id="exportHtml">Export standalone HTML</button>
         <button id="resetScene" class="danger">Discard local canvas draft</button>
       </section>
@@ -245,12 +246,22 @@
 </div>
 <dialog id="publishDialog">
   <form method="dialog" id="publishForm">
-    <h2>Publish a staging preview</h2>
-    <p>This creates <code id="stagePath">editor-v2-previews/index.html</code> in your GitHub Pages repository. It will <strong>not</strong> replace any live website page.</p>
+    <h2 id="publishTitle">Publish website changes</h2>
+    <p id="publishDescription">Review exactly where this edited page will be published on GitHub Pages.</p>
+    <label for="publishTarget">Destination</label>
+    <select id="publishTarget" aria-describedby="publishTargetHelp">
+      <option value="live">Live public website</option>
+      <option value="staging">Staging preview (private draft path, publicly accessible URL)</option>
+    </select>
+    <p id="publishTargetHelp" class="help">Live publishing is available only for edits made in Live website mode.</p>
+    <p>GitHub file to update: <code id="stagePath">index.html</code></p>
+    <p class="help">The editor checks the latest file in GitHub before publishing. If an edited element no longer matches, publication stops without overwriting it.</p>
     <label for="githubToken">GitHub fine-grained personal access token (Contents: Read and write)</label>
-    <input id="githubToken" type="password" autocomplete="off" spellcheck="false" placeholder="github_pat_…">
-    <p class="help">Used only for this publication. The token is not stored or included in the exported page.</p>
-    <div class="dialog-actions"><button value="cancel">Cancel</button><button id="confirmPublish" class="primary" value="publish">Publish staging page</button></div>
+    <input id="githubToken" type="password" autocomplete="off" spellcheck="false" placeholder="github_pat_…" required>
+    <p class="help">Select only the <strong>gmoon-code.github.io</strong> repository when creating a token. Your token is not saved to browser storage or included in the website. <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener noreferrer">Create a fine-grained GitHub token</a>.</p>
+    <label class="publish-acknowledgement"><input type="checkbox" id="acknowledgeLive"> I reviewed this page and want to publish these edits to the public website.</label>
+    <p id="publishError" class="publish-error" role="alert" hidden></p>
+    <div class="dialog-actions"><button type="button" id="cancelPublish">Cancel</button><button id="confirmPublish" class="primary" type="submit" value="publish">Publish live page</button></div>
   </form>
 </dialog>
 <dialog id="previewDialog"><div class="preview-top"><strong>Page preview</strong><button id="closePreview" aria-label="Close preview">Close</button></div><iframe id="previewFrame" title="Standalone editor preview" sandbox="allow-same-origin"></iframe></dialog>
