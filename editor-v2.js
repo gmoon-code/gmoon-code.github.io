@@ -635,6 +635,19 @@ function applyLiveLayoutInput(key,value){
   livePatches.set(patch.selector,patch);
   if(recordLiveHistory(before)){refreshLiveLayoutRules();renderLiveInspector();syncLiveOverlay();}
 }
+const LIVE_REFLOW_TEXT="h1,h2,h3,h4,h5,h6,p,blockquote,figcaption";
+function normaliseTextBoxLayout(node,layout){
+  // Preserve the rendered text-box dimensions when migrating an old
+  // scale-based edit to a real width/height edit. Clear CSS scale on both
+  // axes so glyphs are never stretched by future text resizing.
+  const rect=node.getBoundingClientRect();
+  const next={...layout};
+  next.wrapWidth=Math.round(clamp(next.wrapWidth??rect.width,64,4000));
+  next.reserveHeight=Math.round(clamp(next.reserveHeight??rect.height,24,5000));
+  next.sx=clamp(1/(next.osx||1),.2,5);
+  next.sy=clamp(1/(next.osy||1),.2,5);
+  return next;
+}
 function setLiveReflow(enabled){
   const node=liveSelected?.node;
   if(!node?.matches("h1,h2,h3,h4,h5,h6,p,blockquote,figcaption"))return;
@@ -657,8 +670,7 @@ function setLiveReflowDimension(key,value){
   const node=liveSelected?.node;
   if(!node?.matches("h1,h2,h3,h4,h5,h6,p,blockquote,figcaption"))return;
   const patch=livePatchForSelected();if(!patch)return;
-  const layout=liveLayoutFor(patch.selector);
-  if(layout.wrapWidth===undefined)return;
+  const layout=normaliseTextBoxLayout(node,liveLayoutFor(patch.selector));
   const number=Number(value);
   if(!Number.isFinite(number))return;
   const before=liveSnapshot();
@@ -674,7 +686,6 @@ function fitLiveTextHeight(){
   const node=liveSelected?.node,selector=node&&liveSelector(node);
   if(!selector||!node||!node.matches("h1,h2,h3,h4,h5,h6,p,blockquote,figcaption"))return;
   const entry=liveLayoutFor(selector);
-  if(entry.wrapWidth===undefined)return;
   const wanted=Math.round(clamp(Math.ceil(node.scrollHeight+2),24,5000));
   if(wanted<=entry.reserveHeight)return;
   setLiveReflowDimension("reserveHeight",wanted);
@@ -696,7 +707,7 @@ function validLivePatch(p){
     typeof p.expected==="string"&&p.expected.length<=350&&
     (p.kind==="text"&&typeof p.html==="string"&&p.html.length<=70000||
      p.kind==="image"&&safeImageSource(p.src)&&typeof p.alt==="string"&&p.alt.length<=300||
-     p.kind==="layout")&&
+     p.kind==="layout"||p.kind==="delete")&&
     (p.layout===undefined||validLiveLayout(p.layout))&&
     (p.appearance===undefined||validLiveAppearance(p.appearance));
 }
@@ -743,6 +754,8 @@ function renderLiveInspector(){
   }
   const selector=node&&liveSelector(node);
   $("revertLiveElement").disabled=!selector||!livePatches.has(selector);
+  $("deleteLiveElement").disabled=!node||!selector||!!liveEditing;
+  $("remove").disabled=workspaceMode==="live"?!node: $("remove").disabled;
   $("liveLayoutControls").hidden=!node;
   $("liveAppearanceControls").hidden=!node||tag==="IMG";
   if(node&&tag!=="IMG"){
@@ -761,23 +774,28 @@ function renderLiveInspector(){
     const entry=liveLayoutFor(selector);
     $("liveMoveX").value=String(entry.dx);
     $("liveMoveY").value=String(entry.dy);
+    const canReflow=!!node.matches("h1,h2,h3,h4,h5,h6,p,blockquote,figcaption");
+    // Box-resize controls replace geometry scaling for text. Separate scale
+    // fields remain available for images and section containers.
     $("liveScaleX").value=String(Math.round(entry.sx*100));
     $("liveScaleY").value=String(Math.round(entry.sy*100));
-    $("liveScaleX").disabled=false;
-    $("liveScaleY").disabled=false;
-    const canReflow=!!node.matches("h1,h2,h3,h4,h5,h6,p,blockquote,figcaption");
+    $("liveScaleX").disabled=canReflow;
+    $("liveScaleY").disabled=canReflow;
+    $("liveScaleX").closest("label").hidden=canReflow;
+    $("liveScaleY").closest("label").hidden=canReflow;
     $("liveTextReflowControls").hidden=!canReflow;
-    const on=canReflow&&entry.wrapWidth!==undefined;
+    const on=canReflow;
     $("liveTextReflow").checked=on;
     $("liveTextBoxWidth").disabled=!on;
     $("liveTextBoxHeight").disabled=!on;
-    $("liveTextBoxWidth").value=String(Math.round(entry.wrapWidth||node.offsetWidth));
-    $("liveTextBoxHeight").value=String(Math.round(entry.reserveHeight||node.offsetHeight));
-    const extra=on?Math.max(0,Math.ceil(node.scrollHeight-node.clientHeight)):0;
+    $("liveTextBoxWidth").value=String(Math.round(entry.wrapWidth||node.getBoundingClientRect().width));
+    $("liveTextBoxHeight").value=String(Math.round(entry.reserveHeight||node.getBoundingClientRect().height));
+    const extra=canReflow&&entry.wrapWidth!==undefined?
+      Math.max(0,Math.ceil(node.scrollHeight-node.clientHeight)):0;
     $("liveReflowWarning").hidden=extra<=3;
     $("liveReflowWarning").textContent=extra>3?
       "Wrapped text extends about "+extra+"px beyond the reserved height and may overlap the next element.":"";
-    $("liveFitReflowHeight").disabled=!on||extra<=3;
+    $("liveFitReflowHeight").disabled=!canReflow||extra<=3;
     $("resetLiveLayout").disabled=!livePatches.get(selector)?.layout?.[liveDevice()];
   }
   renderLiveEditCount();
