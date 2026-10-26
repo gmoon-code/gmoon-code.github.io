@@ -1353,6 +1353,27 @@
     }
     return geometry;
   }
+  // Monitor nearby layout boxes during the first detachment. If ordinary
+  // page content moves when a selected element enters the free layer,
+  // reject that gesture and restore the undo checkpoint.
+  function freeLayoutSnapshot(selected){
+    const main=selected?.closest("main");
+    if(!main)return [];
+    return [...main.querySelectorAll("h1,h2,h3,p,li,figure,img,section,article")]
+      .filter(node=>node!==selected&&!node.contains(selected)&&
+        !selected.contains(node)&&!node.closest(".moon-free-layer"))
+      .slice(0,180).map(node=>{
+        const r=node.getBoundingClientRect();
+        return {node,x:r.left,y:r.top};
+      });
+  }
+  function freeLayoutShifted(snapshot){
+    return snapshot.some(({node,x,y})=>{
+      if(!node.isConnected)return true;
+      const r=node.getBoundingClientRect();
+      return Math.abs(r.left-x)>3||Math.abs(r.top-y)>3;
+    });
+  }
   function freeGestureMove(event){
     const drag=freeGesture;if(!drag||drag.id!==event.pointerId)return;
     event.preventDefault();event.stopPropagation();
@@ -1373,6 +1394,7 @@
           freeGesture=null;return;
         }
       }
+      drag.layoutSnapshot=freeLayoutSnapshot(freeSelected()?.node);
       checkpoint();
       drag.moved=true;
       // A moving object can be reparented to the page canvas. Capturing
@@ -1415,7 +1437,17 @@
       const sel=freeSelected();
       if(sel)snapFreeMove(next,sel,event.altKey);
     }else clearFreeSnapGuides();
-    applyFreeGeometry(next);
+    if(!applyFreeGeometry(next))return;
+    if(drag.layoutSnapshot){
+      const snapshot=drag.layoutSnapshot;
+      drag.layoutSnapshot=null;
+      if(freeLayoutShifted(snapshot)){
+        freeGesture=null;
+        clearFreeSnapGuides();
+        undo();
+        notice("Moving this object would shift other page content. The change was undone to protect the layout.","Layout protected");
+      }
+    }
   }
   function freeGestureEnd(event){
     const drag=freeGesture;if(!drag||drag.id!==event.pointerId)return;
