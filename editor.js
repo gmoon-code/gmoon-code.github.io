@@ -4224,9 +4224,26 @@
       child.getAttribute("data-moon-free-placeholder")===slot))return;
     // Use an HTML-valid element in paragraph and list contexts. This marker
     // reserves geometry; it contains no duplicated content or accessible text.
-    const tag=object.tagName==="LI"?"li":"span";
-    const placeholder=doc.createElement(tag);
-    placeholder.className="moon-free-placeholder";
+    // Retain the element type and original CSS classes so flex/grid child
+    // selectors continue to match the reserved slot. No content is cloned.
+    const placeholder=object.cloneNode(false);
+    placeholder.removeAttribute("id");
+    placeholder.removeAttribute("src");
+    placeholder.removeAttribute("href");
+    placeholder.removeAttribute("srcset");
+    placeholder.removeAttribute("tabindex");
+    placeholder.removeAttribute("data-editor-key");
+    placeholder.removeAttribute("data-editor-added-index");
+    placeholder.removeAttribute("data-moon-free-slot");
+    placeholder.removeAttribute("data-moon-free-footprint");
+    placeholder.removeAttribute("data-moon-free-detach");
+    placeholder.removeAttribute("contenteditable");
+    placeholder.removeAttribute("style");
+    for(const attr of [...placeholder.attributes]){
+      if(/^on/i.test(attr.name))placeholder.removeAttribute(attr.name);
+    }
+    placeholder.classList.remove(FREE_CLASS,"moon-free-absolute");
+    placeholder.classList.add("moon-free-placeholder");
     placeholder.setAttribute("data-moon-free-placeholder",slot);
     placeholder.setAttribute("aria-hidden","true");
     const style=placeholder.style;
@@ -4234,12 +4251,12 @@
     style.display=originalDisplay==="inline"?"inline-block":
       originalDisplay==="contents"?"block":originalDisplay||"block";
     style.boxSizing="border-box";
-    style.width=footprint.w+"px";
-    style.height=footprint.h+"px";
+    style.setProperty("width",footprint.w+"px","important");
+    style.setProperty("height",footprint.h+"px","important");
     style.minWidth="0";
     style.minHeight="0";
-    style.maxWidth="none";
-    style.maxHeight="none";
+    style.setProperty("max-width","none","important");
+    style.setProperty("max-height","none","important");
     for(const name of ["marginTop","marginRight","marginBottom","marginLeft",
       "gridColumn","gridRow","gridArea","flex","order","alignSelf",
       "justifySelf","float","clear","verticalAlign"]){
