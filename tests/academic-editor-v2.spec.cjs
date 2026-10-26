@@ -177,3 +177,60 @@ test('double-click edits the text object directly and Undo restores prior wordin
   await page.locator('#undo').click();
   await expect(page.locator('#stage [data-id="1"] .scene-content')).toHaveText('Research overview');
 });
+
+test('imported links, emphasis and heading structure survive staging export safely',async({page})=>{
+  const linked='<!doctype html><html><body><main><h2>Public research</h2>'+
+    '<p>Read <a href="research.html">research notes</a> and '+
+    '<em>science learning</em> together.</p>'+
+    '<p>External <a href="https://doi.org/10.5555/example">DOI link</a>.</p>'+
+    '</main></body></html>';
+  await page.route('**/about.html',route=>route.fulfill({
+    status:200,contentType:'text/html',body:linked
+  }));
+  await page.locator('#importPage').click();
+  await expect(page.locator('#status')).toContainText('Imported');
+  const rich=page.locator('#stage [data-id="2"] .scene-content');
+  await expect(rich.locator('a[href="research.html"]')).toHaveText('research notes');
+  await expect(rich.locator('em')).toHaveText('science learning');
+  const pending=page.waitForEvent('download');
+  await page.locator('#exportHtml').click();
+  const exported=fs.readFileSync(await (await pending).path(),'utf8');
+  expect(exported).toContain('<h2 class="item"');
+  expect(exported).toContain('<a href="research.html">research notes</a>');
+  expect(exported).toContain('<em>science learning</em>');
+  expect(exported).toContain('rel="noopener noreferrer"');
+  let posted;
+  await page.route('https://api.github.com/repos/gmoon-code/gmoon-code.github.io/contents/editor-v2-previews/about.html',route=>{
+    if(route.request().method()==='GET')return route.fulfill({status:404,body:'{}'});
+    posted=JSON.parse(route.request().postData());
+    return route.fulfill({status:201,body:'{}'});
+  });
+  await page.locator('#publish').click();
+  await page.locator('#githubToken').fill('test-placeholder');
+  await page.locator('#confirmPublish').click();
+  await expect(page.locator('#status')).toContainText('Staging published');
+  const staging=Buffer.from(posted.content,'base64').toString('utf8');
+  expect(staging).toContain('<a href="../research.html">research notes</a>');
+});
+test('unsafe HTML inside a saved rich-text scene is not rendered or exported',async({page})=>{
+  await importScene(page);
+  await page.evaluate(()=>{
+    const key='moon-academic-editor-v2:about.html';
+    const json=JSON.parse(localStorage.getItem(key));
+    json.objects[0].rich='<em>Allowed</em><script>window.polluted=1</script>'+
+      '<img src=x onerror="window.polluted=1">'+
+      '<a href="javascript:alert(1)" onclick="window.polluted=1">Blocked link</a>';
+    localStorage.setItem(key,JSON.stringify(json));
+  });
+  await page.reload({waitUntil:'domcontentloaded'});
+  const element=page.locator('#stage [data-id="1"] .scene-content');
+  await expect(element.locator('em')).toHaveText('Allowed');
+  await expect(element.locator('script,img')).toHaveCount(0);
+  await expect(element.locator('a[href]')).toHaveCount(0);
+  expect(await page.evaluate(()=>window.polluted)).toBeUndefined();
+  const pending=page.waitForEvent('download');await page.locator('#exportHtml').click();
+  const exported=fs.readFileSync(await (await pending).path(),'utf8');
+  expect(exported).not.toContain('onerror=');
+  expect(exported).not.toContain('javascript:');
+  expect(exported).not.toContain('<script>window.polluted');
+});
