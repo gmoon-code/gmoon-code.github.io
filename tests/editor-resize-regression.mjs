@@ -136,7 +136,7 @@ try{
     await mobile.waitForFunction(()=>{
       const node=document.querySelector('main img[src*="profile-portrait"]');
       return node&&!node.parentElement?.classList.contains("moon-free-layer");
-    },{timeout:10000});
+    },null,{timeout:10000});
     const mobileImageBox=await mobileImage.boundingBox();
     assert(mobileImageBox&&mobileImageBox.width<=390,
       "Published image overflows the mobile screen");
