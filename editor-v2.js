@@ -2361,6 +2361,12 @@ function attachEvents(){
       message.classList.remove("publish-success");
       message.textContent=error.message||"Saved edit verification failed";
       message.hidden=false;
+      if([...livePatches.values()].some(p=>p.kind==="image")&&
+         /matching original element|match saved edit|source was updated|image/i.test(error.message||"")){
+        // Offer a repair immediately, without deleting the draft or
+        // automatically selecting a different original image.
+        $("imageReconnectPanel").open=true;
+      }
     }finally{button.disabled=false;}
   });
   $("publishDialog").addEventListener("close",()=>{$("githubToken").value="";});
