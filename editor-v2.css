@@ -54,3 +54,14 @@
 #liveTextReflowControls[hidden],#liveReflowWarning[hidden]{display:none!important}
 #liveTextReflowControls .reflow-warning{font-weight:600;color:#8c4b30;margin:8px 0}
 #liveFitReflowHeight{margin-top:4px;white-space:normal;text-align:center}
+
+/* Explicit live-site publishing confirmation and accessible results. */
+#publishDialog{width:min(94vw,520px);max-height:90dvh;overflow:auto}
+#publishDialog select{display:block;width:100%;padding:9px;border:1px solid #ccd3cd;border-radius:5px;background:#fff;color:var(--ink)}
+#publishDialog .publish-acknowledgement{display:flex;gap:9px;align-items:flex-start;margin-top:15px;line-height:1.5;font-size:12px;font-weight:600}
+#publishDialog .publish-acknowledgement input{width:18px;min-width:18px;height:18px;margin:1px 0 0;padding:0}
+#publishDialog .publish-error{border-left:3px solid #b33434;padding:9px 11px;background:#fff1f1;color:#842727;line-height:1.5}
+#publishDialog code{display:inline-block;max-width:100%;overflow-wrap:anywhere;white-space:normal}
+.publish-result{padding:11px 18px;background:#eef8f1;border-bottom:1px solid #b6d3c1;line-height:1.5;font-size:12px}
+.publish-result a{color:#12513f;text-decoration:underline;text-underline-offset:3px;font-weight:650}
+[hidden]{display:none!important}
