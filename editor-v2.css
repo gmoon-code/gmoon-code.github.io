@@ -84,3 +84,19 @@
 #publishDialog .image-reconnect img{display:block;width:100%;height:150px;object-fit:contain;background:#f4f6f3;margin:10px 0;border:1px solid var(--rule);border-radius:4px}
 #publishDialog .image-reconnect img[hidden]{display:none!important}
 #reconnectImageButton{white-space:normal;max-width:100%;text-align:left;line-height:1.4}
+
+/* V2 selection pane and source-parity status, Oct 2026 */
+.verification-note{padding:8px 14px;margin:0;background:var(--surface,#f6faf7);
+  border-bottom:1px solid var(--rule,#d6e0d9);color:var(--muted,#52655b);font-size:12px;line-height:1.5}
+#liveLayersPanel .live-element-list{max-height:340px;overflow:auto;margin-top:10px}
+#liveElementSearch{width:100%;box-sizing:border-box;padding:9px;border:1px solid var(--rule,#cbd8cf);
+  border-radius:5px;background:#fff;color:#1a2420}
+#liveLayersPanel .live-element-list button{display:flex;align-items:center;width:100%;gap:10px;
+  text-align:left;min-height:31px;padding:6px 8px;white-space:normal;overflow-wrap:anywhere}
+#liveLayersPanel .live-element-list button[aria-current=true]{
+  outline:2px solid var(--focus,#287dbb);outline-offset:-2px;background:#eaf3f7}
+#liveLayersPanel .live-element-list .layer-type{flex:0 0 34px;font-size:10px;text-align:center;
+  border:1px solid var(--rule,#cbd8cf);border-radius:4px;padding:3px 2px}
+#liveLayersPanel .live-element-list .layer-name{flex:1;min-width:0;font-size:12px;line-height:1.45}
+#liveLayersPanel .live-element-list .empty{color:var(--muted,#52655b);font-size:12px;padding:10px}
+#liveLayoutControls .inline-actions button{white-space:normal}
