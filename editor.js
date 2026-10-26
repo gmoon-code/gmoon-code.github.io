@@ -1093,6 +1093,9 @@
       const style=doc.createElement("style");style.id="moon-free-position-css";
       style.textContent=FREE_CSS;doc.head.append(style);
     }
+    // Measure before applying absolute positioning and before relocation.
+    // Measurements from a detached source or a resized image are unreliable.
+    if(!captureFreeFootprint(sel))return false;
     if(sel.added){
       const i=state.selectedAddition,item=state.additions[i];
       const next={...item,freePosition:{...geometry}};
@@ -4174,13 +4177,93 @@
     "main > .moon-free-layer > p.moon-free-absolute > img{max-width:100%;max-height:100%;width:100%;height:100%;object-fit:contain}",
     "main > .moon-free-layer > img.moon-free-absolute{object-fit:contain!important;object-position:center!important;min-width:0!important;min-height:0!important}",
     "main > .moon-free-layer > .moon-free-absolute{pointer-events:auto!important}",
+    "main .moon-free-placeholder{visibility:hidden!important;pointer-events:none!important;user-select:none!important}",
+    "@media(max-width:700px){html:not(.moon-free-mode) main .moon-free-placeholder{display:none!important}}",
     "@media(max-width:700px){html:not(.moon-free-mode) main:has(> .moon-free-layer){min-height:0!important}html:not(.moon-free-mode) main > .moon-free-layer{position:static!important;inset:auto!important;display:contents!important;pointer-events:auto!important}html:not(.moon-free-mode) main .moon-free-absolute{position:static!important;left:auto!important;top:auto!important;right:auto!important;bottom:auto!important;translate:none!important;width:auto!important;max-width:100%!important;min-height:0!important;height:auto!important}html:not(.moon-free-mode) main p.moon-free-absolute > img{height:auto!important;max-height:none!important}html:not(.moon-free-mode) img.moon-free-object{width:auto!important;max-width:100%!important;height:auto!important}}"
   ].join("\n");
+
+  // An object's original footprint must be measured in the rendered iframe.
+  // DOMParser documents have no layout: getBoundingClientRect() is zero there.
+  // Persist the measured dimensions so preview and exported HTML agree.
+  function readFreeFootprint(value){
+    if(typeof value!=="string"||value.length>1700)return null;
+    try{
+      const data=JSON.parse(decodeURIComponent(value));
+      if(!data||typeof data!=="object"||!Number.isFinite(data.w)||
+         !Number.isFinite(data.h)||data.w<1||data.w>8000||
+         data.h<1||data.h>20000)return null;
+      const properties=["display","marginTop","marginRight","marginBottom",
+        "marginLeft","gridColumn","gridRow","gridArea","flex","order",
+        "alignSelf","justifySelf","float","clear","verticalAlign"];
+      if(properties.some(name=>typeof data[name]!=="string"||data[name].length>160))
+        return null;
+      return data;
+    }catch{return null;}
+  }
+  function captureFreeFootprint(sel){
+    if(!sel?.node)return false;
+    if(sel.node.classList.contains("moon-free-absolute"))return true;
+    const win=sel.node.ownerDocument.defaultView;
+    const rect=sel.node.getBoundingClientRect(),css=win.getComputedStyle(sel.node);
+    if(!Number.isFinite(rect.width)||!Number.isFinite(rect.height)||
+       rect.width<1||rect.height<1)return false;
+    const data={w:Math.round(rect.width*10)/10,h:Math.round(rect.height*10)/10};
+    for(const name of ["display","marginTop","marginRight","marginBottom",
+      "marginLeft","gridColumn","gridRow","gridArea","flex","order",
+      "alignSelf","justifySelf","float","clear","verticalAlign"]){
+      data[name]=String(css[name]||"").slice(0,160);
+    }
+    const encoded=encodeURIComponent(JSON.stringify(data));
+    sel.node.setAttribute("data-moon-free-footprint",encoded);
+    if(sel.added){
+      const index=state.selectedAddition;
+      const item=state.additions[index];
+      if(!item)return false;
+      state.additions[index]={...item,freeFootprint:encoded};
+    }else{
+      const source=getWorking(state.selected);
+      if(!source)return false;
+      source.setAttribute("data-moon-free-footprint",encoded);
+    }
+    return true;
+  }
+  function insertFreePlaceholder(object,slot,doc){
+    const footprint=readFreeFootprint(object.getAttribute("data-moon-free-footprint"));
+    if(!footprint)return;
+    const parent=object.parentElement;
+    if(!parent||[...parent.children].some(child=>
+      child.getAttribute("data-moon-free-placeholder")===slot))return;
+    // Use an HTML-valid element in paragraph and list contexts. This marker
+    // reserves geometry; it contains no duplicated content or accessible text.
+    const tag=object.tagName==="LI"?"li":"span";
+    const placeholder=doc.createElement(tag);
+    placeholder.className="moon-free-placeholder";
+    placeholder.setAttribute("data-moon-free-placeholder",slot);
+    placeholder.setAttribute("aria-hidden","true");
+    const style=placeholder.style;
+    const originalDisplay=footprint.display;
+    style.display=originalDisplay==="inline"?"inline-block":
+      originalDisplay==="contents"?"block":originalDisplay||"block";
+    style.boxSizing="border-box";
+    style.width=footprint.w+"px";
+    style.height=footprint.h+"px";
+    style.minWidth="0";
+    style.minHeight="0";
+    style.maxWidth="none";
+    style.maxHeight="none";
+    for(const name of ["marginTop","marginRight","marginBottom","marginLeft",
+      "gridColumn","gridRow","gridArea","flex","order","alignSelf",
+      "justifySelf","float","clear","verticalAlign"]){
+      if(footprint[name]&&footprint[name]!=="auto"&&footprint[name]!=="none")
+        style[name]=footprint[name];
+    }
+    style.visibility="hidden";
+    style.pointerEvents="none";
+    object.before(placeholder);
+  }
   function relocateFreeObjects(doc){
     const main=doc.querySelector("main");
     if(!main)return 0;
-    // Preserve nested floating groups. Their child elements remain attached
-    // to the group, preserving captions and relative positioning.
     const objects=[...main.querySelectorAll(".moon-free-absolute")].filter(node=>
       node.hasAttribute("data-moon-free-detach")||
       !node.parentElement?.closest(".moon-free-absolute"));
@@ -4191,14 +4274,11 @@
       layer.className="moon-free-layer";
       main.appendChild(layer);
     }
-    // Leave a comment at the object's original location. Comments have no
-    // layout footprint and survive HTML serialization. The published mobile
-    // runtime uses these markers to restore the original reading order.
     const prefix="moon-free-slot:";
-    const occupied=new Set(objects.map(node=>node.getAttribute("data-moon-free-slot")).filter(Boolean));
+    const occupied=new Set(objects.map(node=>
+      node.getAttribute("data-moon-free-slot")).filter(Boolean));
     let id=0,moved=0;
-    const encounteredSlots=new Set();
-    const markerNames=new Set();
+    const encounteredSlots=new Set(),markerNames=new Set();
     const walker=doc.createTreeWalker(main,128);
     while(walker.nextNode()){
       const name=walker.currentNode.data;
@@ -4217,48 +4297,19 @@
           object.before(doc.createComment(prefix+slot));
           markerNames.add(slot);
         }
-        // Reserve the occupied slot in the preview before detaching. A
-        // zero-size comment alone collapses the source grid or paragraph flow.
-        // Only use an inert visual spacer, never duplicate editable content.
-        // The existing rollback guard rejects layouts whose other elements
-        // still move (for example, complex grid spanning or margin collapse).
-        if(!object.previousElementSibling?.hasAttribute("data-moon-free-placeholder")){
-          const win=doc.defaultView,rect=object.getBoundingClientRect();
-          const computed=win.getComputedStyle(object);
-          const placeholder=doc.createElement("div");
-          placeholder.setAttribute("data-moon-free-placeholder",slot);
-          placeholder.setAttribute("aria-hidden","true");
-          const copy=["display","margin-top","margin-right","margin-bottom","margin-left",
-            "grid-column","grid-row","grid-area","flex","align-self","justify-self",
-            "order","float","clear"];
-          for(const prop of copy){
-            const value=computed.getPropertyValue(prop);
-            if(value&&value!=="auto"&&value!=="none")placeholder.style.setProperty(prop,value);
-          }
-          // Block sized exactly as the original margin-box content area,
-          // retaining CSS grid/flex placement where possible.
-          placeholder.style.setProperty("box-sizing","border-box");
-          placeholder.style.setProperty("width",Math.max(0,rect.width)+"px");
-          placeholder.style.setProperty("height",Math.max(0,rect.height)+"px");
-          placeholder.style.setProperty("min-height","0");
-          placeholder.style.setProperty("visibility","hidden");
-          placeholder.style.setProperty("pointer-events","none");
-          object.before(placeholder);
-        }
+        insertFreePlaceholder(object,slot,doc);
         layer.appendChild(object);
         moved++;
       }
     }
-    // Absolutely positioned children do not contribute to main's height.
-    // Reserve enough space for the lowest saved object, including a margin
-    // to keep following sections and the footer clear of the canvas.
     const bottom=objects.reduce((max,node)=>{
       const y=parseFloat(node.style.getPropertyValue("--moon-page-y")||node.style.top);
       const height=parseFloat(node.style.minHeight)||parseFloat(node.style.height)||0;
       return Number.isFinite(y)&&Number.isFinite(height)?
         Math.max(max,y+Math.max(0,height)+32):max;
     },0);
-    main.style.setProperty("--moon-free-canvas-height",Math.min(20064,Math.max(0,Math.ceil(bottom)))+"px");
+    main.style.setProperty("--moon-free-canvas-height",
+      Math.min(20064,Math.max(0,Math.ceil(bottom)))+"px");
     return moved;
   }
   function refreshFreeCanvasExtent(doc){
