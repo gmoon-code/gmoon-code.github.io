@@ -442,9 +442,9 @@ function liveLayoutFor(selector,device=liveDevice()){
       originalLiveTransform(selectedNode):{ox:0,oy:0,osx:1,osy:1};
   return {...defaultLiveLayout(),...origin,...current};
 }
-function liveLayoutRules(){
+function liveLayoutRules(patches=[...livePatches.values()]){
   const result=[];
-  for(const patch of livePatches.values()){
+  for(const patch of patches){
     const value=patch.appearance;
     if(!value||!validLiveAppearance(value))continue;
     const style=[];
@@ -456,7 +456,7 @@ function liveLayoutRules(){
   }
   for(const [device,media] of Object.entries(LIVE_DEVICE_RULES)){
     const selectors=[];
-    for(const patch of livePatches.values()){
+    for(const patch of patches){
       const entry=patch.layout?.[device];
       if(!entry||!validLiveLayout({[device]:entry}))continue;
       // Both values are bounded, strictly numeric data. Selectors are
@@ -476,14 +476,14 @@ function liveLayoutRules(){
   }
   return result.join("\n");
 }
-function refreshLiveLayoutRules(doc=$("livePageFrame").contentDocument){
+function refreshLiveLayoutRules(doc=$("livePageFrame").contentDocument,patches=[...livePatches.values()]){
   if(!doc?.head)return;
   let sheet=doc.getElementById("moon-v2-live-layout");
   if(!sheet){
     sheet=doc.createElement("style");sheet.id="moon-v2-live-layout";
     doc.head.append(sheet);
   }
-  sheet.textContent=liveLayoutRules();
+  sheet.textContent=liveLayoutRules(patches);
 }
 function livePatchForSelected(){
   const node=liveSelected?.node,selector=node&&liveSelector(node);
@@ -676,33 +676,73 @@ function renderLiveInspector(){
   }
   renderLiveEditCount();
 }
-function applyPatchesToDocument(doc,strict=false){
-  let count=0;
+// A selector recorded in the rendered (script-enabled) website can differ
+// from the source HTML committed to GitHub. Match the original content and tag
+// when the positional selector fails, and never guess between duplicates.
+function livePatchExcerpt(patch){
+  const excerpt=(patch.expected||"").replace(/\s+/g," ").slice(0,90);
+  return excerpt||patch.selector.split(" > ").at(-1)||"Unnamed element";
+}
+function livePatchNodeMatches(node,patch){
+  if(!node||!node.closest("main"))return false;
+  if(patch.kind==="image"&&node.tagName!=="IMG")return false;
+  if(patch.kind==="text"&&(node.tagName==="IMG"||LIVE_CONTAINER_SET.has(node.tagName)))return false;
+  if(patch.kind==="layout"&&!node.matches(LIVE_SELECTABLE_TAGS))return false;
+  const original=patch.kind==="image"?node.getAttribute("src")||"":
+    (node.textContent||"").trim().slice(0,300);
+  return original===patch.expected;
+}
+function resolveLivePatchTarget(doc,patch,claimed){
+  const direct=doc.querySelector(patch.selector);
+  if(direct&&!claimed.has(direct)&&livePatchNodeMatches(direct,patch))return direct;
+  const tag=patch.selector.match(/ > ([a-z][a-z0-9-]*):nth-of-type\(\d{1,4}\)$/)?.[1];
+  if(!tag||!patch.expected||patch.expected.trim().length<5)
+    throw Error("Could not match saved edit \""+livePatchExcerpt(patch)+"\" to the original webpage. The draft is preserved.");
+  const matches=[...doc.querySelectorAll("main "+tag)].filter(node=>
+    !claimed.has(node)&&livePatchNodeMatches(node,patch));
+  if(matches.length!==1){
+    const reason=matches.length?"Multiple matching elements":"No matching original element";
+    throw Error(reason+" for saved edit \""+livePatchExcerpt(patch)+
+      "\". Review or remove this saved edit before publishing. The draft is preserved.");
+  }
+  return matches[0];
+}
+function applyPatchesToDocument(doc,strict=false,resolved=[]){
+  const changes=[],claimed=new Set();
   for(const patch of livePatches.values()){
     if(!validLivePatch(patch)){
-      if(strict)throw Error("Invalid saved live-page edit");continue;
+      if(strict)throw Error("An invalid live-page edit needs review.");continue;
     }
-    const node=doc.querySelector(patch.selector);
-    if(!node||(patch.kind==="image"&&node.tagName!=="IMG")||
-      (patch.kind==="text"&&(node.tagName==="IMG"||LIVE_CONTAINER_SET.has(node.tagName)))||
-      (patch.kind==="layout"&&!node.matches(LIVE_SELECTABLE_TAGS))){
-      if(strict)throw Error("The saved edit's element is missing");continue;
+    let node;
+    try{node=resolveLivePatchTarget(doc,patch,claimed);}
+    catch(error){if(strict)throw error;continue;}
+    claimed.add(node);
+    changes.push({patch,node,selector:liveSelector(node)});
+  }
+  if(strict){
+    // Replacing a parent's innerHTML would discard a nested edited element.
+    // Reject those conflicting edits before making any changes to the copy.
+    for(const a of changes){
+      if(a.patch.kind!=="text")continue;
+      if(changes.some(b=>b!==a&&a.node.contains(b.node)))
+        throw Error("Edits to a parent and its nested content overlap near \""+
+          livePatchExcerpt(a.patch)+"\". Review those edits before publishing.");
     }
-    const original=patch.kind==="image"?node.getAttribute("src")||"":
-      (node.textContent||"").trim().slice(0,300);
-    if(original!==patch.expected){
-      if(strict)throw Error("The original page has changed since the edit");continue;
-    }
+  }
+  for(const {patch,node,selector} of changes){
     if(patch.kind==="image"){
       node.setAttribute("src",patch.src);
       node.setAttribute("alt",patch.alt);
     }else if(patch.kind==="text")node.innerHTML=cleanRich(patch.html);
-    // Layout-only patches change CSS geometry, never descendants or markup.
-    count++;
+    // Layout CSS uses the verified source selector, not an outdated iframe
+    // path that could silently style another source element.
+    resolved.push({from:patch.selector,to:selector});
   }
-  refreshLiveLayoutRules(doc);
-  return count;
+  const sourcePatches=changes.map(({patch,selector})=>({...patch,selector}));
+  refreshLiveLayoutRules(doc,sourcePatches);
+  return changes.length;
 }
+
 function editLiveText(){
   const node=liveSelected?.node;
   if(!node||node.tagName==="IMG"||LIVE_CONTAINER_SET.has(node.tagName)||liveEditing)return;
