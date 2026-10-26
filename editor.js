@@ -1473,10 +1473,20 @@
     const y=origin.top+(parseFloat(css.borderTopWidth)||0)+expected.y;
     // A mismatch indicates that inherited !important styles, transforms,
     // or an unsupported container has overridden the requested geometry.
-    return [actual.x,actual.y,actual.width,actual.height].every(Number.isFinite)&&
+    const match=[actual.x,actual.y,actual.width,actual.height].every(Number.isFinite)&&
       Math.abs(actual.left-x)<=5&&Math.abs(actual.top-y)<=5&&
       Math.abs(actual.width-expected.width)<=5&&
       Math.abs(actual.height-expected.height)<=5;
+    if(!match){
+      const style=doc.defaultView.getComputedStyle(sel.node);
+      console.warn("Moon resize geometry mismatch",JSON.stringify({
+        expected,actual:{x:actual.left,y:actual.top,width:actual.width,height:actual.height},
+        origin:{x,y},inline:sel.node.getAttribute("style"),
+        computed:{width:style.width,height:style.height,position:style.position,
+          transform:style.transform},parent:sel.node.parentElement?.className
+      }));
+    }
+    return match;
   }
   function freeGestureEnd(event){
     const drag=freeGesture;if(!drag||drag.id!==event.pointerId)return;
