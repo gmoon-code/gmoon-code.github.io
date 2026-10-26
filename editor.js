@@ -4217,6 +4217,34 @@
           object.before(doc.createComment(prefix+slot));
           markerNames.add(slot);
         }
+        // Reserve the occupied slot in the preview before detaching. A
+        // zero-size comment alone collapses the source grid or paragraph flow.
+        // Only use an inert visual spacer, never duplicate editable content.
+        // The existing rollback guard rejects layouts whose other elements
+        // still move (for example, complex grid spanning or margin collapse).
+        if(!object.previousElementSibling?.hasAttribute("data-moon-free-placeholder")){
+          const win=doc.defaultView,rect=object.getBoundingClientRect();
+          const computed=win.getComputedStyle(object);
+          const placeholder=doc.createElement("div");
+          placeholder.setAttribute("data-moon-free-placeholder",slot);
+          placeholder.setAttribute("aria-hidden","true");
+          const copy=["display","margin-top","margin-right","margin-bottom","margin-left",
+            "grid-column","grid-row","grid-area","flex","align-self","justify-self",
+            "order","float","clear"];
+          for(const prop of copy){
+            const value=computed.getPropertyValue(prop);
+            if(value&&value!=="auto"&&value!=="none")placeholder.style.setProperty(prop,value);
+          }
+          // Block sized exactly as the original margin-box content area,
+          // retaining CSS grid/flex placement where possible.
+          placeholder.style.setProperty("box-sizing","border-box");
+          placeholder.style.setProperty("width",Math.max(0,rect.width)+"px");
+          placeholder.style.setProperty("height",Math.max(0,rect.height)+"px");
+          placeholder.style.setProperty("min-height","0");
+          placeholder.style.setProperty("visibility","hidden");
+          placeholder.style.setProperty("pointer-events","none");
+          object.before(placeholder);
+        }
         layer.appendChild(object);
         moved++;
       }
