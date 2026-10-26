@@ -7,11 +7,17 @@ import {resolve,extname,sep} from "node:path";
 import {chromium} from "playwright";
 
 const root=process.cwd();
+let publishedIndexOverride=null;
 const types={".html":"text/html",".js":"text/javascript",".css":"text/css",
   ".webp":"image/webp",".png":"image/png",".jpg":"image/jpeg",".svg":"image/svg+xml"};
 const server=createServer(async(req,res)=>{
   try{
     const pathname=decodeURIComponent(new URL(req.url,"http://localhost").pathname);
+    if(pathname==="/index.html"&&publishedIndexOverride!==null){
+      res.writeHead(200,{"Content-Type":"text/html"});
+      res.end(publishedIndexOverride);
+      return;
+    }
     const full=resolve(root,"."+pathname);
     if(full!==root&&!full.startsWith(root+sep)){res.writeHead(403).end();return;}
     const file=await readFile(full===root?resolve(root,"index.html"):full);
@@ -109,6 +115,19 @@ try{
   assert(exported.includes("moon-free-responsive.js"),
     "Published HTML omitted the mobile reading-order runtime");
   console.log("PASS exported layout footprint and responsive runtime");
+  // Simulate publishing the HTML and reopening it in the same editor.
+  // Layout placeholders must not become editable source objects.
+  publishedIndexOverride=exported;
+  await page.evaluate(()=>localStorage.clear());
+  await page.reload({waitUntil:"domcontentloaded"});
+  await frame.locator('main img[src*="profile-portrait"]')
+    .waitFor({state:"visible",timeout:25000});
+  const placeholderCount=await frame.locator("main [data-moon-free-placeholder]").count();
+  assert(placeholderCount>=1,"Published site did not retain its layout slot");
+  assert.equal(await frame.locator(
+    'main [data-moon-free-placeholder][data-editor-key]').count(),0,
+    "Published placeholders were incorrectly registered as editable content");
+  console.log("PASS published page reopens without ghost editable objects");
 }catch(error){
   const {mkdir}=await import("node:fs/promises");
   await mkdir("test-artifacts",{recursive:true});
