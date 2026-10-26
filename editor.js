@@ -4281,11 +4281,10 @@
       object.tagName==="IMG"||object.tagName==="A";
     const placeholder=doc.createElement(object.tagName==="LI"?"li":
       originallyInline?"span":"div");
-    for(const cls of object.classList){
-      if(cls!==FREE_CLASS&&cls!=="moon-free-absolute")
-        placeholder.classList.add(cls);
-    }
-    placeholder.classList.add("moon-free-placeholder");
+    // Keep placeholders out of user-facing content selectors. Copying the
+    // original classes made .home-lead and image queries return the invisible
+    // slot ahead of the actual freely positioned object.
+    placeholder.className="moon-free-placeholder";
     if(object.tagName==="LI")placeholder.setAttribute("role","presentation");
     placeholder.setAttribute("data-moon-free-placeholder",slot);
     placeholder.setAttribute("aria-hidden","true");
