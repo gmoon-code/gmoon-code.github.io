@@ -4261,28 +4261,19 @@
     const parent=object.parentElement;
     if(!parent||[...parent.children].some(child=>
       child.getAttribute("data-moon-free-placeholder")===slot))return;
-    // Use an HTML-valid element in paragraph and list contexts. This marker
-    // reserves geometry; it contains no duplicated content or accessible text.
-    // Retain the element type and original CSS classes so flex/grid child
-    // selectors continue to match the reserved slot. No content is cloned.
-    const placeholder=object.cloneNode(false);
-    placeholder.removeAttribute("id");
-    placeholder.removeAttribute("src");
-    placeholder.removeAttribute("href");
-    placeholder.removeAttribute("srcset");
-    placeholder.removeAttribute("tabindex");
-    placeholder.removeAttribute("data-editor-key");
-    placeholder.removeAttribute("data-editor-added-index");
-    placeholder.removeAttribute("data-moon-free-slot");
-    placeholder.removeAttribute("data-moon-free-footprint");
-    placeholder.removeAttribute("data-moon-free-detach");
-    placeholder.removeAttribute("contenteditable");
-    placeholder.removeAttribute("style");
-    for(const attr of [...placeholder.attributes]){
-      if(/^on/i.test(attr.name))placeholder.removeAttribute(attr.name);
+    // A layout placeholder must not create a second heading, paragraph,
+    // image, figure or link in the document. Use inert HTML in the slot.
+    // List items are the exception because UL/OL placement requires LI.
+    const originallyInline=footprint.display==="inline"||
+      object.tagName==="IMG"||object.tagName==="A";
+    const placeholder=doc.createElement(object.tagName==="LI"?"li":
+      originallyInline?"span":"div");
+    for(const cls of object.classList){
+      if(cls!==FREE_CLASS&&cls!=="moon-free-absolute")
+        placeholder.classList.add(cls);
     }
-    placeholder.classList.remove(FREE_CLASS,"moon-free-absolute");
     placeholder.classList.add("moon-free-placeholder");
+    if(object.tagName==="LI")placeholder.setAttribute("role","presentation");
     placeholder.setAttribute("data-moon-free-placeholder",slot);
     placeholder.setAttribute("aria-hidden","true");
     const style=placeholder.style;
@@ -4291,8 +4282,8 @@
     // without changing their baseline layout. Empty text/anchor spans need
     // inline-block to retain a measurable footprint.
     style.display=originalDisplay==="inline"?
-      (object.tagName==="IMG"?"inline":"inline-block"):
-      originalDisplay==="contents"?"block":originalDisplay||"block";
+      "inline-block":originalDisplay==="contents"?"block":
+      originallyInline?"inline-block":originalDisplay||"block";
     style.boxSizing="border-box";
     style.setProperty("width",footprint.w+"px","important");
     style.setProperty("height",footprint.h+"px","important");
