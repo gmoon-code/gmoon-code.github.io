@@ -4,6 +4,7 @@
   "use strict";
   const media=window.matchMedia("(max-width:700px)");
   const PREFIX="moon-free-slot:";
+  const detachedPlaceholders=new Map();
   function reserveHeight(){
     if(media.matches)return;
     const main=document.querySelector("main");
@@ -31,6 +32,17 @@
     while(walker.nextNode()){
       const marker=walker.currentNode;
       if(marker.data.startsWith(PREFIX))markers.set(marker.data.slice(PREFIX.length),marker);
+    }
+    // Keep layout slots for desktop without adding duplicate child nodes
+    // to the published mobile reading order.
+    for(const placeholder of main.querySelectorAll("[data-moon-free-placeholder]")){
+      detachedPlaceholders.set(placeholder.getAttribute("data-moon-free-placeholder"),placeholder);
+    }
+    for(const [slot,placeholder] of detachedPlaceholders){
+      const marker=markers.get(slot);
+      if(media.matches)placeholder.remove();
+      else if(marker?.parentNode&&placeholder.nextSibling!==marker)
+        marker.parentNode.insertBefore(placeholder,marker);
     }
     const objects=[...main.querySelectorAll(".moon-free-absolute[data-moon-free-slot]")];
     for(const node of objects){
