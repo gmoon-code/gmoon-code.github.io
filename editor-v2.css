@@ -42,3 +42,11 @@
 
 .live-assets{background:#fff;border-bottom:1px solid var(--rule);padding:6px 16px;font-size:11px;color:var(--muted)}
 .live-assets.has-warning{color:#98572b;background:#fef4e9}
+
+/* Live-page placement controls operate only on staged, per-device geometry. */
+.live-layout-controls{margin:15px 0;padding:12px;border:1px solid var(--rule);border-radius:7px;background:#f8faf8}
+.live-layout-controls h3{font-size:12px;margin:0 0 8px}
+.live-layout-controls .property-grid{gap:0 8px}
+.live-layout-controls input:disabled{background:#edf0ee;color:#87938d}
+.live-layout-controls .inline-actions button{white-space:normal}
+#liveLayoutControls[hidden]{display:none!important}
