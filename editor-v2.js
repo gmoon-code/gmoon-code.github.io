@@ -1006,11 +1006,16 @@ function liveLayoutRules(patches=[...livePatches.values()]){
       if(!entry||!validLiveLayout({[device]:entry}))continue;
       // Both values are bounded, strictly numeric data. Selectors are
       // validated source-rooted nth-of-type paths; no arbitrary CSS allowed.
+      const tag=patch.tag||
+        patch.selector.match(/ > ([a-z][a-z0-9-]*):nth-of-type\(\d+\)$/)?.[1]||"";
+      const sectionLike=["section","article","aside","figure","div","nav","ul","ol"].includes(tag);
       const reflow=entry.wrapWidth!==undefined?
-        "width:"+entry.wrapWidth+"px!important;height:"+entry.reserveHeight+
-        "px!important;box-sizing:border-box!important;min-width:0!important;"+
+        "width:"+entry.wrapWidth+"px!important;"+
+        (sectionLike?"height:auto!important;min-height:"+entry.reserveHeight+
+          "px!important;":"height:"+entry.reserveHeight+"px!important;")+
+        "box-sizing:border-box!important;min-width:0!important;"+
         "max-width:none!important;max-height:none!important;overflow:visible!important;"+
-        (patch.kind==="image"||patch.tag==="img"?
+        (patch.kind==="image"||tag==="img"?
           "object-fit:contain!important;":""):"";
       selectors.push(patch.selector+"{translate:"+
         (Math.round(((entry.ox||0)+entry.dx)*1000)/1000)+"px "+
