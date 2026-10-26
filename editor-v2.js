@@ -143,7 +143,8 @@ function refreshUndo(){
     [...selected].some(id=>{const obj=lookup(id);return obj&&!obj.locked;});
   $("duplicate").disabled=!editable;
   $("remove").disabled=workspaceMode==="live"?!liveSelected?.node:!editable;
-  $("front").disabled=!editable;$("back").disabled=!editable;
+  $("front").disabled=workspaceMode==="live"?!liveSelected?.node:!editable;
+  $("back").disabled=workspaceMode==="live"?!liveSelected?.node:!editable;
   $("copyObjects").disabled=workspaceMode!=="design"||!selected.size;
   $("pasteObjects").disabled=workspaceMode!=="design"||!canvasClipboard.length||
     scene.objects.length>=MAX_OBJECTS;
@@ -351,6 +352,11 @@ function setWorkspaceMode(mode){
   $("reloadLive").disabled=!isLive;
   $("copyLiveObject").disabled=!isLive||!liveSelected;
   $("remove").textContent=isLive?"Delete element":"Delete";
+  $("front").title=isLive?"Raise selected webpage element's stacking order":"Bring canvas objects to front";
+  $("back").title=isLive?"Lower selected webpage element's stacking order":"Send canvas objects behind";
+  $("front").textContent=isLive?"Bring forward":"Bring to front";
+  $("back").textContent=isLive?"Send backward":"Send to back";
+  $("liveLayersPanel").hidden=!isLive;
   $("remove").title=isLive?"Delete selected live webpage element":"Delete selected canvas objects";
   $("canvasLayersPanel").hidden=isLive;
   $("canvasPropertiesPanel").hidden=isLive;
@@ -441,7 +447,7 @@ const LIVE_FONT_OPTIONS=new Set([
 function validLiveAppearance(value){
   if(!value||typeof value!=="object"||Array.isArray(value))return false;
   const allowed=new Set(["family","fontSize","color","backgroundColor",
-    "weight","style","decoration","align"]);
+    "weight","style","decoration","align","layer"]);
   for(const [key,v] of Object.entries(value)){
     if(!allowed.has(key))return false;
     if(key==="family"&&!LIVE_FONT_OPTIONS.has(v))return false;
@@ -452,6 +458,7 @@ function validLiveAppearance(value){
     if(key==="style"&&!["italic","normal"].includes(v))return false;
     if(key==="decoration"&&!["none","underline"].includes(v))return false;
     if(key==="align"&&!["left","center","right","justify"].includes(v))return false;
+    if(key==="layer"&&(!Number.isInteger(v)||v< -9999||v>9999))return false;
   }
   return true;
 }
@@ -498,6 +505,29 @@ function setLiveAppearance(key,value){
   else livePatches.set(patch.selector,patch);
   if(recordLiveHistory(before)){
     refreshLiveLayoutRules();renderLiveInspector();syncLiveOverlay();
+  }
+}
+function setLiveLayer(front,reset=false){
+  const node=liveSelected?.node,patch=livePatchForSelected();
+  if(!node||!patch||workspaceMode!=="live"||liveEditing)return;
+  const old=liveSnapshot(),appearance={...(patch.appearance||{})};
+  if(reset)delete appearance.layer;
+  else{
+    const levels=[...livePatches.values()].map(p=>p.appearance?.layer)
+      .filter(Number.isInteger);
+    appearance.layer=front?
+      clamp(Math.max(1000,...levels)+1,-9999,9999):
+      clamp(Math.min(-1,...levels)-1,-9999,9999);
+  }
+  if(Object.keys(appearance).length)patch.appearance=appearance;
+  else delete patch.appearance;
+  if(pruneLivePatch(patch,node))livePatches.delete(patch.selector);
+  else livePatches.set(patch.selector,patch);
+  if(recordLiveHistory(old)){
+    refreshLiveLayoutRules();renderLiveInspector();syncLiveOverlay();
+    status(reset?"Element returned to website stacking order":
+      (front?"Element brought forward":"Element sent backward")+
+      " · Saved locally · Undo available");
   }
 }
 function resetLiveAppearance(){
@@ -576,6 +606,8 @@ function liveLayoutRules(patches=[...livePatches.values()]){
     if(value.style)style.push("font-style:"+value.style+"!important");
     if(value.decoration)style.push("text-decoration-line:"+value.decoration+"!important");
     if(value.align)style.push("text-align:"+value.align+"!important");
+    if(value.layer!==undefined)
+      style.push("position:relative!important","z-index:"+value.layer+"!important");
     if(style.length)result.push(patch.selector+"{"+style.join(";")+";}");
   }
   for(const [device,media] of Object.entries(LIVE_DEVICE_RULES)){
@@ -786,6 +818,10 @@ function renderLiveInspector(){
   $("deleteLiveElement").disabled=!node||!selector||!!liveEditing;
   refreshUndo();
   $("liveLayoutControls").hidden=!node;
+  $("liveBringFront").disabled=!node||!!liveEditing;
+  $("liveSendBack").disabled=!node||!!liveEditing;
+  $("liveResetStack").disabled=!node||!!liveEditing||
+    livePatches.get(selector)?.appearance?.layer===undefined;
   $("liveAppearanceControls").hidden=!node||tag==="IMG";
   if(node&&tag!=="IMG"){
     const values=livePatches.get(selector)?.appearance||{};
@@ -2403,6 +2439,9 @@ function attachEvents(){
   ])$(field).addEventListener("change",event=>
     applyLiveLayoutInput(key,Number(event.target.value)*multiplier));
   $("resetLiveLayout").addEventListener("click",resetSelectedLiveLayout);
+  $("liveBringFront").addEventListener("click",()=>setLiveLayer(true));
+  $("liveSendBack").addEventListener("click",()=>setLiveLayer(false));
+  $("liveResetStack").addEventListener("click",()=>setLiveLayer(false,true));
   $("liveTextReflow").addEventListener("change",event=>
     setLiveReflow(event.target.checked));
   $("liveTextBoxWidth").addEventListener("change",event=>
@@ -2656,14 +2695,20 @@ function attachEvents(){
       selected=new Set(ids);activeId=ids.at(-1)||null;
     });
   });
-  $("front").addEventListener("click",()=>mutate(()=>{
-    let z=scene.objects.reduce((m,o)=>Math.max(m,o.z),0);
-    for(const obj of scene.objects.filter(o=>selected.has(o.id)&&!o.locked))obj.z=++z;
-  }));
-  $("back").addEventListener("click",()=>mutate(()=>{
-    let z=scene.objects.reduce((m,o)=>Math.min(m,o.z),0);
-    for(const obj of scene.objects.filter(o=>selected.has(o.id)&&!o.locked))obj.z=--z;
-  }));
+  $("front").addEventListener("click",()=>{
+    if(workspaceMode==="live"){setLiveLayer(true);return;}
+    mutate(()=>{
+      let z=scene.objects.reduce((m,o)=>Math.max(m,o.z),0);
+      for(const obj of scene.objects.filter(o=>selected.has(o.id)&&!o.locked))obj.z=++z;
+    });
+  });
+  $("back").addEventListener("click",()=>{
+    if(workspaceMode==="live"){setLiveLayer(false);return;}
+    mutate(()=>{
+      let z=scene.objects.reduce((m,o)=>Math.min(m,o.z),0);
+      for(const obj of scene.objects.filter(o=>selected.has(o.id)&&!o.locked))obj.z=--z;
+    });
+  });
   $("remove").addEventListener("click",()=>{
     if(workspaceMode==="live"){deleteSelectedLiveElement();return;}
     mutate(()=>{
