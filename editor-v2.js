@@ -1215,6 +1215,28 @@ function resetLiveObjectDesign(){
     renderLiveInspector();syncLiveOverlay();
   }
 }
+function setOriginalBoxDimension(key,value){
+  const node=liveSelected?.node,patch=livePatchForSelected();
+  if(!node||!patch||patch.kind==="insert"||!["wrapWidth","reserveHeight"].includes(key))return;
+  const number=Number(value);
+  if(!Number.isFinite(number))return;
+  const previous=liveSnapshot(),layout=normaliseElementBoxLayout(node,
+    liveLayoutFor(patch.selector));
+  layout[key]=Math.round(clamp(number,key==="wrapWidth"?64:24,
+    key==="wrapWidth"?4000:5000));
+  if(node.tagName==="IMG"&&liveLockImageRatio){
+    const rect=node.getBoundingClientRect(),ratio=
+      (node.naturalWidth&&node.naturalHeight?
+        node.naturalWidth/node.naturalHeight:rect.width/Math.max(1,rect.height));
+    if(key==="wrapWidth")layout.reserveHeight=Math.round(clamp(layout.wrapWidth/ratio,24,5000));
+    else layout.wrapWidth=Math.round(clamp(layout.reserveHeight*ratio,64,4000));
+  }
+  patch.layout={...patch.layout,[liveDevice()]:layout};
+  livePatches.set(patch.selector,patch);
+  if(recordLiveHistory(previous)){
+    refreshLiveLayoutRules();renderLiveInspector();syncLiveOverlay();
+  }
+}
 function setAddedDimension(key,value){
   const node=liveSelected?.node,patch=livePatchForSelected();
   if(!node||patch?.kind!=="insert"||!["w","h"].includes(key))return;
@@ -1370,7 +1392,16 @@ function renderLiveInspector(){
   $("deleteLiveElement").disabled=!node||!selector||!!liveEditing;
   refreshUndo();
   $("liveLayoutControls").hidden=!node;
+  $("liveImageSizing").hidden=tag!=="IMG";
+  $("liveLockImageRatio").checked=liveLockImageRatio;
   const added=!!selector&&LIVE_ADDED_ID.test(selector);
+  const originalBox=!!node&&!added&&!node.matches(LIVE_REFLOW_TEXT);
+  $("liveOriginalDimensions").hidden=!originalBox;
+  if(originalBox){
+    const dims=liveLayoutFor(selector),rect=node.getBoundingClientRect();
+    $("liveOriginalWidth").value=String(Math.round(dims.wrapWidth??rect.width));
+    $("liveOriginalHeight").value=String(Math.round(dims.reserveHeight??rect.height));
+  }
   $("liveAddedDimensions").hidden=!added;
   $("liveObjectDesign").hidden=!added;
   if(added){
@@ -1417,10 +1448,11 @@ function renderLiveInspector(){
     // fields remain available for images and section containers.
     $("liveScaleX").value=String(Math.round(entry.sx*100));
     $("liveScaleY").value=String(Math.round(entry.sy*100));
-    $("liveScaleX").disabled=canReflow||added;
-    $("liveScaleY").disabled=canReflow||added;
-    $("liveScaleX").closest("label").hidden=canReflow||added;
-    $("liveScaleY").closest("label").hidden=canReflow||added;
+    // Original elements use box geometry, not independent X/Y visual scale.
+    $("liveScaleX").disabled=true;
+    $("liveScaleY").disabled=true;
+    $("liveScaleX").closest("label").hidden=true;
+    $("liveScaleY").closest("label").hidden=true;
     $("liveTextReflowControls").hidden=!canReflow;
     const on=canReflow;
     $("liveTextReflow").checked=on;
@@ -2062,21 +2094,10 @@ function moveLiveGesture(event){
       geom.y=Math.round(clamp(base.y+snap.dy,-4000,40000));
       drawLiveSnapGuides(snap.x,snap.y,g.node.ownerDocument);
     }else{
-      const direction=g.dir;
-      geom.w=Math.round(clamp(base.w+
-        (direction.includes("e")?deltaX:0)-(direction.includes("w")?deltaX:0),40,4000));
-      geom.h=Math.round(clamp(base.h+
-        (direction.includes("s")?deltaY:0)-(direction.includes("n")?deltaY:0),24,5000));
-      if(g.patch.objectType==="image"&&direction.length===2&&!event.altKey){
-        const ratio=base.w/base.h;
-        if(Math.abs(geom.w-base.w)>=Math.abs(geom.h-base.h)*ratio)
-          geom.h=Math.round(clamp(geom.w/ratio,24,5000));
-        else geom.w=Math.round(clamp(geom.h*ratio,40,4000));
-      }
-      if(direction.includes("w"))geom.x=Math.round(clamp(
-        base.x+base.w-geom.w,-4000,10000));
-      if(direction.includes("n"))geom.y=Math.round(clamp(
-        base.y+base.h-geom.h,-4000,40000));
+      Object.assign(geom,resizableBoxFromDrag(base,g.dir,deltaX,deltaY,
+        g.patch.objectType==="image"&&liveLockImageRatio&&!event.altKey));
+      geom.x=Math.round(clamp(geom.x,-4000,10000));
+      geom.y=Math.round(clamp(geom.y,-4000,40000));
     }
     patch.geometry={...patch.geometry,[device]:geom};
     livePatches.set(g.selector,patch);
@@ -2116,21 +2137,17 @@ function moveLiveGesture(event){
     if(dir.includes("n"))next.dy=clamp(Math.round(g.layout.dy+
       (originalHeight-nextHeight)),-4000,4000);
   }else{
-    const dir=g.dir;
-    let width=clamp(g.rect.width+(dir.includes("e")?deltaX:0)-
-      (dir.includes("w")?deltaX:0),32,8000);
-    let height=clamp(g.rect.height+(dir.includes("s")?deltaY:0)-
-      (dir.includes("n")?deltaY:0),24,8000);
-    if(dir.length===2&&!event.altKey&&g.node.tagName==="IMG"){
-      const ratio=g.rect.width/g.rect.height;
-      if(Math.abs(width-g.rect.width)>=Math.abs(height-g.rect.height)*ratio)
-        height=clamp(width/ratio,24,8000);
-      else width=clamp(height*ratio,32,8000);
-    }
-    next.sx=clamp(Math.round(g.layout.sx*(width/g.rect.width)*1000)/1000,.2,5);
-    next.sy=clamp(Math.round(g.layout.sy*(height/g.rect.height)*1000)/1000,.2,5);
-    if(dir.includes("w"))next.dx=clamp(Math.round(g.layout.dx+g.rect.width-width),-4000,4000);
-    if(dir.includes("n"))next.dy=clamp(Math.round(g.layout.dy+g.rect.height-height),-4000,4000);
+    // Existing images and section containers now change their actual
+    // dimensions. Transform scales are cancelled, so descendant text and
+    // photos are never stretched horizontally or vertically.
+    const box=resizableBoxFromDrag(
+      {x:0,y:0,w:g.rect.width,h:g.rect.height},g.dir,deltaX,deltaY,
+      g.node.tagName==="IMG"&&liveLockImageRatio&&!event.altKey,64,24);
+    Object.assign(next,normaliseElementBoxLayout(g.node,g.layout));
+    next.wrapWidth=box.w;
+    next.reserveHeight=box.h;
+    next.dx=clamp(Math.round(g.layout.dx+box.x),-4000,4000);
+    next.dy=clamp(Math.round(g.layout.dy+box.y),-4000,4000);
   }
   const patch=copy(g.patch);
   patch.layout={...patch.layout,[liveDevice()]:next};
@@ -3463,6 +3480,14 @@ function attachEvents(){
   for(const [id,key] of Object.entries(liveDesignFields))
     $(id).addEventListener("change",event=>setLiveObjectDesign(key,event.target.value));
   $("resetLiveObjectDesign").addEventListener("click",resetLiveObjectDesign);
+  $("liveLockImageRatio").addEventListener("change",event=>{
+    liveLockImageRatio=event.target.checked;
+    status(liveLockImageRatio?"Image frame proportions locked":"Image frame proportions unlocked · Image content still keeps its natural aspect ratio");
+  });
+  $("liveOriginalWidth").addEventListener("change",event=>
+    setOriginalBoxDimension("wrapWidth",event.target.value));
+  $("liveOriginalHeight").addEventListener("change",event=>
+    setOriginalBoxDimension("reserveHeight",event.target.value));
   $("liveAddedWidth").addEventListener("change",event=>
     setAddedDimension("w",event.target.value));
   $("liveAddedHeight").addEventListener("change",event=>
