@@ -16,6 +16,7 @@ let workspaceMode="live",liveWidth=1160,liveScale=1,liveManualScale=null,liveSel
 const LIVE_DRAFT_KEY="moon-academic-editor-v2:source:";
 let livePatches=new Map(),liveEditing=null,liveHistory=[],liveRedo=[],liveGesture=null,liveOverlay=null;
 let githubTabToken=""; // In-memory only. Never written to storage or page files.
+let reconnectImages=[],reconnectForPage="";
 const copy=data=>JSON.parse(JSON.stringify(data));
 const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
 const number=v=>Number.isFinite(Number(v))?Number(v):0;
@@ -1870,6 +1871,101 @@ function renderPublishPatchList(){
     row.append(label,remove);list.append(row);
   }
 }
+function listReconnectEdits(){
+  const panel=$("imageReconnectPanel"),selector=$("reconnectSavedImage");
+  const before=selector.value;
+  const saved=[...livePatches.values()].filter(p=>p.kind==="image");
+  panel.hidden=workspaceMode!=="live"||!saved.length;
+  selector.replaceChildren();
+  for(const patch of saved){
+    const option=document.createElement("option");
+    option.value=patch.selector;
+    option.textContent=(patch.expected||"Image")+" → "+(patch.src||"")+" · "+patch.selector;
+    selector.append(option);
+  }
+  if(saved.some(p=>p.selector===before))selector.value=before;
+  updateReconnectPreview();
+}
+function updateReconnectPreview(){
+  const selection=$("reconnectSourceImage").value;
+  const entry=reconnectImages.find(item=>item.selector===selection);
+  const image=$("reconnectImagePreview"),message=$("reconnectSourceInfo");
+  image.hidden=!entry;
+  image.removeAttribute("src");
+  if(entry){
+    image.src=entry.url;
+    message.textContent="Original source "+entry.src+" · "+(entry.alt||"No description")+
+      ". Only reconnect if this is the intended image.";
+  }else message.textContent=reconnectImages.length?
+    "Select the corresponding source image before reconnecting.":
+    "No eligible original images loaded for this page.";
+  $("reconnectImageButton").disabled=!entry;
+}
+async function loadReconnectImages(){
+  const page=currentPage;
+  const select=$("reconnectSourceImage");
+  reconnectImages=[];reconnectForPage="";
+  select.replaceChildren();
+  $("reconnectSourceInfo").textContent="Checking images in the original "+page+"…";
+  try{
+    const url=new URL(page,location.href);
+    const response=await fetch(url,{cache:"no-store",credentials:"same-origin"});
+    if(!response.ok)throw Error("Could not fetch original page (HTTP "+response.status+")");
+    const doc=new DOMParser().parseFromString(await response.text(),"text/html");
+    if(page!==currentPage)return;
+    for(const node of doc.querySelectorAll("main img[src]")){
+      const src=node.getAttribute("src")||"",selector=liveSelector(node);
+      let absolute;
+      try{absolute=new URL(src,url);}catch{continue;}
+      // Never offer a remote image or javascript URL as a reconnection target.
+      if(absolute.origin!==url.origin||!["http:","https:"].includes(absolute.protocol)||!selector)continue;
+      reconnectImages.push({src,selector,alt:node.alt||"",url:absolute.href});
+    }
+    reconnectForPage=page;
+    for(const item of reconnectImages){
+      const option=document.createElement("option");
+      option.value=item.selector;
+      option.textContent=item.src+" · "+(item.alt||item.selector);
+      select.append(option);
+    }
+    const patch=livePatches.get($("reconnectSavedImage").value);
+    const exact=reconnectImages.find(x=>patch&&equivalentSiteImageSource(x.src,patch.expected));
+    if(exact)select.value=exact.selector;
+    updateReconnectPreview();
+    if(!reconnectImages.length)
+      $("reconnectSourceInfo").textContent="No local images found in "+page+
+        ". The saved edit may belong to another page.";
+  }catch(error){
+    $("reconnectSourceInfo").textContent="Could not inspect this source page. "+
+      (error.message||error);
+    updateReconnectPreview();
+  }
+}
+function reconnectSavedImage(){
+  const former=$("reconnectSavedImage").value;
+  const patch=livePatches.get(former),destination=$("reconnectSourceImage").value;
+  const image=reconnectImages.find(item=>item.selector===destination);
+  if(!patch||patch.kind!=="image"||!image||reconnectForPage!==currentPage){
+    status("Reconnect cancelled · Source images need to be loaded again.");return;
+  }
+  if([...livePatches.keys()].some(key=>key!==former&&key===destination)){
+    status("That source image already has another saved edit. Nothing changed.");return;
+  }
+  const allowed=confirm("Reconnect saved image edit to "+image.src+" on "+currentPage+
+    "?\n\nThe editor will keep your intended replacement, position and appearance."+
+    "\nIt will treat the selected image as the new original for this edit. The website will not be published yet.");
+  if(!allowed)return;
+  const before=liveSnapshot(),next={...patch,selector:destination,expected:image.src};
+  livePatches.delete(former);
+  livePatches.set(destination,next);
+  if(!recordLiveHistory(before))return;
+  renderPublishPatchList();
+  $("reconnectSavedImage").value=destination;
+  $("publishError").hidden=true;
+  loadLivePage();
+  status("Image edit reconnected to "+image.src+" · Review and check saved edits again.");
+}
+
 function updatePublishTarget(){
   const target=$("publishTarget").value,live=target==="live";
   $("publishTitle").textContent=live?"Publish changes to the live website":"Publish staging preview";
@@ -1884,6 +1980,7 @@ function updatePublishTarget(){
   $("confirmPublish").disabled=live&&!livePatches.size;
   $("checkPublishEdits").hidden=workspaceMode!=="live";
   renderPublishPatchList();
+  listReconnectEdits();
   $("publishError").hidden=true;
 }
 function showPublishResult(result){
@@ -2224,6 +2321,17 @@ function attachEvents(){
     $("publishDialog").showModal();
   });
   $("publishTarget").addEventListener("change",updatePublishTarget);
+  $("imageReconnectPanel").addEventListener("toggle",event=>{
+    if(event.target.open&&workspaceMode==="live")loadReconnectImages();
+  });
+  $("reconnectSavedImage").addEventListener("change",()=>{
+    const patch=livePatches.get($("reconnectSavedImage").value);
+    const match=reconnectImages.find(item=>patch&&equivalentSiteImageSource(item.src,patch.expected));
+    if(match)$("reconnectSourceImage").value=match.selector;
+    updateReconnectPreview();
+  });
+  $("reconnectSourceImage").addEventListener("change",updateReconnectPreview);
+  $("reconnectImageButton").addEventListener("click",reconnectSavedImage);
   $("publishPatchList").addEventListener("click",event=>{
     const button=event.target.closest("button[data-patch-selector]");
     if(!button||$("confirmPublish").disabled&&!livePatches.size)return;
@@ -2233,6 +2341,7 @@ function attachEvents(){
     livePatches.delete(selector);
     recordLiveHistory(before);
     renderPublishPatchList();
+    listReconnectEdits();
     $("confirmPublish").disabled=$("publishTarget").value==="live"&&!livePatches.size;
     $("publishError").hidden=true;
     loadLivePage();
