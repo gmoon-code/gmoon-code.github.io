@@ -60,7 +60,7 @@ function remember(snapshot){
   const before=snapshot||copy(scene);
   history.push(before);
   if(history.length>60)history.shift();
-  redo.length=0;refreshUndo();scheduleSave();
+  redo.length=0;refreshUndo();save();
 }
 function mutate(fn){
   const before=copy(scene);
@@ -76,11 +76,11 @@ function restore(data){
 }
 function undo(){
   if(!history.length)return;
-  redo.push(copy(scene));restore(history.pop());refreshUndo();scheduleSave();
+  redo.push(copy(scene));restore(history.pop());refreshUndo();save();
 }
 function redoAction(){
   if(!redo.length)return;
-  history.push(copy(scene));restore(redo.pop());refreshUndo();scheduleSave();
+  history.push(copy(scene));restore(redo.pop());refreshUndo();save();
 }
 function makeObject(type,attrs={}){
   const z=scene.objects.reduce((m,o)=>Math.max(o.z,m),0)+1;
@@ -266,9 +266,11 @@ function endGesture(event){
   const g=gesture;gesture=null;
   if(event.type==="pointercancel"){scene=g.snapshot;render();return;}
   if(g.moved&&JSON.stringify(g.snapshot)!==JSON.stringify(scene)){
-    remember(g.snapshot);
     const bottom=Math.max(...scene.objects.map(o=>o.y+o.h+70),900);
     if(bottom>scene.height)scene.height=Math.ceil(bottom);
+    // A committed gesture is a single undoable operation; persist it before
+    // a possible immediate reload, navigation or accidental tab closure.
+    remember(g.snapshot);
   }
   render();
 }
