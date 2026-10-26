@@ -682,3 +682,39 @@ test('Escape and an empty-canvas click dismiss selection without changing the dr
   await expect(view.locator('#moon-free-selection')).toHaveCount(0);
   await expect(page.locator('#exportBtn')).toBeDisabled();
 });
+
+test('Edit text updates an original heading without turning off free canvas mode',async({page})=>{
+  const view=page.frameLocator('#pageFrame');
+  const heading=view.locator('#nested h2');
+  await heading.click();
+  await view.getByRole('button',{
+    name:'Edit selected text directly without leaving free move mode'
+  }).click();
+  await expect(heading).toHaveAttribute('contenteditable','true');
+  await heading.fill('An improved scientific explanation');
+  await heading.press('Escape');
+  await expect(heading).not.toHaveAttribute('contenteditable','true');
+  await expect(page.locator('#freeCanvasToggle')).toHaveAttribute('aria-pressed','true');
+  await expect(view.locator('#moon-free-selection')).toHaveCount(1);
+  await expect.poll(()=>page.evaluate(key=>
+    JSON.parse(localStorage.getItem(key)||'{}').items?.some(item=>
+      item.markup.includes('An improved scientific explanation')),DRAFT)).toBe(true);
+  const downloadPromise=page.waitForEvent('download');
+  await page.locator('#exportBtn').click();
+  const exported=fs.readFileSync(await(await downloadPromise).path(),'utf8');
+  expect(exported).toContain('An improved scientific explanation');
+  expect(exported).not.toContain('data-moon-inline-editing');
+  await page.reload();
+  await expect(view.locator('main h2')).toHaveText('An improved scientific explanation');
+});
+
+test('double-clicking source text opens inline editing without a page-wide mode switch',async({page})=>{
+  const view=page.frameLocator('#pageFrame');
+  const heading=view.locator('#nested h2');
+  await heading.dblclick();
+  await expect(heading).toHaveAttribute('contenteditable','true');
+  await heading.fill('Edited by double-click');
+  await heading.press('Escape');
+  await expect(page.locator('#freeCanvasToggle')).toHaveAttribute('aria-pressed','true');
+  await expect(view.locator('#nested h2')).toHaveText('Edited by double-click');
+});
