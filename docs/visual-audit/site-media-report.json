@@ -1,5 +1,5 @@
 {
-  "testedAt": "2026-10-19T09:11:21.398Z",
+  "testedAt": "2026-10-26T12:45:25.831Z",
   "results": [
     {
       "path": "index.html",
@@ -10,15 +10,6 @@
         "viewportWidth": 1440,
         "figures": [
           {
-            "className": "home-photo studio-unrestricted-size",
-            "hasCaption": false,
-            "hasAccessibleName": false,
-            "width": 318,
-            "left": 962,
-            "right": 1280,
-            "contentChars": 0
-          },
-          {
             "className": "home-outside-photo",
             "hasCaption": false,
             "hasAccessibleName": false,
@@ -26,35 +17,44 @@
             "left": 1010,
             "right": 1280,
             "contentChars": 0
+          },
+          {
+            "className": "home-photo studio-unrestricted-size moon-free-object moon-free-absolute",
+            "hasCaption": false,
+            "hasAccessibleName": false,
+            "width": 429,
+            "left": 819,
+            "right": 1248,
+            "contentChars": 0
           }
         ]
       },
       "images": [
-        {
-          "src": "assets/profile-portrait.webp",
-          "naturalWidth": 520,
-          "naturalHeight": 516,
-          "complete": true,
-          "renderedWidth": 298,
-          "renderedHeight": 298,
-          "left": 972,
-          "right": 1270,
-          "alt": "Portrait of Ye Eun Moon outdoors",
-          "loading": "eager",
-          "source": "https://gmoon-code.github.io/assets/profile-portrait.webp"
-        },
         {
           "src": "assets/pungmul-stage.webp",
           "naturalWidth": 860,
           "naturalHeight": 645,
           "complete": true,
           "renderedWidth": 254,
-          "renderedHeight": 170,
-          "left": 1018,
-          "right": 1272,
+          "renderedHeight": 249,
+          "left": 886,
+          "right": 1140,
           "alt": "Pungmul ensemble performing together on stage",
           "loading": "lazy",
           "source": "https://gmoon-code.github.io/assets/pungmul-stage.webp"
+        },
+        {
+          "src": "assets/profile-portrait.webp",
+          "naturalWidth": 520,
+          "naturalHeight": 516,
+          "complete": true,
+          "renderedWidth": 412,
+          "renderedHeight": 412,
+          "left": 828,
+          "right": 1240,
+          "alt": "Portrait of Ye Eun Moon outdoors",
+          "loading": "eager",
+          "source": "https://gmoon-code.github.io/assets/profile-portrait.webp"
         }
       ],
       "showLogoMetrics": [],
@@ -69,11 +69,11 @@
         "viewportWidth": 1440,
         "figures": [
           {
-            "className": "about-photo",
+            "className": "contact-portrait",
             "hasCaption": false,
             "hasAccessibleName": false,
-            "width": 190,
-            "left": 1090,
+            "width": 314,
+            "left": 966,
             "right": 1280,
             "contentChars": 0
           }
@@ -85,12 +85,12 @@
           "naturalWidth": 520,
           "naturalHeight": 516,
           "complete": true,
-          "renderedWidth": 170,
-          "renderedHeight": 170,
-          "left": 1100,
-          "right": 1270,
+          "renderedWidth": 282,
+          "renderedHeight": 273,
+          "left": 982,
+          "right": 1264,
           "alt": "Portrait of Ye Eun Moon outdoors",
-          "loading": "eager",
+          "loading": "lazy",
           "source": "https://gmoon-code.github.io/assets/profile-portrait.webp"
         }
       ],
@@ -682,7 +682,7 @@
         "viewportWidth": 390,
         "figures": [
           {
-            "className": "home-photo studio-unrestricted-size",
+            "className": "home-photo studio-unrestricted-size moon-free-object moon-free-absolute",
             "hasCaption": false,
             "hasAccessibleName": false,
             "width": 162,
@@ -721,16 +721,18 @@
           "naturalHeight": 645,
           "complete": true,
           "renderedWidth": 254,
-          "renderedHeight": 191,
-          "left": 22,
-          "right": 276,
+          "renderedHeight": 249,
+          "left": -110,
+          "right": 144,
           "alt": "Pungmul ensemble performing together on stage",
           "loading": "lazy",
           "source": "https://gmoon-code.github.io/assets/pungmul-stage.webp"
         }
       ],
       "showLogoMetrics": [],
-      "failures": []
+      "failures": [
+        "image 2 outside viewport"
+      ]
     },
     {
       "path": "about.html",
@@ -741,12 +743,12 @@
         "viewportWidth": 390,
         "figures": [
           {
-            "className": "about-photo",
+            "className": "contact-portrait",
             "hasCaption": false,
             "hasAccessibleName": false,
-            "width": 190,
+            "width": 148,
             "left": 14,
-            "right": 204,
+            "right": 162,
             "contentChars": 0
           }
         ]
@@ -757,12 +759,12 @@
           "naturalWidth": 520,
           "naturalHeight": 516,
           "complete": true,
-          "renderedWidth": 170,
-          "renderedHeight": 170,
-          "left": 24,
-          "right": 194,
+          "renderedWidth": 132,
+          "renderedHeight": 132,
+          "left": 22,
+          "right": 154,
           "alt": "Portrait of Ye Eun Moon outdoors",
-          "loading": "eager",
+          "loading": "lazy",
           "source": "https://gmoon-code.github.io/assets/profile-portrait.webp"
         }
       ],
