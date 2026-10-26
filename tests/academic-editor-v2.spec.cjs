@@ -972,3 +972,54 @@ test('selecting and moving a real website section preserves nested links and HTM
   await page.reload();
   await expect(live.locator('main section h2')).toHaveText('Whole card');
 });
+
+test('faithful live text colour and font editing preserves document content and supports Undo',async({page})=>{
+  const live=page.frameLocator('#livePageFrame');
+  const heading=live.locator('main h2');
+  await heading.click();
+  const original=await heading.evaluate(node=>({
+    font:getComputedStyle(node).fontFamily,color:getComputedStyle(node).color
+  }));
+  await page.locator('#liveFontFamily').selectOption('Arial, sans-serif');
+  await expect(heading).toHaveCSS('font-family','Arial, sans-serif');
+  await page.locator('#liveTextColour').evaluate(node=>{
+    node.value='#bb3377';node.dispatchEvent(new Event('change',{bubbles:true}));
+  });
+  await expect(heading).toHaveCSS('color','rgb(187, 51, 119)');
+  await expect(heading).toHaveText('Research overview');
+  const pending=page.waitForEvent('download');
+  await page.locator('#exportLiveEdits').click();
+  const exported=fs.readFileSync(await (await pending).path(),'utf8');
+  expect(exported).toContain('font-family:Arial, sans-serif!important');
+  expect(exported).toContain('color:#bb3377!important');
+  await page.locator('#undo').click();
+  await expect(heading).toHaveCSS('color',original.color);
+  await page.locator('#redo').click();
+  await expect(heading).toHaveCSS('color','rgb(187, 51, 119)');
+  await page.reload();
+  await expect(live.locator('main h2')).toHaveCSS('color','rgb(187, 51, 119)');
+});
+test('whole-section background changes keep nested markup and reset cleanly',async({page})=>{
+  const fixture='<!doctype html><html><body><main>'+
+    '<section class="study" style="padding:15px"><h2>Study</h2>'+
+    '<p>Evidence and <a href="#ref">references</a></p></section>'+
+    '<p id="ref">Citation remains.</p></main></body></html>';
+  await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',body:fixture}));
+  await page.locator('#reloadLive').click();
+  const live=page.frameLocator('#livePageFrame');
+  const section=live.locator('main section.study');
+  await live.locator('main section h2').click({modifiers:['Alt']});
+  await expect(page.locator('#liveAppearanceControls')).toBeVisible();
+  await page.locator('#liveBackgroundColour').evaluate(node=>{
+    node.value='#ddeeff';node.dispatchEvent(new Event('change',{bubbles:true}));
+  });
+  await expect(section).toHaveCSS('background-color','rgb(221, 238, 255)');
+  await page.locator('#resetLiveAppearance').click();
+  await expect(section).not.toHaveCSS('background-color','rgb(221, 238, 255)');
+  await expect(page.locator('#liveEditCount')).toContainText('No saved live-page edits');
+  const pending=page.waitForEvent('download');
+  await page.locator('#exportLiveEdits').click();
+  const exported=fs.readFileSync(await (await pending).path(),'utf8');
+  expect(exported).toContain('href="#ref"');
+  expect(exported).toContain('Evidence and');
+});
