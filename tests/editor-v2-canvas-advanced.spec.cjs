@@ -70,3 +70,16 @@ test('Escape cancels an in-progress marquee without moving or deselecting object
   await page.mouse.up();
   await expect(page.locator('#stage [data-id="1"]')).toHaveCSS('left','150px');
 });
+
+test('clicking a canvas object restores arrow-key control after inspector editing',async({page})=>{
+  await page.locator('#addShape').click();
+  await setPosition(page,1,150,150);
+  await expect(page.locator('#propY')).toBeFocused();
+  const shape=page.locator('#stage [data-id="1"]');
+  await shape.click({position:{x:45,y:45}});
+  await expect(page.locator('#stage')).toBeFocused();
+  await page.keyboard.press('ArrowLeft');
+  await expect(shape).toHaveCSS('left','149px');
+  await page.keyboard.press('Shift+ArrowDown');
+  await expect(shape).toHaveCSS('top','160px');
+});
