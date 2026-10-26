@@ -507,6 +507,21 @@ function selectLiveElement(node){
     .trim().replace(/\s+/g," ").slice(0,80);
   status("Live element selected: "+label+" · Original website unchanged");
 }
+function reportLiveAssets(){
+  const label=$("liveAssetStatus"),doc=$("livePageFrame").contentDocument;
+  if(!doc?.body){label.textContent="The selected page could not be loaded";return;}
+  const missingImages=[...doc.images].filter(image=>
+    image.hasAttribute("src")&&image.complete&&image.naturalWidth===0&&image.loading!=="lazy");
+  const missingStyles=[...doc.querySelectorAll('link[rel~="stylesheet"]')].filter(
+    link=>!link.disabled&&!link.sheet);
+  const warnings=[];
+  if(missingImages.length)warnings.push(missingImages.length+" missing image"+(missingImages.length===1?"":"s"));
+  if(missingStyles.length)warnings.push(missingStyles.length+" missing stylesheet"+(missingStyles.length===1?"":"s"));
+  label.textContent=warnings.length?
+    "Original-page resource warning · "+warnings.join(" · "):
+    "Original webpage loaded · "+liveWidth+"px browser viewport";
+  label.classList.toggle("has-warning",!!warnings.length);
+}
 function bindLiveDocument(){
   const frame=$("livePageFrame"),doc=frame.contentDocument;
   if(liveObserver){liveObserver.disconnect();liveObserver=null;}
@@ -555,15 +570,20 @@ function bindLiveDocument(){
   liveObserver=new ResizeObserver(()=>fitLivePage());
   liveObserver.observe(doc.documentElement);
   liveObserver.observe(doc.body);
-  doc.fonts?.ready?.then(()=>fitLivePage());
+  doc.fonts?.ready?.then(()=>{fitLivePage();reportLiveAssets();});
   for(const image of doc.querySelectorAll("img")){
-    if(!image.complete)image.addEventListener("load",()=>fitLivePage(),{once:true});
+    if(!image.complete){
+      image.addEventListener("load",()=>{fitLivePage();reportLiveAssets();},{once:true});
+      image.addEventListener("error",reportLiveAssets,{once:true});
+    }
   }
-  fitLivePage();
+  fitLivePage();reportLiveAssets();
 }
 function loadLivePage(page=currentPage){
   if(!PAGES.has(page))return;
   ++liveSerial;
+  $("liveAssetStatus").textContent="Loading the original webpage…";
+  $("liveAssetStatus").classList.remove("has-warning");
   // Keep the image library in sync when the original website is refreshed.
   loadPageImageLibrary(page,loadSerial);
   if(liveObserver){liveObserver.disconnect();liveObserver=null;}
