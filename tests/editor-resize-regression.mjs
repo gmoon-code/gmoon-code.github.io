@@ -54,20 +54,39 @@ async function resize(label,subject,neighbor){
   assert.equal(await page.locator("#noticeDialog[open]").count(),0,
     label+" triggered a page-protection error");
   console.log("PASS",label,"width",oldBox.width,"=>",now.width);
+  return {before:oldBox,after:now};
 }
 try{
   await page.goto(base+"/editor.html",{waitUntil:"domcontentloaded"});
   const frame=page.frameLocator("#pageFrame");
   await frame.locator("main .home-lead").waitFor({state:"visible",timeout:25000});
-  await resize("paragraph",frame.locator("main .home-lead").first(),
-    frame.locator("main h1").first());
+  const paragraph=frame.locator("main .home-lead").first();
+  const paragraphResult=await resize("paragraph",paragraph,frame.locator("main h1").first());
+  // The resized geometry must persist to the browser-local draft.
+  await page.keyboard.press("Control+s");
+  await page.reload({waitUntil:"domcontentloaded"});
+  await paragraph.waitFor({state:"visible",timeout:25000});
+  const restoredParagraph=await paragraph.boundingBox();
+  assert(restoredParagraph&&closeTo(restoredParagraph.width,paragraphResult.after.width),
+    "paragraph resize was lost after saving and reloading");
+  console.log("PASS saved resize restored");
+  await page.keyboard.press("Control+z");
+  const reverted=await paragraph.boundingBox();
+  // A fresh page load clears undo history, so test undo in the current
+  // document separately after a second resize, below.
+  assert(reverted,"paragraph lost after keyboard action");
   // Start the image test from the original content, not the text test draft.
   await page.evaluate(()=>localStorage.clear());
   await page.reload({waitUntil:"domcontentloaded"});
   await frame.locator('main img[src*="profile-portrait"]')
     .waitFor({state:"visible",timeout:25000});
-  await resize("image",frame.locator('main img[src*="profile-portrait"]').first(),
-    frame.locator("main h1").first());
+  const image=frame.locator('main img[src*="profile-portrait"]').first();
+  const imageResult=await resize("image",image,frame.locator("main h1").first());
+  await page.locator("#undoBtn").click();
+  const undoneImage=await image.boundingBox();
+  assert(undoneImage&&closeTo(undoneImage.width,imageResult.before.width),
+    "undo did not restore the original image dimensions");
+  console.log("PASS image resize undo");
 }finally{
   await browser.close();
   await new Promise(ok=>server.close(ok));
