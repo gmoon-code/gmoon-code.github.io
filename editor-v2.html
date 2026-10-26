@@ -6,30 +6,30 @@
 <meta name="robots" content="noindex,nofollow">
 <title>Academic Website Editor 2 | Ye Eun Moon</title>
 <link rel="stylesheet" href="editor-v2.css?v=20261026-image-reconnect-v12">
-<script src="editor-v2.js?v=20261026-contact-page-v15" defer></script>
+<script src="editor-v2.js?v=20261026-editor-actions-v16" defer></script>
 </head>
 <body>
 <a class="skip" href="#workspace">Skip to editor canvas</a>
 <div class="application">
   <header class="topbar">
-    <div class="identity"><span class="brand-mark" aria-hidden="true"></span><span><strong>Academic Editor <small>2.0</small></strong><em>Independent canvas · draft only</em></span></div>
+    <div class="identity"><span class="brand-mark" aria-hidden="true"></span><span><strong>Academic Editor <small>2.0</small></strong><em>Visual editing · source-safe publishing</em></span></div>
     <div class="actions">
       <span class="saving" id="status" role="status" aria-live="polite">Preparing editor</span>
       <button id="undo" title="Undo (Ctrl+Z)" disabled>↶ Undo</button>
       <button id="redo" title="Redo (Ctrl+Shift+Z)" disabled>↷ Redo</button>
       <button id="save" class="subtle">Save draft</button>
-      <button id="exportScene" class="subtle">Export JSON</button>
+      <button id="exportScene" class="subtle">Export canvas JSON</button>
       <button id="preview" class="primary">Preview page</button>
       <button id="compare" class="subtle">Compare original</button>
       <button id="publish" class="primary outline">Publish live website</button>
     </div>
   </header>
   <div id="publishResult" class="publish-result" role="status" aria-live="polite" hidden></div>
-  <section class="tools" aria-label="Canvas tools">
+  <section class="tools" aria-label="Editor tools">
     <button id="selectTool" class="active" aria-pressed="true">↖ Select</button>
-    <button id="addText">T Text</button>
-    <button id="addImage">▧ Image</button>
-    <button id="addShape">▢ Shape</button>
+    <button id="addText" title="Add an independent text object to the free design canvas">T Canvas text</button>
+    <button id="addImage" title="Add an image to the free design canvas">▧ Canvas image</button>
+    <button id="addShape" title="Add a shape to the free design canvas">▢ Canvas shape</button>
     <span class="divider"></span>
     <button id="duplicate">Duplicate</button>
     <button id="front">Bring forward</button>
@@ -68,14 +68,14 @@
         <button id="importScene" class="subtle">Restore canvas from JSON backup</button>
         <p class="help">Creates a simplified, free-form reconstruction. For a faithful appearance and small content edits, use Live website. The original website remains unchanged.</p>
       </section>
-      <section class="panel-section">
+      <section id="canvasLayersPanel" class="panel-section" hidden>
         <div class="panel-title"><h2>Layers</h2><span id="layerCount">0</span></div>
         <div id="layers" class="layers" aria-label="Page objects"></div>
         <p class="help">Click an object or its layer to select it. Drag on the canvas, or use the arrow keys for precise movement.</p>
       </section>
       <section class="panel-section">
         <h2>Page image library</h2>
-        <p class="help">Import a page to browse its existing images. Click one to insert it, or select an image first to replace it.</p>
+        <p class="help">In Live website mode, select an existing image, then choose a replacement here. To insert a new independent image, switch to Free design canvas.</p>
         <div id="imageLibrary" class="image-library" aria-label="Images from this website page"></div>
       </section>
     </aside>
@@ -150,7 +150,7 @@
         </div>
         <div id="liveLayoutControls" class="live-layout-controls" hidden>
           <h3>Free placement on this screen</h3>
-          <p class="help">Click text or an image to select it. Alt-click inside a card or section to select the whole container. Drag to move with alignment guides (hold Alt while dragging to disable snapping), or use resize handles. Enable text rewrapping below when you want to change line breaks.</p>
+          <p class="help">Click or drag any text or image to select and move it. Double-click text to edit. Alt-click a card, section, or linked text to select without following a link. Drag resize handles, using Alt while dragging to disable snapping.</p>
           <div class="property-grid">
             <label>Horizontal offset <input type="number" id="liveMoveX" step="1" value="0"></label>
             <label>Vertical offset <input type="number" id="liveMoveY" step="1" value="0"></label>
@@ -173,7 +173,7 @@
           <div class="inline-actions">
             <button id="resetLiveLayout" type="button">Reset position on this screen</button>
           </div>
-          <p class="help">Positioning is saved independently for desktop, tablet and phone and included only in draft previews or staging.</p>
+          <p class="help">Positioning is saved independently for desktop, tablet and phone. Validated changes can be published from Live website mode after review.</p>
         </div>
         <div class="inline-actions">
           <button id="revertLiveElement" type="button" disabled>Revert this element</button>
@@ -182,8 +182,8 @@
         <button id="exportLiveEdits" type="button">Export original-layout HTML</button>
         <p id="liveEditCount" class="help">No saved live-page edits.</p>
       </section>
-      <section class="panel-section">
-        <h2>Object properties</h2>
+      <section id="canvasPropertiesPanel" class="panel-section" hidden>
+        <h2>Canvas object properties</h2>
         <div id="emptySelection" class="empty-selection">Select an object to edit its position, dimensions, text, colour, and layering.</div>
         <div id="properties" hidden>
           <label for="objectName">Layer name</label>
@@ -235,8 +235,8 @@
           </div>
         </div>
       </section>
-      <section class="panel-section">
-        <h2>Publishing safeguards</h2>
+      <section id="canvasPublishingPanel" class="panel-section" hidden>
+        <h2>Canvas draft tools</h2>
         <p class="help">Live website mode can publish source-preserving edits to the public page after review. The independent design canvas remains staging-only until its layout matches the original site.</p>
         <button id="exportHtml">Export standalone HTML</button>
         <button id="resetScene" class="danger">Discard local canvas draft</button>
