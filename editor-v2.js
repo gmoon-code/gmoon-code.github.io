@@ -2295,11 +2295,18 @@ async function publishGithub(token,target){
   if(target==="live"&&!info)
     throw Error("The public page is missing from GitHub. Publication cancelled.");
 
-  // Production HTML is based on the latest GitHub blob, not a stale page
-  // obtained through the Pages CDN. Unrelated changes are retained; changed
-  // target elements fail the strict expected-text/image checks.
+  // Exactly the source HTML shown in the editable iframe must still be on
+  // GitHub when publishing. Matching text on a changed page is insufficient
+  // evidence that the overall visual result will be identical.
+  const currentSource=target==="live"?decodeGithubHtml(info):null;
+  if(target==="live"&&(liveSourceProvenance!=="github"||
+      liveDisplayedSourceHtml!==currentSource))
+    throw Error("The GitHub page changed since your editing view was loaded, or the editor is showing an unverified fallback. No publication was submitted. Your draft is preserved. Reload the live page and review the edits before publishing.");
+
+  // The exact same source assembler builds verified previews and the live
+  // update; the GitHub Contents API SHA guards the write from later changes.
   const production=target==="live"?
-    applyLiveEditsToGithubHtml(decodeGithubHtml(info)):null;
+    applyLiveEditsToGithubHtml(currentSource):null;
   const html=production?.html||
     (sourceMode?await sourcePreservingHtml("https://gmoon-code.github.io/"):
       standaloneHtml("../"));
