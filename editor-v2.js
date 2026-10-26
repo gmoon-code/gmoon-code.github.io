@@ -1243,7 +1243,12 @@ function setAddedDimension(key,value){
   const parsed=Number(value);
   if(!Number.isFinite(parsed))return;
   const previous=liveSnapshot(),geo={...addedDeviceGeometry(patch,liveDevice())};
+  const ratio=geo.w/Math.max(1,geo.h);
   geo[key]=Math.round(clamp(parsed,key==="w"?40:24,key==="w"?4000:5000));
+  if(patch.objectType==="image"&&liveLockImageRatio){
+    if(key==="w")geo.h=Math.round(clamp(geo.w/ratio,24,5000));
+    else geo.w=Math.round(clamp(geo.h*ratio,40,4000));
+  }
   patch.geometry={...patch.geometry,[liveDevice()]:geo};
   livePatches.set(patch.selector,patch);
   if(recordLiveHistory(previous)){
