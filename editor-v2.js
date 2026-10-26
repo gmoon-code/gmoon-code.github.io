@@ -1605,8 +1605,21 @@ function bindLiveDocument(){
   sheet.textContent='[data-moon-v2-live-selected]{outline:2px solid #287dbb!important;outline-offset:2px!important;cursor:crosshair!important}';
   (doc.head||doc.documentElement).append(sheet);
   doc.addEventListener("keydown",event=>{
-    if(workspaceMode!=="live"||liveEditing)return;
+    if(workspaceMode!=="live")return;
+    if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==="s"){
+      event.preventDefault();saveActiveDraft();return;
+    }
+    if(liveEditing){
+      if(event.key==="Escape"){event.preventDefault();cancelLiveText();}
+      return;
+    }
     if(event.target.closest?.("input,textarea,select,[contenteditable=true]"))return;
+    if((event.ctrlKey||event.metaKey)&&event.key==="]"&&liveSelected?.node){
+      event.preventDefault();setLiveLayer(true);return;
+    }
+    if((event.ctrlKey||event.metaKey)&&event.key==="["&&liveSelected?.node){
+      event.preventDefault();setLiveLayer(false);return;
+    }
     if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==="z"){
       event.preventDefault();
       liveUndoAction(event.shiftKey);return;
@@ -3036,6 +3049,9 @@ function attachEvents(){
     }
   });
   document.addEventListener("keydown",event=>{
+    if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==="s"){
+      event.preventDefault();saveActiveDraft();return;
+    }
     if(editingId!==null){
       if(event.key==="Escape"||(event.key==="Enter"&&(event.metaKey||event.ctrlKey))){
         event.preventDefault();finishTextEdit();
@@ -3055,6 +3071,12 @@ function attachEvents(){
     if(workspaceMode==="live"){
       // Canvas selection is retained across workspace switches. Shortcuts
       // must never delete/duplicate/move those hidden canvas objects.
+      if((event.ctrlKey||event.metaKey)&&event.key==="]"&&liveSelected?.node){
+        event.preventDefault();setLiveLayer(true);return;
+      }
+      if((event.ctrlKey||event.metaKey)&&event.key==="["&&liveSelected?.node){
+        event.preventDefault();setLiveLayer(false);return;
+      }
       if(event.key==="Escape"){clearLiveSelection();return;}
       if((event.key==="Delete"||event.key==="Backspace")&&liveSelected?.node){
         event.preventDefault();deleteSelectedLiveElement();
