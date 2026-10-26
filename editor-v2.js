@@ -315,7 +315,8 @@ function renderProperties(){
   if(shape)$("propShapeKind").value=obj.shapeKind||"rectangle";
   $("replaceImage").hidden=!isImage;
   $("replaceImage").disabled=obj.locked;
-  for(const id of ["textLabel","propText"])$(id).hidden=!isText;
+  for(const id of ["textLabel","propText","fitText"])$(id).hidden=!isText;
+  $("fitText").disabled=obj.locked;
   for(const id of ["srcLabel","propSrc","altLabel","propAlt"])$(id).hidden=!isImage;
   $("lock").textContent=obj.locked?"Unlock":"Lock";
   $("hide").textContent=obj.hidden?"Show":"Hide";
@@ -445,15 +446,34 @@ function beginTextEdit(id){
   content.focus();const range=document.createRange();range.selectNodeContents(content);
   const selection=window.getSelection();selection.removeAllRanges();selection.addRange(range);selection.collapseToEnd();
 }
+function measuredTextHeight(obj){
+  const measure=document.createElement("div");
+  measure.style.cssText="position:fixed;visibility:hidden;pointer-events:none;"+
+    "width:"+Math.max(MIN_W,obj.w)+"px;box-sizing:border-box;"+
+    "white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.45;"+
+    "font-family:"+obj.family+";font-size:"+obj.font+"px";
+  if(obj.rich)measure.innerHTML=cleanRich(obj.rich);
+  else measure.textContent=obj.text;
+  document.body.append(measure);
+  const height=Math.ceil(measure.getBoundingClientRect().height+6);
+  measure.remove();
+  return clamp(height,MIN_H,20000);
+}
 function finishTextEdit(){
   if(editingId===null)return;
   const id=editingId;editingId=null;
   const node=$("stage").querySelector('[data-id="'+id+'"]');
   if(!node)return;
   const content=node.querySelector(".scene-content");
-  const text=(content?.textContent||"").slice(0,30000);
+  const text=(content?.innerText||content?.textContent||"").slice(0,30000);
   const rich=cleanRich(content?.innerHTML||"");
-  mutate(()=>{const obj=lookup(id);if(obj){obj.text=text;obj.rich=rich;}});
+  mutate(()=>{
+    const obj=lookup(id);
+    if(!obj)return;
+    obj.text=text;obj.rich=rich;
+    obj.h=Math.max(obj.h,measuredTextHeight(obj));
+    scene.height=Math.max(scene.height,obj.y+obj.h+70);
+  });
   if(content)content.contentEditable="false";
   render();
 }
@@ -775,6 +795,14 @@ function attachEvents(){
       });
     });
   }
+  $("fitText").addEventListener("click",()=>{
+    const obj=lookup(activeId);
+    if(obj?.type!=="text"||obj.locked)return;
+    mutate(()=>{
+      obj.h=measuredTextHeight(obj);
+      scene.height=Math.max(scene.height,obj.y+obj.h+70);
+    });
+  });
   $("propShapeKind").addEventListener("change",event=>{
     const obj=lookup(activeId);
     if(obj?.type!=="shape"||obj.locked)return;
