@@ -25,3 +25,9 @@
 #liveViewport[hidden],#scrollspace[hidden]{display:none!important}
 #copyLiveObject:disabled{opacity:.45}
 @media(max-width:1100px){.workspace-modes .device-control{margin-left:0}.live-scrollspace{padding:16px}}
+
+/* Source-preserving edits are a separate workflow from the flattened canvas. */
+.live-selection-label{padding:10px;border:1px solid var(--rule);border-radius:6px;line-height:1.5;font-size:11px;background:#f7faf8;overflow-wrap:anywhere}
+#liveTextControls[hidden],#liveImageControls[hidden],#liveInspector[hidden]{display:none!important}
+#liveTextControls>button,#liveImageControls>button,#exportLiveEdits{max-width:100%;white-space:normal;text-align:center}
+#liveEditCount{border-top:1px solid var(--rule);padding-top:9px}
