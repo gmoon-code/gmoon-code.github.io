@@ -481,7 +481,10 @@ function changePage(page){
 function esc(s){return String(s??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
 function standaloneHtml(assetPrefix=""){
   const name=$("page").selectedOptions[0]?.textContent||"Website";
-  const sorted=[...scene.objects].filter(o=>!o.hidden).sort((a,b)=>a.z-b.z);
+  // The visual stack can change without scrambling headings and hyperlinks
+  // for keyboard and screen-reader users.
+  const sorted=[...scene.objects].filter(o=>!o.hidden)
+    .sort((a,b)=>(a.order??a.id)-(b.order??b.id)||a.id-b.id);
   const items=sorted.map(o=>{
     const base='class="item" style="left:'+o.x+'px;top:'+o.y+'px;width:'+o.w+
       'px;height:'+o.h+'px;z-index:'+o.z+';'+
@@ -493,8 +496,10 @@ function standaloneHtml(assetPrefix=""){
         '" alt="'+esc(o.alt)+'" loading="lazy"></figure>';
     }
     if(o.type==="shape")return '<div aria-hidden="true" '+base+'"></div>';
-    return '<section '+base+'font-family:'+esc(o.family)+';font-size:'+o.font+
-      'px;color:'+esc(o.color)+';text-align:'+esc(o.align)+'">'+esc(o.text)+'</section>';
+    const tag=exportedTag(o.tag);
+    const rich=o.rich?cleanRich(o.rich,assetPrefix):esc(o.text);
+    return '<'+tag+' '+base+'font-family:'+esc(o.family)+';font-size:'+o.font+
+      'px;color:'+esc(o.color)+';text-align:'+esc(o.align)+'">'+rich+'</'+tag+'>';
   }).join("\n");
   return '<!doctype html>\n<html lang="en"><head><meta charset="utf-8">'+
     '<meta name="viewport" content="width=device-width,initial-scale=1">'+
