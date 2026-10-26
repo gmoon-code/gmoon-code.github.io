@@ -430,7 +430,8 @@ function liveUndoAction(again=false){
 }
 function applyLiveLayoutInput(key,value){
   const patch=livePatchForSelected();if(!patch)return;
-  if(["sx","sy"].includes(key)&&patch.kind!=="image")return;
+  // Both text and image objects may scale visually, leaving their original
+  // layout footprints unchanged so neighbouring website content stays put.
   const min=["sx","sy"].includes(key)?.2:-4000;
   const max=["sx","sy"].includes(key)?5:4000;
   const next=clamp(Number(value),min,max);
@@ -510,8 +511,8 @@ function renderLiveInspector(){
     $("liveMoveY").value=String(entry.dy);
     $("liveScaleX").value=String(Math.round(entry.sx*100));
     $("liveScaleY").value=String(Math.round(entry.sy*100));
-    $("liveScaleX").disabled=tag!=="IMG";
-    $("liveScaleY").disabled=tag!=="IMG";
+    $("liveScaleX").disabled=false;
+    $("liveScaleY").disabled=false;
     $("resetLiveLayout").disabled=!livePatches.get(selector)?.layout?.[liveDevice()];
   }
   renderLiveEditCount();
@@ -675,7 +676,7 @@ function syncLiveOverlay(){
     move.setAttribute("aria-label","Move selected live-page object");
     move.dataset.direction="move";
     liveOverlay.append(move);
-    if(node.tagName==="IMG"){
+    if(node.matches("h1,h2,h3,h4,h5,h6,p,li,figcaption,blockquote,img")){
       for(const dir of ["nw","n","ne","e","se","s","sw","w"]){
         const grip=doc.createElement("button");
         grip.type="button";grip.className="moon-v2-grip";
@@ -705,7 +706,8 @@ function syncLiveOverlay(){
 function startLiveGesture(event,direction,anchor){
   if(event.button!==0||workspaceMode!=="live"||liveEditing||liveGesture)return;
   if(!liveSelected?.node?.isConnected)return;
-  if(direction!=="move"&&liveSelected.node.tagName!=="IMG")return;
+  if(direction!=="move"&&!liveSelected.node.matches(
+    "h1,h2,h3,h4,h5,h6,p,li,figcaption,blockquote,img"))return;
   const node=liveSelected.node,selector=liveSelector(node);
   const patch=livePatchForSelected();
   if(!patch||!validLivePatch(patch))return;
@@ -735,7 +737,7 @@ function moveLiveGesture(event){
       (dir.includes("w")?deltaX:0),32,8000);
     let height=clamp(g.rect.height+(dir.includes("s")?deltaY:0)-
       (dir.includes("n")?deltaY:0),24,8000);
-    if(dir.length===2&&!event.altKey){
+    if(dir.length===2&&!event.altKey&&g.node.tagName==="IMG"){
       const ratio=g.rect.width/g.rect.height;
       if(Math.abs(width-g.rect.width)>=Math.abs(height-g.rect.height)*ratio)
         height=clamp(width/ratio,24,8000);
