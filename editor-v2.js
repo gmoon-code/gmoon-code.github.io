@@ -76,6 +76,11 @@ function cleanRich(value,prefix=""){
   const visit=(node,parent)=>{
     if(node.nodeType===3){parent.append(document.createTextNode(node.nodeValue));return;}
     if(node.nodeType!==1||blocked.has(node.tagName))return;
+    // contenteditable commonly represents Enter with DIV or P siblings.
+    // Preserve their line boundaries while removing their arbitrary styles.
+    const block=node.tagName==="DIV"||node.tagName==="P";
+    if(block&&parent.lastChild&&parent.lastChild.nodeName!=="BR")
+      parent.append(document.createElement("br"));
     const keep=allowed.has(node.tagName);
     const child=keep?document.createElement(node.tagName.toLowerCase()):parent;
     if(keep){
@@ -91,6 +96,8 @@ function cleanRich(value,prefix=""){
     }
     if(node.tagName==="BR")return;
     for(const nested of [...node.childNodes])visit(nested,child);
+    if(block&&node.nextSibling&&parent.lastChild?.nodeName!=="BR")
+      parent.append(document.createElement("br"));
   };
   for(const node of [...template.content.childNodes])visit(node,out);
   return out.innerHTML;
