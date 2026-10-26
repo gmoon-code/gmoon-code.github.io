@@ -285,6 +285,9 @@ function togglePageFocus(){
   const focused=app.classList.toggle("focus-view");
   $("focusPage").setAttribute("aria-pressed",String(focused));
   $("focusPage").textContent=focused?"Restore panels":"Focus page";
+  // Force a layout read after changing the grid before scaling the iframe.
+  // Otherwise the preview retains the old zoom until the next paint.
+  fitLivePage();
   requestAnimationFrame(()=>fitLivePage());
 }
 function fitLivePage(){
