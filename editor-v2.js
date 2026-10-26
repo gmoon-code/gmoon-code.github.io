@@ -147,6 +147,24 @@ function makeObject(type,attrs={}){
     align:"left",locked:false,hidden:false};
   return Object.assign(common,attrs);
 }
+function pagePoint(event){
+  const rect=$("stage").getBoundingClientRect();
+  return {x:clamp(Math.round((event.clientX-rect.left)/zoom),0,scene.width-60),
+    y:clamp(Math.round((event.clientY-rect.top)/zoom),0,scene.height-40)};
+}
+function insertImageFile(file,position={}){
+  if(!file)return;
+  if(file.size>3000000||!["image/png","image/jpeg","image/webp"].includes(file.type)){
+    status("Choose PNG, JPEG or WebP under 3 MB");return;
+  }
+  const reader=new FileReader();
+  reader.onload=()=>{
+    add("image",{src:String(reader.result),alt:file.name.replace(/\.[^.]+$/,""),
+      name:file.name,w:340,h:260,...position});
+  };
+  reader.onerror=()=>status("Could not read the selected image file");
+  reader.readAsDataURL(file);
+}
 function add(type,attrs={}){
   if(scene.objects.length>=MAX_OBJECTS){status("Maximum canvas object count reached");return;}
   mutate(()=>{
@@ -627,8 +645,31 @@ function attachEvents(){
   $("stage").addEventListener("pointerup",endGesture);
   $("stage").addEventListener("pointercancel",endGesture);
   $("stage").addEventListener("dblclick",event=>{
+    if(editingId!==null)return;
     const node=event.target.closest(".scene-object");
-    if(node&&editingId===null)beginTextEdit(Number(node.dataset.id));
+    if(node){beginTextEdit(Number(node.dataset.id));return;}
+    if(event.target!==$("stage"))return;
+    const point=pagePoint(event);
+    add("text",{x:point.x,y:point.y,w:320,h:90,
+      name:"New text",text:"Type here"});
+    beginTextEdit(activeId);
+  });
+  $("stage").addEventListener("dragover",event=>{
+    if(event.dataTransfer?.types.includes("Files")){
+      event.preventDefault();
+      event.dataTransfer.dropEffect="copy";
+      $("stage").classList.add("drag-target");
+    }
+  });
+  $("stage").addEventListener("dragleave",event=>{
+    if(!$("stage").contains(event.relatedTarget))$("stage").classList.remove("drag-target");
+  });
+  $("stage").addEventListener("drop",event=>{
+    event.preventDefault();$("stage").classList.remove("drag-target");
+    const file=[...event.dataTransfer.files].find(file=>
+      ["image/png","image/jpeg","image/webp"].includes(file.type));
+    if(file)insertImageFile(file,pagePoint(event));
+    else status("Drop a PNG, JPEG or WebP image onto the canvas");
   });
   $("stage").addEventListener("focusout",event=>{
     if(editingId!==null&&
@@ -700,15 +741,9 @@ function attachEvents(){
   $("addText").addEventListener("click",()=>add("text",{text:"Double-click to edit text",name:"New text"}));
   $("addShape").addEventListener("click",()=>add("shape",{name:"New shape"}));
   $("addImage").addEventListener("click",()=>$("imageFile").click());
-  $("imageFile").addEventListener("change",async event=>{
+  $("imageFile").addEventListener("change",event=>{
     const file=event.target.files?.[0];event.target.value="";
-    if(!file)return;
-    if(file.size>3000000||!["image/png","image/jpeg","image/webp"].includes(file.type)){
-      status("Choose PNG, JPEG or WebP under 3 MB");return;
-    }
-    const reader=new FileReader();
-    reader.onload=()=>add("image",{src:String(reader.result),alt:file.name.replace(/\.[^.]+$/,""),name:file.name,w:340,h:260});
-    reader.readAsDataURL(file);
+    insertImageFile(file);
   });
   $("duplicate").addEventListener("click",()=>{
     const source=scene.objects.filter(o=>selected.has(o.id)&&!o.locked);if(!source.length)return;
