@@ -6,7 +6,18 @@ A replacement visual editor developed separately from the existing academic webs
 
 - Editor application at `/editor-v2.html`
 - Original application at `/editor.html`
-- Staging previews, when a user explicitly publishes with a GitHub token, at `/editor-v2-previews/{page}.html`
+- Free-canvas staging previews at `/editor-v2-previews/{page}.html`
+- Original-layout staging previews at `/editor-v2-previews/source-{page}.html`
+
+## Two distinct editing workflows
+
+**Live website** is the default viewing mode. A same-origin iframe renders the existing page's real HTML, CSS, scripts, images and responsive breakpoints at a browser viewport of 1160 × 900, 768 × 1024, or 390 × 844 pixels. Zoom scales the presentation without changing the iframe viewport. Focus page removes the editor's sidebars to make more space. Navigation to known academic pages updates the editor page picker, while external links open separately.
+
+Live mode supports selecting a heading, paragraph or image and saving source-anchored text or image edits into a separate per-page local draft. These edits are replayed onto a copy of the original HTML. Staging export keeps existing CSS, navigation and semantic content; relative asset references become absolute site paths while same-page anchors such as `#references` remain local. The live page and current production files remain unchanged. Styling/layout changes for arbitrary existing components are **not yet** supported by this original-layout path.
+
+**Free design canvas** is a separate PowerPoint-style workspace with independent objects. Conversion from the live page is explicitly labelled a simplified reconstruction. It is useful for experimenting with free placement, object size and colour but cannot currently migrate every existing layout feature faithfully. A live element may be copied into it without detaching that element from the original website.
+
+Switching modes never overwrites saved work in the other mode. Both paths only publish to separately named staging pages.
 
 ## Architectural decision
 
@@ -34,7 +45,9 @@ Each scene is `{version:2,page,width,height,nextId,objects}`. Objects have `id,t
 
 ## Deliberate limitations
 
-The current import is a first-pass approximation, not a lossless migration. It currently extracts text and images with approximate computed sizes and desktop positions. It does **not yet** faithfully reproduce all original HTML structure, inline hyperlinks, decorative section backgrounds, complex grids, embedded widgets, footnotes, or semantic heading relationships. The generated mobile view is a basic reading-order stack; precise tablet and mobile page designs remain future work.
+The **free-canvas importer** is an approximate conversion, not a lossless migration. It extracts positioned text, images and simple colour panels while retaining selected inline formatting and heading levels. It does **not yet** faithfully reproduce complex nested grids, animation, interactive widgets, every decorative background, all original accessibility relationships or fully authored responsive layouts. Mobile free-canvas export is a basic reading-order stack.
+
+The **live-page editing path** displays the original HTML/CSS faithfully and supports source-anchored text and image replacement. Some pages with JavaScript tied to the original URL may need additional staging validation. Saved edits are checked against the original source when exported, and are blocked when the source no longer matches the stored edit. Staging should be visually reviewed at all supported viewport sizes.
 
 Do not direct-publish this new scene over `index.html`, `research.html` or other live source pages until the migration importer, fidelity comparison, accessibility and full responsive editing are completed and tested. This limitation is intentional.
 
