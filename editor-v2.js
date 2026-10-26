@@ -716,7 +716,9 @@ function setLiveAppearance(key,value){
   if(pruneLivePatch(patch,selected))livePatches.delete(patch.selector);
   else livePatches.set(patch.selector,patch);
   if(recordLiveHistory(before)){
-    refreshLiveLayoutRules();renderLiveInspector();syncLiveOverlay();
+    if(patch.kind==="insert")refreshAddedObject(selected.ownerDocument,patch);
+    else refreshLiveLayoutRules();
+    renderLiveInspector();syncLiveOverlay();
   }
 }
 function setLiveLayer(front,reset=false){
@@ -736,7 +738,9 @@ function setLiveLayer(front,reset=false){
   if(pruneLivePatch(patch,node))livePatches.delete(patch.selector);
   else livePatches.set(patch.selector,patch);
   if(recordLiveHistory(old)){
-    refreshLiveLayoutRules();renderLiveInspector();syncLiveOverlay();
+    if(patch.kind==="insert")refreshAddedObject(node.ownerDocument,patch);
+    else refreshLiveLayoutRules();
+    renderLiveInspector();syncLiveOverlay();
     status(reset?"Element returned to website stacking order":
       (front?"Element brought forward":"Element sent backward")+
       " · Saved locally · Undo available");
@@ -750,7 +754,9 @@ function resetLiveAppearance(){
   if(pruneLivePatch(patch,selected))livePatches.delete(patch.selector);
   else livePatches.set(patch.selector,patch);
   if(recordLiveHistory(before)){
-    refreshLiveLayoutRules();renderLiveInspector();syncLiveOverlay();
+    if(patch.kind==="insert")refreshAddedObject(selected.ownerDocument,patch);
+    else refreshLiveLayoutRules();
+    renderLiveInspector();syncLiveOverlay();
   }
 }
 function validLiveLayout(layout){
@@ -1024,7 +1030,21 @@ function fitLiveTextHeight(){
   status("Text box height fitted to wrapped content · Following page elements may move");
 }
 function resetSelectedLiveLayout(){
-  const patch=livePatchForSelected();if(!patch?.layout?.[liveDevice()])return;
+  const patch=livePatchForSelected();
+  if(patch?.kind==="insert"){
+    const current=addedDeviceGeometry(patch,liveDevice());
+    const all=addedDeviceGeometry(patch,"desktop");
+    if(!current||!all)return;
+    const before=liveSnapshot();
+    patch.geometry[liveDevice()]={...all,x:clamp(all.x,12,2500)};
+    livePatches.set(patch.selector,patch);
+    if(recordLiveHistory(before)){
+      refreshAddedObject(liveSelected.node.ownerDocument,patch);
+      renderLiveInspector();syncLiveOverlay();
+    }
+    return;
+  }
+  if(!patch?.layout?.[liveDevice()])return;
   const before=liveSnapshot();
   delete patch.layout[liveDevice()];
   if(!Object.keys(patch.layout).length)delete patch.layout;
@@ -1140,7 +1160,8 @@ function renderLiveInspector(){
     $("liveReflowWarning").textContent=extra>3?
       "Wrapped text extends about "+extra+"px beyond the reserved height and may overlap the next element.":"";
     $("liveFitReflowHeight").disabled=!canReflow||extra<=3;
-    $("resetLiveLayout").disabled=!livePatches.get(selector)?.layout?.[liveDevice()];
+    $("resetLiveLayout").disabled=!livePatches.get(selector)?.layout?.[liveDevice()]&&
+      livePatches.get(selector)?.kind!=="insert";
   }
   renderLiveEditCount();
 }
@@ -1354,7 +1375,12 @@ function saveLiveText(){
   const html=cleanRich(edit.node.innerHTML);
   edit.node.removeAttribute("contenteditable");
   edit.node.innerHTML=html;
-  const old=livePatches.get(edit.selector);
+  const old=livePatchForSelected();
+  if(old?.kind==="insert"){
+    old.html=html;livePatches.set(edit.selector,old);
+    recordLiveHistory(before);refreshAddedObject(edit.node.ownerDocument,old);
+    renderLiveInspector();renderLiveLayers();fitLivePage();return;
+  }
   livePatches.set(edit.selector,{
     selector:edit.selector,kind:"text",expected:edit.expected,html,
     ...(old?.layout?{layout:old.layout}:{}),
@@ -1380,7 +1406,12 @@ function applyLiveImage(){
     status("Please choose a site image under assets/");return;
   }
   const selector=liveSelector(node);if(!selector)return;
-  const before=liveSnapshot(),old=livePatches.get(selector);
+  const before=liveSnapshot(),old=livePatchForSelected();
+  if(old?.kind==="insert"){
+    old.src=src;old.alt=alt;livePatches.set(selector,old);
+    recordLiveHistory(before);refreshAddedObject(node.ownerDocument,old);
+    renderLiveInspector();renderLiveLayers();return;
+  }
   const expected=old?.expected||node.getAttribute("src")||"";
   node.setAttribute("src",src);node.setAttribute("alt",alt);
   livePatches.set(selector,{selector,kind:"image",expected,src,alt,
@@ -1405,6 +1436,18 @@ function deleteSelectedLiveElement(){
     " from the website draft?\n\n"+label+
     "\n\nYou can undo before publishing. The public page changes only after publication."))return;
   const before=liveSnapshot(),prior=livePatches.get(selector);
+  if(LIVE_ADDED_ID.test(selector)){
+    const wasPublished=!!new DOMParser().parseFromString(
+      liveDisplayedSourceHtml||"","text/html").querySelector(
+        '[data-moon-v2-added-id="'+selector.slice(6)+'"]');
+    if(wasPublished)livePatches.set(selector,{selector,kind:"remove-added",expected:""});
+    else livePatches.delete(selector);
+    if(!recordLiveHistory(before))return;
+    clearLiveSelection();removeAddedPatchFromDoc(node.ownerDocument,selector);
+    renderLiveLayers();
+    status("Independent object removed from website draft · Undo available");
+    return;
+  }
   const expected=prior?.expected||(node.tagName==="IMG"?
     node.getAttribute("src")||"":(node.textContent||"").trim().slice(0,300));
   // Preserve the historical identity even if the user already changed the
