@@ -23,7 +23,7 @@ The site follows the established Moon Notes design family used in the Research M
 - `research.html`
 - `projects.html`
 - `teaching.html`
-- `about.html`
+- `contact.html`
 - `cv.html`
 
 Research and project overview pages link to dedicated subpages for individual work.
