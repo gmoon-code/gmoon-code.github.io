@@ -313,6 +313,35 @@
   function previewMarkup() {
     const copy=state.doc.cloneNode(true);
     for (const element of copy.querySelectorAll("script,iframe,object,embed,form,base")) element.remove();
+    // appearance.js normally creates this header control at runtime. Scripts
+    // must stay disabled in the editing iframe, but the preview still needs
+    // the same header geometry as the public website.
+    const siteHeader=copy.querySelector(".topbar");
+    if(siteHeader&&!siteHeader.querySelector(".moon-appearance")){
+      const container=siteHeader.querySelector(".topbar-inner")||siteHeader;
+      const holder=copy.createElement("div");
+      holder.className="moon-appearance";
+      const label=copy.createElement("label");
+      label.className="moon-appearance-label";
+      label.htmlFor="moon-preview-appearance-choice";
+      label.textContent="Appearance";
+      const select=copy.createElement("select");
+      select.className="moon-appearance-select";
+      select.id="moon-preview-appearance-choice";
+      select.setAttribute("aria-label","Appearance theme (use editor Theme selector)");
+      select.title="Change the preview theme using the editor toolbar";
+      for(const value of ["light","dark","system"]){
+        const option=copy.createElement("option");
+        option.value=value;
+        option.textContent=value.charAt(0).toUpperCase()+value.slice(1);
+        select.append(option);
+      }
+      select.value=$("previewTheme").value;
+      select.disabled=true;
+      label.append(select);
+      holder.append(label);
+      container.append(holder);
+    }
     const base=copy.createElement("base");
     base.setAttribute("href",new URL("./",location.href).href);
     copy.head.prepend(base);
@@ -368,6 +397,7 @@
       "@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}"
     ].join("\n");
     copy.head.appendChild(overlay);
+    copy.documentElement.setAttribute("data-moon-preference",$("previewTheme").value);
     copy.documentElement.setAttribute("data-moon-theme",$("previewTheme").value);
     copy.documentElement.style.colorScheme=$("previewTheme").value;
     return "<!doctype html>\n"+copy.documentElement.outerHTML;
