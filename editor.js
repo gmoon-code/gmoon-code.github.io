@@ -1130,8 +1130,12 @@
         node.style.setProperty("--moon-page-y",geometry.y+"px");
         node.style.left=geometry.x+"px";
         node.style.top=geometry.y+"px";
-        node.style.setProperty("width",geometry.width+"px","important");
-        node.style.setProperty("height",geometry.height+"px","important");
+        node.style.setProperty("--moon-free-width",geometry.width+"px");
+        node.style.setProperty("--moon-free-height",geometry.height+"px");
+        // Use normal inline priority. Responsive mobile CSS must be able
+        // to restore width:auto and height:auto in reading-order mode.
+        node.style.setProperty("width",geometry.width+"px");
+        node.style.setProperty("height",geometry.height+"px");
         node.style.minHeight=geometry.height+"px";
         node.style.maxWidth="none";
         node.style.boxSizing="border-box";
@@ -1503,7 +1507,7 @@
     // captured when leaving the original section. Retain content, colours,
     // backgrounds and any other independent edits.
     for(const name of ["--moon-page-x","--moon-page-y","--moon-object-layer",
-      "left","top","width","height","min-height","max-width","box-sizing","translate",
+      "left","top","width","height","--moon-free-width","--moon-free-height","min-height","max-width","box-sizing","translate",
       "font-family","font-size","font-weight","font-style","line-height",
       "letter-spacing","text-align","text-transform",
       "object-fit","object-position","border-radius"]){
@@ -4166,6 +4170,8 @@
     "main > .moon-free-layer > p.moon-free-absolute > img{max-width:100%;max-height:100%;width:100%;height:100%;object-fit:contain}",
     "main > .moon-free-layer > img.moon-free-absolute{object-fit:contain!important;object-position:center!important;min-width:0!important;min-height:0!important}",
     "main > .moon-free-layer > .moon-free-absolute{pointer-events:auto!important}",
+    "@media(min-width:701px){main > .moon-free-layer > .moon-free-absolute{width:var(--moon-free-width)!important;height:var(--moon-free-height)!important}}",
+    "html.moon-free-mode main > .moon-free-layer > .moon-free-absolute{width:var(--moon-free-width)!important;height:var(--moon-free-height)!important}",
     "main .moon-free-placeholder{visibility:hidden!important;pointer-events:none!important;user-select:none!important}",
     "@media(max-width:700px){html:not(.moon-free-mode) main .moon-free-placeholder{display:none!important}}",
     "@media(max-width:700px){html:not(.moon-free-mode) main:has(> .moon-free-layer){min-height:0!important}html:not(.moon-free-mode) main > .moon-free-layer{position:static!important;inset:auto!important;display:contents!important;pointer-events:auto!important}html:not(.moon-free-mode) main .moon-free-absolute{position:static!important;left:auto!important;top:auto!important;right:auto!important;bottom:auto!important;translate:none!important;width:auto!important;max-width:100%!important;min-height:0!important;height:auto!important}html:not(.moon-free-mode) main p.moon-free-absolute > img{height:auto!important;max-height:none!important}html:not(.moon-free-mode) img.moon-free-object{width:auto!important;max-width:100%!important;height:auto!important}}"
@@ -4362,7 +4368,7 @@
     Object.keys(p).length===4&&["x","y","width","height"].every(k=>Number.isInteger(p[k]))&&
     Math.abs(p.x)<=16000&&Math.abs(p.y)<=16000&&p.width>=35&&p.width<=4000&&p.height>=18&&p.height<=4000;}
   function freeStyle(p){return "--moon-page-x:"+p.x+"px;--moon-page-y:"+p.y+"px;left:"+p.x+"px;top:"+p.y+"px;translate:none;width:"+p.width+
-    "px;height:"+p.height+"px;min-height:"+p.height+"px;max-width:none;box-sizing:border-box"}
+    "px;height:"+p.height+"px;--moon-free-width:"+p.width+"px;--moon-free-height:"+p.height+"px;min-height:"+p.height+"px;max-width:none;box-sizing:border-box"}
   const ADDED_LAYOUT_DEFAULT={align:"left",widthPercent:100,spaceAbove:0,spaceBelow:0};
   function addedBlockLayout(item){return {...ADDED_LAYOUT_DEFAULT,...(item?.layout||{})};}
   function isDefaultAddedLayout(layout){
