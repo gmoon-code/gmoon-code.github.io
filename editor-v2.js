@@ -176,6 +176,7 @@ function insertImageFile(file,position={}){
   reader.readAsDataURL(file);
 }
 function add(type,attrs={}){
+  if(workspaceMode!=="design")setWorkspaceMode("design");
   if(scene.objects.length>=MAX_OBJECTS){status("Maximum canvas object count reached");return;}
   mutate(()=>{
     const offset=scene.objects.length%12*18;
@@ -740,7 +741,7 @@ async function importPage(force=false){
     history.push(before);if(history.length>60)history.shift();redo.length=0;
     pageImages=[...images.values()];
     renderImageLibrary();
-    render();fitCanvas();save();
+    setWorkspaceMode("design");render();fitCanvas();save();
     status("Imported "+scene.objects.length+" independent objects · Original website unchanged");
   }catch(error){status("Import stopped · "+(error.message||error));}
 }
@@ -757,8 +758,9 @@ function changePage(page){
     status(raw?"Saved canvas restored · Original website unchanged":"New canvas · Use Import page layout");
   }catch{scene=empty;status("Saved canvas invalid · Original website unchanged");}
   render();
-  fitCanvas();
   loadPageImageLibrary(page,loadSerial);
+  loadLivePage(page);
+  setWorkspaceMode("live");
 }
 function esc(s){return String(s??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
 function standaloneHtml(assetPrefix=""){
@@ -840,6 +842,12 @@ async function publishStaging(token){
 }
 function attachEvents(){
   $("page").addEventListener("change",event=>changePage(event.target.value));
+  $("liveMode").addEventListener("click",()=>setWorkspaceMode("live"));
+  $("designMode").addEventListener("click",()=>setWorkspaceMode("design"));
+  $("devicePreview").addEventListener("change",()=>fitLivePage());
+  $("reloadLive").addEventListener("click",()=>loadLivePage());
+  $("copyLiveObject").addEventListener("click",copySelectedLiveElement);
+  window.addEventListener("resize",()=>{if(workspaceMode==="live")fitLivePage();});
   $("importScene").addEventListener("click",()=>$("sceneFile").click());
   $("sceneFile").addEventListener("change",async event=>{
     const file=event.target.files?.[0];event.target.value="";
