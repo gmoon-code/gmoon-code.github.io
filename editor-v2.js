@@ -7,6 +7,7 @@ const $=id=>document.getElementById(id);
 const VERSION=2, REPO="gmoon-code/gmoon-code.github.io";
 const PAGES=new Set([...$("page").options].map(opt=>opt.value));
 const STANDARD_WIDTH=1160, MAX_OBJECTS=350, MIN_W=40, MIN_H=24;
+const MAX_GITHUB_PAGE_BYTES=900000; // Keep REST Contents API base64 readable.
 const HANDLES=["nw","n","ne","e","se","s","sw","w"];
 const NEW_DRAFT="moon-academic-editor-v2:";
 let currentPage="index.html";
@@ -209,7 +210,7 @@ async function compactLiveImage(file){
     throw Error("This browser cannot prepare a compact webpage image. Use an existing site image.");
   const bitmap=await createImageBitmap(file);
   try{
-    for(const [limit,quality] of [[1600,.82],[1200,.7],[900,.6]]){
+    for(const [limit,quality] of [[1400,.8],[1100,.67],[900,.57],[720,.45]]){
       const scale=Math.min(1,limit/Math.max(bitmap.width,bitmap.height));
       const canvas=document.createElement("canvas");
       canvas.width=Math.max(1,Math.round(bitmap.width*scale));
@@ -218,10 +219,10 @@ async function compactLiveImage(file){
       if(!context)throw Error("Image compression is unavailable in this browser.");
       context.drawImage(bitmap,0,0,canvas.width,canvas.height);
       const encoded=canvas.toDataURL("image/webp",quality);
-      if(/^data:image\/webp;base64,/.test(encoded)&&encoded.length<=1400000)
+      if(/^data:image\/webp;base64,/.test(encoded)&&encoded.length<=180000)
         return encoded;
     }
-    throw Error("This image is too large for a reliable webpage draft. Please use a smaller image.");
+    throw Error("Image is too large for safe GitHub page editing. Try a smaller file or use an image from website assets.");
   }finally{bitmap.close?.();}
 }
 async function insertImageFile(file,position={}){
@@ -2782,7 +2783,12 @@ function applyLiveEditsToGithubHtml(html){
   if(applyPatchesToDocument(doc,true,resolved,normalized)!==livePatches.size)
     throw Error("Some edits did not match the latest GitHub page. Nothing was published.");
   // Keep source HTML and CSS intact and return one merged patch per element.
-  return {html:"<!doctype html>\n"+doc.documentElement.outerHTML,resolved,normalized};
+  const output="<!doctype html>\n"+doc.documentElement.outerHTML;
+  const size=new TextEncoder().encode(output).length;
+  if(size>MAX_GITHUB_PAGE_BYTES)
+    throw Error("The edited page would exceed the safe GitHub HTML size ("+
+      Math.round(size/1024)+" KB). Nothing was published. Use image paths in assets/ or remove large embedded images.");
+  return {html:output,resolved,normalized};
 }
 async function publishGithub(token,target){
   if(!token)throw Error("Enter your GitHub token to publish.");
