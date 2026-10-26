@@ -11,6 +11,9 @@ on:
       - tests/editor-resize-regression.mjs
       - .github/workflows/editor-resize.yml
   workflow_dispatch:
+permissions:
+  contents: read
+  statuses: write
 jobs:
   browser-resize:
     runs-on: ubuntu-latest
@@ -27,6 +30,7 @@ jobs:
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
       - name: Check text and image resizing
+        id: browser_test
         run: node tests/editor-resize-regression.mjs
       - name: Upload failure screenshot
         if: failure()
@@ -36,3 +40,20 @@ jobs:
           path: test-artifacts/
           if-no-files-found: ignore
           retention-days: 7
+      - name: Report regression result to commit status
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SHA: ${{ github.sha }}
+          TEST_RESULT: ${{ steps.browser_test.outcome }}
+          API_URL: ${{ github.api_url }}
+          REPOSITORY: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        shell: bash
+        run: |
+          if [ "$TEST_RESULT" = "success" ]; then STATE=success; else STATE=failure; fi
+          curl --fail-with-body -sS -X POST \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "$API_URL/repos/$REPOSITORY/statuses/$SHA" \
+            -d "{\"state\":\"$STATE\",\"context\":\"academic-editor/browser-resize\",\"description\":\"Chromium resize, layout, undo, export and mobile test\",\"target_url\":\"$RUN_URL\"}"
