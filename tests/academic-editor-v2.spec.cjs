@@ -295,3 +295,14 @@ test('real Home, Research and Teaching pages import without source modification'
     expect(saved.objects.every(object=>Number.isFinite(object.x)&&Number.isFinite(object.w))).toBe(true);
   }
 });
+
+test('comparison view keeps original and new draft separate',async({page})=>{
+  await importScene(page);
+  await page.locator('#compare').click();
+  await expect(page.locator('#compareDialog')).toBeVisible();
+  await expect(page.frameLocator('#originalFrame').locator('h2')).toHaveText('Research overview');
+  await expect(page.frameLocator('#sceneFrame').locator('main h2')).toHaveText('Research overview');
+  await page.locator('#closeCompare').click();
+  await expect(page.locator('#compareDialog')).not.toBeVisible();
+  await expect(page.locator('#stage [data-id="1"] .scene-content')).toHaveText('Research overview');
+});
