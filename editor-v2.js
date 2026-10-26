@@ -1046,6 +1046,7 @@ function liveUndoAction(again=false){
   const selectedNode=liveSelected?.node;
   pendingLiveViewRestore={
     page:currentPage,x:view?.scrollX||0,y:view?.scrollY||0,
+    addedSelection:[...liveAddedMulti],
     selector:selectedNode&&liveSelector(selectedNode),
     tag:selectedNode?.tagName,
     text:selectedNode?.tagName==="IMG"?
@@ -2459,6 +2460,16 @@ function bindLiveDocument(){
         candidate.getAttribute("src")===restore.text:
         (candidate.textContent||"").trim().slice(0,300)===restore.text);
     if(same)selectLiveElement(candidate);
+    if(restore.addedSelection?.length){
+      const retained=restore.addedSelection.filter(key=>
+        LIVE_ADDED_ID.test(key)&&!!findAddedNode(doc,key));
+      if(retained.length){
+        liveAddedMulti=new Set(retained);
+        const primary=same&&LIVE_ADDED_ID.test(restore.selector)?
+          candidate:findAddedNode(doc,retained.at(-1));
+        if(primary)selectLiveElement(primary,false,true);
+      }
+    }
     doc.defaultView.scrollTo(restore.x,restore.y);
     requestAnimationFrame(()=>doc.defaultView?.scrollTo(restore.x,restore.y));
   }
