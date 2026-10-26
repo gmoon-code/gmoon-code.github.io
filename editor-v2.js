@@ -924,6 +924,30 @@ function mergeLiveTargetPatches(first,second,node){
   else delete merged.appearance;
   return merged;
 }
+function captureExistingLiveStyles(doc){
+  // Older published V2 rules use positional selectors. Remember their
+  // *actual element nodes* before deleting siblings, so rules can be rebased
+  // on the survivors. Otherwise an old selector could style the wrong text.
+  const sheet=doc.getElementById("moon-v2-live-layout");
+  const css=sheet?.textContent||"";
+  if(!css)return null;
+  const pattern=/main(?: > [a-z][a-z0-9-]*:nth-of-type\(\d{1,4}\)){1,12}(?=\s*\{)/g;
+  const references=new Map();
+  for(const match of css.matchAll(pattern)){
+    if(!references.has(match[0]))references.set(match[0],doc.querySelector(match[0]));
+  }
+  return {css,pattern,references};
+}
+function rebaseExistingLiveStyles(doc,state){
+  if(!state)return;
+  // A deleted object's legacy rule becomes a harmless selector matching
+  // nothing. Retained objects receive their *new* selector after removal.
+  const next=state.css.replace(state.pattern,selector=>{
+    const node=state.references.get(selector);
+    return node?.isConnected?liveSelector(node)||":not(*)":":not(*)";
+  });
+  liveSourceCss.set(doc,next);
+}
 function applyPatchesToDocument(doc,strict=false,resolved=[],normalized=[]){
   const changes=[],byNode=new Map();
   for(const patch of livePatches.values()){
@@ -962,6 +986,8 @@ function applyPatchesToDocument(doc,strict=false,resolved=[],normalized=[]){
   // Apply content first against resolved DOM nodes. When deletion changes
   // sibling nth-of-type positions, calculate fresh selectors AFTER removal.
   // That prevents a moved or styled sibling from targeting the wrong node.
+  const priorStyles=changes.some(({patch})=>patch.kind==="delete")?
+    captureExistingLiveStyles(doc):null;
   for(const {patch,node} of changes){
     if(patch.kind==="image"){
       node.setAttribute("src",patch.src);
@@ -971,6 +997,7 @@ function applyPatchesToDocument(doc,strict=false,resolved=[],normalized=[]){
   for(const {patch,node} of changes){
     if(patch.kind==="delete")node.remove();
   }
+  rebaseExistingLiveStyles(doc,priorStyles);
   for(const {patch,node,selector,originals} of changes){
     const finalSelector=patch.kind==="delete"?selector:liveSelector(node);
     if(!finalSelector){
