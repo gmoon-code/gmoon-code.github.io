@@ -445,6 +445,39 @@ function revertLiveElement(){
   cancelLiveText();livePatches.delete(selector);
   storeLiveDraft();loadLivePage();
 }
+function resolveSourceReference(value,rootHref){
+  const raw=String(value||"").trim();
+  if(!raw||raw.startsWith("#")||/^(?:data:|blob:|mailto:|tel:|javascript:)/i.test(raw))
+    return value;
+  try{return new URL(raw,rootHref).href;}catch{return value;}
+}
+function rewriteSourceReferences(doc,rootHref){
+  // A <base> element redirects href="#references" away from the draft and
+  // breaks citation and navigation anchors. Preserve those anchors and make
+  // document-external resources absolute before moving HTML into staging.
+  for(const node of doc.querySelectorAll("[src],[href],[poster],[action]")){
+    for(const attr of ["src","href","poster","action"]){
+      if(node.hasAttribute(attr)){
+        node.setAttribute(attr,resolveSourceReference(node.getAttribute(attr),rootHref));
+      }
+    }
+  }
+  for(const node of doc.querySelectorAll("[srcset]")){
+    const value=node.getAttribute("srcset")||"";
+    if(/^\s*data:/i.test(value))continue;
+    node.setAttribute("srcset",value.split(",").map(item=>{
+      const part=item.trim();
+      const match=part.match(/^(\S+)(\s+.*)?$/);
+      return match?resolveSourceReference(match[1],rootHref)+(match[2]||""):part;
+    }).join(", "));
+  }
+  const rewriteCss=css=>css.replace(/url\(\s*(["']?)([^)"']+)\1\s*\)/gi,
+    (all,quote,url)=>"url("+quote+resolveSourceReference(url,rootHref)+quote+")");
+  for(const node of doc.querySelectorAll("[style]"))
+    node.setAttribute("style",rewriteCss(node.getAttribute("style")||""));
+  for(const node of doc.querySelectorAll("style"))
+    node.textContent=rewriteCss(node.textContent||"");
+}
 async function sourcePreservingHtml(rootHref){
   const response=await fetch(new URL(currentPage,location.href),{cache:"no-store"});
   if(!response.ok)throw Error("Could not load the original HTML");
@@ -452,9 +485,7 @@ async function sourcePreservingHtml(rootHref){
   if(applyPatchesToDocument(doc,true)!==livePatches.size)
     throw Error("Some saved edits no longer match this page");
   for(const base of doc.querySelectorAll("base"))base.remove();
-  const base=doc.createElement("base");
-  base.setAttribute("href",rootHref);
-  doc.head.prepend(base);
+  rewriteSourceReferences(doc,rootHref);
   return "<!doctype html>\n"+doc.documentElement.outerHTML;
 }
 function clearLiveSelection(){
