@@ -1177,3 +1177,27 @@ test('holding Alt disables live drag snapping and leaves guides hidden',async({p
   await page.keyboard.up('Alt');
   await expect(live.locator('#moon-v2-snap-x')).toHaveCount(0);
 });
+
+test('overflow warning and explicit fit height prevent hidden wrapped text without silent reflow',async({page})=>{
+  const live=page.frameLocator('#livePageFrame');
+  const heading=live.locator('main h2'),neighbour=live.locator('main p').first();
+  const initialNeighbour=await neighbour.boundingBox();
+  await heading.click();
+  await page.locator('#liveTextReflow').check();
+  await page.locator('#liveTextBoxWidth').fill('100');
+  await page.locator('#liveTextBoxWidth').press('Tab');
+  await expect(page.locator('#liveReflowWarning')).toBeVisible();
+  await expect(page.locator('#liveFitReflowHeight')).toBeEnabled();
+  const oldHeight=Number(await page.locator('#liveTextBoxHeight').inputValue());
+  const beforeFit=await neighbour.boundingBox();
+  expect(Math.abs(beforeFit.y-initialNeighbour.y)).toBeLessThan(1.2);
+  await page.locator('#liveFitReflowHeight').click();
+  const newHeight=Number(await page.locator('#liveTextBoxHeight').inputValue());
+  expect(newHeight).toBeGreaterThan(oldHeight+5);
+  const afterFit=await neighbour.boundingBox();
+  expect(afterFit.y).toBeGreaterThan(beforeFit.y+5);
+  await expect(page.locator('#liveReflowWarning')).toBeHidden();
+  await page.locator('#undo').click();
+  const restored=await neighbour.boundingBox();
+  expect(Math.abs(restored.y-beforeFit.y)).toBeLessThan(1.2);
+});
