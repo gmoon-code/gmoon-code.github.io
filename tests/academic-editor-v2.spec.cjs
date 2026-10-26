@@ -413,3 +413,12 @@ test('line breaks inserted during inline editing survive save, reload and export
   await page.reload({waitUntil:'domcontentloaded'});
   await expect(page.locator('#stage [data-id="1"] .scene-content')).toContainText('Second line');
 });
+
+test('image library is available without replacing or importing a saved page',async({page})=>{
+  await expect(page.locator('#stage .scene-object')).toHaveCount(0);
+  await expect(page.locator('#imageLibrary button')).toHaveCount(1,{timeout:12000});
+  await page.locator('#imageLibrary button').click();
+  await expect(page.locator('#stage [data-kind="image"]')).toHaveCount(1);
+  await expect(page.locator('#stage [data-kind="image"] img')).toHaveAttribute('src','assets/profile-portrait.webp');
+  expect(await page.locator('#stage .scene-object').count()).toBe(1);
+});
