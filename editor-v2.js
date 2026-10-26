@@ -381,15 +381,19 @@ function changePage(page){
   fitCanvas();
 }
 function esc(s){return String(s??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
-function standaloneHtml(){
+function standaloneHtml(assetPrefix=""){
   const name=$("page").selectedOptions[0]?.textContent||"Website";
   const sorted=[...scene.objects].filter(o=>!o.hidden).sort((a,b)=>a.z-b.z);
   const items=sorted.map(o=>{
     const base='class="item" style="left:'+o.x+'px;top:'+o.y+'px;width:'+o.w+
       'px;height:'+o.h+'px;z-index:'+o.z+';'+
       (o.transparent?'background:transparent;':'background:'+o.bg+';');
-    if(o.type==="image")return '<figure '+base+'"><img src="'+esc(safeImageSource(o.src)?o.src:"")+
-      '" alt="'+esc(o.alt)+'" loading="lazy"></figure>';
+    if(o.type==="image"){
+      const source=safeImageSource(o.src)?o.src:"";
+      const path=source.startsWith("assets/")?assetPrefix+source:source;
+      return '<figure '+base+'"><img src="'+esc(path)+
+        '" alt="'+esc(o.alt)+'" loading="lazy"></figure>';
+    }
     if(o.type==="shape")return '<div aria-hidden="true" '+base+'"></div>';
     return '<section '+base+'font-family:'+esc(o.family)+';font-size:'+o.font+
       'px;color:'+esc(o.color)+';text-align:'+esc(o.align)+'">'+esc(o.text)+'</section>';
@@ -434,7 +438,9 @@ async function publishStaging(token){
   if(!current.ok&&current.status!==404)throw Error("GitHub access failed ("+current.status+")");
   const info=current.ok?await current.json():null;
   const body={message:"Update visual editor 2 staging preview of "+currentPage,
-    content:utf8Base64(standaloneHtml()),branch:"main"};
+    // Staging is nested one level below the GitHub Pages repository root.
+    // Rebase root-relative project assets without changing the local canvas.
+    content:utf8Base64(standaloneHtml("../")),branch:"main"};
   if(info?.sha)body.sha=info.sha;
   const result=await fetch(endpoint,{method:"PUT",headers:{...headers,"Content-Type":"application/json"},
     body:JSON.stringify(body)});
