@@ -131,3 +131,49 @@ test('Github live publishing retains original HTML and inserts new objects once'
   // The confirmed GitHub source is loaded without duplicating the object.
   await expect(frame.locator('[data-moon-v2-added-id]')).toHaveCount(1);
 });
+
+test('Object appearance round-trip: ellipse, border, rotation, opacity and undo',async({page})=>{
+  const frame=page.frameLocator('#livePageFrame');
+  await page.locator('#addShape').click();
+  const shape=frame.locator('div[data-moon-v2-added-id]').first();
+  await expect(page.locator('#liveObjectDesign')).toBeVisible();
+  await page.locator('#liveShapeType').selectOption('ellipse');
+  await page.locator('#liveShapeFill').fill('#aabbcc');
+  await page.locator('#liveObjectRotation').fill('45');
+  await page.locator('#liveObjectRotation').press('Tab');
+  await page.locator('#liveObjectOpacity').fill('70');
+  await page.locator('#liveObjectOpacity').press('Tab');
+  await page.locator('#liveObjectBorderWidth').fill('3');
+  await page.locator('#liveObjectBorderWidth').press('Tab');
+  await page.locator('#liveObjectBorderColour').fill('#112233');
+  await expect(shape).toHaveCSS('opacity','0.7');
+  await expect(shape).toHaveCSS('border-top-width','3px');
+  await expect(shape).toHaveCSS('border-top-color','rgb(17, 34, 51)');
+  await expect(shape).toHaveCSS('border-radius','50%');
+  const beforeUndo=await shape.getAttribute('data-moon-v2-added-design');
+  expect(JSON.parse(beforeUndo).rotation).toBe(45);
+  await page.locator('#undo').click();
+  const afterUndo=JSON.parse(await shape.getAttribute('data-moon-v2-added-design'));
+  expect(afterUndo.borderColour).not.toBe('#112233');
+  await page.locator('#redo').click();
+  await expect(shape).toHaveCSS('border-top-color','rgb(17, 34, 51)');
+  await page.locator('#preview').click();
+  const preview=page.frameLocator('#previewFrame').locator('div[data-moon-v2-added-id]');
+  await expect(preview).toHaveCSS('opacity','0.7');
+  await expect(preview).toHaveCSS('border-radius','50%');
+  await expect(preview).toHaveCSS('border-top-width','3px');
+  expect(JSON.parse(await preview.getAttribute('data-moon-v2-added-design')).rotation).toBe(45);
+  await page.locator('#closePreview').click();
+  await page.reload({waitUntil:'domcontentloaded'});
+  await expect(frame.locator('div[data-moon-v2-added-id]')).toHaveCSS('opacity','0.7');
+});
+test('Live shape type can become a line, with clean reset and no changes to source content',async({page})=>{
+  const frame=page.frameLocator('#livePageFrame');
+  await page.locator('#addShape').click();
+  const shape=frame.locator('div[data-moon-v2-added-id]').first();
+  await page.locator('#liveShapeType').selectOption('line');
+  await expect(shape).toHaveCSS('clip-path',/polygon\(/);
+  await page.locator('#resetLiveObjectDesign').click();
+  await expect(shape).toHaveCSS('clip-path','none');
+  expect(await frame.locator('main > p').first().textContent()).toContain('This original paragraph');
+});
