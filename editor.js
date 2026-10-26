@@ -4278,7 +4278,11 @@
     placeholder.setAttribute("aria-hidden","true");
     const style=placeholder.style;
     const originalDisplay=footprint.display;
-    style.display=originalDisplay==="inline"?"inline-block":
+    // Inline replaced elements (especially images) accept explicit dimensions
+    // without changing their baseline layout. Empty text/anchor spans need
+    // inline-block to retain a measurable footprint.
+    style.display=originalDisplay==="inline"?
+      (object.tagName==="IMG"?"inline":"inline-block"):
       originalDisplay==="contents"?"block":originalDisplay||"block";
     style.boxSizing="border-box";
     style.setProperty("width",footprint.w+"px","important");
