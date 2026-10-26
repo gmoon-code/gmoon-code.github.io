@@ -137,7 +137,10 @@ function makeSceneElement(obj){
     if(safeImageSource(obj.src))image.src=obj.src;
     node.append(image);
   }else if(obj.type==="text"){
-    node.textContent=obj.text;
+    const content=document.createElement("div");
+    content.className="scene-content";
+    content.textContent=obj.text;
+    node.append(content);
   }
   if(selected.has(obj.id)&&!obj.locked){
     for(const dir of HANDLES){
@@ -261,8 +264,10 @@ function beginTextEdit(id){
   select(id);editingId=id;
   const node=$("stage").querySelector('[data-id="'+id+'"]');
   node.querySelectorAll(".handle").forEach(h=>h.remove());
-  node.contentEditable="true";
-  node.focus();const range=document.createRange();range.selectNodeContents(node);
+  const content=node.querySelector(".scene-content");
+  if(!content)return;
+  content.contentEditable="true";
+  content.focus();const range=document.createRange();range.selectNodeContents(content);
   const selection=window.getSelection();selection.removeAllRanges();selection.addRange(range);selection.collapseToEnd();
 }
 function finishTextEdit(){
@@ -270,9 +275,11 @@ function finishTextEdit(){
   const id=editingId;editingId=null;
   const node=$("stage").querySelector('[data-id="'+id+'"]');
   if(!node)return;
-  const text=node.textContent.slice(0,30000);
+  const content=node.querySelector(".scene-content");
+  const text=(content?.textContent||"").slice(0,30000);
   mutate(()=>{const obj=lookup(id);if(obj)obj.text=text;});
-  node.contentEditable="false";render();
+  if(content)content.contentEditable="false";
+  render();
 }
 function hexColour(value,fallback){
   const result=String(value||"").match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)/);
@@ -439,7 +446,8 @@ function attachEvents(){
     if(node)beginTextEdit(Number(node.dataset.id));
   });
   $("stage").addEventListener("focusout",event=>{
-    if(editingId!==null&&event.target.dataset.id===String(editingId))finishTextEdit();
+    if(editingId!==null&&
+      event.target.closest(".scene-object")?.dataset.id===String(editingId))finishTextEdit();
   });
   $("layers").addEventListener("click",event=>{
     const node=event.target.closest("[data-layer-id]");
