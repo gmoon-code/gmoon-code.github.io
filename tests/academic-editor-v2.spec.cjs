@@ -763,20 +763,18 @@ test('live text in progress is saved when switching modes, reloading or changing
 });
 
 test('direct movement on actual webpage changes only selected text and supports undo',async({page})=>{
-  test.setTimeout(18000);
-  const trace=(step)=>console.log("LIVE-DRAG-TRACE",step);
   const live=page.frameLocator('#livePageFrame');
   const paragraph=live.locator('main p').first(),heading=live.locator('main h2');
-  trace("before paragraph click");await paragraph.click();trace("clicked");
+  await paragraph.click();
   const before=await paragraph.boundingBox();
   const headingBefore=await heading.boundingBox();
   const grip=live.locator('#moon-v2-live-overlay .moon-v2-move');
-  trace("looking for overlay handle");await expect(grip).toBeVisible({timeout:3500});trace("overlay visible");
+  await expect(grip).toBeVisible();
   const box=await grip.boundingBox();
   await page.mouse.move(box.x+box.width/2,box.y+box.height/2);
-  await page.mouse.down();trace("pointer down");
+  await page.mouse.down();
   await page.mouse.move(box.x+box.width/2+38,box.y+box.height/2+27,{steps:8});
-  await page.mouse.up();trace("pointer up");
+  await page.mouse.up();
   const moved=await paragraph.boundingBox();
   expect(moved.x).toBeGreaterThan(before.x+20);
   expect(moved.y).toBeGreaterThan(before.y+15);
@@ -784,10 +782,10 @@ test('direct movement on actual webpage changes only selected text and supports 
   expect(Math.abs(headingAfter.x-headingBefore.x)).toBeLessThan(1);
   expect(Math.abs(headingAfter.y-headingBefore.y)).toBeLessThan(1);
   await expect(page.locator('#liveEditCount')).toContainText('1 saved edit');
-  trace("undo button "+await page.locator('#undo').isEnabled());await page.locator('#undo').click({timeout:3500});trace("undo clicked");
+  await page.locator('#undo').click();
   const undone=await paragraph.boundingBox();
   expect(Math.abs(undone.x-before.x)).toBeLessThan(1);
-  trace("redo button "+await page.locator('#redo').isEnabled());await page.locator('#redo').click({timeout:3500});trace("redo clicked");
+  await page.locator('#redo').click();
   const redone=await paragraph.boundingBox();
   expect(redone.x).toBeGreaterThan(before.x+20);
   await page.reload();
@@ -848,4 +846,27 @@ test('device-specific live positions do not spill into phone or tablet layouts',
   expect(html).toContain('@media (min-width:1025px)');
   expect(html).toContain('translate:80px 0px!important');
   expect(html).toContain('translate:22px 0px!important');
+});
+
+test('arrow keys nudge live text and reset position only for active device',async({page})=>{
+  const live=page.frameLocator('#livePageFrame');
+  const paragraph=live.locator('main p').first();
+  await paragraph.click();
+  const original=await paragraph.boundingBox();
+  await paragraph.press('ArrowRight');
+  await paragraph.press('Shift+ArrowDown');
+  await expect(page.locator('#liveMoveX')).toHaveValue('1');
+  await expect(page.locator('#liveMoveY')).toHaveValue('10');
+  const nudged=await paragraph.boundingBox();
+  expect(nudged.x).toBeGreaterThan(original.x);
+  expect(nudged.y).toBeGreaterThan(original.y+5);
+  await page.locator('#devicePreview').selectOption('phone');
+  await expect(page.locator('#liveMoveX')).toHaveValue('0');
+  await page.locator('#devicePreview').selectOption('desktop');
+  await page.locator('#resetLiveLayout').click();
+  await expect(page.locator('#liveMoveX')).toHaveValue('0');
+  await expect(page.locator('#liveMoveY')).toHaveValue('0');
+  const reset=await paragraph.boundingBox();
+  expect(Math.abs(reset.x-original.x)).toBeLessThan(1);
+  expect(Math.abs(reset.y-original.y)).toBeLessThan(1);
 });
