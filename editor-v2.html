@@ -72,6 +72,15 @@
         <button id="importScene" class="subtle">Restore canvas from JSON backup</button>
         <p class="help">Creates a simplified, free-form reconstruction. For a faithful appearance and small content edits, use Live website. The original website remains unchanged.</p>
       </section>
+      <section id="liveLayersPanel" class="panel-section">
+        <div class="panel-title">
+          <h2>Website elements</h2><span id="liveLayerCount">0</span>
+        </div>
+        <label for="liveElementSearch">Find text, headings or images</label>
+        <input id="liveElementSearch" type="search" placeholder="Search elements on this page" autocomplete="off">
+        <div id="liveElementList" class="layers live-element-list" aria-label="Selectable elements in the actual webpage"></div>
+        <p class="help">Select any item to jump to it in the page. Use the website itself to drag and resize. This list reflects the real GitHub page, not a reconstructed canvas.</p>
+      </section>
       <section id="canvasLayersPanel" class="panel-section" hidden>
         <div class="panel-title"><h2>Layers</h2><span id="layerCount">0</span></div>
         <div id="layers" class="layers" aria-label="Page objects"></div>
@@ -213,6 +222,12 @@
             <button id="liveFitReflowHeight" type="button" disabled>Fit height to wrapped text</button>
             <p class="help">Fitting the height deliberately makes room for the whole paragraph and can move following sections down. Undo is available.</p>
           </div>
+          <div class="inline-actions">
+            <button id="liveBringFront" type="button" disabled>Bring to front</button>
+            <button id="liveSendBack" type="button" disabled>Send backward</button>
+            <button id="liveResetStack" type="button" disabled>Reset stacking</button>
+          </div>
+          <p class="help">Layer controls change the selected element's stacking order within its existing website container. They cannot break out of a clipped parent.</p>
           <div class="inline-actions">
             <button id="resetLiveLayout" type="button">Reset position on this screen</button>
           </div>
