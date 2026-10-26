@@ -98,12 +98,21 @@
           <input id="propSrc" placeholder="assets/photo.webp" hidden>
           <label for="propAlt" id="altLabel" hidden>Image description</label>
           <textarea id="propAlt" rows="2" hidden></textarea>
+          <button type="button" id="replaceImage" hidden>Replace selected image file</button>
+          <label for="propFamily">Font family</label>
+          <select id="propFamily">
+            <option value="Georgia, serif">Georgia</option>
+            <option value='"Times New Roman", Times, serif'>Times New Roman</option>
+            <option value="Arial, sans-serif">Arial</option>
+            <option value="system-ui, sans-serif">System sans-serif</option>
+          </select>
           <div class="property-grid">
             <label>Text size <input type="number" id="propFont" min="10" max="120"></label>
             <label>Alignment <select id="propAlign"><option value="left">Left</option><option value="center">Centre</option><option value="right">Right</option></select></label>
             <label>Text colour <input type="color" id="propColor"></label>
             <label>Background <input type="color" id="propBg"></label>
           </div>
+          <label class="checkbox-line"><input id="propTransparent" type="checkbox"> Transparent background</label>
           <div class="inline-actions"><button id="lock">Lock</button><button id="hide">Hide</button></div>
         </div>
       </section>
