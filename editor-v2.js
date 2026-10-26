@@ -1814,6 +1814,36 @@ async function publishGithub(token,target){
     publishedHtml:production?.html||null,
     publishedMatches:production?.resolved||[]};
 }
+function renderPublishPatchList(){
+  const list=$("publishPatchList");
+  list.replaceChildren();
+  if(workspaceMode!=="live"){
+    list.hidden=true;return;
+  }
+  list.hidden=false;
+  const heading=document.createElement("strong");
+  heading.textContent="Saved edits to this webpage ("+livePatches.size+")";
+  list.append(heading);
+  if(!livePatches.size){
+    const empty=document.createElement("p");
+    empty.textContent="No live-page edits remain. Return to the webpage to make another edit.";
+    list.append(empty);return;
+  }
+  for(const patch of livePatches.values()){
+    const row=document.createElement("div");
+    row.className="publish-patch";
+    const label=document.createElement("span");
+    label.textContent=(patch.kind==="text"?"Text":patch.kind==="image"?"Image":"Position/style")+
+      " · "+livePatchExcerpt(patch);
+    label.title=patch.selector;
+    const remove=document.createElement("button");
+    remove.type="button";remove.className="subtle";
+    remove.textContent="Remove edit";
+    remove.setAttribute("aria-label","Remove saved edit "+livePatchExcerpt(patch));
+    remove.dataset.patchSelector=patch.selector;
+    row.append(label,remove);list.append(row);
+  }
+}
 function updatePublishTarget(){
   const target=$("publishTarget").value,live=target==="live";
   $("publishTitle").textContent=live?"Publish changes to the live website":"Publish staging preview";
@@ -1825,6 +1855,9 @@ function updatePublishTarget(){
   $("acknowledgeLive").closest("label").hidden=!live;
   $("acknowledgeLive").required=live;
   $("confirmPublish").textContent=live?"Publish live page":"Publish staging preview";
+  $("confirmPublish").disabled=live&&!livePatches.size;
+  $("checkPublishEdits").hidden=workspaceMode!=="live";
+  renderPublishPatchList();
   $("publishError").hidden=true;
 }
 function showPublishResult(result){
@@ -2165,6 +2198,37 @@ function attachEvents(){
     $("publishDialog").showModal();
   });
   $("publishTarget").addEventListener("change",updatePublishTarget);
+  $("publishPatchList").addEventListener("click",event=>{
+    const button=event.target.closest("button[data-patch-selector]");
+    if(!button||$("confirmPublish").disabled&&!livePatches.size)return;
+    const selector=button.dataset.patchSelector;
+    if(!livePatches.has(selector))return;
+    const before=liveSnapshot();
+    livePatches.delete(selector);
+    recordLiveHistory(before);
+    renderPublishPatchList();
+    $("confirmPublish").disabled=$("publishTarget").value==="live"&&!livePatches.size;
+    $("publishError").hidden=true;
+    loadLivePage();
+    status("Saved edit removed from draft · Undo available · Website unchanged");
+  });
+  $("checkPublishEdits").addEventListener("click",async()=>{
+    const button=$("checkPublishEdits"),message=$("publishError");
+    if(workspaceMode!=="live")return;
+    button.disabled=true;message.hidden=true;
+    try{
+      await sourcePreservingHtml(new URL(".",location.href).href);
+      message.hidden=false;
+      message.classList.add("publish-success");
+      message.textContent="All "+livePatches.size+
+        " saved edits match the current webpage source. GitHub will also verify its latest version when you publish.";
+    }catch(error){
+      message.classList.remove("publish-success");
+      message.textContent=error.message||"Saved edit verification failed";
+      message.hidden=false;
+    }finally{button.disabled=false;}
+  });
+  $("publishDialog").addEventListener("close",()=>{$("githubToken").value="";});
   $("forgetGithubToken").addEventListener("click",()=>{
     githubTabToken="";
     $("githubToken").value="";
@@ -2186,6 +2250,7 @@ function attachEvents(){
       message.hidden=false;return;
     }
     $("confirmPublish").disabled=true;$("cancelPublish").disabled=true;
+    message.classList.remove("publish-success");
     message.hidden=true;
     status("Checking the latest GitHub file before publishing…");
     try{
