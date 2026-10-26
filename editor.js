@@ -1110,7 +1110,11 @@
       // Update the canvas extent once when the gesture ends.
       if(!freeGesture?.moved)refreshFreeCanvasExtent(doc);
       const image=sel.node.querySelector("img");
-      if(image)image.style.width="100%";
+      if(image&&insertionKind(next)==="image"){
+        image.style.width="100%";
+        image.style.height="100%";
+        image.style.objectFit="contain";
+      }
     }else{
       const source=getWorking(state.selected);
       if(!source)return false;
@@ -4537,7 +4541,11 @@
       img.setAttribute("loading","lazy");
       img.style.cssText="max-width:100%;height:auto";
       if(item.widthPercent!==undefined)img.style.width=item.widthPercent+"%";
-      if(item.freePosition)img.style.width="100%";
+      if(item.freePosition){
+        img.style.width="100%";
+        img.style.height="100%";
+        img.style.objectFit="contain";
+      }
       node.append(img);
       return node;
     }
@@ -4559,7 +4567,7 @@
     if(insertionKind(item)==="image")return '<p'+(item.freePosition?' class="moon-free-object moon-free-absolute"':"")+footprint+style+'><img src="'+item.src+
       '" alt="'+text.replace(/"/g,"&quot;").replace(/'/g,"&#39;")+
       '" loading="lazy" style="max-width:100%;height:auto'+
-        (item.freePosition?";width:100%":item.widthPercent===undefined?"":";width:"+item.widthPercent+"%")+'"></p>';
+        (item.freePosition?";width:100%;height:100%;object-fit:contain":item.widthPercent===undefined?"":";width:"+item.widthPercent+"%")+'"></p>';
     if(insertionKind(item)==="heading")return "<"+item.headingTag+(item.freePosition?' class="moon-free-object moon-free-absolute"':"")+footprint+style+">"+text+"</"+item.headingTag+">";
     if(insertionKind(item)==="link")return "<p"+(item.freePosition?' class="moon-free-object moon-free-absolute"':"")+footprint+style+"><a href=\""+escapePlainText(item.href)+"\""+
       (/^https:\/\//i.test(item.href)?" rel=\"noopener noreferrer\"":"")+">"+text+"</a></p>";
