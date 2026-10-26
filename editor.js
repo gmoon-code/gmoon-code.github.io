@@ -125,7 +125,8 @@
 
   function initialIndex() {
     state.original.clear();
-    const nodes=[...state.doc.querySelectorAll("body "+EDITABLE.replaceAll(",",",body "))];
+    const nodes=[...state.doc.querySelectorAll("body "+EDITABLE.replaceAll(",",",body "))].filter(
+      node=>!node.matches(".moon-free-placeholder,[data-moon-free-placeholder]"));
     nodes.forEach((node,i)=>state.original.set(annotationId(i),node.outerHTML));
     nodes.forEach((node,i)=>node.setAttribute("data-editor-key",annotationId(i)));
     const main=state.doc.querySelector("main");
@@ -153,7 +154,8 @@
   }
 
   function reindex() {
-    const nodes=[...state.doc.querySelectorAll("body "+EDITABLE.replaceAll(",",",body "))];
+    const nodes=[...state.doc.querySelectorAll("body "+EDITABLE.replaceAll(",",",body "))].filter(
+      node=>!node.matches(".moon-free-placeholder,[data-moon-free-placeholder]"));
     if (nodes.length!==state.original.size) {
       throw new Error("The edited block changed the number of editable elements. Undo that edit before exporting.");
     }
