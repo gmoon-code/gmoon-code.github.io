@@ -608,6 +608,13 @@ function removeAddedPatchFromDoc(doc,selector){
   for(const node of doc.querySelectorAll("[data-moon-v2-added-style]")){
     if(node.getAttribute("data-moon-v2-added-style")===id)node.remove();
   }
+  const main=doc.querySelector("main");
+  const layer=main?.querySelector(":scope > [data-moon-v2-added-layer]");
+  if(layer&&!layer.querySelector("[data-moon-v2-added-id]")){
+    layer.remove();
+    main.removeAttribute("data-moon-v2-added-host");
+    doc.getElementById("moon-v2-added-foundation")?.remove();
+  }
 }
 function findAddedNode(doc,selector){
   const found=selector?.match(LIVE_ADDED_ID);
@@ -1966,7 +1973,8 @@ function renderLiveLayers(){
     if(css.display==="none"||css.visibility==="hidden")return false;
     const label=node.tagName==="IMG"?
       node.alt||node.getAttribute("src")||"Image":node.textContent||"";
-    return !!label.trim()||["SECTION","ARTICLE","FIGURE","ASIDE"].includes(node.tagName);
+    return !!label.trim()||node.hasAttribute("data-moon-v2-added-id")||
+      ["SECTION","ARTICLE","FIGURE","ASIDE"].includes(node.tagName);
   });
   const matching=nodes.filter(node=>{
     if(!filter)return true;
@@ -2018,7 +2026,8 @@ function selectLiveElement(node){
   if(!node||!doc?.querySelector("main")?.contains(node))return;
   liveSelected={node,page:currentPage};
   node.setAttribute("data-moon-v2-live-selected","");
-  $("copyLiveObject").disabled=LIVE_CONTAINER_SET.has(node.tagName);
+  $("copyLiveObject").disabled=LIVE_CONTAINER_SET.has(node.tagName)&&
+    !node.hasAttribute("data-moon-v2-added-id");
   renderLiveInspector();syncLiveOverlay();updateLiveLayerSelection();
   const label=(node.tagName==="IMG"?node.alt||"image":node.textContent||"text")
     .trim().replace(/\s+/g," ").slice(0,80);
