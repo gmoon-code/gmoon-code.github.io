@@ -578,3 +578,20 @@ test('live image library replaces source image without creating a canvas object'
   await expect(page.locator('#stage .scene-object')).toHaveCount(0);
   await expect(page.locator('#liveEditCount')).toContainText('1 saved edit');
 });
+
+test('top-bar preview and compare show faithful original-layout edits in live mode',async({page})=>{
+  const live=page.frameLocator('#livePageFrame');
+  await live.locator('main h2').click();
+  await page.locator('#editLiveText').click();
+  await live.locator('main h2').fill('Live mode preview heading');
+  await page.locator('#saveLiveText').click();
+  await page.locator('#preview').click();
+  const preview=page.frameLocator('#previewFrame');
+  await expect(preview.locator('main h2')).toHaveText('Live mode preview heading');
+  await expect(preview.locator('main h2')).toHaveCSS('font-size','30px');
+  await page.locator('#closePreview').click();
+  await page.locator('#compare').click();
+  await expect(page.frameLocator('#originalFrame').locator('main h2')).toHaveText('Research overview');
+  await expect(page.frameLocator('#sceneFrame').locator('main h2')).toHaveText('Live mode preview heading');
+  await page.locator('#closeCompare').click();
+});
