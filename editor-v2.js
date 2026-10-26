@@ -265,6 +265,25 @@ function render(){
   for(const obj of [...scene.objects].sort((a,b)=>a.z-b.z||a.id-b.id))stage.append(makeSceneElement(obj));
   renderLayers();renderProperties();refreshUndo();
 }
+async function loadPageImageLibrary(page,serial){
+  try{
+    const response=await fetch(new URL(page,location.href),{cache:"no-cache"});
+    if(!response.ok)throw Error("Page unavailable");
+    const source=new DOMParser().parseFromString(await response.text(),"text/html");
+    const unique=new Map();
+    for(const img of source.querySelectorAll("main img[src]")){
+      const src=img.getAttribute("src")||"";
+      if(!safeImageSource(src)||unique.has(src))continue;
+      unique.set(src,{src,alt:img.alt||"",w:Number(img.getAttribute("width"))||260,
+        h:Number(img.getAttribute("height"))||190});
+      if(unique.size>=75)break;
+    }
+    if(currentPage!==page||serial!==loadSerial)return;
+    pageImages=[...unique.values()];renderImageLibrary();
+  }catch{
+    // Image browsing is optional. Keep any current canvas draft untouched.
+  }
+}
 function renderImageLibrary(){
   const container=$("imageLibrary");
   container.replaceChildren();
@@ -608,6 +627,7 @@ function changePage(page){
   }catch{scene=empty;status("Saved canvas invalid · Original website unchanged");}
   render();
   fitCanvas();
+  loadPageImageLibrary(page,loadSerial);
 }
 function esc(s){return String(s??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
 function standaloneHtml(assetPrefix=""){
