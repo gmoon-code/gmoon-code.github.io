@@ -159,6 +159,27 @@ try{
       "Invisible layout holder should be detached from mobile reading order");
     console.log("PASS published mobile sizing and reading order");
   }finally{await mobile.close();}
+  // Newly inserted images use a separate <p><img></p> sizing path. Check
+  // that the image itself never spills out of its resized outer box.
+  publishedIndexOverride=null;
+  await page.evaluate(()=>localStorage.clear());
+  await page.reload({waitUntil:"domcontentloaded"});
+  const anchor=frame.locator("main .home-lead").first();
+  await anchor.waitFor({state:"visible",timeout:25000});
+  await anchor.click();
+  await page.locator("#insertContentKind").selectOption("image");
+  await page.locator("#insertContentText").fill("Temporary image for resize regression");
+  await page.locator("#insertImageSrc").fill("assets/profile-portrait.webp");
+  await page.locator("#insertContentBtn").click();
+  const inserted=frame.locator("main [data-editor-added-index]").first();
+  await inserted.waitFor({state:"visible"});
+  await resize("new image block",inserted,frame.locator("main h1").first());
+  const inner=inserted.locator("img").first();
+  const outerBox=await inserted.boundingBox(),innerBox=await inner.boundingBox();
+  assert(outerBox&&innerBox,"New image disappeared");
+  assert(innerBox.width<=outerBox.width+3&&innerBox.height<=outerBox.height+3,
+    "Inserted image overflowed its resized frame");
+  console.log("PASS inserted image contained in resized frame");
 }catch(error){
   const {mkdir}=await import("node:fs/promises");
   await mkdir("test-artifacts",{recursive:true});
