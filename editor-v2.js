@@ -255,7 +255,7 @@ const LIVE_WIDTHS={desktop:1160,tablet:768,phone:390};
 function setWorkspaceMode(mode){
   if(mode!=="live"&&mode!=="design")return;
   if(mode!=="live"&&liveEditing)saveLiveText();
-  if(mode!=="live"){removeLiveOverlay();liveGesture=null;}
+  if(mode!=="live"){removeLiveOverlay();removeLiveSnapGuides();liveGesture=null;}
   workspaceMode=mode;
   const isLive=mode==="live";
   $("liveViewport").hidden=!isLive;
@@ -850,6 +850,77 @@ function syncLiveOverlay(){
   liveOverlay.style.width=rect.width+"px";
   liveOverlay.style.height=rect.height+"px";
 }
+function removeLiveSnapGuides(){
+  const doc=$("livePageFrame")?.contentDocument;
+  doc?.getElementById("moon-v2-snap-x")?.remove();
+  doc?.getElementById("moon-v2-snap-y")?.remove();
+}
+function candidateLiveSnapLines(node){
+  const doc=node.ownerDocument,root=doc.querySelector("main");
+  const x=[],y=[];
+  if(!root)return {x,y};
+  for(const other of [...root.querySelectorAll(LIVE_SELECTABLE_TAGS)].slice(0,180)){
+    if(other===node||other.contains(node)||node.contains(other))continue;
+    const style=doc.defaultView.getComputedStyle(other);
+    if(style.display==="none"||style.visibility==="hidden")continue;
+    const box=other.getBoundingClientRect();
+    if(box.width<12||box.height<8)continue;
+    x.push(box.left,box.left+box.width/2,box.right);
+    y.push(box.top,box.top+box.height/2,box.bottom);
+  }
+  return {x,y};
+}
+function snapLiveMove(dx,dy,gesture,disabled){
+  if(disabled)return {dx,dy,x:null,y:null};
+  const bounds=gesture.rect;
+  const x=bounds.left+dx,y=bounds.top+dy;
+  const edgesX=[x,x+bounds.width/2,x+bounds.width];
+  const edgesY=[y,y+bounds.height/2,y+bounds.height];
+  const tolerance=7;
+  let bestX=null,bestY=null;
+  for(const guide of gesture.snapLines.x){
+    for(const edge of edgesX){
+      const diff=guide-edge;
+      if(Math.abs(diff)<=tolerance&&
+        (!bestX||Math.abs(diff)<Math.abs(bestX.diff))){
+        bestX={diff,guide};
+      }
+    }
+  }
+  for(const guide of gesture.snapLines.y){
+    for(const edge of edgesY){
+      const diff=guide-edge;
+      if(Math.abs(diff)<=tolerance&&
+        (!bestY||Math.abs(diff)<Math.abs(bestY.diff))){
+        bestY={diff,guide};
+      }
+    }
+  }
+  return {dx:dx+(bestX?.diff||0),dy:dy+(bestY?.diff||0),
+    x:bestX?.guide??null,y:bestY?.guide??null};
+}
+function drawLiveSnapGuides(x,y,doc){
+  for(const [id,value,axis] of [
+    ["moon-v2-snap-x",x,"x"],["moon-v2-snap-y",y,"y"]
+  ]){
+    let line=doc.getElementById(id);
+    if(value===null){line?.remove();continue;}
+    if(!line){
+      line=doc.createElement("div");line.id=id;
+      line.setAttribute("aria-hidden","true");
+      line.style.cssText="position:fixed!important;pointer-events:none!important;"+
+        "z-index:2147482990!important;background:#e03c8a!important;";
+      doc.body.append(line);
+    }
+    if(axis==="x"){
+      line.style.left=value+"px";line.style.top="0px";
+      line.style.height="100vh";line.style.width="1px";
+    }else{
+      line.style.left="0px";line.style.top=value+"px";
+      line.style.height="1px";line.style.width="100vw";
+    }
+  }
+}
 function startLiveGesture(event,direction,anchor){
   if(event.button!==0||workspaceMode!=="live"||liveEditing||liveGesture)return;
   if(!liveSelected?.node?.isConnected)return;
@@ -863,7 +934,7 @@ function startLiveGesture(event,direction,anchor){
   liveGesture={pointer:event.pointerId,anchor,dir:direction,
     startX:event.clientX,startY:event.clientY,rect,
     patch,layout:liveLayoutFor(selector),snapshot:liveSnapshot(),
-    moved:false,selector,node};
+    moved:false,selector,node,snapLines:candidateLiveSnapLines(node)};
   anchor.setPointerCapture?.(event.pointerId);
 }
 function moveLiveGesture(event){
@@ -875,8 +946,10 @@ function moveLiveGesture(event){
   g.moved=true;
   const next={...g.layout};
   if(g.dir==="move"){
-    next.dx=clamp(Math.round(g.layout.dx+deltaX),-4000,4000);
-    next.dy=clamp(Math.round(g.layout.dy+deltaY),-4000,4000);
+    const snap=snapLiveMove(deltaX,deltaY,g,event.altKey);
+    next.dx=clamp(Math.round(g.layout.dx+snap.dx),-4000,4000);
+    next.dy=clamp(Math.round(g.layout.dy+snap.dy),-4000,4000);
+    drawLiveSnapGuides(snap.x,snap.y,g.node.ownerDocument);
   }else if(g.layout.wrapWidth!==undefined&&g.node.matches(
     "h1,h2,h3,h4,h5,h6,p,blockquote,figcaption")){
     const dir=g.dir;
@@ -921,6 +994,7 @@ function finishLiveGesture(event){
   const g=liveGesture;
   if(!g||event.pointerId!==g.pointer)return;
   liveGesture=null;
+  removeLiveSnapGuides();
   if(event.type==="pointercancel"){
     livePatches=new Map(g.snapshot.map(p=>[p.selector,p]));
     refreshLiveLayoutRules(g.node.ownerDocument);
@@ -931,6 +1005,7 @@ function finishLiveGesture(event){
   renderLiveInspector();syncLiveOverlay();
 }
 function clearLiveSelection(){
+  removeLiveSnapGuides();
   if(liveSelected?.node?.isConnected)
     liveSelected.node.removeAttribute("data-moon-v2-live-selected");
   liveSelected=null;
