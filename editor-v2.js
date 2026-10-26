@@ -12,6 +12,7 @@ const NEW_DRAFT="moon-academic-editor-v2:";
 let currentPage="index.html";
 let scene={version:VERSION,page:currentPage,width:STANDARD_WIDTH,height:1080,objects:[],nextId:1};
 let selected=new Set(),activeId=null,history=[],redo=[],zoom=.8,gesture=null,editingId=null,saveTimer=null,loadSerial=0,lastTap=null,pageImages=[];
+let canvasClipboard=[],canvasPasteCount=0;
 let workspaceMode="live",liveWidth=1160,liveScale=1,liveManualScale=null,liveSelected=null,liveObserver=null,liveSerial=0;
 let liveSuppressClickUntil=0;
 const LIVE_DRAFT_KEY="moon-academic-editor-v2:source:";
@@ -140,6 +141,11 @@ function refreshUndo(){
     [...selected].some(id=>{const obj=lookup(id);return obj&&!obj.locked;});
   $("duplicate").disabled=!editable;$("remove").disabled=!editable;
   $("front").disabled=!editable;$("back").disabled=!editable;
+  $("copyObjects").disabled=workspaceMode!=="design"||!selected.size;
+  $("pasteObjects").disabled=workspaceMode!=="design"||!canvasClipboard.length||
+    scene.objects.length>=MAX_OBJECTS;
+  $("selectAllObjects").disabled=workspaceMode!=="design"||
+    !scene.objects.some(obj=>!obj.hidden&&!obj.locked);
 }
 function remember(snapshot){
   const before=snapshot||copy(scene);
@@ -221,6 +227,56 @@ function select(id,additive=false){
     selected=new Set(id===null?[]:[id]);activeId=id;
   }
   render();
+}
+function selectAllCanvasObjects(){
+  if(workspaceMode!=="design")return;
+  const ids=scene.objects.filter(obj=>!obj.hidden&&!obj.locked).map(obj=>obj.id);
+  setSelection(ids,ids.at(-1)||null);
+  status(ids.length?ids.length+" canvas objects selected":"No visible, unlocked objects to select");
+}
+function copyCanvasObjects(cut=false){
+  if(workspaceMode!=="design")return;
+  const objects=scene.objects.filter(obj=>selected.has(obj.id)&&
+    (!cut||!obj.locked)).sort((a,b)=>a.z-b.z||a.id-b.id);
+  if(!objects.length){status("Select canvas objects first");return;}
+  canvasClipboard=copy(objects);canvasPasteCount=0;
+  if(cut){
+    mutate(()=>{
+      const ids=new Set(objects.map(obj=>obj.id));
+      scene.objects=scene.objects.filter(obj=>!ids.has(obj.id));
+      selected.clear();activeId=null;
+    });
+    status(objects.length+" objects cut · Paste to insert them here or on another page");
+  }else{
+    refreshUndo();
+    status(objects.length+" canvas objects copied · Paste on any canvas page");
+  }
+}
+function pasteCanvasObjects(){
+  if(workspaceMode!=="design"||!canvasClipboard.length)return;
+  if(scene.objects.length>=MAX_OBJECTS){status("Canvas object limit reached");return;}
+  const incoming=canvasClipboard.slice(0,MAX_OBJECTS-scene.objects.length);
+  if(!incoming.length)return;
+  canvasPasteCount++;
+  const shift=Math.min(canvasPasteCount*24,360);
+  mutate(()=>{
+    let z=Math.max(0,...scene.objects.map(obj=>obj.z));
+    const ids=[];
+    for(const source of incoming){
+      const clone=copy(source);
+      clone.id=scene.nextId++;
+      clone.name=(source.name+" copy").slice(0,120);
+      clone.x=clamp(source.x+shift,-2000,20000);
+      clone.y=clamp(source.y+shift,-2000,40000);
+      clone.z=++z;
+      clone.locked=false;clone.hidden=false;
+      clone.order=scene.objects.length;
+      scene.objects.push(clone);ids.push(clone.id);
+      scene.height=Math.max(scene.height,clone.y+clone.h+70);
+    }
+    selected=new Set(ids);activeId=ids.at(-1)||null;
+  });
+  status(incoming.length+" objects pasted · Undo available");
 }
 function applyBox(node,obj){
   node.style.left=obj.x+"px";node.style.top=obj.y+"px";
@@ -2256,6 +2312,9 @@ function attachEvents(){
     if(editingId!==null&&
       event.target.closest(".scene-object")?.dataset.id===String(editingId))finishTextEdit();
   });
+  $("copyObjects").addEventListener("click",()=>copyCanvasObjects());
+  $("pasteObjects").addEventListener("click",pasteCanvasObjects);
+  $("selectAllObjects").addEventListener("click",selectAllCanvasObjects);
   $("layers").addEventListener("click",event=>{
     const node=event.target.closest("[data-layer-id]");
     if(!node)return;
@@ -2552,6 +2611,18 @@ function attachEvents(){
       // must never delete/duplicate/move those hidden canvas objects.
       if(event.key==="Escape"){clearLiveSelection();return;}
       return;
+    }
+    if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==="a"){
+      event.preventDefault();selectAllCanvasObjects();return;
+    }
+    if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==="c"&&selected.size){
+      event.preventDefault();copyCanvasObjects();return;
+    }
+    if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==="x"&&selected.size){
+      event.preventDefault();copyCanvasObjects(true);return;
+    }
+    if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==="v"&&canvasClipboard.length){
+      event.preventDefault();pasteCanvasObjects();return;
     }
     if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==="d"){
       event.preventDefault();$("duplicate").click();return;
