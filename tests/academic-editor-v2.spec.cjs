@@ -870,3 +870,19 @@ test('arrow keys nudge live text and reset position only for active device',asyn
   expect(Math.abs(reset.x-original.x)).toBeLessThan(1);
   expect(Math.abs(reset.y-original.y)).toBeLessThan(1);
 });
+
+test('moving a real homepage image preserves its pre-existing translation',async({page})=>{
+  test.setTimeout(25000);
+  await page.locator('#page').selectOption('index.html');
+  const live=page.frameLocator('#livePageFrame');
+  const image=live.locator('main img[src="assets/pungmul-stage.webp"]').first();
+  await image.scrollIntoViewIfNeeded();
+  await image.click();
+  const original=await image.boundingBox();
+  await page.locator('#liveMoveX').fill('20');
+  await page.locator('#liveMoveX').press('Tab');
+  const after=await image.boundingBox();
+  const scale=Number(await page.locator('#zoom').inputValue())/100;
+  expect(after.x-original.x).toBeGreaterThan(5);
+  expect(Math.abs((after.x-original.x)-20*scale)).toBeLessThan(4);
+});
