@@ -264,9 +264,9 @@ function setWorkspaceMode(mode){
   $("reloadLive").disabled=!isLive;
   $("copyLiveObject").disabled=!isLive||!liveSelected;
   $("workspaceTitle").textContent=isLive?"Live website":"Free design canvas";
-  $("workspacePill").textContent=isLive?"Original HTML and CSS · read-only":"Independent objects · staging only";
+  $("workspacePill").textContent=isLive?"Original layout · safe content edits":"Independent objects · staging only";
   $("workspaceExplanation").textContent=isLive?
-    "This displays the existing page with its real styles, images and responsive layout. Click a text block or image to select it. Copy creates a separate canvas object and does not change the original.":
+    "This displays the existing page with its real styles and responsive layout. Select text or an image to edit it in the original-page inspector. Copy creates an independent free-design object. Production files remain unchanged.":
     "This canvas is a simplified, independent reconstruction. It does not yet reproduce every original section or responsive rule. Use Live website to verify the real page; only the staging preview can be published.";
   $("workspaceFooter").textContent=isLive?
     "Original page · browse links, switch pages, and edit selected text or images · Choose Desktop, Tablet or Phone":
