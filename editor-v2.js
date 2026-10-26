@@ -484,10 +484,10 @@ function livePatchForSelected(){
   if(node.tagName==="IMG")
     return {selector,kind:"image",expected:node.getAttribute("src")||"",
       src:node.getAttribute("src")||"",alt:node.alt||""};
-  if(LIVE_CONTAINER_SET.has(node.tagName))
-    return {selector,kind:"layout",expected:(node.textContent||"").trim().slice(0,300)};
-  return {selector,kind:"text",expected:(node.textContent||"").trim().slice(0,300),
-    html:cleanRich(node.innerHTML)};
+  // A geometry or appearance adjustment must never rewrite the source
+  // paragraph's links, span attributes or other original child markup.
+  // A text patch is created only when the user explicitly edits the text.
+  return {selector,kind:"layout",expected:(node.textContent||"").trim().slice(0,300)};
 }
 function liveSnapshot(){return copy([...livePatches.values()]);}
 function recordLiveHistory(before){
@@ -618,7 +618,7 @@ function applyPatchesToDocument(doc,strict=false){
     const node=doc.querySelector(patch.selector);
     if(!node||(patch.kind==="image"&&node.tagName!=="IMG")||
       (patch.kind==="text"&&(node.tagName==="IMG"||LIVE_CONTAINER_SET.has(node.tagName)))||
-      (patch.kind==="layout"&&!LIVE_CONTAINER_SET.has(node.tagName))){
+      (patch.kind==="layout"&&!node.matches(LIVE_SELECTABLE_TAGS))){
       if(strict)throw Error("The saved edit's element is missing");continue;
     }
     const original=patch.kind==="image"?node.getAttribute("src")||"":
@@ -657,7 +657,8 @@ function saveLiveText(){
   const old=livePatches.get(edit.selector);
   livePatches.set(edit.selector,{
     selector:edit.selector,kind:"text",expected:edit.expected,html,
-    ...(old?.layout?{layout:old.layout}:{})
+    ...(old?.layout?{layout:old.layout}:{}),
+    ...(old?.appearance?{appearance:old.appearance}:{})
   });
   recordLiveHistory(before);renderLiveInspector();fitLivePage();
 }
