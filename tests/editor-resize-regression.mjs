@@ -62,6 +62,16 @@ try{
   await frame.locator("main .home-lead").waitFor({state:"visible",timeout:25000});
   const paragraph=frame.locator("main .home-lead").first();
   const paragraphResult=await resize("paragraph",paragraph,frame.locator("main h1").first());
+  // Undo and Redo must each restore the exact expected geometry.
+  await page.locator("#undoBtn").click();
+  const revertedParagraph=await paragraph.boundingBox();
+  assert(revertedParagraph&&closeTo(revertedParagraph.width,paragraphResult.before.width),
+    "Undo did not restore the paragraph dimensions");
+  await page.locator("#redoBtn").click();
+  const redoneParagraph=await paragraph.boundingBox();
+  assert(redoneParagraph&&closeTo(redoneParagraph.width,paragraphResult.after.width),
+    "Redo did not restore the paragraph resize");
+  console.log("PASS paragraph Undo/Redo");
   // The resized geometry must persist to the browser-local draft.
   await page.keyboard.press("Control+s");
   await page.reload({waitUntil:"domcontentloaded"});
@@ -70,11 +80,6 @@ try{
   assert(restoredParagraph&&closeTo(restoredParagraph.width,paragraphResult.after.width),
     "paragraph resize was lost after saving and reloading");
   console.log("PASS saved resize restored");
-  await page.keyboard.press("Control+z");
-  const reverted=await paragraph.boundingBox();
-  // A fresh page load clears undo history, so test undo in the current
-  // document separately after a second resize, below.
-  assert(reverted,"paragraph lost after keyboard action");
   // Start the image test from the original content, not the text test draft.
   await page.evaluate(()=>localStorage.clear());
   await page.reload({waitUntil:"domcontentloaded"});
