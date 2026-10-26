@@ -1123,3 +1123,57 @@ test('disabling reflow restores source width without discarding visual position'
   await expect(live.locator('main h2')).not.toHaveCSS('width','120px');
   await expect(page.locator('#liveMoveX')).toHaveValue('31');
 });
+
+test('live drag snaps to a nearby edge with temporary alignment guides',async({page})=>{
+  const source='<!doctype html><html><head><style>'+
+    'main{padding:95px 20px}p{font:18px Arial;width:100px;height:35px}'+
+    '.first{margin:0}.second{margin:10px 0 0 200px}'+
+    '</style></head><body><main>'+
+    '<p class="first">First box</p><p class="second">Second box</p>'+
+    '</main></body></html>';
+  await page.route('**/about.html',route=>route.fulfill({
+    status:200,contentType:'text/html',body:source
+  }));
+  await page.locator('#reloadLive').click();
+  const live=page.frameLocator('#livePageFrame');
+  const first=live.locator('main p.first'),second=live.locator('main p.second');
+  await first.click();
+  await page.locator('#liveMoveX').fill('194');
+  await page.locator('#liveMoveX').press('Tab');
+  const move=live.locator('#moon-v2-live-overlay .moon-v2-move');
+  const box=await move.boundingBox();
+  await page.mouse.move(box.x+box.width/2,box.y+box.height/2);
+  await page.mouse.down();
+  await page.mouse.move(box.x+box.width/2+4,box.y+box.height/2,{steps:7});
+  await expect(live.locator('#moon-v2-snap-x')).toBeVisible();
+  await page.mouse.up();
+  const finalPosition=await first.boundingBox(),reference=await second.boundingBox();
+  expect(Math.abs(finalPosition.x-reference.x)).toBeLessThan(1.5);
+  await expect(live.locator('#moon-v2-snap-x')).toHaveCount(0);
+  await expect(live.locator('main p.second')).toHaveText('Second box');
+});
+test('holding Alt disables live drag snapping and leaves guides hidden',async({page})=>{
+  const source='<!doctype html><html><head><style>'+
+    'main{padding:95px 20px}p{font:18px Arial;width:100px;height:35px}'+
+    '.first{margin:0}.second{margin:10px 0 0 200px}'+
+    '</style></head><body><main>'+
+    '<p class="first">First box</p><p class="second">Second box</p>'+
+    '</main></body></html>';
+  await page.route('**/about.html',route=>route.fulfill({
+    status:200,contentType:'text/html',body:source
+  }));
+  await page.locator('#reloadLive').click();
+  const live=page.frameLocator('#livePageFrame');
+  await live.locator('main p.first').click();
+  await page.locator('#liveMoveX').fill('194');
+  await page.locator('#liveMoveX').press('Tab');
+  const grip=await live.locator('#moon-v2-live-overlay .moon-v2-move').boundingBox();
+  await page.mouse.move(grip.x+grip.width/2,grip.y+grip.height/2);
+  await page.keyboard.down('Alt');
+  await page.mouse.down();
+  await page.mouse.move(grip.x+grip.width/2+4,grip.y+grip.height/2,{steps:6});
+  await expect(live.locator('#moon-v2-snap-x')).toHaveCount(0);
+  await page.mouse.up();
+  await page.keyboard.up('Alt');
+  await expect(live.locator('#moon-v2-snap-x')).toHaveCount(0);
+});
