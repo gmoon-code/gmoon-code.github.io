@@ -935,14 +935,26 @@ function applyPatchesToDocument(doc,strict=false,resolved=[],normalized=[]){
           livePatchExcerpt(a.patch)+"\". Revert the nested edits first to avoid discarding them.");
     }
   }
-  for(const {patch,node,selector,originals} of changes){
+  // Apply content first against resolved DOM nodes. When deletion changes
+  // sibling nth-of-type positions, calculate fresh selectors AFTER removal.
+  // That prevents a moved or styled sibling from targeting the wrong node.
+  for(const {patch,node} of changes){
     if(patch.kind==="image"){
       node.setAttribute("src",patch.src);
       node.setAttribute("alt",patch.alt);
     }else if(patch.kind==="text")node.innerHTML=cleanRich(patch.html);
-    else if(patch.kind==="delete")node.remove();
-    for(const from of originals)resolved.push({from,to:selector});
-    normalized.push({...patch,selector});
+  }
+  for(const {patch,node} of changes){
+    if(patch.kind==="delete")node.remove();
+  }
+  for(const {patch,node,selector,originals} of changes){
+    const finalSelector=patch.kind==="delete"?selector:liveSelector(node);
+    if(!finalSelector){
+      if(strict)throw Error("A source element changed position while applying the edits. Publication stopped.");
+      continue;
+    }
+    for(const from of originals)resolved.push({from,to:finalSelector});
+    normalized.push({...patch,selector:finalSelector});
   }
   refreshLiveLayoutRules(doc,normalized.filter(p=>p.kind!=="delete"));
   return resolved.length;
@@ -1385,6 +1397,9 @@ function bindLiveDocument(){
       event.preventDefault();liveUndoAction(true);return;
     }
     if(event.key==="Escape"){clearLiveSelection();return;}
+    if((event.key==="Delete"||event.key==="Backspace")&&liveSelected?.node){
+      event.preventDefault();deleteSelectedLiveElement();return;
+    }
     const moves={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]};
     const change=moves[event.key];
     if(change&&liveSelected?.node){
@@ -2707,6 +2722,9 @@ function attachEvents(){
       // Canvas selection is retained across workspace switches. Shortcuts
       // must never delete/duplicate/move those hidden canvas objects.
       if(event.key==="Escape"){clearLiveSelection();return;}
+      if((event.key==="Delete"||event.key==="Backspace")&&liveSelected?.node){
+        event.preventDefault();deleteSelectedLiveElement();
+      }
       return;
     }
     if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==="a"){
