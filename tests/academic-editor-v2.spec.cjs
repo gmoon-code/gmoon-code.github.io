@@ -639,7 +639,8 @@ test('real website rendering matches standalone pages at desktop and phone width
   test.setTimeout(90000);
   const root='http://127.0.0.1:8765/';
   await page.unroute('**/about.html');
-  const summary=async handle=>handle.evaluate(doc=>{
+  const summary=async handle=>handle.evaluate(node=>{
+    const doc=node.ownerDocument;
     const main=doc.querySelector('main');
     const heading=main?.querySelector('h1,h2');
     const css=heading?doc.defaultView.getComputedStyle(heading):null;
