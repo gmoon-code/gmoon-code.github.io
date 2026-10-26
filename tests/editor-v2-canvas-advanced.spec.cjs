@@ -45,10 +45,11 @@ test('right-to-left selection includes touched objects and Shift preserves previ
   for(let i=0;i<3;i++)await page.locator('#addShape').click();
   await setPosition(page,1,150,150);
   await setPosition(page,2,420,150);
-  await setPosition(page,3,700,500);
+  // Keep the crossing gesture fully inside the visible editor viewport.
+  await setPosition(page,3,700,250);
   await boxDrag(page,[35,40],[395,430]);
   await expect(page.locator('#stage .scene-object[aria-selected="true"]')).toHaveCount(1);
-  await boxDrag(page,[995,760],[855,620],['Shift']);
+  await boxDrag(page,[995,500],[855,385],['Shift']);
   await expect(page.locator('#stage [data-id="1"]')).toHaveAttribute('aria-selected','true');
   await expect(page.locator('#stage [data-id="3"]')).toHaveAttribute('aria-selected','true');
   await expect(page.locator('#stage [data-id="2"]')).toHaveAttribute('aria-selected','false');
