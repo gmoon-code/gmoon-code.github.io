@@ -768,6 +768,13 @@
       $("toggleCanvasFocus").click();
       return true;
     }
+    // A canvas-mode shortcut allows switching between movement and direct
+    // text editing without navigating to the header controls.
+    if(event.altKey&&event.shiftKey&&!event.ctrlKey&&!event.metaKey&&event.key.toLowerCase()==="m"&&!typing){
+      event.preventDefault();
+      $("freeCanvasToggle").click();
+      return true;
+    }
     // The slash key opens the existing page content finder from anywhere
     // in the editor outside input fields. No source content is altered.
     if(event.key==="/"&&!event.altKey&&!event.ctrlKey&&!event.metaKey&&!typing){
