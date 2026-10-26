@@ -115,14 +115,28 @@ function save(){
   clearTimeout(saveTimer);
   try{
     localStorage.setItem(NEW_DRAFT+currentPage,JSON.stringify(scene));
-    status("Saved locally · Website unchanged");
+    status("Canvas draft saved locally · Public website unchanged");
   }catch{status("Local storage unavailable · Export JSON to keep your draft");}
+}
+function saveActiveDraft(){
+  if(workspaceMode==="live"){
+    if(liveEditing)saveLiveText();
+    // This button previously saved the *other* workspace's canvas draft.
+    // Source edits are normally autosaved; the explicit action confirms the
+    // correct page's source draft is persisted.
+    storeLiveDraft();
+    status("Live-page edits saved in this browser · Use Publish to update the website");
+  }else{
+    if(editingId!==null)finishTextEdit();
+    save();
+  }
 }
 function scheduleSave(){clearTimeout(saveTimer);saveTimer=setTimeout(save,400);status("Unsaved canvas changes · Website unchanged");}
 function refreshUndo(){
   $("undo").disabled=workspaceMode==="live"?!liveHistory.length:!history.length;
   $("redo").disabled=workspaceMode==="live"?!liveRedo.length:!redo.length;
-  const editable=[...selected].some(id=>!lookup(id)?.locked);
+  const editable=workspaceMode==="design"&&
+    [...selected].some(id=>{const obj=lookup(id);return obj&&!obj.locked;});
   $("duplicate").disabled=!editable;$("remove").disabled=!editable;
   $("front").disabled=!editable;$("back").disabled=!editable;
 }
@@ -269,13 +283,20 @@ function setWorkspaceMode(mode){
   $("devicePreview").disabled=!isLive;
   $("reloadLive").disabled=!isLive;
   $("copyLiveObject").disabled=!isLive||!liveSelected;
+  $("canvasLayersPanel").hidden=isLive;
+  $("canvasPropertiesPanel").hidden=isLive;
+  $("canvasPublishingPanel").hidden=isLive;
+  $("exportScene").disabled=isLive;
+  $("exportScene").title=isLive?"Switch to Free design canvas to export canvas JSON":"Export the current free design canvas";
+  $("save").textContent=isLive?"Save live-page edits":"Save canvas draft";
+  $("selectTool").textContent=isLive?"↖ Select webpage":"↖ Select canvas";
   $("workspaceTitle").textContent=isLive?"Live website":"Free design canvas";
   $("workspacePill").textContent=isLive?"Original layout · safe content edits":"Independent objects · staging only";
   $("workspaceExplanation").textContent=isLive?
     "This displays the existing page with its real styles and responsive layout. Select text or an image to edit it in the original-page inspector. Copy creates an independent free-design object. Production files remain unchanged.":
     "This canvas is a simplified, independent reconstruction. It does not yet reproduce every original section or responsive rule. Use Live website to verify the real page; only the staging preview can be published.";
   $("workspaceFooter").textContent=isLive?
-    "Original page · Click text or images · Alt-click to select a card or section · Drag or resize without changing production files":
+    "Original page · Drag text or images directly · Double-click text to edit · Alt-click linked text or a section · Resize with handles":
     "Drag to move · Eight resize handles · Double-click text to edit · Double-click empty canvas to add text · Drop images · Shift-click for multiple selection";
   renderLiveInspector();refreshUndo();
   if(isLive){fitLivePage();syncLiveOverlay();}
@@ -2113,7 +2134,11 @@ function attachEvents(){
     if(!button)return;
     const item=pageImages[Number(button.dataset.imageIndex)];
     if(!item)return;
-    if(workspaceMode==="live"&&liveSelected?.node?.tagName==="IMG"){
+    if(workspaceMode==="live"){
+      if(liveSelected?.node?.tagName!=="IMG"){
+        status("Select a website image first to replace it. Adding new objects belongs to Free design canvas.");
+        return;
+      }
       $("liveImageSrc").value=item.src;
       $("liveImageAlt").value=item.alt||"";
       applyLiveImage();
@@ -2278,7 +2303,7 @@ function attachEvents(){
     reader.readAsDataURL(file);
   });
   $("undo").addEventListener("click",undo);$("redo").addEventListener("click",redoAction);
-  $("save").addEventListener("click",save);
+  $("save").addEventListener("click",saveActiveDraft);
   $("addText").addEventListener("click",()=>add("text",{text:"Double-click to edit text",name:"New text"}));
   $("addShape").addEventListener("click",()=>add("shape",{name:"New shape"}));
   $("addImage").addEventListener("click",()=>$("imageFile").click());
@@ -2376,7 +2401,7 @@ function attachEvents(){
   $("reconnectImageButton").addEventListener("click",reconnectSavedImage);
   $("publishPatchList").addEventListener("click",event=>{
     const button=event.target.closest("button[data-patch-selector]");
-    if(!button||$("confirmPublish").disabled&&!livePatches.size)return;
+    if(!button)return;
     const selector=button.dataset.patchSelector;
     if(!livePatches.has(selector))return;
     const before=liveSnapshot();
@@ -2420,7 +2445,7 @@ function attachEvents(){
     status("GitHub token cleared from this editor tab");
   });
   $("cancelPublish").addEventListener("click",()=>{
-    if($("confirmPublish").disabled)return;
+    if($("cancelPublish").disabled)return;
     $("githubToken").value="";$("publishDialog").close();
   });
   $("publishForm").addEventListener("submit",async event=>{
@@ -2471,7 +2496,8 @@ function attachEvents(){
       status("Publication stopped · No changes were confirmed");
     }finally{
       $("githubToken").value="";
-      $("confirmPublish").disabled=false;$("cancelPublish").disabled=false;
+      $("confirmPublish").disabled=$("publishTarget").value==="live"&&!livePatches.size;
+      $("cancelPublish").disabled=false;
     }
   });
   document.addEventListener("keydown",event=>{
