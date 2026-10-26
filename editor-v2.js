@@ -16,7 +16,8 @@ let selected=new Set(),activeId=null,history=[],redo=[],zoom=.8,gesture=null,edi
 let canvasClipboard=[],canvasPasteCount=0;
 let canvasMarquee=null; // Non-persistent rubber-band selection; no scene changes.
 let liveObjectClipboard=null,livePasteCount=0;
-let liveAddedMulti=new Set(); // Selected stable IDs for objects on the actual webpage
+let liveAddedMulti=new Set(); // Selected stable IDs for added objects
+let liveSourceMulti=new Set(); // Existing source objects selected on the actual webpage
 let liveLockImageRatio=true;
 let workspaceMode="live",liveWidth=1160,liveScale=1,liveManualScale=null,liveSelected=null,liveObserver=null,liveSerial=0;
 let liveSuppressClickUntil=0;
@@ -1098,6 +1099,7 @@ function liveUndoAction(again=false){
   pendingLiveViewRestore={
     page:currentPage,x:view?.scrollX||0,y:view?.scrollY||0,
     addedSelection:[...liveAddedMulti],
+    sourceSelection:[...liveSourceMulti],
     selector:selectedNode&&liveSelector(selectedNode),
     tag:selectedNode?.tagName,
     text:selectedNode?.tagName==="IMG"?
@@ -2082,8 +2084,11 @@ function startLiveGesture(event,direction,anchor){
     liveAddedMulti.has(selector)&&selectedAddedPatches().length>1?
     selectedAddedPatches().map(item=>({selector:item.selector,node:item.node,
       patch:copy(item.patch)})):null;
+  const sourceGroup=direction==="move"&&!LIVE_ADDED_ID.test(selector)&&
+    liveSourceMulti.has(selector)&&selectedSourcePatches().length>1?
+    selectedSourcePatches():null;
   liveGesture={pointer:event.pointerId,anchor,dir:direction,
-    startX:event.clientX,startY:event.clientY,rect,group,
+    startX:event.clientX,startY:event.clientY,rect,group,sourceGroup,
     patch,layout:liveLayoutFor(selector),snapshot:liveSnapshot(),
     moved:false,selector,node,snapLines:candidateLiveSnapLines(node)};
   anchor.setPointerCapture?.(event.pointerId);
@@ -2095,6 +2100,22 @@ function moveLiveGesture(event){
   const deltaX=event.clientX-g.startX,deltaY=event.clientY-g.startY;
   if(!g.moved&&Math.hypot(deltaX,deltaY)<3)return;
   g.moved=true;
+  if(g.sourceGroup&&g.dir==="move"){
+    const snap=snapLiveMove(deltaX,deltaY,g,event.altKey);
+    const device=liveDevice();
+    for(const item of g.sourceGroup){
+      const patch=copy(item.patch);
+      patch.layout={...patch.layout,[device]:{
+        ...item.layout,
+        dx:clamp(Math.round(item.layout.dx+snap.dx),-4000,4000),
+        dy:clamp(Math.round(item.layout.dy+snap.dy),-4000,4000)
+      }};
+      livePatches.set(item.selector,patch);
+    }
+    refreshLiveLayoutRules(g.node.ownerDocument);
+    drawLiveSnapGuides(snap.x,snap.y,g.node.ownerDocument);
+    syncLiveOverlay();return;
+  }
   if(g.group&&g.dir==="move"){
     const device=liveDevice();
     for(const item of g.group){
@@ -2207,6 +2228,7 @@ function cancelLiveGesture(){
       const original=livePatches.get(g.selector);
       if(original)refreshAddedObject(g.node.ownerDocument,original);
     }else refreshLiveLayoutRules(g.node.ownerDocument);
+    if(g.sourceGroup)refreshLiveLayoutRules(g.node.ownerDocument);
   }
   try{
     if(g.anchor?.hasPointerCapture?.(g.pointer))
@@ -2231,12 +2253,15 @@ function finishLiveGesture(event){
       const restored=livePatches.get(g.selector);
       if(restored)refreshAddedObject(g.node.ownerDocument,restored);
     }else refreshLiveLayoutRules(g.node.ownerDocument);
+    if(g.sourceGroup)refreshLiveLayoutRules(g.node.ownerDocument);
   }else if(g.moved){
     // Mouseup still generates a click; keep it from navigating to a nearby
     // link or selecting a different element after a drag.
     liveSuppressClickUntil=performance.now()+250;
     recordLiveHistory(g.snapshot);
-    status("Moved/resized live-page draft saved · Review changes before publishing");
+    status(g.sourceGroup?
+      g.sourceGroup.length+" original webpage objects moved together · Review before publishing":
+      "Moved/resized live-page draft saved · Review changes before publishing");
   }
   renderLiveInspector();syncLiveOverlay();
 }
@@ -2267,7 +2292,8 @@ function renderLiveLayers(){
     button.type="button";button.className="layer";
     button.dataset.liveSelector=selector;
     button.setAttribute("aria-current",String(liveSelected?.node===node));
-    button.setAttribute("aria-selected",String(liveAddedMulti.has(selector)));
+    button.setAttribute("aria-selected",String(liveAddedMulti.has(selector)||
+      liveSourceMulti.has(selector)));
     const type=document.createElement("span"),label=document.createElement("span");
     type.className="layer-type";type.textContent=node.tagName.toLowerCase();
     label.className="layer-name";
@@ -2295,6 +2321,32 @@ function selectedAddedPatches(){
     return node?.isConnected&&patch?.kind==="insert"?{selector,node,patch}:null;
   }).filter(Boolean);
 }
+// Source objects keep their own DOM markup. Only a geometry patch is written
+// when a selection moves; native links and text are never reconstructed.
+function selectedSourcePatches(){
+  const doc=$("livePageFrame").contentDocument,main=doc?.querySelector("main");
+  if(!main)return [];
+  return [...liveSourceMulti].map(selector=>{
+    if(LIVE_ADDED_ID.test(selector))return null;
+    let node;
+    try{node=main.querySelector(selector);}catch{return null;}
+    // main.querySelector("main > ...") does not match a main-rooted selector.
+    node=doc.querySelector(selector);
+    if(!node||!main.contains(node))return null;
+    const stored=livePatches.get(selector);
+    if(stored?.kind==="delete"||stored?.kind==="remove-added")return null;
+    const patch=stored?copy(stored):node.tagName==="IMG"?
+      {selector,kind:"image",expected:node.getAttribute("src")||"",
+        src:node.getAttribute("src")||"",alt:node.alt||""}:
+      {selector,kind:"layout",expected:(node.textContent||"").trim().slice(0,300)};
+    if(!validLivePatch(patch))return null;
+    const device=liveDevice();
+    const current=patch.layout?.[device]||{};
+    const base=current.ox!==undefined&&current.oy!==undefined?
+      {}:originalLiveTransform(node);
+    return {selector,node,patch,layout:{...defaultLiveLayout(),...base,...current}};
+  }).filter(Boolean);
+}
 function syncLiveMultiSelection(){
   const doc=$("livePageFrame").contentDocument;
   if(doc){
@@ -2303,16 +2355,21 @@ function syncLiveMultiSelection(){
       if(selected)node.setAttribute("data-moon-v2-multi-selected","");
       else node.removeAttribute("data-moon-v2-multi-selected");
     }
+    for(const node of doc.querySelectorAll("[data-moon-v2-source-selected]"))
+      node.removeAttribute("data-moon-v2-source-selected");
+    for(const item of selectedSourcePatches())
+      item.node.setAttribute("data-moon-v2-source-selected","");
   }
   const count=selectedAddedPatches().length;
-  $("liveMultiCount").textContent=count+" selected";
+  $("liveMultiCount").textContent=(count+selectedSourcePatches().length)+" selected";
   $("liveClearAdded").disabled=!count;
   $("liveSelectAdded").disabled=workspaceMode!=="live";
   for(const id of LIVE_ARRANGE_TOOLS)
     $(id).disabled=workspaceMode!=="live"||count<(id.startsWith("liveDistribute")?3:2);
   for(const button of $("liveElementList").querySelectorAll("[data-live-selector]")){
     const key=button.dataset.liveSelector;
-    button.setAttribute("aria-selected",String(liveAddedMulti.has(key)));
+    button.setAttribute("aria-selected",String(liveAddedMulti.has(key)||
+      liveSourceMulti.has(key)));
     button.setAttribute("aria-current",String(liveSelected?.node&&liveSelector(liveSelected.node)===key));
   }
 }
@@ -2331,6 +2388,23 @@ function selectAllLiveAdded(){
   status(liveAddedMulti.size+" independent webpage objects selected");
 }
 function nudgeLiveSelection(dx,dy){
+  const sources=selectedSourcePatches();
+  if(sources.length>1){
+    const before=liveSnapshot(),device=liveDevice();
+    for(const item of sources){
+      const patch=copy(item.patch),old=item.layout;
+      patch.layout={...patch.layout,[device]:{...old,
+        dx:clamp(Math.round(old.dx+dx),-4000,4000),
+        dy:clamp(Math.round(old.dy+dy),-4000,4000)}};
+      livePatches.set(item.selector,patch);
+    }
+    if(recordLiveHistory(before)){
+      refreshLiveLayoutRules(sources[0].node.ownerDocument);
+      renderLiveInspector();syncLiveOverlay();syncLiveMultiSelection();
+      status(sources.length+" existing webpage objects moved together · Undo available");
+    }
+    return;
+  }
   const selected=selectedAddedPatches();
   if(selected.length<2){
     const node=liveSelected?.node;
@@ -2403,7 +2477,7 @@ function updateLiveLayerSelection(){
   syncLiveMultiSelection();
 }
 function clearLiveSelection(preserveMulti=false){
-  if(!preserveMulti)liveAddedMulti.clear();
+  if(!preserveMulti){liveAddedMulti.clear();liveSourceMulti.clear();}
   removeLiveSnapGuides();
   if(liveSelected?.node?.isConnected)
     liveSelected.node.removeAttribute("data-moon-v2-live-selected");
@@ -2418,6 +2492,23 @@ function selectLiveElement(node,additive=false,preserveMulti=false){
   const doc=$("livePageFrame").contentDocument;
   if(!node||!doc?.querySelector("main")?.contains(node))return;
   const key=liveSelector(node),isAdded=LIVE_ADDED_ID.test(key);
+  if(additive&&!isAdded){
+    const group=selectedSourcePatches();
+    // Selecting nested containers and children together would double-move
+    // descendants, so keep grouped moves to independent page elements.
+    if(group.some(item=>item.node!==node&&
+      (item.node.contains(node)||node.contains(item.node)))){
+      status("Choose independent webpage objects to move as a group");
+      return;
+    }
+    liveAddedMulti.clear();
+    if(liveSourceMulti.has(key))liveSourceMulti.delete(key);
+    else liveSourceMulti.add(key);
+    const last=[...liveSourceMulti].at(-1);
+    if(!last){clearLiveSelection();return;}
+    selectLiveElement(doc.querySelector(last),false,true);
+    return;
+  }
   if(additive&&isAdded){
     if(liveAddedMulti.has(key))liveAddedMulti.delete(key);
     else liveAddedMulti.add(key);
@@ -2427,8 +2518,9 @@ function selectLiveElement(node,additive=false,preserveMulti=false){
     selectLiveElement(primary,false,true);
     return;
   }
-  if(!preserveMulti)liveAddedMulti.clear();
+  if(!preserveMulti){liveAddedMulti.clear();liveSourceMulti.clear();}
   if(isAdded)liveAddedMulti.add(key);
+  else liveSourceMulti.add(key);
   clearLiveSelection(true);
   liveSelected={node,page:currentPage};
   node.setAttribute("data-moon-v2-live-selected","");
@@ -2478,7 +2570,9 @@ function bindLiveDocument(){
   const sheet=doc.createElement("style");
   sheet.textContent='[data-moon-v2-live-selected]{outline:2px solid #287dbb!important;outline-offset:2px!important;cursor:crosshair!important}'+
     '[data-moon-v2-multi-selected]{outline:2px dashed #bf3d8a!important;outline-offset:3px!important;}'+
-    '[data-moon-v2-live-selected][data-moon-v2-multi-selected]{outline:3px solid #287dbb!important;}';
+    '[data-moon-v2-source-selected]{outline:2px dashed #bf3d8a!important;outline-offset:3px!important;}'+
+    '[data-moon-v2-live-selected][data-moon-v2-multi-selected],'+
+    '[data-moon-v2-live-selected][data-moon-v2-source-selected]{outline:3px solid #287dbb!important;}';
   (doc.head||doc.documentElement).append(sheet);
   doc.addEventListener("keydown",event=>{
     if(workspaceMode!=="live")return;
@@ -2535,10 +2629,10 @@ function bindLiveDocument(){
     // Select and start a move in one pointer gesture. Previously a user had
     // to click, release and then start a *second* drag on the same element.
     const link=event.target.closest?.("a[href]");
-    if(link&&!event.altKey)return; // Normal link navigation remains possible.
+    if(link&&!event.altKey&&!event.shiftKey)return; // Ordinary clicks still navigate.
     const target=liveEventTarget(event);
     if(!target||!doc.querySelector("main")?.contains(target))return;
-    if(event.shiftKey&&LIVE_ADDED_ID.test(liveSelector(target))){
+    if(event.shiftKey){
       event.preventDefault();
       liveSuppressClickUntil=performance.now()+250;
       selectLiveElement(target,true);
@@ -2591,8 +2685,8 @@ function bindLiveDocument(){
       }catch{status("Cannot open an invalid webpage link");return;}
     }
     const node=liveEventTarget(event);
-    if(node)selectLiveElement(node,event.shiftKey);
-    else clearLiveSelection();
+    if(node&&liveSelected?.node!==node)selectLiveElement(node,event.shiftKey);
+    else if(!node)clearLiveSelection();
   },true);
   doc.addEventListener("dblclick",event=>{
     if(workspaceMode!=="live"||liveEditing||event.target.closest?.("a[href]")&&!event.altKey)return;
