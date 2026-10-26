@@ -278,3 +278,20 @@ test('a locked canvas object cannot be moved, deleted, or restyled',async({page}
   await page.locator('#undo').click();
   await expect(page.locator('#stage [data-id="1"]')).toHaveCount(1);
 });
+
+test('real Home, Research and Teaching pages import without source modification',async({page})=>{
+  test.setTimeout(90000);
+  await page.unroute('**/about.html');
+  for(const source of ['index.html','research.html','teaching.html']){
+    await page.locator('#page').selectOption(source);
+    await page.locator('#importPage').click();
+    await expect(page.locator('#status')).toContainText('Imported',{timeout:25000});
+    const count=await page.locator('#stage .scene-object').count();
+    expect(count).toBeGreaterThan(5);
+    const saved=await page.evaluate(name=>JSON.parse(localStorage.getItem(
+      'moon-academic-editor-v2:'+name)),source);
+    expect(saved.page).toBe(source);
+    expect(saved.objects.length).toBe(count);
+    expect(saved.objects.every(object=>Number.isFinite(object.x)&&Number.isFinite(object.w))).toBe(true);
+  }
+});
