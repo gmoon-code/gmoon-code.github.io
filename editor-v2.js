@@ -139,7 +139,8 @@ function refreshUndo(){
   $("redo").disabled=workspaceMode==="live"?!liveRedo.length:!redo.length;
   const editable=workspaceMode==="design"&&
     [...selected].some(id=>{const obj=lookup(id);return obj&&!obj.locked;});
-  $("duplicate").disabled=!editable;$("remove").disabled=!editable;
+  $("duplicate").disabled=!editable;
+  $("remove").disabled=workspaceMode==="live"?!liveSelected?.node:!editable;
   $("front").disabled=!editable;$("back").disabled=!editable;
   $("copyObjects").disabled=workspaceMode!=="design"||!selected.size;
   $("pasteObjects").disabled=workspaceMode!=="design"||!canvasClipboard.length||
@@ -762,7 +763,7 @@ function renderLiveInspector(){
   const selector=node&&liveSelector(node);
   $("revertLiveElement").disabled=!selector||!livePatches.has(selector);
   $("deleteLiveElement").disabled=!node||!selector||!!liveEditing;
-  $("remove").disabled=workspaceMode==="live"?!node: $("remove").disabled;
+  refreshUndo();
   $("liveLayoutControls").hidden=!node;
   $("liveAppearanceControls").hidden=!node||tag==="IMG";
   if(node&&tag!=="IMG"){
