@@ -8,6 +8,7 @@ on:
       - 'editor-v2.js'
       - 'tests/editor-v2-source-parity.spec.cjs'
       - 'tests/editor-v2-live-insertions.spec.cjs'
+      - 'tests/editor-v2-live-arrangement.spec.cjs'
       - '.github/workflows/editor-v2-source-parity.yml'
   workflow_dispatch:
 permissions:
@@ -36,6 +37,7 @@ jobs:
         run: |
           npx playwright test \
             tests/editor-v2-live-insertions.spec.cjs \
+            tests/editor-v2-live-arrangement.spec.cjs \
             tests/editor-v2-source-parity.spec.cjs \
             --browser chromium --workers=1 --reporter=list
       - name: Upload browser failure details
