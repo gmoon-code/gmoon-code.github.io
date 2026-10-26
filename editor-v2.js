@@ -473,6 +473,17 @@ function ensureAddedLayer(doc){
   const main=doc.querySelector("main");
   if(!main)throw Error("The webpage has no main element for independent objects.");
   main.setAttribute("data-moon-v2-added-host","");
+  let foundation=doc.getElementById("moon-v2-added-foundation");
+  if(!foundation){
+    foundation=doc.createElement("style");
+    foundation.id="moon-v2-added-foundation";
+    foundation.textContent=
+      'main[data-moon-v2-added-host]{position:relative!important;}'+
+      'main > [data-moon-v2-added-layer]{position:absolute!important;'+
+      'left:0!important;top:0!important;width:100%!important;height:0!important;'+
+      'overflow:visible!important;pointer-events:none!important;z-index:100!important;}';
+    doc.head.append(foundation);
+  }
   let layer=main.querySelector(":scope > [data-moon-v2-added-layer]");
   if(!layer){
     layer=doc.createElement("div");
@@ -554,6 +565,59 @@ function removeAddedPatchFromDoc(doc,selector){
   for(const node of doc.querySelectorAll("[data-moon-v2-added-style]")){
     if(node.getAttribute("data-moon-v2-added-style")===id)node.remove();
   }
+}
+function findAddedNode(doc,selector){
+  const found=selector?.match(LIVE_ADDED_ID);
+  if(!found)return null;
+  return [...doc.querySelectorAll("[data-moon-v2-added-id]")].find(node=>
+    node.getAttribute("data-moon-v2-added-id")===found[1])||null;
+}
+function newAddedPatch(type,{src="",alt="",html="",fill="#e1eee4"}={}){
+  const doc=$("livePageFrame").contentDocument,main=doc?.querySelector("main");
+  if(!main)throw Error("The current webpage has not finished loading.");
+  const id=(crypto.randomUUID?.()||Math.random().toString(36).slice(2))
+    .toLowerCase().replace(/[^a-z0-9-]/g,"").slice(0,36);
+  const w=type==="text"?320:type==="image"?300:180;
+  const h=type==="text"?105:type==="image"?220:120;
+  const rect=main.getBoundingClientRect();
+  const y=Math.round(clamp(75-rect.top,20,38000));
+  const x=Math.round(clamp((rect.width-w)/2,12,9000));
+  const geometry={};
+  for(const [device,viewportWidth] of Object.entries(LIVE_WIDTHS)){
+    const width=Math.min(w,Math.max(80,viewportWidth-32));
+    geometry[device]={x:Math.round(clamp(x,12,Math.max(12,viewportWidth-width-16))),
+      y,w:width,h};
+  }
+  geometry[liveDevice()]={x,y,w:Math.min(w,Math.max(80,rect.width-24)),h};
+  return {selector:"added:"+id,kind:"insert",expected:"",objectType:type,
+    geometry,...(type==="text"?{html:cleanRich(html||"Double-click to edit text")}:
+      type==="image"?{src,alt}:{fill}),
+    ...(type==="text"?{appearance:{fontSize:20,color:"#1c2622"}}:{})};
+}
+function addLiveObject(type,values={}){
+  if(workspaceMode!=="live"||liveEditing)return;
+  if(type==="image"&&!safeImageSource(values.src)){
+    status("Choose a website image or an image file to add.");return;
+  }
+  try{
+    const patch=newAddedPatch(type,values);
+    if(!validAddedPatch(patch))throw Error("Invalid object details.");
+    const before=liveSnapshot();
+    if(livePatches.size>=180)throw Error("The per-page edit limit has been reached.");
+    livePatches.set(patch.selector,patch);
+    const doc=$("livePageFrame").contentDocument;
+    const node=applyAddedPatch(doc,patch);
+    recordLiveHistory(before);
+    renderLiveLayers();
+    selectLiveElement(node);
+    node.scrollIntoView({block:"center",inline:"nearest"});
+    syncLiveOverlay();
+    status("New "+type+" added directly to the webpage · Drag or resize · Publish through GitHub");
+  }catch(error){status("Could not add "+type+" · "+error.message);}
+}
+function refreshAddedObject(doc,patch){
+  if(patch?.kind==="insert")applyAddedPatch(doc,patch);
+  else if(patch?.kind==="remove-added")removeAddedPatchFromDoc(doc,patch.selector);
 }
 function liveSelector(node){
   const added=node?.closest?.("[data-moon-v2-added-id]");
@@ -728,6 +792,12 @@ function originalLiveTransform(node){
   }finally{if(sheet)sheet.disabled=wasDisabled;}
 }
 function liveLayoutFor(selector,device=liveDevice()){
+  const added=livePatches.get(selector);
+  if(added?.kind==="insert"){
+    const v=addedDeviceGeometry(added,device);
+    return {...defaultLiveLayout(),dx:v.x,dy:v.y,
+      wrapWidth:v.w,reserveHeight:v.h};
+  }
   const current=livePatches.get(selector)?.layout?.[device]||{};
   const selectedNode=liveSelected?.node;
   const origin=current.ox!==undefined&&current.oy!==undefined?
@@ -853,6 +923,24 @@ function liveUndoAction(again=false){
 }
 function applyLiveLayoutInput(key,value){
   const patch=livePatchForSelected();if(!patch)return;
+  if(patch.kind==="insert"){
+    const geometry=addedDeviceGeometry(patch,liveDevice()),v=Number(value);
+    if(!Number.isFinite(v))return;
+    const before=liveSnapshot();
+    const field=key==="dx"?"x":key==="dy"?"y":key==="sx"?"w":key==="sy"?"h":null;
+    if(!field)return;
+    const next={...geometry};
+    next[field]=field==="w"||field==="h"?
+      Math.round(clamp(geometry[field]*v,field==="w"?40:24,field==="w"?4000:5000)):
+      Math.round(clamp(v,-4000,field==="y"?40000:10000));
+    patch.geometry={...patch.geometry,[liveDevice()]:next};
+    livePatches.set(patch.selector,patch);
+    if(recordLiveHistory(before)){
+      refreshAddedObject(liveSelected.node.ownerDocument,patch);
+      renderLiveInspector();syncLiveOverlay();
+    }
+    return;
+  }
   // Both text and image objects may scale visually, leaving their original
   // layout footprints unchanged so neighbouring website content stays put.
   const min=["sx","sy"].includes(key)?.2:-4000;
@@ -902,6 +990,18 @@ function setLiveReflowDimension(key,value){
   const node=liveSelected?.node;
   if(!node?.matches("h1,h2,h3,h4,h5,h6,p,blockquote,figcaption"))return;
   const patch=livePatchForSelected();if(!patch)return;
+  if(patch.kind==="insert"){
+    const n=Number(value);if(!Number.isFinite(n))return;
+    const before=liveSnapshot(),geometry={...addedDeviceGeometry(patch,liveDevice())};
+    geometry[key==="wrapWidth"?"w":"h"]=Math.round(clamp(n,key==="wrapWidth"?40:24,
+      key==="wrapWidth"?4000:5000));
+    patch.geometry={...patch.geometry,[liveDevice()]:geometry};
+    livePatches.set(patch.selector,patch);
+    if(recordLiveHistory(before)){
+      refreshAddedObject(node.ownerDocument,patch);renderLiveInspector();syncLiveOverlay();
+    }
+    return;
+  }
   const layout=normaliseTextBoxLayout(node,liveLayoutFor(patch.selector));
   const number=Number(value);
   if(!Number.isFinite(number))return;
