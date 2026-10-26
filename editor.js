@@ -4342,8 +4342,13 @@
       return Number.isFinite(y)&&Number.isFinite(height)?
         Math.max(max,y+Math.max(0,height)+32):max;
     },0);
-    main.style.setProperty("--moon-free-canvas-height",
-      Math.min(20064,Math.max(0,Math.ceil(bottom)))+"px");
+    // This function also runs on every pointermove. Never change the main
+    // canvas minimum height mid-gesture: doing so moves subsequent sections,
+    // scrollbars and even the coordinate origin under the pointer.
+    // finishFreeGeometry updates the extent after pointerup.
+    if(!(doc===state.frameDoc&&freeGesture?.moved))
+      main.style.setProperty("--moon-free-canvas-height",
+        Math.min(20064,Math.max(0,Math.ceil(bottom)))+"px");
     return moved;
   }
   function refreshFreeCanvasExtent(doc){
