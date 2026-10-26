@@ -976,8 +976,14 @@ function utf8Base64(value){
   return btoa(result);
 }
 async function publishStaging(token){
-  if(!token||!scene.objects.length)throw Error("Add content and provide a GitHub token");
-  const path="editor-v2-previews/"+currentPage;
+  const sourceMode=workspaceMode==="live";
+  if(!token)throw Error("A GitHub token is required for staging");
+  if(sourceMode&&!livePatches.size)throw Error("Make at least one original-layout edit before publishing");
+  if(!sourceMode&&!scene.objects.length)throw Error("Import or add objects first");
+  const path="editor-v2-previews/"+(sourceMode?"source-":"")+currentPage;
+  const content=sourceMode?
+    await sourcePreservingHtml("https://gmoon-code.github.io/"):
+    standaloneHtml("../");
   const endpoint="https://api.github.com/repos/"+REPO+"/contents/"+path;
   const headers={Accept:"application/vnd.github+json",Authorization:"Bearer "+token,
     "X-GitHub-Api-Version":"2022-11-28"};
@@ -985,9 +991,7 @@ async function publishStaging(token){
   if(!current.ok&&current.status!==404)throw Error("GitHub access failed ("+current.status+")");
   const info=current.ok?await current.json():null;
   const body={message:"Update visual editor 2 staging preview of "+currentPage,
-    // Staging is nested one level below the GitHub Pages repository root.
-    // Rebase root-relative project assets without changing the local canvas.
-    content:utf8Base64(standaloneHtml("../")),branch:"main"};
+    content:utf8Base64(content),branch:"main"};
   if(info?.sha)body.sha=info.sha;
   const result=await fetch(endpoint,{method:"PUT",headers:{...headers,"Content-Type":"application/json"},
     body:JSON.stringify(body)});
@@ -1231,8 +1235,14 @@ function attachEvents(){
   });
   $("closePreview").addEventListener("click",()=>$("previewDialog").close());
   $("publish").addEventListener("click",()=>{
-    if(!scene.objects.length){status("Import or add objects first");return;}
-    $("stagePath").textContent="editor-v2-previews/"+currentPage;
+    if(workspaceMode==="live"&&!livePatches.size){
+      status("Select text or an image and save a live-page edit before publishing");return;
+    }
+    if(workspaceMode==="design"&&!scene.objects.length){
+      status("Import or add objects first");return;
+    }
+    $("stagePath").textContent="editor-v2-previews/"+
+      (workspaceMode==="live"?"source-":"")+currentPage;
     $("githubToken").value="";$("publishDialog").showModal();
   });
   $("publishForm").addEventListener("submit",async event=>{
