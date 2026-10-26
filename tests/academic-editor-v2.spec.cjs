@@ -680,3 +680,23 @@ test('real website rendering matches standalone pages at desktop and phone width
     }
   }
 });
+
+test('internal links in live site navigate pages through editor without stale iframe state',async({page})=>{
+  await page.route('**/about.html',route=>route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<!doctype html><html><body><header><a href="research.html">Research nav</a></header>'+
+      '<main><h1>Original about page</h1><a href="#section">Jump down</a>'+
+      '<p id="section">About section</p></main></body></html>'
+  }));
+  await page.route('**/research.html',route=>route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<!doctype html><html><body><main><h1>Destination research page</h1></main></body></html>'
+  }));
+  await page.locator('#reloadLive').click();
+  const live=page.frameLocator('#livePageFrame');
+  await expect(live.locator('main h1')).toHaveText('Original about page');
+  await live.locator('header a').click();
+  await expect(page.locator('#page')).toHaveValue('research.html');
+  await expect(live.locator('main h1')).toHaveText('Destination research page');
+  await expect(page.locator('#liveViewport')).toBeVisible();
+});
