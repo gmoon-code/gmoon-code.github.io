@@ -395,7 +395,7 @@ function liveUndoAction(again=false){
   if(liveEditing)saveLiveText();
   to.push(liveSnapshot());
   livePatches=new Map(from.pop().map(p=>[p.selector,p]));
-  storeLiveDraft();loadLivePage();
+  storeLiveDraft();refreshUndo();loadLivePage();
 }
 function applyLiveLayoutInput(key,value){
   const patch=livePatchForSelected();if(!patch)return;
