@@ -180,6 +180,33 @@ try{
   assert(innerBox.width<=outerBox.width+3&&innerBox.height<=outerBox.height+3,
     "Inserted image overflowed its resized frame");
   console.log("PASS inserted image contained in resized frame");
+  // Resizing from the west and north must leave the opposite edges fixed.
+  for(const [direction,dx,dy] of [["w",25,0],["n",0,20]]){
+    await inserted.click();
+    const resizeGrip=frame.locator(
+      '#moon-free-selection [data-free-direction="'+direction+'"]');
+    await resizeGrip.waitFor({state:"visible"});
+    const before=await inserted.boundingBox();
+    const grip=await resizeGrip.boundingBox();
+    assert(before&&grip,"Missing "+direction+" handle");
+    await page.mouse.move(grip.x+grip.width/2,grip.y+grip.height/2);
+    await page.mouse.down();
+    await page.mouse.move(grip.x+grip.width/2+dx,
+      grip.y+grip.height/2+dy,{steps:8});
+    await page.mouse.up();
+    const after=await inserted.boundingBox();
+    assert(after,"Object disappeared when resizing from "+direction);
+    if(direction==="w"){
+      assert(after.width<=before.width-12,"West handle did not shrink width");
+      assert(closeTo(after.x+after.width,before.x+before.width),
+        "West resizing moved the right edge");
+    }else{
+      assert(after.height<=before.height-12,"North handle did not shrink height");
+      assert(closeTo(after.y+after.height,before.y+before.height),
+        "North resizing moved the bottom edge");
+    }
+    console.log("PASS anchored "+direction+" resize");
+  }
 }catch(error){
   const {mkdir}=await import("node:fs/promises");
   await mkdir("test-artifacts",{recursive:true});
