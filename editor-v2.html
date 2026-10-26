@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex,nofollow">
 <title>Academic Website Editor 2 | Ye Eun Moon</title>
 <link rel="stylesheet" href="editor-v2.css?v=20261026-image-reconnect-v12">
-<script src="editor-v2.js?v=20261026-editor-actions-v20" defer></script>
+<script src="editor-v2.js?v=20261026-text-delete-v21" defer></script>
 </head>
 <body>
 <a class="skip" href="#workspace">Skip to editor canvas</a>
@@ -167,14 +167,15 @@
             <label>Height scale <input type="number" id="liveScaleY" min="20" max="500" step="1" value="100"></label>
           </div>
           <div id="liveTextReflowControls" hidden>
-            <label class="checkbox-line">
-              <input type="checkbox" id="liveTextReflow"> Rewrap text inside a resizable box
+            <label class="checkbox-line" hidden>
+              <input type="checkbox" id="liveTextReflow" checked disabled> Rewrap text inside a resizable box
             </label>
+            <p class="help">Text reflows automatically when you resize its box. Font size stays the same. For precise dimensions, enter a width or height below.</p>
             <div class="property-grid">
               <label>Text box width (px) <input type="number" id="liveTextBoxWidth" min="64" max="4000" step="1"></label>
               <label>Reserved height (px) <input type="number" id="liveTextBoxHeight" min="24" max="5000" step="1"></label>
             </div>
-            <p class="help">When enabled, resize handles change the text box and its line breaks. Its height reserves space in the page. If the text becomes taller, it may overlap content below.</p>
+            <p class="help">The box reserves its chosen height in the page layout. If text needs more height, use Fit height to wrapped text to avoid overlap.</p>
             <p id="liveReflowWarning" class="help reflow-warning" role="status" hidden></p>
             <button id="liveFitReflowHeight" type="button" disabled>Fit height to wrapped text</button>
             <p class="help">Fitting the height deliberately makes room for the whole paragraph and can move following sections down. Undo is available.</p>
@@ -184,6 +185,10 @@
           </div>
           <p class="help">Positioning is saved independently for desktop, tablet and phone. Validated changes can be published from Live website mode after review.</p>
         </div>
+        <div class="inline-actions">
+          <button id="deleteLiveElement" type="button" class="danger" disabled>Delete selected element</button>
+        </div>
+        <p class="help">Deleting removes the selected element from the draft and the published HTML only after you confirm publication. Undo restores it before publishing.</p>
         <div class="inline-actions">
           <button id="revertLiveElement" type="button" disabled>Revert this element</button>
           <button id="previewLiveEdits" type="button">Preview live-page draft</button>
