@@ -306,3 +306,36 @@ test('comparison view keeps original and new draft separate',async({page})=>{
   await expect(page.locator('#compareDialog')).not.toBeVisible();
   await expect(page.locator('#stage [data-id="1"] .scene-content')).toHaveText('Research overview');
 });
+
+test('blank-canvas double click creates a text object at the clicked position',async({page})=>{
+  await importScene(page);
+  const stage=page.locator('#stage');
+  await stage.dblclick({position:{x:55,y:450}});
+  await expect(page.locator('#stage .scene-object')).toHaveCount(4);
+  const newText=page.locator('#stage [data-kind="text"][aria-selected=true]');
+  await expect(newText).toHaveCount(1);
+  const editor=newText.locator('.scene-content');
+  await expect(editor).toHaveAttribute('contenteditable','true');
+  await editor.fill('New text on the page');
+  await editor.press('Escape');
+  await expect(page.locator('#stage [data-kind="text"]').last()).toContainText('New text on the page');
+});
+test('dropping an image file places an independent image onto the canvas',async({page})=>{
+  await importScene(page);
+  await page.locator('#stage').evaluate(stage=>{
+    const data=new DataTransfer();
+    const b64='iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9a1Z6sUAAAAASUVORK5CYII=';
+    const bytes=Uint8Array.from(atob(b64),c=>c.charCodeAt(0));
+    data.items.add(new File([bytes],'drop-test.png',{type:'image/png'}));
+    const rect=stage.getBoundingClientRect();
+    stage.dispatchEvent(new DragEvent('drop',{
+      bubbles:true,cancelable:true,dataTransfer:data,
+      clientX:rect.left+90,clientY:rect.top+160
+    }));
+  });
+  await expect(page.locator('#stage [data-kind="image"]')).toHaveCount(2);
+  const dropped=page.locator('#stage [data-kind="image"]').last();
+  await expect(dropped.locator('img')).toHaveAttribute('src',/^data:image\/png;base64,/);
+  const position=await dropped.evaluate(node=>parseInt(node.style.left));
+  expect(position).toBeGreaterThan(0);
+});
