@@ -499,14 +499,15 @@ function validAddedGeometry(geometry){
 }
 const DEFAULT_LIVE_OBJECT_DESIGN=Object.freeze({
   shape:"rectangle",rotation:0,opacity:100,radius:0,
-  borderWidth:0,borderColour:"#394e46"
+  borderWidth:0,borderColour:"#394e46",imageFit:"contain"
 });
 function validAddedDesign(design){
   if(!design||typeof design!=="object"||Array.isArray(design))return false;
-  const allowed=new Set(["shape","rotation","opacity","radius","borderWidth","borderColour"]);
+  const allowed=new Set(["shape","rotation","opacity","radius","borderWidth","borderColour","imageFit"]);
   for(const [key,value] of Object.entries(design)){
     if(!allowed.has(key))return false;
     if(key==="shape"&&!["rectangle","ellipse","line"].includes(value))return false;
+    if(key==="imageFit"&&!["contain","cover"].includes(value))return false;
     if(key==="borderColour"&&(typeof value!=="string"||
        !/^#[0-9a-f]{6}$/i.test(value)))return false;
     if(key==="rotation"&&(!Number.isInteger(value)||value< -180||value>180))return false;
@@ -588,7 +589,7 @@ function addedStyleCss(p){
       styles.push("border:0");
     }
   }
-  if(p.objectType==="image")styles.push("object-fit:contain");
+  if(p.objectType==="image")styles.push("object-fit:"+design.imageFit);
   for(const [key,name] of [["backgroundColor","background-color"],
     ["weight","font-weight"],["style","font-style"],
     ["decoration","text-decoration-line"],["align","text-align"]]){
@@ -1183,6 +1184,9 @@ function setLiveObjectDesign(key,value){
   }else if(key==="shape"){
     if(patch.objectType!=="shape"||!["rectangle","ellipse","line"].includes(value))return;
     design.shape=value;
+  }else if(key==="imageFit"){
+    if(patch.objectType!=="image"||!["contain","cover"].includes(value))return;
+    design.imageFit=value;
   }else if(key==="borderColour"){
     if(!/^#[0-9a-f]{6}$/i.test(value))return;
     design.borderColour=value.toLowerCase();
@@ -1399,6 +1403,11 @@ function renderLiveInspector(){
   $("liveLayoutControls").hidden=!node;
   $("liveImageSizing").hidden=tag!=="IMG";
   $("liveLockImageRatio").checked=liveLockImageRatio;
+  $("liveAddedImageFit").hidden=tag!=="IMG"||!LIVE_ADDED_ID.test(selector);
+  if(tag==="IMG"&&LIVE_ADDED_ID.test(selector)){
+    const imagePatch=livePatchForSelected();
+    $("liveImageFit").value=imagePatch?.design?.imageFit||"contain";
+  }
   const added=!!selector&&LIVE_ADDED_ID.test(selector);
   const originalBox=!!node&&!added&&!node.matches(LIVE_REFLOW_TEXT);
   $("liveOriginalDimensions").hidden=!originalBox;
@@ -3478,7 +3487,7 @@ function attachEvents(){
   $("liveTextReflow").addEventListener("change",event=>
     setLiveReflow(event.target.checked));
   const liveDesignFields={
-    liveShapeType:"shape",liveShapeFill:"fill",liveObjectRotation:"rotation",
+    liveShapeType:"shape",liveShapeFill:"fill",liveImageFit:"imageFit",liveObjectRotation:"rotation",
     liveObjectOpacity:"opacity",liveObjectRadius:"radius",
     liveObjectBorderWidth:"borderWidth",liveObjectBorderColour:"borderColour"
   };
