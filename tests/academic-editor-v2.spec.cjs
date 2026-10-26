@@ -355,3 +355,23 @@ test('visual image library inserts site assets and replaces selected pictures',a
   await expect(page.locator('#stage [data-kind="image"]').last().locator('img'))
     .toHaveAttribute('src','assets/profile-portrait.webp');
 });
+
+test('shape inspector switches rectangle to ellipse and line, including export',async({page})=>{
+  await importScene(page);
+  await page.locator('#addShape').click();
+  const shape=page.locator('#stage [data-kind="shape"][aria-selected=true]');
+  await expect(shape).toHaveCount(1);
+  await page.locator('#propShapeKind').selectOption('ellipse');
+  await expect(shape).toHaveCSS('border-radius','50%');
+  await page.locator('#propShapeKind').selectOption('line');
+  await expect(shape).toHaveClass(/line-shape/);
+  await expect(shape).toHaveCSS('border-top-style','none');
+  const pending=page.waitForEvent('download');
+  await page.locator('#exportHtml').click();
+  const output=fs.readFileSync(await (await pending).path(),'utf8');
+  expect(output).toContain('item line-shape');
+  expect(output).toContain('--shape-line-colour');
+  await page.locator('#undo').click();
+  await expect(shape).not.toHaveClass(/line-shape/);
+  await expect(shape).toHaveCSS('border-radius','50%');
+});
