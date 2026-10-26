@@ -496,6 +496,25 @@ function validAddedGeometry(geometry){
       v.w>=40&&v.w<=4000&&v.h>=24&&v.h<=5000;
   });
 }
+const DEFAULT_LIVE_OBJECT_DESIGN=Object.freeze({
+  shape:"rectangle",rotation:0,opacity:100,radius:0,
+  borderWidth:0,borderColour:"#394e46"
+});
+function validAddedDesign(design){
+  if(!design||typeof design!=="object"||Array.isArray(design))return false;
+  const allowed=new Set(["shape","rotation","opacity","radius","borderWidth","borderColour"]);
+  for(const [key,value] of Object.entries(design)){
+    if(!allowed.has(key))return false;
+    if(key==="shape"&&!["rectangle","ellipse","line"].includes(value))return false;
+    if(key==="borderColour"&&(typeof value!=="string"||
+       !/^#[0-9a-f]{6}$/i.test(value)))return false;
+    if(key==="rotation"&&(!Number.isInteger(value)||value< -180||value>180))return false;
+    if(key==="opacity"&&(!Number.isInteger(value)||value<0||value>100))return false;
+    if(key==="radius"&&(!Number.isInteger(value)||value<0||value>200))return false;
+    if(key==="borderWidth"&&(!Number.isInteger(value)||value<0||value>30))return false;
+  }
+  return true;
+}
 function validAddedPatch(p){
   return !!p&&isAddedPatch(p)&&typeof p.expected==="string"&&p.expected===""&&
     ["text","image","shape"].includes(p.objectType)&&
@@ -506,7 +525,8 @@ function validAddedPatch(p){
       safeImageSource(p.src)&&typeof p.alt==="string"&&p.alt.length<=300)&&
     (p.objectType!=="shape"||
       typeof p.fill==="string"&&/^#[0-9a-f]{6}$/i.test(p.fill))&&
-    (p.appearance===undefined||validLiveAppearance(p.appearance));
+    (p.appearance===undefined||validLiveAppearance(p.appearance))&&
+    (p.design===undefined||validAddedDesign(p.design));
 }
 function addedObjectId(p){return p.selector.slice("added:".length);}
 function addedDeviceGeometry(p,device){
@@ -541,9 +561,17 @@ function addedStyleCss(p){
   const styles=[
     "box-sizing:border-box","position:absolute","margin:0","display:block",
     "pointer-events:auto","overflow:visible","max-width:none",
-    "transform:none","transform-origin:top left"
+    "transform-origin:center center"
   ];
-  const appearance=p.appearance||{};
+  const appearance=p.appearance||{},design={
+    ...DEFAULT_LIVE_OBJECT_DESIGN,...(p.design||{})
+  };
+  styles.push("transform:rotate("+design.rotation+"deg)");
+  styles.push("opacity:"+(design.opacity/100));
+  styles.push("border-radius:"+design.radius+"px");
+  if(design.borderWidth)
+    styles.push("border:"+design.borderWidth+"px solid "+design.borderColour);
+  else styles.push("border:0");
   if(p.objectType==="text"){
     styles.push("overflow-wrap:anywhere","white-space:normal",
       "line-height:1.4","padding:3px","min-width:0");
@@ -551,7 +579,14 @@ function addedStyleCss(p){
     styles.push("font-family:"+(appearance.family||"Georgia, serif"));
     styles.push("color:"+(appearance.color||"#1c2622"));
   }
-  if(p.objectType==="shape")styles.push("background:"+p.fill);
+  if(p.objectType==="shape"){
+    styles.push("background:"+p.fill);
+    if(design.shape==="ellipse")styles.push("border-radius:50%");
+    if(design.shape==="line"){
+      styles.push("clip-path:polygon(0 47%,100% 47%,100% 53%,0 53%)");
+      styles.push("border:0");
+    }
+  }
   if(p.objectType==="image")styles.push("object-fit:contain");
   for(const [key,name] of [["backgroundColor","background-color"],
     ["weight","font-weight"],["style","font-style"],
@@ -614,6 +649,7 @@ function applyAddedPatch(doc,p){
   if(p.objectType==="shape")node.setAttribute("data-moon-v2-shape-fill",p.fill);
   node.setAttribute("data-moon-v2-added-geometry",JSON.stringify(p.geometry));
   node.setAttribute("data-moon-v2-added-appearance",JSON.stringify(p.appearance||{}));
+  node.setAttribute("data-moon-v2-added-design",JSON.stringify(p.design||{}));
   if(p.objectType==="image"){
     node.setAttribute("src",p.src);node.setAttribute("alt",p.alt);
   }else if(p.objectType==="text")node.innerHTML=cleanRich(p.html);
@@ -1001,15 +1037,17 @@ function refreshLiveLayoutRules(doc=$("livePageFrame").contentDocument,patches=[
 }
 function addedPatchFromNode(node,selector=liveSelector(node)){
   if(!node||!LIVE_ADDED_ID.test(selector))return null;
-  let geometry,appearance;
+  let geometry,appearance,design;
   try{geometry=JSON.parse(node.getAttribute("data-moon-v2-added-geometry")||"{}");}
   catch{geometry={};}
   try{appearance=JSON.parse(node.getAttribute("data-moon-v2-added-appearance")||"{}");}
   catch{appearance={};}
+  try{design=JSON.parse(node.getAttribute("data-moon-v2-added-design")||"{}");}
+  catch{design={};}
   const patch={selector,kind:"insert",expected:"",
     objectType:node.getAttribute("data-moon-v2-object-type")||
       (node.tagName==="IMG"?"image":node.tagName==="P"?"text":"shape"),
-    geometry,appearance,
+    geometry,appearance,design,
     ...(node.tagName==="IMG"?{src:node.getAttribute("src")||"",alt:node.alt||""}:
       node.tagName==="P"?{html:cleanRich(node.innerHTML)}:
       {fill:node.getAttribute("data-moon-v2-shape-fill")||"#e1eee4"})};
