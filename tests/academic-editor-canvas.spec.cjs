@@ -219,10 +219,16 @@ test('Ctrl-click cycles between overlapping floating objects without dragging', 
     left:node.style.left,top:node.style.top,width:node.style.width,height:node.style.height
   }));
   await floatingParagraph.evaluate((node,place)=>{
+    // Free-canvas coordinates are now authoritative CSS variables. Setting
+    // left/top/width alone is correctly overridden by the editor stylesheet.
     node.style.left=place.left;
     node.style.top=place.top;
     node.style.width=place.width;
     node.style.height=place.height;
+    node.style.setProperty('--moon-page-x',place.left);
+    node.style.setProperty('--moon-page-y',place.top);
+    node.style.setProperty('--moon-free-width',place.width);
+    node.style.setProperty('--moon-free-height',place.height);
     node.style.setProperty('--moon-object-layer','30');
   },place);
   const rect=await floatingHeading.boundingBox();
