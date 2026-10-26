@@ -127,6 +127,26 @@
           <textarea id="liveImageAlt" rows="2"></textarea>
           <button id="applyLiveImage" type="button">Apply image change</button>
         </div>
+        <div id="liveAppearanceControls" class="live-layout-controls" hidden>
+          <h3>Colours and typography</h3>
+          <p class="help">These changes apply to the selected original-page element, while retaining its HTML structure.</p>
+          <label for="liveFontFamily">Font family</label>
+          <select id="liveFontFamily">
+            <option value="">Keep website font</option>
+            <option value="Georgia, serif">Georgia</option>
+            <option value="Arial, sans-serif">Arial</option>
+            <option value="system-ui, sans-serif">System sans-serif</option>
+            <option value="Times New Roman, Times, serif">Times New Roman</option>
+          </select>
+          <div class="property-grid">
+            <label>Font size (px) <input id="liveFontSize" type="number" min="10" max="120" step="1"></label>
+            <label>Text colour <input id="liveTextColour" type="color"></label>
+            <label>Background <input id="liveBackgroundColour" type="color"></label>
+          </div>
+          <div class="inline-actions">
+            <button id="resetLiveAppearance" type="button">Restore website styles</button>
+          </div>
+        </div>
         <div id="liveLayoutControls" class="live-layout-controls" hidden>
           <h3>Free placement on this screen</h3>
           <p class="help">Click text or an image to select it. Alt-click inside a card or section to select the whole container. Drag or use resize handles to change its visual position or size. Text keeps its original line wrapping, and surrounding layout positions are preserved.</p>
