@@ -339,3 +339,19 @@ test('dropping an image file places an independent image onto the canvas',async(
   const position=await dropped.evaluate(node=>parseInt(node.style.left));
   expect(position).toBeGreaterThan(0);
 });
+
+test('visual image library inserts site assets and replaces selected pictures',async({page})=>{
+  await importScene(page);
+  await expect(page.locator('#imageLibrary button')).toHaveCount(1);
+  await page.locator('#layers [data-layer-id="3"]').click();
+  await page.locator('#propSrc').fill('assets/temporary-image.webp');
+  await page.locator('#propSrc').press('Tab');
+  await expect(page.locator('#stage [data-id="3"] img')).toHaveAttribute('src','assets/temporary-image.webp');
+  await page.locator('#imageLibrary button').click();
+  await expect(page.locator('#stage [data-id="3"] img')).toHaveAttribute('src','assets/profile-portrait.webp');
+  await page.locator('#addText').click();
+  await page.locator('#imageLibrary button').click();
+  await expect(page.locator('#stage [data-kind="image"]')).toHaveCount(2);
+  await expect(page.locator('#stage [data-kind="image"]').last().locator('img'))
+    .toHaveAttribute('src','assets/profile-portrait.webp');
+});
