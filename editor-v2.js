@@ -1117,15 +1117,26 @@ function syncLiveOverlay(){
       "background:#fff!important;color:#14547e!important;font:12px Arial,sans-serif!important;}"+
       "#moon-v2-live-overlay .moon-v2-grip{width:13px!important;height:13px!important;"+
       "border-radius:2px!important;padding:0!important;}"+
-      "#moon-v2-live-overlay .moon-v2-move{left:0!important;top:-27px!important;"+
-      "height:25px!important;padding:2px 8px!important;border-radius:4px!important;"+
-      "white-space:nowrap!important;}";
+      "#moon-v2-live-overlay .moon-v2-move{left:0!important;top:-29px!important;"+
+      "height:26px!important;padding:2px 8px!important;border-radius:4px!important;"+
+      "white-space:nowrap!important;}"+
+      "#moon-v2-live-overlay .moon-v2-delete{left:60px!important;top:-29px!important;"+
+      "height:26px!important;padding:2px 8px!important;border-radius:4px!important;"+
+      "white-space:nowrap!important;border-color:#a33!important;color:#a33!important;}";
     doc.head.append(css);
     const move=doc.createElement("button");
     move.className="moon-v2-move";move.type="button";move.textContent="Move";
     move.setAttribute("aria-label","Move selected live-page object");
     move.dataset.direction="move";
     liveOverlay.append(move);
+    const remove=doc.createElement("button");
+    remove.className="moon-v2-delete";remove.type="button";remove.textContent="Delete";
+    remove.setAttribute("aria-label","Delete selected webpage element (undo is available)");
+    remove.addEventListener("click",event=>{
+      event.preventDefault();event.stopPropagation();
+      deleteSelectedLiveElement();
+    });
+    liveOverlay.append(remove);
     if(node.matches(LIVE_SELECTABLE_TAGS)){
       for(const dir of ["nw","n","ne","e","se","s","sw","w"]){
         const grip=doc.createElement("button");
@@ -1292,6 +1303,18 @@ function moveLiveGesture(event){
   patch.layout={...patch.layout,[liveDevice()]:next};
   livePatches.set(g.selector,patch);
   refreshLiveLayoutRules(g.node.ownerDocument);
+  // If narrowing a text box creates more lines, grow its reserved height
+  // for width-only drags so the text does not cover following content.
+  if(g.dir!=="move"&&g.node.matches(LIVE_REFLOW_TEXT)&&
+     (g.dir==="e"||g.dir==="w")){
+    const needed=Math.ceil(g.node.scrollHeight+2);
+    if(Number.isFinite(needed)&&needed>next.reserveHeight&&needed<=5000){
+      next.reserveHeight=needed;
+      patch.layout[liveDevice()]=next;
+      livePatches.set(g.selector,patch);
+      refreshLiveLayoutRules(g.node.ownerDocument);
+    }
+  }
   syncLiveOverlay();
 }
 function cancelLiveGesture(){
