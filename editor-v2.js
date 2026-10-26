@@ -438,13 +438,18 @@ const LIVE_FONT_OPTIONS=new Set([
 ]);
 function validLiveAppearance(value){
   if(!value||typeof value!=="object"||Array.isArray(value))return false;
-  const allowed=new Set(["family","fontSize","color","backgroundColor"]);
+  const allowed=new Set(["family","fontSize","color","backgroundColor",
+    "weight","style","decoration","align"]);
   for(const [key,v] of Object.entries(value)){
     if(!allowed.has(key))return false;
     if(key==="family"&&!LIVE_FONT_OPTIONS.has(v))return false;
     if(key==="fontSize"&&(!Number.isFinite(v)||v<10||v>120))return false;
     if(["color","backgroundColor"].includes(key)&&
       (typeof v!=="string"||!/^#[0-9a-f]{6}$/i.test(v)))return false;
+    if(key==="weight"&&!["bold","normal"].includes(v))return false;
+    if(key==="style"&&!["italic","normal"].includes(v))return false;
+    if(key==="decoration"&&!["none","underline"].includes(v))return false;
+    if(key==="align"&&!["left","center","right","justify"].includes(v))return false;
   }
   return true;
 }
@@ -473,6 +478,16 @@ function setLiveAppearance(key,value){
   }else if(["color","backgroundColor"].includes(key)){
     if(!/^#[0-9a-f]{6}$/i.test(value))return;
     current[key]=value;
+  }else if(["weight","style","decoration","align"].includes(key)){
+    if(value==="")delete current[key];
+    else{
+      const acceptable={
+        weight:["bold","normal"],style:["italic","normal"],
+        decoration:["none","underline"],align:["left","center","right","justify"]
+      };
+      if(!acceptable[key].includes(value))return;
+      current[key]=value;
+    }
   }else return;
   const before=liveSnapshot();
   if(Object.keys(current).length)patch.appearance=current;
@@ -555,6 +570,10 @@ function liveLayoutRules(patches=[...livePatches.values()]){
     if(value.fontSize)style.push("font-size:"+value.fontSize+"px!important");
     if(value.color)style.push("color:"+value.color+"!important");
     if(value.backgroundColor)style.push("background-color:"+value.backgroundColor+"!important");
+    if(value.weight)style.push("font-weight:"+value.weight+"!important");
+    if(value.style)style.push("font-style:"+value.style+"!important");
+    if(value.decoration)style.push("text-decoration-line:"+value.decoration+"!important");
+    if(value.align)style.push("text-align:"+value.align+"!important");
     if(style.length)result.push(patch.selector+"{"+style.join(";")+";}");
   }
   for(const [device,media] of Object.entries(LIVE_DEVICE_RULES)){
@@ -776,6 +795,10 @@ function renderLiveInspector(){
       hexColour(originalStyle.color,"#1c2622");
     $("liveBackgroundColour").value=values.backgroundColor||
       hexColour(originalStyle.backgroundColor,"#ffffff");
+    $("liveFontWeight").value=values.weight||"";
+    $("liveFontStyle").value=values.style||"";
+    $("liveTextDecoration").value=values.decoration||"";
+    $("liveTextAlign").value=values.align||"";
     $("resetLiveAppearance").disabled=!livePatches.get(selector)?.appearance;
   }
   if(node){
@@ -2300,7 +2323,9 @@ function attachEvents(){
   $("liveFitReflowHeight").addEventListener("click",fitLiveTextHeight);
   for(const [field,key] of [
     ["liveFontFamily","family"],["liveFontSize","fontSize"],
-    ["liveTextColour","color"],["liveBackgroundColour","backgroundColor"]
+    ["liveTextColour","color"],["liveBackgroundColour","backgroundColor"],
+    ["liveFontWeight","weight"],["liveFontStyle","style"],
+    ["liveTextDecoration","decoration"],["liveTextAlign","align"]
   ])$(field).addEventListener("change",event=>
     setLiveAppearance(key,event.target.value));
   $("resetLiveAppearance").addEventListener("click",resetLiveAppearance);
