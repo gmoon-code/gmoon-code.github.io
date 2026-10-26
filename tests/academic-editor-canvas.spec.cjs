@@ -718,3 +718,19 @@ test('double-clicking source text opens inline editing without a page-wide mode 
   await expect(page.locator('#freeCanvasToggle')).toHaveAttribute('aria-pressed','true');
   await expect(view.locator('#nested h2')).toHaveText('Edited by double-click');
 });
+
+test('F2 edits selected source text without exiting the free canvas',async({page})=>{
+  const view=page.frameLocator('#pageFrame');
+  await view.locator('#nested h2').click();
+  const move=view.locator('#moon-free-selection [data-free-direction="move"]');
+  await move.focus();
+  await move.press('F2');
+  const heading=view.locator('#nested h2');
+  await expect(heading).toHaveAttribute('contenteditable','true');
+  await heading.fill('Updated with F2');
+  await heading.press('Escape');
+  await expect(heading).not.toHaveAttribute('contenteditable','true');
+  await expect(page.locator('#freeCanvasToggle')).toHaveAttribute('aria-pressed','true');
+  await page.reload();
+  await expect(view.locator('#nested h2')).toHaveText('Updated with F2');
+});
