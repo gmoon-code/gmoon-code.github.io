@@ -50,3 +50,7 @@
 .live-layout-controls input:disabled{background:#edf0ee;color:#87938d}
 .live-layout-controls .inline-actions button{white-space:normal}
 #liveLayoutControls[hidden]{display:none!important}
+
+#liveTextReflowControls[hidden],#liveReflowWarning[hidden]{display:none!important}
+#liveTextReflowControls .reflow-warning{font-weight:600;color:#8c4b30;margin:8px 0}
+#liveFitReflowHeight{margin-top:4px;white-space:normal;text-align:center}
