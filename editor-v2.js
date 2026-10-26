@@ -1139,6 +1139,49 @@ function normaliseTextBoxLayout(node,layout){
   next.sy=clamp(1/(next.osy||1),.2,5);
   return next;
 }
+function setLiveObjectDesign(key,value){
+  if(workspaceMode!=="live"||liveEditing)return;
+  const node=liveSelected?.node,patch=livePatchForSelected();
+  if(!node||patch?.kind!=="insert")return;
+  const design={...DEFAULT_LIVE_OBJECT_DESIGN,...(patch.design||{})};
+  if(key==="fill"){
+    if(patch.objectType!=="shape"||!/^#[0-9a-f]{6}$/i.test(value))return;
+    patch.fill=value.toLowerCase();
+  }else if(key==="shape"){
+    if(patch.objectType!=="shape"||!["rectangle","ellipse","line"].includes(value))return;
+    design.shape=value;
+  }else if(key==="borderColour"){
+    if(!/^#[0-9a-f]{6}$/i.test(value))return;
+    design.borderColour=value.toLowerCase();
+  }else{
+    const limits={rotation:[-180,180],opacity:[0,100],radius:[0,200],borderWidth:[0,30]};
+    const range=limits[key],number=Number(value);
+    if(!range||!Number.isInteger(number)||number<range[0]||number>range[1])return;
+    design[key]=number;
+  }
+  if(!validAddedDesign(design))return;
+  const before=liveSnapshot();
+  patch.design=design;
+  livePatches.set(patch.selector,patch);
+  if(recordLiveHistory(before)){
+    refreshAddedObject(node.ownerDocument,patch);
+    renderLiveInspector();syncLiveOverlay();
+    status("Object appearance updated · Undo available · Preview matches publication CSS");
+  }
+}
+function resetLiveObjectDesign(){
+  if(workspaceMode!=="live"||liveEditing)return;
+  const node=liveSelected?.node,patch=livePatchForSelected();
+  if(!node||patch?.kind!=="insert")return;
+  const before=liveSnapshot();
+  delete patch.design;
+  if(patch.objectType==="shape")patch.fill="#e1eee4";
+  livePatches.set(patch.selector,patch);
+  if(recordLiveHistory(before)){
+    refreshAddedObject(node.ownerDocument,patch);
+    renderLiveInspector();syncLiveOverlay();
+  }
+}
 function setAddedDimension(key,value){
   const node=liveSelected?.node,patch=livePatchForSelected();
   if(!node||patch?.kind!=="insert"||!["w","h"].includes(key))return;
@@ -1296,8 +1339,18 @@ function renderLiveInspector(){
   $("liveLayoutControls").hidden=!node;
   const added=!!selector&&LIVE_ADDED_ID.test(selector);
   $("liveAddedDimensions").hidden=!added;
+  $("liveObjectDesign").hidden=!added;
   if(added){
     const data=livePatchForSelected(),g=data&&addedDeviceGeometry(data,liveDevice());
+    const design={...DEFAULT_LIVE_OBJECT_DESIGN,...(data?.design||{})};
+    $("liveShapeOptions").hidden=data?.objectType!=="shape";
+    $("liveShapeType").value=design.shape;
+    $("liveShapeFill").value=data?.fill||"#e1eee4";
+    $("liveObjectRotation").value=String(design.rotation);
+    $("liveObjectOpacity").value=String(design.opacity);
+    $("liveObjectRadius").value=String(design.radius);
+    $("liveObjectBorderWidth").value=String(design.borderWidth);
+    $("liveObjectBorderColour").value=design.borderColour;
     $("liveAddedWidth").value=String(g?.w||Math.round(node.getBoundingClientRect().width));
     $("liveAddedHeight").value=String(g?.h||Math.round(node.getBoundingClientRect().height));
   }
@@ -3369,6 +3422,14 @@ function attachEvents(){
   $("liveResetStack").addEventListener("click",()=>setLiveLayer(false,true));
   $("liveTextReflow").addEventListener("change",event=>
     setLiveReflow(event.target.checked));
+  const liveDesignFields={
+    liveShapeType:"shape",liveShapeFill:"fill",liveObjectRotation:"rotation",
+    liveObjectOpacity:"opacity",liveObjectRadius:"radius",
+    liveObjectBorderWidth:"borderWidth",liveObjectBorderColour:"borderColour"
+  };
+  for(const [id,key] of Object.entries(liveDesignFields))
+    $(id).addEventListener("change",event=>setLiveObjectDesign(key,event.target.value));
+  $("resetLiveObjectDesign").addEventListener("click",resetLiveObjectDesign);
   $("liveAddedWidth").addEventListener("change",event=>
     setAddedDimension("w",event.target.value));
   $("liveAddedHeight").addEventListener("change",event=>
