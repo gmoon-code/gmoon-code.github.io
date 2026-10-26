@@ -96,7 +96,7 @@ test('responsive HTML export and staging publication only, with no saved token',
   expect(exported).toContain('Students investigate scientific explanations');
   expect(exported).toContain('@media(max-width:700px)');
   let observed;
-  await page.route('https://api.github.com/repos/gmoon-code/gmoon-code.github.io/contents/editor-v2-previews/about.html',route=>{
+  await page.route('https://api.github.com/repos/gmoon-code/gmoon-code.github.io/contents/editor-v2-previews/about.html*',route=>{
     if(route.request().method()==='GET')return route.fulfill({status:404,contentType:'application/json',body:'{}'});
     observed=JSON.parse(route.request().postData());return route.fulfill({status:201,contentType:'application/json',body:JSON.stringify({commit:{sha:'staging-test-commit'}})});
   });
@@ -210,7 +210,7 @@ test('imported links, emphasis and heading structure survive staging export safe
   expect(exported).toContain('<em>science learning</em>');
   expect(exported).toContain('rel="noopener noreferrer"');
   let posted;
-  await page.route('https://api.github.com/repos/gmoon-code/gmoon-code.github.io/contents/editor-v2-previews/about.html',route=>{
+  await page.route('https://api.github.com/repos/gmoon-code/gmoon-code.github.io/contents/editor-v2-previews/about.html*',route=>{
     if(route.request().method()==='GET')return route.fulfill({status:404,body:'{}'});
     posted=JSON.parse(route.request().postData());
     return route.fulfill({status:201,contentType:'application/json',body:JSON.stringify({commit:{sha:'staging-test-commit'}})});
@@ -308,6 +308,13 @@ test('real Home, Research and Teaching pages import without source modification'
 
 test('comparison view keeps original and new draft separate',async({page})=>{
   await importScene(page);
+  // The source comparison asks GitHub for the exact page revision.
+  // This independent fixture must be served by both the local import
+  // and the mocked GitHub Contents endpoint.
+  await page.route('https://api.github.com/repos/gmoon-code/gmoon-code.github.io/contents/about.html*',
+    route=>route.fulfill({status:200,contentType:'application/json',
+      body:JSON.stringify({type:'file',sha:'fixture-commit-123',
+        encoding:'base64',content:Buffer.from(fixture).toString('base64')})}));
   await page.locator('#compare').click();
   await expect(page.locator('#compareDialog')).toBeVisible();
   await expect(page.frameLocator('#originalFrame').locator('h2')).toHaveText('Research overview');
@@ -525,7 +532,7 @@ test('original-layout image edit publishes to source-only staging path',async({p
   await page.locator('#applyLiveImage').click();
   await expect(live.locator('main img')).toHaveAttribute('src','assets/replaced-photo.webp');
   let sent;
-  await page.route('https://api.github.com/repos/gmoon-code/gmoon-code.github.io/contents/editor-v2-previews/source-about.html',route=>{
+  await page.route('https://api.github.com/repos/gmoon-code/gmoon-code.github.io/contents/editor-v2-previews/source-about.html*',route=>{
     if(route.request().method()==='GET')return route.fulfill({status:404,body:'{}'});
     sent=JSON.parse(route.request().postData());
     return route.fulfill({status:201,contentType:'application/json',body:JSON.stringify({commit:{sha:'staging-test-commit'}})});
