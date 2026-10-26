@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex,nofollow">
 <title>Academic Website Editor 2 | Ye Eun Moon</title>
 <link rel="stylesheet" href="editor-v2.css?v=20261026-image-reconnect-v12">
-<script src="editor-v2.js?v=20261026-text-delete-v21" defer></script>
+<script src="editor-v2.js?v=20261026-text-delete-v22" defer></script>
 </head>
 <body>
 <a class="skip" href="#workspace">Skip to editor canvas</a>
@@ -153,6 +153,39 @@
             <label>Text colour <input id="liveTextColour" type="color"></label>
             <label>Background <input id="liveBackgroundColour" type="color"></label>
           </div>
+          <div class="property-grid">
+            <label>Weight
+              <select id="liveFontWeight">
+                <option value="">Keep website style</option>
+                <option value="normal">Normal</option>
+                <option value="bold">Bold</option>
+              </select>
+            </label>
+            <label>Style
+              <select id="liveFontStyle">
+                <option value="">Keep website style</option>
+                <option value="normal">Regular</option>
+                <option value="italic">Italic</option>
+              </select>
+            </label>
+            <label>Underline
+              <select id="liveTextDecoration">
+                <option value="">Keep website style</option>
+                <option value="none">None</option>
+                <option value="underline">Underline</option>
+              </select>
+            </label>
+            <label>Text alignment
+              <select id="liveTextAlign">
+                <option value="">Keep website alignment</option>
+                <option value="left">Left</option>
+                <option value="center">Centre</option>
+                <option value="right">Right</option>
+                <option value="justify">Justify</option>
+              </select>
+            </label>
+          </div>
+          <p class="help">These options format the entire selected heading, paragraph or container. Edit text directly on the page to format individual words.</p>
           <div class="inline-actions">
             <button id="resetLiveAppearance" type="button">Restore website styles</button>
           </div>
