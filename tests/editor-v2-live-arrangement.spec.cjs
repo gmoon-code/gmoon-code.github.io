@@ -99,3 +99,49 @@ test('Shift-click selects added objects without selecting original headings',asy
   await page.locator('#liveClearAdded').click();
   await expect(page.locator('#liveMultiCount')).toContainText('0 selected');
 });
+
+test('Grouped duplication and deletion are each one undoable operation',async({page})=>{
+  await positionLast(page,70,160);
+  await positionLast(page,340,300);
+  const added=page.frameLocator('#livePageFrame').locator('div[data-moon-v2-added-id]');
+  await page.locator('#liveSelectAdded').click();
+  await page.locator('#duplicate').click();
+  await expect(added).toHaveCount(4);
+  await expect(page.locator('#liveMultiCount')).toContainText('2 selected');
+  page.once('dialog',dialog=>dialog.accept());
+  await page.locator('#deleteLiveElement').click();
+  await expect(added).toHaveCount(2);
+  await page.locator('#undo').click();
+  await expect(added).toHaveCount(4);
+  await page.locator('#undo').click();
+  await expect(added).toHaveCount(2);
+});
+test('Alignment can edit existing published added objects without a local draft',async({page})=>{
+  const sourceWithObjects=source.replace('</main>',
+    '<div data-moon-v2-added-layer>'+
+    '<div data-moon-v2-added-id="published-a" data-moon-v2-object-type="shape" '+
+    'data-moon-v2-shape-fill="#eeeeee" data-moon-v2-added-appearance="{}" '+
+    'data-moon-v2-added-geometry=\'{"desktop":{"x":40,"y":120,"w":100,"h":60},"phone":{"x":10,"y":120,"w":80,"h":60}}\'></div>'+
+    '<div data-moon-v2-added-id="published-b" data-moon-v2-object-type="shape" '+
+    'data-moon-v2-shape-fill="#eeeeee" data-moon-v2-added-appearance="{}" '+
+    'data-moon-v2-added-geometry=\'{"desktop":{"x":260,"y":300,"w":100,"h":60},"phone":{"x":20,"y":300,"w":80,"h":60}}\'></div>'+
+    '</div></main>');
+  // Mock the revised, already published HTML on GitHub main.
+  await page.unroute('https://api.github.com/repos/gmoon-code/gmoon-code.github.io/contents/contact.html?ref=main');
+  await page.route('https://api.github.com/repos/gmoon-code/gmoon-code.github.io/contents/contact.html?ref=main',
+    route=>route.fulfill({status:200,contentType:'application/json',
+      headers:{'access-control-allow-origin':'*'},
+      body:JSON.stringify({type:'file',sha:'published-source',
+        encoding:'base64',content:Buffer.from(sourceWithObjects).toString('base64')})}));
+  await page.locator('#reloadLive').click();
+  const added=page.frameLocator('#livePageFrame').locator('[data-moon-v2-added-id]');
+  await expect(added).toHaveCount(2);
+  await page.locator('#liveSelectAdded').click();
+  await expect(page.locator('#liveMultiCount')).toContainText('2 selected');
+  await page.locator('#liveAlignLeft').click();
+  const result=await geom(page);
+  expect(result[0].x).toBe(result[1].x);
+  await page.locator('#undo').click();
+  const original=await geom(page);
+  expect(original.map(o=>o.x)).toEqual([40,260]);
+});
