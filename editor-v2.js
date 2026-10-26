@@ -347,6 +347,8 @@ function setWorkspaceMode(mode){
   $("devicePreview").disabled=!isLive;
   $("reloadLive").disabled=!isLive;
   $("copyLiveObject").disabled=!isLive||!liveSelected;
+  $("remove").textContent=isLive?"Delete element":"Delete";
+  $("remove").title=isLive?"Delete selected live webpage element":"Delete selected canvas objects";
   $("canvasLayersPanel").hidden=isLive;
   $("canvasPropertiesPanel").hidden=isLive;
   $("canvasPublishingPanel").hidden=isLive;
@@ -540,6 +542,7 @@ function liveLayoutFor(selector,device=liveDevice()){
 function liveLayoutRules(patches=[...livePatches.values()]){
   const result=[];
   for(const patch of patches){
+    if(patch.kind==="delete")continue;
     const value=patch.appearance;
     if(!value||!validLiveAppearance(value))continue;
     const style=[];
@@ -556,6 +559,7 @@ function liveLayoutRules(patches=[...livePatches.values()]){
   for(const [device,media] of Object.entries(LIVE_DEVICE_RULES)){
     const selectors=[];
     for(const patch of patches){
+      if(patch.kind==="delete")continue;
       const entry=patch.layout?.[device];
       if(!entry||!validLiveLayout({[device]:entry}))continue;
       // Both values are bounded, strictly numeric data. Selectors are
@@ -710,6 +714,7 @@ function validLivePatch(p){
     (p.kind==="text"&&typeof p.html==="string"&&p.html.length<=70000||
      p.kind==="image"&&safeImageSource(p.src)&&typeof p.alt==="string"&&p.alt.length<=300||
      p.kind==="layout"||p.kind==="delete")&&
+    (p.tag===undefined||/^(?:h[1-6]|p|li|figcaption|blockquote|img|section|article|aside|figure|div|nav|ul|ol)$/.test(p.tag))&&
     (p.layout===undefined||validLiveLayout(p.layout))&&
     (p.appearance===undefined||validLiveAppearance(p.appearance));
 }
@@ -826,9 +831,11 @@ function livePatchNodeMatches(node,patch){
   if(patch.kind==="image"&&node.tagName!=="IMG")return false;
   if(patch.kind==="text"&&(node.tagName==="IMG"||LIVE_CONTAINER_SET.has(node.tagName)))return false;
   if(patch.kind==="layout"&&!node.matches(LIVE_SELECTABLE_TAGS))return false;
-  const original=patch.kind==="image"?node.getAttribute("src")||"":
+  if(patch.kind==="delete"&&patch.tag&&node.tagName.toLowerCase()!==patch.tag)return false;
+  const image=node.tagName==="IMG";
+  const original=image?node.getAttribute("src")||"":
     (node.textContent||"").trim().slice(0,300);
-  return patch.kind==="image"?
+  return image&&(patch.kind==="image"||patch.kind==="delete")?
     equivalentSiteImageSource(original,patch.expected):original===patch.expected;
 }
 function resolveLivePatchTarget(doc,patch){
@@ -856,6 +863,10 @@ function resolveLivePatchTarget(doc,patch){
   return matches[0];
 }
 function mergeLiveTargetPatches(first,second,node){
+  if(first.kind==="delete"||second.kind==="delete")
+    return {...(first.kind==="delete"?first:second),selector:first.selector,
+      expected:first.expected,kind:"delete",
+      tag:(first.kind==="delete"?first:second).tag||node.tagName.toLowerCase()};
   const merged={...first,...second,selector:first.selector,expected:first.expected};
   if(node.tagName!=="IMG"){
     const textEdits=[first,second].filter(p=>p.kind==="text");
@@ -918,10 +929,10 @@ function applyPatchesToDocument(doc,strict=false,resolved=[],normalized=[]){
   if(strict){
     // Editing a parent's innerHTML would erase a separate nested edit.
     for(const a of changes){
-      if(a.patch.kind!=="text")continue;
+      if(a.patch.kind!=="text"&&a.patch.kind!=="delete")continue;
       if(changes.some(b=>b!==a&&a.node.contains(b.node)))
-        throw Error("Edits to a parent and its nested content overlap near \""+
-          livePatchExcerpt(a.patch)+"\". Review those edits before publishing.");
+        throw Error("An edited element contains other separately edited elements near \""+
+          livePatchExcerpt(a.patch)+"\". Revert the nested edits first to avoid discarding them.");
     }
   }
   for(const {patch,node,selector,originals} of changes){
@@ -929,10 +940,11 @@ function applyPatchesToDocument(doc,strict=false,resolved=[],normalized=[]){
       node.setAttribute("src",patch.src);
       node.setAttribute("alt",patch.alt);
     }else if(patch.kind==="text")node.innerHTML=cleanRich(patch.html);
+    else if(patch.kind==="delete")node.remove();
     for(const from of originals)resolved.push({from,to:selector});
     normalized.push({...patch,selector});
   }
-  refreshLiveLayoutRules(doc,normalized);
+  refreshLiveLayoutRules(doc,normalized.filter(p=>p.kind!=="delete"));
   return resolved.length;
 }
 
@@ -986,6 +998,35 @@ function applyLiveImage(){
   livePatches.set(selector,{selector,kind:"image",expected,src,alt,
     ...(old?.layout?{layout:old.layout}:{})});
   recordLiveHistory(before);renderLiveInspector();
+}
+function deleteSelectedLiveElement(){
+  if(workspaceMode!=="live"||liveEditing)return;
+  const node=liveSelected?.node,selector=node&&liveSelector(node);
+  if(!node||!selector||!node.closest("main"))return;
+  // Deleting a parent must not silently discard saved edits to children.
+  const nested=[...livePatches.keys()].filter(key=>key!==selector&&
+    key.startsWith(selector+" > "));
+  if(nested.length){
+    status("This element contains "+nested.length+
+      " separately edited child elements. Revert those edits before deleting the parent.");
+    return;
+  }
+  const label=(node.tagName==="IMG"?node.alt||node.getAttribute("src"):
+    node.textContent||"").trim().replace(/\s+/g," ").slice(0,100);
+  if(!confirm("Delete this "+node.tagName.toLowerCase()+
+    " from the website draft?\n\n"+label+
+    "\n\nYou can undo before publishing. The public page changes only after publication."))return;
+  const before=liveSnapshot(),prior=livePatches.get(selector);
+  const expected=prior?.expected||(node.tagName==="IMG"?
+    node.getAttribute("src")||"":(node.textContent||"").trim().slice(0,300));
+  // Preserve the historical identity even if the user already changed the
+  // text or image in this draft before choosing Delete.
+  const patch={selector,kind:"delete",tag:node.tagName.toLowerCase(),expected};
+  livePatches.set(selector,patch);
+  if(!recordLiveHistory(before))return;
+  clearLiveSelection();
+  node.remove();
+  status("Element deleted from local draft · Undo restores it · Publish to update the website");
 }
 function revertLiveElement(){
   const selector=liveSelected&&liveSelector(liveSelected.node);
@@ -2048,7 +2089,8 @@ function renderPublishPatchList(){
     const row=document.createElement("div");
     row.className="publish-patch";
     const label=document.createElement("span");
-    label.textContent=(patch.kind==="text"?"Text":patch.kind==="image"?"Image":"Position/style")+
+    label.textContent=(patch.kind==="text"?"Text":patch.kind==="image"?"Image":
+      patch.kind==="delete"?"Delete element":"Position/style")+
       " · "+livePatchExcerpt(patch);
     label.title=patch.selector;
     const remove=document.createElement("button");
@@ -2224,6 +2266,7 @@ function attachEvents(){
     setLiveAppearance(key,event.target.value));
   $("resetLiveAppearance").addEventListener("click",resetLiveAppearance);
   $("revertLiveElement").addEventListener("click",revertLiveElement);
+  $("deleteLiveElement").addEventListener("click",deleteSelectedLiveElement);
   $("previewLiveEdits").addEventListener("click",async()=>{
     try{
       $("previewFrame").srcdoc=await sourcePreservingHtml(new URL(".",location.href).href);
@@ -2468,10 +2511,13 @@ function attachEvents(){
     let z=scene.objects.reduce((m,o)=>Math.min(m,o.z),0);
     for(const obj of scene.objects.filter(o=>selected.has(o.id)&&!o.locked))obj.z=--z;
   }));
-  $("remove").addEventListener("click",()=>mutate(()=>{
-    scene.objects=scene.objects.filter(o=>!selected.has(o.id)||o.locked);
-    selected.clear();activeId=null;
-  }));
+  $("remove").addEventListener("click",()=>{
+    if(workspaceMode==="live"){deleteSelectedLiveElement();return;}
+    mutate(()=>{
+      scene.objects=scene.objects.filter(o=>!selected.has(o.id)||o.locked);
+      selected.clear();activeId=null;
+    });
+  });
   $("lock").addEventListener("click",()=>mutate(()=>{for(const obj of scene.objects.filter(o=>selected.has(o.id)))obj.locked=!obj.locked;}));
   $("hide").addEventListener("click",()=>mutate(()=>{for(const obj of scene.objects.filter(o=>selected.has(o.id)))obj.hidden=!obj.hidden;}));
   $("resetScene").addEventListener("click",()=>{
@@ -2611,6 +2657,9 @@ function attachEvents(){
         const committed=new DOMParser().parseFromString(result.publishedHtml,"text/html");
         const rebased=new Map();
         for(const item of result.publishedNormalized){
+          // A successfully published deletion has no remaining source element
+          // to edit. Retain other patches for later changes, drop deletions.
+          if(item.kind==="delete")continue;
           const patch={...item},node=committed.querySelector(patch.selector);
           if(!node)continue;
           patch.expected=patch.kind==="image"?
