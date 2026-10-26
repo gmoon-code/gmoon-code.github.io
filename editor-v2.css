@@ -2,3 +2,5 @@
 .panel-section label.checkbox-line{display:flex;align-items:center;gap:8px;color:var(--ink);font-size:12px}.panel-section input[type=checkbox]{width:auto;accent-color:var(--accent)}
 
 .arrange-panel{border-top:1px solid var(--rule);margin-top:17px;padding-top:14px}.arrange-panel h3{font-size:12px;margin:0 0 8px}.arrange-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}.arrange-grid button{white-space:normal;text-align:center;padding:7px 5px}
+
+#compareDialog{width:min(97vw,1600px);height:min(94vh,1080px);padding:0;border:1px solid var(--rule);border-radius:8px;box-shadow:0 20px 70px #0003}#compareDialog::backdrop{background:#1c2a2499}.compare-grid{height:calc(100% - 47px);display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--rule)}.compare-grid section{min-width:0;min-height:0;display:flex;flex-direction:column;background:white}.compare-grid span{padding:11px 14px;font-size:11px;color:var(--muted);border-bottom:1px solid var(--rule)}.compare-grid iframe{border:0;flex:1;width:100%;min-height:0}@media(max-width:780px){.compare-grid{grid-template-columns:1fr;grid-template-rows:1fr 1fr}}
