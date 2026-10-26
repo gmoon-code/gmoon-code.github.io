@@ -1,14 +1,93 @@
 <!doctype html>
-<html lang="en"><head>
+<html lang="en">
+<head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Academic curriculum vitae of Ye Eun Moon, science educator and science education researcher in South Korea.">
-  <title>CV | Ye Eun Moon</title>
+  <meta name="description" content="Résumé of Ye Eun Moon, a science educator in Incheon, South Korea. Education, research, teaching, student mentorship, academic service, and professional qualifications.">
+  <title>Résumé | Ye Eun Moon</title>
   <link rel="canonical" href="https://gmoon-code.github.io/cv.html">
   <link rel="stylesheet" href="styles-20261013.css">
   <script src="appearance.js?v=20261020-light-default-1"></script>
   <link rel="stylesheet" href="site-theme.css">
   <link rel="stylesheet" href="appearance.css?v=20261020-dark-8">
+  <style>
+    /* The online version follows the section order and content of the
+       updated October 2026 résumé, while retaining the academic site's style. */
+    .resume-page{max-width:var(--page-max);padding-bottom:75px}
+    .resume-header{display:flex;gap:24px;align-items:flex-end;justify-content:space-between;
+      flex-wrap:wrap;padding-bottom:34px;border-bottom:1px solid var(--moon-rule);margin-bottom:0}
+    .resume-eyebrow{font-size:13px;line-height:1.3;color:var(--moon-muted);margin:0 0 12px;
+      font-family:"Times New Roman",Times,serif}
+    .resume-header h1{margin:0 0 13px;font-size:clamp(43px,5vw,58px)}
+    .resume-meta{display:flex;flex-wrap:wrap;gap:7px 13px;align-items:center;color:var(--moon-muted);
+      font-size:15px;line-height:1.55}
+    .resume-meta a{text-decoration:underline;text-underline-offset:3px;color:var(--moon-ink)}
+    .resume-print{display:inline-flex;align-items:center;justify-content:center;min-height:41px;
+      padding:10px 14px;border:1px solid var(--moon-rule-dark);background:var(--moon-paper);
+      color:var(--moon-ink);font-size:14px;cursor:pointer;border-radius:2px;line-height:1.35}
+    .resume-print:hover{border-color:var(--moon-ink);text-decoration:underline;text-underline-offset:3px}
+    .resume-section{padding:29px 0 28px;border-bottom:1px solid var(--moon-rule)}
+    .resume-section:last-child{border-bottom:0}
+    .resume-section h2{display:inline-block;font-size:25px;line-height:1.2;
+      margin:0 0 21px;padding:2px 5px 1px;background:var(--section-blue)}
+    .resume-entry+.resume-entry{margin-top:23px}
+    .resume-entry-heading{display:flex;justify-content:space-between;gap:10px 24px;
+      flex-wrap:wrap;align-items:baseline;margin-bottom:3px}
+    .resume-entry-heading h3{font-size:19px;line-height:1.33;margin:0;font-weight:700}
+    .resume-date{font-size:15px;color:var(--moon-muted);line-height:1.5;white-space:nowrap}
+    .resume-institution{font-size:16px;line-height:1.55;color:var(--moon-ink);margin:2px 0 0}
+    .resume-subline{font-size:15px;line-height:1.55;margin:4px 0 0;font-style:italic;color:var(--moon-muted)}
+    .resume-citation{font-size:15px;line-height:1.6;color:var(--moon-ink);
+      margin:7px 0 0;overflow-wrap:anywhere}
+    .resume-citation a,.resume-section a{text-decoration:underline;text-underline-offset:3px;overflow-wrap:anywhere}
+    .resume-section>p{max-width:94ch;font-size:16px;line-height:1.74;margin:0}
+    .resume-bullets{max-width:100ch;margin:11px 0 0;padding-left:22px}
+    .resume-bullets li{font-size:16px;line-height:1.68;padding-left:2px;margin:0 0 7px;color:var(--moon-ink)}
+    .resume-bullets li:last-child{margin-bottom:0}
+    .resume-skills{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:23px 38px}
+    .resume-skills h3{font-size:18px;margin:0 0 8px}
+    .resume-skills p{font-size:16px;line-height:1.7;margin:0}
+    .resume-skills ul{margin-top:6px}
+    .resume-credentials{list-style:none;padding:0;margin:0;max-width:95ch}
+    .resume-credentials li{padding:9px 0;border-top:1px solid var(--moon-rule);
+      font-size:16px;line-height:1.58}
+    .resume-credentials li:first-child{border-top:0}
+    html[data-moon-theme="dark"] .resume-section h2{background:transparent;color:var(--moon-ink);
+      border-bottom:4px solid var(--section-blue);padding-bottom:6px}
+    @media(max-width:700px){
+      .resume-page{padding-bottom:48px}
+      .resume-header{align-items:flex-start;gap:16px}
+      .resume-section{padding:25px 0}
+      .resume-section h2{font-size:23px}
+      .resume-skills{grid-template-columns:minmax(0,1fr);gap:19px}
+      .resume-date{white-space:normal}
+    }
+    @media print{
+      @page{size:A4;margin:13mm 16mm}
+      html,body{background:white!important;color:black!important;color-scheme:light!important}
+      body{font-size:10pt;line-height:1.4}
+      .topbar,.site-footer,.resume-print,.skip-link,.moon-appearance{display:none!important}
+      .site-shell,.resume-page{max-width:none!important;width:100%!important;margin:0!important}
+      .resume-page{padding:0!important}
+      .resume-header{padding:0 0 11pt!important}
+      .resume-header h1{font-size:23pt!important;margin:0 0 5pt}
+      .resume-meta,.resume-date,.resume-subline{color:#222!important;font-size:9.5pt!important}
+      .resume-section{padding:11pt 0!important;break-inside:auto}
+      .resume-section h2{font-size:14pt!important;margin-bottom:8pt!important;
+        background:none!important;color:#111!important;padding:0 0 2pt!important;
+        border-bottom:1pt solid #333!important}
+      .resume-entry{break-inside:avoid-page}
+      .resume-entry+.resume-entry{margin-top:11pt!important}
+      .resume-entry-heading h3{font-size:11.5pt!important}
+      .resume-institution,.resume-citation,.resume-section>p,.resume-bullets li,
+      .resume-skills p,.resume-credentials li{font-size:9.5pt!important;line-height:1.42!important}
+      .resume-bullets{margin-top:5pt!important;padding-left:18pt}
+      .resume-bullets li{margin-bottom:3pt!important}
+      .resume-skills{gap:10pt 24pt!important}
+      .resume-skills h3{font-size:10.5pt!important}
+      a{text-decoration:none!important;color:#000!important}
+    }
+  </style>
 </head>
 <body class="theme-blue">
   <a class="skip-link" href="#main">Skip to content</a>
@@ -18,100 +97,146 @@
       <nav class="site-nav" aria-label="Primary navigation"><a href="index.html" style="--nav-highlight: var(--section-yellow);">Home</a><a href="research.html" style="--nav-highlight: var(--section-green);">Research</a><a href="projects.html" style="--nav-highlight: var(--section-blue);">Projects</a><a href="teaching.html" style="--nav-highlight: var(--section-magenta);">Teaching</a><a href="interests.html" style="--nav-highlight: var(--section-yellow);">Interests</a><a href="contact.html" style="--nav-highlight: var(--section-green);">Contact</a><a href="cv.html" class="cv-link" aria-current="page" style="--nav-highlight: var(--section-blue);">CV</a></nav>
     </div>
   </header>
-
-  <main id="main" tabindex="-1" class="site-shell page">
-    <section class="page-hero single">
-      <div class="hero-copy">
+  <main id="main" tabindex="-1" class="site-shell page resume-page">
+    <div class="resume-header">
+      <div>
+        <p class="resume-eyebrow">Résumé</p>
         <h1>Ye Eun Moon</h1>
-        <p>Science educator and science education researcher based in South Korea.</p>
-        <div class="controls">
-          <a class="control" href="mailto:gracem.0691@gmail.com">Email</a>
-          <a class="control" href="https://orcid.org/0009-0005-0584-5146">ORCID</a>
+        <div class="resume-meta">
+          <span>Incheon, South Korea</span>
+          <a href="mailto:graceyeunm@gmail.com">graceyeunm@gmail.com</a>
+          <a href="https://orcid.org/0009-0005-0584-5146" rel="noopener noreferrer">ORCID 0009-0005-0584-5146</a>
+        </div>
+      </div>
+      <button type="button" class="resume-print" onclick="window.print()">Print / Save as PDF</button>
+    </div>
+    <section class="resume-section" aria-labelledby="resume-education">
+      <h2 id="resume-education">Education</h2>
+      <div class="resume-entry">
+        <div class="resume-entry-heading"><h3>Master of Education in Science Education</h3><span class="resume-date">Aug 2026</span></div>
+        <p class="resume-institution">American College of Education</p>
+      </div>
+      <div class="resume-entry">
+        <div class="resume-entry-heading"><h3>Bachelor of Science</h3><span class="resume-date">Nov 2020</span></div>
+        <p class="resume-institution">University of British Columbia · Major in Biology, Minor in Biochemistry</p>
+      </div>
+    </section>
+    <section class="resume-section" aria-labelledby="resume-research-interests">
+      <h2 id="resume-research-interests">Research Interests</h2>
+      <p>Justice-oriented science education; epistemic justice and classroom authority; student participation in scientific inquiry; scientific representations and curriculum; queer approaches to science education and multilingual science learning.</p>
+    </section>
+    <section class="resume-section" aria-labelledby="resume-research-project">
+      <h2 id="resume-research-project">Research Project</h2>
+      <div class="resume-entry">
+        <div class="resume-entry-heading"><h3>Scoping Review of Multilingual Learners’ Science Understanding</h3><span class="resume-date">2026</span></div>
+        <p class="resume-citation"><em>Preprint</em> · Moon, Y. E. (2026). <em>Evidence routes and validity risk in claims about multilingual learners’ science understanding in secondary science: A scoping review</em> [Preprint]. <a href="https://doi.org/10.35542/osf.io/kznvj_v1">https://doi.org/10.35542/osf.io/kznvj_v1</a></p>
+        <ul class="resume-bullets">
+          <li>Examined how research on multilingual secondary science learning supports claims about students’ scientific understanding and how those claims depend on the forms of evidence collected.</li>
+          <li>Compared researchers’ uses of classroom talk, writing, diagrams, models, gesture, and movement between languages when interpreting students’ scientific ideas.</li>
+          <li>Developed a diagnostic framework considering evidence forms, disciplinary targets, learner conditions, and interpretive procedures in published studies.</li>
+        </ul>
+      </div>
+    </section>
+    <section class="resume-section" aria-labelledby="resume-experience">
+      <h2 id="resume-experience">Professional Experience</h2>
+      <div class="resume-entry">
+        <div class="resume-entry-heading"><h3>Science Teacher (Full-time) · Ivy Collegiate School · Incheon, South Korea</h3><span class="resume-date">Jul 2024 – Present</span></div>
+        <p class="resume-subline">Courses · AP Biology, AP Chemistry, Biology, Life Science, Research Methods</p>
+        <ul class="resume-bullets">
+          <li>Develop and teach Advanced Placement (AP) and Next Generation Science Standards (NGSS) curricula to multilingual secondary learners with varied English proficiency, academic preparation, and prior science experience.</li>
+          <li>Design laboratory investigations and inquiry activities using experimental data, diagrams, models, and written explanations to help students trace relationships among scientific concepts and evidence.</li>
+          <li>Revise assessments, feedback, and instructional sequences in response to students’ explanations, data-interpretation errors, and questions raised during classroom discussion.</li>
+          <li>Adapt course materials and learning activities using Universal Design for Learning principles and varied forms of student expression.</li>
+        </ul>
+      </div>
+      <div class="resume-entry">
+        <div class="resume-entry-heading"><h3>Science Teacher (Full-time) · Saint Paul Academy Daechi · Seoul, South Korea</h3><span class="resume-date">Jul 2022 – Jun 2024</span></div>
+        <p class="resume-subline">Courses · AP Biology, AP Chemistry, Physical Science, Computer Science</p>
+        <ul class="resume-bullets">
+          <li>Led revisions to science curricula incorporating project-based and inquiry-based learning, including interdisciplinary activities connecting biology, chemistry, and physical science.</li>
+          <li>Designed and implemented a computer science elective and incorporated coding, digital simulations, virtual laboratories, and augmented-reality activities into classroom instruction.</li>
+          <li>Developed assessments and individualized academic support for students with different language backgrounds and levels of prior preparation; coordinated laboratory activities within available facilities.</li>
+        </ul>
+      </div>
+    </section>
+    <section class="resume-section" aria-labelledby="resume-mentorship">
+      <h2 id="resume-mentorship">Student Research Supervision and Mentorship</h2>
+      <div class="resume-entry">
+        <div class="resume-entry-heading"><h3>Capstone and Independent Research Supervision · Ivy Collegiate School</h3><span class="resume-date">Jul 2024 – Present</span></div>
+        <ul class="resume-bullets">
+          <li>Guide students through a semester-long capstone research process, from defining questions and reviewing literature to developing proposals, conducting experiments, analyzing data, and presenting findings to faculty reviewers.</li>
+          <li>Review student research proposals and presentations as a faculty panelist, providing feedback on research design, evidence, data interpretation, and scientific communication.</li>
+          <li>Support students preparing research manuscripts for the school’s annual research journal, <em>Helix</em>, including revisions to their written explanations and presentation of evidence.</li>
+        </ul>
+      </div>
+      <div class="resume-entry">
+        <div class="resume-entry-heading"><h3>Student Teaching Assistant Mentorship · Ivy Collegiate School</h3><span class="resume-date">Jul 2024 – Present</span></div>
+        <ul class="resume-bullets">
+          <li>Recruit and mentor student teaching assistants in preparing peer-learning activities, explaining advanced science concepts, and supporting after-school tutorials.</li>
+        </ul>
+      </div>
+    </section>
+    <section class="resume-section" aria-labelledby="resume-service">
+      <h2 id="resume-service">Academic and Professional Service</h2>
+      <div class="resume-entry">
+        <div class="resume-entry-heading"><h3>Science Club, Competition, and Community Project Advising · Saint Paul Academy Daechi</h3><span class="resume-date">Jul 2022 – Jun 2024</span></div>
+        <ul class="resume-bullets">
+          <li>Advise coding, robotics, and environmental education activities, providing guidance on student-led projects and competition preparation.</li>
+          <li>Organized community science events, promoting scientific understanding among community members.</li>
+          <li>Organized educational field trips, enhancing community engagement.</li>
+          <li>Supervised the Environment Business System club (SDX Foundation) dedicated to advocating for environmental health initiatives.</li>
+        </ul>
+      </div>
+    </section>
+    <section class="resume-section" aria-labelledby="resume-skills">
+      <h2 id="resume-skills">Highlights of Qualifications &amp; Additional Skills</h2>
+      <div class="resume-skills">
+        <div>
+          <h3>Languages</h3>
+          <p>English and Korean, fluent</p>
+          <p>French, intermediate</p>
+        </div>
+        <div>
+          <h3>Programming tools</h3>
+          <p>R; Python; HTML; JavaScript</p>
+        </div>
+        <div>
+          <h3>Instructional technologies</h3>
+          <p>PhET; A-Frame; Arduino</p>
+        </div>
+        <div>
+          <h3>Work habits</h3>
+          <ul class="resume-bullets">
+            <li>Fast learner with high adaptability.</li>
+            <li>Clear and concise communication skills.</li>
+            <li>Highly systemized and efficient work/personal organization.</li>
+            <li>Strong ability to work in a team with individuals from diverse backgrounds.</li>
+            <li>Strong ability to work individually and efficiently to complete set goals.</li>
+            <li>Strong student, client, and peer interaction skills, including compassion, patience, and perseverance.</li>
+            <li>Consistent determination, geniality, and dependable professionalism.</li>
+          </ul>
         </div>
       </div>
     </section>
-
-    <section class="section">
-      <div class="section-head"><h2>Education</h2></div>
-      <div class="list-rows">
-        <div class="list-row"><div class="label">2026</div><p><strong>Master of Education in Science Education</strong><br>American College of Education · Expected November 2026 · GPA to date 4.0/4.0</p></div>
-        <div class="list-row"><div class="label">2020</div><p><strong>Bachelor of Science</strong><br>University of British Columbia · Major in Biology · Minor in Biochemistry</p></div>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="section-head"><h2>Research interests</h2></div>
-      <div class="reading">
-        <p>Justice-oriented science education, including anti-racist, anti-colonial, and queer- and trans-inclusive curricula; how inequalities related to race, gender, sexuality, class, and language affect participation and the recognition of scientific knowledge; students' influence on classroom inquiry; biological sex and human variation; multilingual scientific sensemaking and the interpretation of classroom evidence.</p>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="section-head"><h2>Research and scholarly work</h2></div>
-      <div class="list-rows">
-        <div class="list-row"><div class="label">Scoping review · Manuscript in preparation · 2026</div><p><strong>Evidence Routes and Validity Risk in Claims About Multilingual Learners' Science Understanding in Secondary Science: An ERIC-Bounded Scoping Review</strong><br>Review of 20 empirical studies examining how researchers interpreted written, interactional, and representational evidence of multilingual learners' science understanding. <a class="inline-link" href="research-scoping.html">Study overview →</a></p></div>
-        <div class="list-row"><div class="label">Classroom action research · Manuscript in preparation · 2026</div><p><strong>Assessment correction, reconstruction, and the interpretation of classroom evidence</strong><br>Two-cycle inquiry involving 28 AP Biology students, comparing assessment explanations, post-correction reflections, preparation reports, and reconstructions of a previously assessed mechanism. <a class="inline-link" href="research-action.html">Study overview →</a></p></div>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="section-head"><h2>Selected scholarly writing</h2></div>
-      <div class="list-rows">
-        <div class="list-row"><div class="label">Independent scholarly essay · October 2026</div><p><strong>What can a biological classification explain?</strong><br>A critical reading of published work on haemoglobin, malaria, sex chromosomes, and classroom authority. This essay examines how scientific categories can acquire claims beyond their evidence and considers questions for justice-oriented biology education. <a class="inline-link" href="writing-biological-classification.html">Read the essay →</a></p></div>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="section-head"><h2>Selected curriculum and resource projects</h2></div>
-      <div class="list-rows">
-        <div class="list-row"><div class="label">Science education</div><p><strong>The Story Method</strong><br>Story-based AP Biology learning environment spanning eight units, with guided journeys, retrieval practice, review activities, and application questions. <a class="inline-link" href="story-method.html">Project description →</a></p></div>
-        <div class="list-row"><div class="label">Research education</div><p><strong>Research Methods Studio</strong><br>Guided research workspace supporting question development, literature work, study design, data analysis, and evidence-based writing. <a class="inline-link" href="research-methods-studio.html">Project description →</a></p></div>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="section-head"><h2>Teaching experience</h2></div>
-      <div class="list-rows">
-        <div class="list-row"><div class="label">2024–present</div><p><strong>Science Teacher · Ivy Collegiate School · Incheon, South Korea</strong><br>AP Biology, AP Chemistry, NGSS Life Science, and Research Methods / Capstone. Develop original AP and NGSS science curricula for multilingual secondary learners and revise assessments and instructional materials in response to student work and classroom interaction.</p></div>
-        <div class="list-row"><div class="label">2022–2024</div><p><strong>Science Teacher · Saint Paul American School System / Saint Paul Academy Daechi · Seoul, South Korea</strong><br>AP Biology, AP Chemistry, Physical Science, and Computer Science. Developed standards-aligned curricula integrating laboratory investigation, modelling, digital simulations, coding, and inquiry-based learning.</p></div>
-        <div class="list-row"><div class="label">2013–2022</div><p><strong>Private Tutor · British Columbia, Canada and Seoul, South Korea</strong><br>Biology, chemistry, physics, English, academic writing, and individualized support across secondary, AP, IB Diploma Programme, and early university-level study.</p></div>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="section-head"><h2>Student research supervision</h2></div>
-      <div class="reading">
-        <p>Mentor secondary students through research-question development, literature review, proposal writing, experimental design, data analysis, scientific writing, and presentation. Serve as a faculty reviewer of student research proposals and completed work and mentor student teaching assistants supporting advanced science coursework.</p>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="section-head"><h2>Licensure and selected professional development</h2></div>
-      <div class="list-rows">
-        <div class="list-row"><div class="label">License</div><p>Massachusetts Department of Elementary and Secondary Education · Digital Literacy/Computer Science, Grades 9–12 · January 2024</p></div>
-        <div class="list-row"><div class="label">Certificate</div><p>Harvard University, Derek Bok Center for Teaching and Learning · Higher Education Teaching Certificate</p></div>
-        <div class="list-row"><div class="label">Certificate</div><p>University of Zurich · Teaching Science at University</p></div>
-        <div class="list-row"><div class="label">Specialization</div><p>Rice University · Fundamentals of Computing</p></div>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="section-head"><h2>Methods, technical skills, and languages</h2></div>
-      <div class="list-rows">
-        <div class="list-row"><div class="label">Research methods</div><p>Classroom action research; scoping review methods; literature searching and screening; qualitative coding; descriptive quantitative analysis; evidence synthesis.</p></div>
-        <div class="list-row"><div class="label">Programming</div><p>Python, Java, HTML, CSS, JavaScript.</p></div>
-        <div class="list-row"><div class="label">Languages</div><p>English and Korean, fluent; French, intermediate.</p></div>
-      </div>
+    <section class="resume-section" aria-labelledby="resume-development">
+      <h2 id="resume-development">Licensure and Selected Professional Development</h2>
+      <ul class="resume-credentials">
+        <li>Massachusetts Department of Elementary and Secondary Education · Digital Literacy/Computer Science License</li>
+        <li>Harvard University, Derek Bok Center for Teaching and Learning · Higher Education Teaching Certificate</li>
+        <li>University of Zurich · Teaching Science at University Certificate</li>
+        <li>Rice University · Fundamentals of Computing Specialization</li>
+        <li>TEFL UK · 120 Hour Professional TEFL Certificate</li>
+      </ul>
     </section>
   </main>
   <footer class="site-footer">
     <div class="site-shell site-footer-inner">
-      <p>If something here brings up a question, you're welcome to <a href="mailto:gracem.0691@gmail.com">write to me</a>.</p>
+      <p>If something here brings up a question, you're welcome to <a href="contact.html">get in touch</a>.</p>
       <nav class="site-footer-links" aria-label="Additional links">
         <a href="https://orcid.org/0009-0005-0584-5146">ORCID</a>
         <a href="#page-top">Back to top ↑</a>
       </nav>
     </div>
   </footer>
-
-</body></html>
+</body>
+</html>
