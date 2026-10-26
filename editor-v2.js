@@ -382,6 +382,25 @@ function setWorkspaceMode(mode){
   }
 }
 const LIVE_HEIGHTS={desktop:900,tablet:1024,phone:844};
+function fitVerifiedPreviewFrames(){
+  const pageWidth=workspaceMode==="live"?LIVE_WIDTHS[$("devicePreview").value]||1160:scene.width;
+  const pageHeight=workspaceMode==="live"?LIVE_HEIGHTS[$("devicePreview").value]||900:Math.max(900,Math.min(scene.height,1400));
+  for(const [dialogId,viewportId,shellId,frameId] of [
+    ["previewDialog","previewViewport","previewShell","previewFrame"],
+    ["compareDialog","originalViewport","originalShell","originalFrame"],
+    ["compareDialog","sceneViewport","sceneShell","sceneFrame"]
+  ]){
+    if(!$(dialogId).open)continue;
+    const viewport=$(viewportId),shell=$(shellId),frame=$(frameId);
+    const available=Math.max(180,viewport.clientWidth-24);
+    const scale=Math.min(1,available/pageWidth);
+    frame.style.width=pageWidth+"px";
+    frame.style.height=pageHeight+"px";
+    frame.style.transform="scale("+scale+")";
+    shell.style.width=Math.ceil(pageWidth*scale)+"px";
+    shell.style.height=Math.ceil(pageHeight*scale)+"px";
+  }
+}
 function togglePageFocus(){
   const app=document.querySelector(".application");
   const focused=app.classList.toggle("focus-view");
@@ -2529,7 +2548,10 @@ function attachEvents(){
       download(currentPage.replace(".html","-original-layout-draft.html"),html,"text/html");
     }catch(error){status(error.message||"Could not export original-layout draft");}
   });
-  window.addEventListener("resize",()=>{if(workspaceMode==="live")fitLivePage();});
+  window.addEventListener("resize",()=>{
+    if(workspaceMode==="live")fitLivePage();
+    fitVerifiedPreviewFrames();
+  });
   const workspaceObserver=new ResizeObserver(()=>{if(workspaceMode==="live")fitLivePage();});
   workspaceObserver.observe($("liveViewport"));
   $("importScene").addEventListener("click",()=>$("sceneFile").click());
@@ -2800,6 +2822,8 @@ function attachEvents(){
         $("previewSourceStatus").textContent="Free design canvas · staging-only preview";
       }
       $("previewDialog").showModal();
+      fitVerifiedPreviewFrames();
+      requestAnimationFrame(fitVerifiedPreviewFrames);
     }catch(error){status(error.message||"Could not create verified page preview");}
     finally{button.disabled=false;}
   });
@@ -2823,6 +2847,8 @@ function attachEvents(){
           "Original GitHub page versus independent staging-only canvas";
       }
       $("compareDialog").showModal();
+      fitVerifiedPreviewFrames();
+      requestAnimationFrame(fitVerifiedPreviewFrames);
     }catch(error){status(error.message||"Could not compare the selected page");}
     finally{button.disabled=false;}
   });
