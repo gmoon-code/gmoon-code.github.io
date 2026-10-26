@@ -13,6 +13,7 @@ let currentPage="index.html";
 let scene={version:VERSION,page:currentPage,width:STANDARD_WIDTH,height:1080,objects:[],nextId:1};
 let selected=new Set(),activeId=null,history=[],redo=[],zoom=.8,gesture=null,editingId=null,saveTimer=null,loadSerial=0,lastTap=null,pageImages=[];
 let canvasClipboard=[],canvasPasteCount=0;
+let liveObjectClipboard=null,livePasteCount=0;
 let workspaceMode="live",liveWidth=1160,liveScale=1,liveManualScale=null,liveSelected=null,liveObserver=null,liveSerial=0;
 let liveSuppressClickUntil=0;
 const LIVE_DRAFT_KEY="moon-academic-editor-v2:source:";
@@ -154,6 +155,8 @@ function refreshUndo(){
     scene.objects.length>=MAX_OBJECTS;
   $("selectAllObjects").disabled=workspaceMode!=="design"||
     !scene.objects.some(obj=>!obj.hidden&&!obj.locked);
+  $("liveCopyObject").disabled=workspaceMode!=="live"||!liveSelected?.node;
+  $("livePasteObject").disabled=workspaceMode!=="live"||!liveObjectClipboard;
 }
 function remember(snapshot){
   const before=snapshot||copy(scene);
@@ -633,6 +636,52 @@ function newAddedPatch(type,{src="",alt="",html="",fill="#e1eee4"}={}){
     geometry,...(type==="text"?{html:cleanRich(html||"Double-click to edit text")}:
       type==="image"?{src,alt}:{fill}),
     ...(type==="text"?{appearance:{fontSize:20,color:"#1c2622"}}:{})};
+}
+function copyLiveSelection(){
+  const node=liveSelected?.node;
+  if(workspaceMode!=="live"||!node||liveEditing)return;
+  const saved=livePatchForSelected();
+  if(saved?.kind==="insert")liveObjectClipboard=copy(saved);
+  else if(node.tagName==="IMG"){
+    const src=node.getAttribute("src")||"";
+    if(!safeImageSource(src)){
+      status("This image needs to be imported into website assets before copying");return;
+    }
+    liveObjectClipboard=newAddedPatch("image",{src,alt:node.alt||""});
+  }else if(!LIVE_CONTAINER_SET.has(node.tagName)){
+    liveObjectClipboard=newAddedPatch("text",{html:cleanRich(node.innerHTML)});
+    const style=node.ownerDocument.defaultView.getComputedStyle(node);
+    const family=style.fontFamily;
+    liveObjectClipboard.appearance={
+      fontSize:Math.round(clamp(parseFloat(style.fontSize)||20,10,120)),
+      color:hexColour(style.color,"#1c2622"),
+      ...(LIVE_FONT_OPTIONS.has(family)?{family}:{})
+    };
+  }else{
+    status("Select a text box, image or independent shape to copy");return;
+  }
+  livePasteCount=0;refreshUndo();
+  status("Webpage object copied · Ctrl+V to paste onto this page or another page");
+}
+function pasteLiveSelection(){
+  if(workspaceMode!=="live"||!liveObjectClipboard||liveEditing)return;
+  try{
+    if(livePatches.size>=180)throw Error("This page has reached the saved edit limit.");
+    const source=liveObjectClipboard,patch=copy(source);
+    patch.selector=newAddedPatch(source.objectType,{html:source.html,
+      src:source.src,alt:source.alt,fill:source.fill}).selector;
+    livePasteCount++;
+    for(const geo of Object.values(patch.geometry)){
+      geo.x=Math.round(clamp(geo.x+24*livePasteCount,-4000,10000));
+      geo.y=Math.round(clamp(geo.y+24*livePasteCount,-4000,40000));
+    }
+    if(!validAddedPatch(patch))throw Error("Copied object has invalid content.");
+    const before=liveSnapshot();
+    livePatches.set(patch.selector,patch);
+    const node=applyAddedPatch($("livePageFrame").contentDocument,patch);
+    recordLiveHistory(before);renderLiveLayers();selectLiveElement(node);
+    status("Object pasted directly onto webpage · Undo available");
+  }catch(error){status("Paste cancelled · "+error.message);}
 }
 function addLiveObject(type,values={}){
   if(workspaceMode!=="live"||liveEditing)return;
@@ -2024,6 +2073,16 @@ function bindLiveDocument(){
       return;
     }
     if(event.target.closest?.("input,textarea,select,[contenteditable=true]"))return;
+    if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==="c"&&liveSelected?.node){
+      if(doc.defaultView.getSelection()?.toString().trim())return;
+      event.preventDefault();copyLiveSelection();return;
+    }
+    if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==="v"&&liveObjectClipboard){
+      event.preventDefault();pasteLiveSelection();return;
+    }
+    if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==="d"&&liveSelected?.node){
+      event.preventDefault();$("duplicate").click();return;
+    }
     if((event.ctrlKey||event.metaKey)&&event.key==="]"&&liveSelected?.node){
       event.preventDefault();setLiveLayer(true);return;
     }
@@ -3139,6 +3198,8 @@ function attachEvents(){
     if(editingId!==null&&
       event.target.closest(".scene-object")?.dataset.id===String(editingId))finishTextEdit();
   });
+  $("liveCopyObject").addEventListener("click",copyLiveSelection);
+  $("livePasteObject").addEventListener("click",pasteLiveSelection);
   $("copyObjects").addEventListener("click",()=>copyCanvasObjects());
   $("pasteObjects").addEventListener("click",pasteCanvasObjects);
   $("selectAllObjects").addEventListener("click",selectAllCanvasObjects);
@@ -3526,6 +3587,15 @@ function attachEvents(){
       event.preventDefault();redoAction();return;
     }
     if(workspaceMode==="live"){
+      if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==="c"&&liveSelected?.node){
+        event.preventDefault();copyLiveSelection();return;
+      }
+      if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==="v"&&liveObjectClipboard){
+        event.preventDefault();pasteLiveSelection();return;
+      }
+      if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==="d"&&liveSelected?.node){
+        event.preventDefault();$("duplicate").click();return;
+      }
       // Canvas selection is retained across workspace switches. Shortcuts
       // must never delete/duplicate/move those hidden canvas objects.
       if((event.ctrlKey||event.metaKey)&&event.key==="]"&&liveSelected?.node){
