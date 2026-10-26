@@ -333,6 +333,68 @@ const LIVE_DEVICE_RULES={
   phone:"(max-width:700px)"
 };
 const defaultLiveLayout=()=>({dx:0,dy:0,sx:1,sy:1});
+const LIVE_FONT_OPTIONS=new Set([
+  "Georgia, serif","Arial, sans-serif","system-ui, sans-serif",
+  "Times New Roman, Times, serif"
+]);
+function validLiveAppearance(value){
+  if(!value||typeof value!=="object"||Array.isArray(value))return false;
+  const allowed=new Set(["family","fontSize","color","backgroundColor"]);
+  for(const [key,v] of Object.entries(value)){
+    if(!allowed.has(key))return false;
+    if(key==="family"&&!LIVE_FONT_OPTIONS.has(v))return false;
+    if(key==="fontSize"&&(!Number.isFinite(v)||v<10||v>120))return false;
+    if(["color","backgroundColor"].includes(key)&&
+      (typeof v!=="string"||!/^#[0-9a-f]{6}$/i.test(v)))return false;
+  }
+  return true;
+}
+function pruneLivePatch(patch,node){
+  const unchangedText=patch.kind==="text"&&
+    patch.html===cleanRich(node.innerHTML)&&
+    patch.expected===(node.textContent||"").trim().slice(0,300);
+  const unchangedImage=patch.kind==="image"&&
+    patch.src===(node.getAttribute("src")||"")&&patch.alt===(node.alt||"");
+  return !patch.layout&&!patch.appearance&&
+    (patch.kind==="layout"||unchangedText||unchangedImage);
+}
+function setLiveAppearance(key,value){
+  const selected=liveSelected?.node;
+  if(!selected||selected.tagName==="IMG"||liveEditing)return;
+  const patch=livePatchForSelected();if(!patch)return;
+  const current={...(patch.appearance||{})};
+  if(key==="family"){
+    if(value&&!LIVE_FONT_OPTIONS.has(value))return;
+    if(!value)delete current.family;
+    else current.family=value;
+  }else if(key==="fontSize"){
+    const size=Number(value);
+    if(!Number.isFinite(size)||size<10||size>120)return;
+    current.fontSize=Math.round(size);
+  }else if(["color","backgroundColor"].includes(key)){
+    if(!/^#[0-9a-f]{6}$/i.test(value))return;
+    current[key]=value;
+  }else return;
+  const before=liveSnapshot();
+  if(Object.keys(current).length)patch.appearance=current;
+  else delete patch.appearance;
+  if(pruneLivePatch(patch,selected))livePatches.delete(patch.selector);
+  else livePatches.set(patch.selector,patch);
+  if(recordLiveHistory(before)){
+    refreshLiveLayoutRules();renderLiveInspector();syncLiveOverlay();
+  }
+}
+function resetLiveAppearance(){
+  const selected=liveSelected?.node,patch=livePatchForSelected();
+  if(!selected||!patch?.appearance)return;
+  const before=liveSnapshot();
+  delete patch.appearance;
+  if(pruneLivePatch(patch,selected))livePatches.delete(patch.selector);
+  else livePatches.set(patch.selector,patch);
+  if(recordLiveHistory(before)){
+    refreshLiveLayoutRules();renderLiveInspector();syncLiveOverlay();
+  }
+}
 function validLiveLayout(layout){
   if(!layout||typeof layout!=="object"||Array.isArray(layout))return false;
   for(const [device,values] of Object.entries(layout)){
@@ -377,6 +439,16 @@ function liveLayoutFor(selector,device=liveDevice()){
 }
 function liveLayoutRules(){
   const result=[];
+  for(const patch of livePatches.values()){
+    const value=patch.appearance;
+    if(!value||!validLiveAppearance(value))continue;
+    const style=[];
+    if(value.family)style.push("font-family:"+value.family+"!important");
+    if(value.fontSize)style.push("font-size:"+value.fontSize+"px!important");
+    if(value.color)style.push("color:"+value.color+"!important");
+    if(value.backgroundColor)style.push("background-color:"+value.backgroundColor+"!important");
+    if(style.length)result.push(patch.selector+"{"+style.join(";")+";}");
+  }
   for(const [device,media] of Object.entries(LIVE_DEVICE_RULES)){
     const selectors=[];
     for(const patch of livePatches.values()){
@@ -453,14 +525,7 @@ function resetSelectedLiveLayout(){
   const before=liveSnapshot();
   delete patch.layout[liveDevice()];
   if(!Object.keys(patch.layout).length)delete patch.layout;
-  const selectedNode=liveSelected.node;
-  const unchangedText=patch.kind==="text"&&
-    patch.html===cleanRich(selectedNode.innerHTML)&&
-    patch.expected===(selectedNode.textContent||"").trim().slice(0,300);
-  const unchangedImage=patch.kind==="image"&&
-    patch.src===(selectedNode.getAttribute("src")||"")&&
-    patch.alt===(selectedNode.alt||"");
-  if(!patch.layout&&(patch.kind==="layout"||unchangedText||unchangedImage))
+  if(pruneLivePatch(patch,liveSelected.node))
     livePatches.delete(patch.selector);
   else livePatches.set(patch.selector,patch);
   if(recordLiveHistory(before)){refreshLiveLayoutRules();renderLiveInspector();syncLiveOverlay();}
@@ -472,7 +537,8 @@ function validLivePatch(p){
     (p.kind==="text"&&typeof p.html==="string"&&p.html.length<=70000||
      p.kind==="image"&&safeImageSource(p.src)&&typeof p.alt==="string"&&p.alt.length<=300||
      p.kind==="layout")&&
-    (p.layout===undefined||validLiveLayout(p.layout));
+    (p.layout===undefined||validLiveLayout(p.layout))&&
+    (p.appearance===undefined||validLiveAppearance(p.appearance));
 }
 function loadLiveDraft(page){
   livePatches=new Map();liveHistory=[];liveRedo=[];
@@ -518,6 +584,19 @@ function renderLiveInspector(){
   const selector=node&&liveSelector(node);
   $("revertLiveElement").disabled=!selector||!livePatches.has(selector);
   $("liveLayoutControls").hidden=!node;
+  $("liveAppearanceControls").hidden=!node||tag==="IMG";
+  if(node&&tag!=="IMG"){
+    const values=livePatches.get(selector)?.appearance||{};
+    const originalStyle=node.ownerDocument.defaultView.getComputedStyle(node);
+    $("liveFontFamily").value=values.family||"";
+    $("liveFontSize").value=String(values.fontSize||
+      Math.round(parseFloat(originalStyle.fontSize)||18));
+    $("liveTextColour").value=values.color||
+      hexColour(originalStyle.color,"#1c2622");
+    $("liveBackgroundColour").value=values.backgroundColor||
+      hexColour(originalStyle.backgroundColor,"#ffffff");
+    $("resetLiveAppearance").disabled=!livePatches.get(selector)?.appearance;
+  }
   if(node){
     const entry=liveLayoutFor(selector);
     $("liveMoveX").value=String(entry.dx);
@@ -1453,6 +1532,12 @@ function attachEvents(){
   ])$(field).addEventListener("change",event=>
     applyLiveLayoutInput(key,Number(event.target.value)*multiplier));
   $("resetLiveLayout").addEventListener("click",resetSelectedLiveLayout);
+  for(const [field,key] of [
+    ["liveFontFamily","family"],["liveFontSize","fontSize"],
+    ["liveTextColour","color"],["liveBackgroundColour","backgroundColor"]
+  ])$(field).addEventListener("change",event=>
+    setLiveAppearance(key,event.target.value));
+  $("resetLiveAppearance").addEventListener("click",resetLiveAppearance);
   $("revertLiveElement").addEventListener("click",revertLiveElement);
   $("previewLiveEdits").addEventListener("click",async()=>{
     try{
