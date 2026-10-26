@@ -98,11 +98,11 @@ test('responsive HTML export and staging publication only, with no saved token',
   let observed;
   await page.route('https://api.github.com/repos/gmoon-code/gmoon-code.github.io/contents/editor-v2-previews/about.html',route=>{
     if(route.request().method()==='GET')return route.fulfill({status:404,contentType:'application/json',body:'{}'});
-    observed=JSON.parse(route.request().postData());return route.fulfill({status:201,contentType:'application/json',body:'{}'});
+    observed=JSON.parse(route.request().postData());return route.fulfill({status:201,contentType:'application/json',body:JSON.stringify({commit:{sha:'staging-test-commit'}})});
   });
   await page.locator('#publish').click();await expect(page.locator('#stagePath')).toHaveText('editor-v2-previews/about.html');
   await page.locator('#githubToken').fill('testing-token-only');await page.locator('#confirmPublish').click();
-  await expect(page.locator('#status')).toContainText('Staging published');
+  await expect(page.locator('#status')).toContainText('GitHub confirmed staging preview');
   expect(observed.message).toContain('staging preview');
   const stagedHtml=Buffer.from(observed.content,'base64').toString('utf8');
   expect(stagedHtml).toContain('Research overview');
@@ -213,12 +213,12 @@ test('imported links, emphasis and heading structure survive staging export safe
   await page.route('https://api.github.com/repos/gmoon-code/gmoon-code.github.io/contents/editor-v2-previews/about.html',route=>{
     if(route.request().method()==='GET')return route.fulfill({status:404,body:'{}'});
     posted=JSON.parse(route.request().postData());
-    return route.fulfill({status:201,body:'{}'});
+    return route.fulfill({status:201,contentType:'application/json',body:JSON.stringify({commit:{sha:'staging-test-commit'}})});
   });
   await page.locator('#publish').click();
   await page.locator('#githubToken').fill('test-placeholder');
   await page.locator('#confirmPublish').click();
-  await expect(page.locator('#status')).toContainText('Staging published');
+  await expect(page.locator('#status')).toContainText('GitHub confirmed staging preview');
   const staging=Buffer.from(posted.content,'base64').toString('utf8');
   expect(staging).toContain('<a href="../research.html">research notes</a>');
 });
@@ -528,13 +528,13 @@ test('original-layout image edit publishes to source-only staging path',async({p
   await page.route('https://api.github.com/repos/gmoon-code/gmoon-code.github.io/contents/editor-v2-previews/source-about.html',route=>{
     if(route.request().method()==='GET')return route.fulfill({status:404,body:'{}'});
     sent=JSON.parse(route.request().postData());
-    return route.fulfill({status:201,body:'{}'});
+    return route.fulfill({status:201,contentType:'application/json',body:JSON.stringify({commit:{sha:'staging-test-commit'}})});
   });
   await page.locator('#publish').click();
   await expect(page.locator('#stagePath')).toHaveText('editor-v2-previews/source-about.html');
   await page.locator('#githubToken').fill('staging-test-token');
   await page.locator('#confirmPublish').click();
-  await expect(page.locator('#status')).toContainText('Staging published');
+  await expect(page.locator('#status')).toContainText('GitHub confirmed staging preview');
   const published=Buffer.from(sent.content,'base64').toString('utf8');
   expect(published).toContain('src="https://gmoon-code.github.io/assets/replaced-photo.webp"');
   expect(published).toContain('alt="Replacement description"');
