@@ -12,7 +12,7 @@
 <a class="skip" href="#workspace">Skip to editor canvas</a>
 <div class="application">
   <header class="topbar">
-    <div class="identity"><span class="brand-mark" aria-hidden="true"></span><span><strong>Academic Editor <small>2.0</small></strong><em>Visual editing · source-safe publishing</em></span></div>
+    <div class="identity"><span class="brand-mark" aria-hidden="true"></span><div><h1>Academic Editor <small>2.0</small></h1><em>Visual editing · source-safe publishing</em></div></div>
     <div class="actions">
       <span class="saving" id="status" role="status" aria-live="polite">Preparing editor</span>
       <button id="undo" title="Undo (Ctrl+Z)" disabled>↶ Undo</button>
@@ -42,7 +42,7 @@
     <span id="zoomValue" class="zoom-value">80%</span>
   </section>
   <div class="editor-body">
-    <aside class="left-panel">
+    <aside class="left-panel" aria-label="Pages and object layers">
       <section class="panel-section">
         <h2>Website pages</h2>
         <label for="page">Choose an existing page</label>
@@ -78,7 +78,7 @@
         </div>
         <label for="liveElementSearch">Find text, headings or images</label>
         <input id="liveElementSearch" type="search" placeholder="Search elements on this page" autocomplete="off">
-        <div id="liveElementList" class="layers live-element-list" aria-label="Selectable elements in the actual webpage"></div>
+        <div id="liveElementList" class="layers live-element-list" role="group" aria-label="Selectable elements in the actual webpage"></div>
         <div class="inline-actions">
           <button id="liveCopyObject" type="button" disabled title="Copy selected webpage object (Ctrl+C)">Copy object</button>
           <button id="livePasteObject" type="button" disabled title="Insert an independent copy onto this webpage (Ctrl+V)">Paste object</button>
@@ -138,7 +138,7 @@
       </div>
       <div id="workspaceExplanation" class="workspace-explanation" role="status">The real website is shown with its existing styling and responsive layout. Select text or an image to edit it using the original-page inspector, or copy it to the free-design canvas.</div>
       <div id="liveAssetStatus" class="live-assets" role="status" aria-live="polite">Loading the original webpage…</div>
-      <div id="liveViewport" class="scrollspace live-scrollspace">
+      <div id="liveViewport" class="scrollspace live-scrollspace" role="region" aria-label="Scrollable live webpage preview" tabindex="0">
         <div id="livePageShell" class="live-page-shell">
           <iframe id="livePageFrame" title="Original academic website page" loading="eager"></iframe>
         </div>
@@ -150,7 +150,7 @@
       </div>
       <div class="workspace-footer" id="workspaceFooter">Live website · Click to select text or images · Alt-click to select a whole section · Drag or resize · Original page preserved</div>
     </main>
-    <aside class="right-panel">
+    <aside class="right-panel" aria-label="Selected object inspector">
       <section id="liveInspector" class="panel-section" hidden>
         <h2>Edit selected webpage object</h2>
         <p class="help">Add and edit text, images and shapes directly on the webpage, or select an existing element. Changes remain browser drafts until you approve publication through GitHub. Verified Preview shows the same assembled HTML as publishing.</p>

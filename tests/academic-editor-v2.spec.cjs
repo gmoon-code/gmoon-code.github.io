@@ -2,6 +2,16 @@ const {test,expect}=require('@playwright/test');
 const fs=require('node:fs');
 const fixture='<!doctype html><html><head><style>main{margin:30px;width:950px;} h2{font:700 30px Georgia;}p{font:18px Georgia;} img{width:240px;height:160px;object-fit:contain}</style></head><body><main><h2>Research overview</h2><p>Students investigate scientific explanations together.</p><img src="assets/profile-portrait.webp" alt="Test portrait"></main></body></html>';
 test.beforeEach(async({page})=>{
+  // The public About URL now redirects to Contact. Add a synthetic page
+  // option only to the isolated test HTML so historical fixture tests still
+  // exercise three objects without changing the actual editor's page list.
+  await page.route('**/editor-v2.html*',async route=>{
+    const response=await route.fetch();
+    const source=await response.text();
+    const body=source.replace('<select id="page">',
+      '<select id="page"><option value="about.html">About test fixture</option>');
+    await route.fulfill({response,body});
+  });
   await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',body:fixture}));
   await page.goto('http://127.0.0.1:8765/editor-v2.html?page=about.html',{waitUntil:'domcontentloaded'});
   await page.evaluate(()=>localStorage.removeItem('moon-academic-editor-v2:about.html'));

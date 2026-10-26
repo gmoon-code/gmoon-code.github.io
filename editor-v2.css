@@ -130,3 +130,8 @@
   position:absolute;z-index:2147483000;pointer-events:none;
   background:#d52880;box-shadow:0 0 0 .35px #fff;
 }
+
+/* Clear heading semantics and keyboard access for the live-page preview. */
+.identity h1{margin:0;font-size:15px;font-weight:700;line-height:normal}
+.identity h1 small{font-size:10px;color:var(--accent);margin-left:3px}
+#liveViewport:focus-visible{outline:3px solid var(--focus);outline-offset:-3px}

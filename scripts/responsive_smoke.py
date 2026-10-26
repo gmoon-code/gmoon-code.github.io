@@ -47,7 +47,7 @@ EXPECTED_SECTION = {
     "teaching-ap-evolution.html": "Teaching",
     "teaching-osmosis-practice.html": "Teaching",
     "interests.html": "Interests",
-    "about.html": "About",
+    "about.html": "Contact",
     "cv.html": "CV",
     "404.html": None,
 }
@@ -109,7 +109,7 @@ async def main():
                         expected_tabs = [
                             "#main", "index.html", "index.html",
                             "research.html", "projects.html", "teaching.html",
-                            "interests.html", "about.html", "cv.html",
+                            "interests.html", "contact.html", "cv.html",
                         ]
                         tab_states = []
                         for expected_href in expected_tabs:
@@ -155,6 +155,8 @@ async def main():
                         if filename not in ("404.html", "teaching-osmosis-practice.html"):
                             expected_url = ("https://gmoon-code.github.io/" if
                                             filename == "index.html" else
+                                            "https://gmoon-code.github.io/contact.html" if
+                                            filename == "about.html" else
                                             f"https://gmoon-code.github.io/{filename}")
                             actual_url = (await canonical[0].get_attribute("href")
                                           if len(canonical) == 1 else None)
