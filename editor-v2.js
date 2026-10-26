@@ -738,9 +738,16 @@ function resolveLivePatchTarget(doc,patch){
   return matches[0];
 }
 function mergeLiveTargetPatches(first,second,node){
-  if(first.kind==="text"||second.kind==="text")
-    throw Error("Two saved text edits target the same element. Review those edits before publishing.");
   const merged={...first,...second,selector:first.selector,expected:first.expected};
+  if(node.tagName!=="IMG"){
+    const textEdits=[first,second].filter(p=>p.kind==="text");
+    if(textEdits.length>1&&textEdits[0].html!==textEdits[1].html)
+      throw Error("Two different text replacements target the same paragraph. Review the conflicting saved edits.");
+    if(textEdits.length){
+      merged.kind="text";
+      merged.html=textEdits.at(-1).html;
+    }else merged.kind="layout";
+  }
   if(node.tagName==="IMG"){
     const source=node.getAttribute("src")||"";
     const candidates=[first,second].filter(p=>p.kind==="image");
