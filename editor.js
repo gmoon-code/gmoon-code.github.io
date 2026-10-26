@@ -1109,6 +1109,14 @@
       if(!source)return false;
       const detach=!!sel.node.parentElement?.closest(".moon-free-absolute");
       preserveFreeObjectAppearance(sel);
+      // Image CSS from the original content may set width or height via
+      // !important. Use a predictable contained image box after detaching.
+      if(sel.node.tagName==="IMG"){
+        for(const imageNode of [source,sel.node]){
+          imageNode.style.setProperty("object-fit","contain","important");
+          imageNode.style.setProperty("object-position","center","important");
+        }
+      }
       for(const node of [source,sel.node]){
         node.classList.add(FREE_CLASS,"moon-free-absolute");
         if(detach)node.setAttribute("data-moon-free-detach","true");
@@ -1117,8 +1125,8 @@
         node.style.setProperty("--moon-page-y",geometry.y+"px");
         node.style.left=geometry.x+"px";
         node.style.top=geometry.y+"px";
-        node.style.width=geometry.width+"px";
-        node.style.height=geometry.height+"px";
+        node.style.setProperty("width",geometry.width+"px","important");
+        node.style.setProperty("height",geometry.height+"px","important");
         node.style.minHeight=geometry.height+"px";
         node.style.maxWidth="none";
         node.style.boxSizing="border-box";
@@ -4092,6 +4100,7 @@
     "main .moon-free-object{position:relative;z-index:3;box-sizing:border-box;max-width:none}",
     "main .moon-free-absolute{position:absolute!important;z-index:var(--moon-object-layer,20)!important;box-sizing:border-box;max-width:none;margin:0!important;transform:none!important;overflow:visible}",
     "main > .moon-free-layer > p.moon-free-absolute > img{max-width:100%;max-height:100%;width:100%;height:100%;object-fit:contain}",
+    "main > .moon-free-layer > img.moon-free-absolute{object-fit:contain!important;object-position:center!important;min-width:0!important;min-height:0!important}",
     "main > .moon-free-layer > .moon-free-absolute{pointer-events:auto!important}",
     "@media(max-width:700px){html:not(.moon-free-mode) main:has(> .moon-free-layer){min-height:0!important}html:not(.moon-free-mode) main > .moon-free-layer{position:static!important;inset:auto!important;display:contents!important;pointer-events:auto!important}html:not(.moon-free-mode) main .moon-free-absolute{position:static!important;left:auto!important;top:auto!important;right:auto!important;bottom:auto!important;translate:none!important;width:auto!important;max-width:100%!important;min-height:0!important;height:auto!important}html:not(.moon-free-mode) main p.moon-free-absolute > img{height:auto!important;max-height:none!important}html:not(.moon-free-mode) img.moon-free-object{width:auto!important;max-width:100%!important;height:auto!important}}"
   ].join("\n");
