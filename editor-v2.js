@@ -13,6 +13,7 @@ let currentPage="index.html";
 let scene={version:VERSION,page:currentPage,width:STANDARD_WIDTH,height:1080,objects:[],nextId:1};
 let selected=new Set(),activeId=null,history=[],redo=[],zoom=.8,gesture=null,editingId=null,saveTimer=null,loadSerial=0,lastTap=null,pageImages=[];
 let workspaceMode="live",liveWidth=1160,liveScale=1,liveManualScale=null,liveSelected=null,liveObserver=null,liveSerial=0;
+let liveSuppressClickUntil=0;
 const LIVE_DRAFT_KEY="moon-academic-editor-v2:source:";
 let livePatches=new Map(),liveEditing=null,liveHistory=[],liveRedo=[],liveGesture=null,liveOverlay=null;
 let githubTabToken=""; // In-memory only. Never written to storage or page files.
@@ -1168,8 +1169,11 @@ function finishLiveGesture(event){
     livePatches=new Map(g.snapshot.map(p=>[p.selector,p]));
     refreshLiveLayoutRules(g.node.ownerDocument);
   }else if(g.moved){
+    // Mouseup still generates a click; keep it from navigating to a nearby
+    // link or selecting a different element after a drag.
+    liveSuppressClickUntil=performance.now()+250;
     recordLiveHistory(g.snapshot);
-    status("Moved/resized live-page draft · Original layout and neighbours preserved");
+    status("Moved/resized live-page draft saved · Review changes before publishing");
   }
   renderLiveInspector();syncLiveOverlay();
 }
@@ -1255,10 +1259,20 @@ function bindLiveDocument(){
     }
   },true);
   doc.addEventListener("pointerdown",event=>{
-    if(!liveSelected?.node||liveEditing||event.button!==0)return;
-    const target=event.target.closest?.(LIVE_SELECTABLE_TAGS);
-    if(target===liveSelected.node&&!event.target.closest("a[href]"))
-      startLiveGesture(event,"move",target);
+    if(workspaceMode!=="live"||liveEditing||event.button!==0)return;
+    if(event.target.closest?.("#moon-v2-live-overlay"))return;
+    // Select and start a move in one pointer gesture. Previously a user had
+    // to click, release and then start a *second* drag on the same element.
+    const link=event.target.closest?.("a[href]");
+    if(link&&!event.altKey)return; // Normal link navigation remains possible.
+    const target=event.altKey?
+      event.target.closest?.(LIVE_CONTAINER_TAGS)||
+        event.target.closest?.(LIVE_EDITABLE_TAGS):
+      event.target.closest?.(LIVE_EDITABLE_TAGS)||
+        event.target.closest?.(LIVE_CONTAINER_TAGS);
+    if(!target||!doc.querySelector("main")?.contains(target))return;
+    if(target!==liveSelected?.node)selectLiveElement(target);
+    startLiveGesture(event,"move",target);
   },true);
   doc.addEventListener("pointermove",moveLiveGesture,true);
   doc.addEventListener("pointerup",finishLiveGesture,true);
@@ -1271,10 +1285,13 @@ function bindLiveDocument(){
   doc.defaultView.addEventListener("resize",syncLiveOverlay);
   doc.addEventListener("click",event=>{
     if(workspaceMode!=="live")return;
+    if(performance.now()<liveSuppressClickUntil){
+      event.preventDefault();event.stopPropagation();return;
+    }
     if(event.target.closest?.("#moon-v2-live-overlay"))return;
     if(liveEditing)return;
     const link=event.target.closest?.("a[href]");
-    if(link){
+    if(link&&!event.altKey){
       event.preventDefault();
       const raw=link.getAttribute("href")||"";
       try{
@@ -1303,6 +1320,14 @@ function bindLiveDocument(){
         event.target.closest?.(LIVE_CONTAINER_TAGS);
     if(node)selectLiveElement(node);
     else clearLiveSelection();
+  },true);
+  doc.addEventListener("dblclick",event=>{
+    if(workspaceMode!=="live"||liveEditing||event.target.closest?.("a[href]")&&!event.altKey)return;
+    const node=event.target.closest?.(LIVE_EDITABLE_TAGS);
+    if(!node||node.tagName==="IMG"||!doc.querySelector("main")?.contains(node))return;
+    event.preventDefault();
+    if(node!==liveSelected?.node)selectLiveElement(node);
+    editLiveText();
   },true);
   liveObserver=new ResizeObserver(()=>{fitLivePage();syncLiveOverlay();});
   liveObserver.observe(doc.documentElement);
@@ -2516,6 +2541,12 @@ function attachEvents(){
     }
     if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==="y"){
       event.preventDefault();redoAction();return;
+    }
+    if(workspaceMode==="live"){
+      // Canvas selection is retained across workspace switches. Shortcuts
+      // must never delete/duplicate/move those hidden canvas objects.
+      if(event.key==="Escape"){clearLiveSelection();return;}
+      return;
     }
     if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==="d"){
       event.preventDefault();$("duplicate").click();return;
