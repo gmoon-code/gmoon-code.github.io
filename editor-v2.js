@@ -1005,6 +1005,23 @@ function moveLiveGesture(event){
   refreshLiveLayoutRules(g.node.ownerDocument);
   syncLiveOverlay();
 }
+function cancelLiveGesture(){
+  const g=liveGesture;
+  if(!g)return;
+  liveGesture=null;
+  removeLiveSnapGuides();
+  // Interrupted drags must not leave an unrecorded edit in the draft.
+  livePatches=new Map(g.snapshot.map(p=>[p.selector,p]));
+  if(g.node?.ownerDocument?.defaultView){
+    refreshLiveLayoutRules(g.node.ownerDocument);
+  }
+  try{
+    if(g.anchor?.hasPointerCapture?.(g.pointer))
+      g.anchor.releasePointerCapture(g.pointer);
+  }catch{/* Capture is already gone when the browser loses focus. */}
+  renderLiveInspector();
+  syncLiveOverlay();
+}
 function finishLiveGesture(event){
   const g=liveGesture;
   if(!g||event.pointerId!==g.pointer)return;
@@ -1109,6 +1126,10 @@ function bindLiveDocument(){
   doc.addEventListener("pointermove",moveLiveGesture,true);
   doc.addEventListener("pointerup",finishLiveGesture,true);
   doc.addEventListener("pointercancel",finishLiveGesture,true);
+  doc.addEventListener("lostpointercapture",event=>{
+    if(liveGesture?.pointer===event.pointerId)cancelLiveGesture();
+  },true);
+  doc.defaultView.addEventListener("blur",cancelLiveGesture);
   doc.addEventListener("scroll",syncLiveOverlay,true);
   doc.defaultView.addEventListener("resize",syncLiveOverlay);
   doc.addEventListener("click",event=>{
