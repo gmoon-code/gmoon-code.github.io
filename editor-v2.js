@@ -251,7 +251,7 @@ function makeSceneElement(obj){
 const LIVE_WIDTHS={desktop:1160,tablet:768,phone:390};
 function setWorkspaceMode(mode){
   if(mode!=="live"&&mode!=="design")return;
-  if(mode!=="live")cancelLiveText();
+  if(mode!=="live"&&liveEditing)saveLiveText();
   workspaceMode=mode;
   const isLive=mode==="live";
   $("liveViewport").hidden=!isLive;
@@ -581,6 +581,7 @@ function bindLiveDocument(){
 }
 function loadLivePage(page=currentPage){
   if(!PAGES.has(page))return;
+  if(liveEditing)saveLiveText();
   ++liveSerial;
   $("liveAssetStatus").textContent="Loading the original webpage…";
   $("liveAssetStatus").classList.remove("has-warning");
@@ -990,8 +991,8 @@ async function importPage(force=false){
 }
 function changePage(page){
   if(!PAGES.has(page))return;
+  if(liveEditing)saveLiveText();
   ++loadSerial;clearTimeout(saveTimer);lastTap=null;pageImages=[];
-  cancelLiveText();
   renderImageLibrary();
   currentPage=page;
   loadLiveDraft(page);
