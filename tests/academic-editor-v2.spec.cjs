@@ -1023,3 +1023,33 @@ test('whole-section background changes keep nested markup and reset cleanly',asy
   expect(exported).toContain('href="#ref"');
   expect(exported).toContain('Evidence and');
 });
+
+test('style-only changes preserve original paragraph spans, classes and hyperlinks',async({page})=>{
+  const source='<!doctype html><html><body><main>'+
+    '<p class="science" data-source="published">' +
+    'Evidence from <span class="technical-label" data-term="biotic">biotic</span> interactions '+
+    '<a class="citation" href="#source-1" data-reference="key1">[1]</a>.</p>'+
+    '<p id="source-1">Reference</p></main></body></html>';
+  await page.route('**/about.html',route=>route.fulfill({
+    status:200,contentType:'text/html',body:source
+  }));
+  await page.locator('#reloadLive').click();
+  const live=page.frameLocator('#livePageFrame');
+  const para=live.locator('main p.science');
+  await para.click({position:{x:7,y:8}});
+  await page.locator('#liveMoveX').fill('33');
+  await page.locator('#liveMoveX').press('Tab');
+  await page.locator('#liveTextColour').evaluate(node=>{
+    node.value='#336699';node.dispatchEvent(new Event('change',{bubbles:true}));
+  });
+  await expect(para.locator('span[data-term="biotic"]')).toHaveText('biotic');
+  const pending=page.waitForEvent('download');
+  await page.locator('#exportLiveEdits').click();
+  const exported=fs.readFileSync(await (await pending).path(),'utf8');
+  expect(exported).toContain('class="technical-label" data-term="biotic"');
+  expect(exported).toContain('class="citation" href="#source-1" data-reference="key1"');
+  expect(exported).toContain('data-source="published"');
+  expect(exported).toContain('color:#336699!important');
+  await page.reload({waitUntil:'domcontentloaded'});
+  await expect(live.locator('main p.science span.technical-label')).toHaveText('biotic');
+});
