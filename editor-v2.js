@@ -1565,8 +1565,61 @@ function applyLiveImage(){
     ...(old?.layout?{layout:old.layout}:{})});
   recordLiveHistory(before);renderLiveInspector();renderLiveLayers();
 }
+function deleteSelectedLiveGroup(){
+  const selected=selectedAddedPatches();
+  if(selected.length<2)return false;
+  if(!confirm("Delete "+selected.length+
+    " selected webpage objects from this draft? You can undo before publishing."))return true;
+  const before=liveSnapshot();
+  const source=new DOMParser().parseFromString(liveDisplayedSourceHtml||"","text/html");
+  for(const item of selected){
+    const id=addedObjectId(item.patch);
+    const existing=[...source.querySelectorAll("[data-moon-v2-added-id]")].some(
+      node=>node.getAttribute("data-moon-v2-added-id")===id);
+    if(existing)livePatches.set(item.selector,{
+      selector:item.selector,kind:"remove-added",expected:""
+    });
+    else livePatches.delete(item.selector);
+  }
+  if(!recordLiveHistory(before))return true;
+  clearLiveSelection();
+  for(const item of selected)removeAddedPatchFromDoc(item.node.ownerDocument,item.selector);
+  renderLiveLayers();
+  status(selected.length+" webpage objects removed together · Undo available");
+  return true;
+}
+function duplicateSelectedLiveGroup(){
+  const selected=selectedAddedPatches();
+  if(selected.length<2)return false;
+  if(livePatches.size+selected.length>180){
+    status("Cannot duplicate group: the page edit limit would be exceeded");return true;
+  }
+  const previous=liveSnapshot(),doc=$("livePageFrame").contentDocument;
+  const newItems=[];
+  for(const item of selected){
+    const twin=copy(item.patch);
+    twin.selector=newAddedPatch(item.patch.objectType,{
+      src:item.patch.src,alt:item.patch.alt,html:item.patch.html,fill:item.patch.fill
+    }).selector;
+    for(const device of Object.keys(twin.geometry)){
+      const g=twin.geometry[device];
+      g.x=Math.round(clamp(g.x+24,-4000,10000));
+      g.y=Math.round(clamp(g.y+24,-4000,40000));
+    }
+    livePatches.set(twin.selector,twin);
+    applyAddedPatch(doc,twin);newItems.push(twin.selector);
+  }
+  if(recordLiveHistory(previous)){
+    liveAddedMulti=new Set(newItems);
+    const node=findAddedNode(doc,newItems.at(-1));
+    selectLiveElement(node,false,true);renderLiveLayers();
+    status(newItems.length+" webpage objects duplicated together · Undo available");
+  }
+  return true;
+}
 function deleteSelectedLiveElement(){
   if(workspaceMode!=="live"||liveEditing)return;
+  if(deleteSelectedLiveGroup())return;
   const node=liveSelected?.node,selector=node&&liveSelector(node);
   if(!node||!selector||!node.closest("main"))return;
   // Deleting a parent must not silently discard saved edits to children.
@@ -3518,6 +3571,7 @@ function attachEvents(){
   });
   $("duplicate").addEventListener("click",()=>{
     if(workspaceMode==="live"){
+      if(duplicateSelectedLiveGroup())return;
       const node=liveSelected?.node;if(!node)return;
       if(LIVE_ADDED_ID.test(liveSelector(node))){
         const patch=livePatchForSelected();
