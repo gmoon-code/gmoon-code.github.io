@@ -108,8 +108,9 @@ function save(){
 function scheduleSave(){clearTimeout(saveTimer);saveTimer=setTimeout(save,400);status("Unsaved canvas changes · Website unchanged");}
 function refreshUndo(){
   $("undo").disabled=!history.length;$("redo").disabled=!redo.length;
-  $("duplicate").disabled=!selected.size;$("remove").disabled=!selected.size;
-  $("front").disabled=!selected.size;$("back").disabled=!selected.size;
+  const editable=[...selected].some(id=>!lookup(id)?.locked);
+  $("duplicate").disabled=!editable;$("remove").disabled=!editable;
+  $("front").disabled=!editable;$("back").disabled=!editable;
 }
 function remember(snapshot){
   const before=snapshot||copy(scene);
@@ -254,12 +255,15 @@ function renderProperties(){
   $("properties").hidden=!obj;$("emptySelection").hidden=!!obj;
   if(!obj)return;
   for(const [key,id] of Object.entries(propertyIds)){
+    $(id).disabled=obj.locked;
     if($(id).type==="color")$(id).value=/^#[0-9a-f]{6}$/i.test(obj[key])?obj[key]:"#ffffff";
     else $(id).value=obj[key]??"";
   }
   const isText=obj.type==="text",isImage=obj.type==="image";
   $("propTransparent").checked=obj.transparent;
+  $("propTransparent").disabled=obj.locked;
   $("replaceImage").hidden=!isImage;
+  $("replaceImage").disabled=obj.locked;
   for(const id of ["textLabel","propText"])$(id).hidden=!isText;
   for(const id of ["srcLabel","propSrc","altLabel","propAlt"])$(id).hidden=!isImage;
   $("lock").textContent=obj.locked?"Unlock":"Lock";
@@ -524,7 +528,7 @@ function standaloneHtml(assetPrefix=""){
   const sorted=[...scene.objects].filter(o=>!o.hidden)
     .sort((a,b)=>(a.order??a.id)-(b.order??b.id)||a.id-b.id);
   const items=sorted.map(o=>{
-    const base='class="item" style="left:'+o.x+'px;top:'+o.y+'px;width:'+o.w+
+    const base='class="item'+(o.backdrop?' backdrop':'')+'" style="left:'+o.x+'px;top:'+o.y+'px;width:'+o.w+
       'px;height:'+o.h+'px;z-index:'+o.z+';'+
       (o.transparent?'background:transparent;':'background:'+o.bg+';');
     if(o.type==="image"){
@@ -552,7 +556,7 @@ function standaloneHtml(assetPrefix=""){
     '.item img{height:100%;width:100%;object-fit:contain;display:block}'+
     '@media(max-width:700px){.canvas{height:auto;width:100%;display:flex;flex-direction:column;gap:16px;padding:24px 18px}'+
     '.item{position:static!important;width:100%!important;height:auto!important;max-width:100%!important;min-height:24px}'+
-    '.item img{width:100%;height:auto;max-height:500px;object-fit:contain}}'+
+    '.item img{width:100%;height:auto;max-height:500px;object-fit:contain}.item.backdrop{display:none!important}}'+
     '</style></head><body><header class="site-bar"><strong>Ye Eun Moon</strong>'+
     '<nav><a href="'+assetPrefix+'index.html">Home</a><a href="'+assetPrefix+'research.html">Research</a>'+
     '<a href="'+assetPrefix+'teaching.html">Teaching</a><a href="'+assetPrefix+'about.html">About</a></nav></header>'+
@@ -646,7 +650,7 @@ function attachEvents(){
   }
   for(const [prop,id] of Object.entries(propertyIds)){
     $(id).addEventListener("change",event=>{
-      const obj=lookup(activeId);if(!obj)return;
+      const obj=lookup(activeId);if(!obj||obj.locked)return;
       let value=event.target.value;
       if(["x","y","w","h","font"].includes(prop)){
         value=Math.round(number(value));
@@ -667,12 +671,12 @@ function attachEvents(){
     });
   }
   $("propTransparent").addEventListener("change",event=>{
-    const obj=lookup(activeId);if(!obj)return;
+    const obj=lookup(activeId);if(!obj||obj.locked)return;
     const transparent=event.target.checked;
     mutate(()=>{obj.transparent=transparent;});
   });
   $("replaceImage").addEventListener("click",()=>{
-    if(lookup(activeId)?.type!=="image")return;
+    if(lookup(activeId)?.type!=="image"||lookup(activeId).locked)return;
     $("replaceFile").dataset.target=String(activeId);
     $("replaceFile").click();
   });
@@ -686,7 +690,7 @@ function attachEvents(){
     }
     const reader=new FileReader();
     reader.onload=()=>{
-      const obj=lookup(target);if(!obj||obj.type!=="image")return;
+      const obj=lookup(target);if(!obj||obj.type!=="image"||obj.locked)return;
       mutate(()=>{obj.src=String(reader.result);obj.alt=file.name.replace(/\.[^.]+$/,"");});
     };
     reader.readAsDataURL(file);
@@ -707,7 +711,7 @@ function attachEvents(){
     reader.readAsDataURL(file);
   });
   $("duplicate").addEventListener("click",()=>{
-    const source=scene.objects.filter(o=>selected.has(o.id));if(!source.length)return;
+    const source=scene.objects.filter(o=>selected.has(o.id)&&!o.locked);if(!source.length)return;
     mutate(()=>{
       const ids=[];
       for(const obj of source){
@@ -721,14 +725,15 @@ function attachEvents(){
   });
   $("front").addEventListener("click",()=>mutate(()=>{
     let z=scene.objects.reduce((m,o)=>Math.max(m,o.z),0);
-    for(const obj of scene.objects.filter(o=>selected.has(o.id)))obj.z=++z;
+    for(const obj of scene.objects.filter(o=>selected.has(o.id)&&!o.locked))obj.z=++z;
   }));
   $("back").addEventListener("click",()=>mutate(()=>{
     let z=scene.objects.reduce((m,o)=>Math.min(m,o.z),0);
-    for(const obj of scene.objects.filter(o=>selected.has(o.id)))obj.z=--z;
+    for(const obj of scene.objects.filter(o=>selected.has(o.id)&&!o.locked))obj.z=--z;
   }));
   $("remove").addEventListener("click",()=>mutate(()=>{
-    scene.objects=scene.objects.filter(o=>!selected.has(o.id));selected.clear();activeId=null;
+    scene.objects=scene.objects.filter(o=>!selected.has(o.id)||o.locked);
+    selected.clear();activeId=null;
   }));
   $("lock").addEventListener("click",()=>mutate(()=>{for(const obj of scene.objects.filter(o=>selected.has(o.id)))obj.locked=!obj.locked;}));
   $("hide").addEventListener("click",()=>mutate(()=>{for(const obj of scene.objects.filter(o=>selected.has(o.id)))obj.hidden=!obj.hidden;}));
