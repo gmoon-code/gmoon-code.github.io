@@ -74,6 +74,7 @@ test('Escape cancels an in-progress marquee without moving or deselecting object
 test('clicking a canvas object restores arrow-key control after inspector editing',async({page})=>{
   await page.locator('#addShape').click();
   await setPosition(page,1,150,150);
+  await page.locator('#propY').focus();
   await expect(page.locator('#propY')).toBeFocused();
   const shape=page.locator('#stage [data-id="1"]');
   await shape.click({position:{x:45,y:45}});
