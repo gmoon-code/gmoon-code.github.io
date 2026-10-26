@@ -716,8 +716,14 @@ function applyPatchesToDocument(doc,strict=false,resolved=[]){
     let node;
     try{node=resolveLivePatchTarget(doc,patch,claimed);}
     catch(error){if(strict)throw error;continue;}
+    const selector=liveSelector(node);
+    if(!selector){
+      if(strict)throw Error("Saved edit \""+livePatchExcerpt(patch)+
+        "\" is inside a structure too deeply nested for safe publishing.");
+      continue;
+    }
     claimed.add(node);
-    changes.push({patch,node,selector:liveSelector(node)});
+    changes.push({patch,node,selector});
   }
   if(strict){
     // Replacing a parent's innerHTML would discard a nested edited element.
@@ -1752,11 +1758,12 @@ function decodeGithubHtml(info){
 function applyLiveEditsToGithubHtml(html){
   if(!/<main\b/i.test(html))throw Error("The GitHub page has no main section. No changes were published.");
   const doc=new DOMParser().parseFromString(html,"text/html");
-  if(applyPatchesToDocument(doc,true)!==livePatches.size)
+  const resolved=[];
+  if(applyPatchesToDocument(doc,true,resolved)!==livePatches.size)
     throw Error("Some edits did not match the latest GitHub page. Nothing was published.");
-  // Keep all the website's existing relative assets and links in place.
-  // In particular, do not export editor-only selection outlines or staging URLs.
-  return "<!doctype html>\n"+doc.documentElement.outerHTML;
+  // Keep all existing relative assets and links exactly as they appear in
+  // the real website. Save the verified selectors for future publications.
+  return {html:"<!doctype html>\n"+doc.documentElement.outerHTML,resolved};
 }
 async function publishGithub(token,target){
   if(!token)throw Error("Enter your GitHub token to publish.");
@@ -1779,10 +1786,11 @@ async function publishGithub(token,target){
   // Production HTML is based on the latest GitHub blob, not a stale page
   // obtained through the Pages CDN. Unrelated changes are retained; changed
   // target elements fail the strict expected-text/image checks.
-  const html=target==="live"?
-    applyLiveEditsToGithubHtml(decodeGithubHtml(info)):
-    sourceMode?await sourcePreservingHtml("https://gmoon-code.github.io/"):
-    standaloneHtml("../");
+  const production=target==="live"?
+    applyLiveEditsToGithubHtml(decodeGithubHtml(info)):null;
+  const html=production?.html||
+    (sourceMode?await sourcePreservingHtml("https://gmoon-code.github.io/"):
+      standaloneHtml("../"));
   const body={
     message:(target==="live"?"Publish verified Editor V2 edits to ":"Update Editor V2 staging preview of ")+currentPage,
     content:utf8Base64(html),branch:"main"
@@ -1803,7 +1811,8 @@ async function publishGithub(token,target){
   if(!result?.commit?.sha)throw Error("GitHub did not confirm a commit.");
   return {url:"https://gmoon-code.github.io/"+path,
     commit:result.commit.sha,target,path,
-    publishedHtml:target==="live"?html:null};
+    publishedHtml:production?.html||null,
+    publishedMatches:production?.resolved||[]};
 }
 function updatePublishTarget(){
   const target=$("publishTarget").value,live=target==="live";
@@ -2190,12 +2199,18 @@ function attachEvents(){
         // changes in the same tab then compare with what was just published,
         // even if GitHub Pages is still serving the previous deployed build.
         const committed=new DOMParser().parseFromString(result.publishedHtml,"text/html");
+        const remapped=new Map(result.publishedMatches.map(item=>[item.from,item.to]));
+        const rebased=new Map();
         for(const patch of livePatches.values()){
-          const node=committed.querySelector(patch.selector);
+          const selector=remapped.get(patch.selector)||patch.selector;
+          const node=committed.querySelector(selector);
           if(node)patch.expected=patch.kind==="image"?
             node.getAttribute("src")||"":
             (node.textContent||"").trim().slice(0,300);
+          patch.selector=selector;
+          rebased.set(selector,patch);
         }
+        livePatches=rebased;
         liveHistory=[];liveRedo=[];
         storeLiveDraft();refreshUndo();
       }
