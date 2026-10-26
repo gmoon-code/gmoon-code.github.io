@@ -31,3 +31,11 @@
 #liveTextControls[hidden],#liveImageControls[hidden],#liveInspector[hidden]{display:none!important}
 #liveTextControls>button,#liveImageControls>button,#exportLiveEdits{max-width:100%;white-space:normal;text-align:center}
 #liveEditCount{border-top:1px solid var(--rule);padding-top:9px}
+
+/* Full-width reference mode retains the actual original-site iframe. */
+.application.focus-view .editor-body{grid-template-columns:minmax(0,1fr)}
+.application.focus-view .editor-body>.left-panel,
+.application.focus-view .editor-body>.right-panel{display:none}
+.application.focus-view .workspace{min-width:0}
+.application.focus-view .live-scrollspace{max-height:calc(100vh - 285px)}
+#focusPage[aria-pressed=true]{border-color:var(--accent);color:var(--accent);background:var(--accent-light)}
