@@ -24,3 +24,11 @@ jobs:
         run: npx playwright install --with-deps chromium
       - name: Check text and image resizing
         run: node tests/editor-resize-regression.mjs
+      - name: Upload failure screenshot
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: editor-resize-failure
+          path: test-artifacts/
+          if-no-files-found: ignore
+          retention-days: 7
