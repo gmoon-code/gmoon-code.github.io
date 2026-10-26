@@ -1690,17 +1690,17 @@ async function githubFile(path,token,allowMissing=false){
 function decodeGithubHtml(info){
   if(info.encoding!=="base64"||typeof info.content!=="string"||!info.content.trim())
     throw Error("GitHub did not supply the current file contents. Publication stopped.");
-  const bytes=Uint8Array.from(atob(info.content.replace(/\\s/g,"")),char=>char.charCodeAt(0));
+  const bytes=Uint8Array.from(atob(info.content.replace(/\s/g,"")),char=>char.charCodeAt(0));
   return new TextDecoder("utf-8",{fatal:true}).decode(bytes);
 }
 function applyLiveEditsToGithubHtml(html){
-  if(!/<main\\b/i.test(html))throw Error("The GitHub page has no main section. No changes were published.");
+  if(!/<main\b/i.test(html))throw Error("The GitHub page has no main section. No changes were published.");
   const doc=new DOMParser().parseFromString(html,"text/html");
   if(applyPatchesToDocument(doc,true)!==livePatches.size)
     throw Error("Some edits did not match the latest GitHub page. Nothing was published.");
   // Keep all the website's existing relative assets and links in place.
   // In particular, do not export editor-only selection outlines or staging URLs.
-  return "<!doctype html>\\n"+doc.documentElement.outerHTML;
+  return "<!doctype html>\n"+doc.documentElement.outerHTML;
 }
 async function publishGithub(token,target){
   if(!token)throw Error("Enter your GitHub token to publish.");
