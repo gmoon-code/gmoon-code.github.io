@@ -888,18 +888,17 @@ test('moving a real homepage image preserves its pre-existing translation',async
 });
 
 test('live text resize handles scale text visually without reflowing neighbouring webpage blocks',async({page})=>{
-  test.setTimeout(17000);
   const live=page.frameLocator('#livePageFrame');
   const title=live.locator('main h2').first(),neighbour=live.locator('main p').first();
   const before=await title.boundingBox(),neighbourBefore=await neighbour.boundingBox();
-  console.log("TXT-RESIZE: click");await title.click();console.log("TXT-RESIZE: clicked");
+  await title.click();
   const handle=live.locator('#moon-v2-live-overlay [data-direction="se"]');
-  console.log("TXT-RESIZE: grip");await expect(handle).toBeVisible({timeout:4000});console.log("TXT-RESIZE: visible");
-  const box=await handle.boundingBox();console.log("TXT-RESIZE: box",JSON.stringify(box));
+  await expect(handle).toBeVisible();
+  const box=await handle.boundingBox();
   await page.mouse.move(box.x+box.width/2,box.y+box.height/2);
-  await page.mouse.down();console.log("TXT-RESIZE: down");
+  await page.mouse.down();
   await page.mouse.move(box.x+box.width/2+45,box.y+box.height/2+18,{steps:7});
-  await page.mouse.up();console.log("TXT-RESIZE: up");
+  await page.mouse.up();
   const after=await title.boundingBox(),neighbourAfter=await neighbour.boundingBox();
   expect(after.width).toBeGreaterThan(before.width+15);
   expect(after.height).toBeGreaterThan(before.height+8);
@@ -912,12 +911,16 @@ test('live text resize handles scale text visually without reflowing neighbourin
   const html=fs.readFileSync(await (await pending).path(),'utf8');
   expect(html).toContain('@media (min-width:1025px)');
   expect(html).toContain('scale:');
+  await expect(page.locator('#undo')).toBeEnabled();
+  await page.locator('#undo').click();
+  const undone=await live.locator('main h2').first().boundingBox();
+  expect(Math.abs(undone.width-before.width)).toBeLessThan(1);
+  await page.locator('#redo').click();
+  const redone=await live.locator('main h2').first().boundingBox();
+  expect(redone.width).toBeGreaterThan(before.width+15);
   await page.reload({waitUntil:'domcontentloaded'});
   const retained=await live.locator('main h2').first().boundingBox();
   expect(retained.width).toBeGreaterThan(before.width+15);
-  console.log("TXT-RESIZE: undo",await page.locator('#undo').isEnabled());await page.locator('#undo').click({timeout:4000});
-  const undone=await live.locator('main h2').first().boundingBox();
-  expect(Math.abs(undone.width-before.width)).toBeLessThan(1);
 });
 test('text scaling can be changed numerically and reset for individual viewport',async({page})=>{
   const live=page.frameLocator('#livePageFrame'),heading=live.locator('main h2').first();
