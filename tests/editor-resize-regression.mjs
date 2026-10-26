@@ -53,6 +53,16 @@ async function resize(label,subject,neighbor){
     control.y+control.height/2+30,{steps:9});
   await page.mouse.up();
   const now=await subject.boundingBox(),fixedAfter=await pagePoint(neighbor);
+  const diagnostic=await subject.evaluate(node=>({
+    element:node.outerHTML.slice(0,700),
+    width:getComputedStyle(node).width,
+    position:getComputedStyle(node).position,
+    parent:node.parentElement?.className,
+    footprint:node.getAttribute("data-moon-free-footprint")?.slice(0,130)
+  })).catch(()=>null);
+  const warning=await page.locator("#noticeDialog[open] #noticeMessage").allTextContents();
+  console.log("Resize diagnostic",JSON.stringify({label,oldBox,now,fixedBefore,
+    fixedAfter,warning,diagnostic}));
   assert(now&&fixedAfter,label+" vanished during resize");
   assert(now.width>=oldBox.width+20,label+" did not grow as requested");
   assert(closeTo(fixedAfter.x,fixedBefore.x)&&closeTo(fixedAfter.y,fixedBefore.y),
