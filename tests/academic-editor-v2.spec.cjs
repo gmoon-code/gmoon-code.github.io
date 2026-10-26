@@ -165,3 +165,15 @@ test('alignment tools keep independent objects aligned and undoable',async({page
   await page.locator('#undo').click();
   expect(await b.evaluate(node=>parseInt(node.style.top))).toBe(originalY);
 });
+
+test('double-click edits the text object directly and Undo restores prior wording',async({page})=>{
+  await importScene(page);
+  const target=page.locator('#stage [data-id="1"] .scene-content');
+  await target.dblclick();
+  await expect(target).toHaveAttribute('contenteditable','true');
+  await target.fill('Updated science education title');
+  await target.press('Escape');
+  await expect(page.locator('#stage [data-id="1"] .scene-content')).toHaveText('Updated science education title');
+  await page.locator('#undo').click();
+  await expect(page.locator('#stage [data-id="1"] .scene-content')).toHaveText('Research overview');
+});
