@@ -272,7 +272,10 @@ const LIVE_WIDTHS={desktop:1160,tablet:768,phone:390};
 function setWorkspaceMode(mode){
   if(mode!=="live"&&mode!=="design")return;
   if(mode!=="live"&&liveEditing)saveLiveText();
-  if(mode!=="live"){removeLiveOverlay();removeLiveSnapGuides();liveGesture=null;}
+  if(mode!=="live"){
+    if(liveGesture)cancelLiveGesture();
+    removeLiveOverlay();removeLiveSnapGuides();
+  }else if(gesture)cancelCanvasGesture();
   workspaceMode=mode;
   const isLive=mode==="live";
   $("liveViewport").hidden=!isLive;
@@ -350,6 +353,14 @@ function liveSelector(node){
 const LIVE_CONTAINER_TAGS="section,article,aside,figure,div,nav,ul,ol";
 const LIVE_EDITABLE_TAGS="h1,h2,h3,h4,h5,h6,p,li,figcaption,blockquote,img";
 const LIVE_SELECTABLE_TAGS=LIVE_EDITABLE_TAGS+","+LIVE_CONTAINER_TAGS;
+function liveEventTarget(event){
+  // Alt-click selects a container; on an actual hyperlink it selects the
+  // enclosing paragraph so the link's text remains editable.
+  const nearestText=event.target.closest?.(LIVE_EDITABLE_TAGS);
+  const nearestContainer=event.target.closest?.(LIVE_CONTAINER_TAGS);
+  return event.altKey&&!event.target.closest?.("a[href]")?
+    nearestContainer||nearestText:nearestText||nearestContainer;
+}
 const LIVE_CONTAINER_SET=new Set(["SECTION","ARTICLE","ASIDE","FIGURE","DIV","NAV","UL","OL"]);
 const LIVE_DEVICE_RULES={
   desktop:"(min-width:1025px)",
@@ -1265,14 +1276,12 @@ function bindLiveDocument(){
     // to click, release and then start a *second* drag on the same element.
     const link=event.target.closest?.("a[href]");
     if(link&&!event.altKey)return; // Normal link navigation remains possible.
-    const target=event.altKey?
-      event.target.closest?.(LIVE_CONTAINER_TAGS)||
-        event.target.closest?.(LIVE_EDITABLE_TAGS):
-      event.target.closest?.(LIVE_EDITABLE_TAGS)||
-        event.target.closest?.(LIVE_CONTAINER_TAGS);
+    const target=liveEventTarget(event);
     if(!target||!doc.querySelector("main")?.contains(target))return;
     if(target!==liveSelected?.node)selectLiveElement(target);
-    startLiveGesture(event,"move",target);
+    // A touch tap selects without capturing the pointer, so users can still
+    // scroll the responsive webpage. Mouse/pen can drag immediately.
+    if(event.pointerType!=="touch")startLiveGesture(event,"move",target);
   },true);
   doc.addEventListener("pointermove",moveLiveGesture,true);
   doc.addEventListener("pointerup",finishLiveGesture,true);
@@ -1313,11 +1322,7 @@ function bindLiveDocument(){
         return;
       }catch{status("Cannot open an invalid webpage link");return;}
     }
-    const node=event.altKey?
-      event.target.closest?.(LIVE_CONTAINER_TAGS)||
-        event.target.closest?.(LIVE_EDITABLE_TAGS):
-      event.target.closest?.(LIVE_EDITABLE_TAGS)||
-        event.target.closest?.(LIVE_CONTAINER_TAGS);
+    const node=liveEventTarget(event);
     if(node)selectLiveElement(node);
     else clearLiveSelection();
   },true);
