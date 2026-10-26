@@ -3449,12 +3449,7 @@ function attachEvents(){
   $("resetLiveAppearance").addEventListener("click",resetLiveAppearance);
   $("revertLiveElement").addEventListener("click",revertLiveElement);
   $("deleteLiveElement").addEventListener("click",deleteSelectedLiveElement);
-  $("previewLiveEdits").addEventListener("click",async()=>{
-    try{
-      $("previewFrame").srcdoc=await sourcePreservingHtml(new URL(".",location.href).href);
-      $("previewDialog").showModal();
-    }catch(error){status(error.message||"Could not prepare original-layout preview");}
-  });
+  $("previewLiveEdits").addEventListener("click",()=>$("preview").click());
   $("exportLiveEdits").addEventListener("click",async()=>{
     if(liveEditing)saveLiveText();
     try{
