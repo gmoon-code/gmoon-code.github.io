@@ -1242,13 +1242,24 @@ function attachEvents(){
   });
   $("exportScene").addEventListener("click",()=>download(currentPage+".canvas.json",JSON.stringify(scene,null,2),"application/json"));
   $("exportHtml").addEventListener("click",()=>download(currentPage.replace(".html","-canvas-preview.html"),standaloneHtml(),"text/html"));
-  $("preview").addEventListener("click",()=>{
-    $("previewFrame").srcdoc=standaloneHtml();$("previewDialog").showModal();
+  $("preview").addEventListener("click",async()=>{
+    try{
+      $("previewFrame").srcdoc=workspaceMode==="live"?
+        await sourcePreservingHtml(new URL(".",location.href).href):
+        standaloneHtml();
+      $("previewDialog").showModal();
+    }catch(error){status(error.message||"Could not create the selected page preview");}
   });
-  $("compare").addEventListener("click",()=>{
-    $("originalFrame").src=new URL(currentPage,location.href).href;
-    $("sceneFrame").srcdoc=standaloneHtml();
-    $("compareDialog").showModal();
+  $("compare").addEventListener("click",async()=>{
+    try{
+      const mode=workspaceMode;
+      const output=mode==="live"?
+        await sourcePreservingHtml(new URL(".",location.href).href):
+        standaloneHtml();
+      $("originalFrame").src=new URL(currentPage,location.href).href;
+      $("sceneFrame").srcdoc=output;
+      $("compareDialog").showModal();
+    }catch(error){status(error.message||"Could not compare the selected page");}
   });
   $("closeCompare").addEventListener("click",()=>{
     $("compareDialog").close();
