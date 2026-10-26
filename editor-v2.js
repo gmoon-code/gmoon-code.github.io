@@ -143,7 +143,9 @@ function refreshUndo(){
   $("redo").disabled=workspaceMode==="live"?!liveRedo.length:!redo.length;
   const editable=workspaceMode==="design"&&
     [...selected].some(id=>{const obj=lookup(id);return obj&&!obj.locked;});
-  $("duplicate").disabled=!editable;
+  $("duplicate").disabled=workspaceMode==="live"?
+    !liveSelected?.node||LIVE_CONTAINER_SET.has(liveSelected.node.tagName)&&
+      !liveSelected.node.hasAttribute("data-moon-v2-added-id"):!editable;
   $("remove").disabled=workspaceMode==="live"?!liveSelected?.node:!editable;
   $("front").disabled=workspaceMode==="live"?!liveSelected?.node:!editable;
   $("back").disabled=workspaceMode==="live"?!liveSelected?.node:!editable;
@@ -207,7 +209,10 @@ function insertImageFile(file,position={}){
     if(currentPage!==requestedPage){
       status("Image insertion cancelled because the selected website page changed");return;
     }
-    add("image",{src:String(reader.result),alt:file.name.replace(/\.[^.]+$/,""),
+    if(workspaceMode==="live")addLiveObject("image",{
+      src:String(reader.result),alt:file.name.replace(/\.[^.]+$/,"")
+    });
+    else add("image",{src:String(reader.result),alt:file.name.replace(/\.[^.]+$/,""),
       name:file.name,w:340,h:260,...position});
   };
   reader.onerror=()=>status("Could not read the selected image file");
@@ -367,6 +372,9 @@ function setWorkspaceMode(mode){
   $("exportScene").title=isLive?"Switch to Free design canvas to export canvas JSON":"Export the current free design canvas";
   $("save").textContent=isLive?"Save live-page edits":"Save canvas draft";
   $("selectTool").textContent=isLive?"↖ Select webpage":"↖ Select canvas";
+  $("addText").textContent=isLive?"T Add webpage text":"T Canvas text";
+  $("addShape").textContent=isLive?"▢ Add webpage shape":"▢ Canvas shape";
+  $("addImage").textContent=isLive?"▧ Add webpage image":"▧ Canvas image";
   $("workspaceTitle").textContent=isLive?"Live website":"Free design canvas";
   $("workspacePill").textContent=isLive?"GitHub main · source-matched editing":"Independent objects · staging only";
   $("workspaceExplanation").textContent=isLive?
@@ -2737,8 +2745,11 @@ function renderPublishPatchList(){
     row.className="publish-patch";
     const label=document.createElement("span");
     label.textContent=(patch.kind==="text"?"Text":patch.kind==="image"?"Image":
+      patch.kind==="insert"?"New "+patch.objectType:
+      patch.kind==="remove-added"?"Remove added object":
       patch.kind==="delete"?"Delete element":"Position/style")+
-      " · "+livePatchExcerpt(patch);
+      " · "+(patch.kind==="insert"?(patch.html||patch.alt||"Shape").slice(0,65):
+        livePatchExcerpt(patch));
     label.title=patch.selector;
     const remove=document.createElement("button");
     remove.type="button";remove.className="subtle";
@@ -2977,7 +2988,7 @@ function attachEvents(){
     if(!item)return;
     if(workspaceMode==="live"){
       if(liveSelected?.node?.tagName!=="IMG"){
-        status("Select a website image first to replace it. Adding new objects belongs to Free design canvas.");
+        addLiveObject("image",{src:item.src,alt:item.alt||""});
         return;
       }
       $("liveImageSrc").value=item.src;
@@ -3152,14 +3163,44 @@ function attachEvents(){
   });
   $("undo").addEventListener("click",undo);$("redo").addEventListener("click",redoAction);
   $("save").addEventListener("click",saveActiveDraft);
-  $("addText").addEventListener("click",()=>add("text",{text:"Double-click to edit text",name:"New text"}));
-  $("addShape").addEventListener("click",()=>add("shape",{name:"New shape"}));
+  $("addText").addEventListener("click",()=>{
+    if(workspaceMode==="live")addLiveObject("text");
+    else add("text",{text:"Double-click to edit text",name:"New text"});
+  });
+  $("addShape").addEventListener("click",()=>{
+    if(workspaceMode==="live")addLiveObject("shape");
+    else add("shape",{name:"New shape"});
+  });
   $("addImage").addEventListener("click",()=>$("imageFile").click());
   $("imageFile").addEventListener("change",event=>{
     const file=event.target.files?.[0];event.target.value="";
     insertImageFile(file);
   });
   $("duplicate").addEventListener("click",()=>{
+    if(workspaceMode==="live"){
+      const node=liveSelected?.node;if(!node)return;
+      if(LIVE_ADDED_ID.test(liveSelector(node))){
+        const patch=livePatchForSelected();
+        if(!patch||patch.kind!=="insert")return;
+        const before=liveSnapshot(),newPatch=copy(patch);
+        newPatch.selector=newAddedPatch(patch.objectType,
+          {src:patch.src,alt:patch.alt,html:patch.html,fill:patch.fill}).selector;
+        for(const dev of Object.keys(newPatch.geometry)){
+          newPatch.geometry[dev].x=clamp(newPatch.geometry[dev].x+24,-4000,10000);
+          newPatch.geometry[dev].y=clamp(newPatch.geometry[dev].y+24,-4000,40000);
+        }
+        livePatches.set(newPatch.selector,newPatch);
+        const twin=applyAddedPatch(node.ownerDocument,newPatch);
+        recordLiveHistory(before);renderLiveLayers();selectLiveElement(twin);return;
+      }
+      if(node.tagName==="IMG"){
+        const src=node.getAttribute("src")||"";
+        if(safeImageSource(src))addLiveObject("image",{src,alt:node.alt||""});
+      }else if(!LIVE_CONTAINER_SET.has(node.tagName))
+        addLiveObject("text",{html:cleanRich(node.innerHTML)});
+      else status("Select text or an image to duplicate it as a free webpage object");
+      return;
+    }
     const source=scene.objects.filter(o=>selected.has(o.id)&&!o.locked);if(!source.length)return;
     mutate(()=>{
       const ids=[];
@@ -3365,7 +3406,12 @@ function attachEvents(){
         for(const item of result.publishedNormalized){
           // A successfully published deletion has no remaining source element
           // to edit. Retain other patches for later changes, drop deletions.
-          if(item.kind==="delete")continue;
+          if(item.kind==="delete"||item.kind==="remove-added")continue;
+          if(item.kind==="insert"){
+            if(findAddedNode(committed,item.selector))
+              rebased.set(item.selector,{...item});
+            continue;
+          }
           const patch={...item},node=committed.querySelector(patch.selector);
           if(!node)continue;
           patch.expected=patch.kind==="image"?
