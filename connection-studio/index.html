@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en-CA">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="description" content="An offline interactive writing trainer for expert sentence connections, transitions, rhetorical relationships, and paragraph flow."><title>Connection Studio | Sentence & Paragraph Transition Trainer</title><link rel="stylesheet" href="./style.css"><meta name="theme-color" content="#172d37">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Connection Studio">
+<link rel="icon" href="./icon.svg" type="image/svg+xml">
+<link rel="manifest" href="./manifest.webmanifest">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" aria-label="Main navigation">
+    <div class="brand"><div class="mark">c.</div><div><div class="brand-title">Connection<br>Studio</div><div class="brand-sub">Writing mastery</div></div></div>
+    <div><p class="nav-caption">Explore and practise</p><nav class="nav" id="navigation">
+      <button data-tab="home"><span class="nav-ico">⌂</span>Overview</button>
+      <button data-tab="diagnose"><span class="nav-ico">◎</span>Identify the relationship</button>
+      <button data-tab="choose"><span class="nav-ico">◈</span>Choose the strongest link</button>
+      <button data-tab="rewrite"><span class="nav-ico">✎</span>Rewrite laboratory</button>
+      <button data-tab="paragraph"><span class="nav-ico">▤</span>Paragraph workshop</button>
+      <button data-tab="library"><span class="nav-ico">▦</span>Technique library</button>
+      <button data-tab="wordbank"><span class="nav-ico">⌘</span>Word and phrase bank</button>
+      <button data-tab="progress"><span class="nav-ico">◉</span>Progress and review</button>
+    </nav></div>
+    <div class="sidebar-tip"><strong>One guiding principle</strong>A strong connection preserves what the reader already understands and gives them something new to think about.</div>
+    <div class="sidebar-footer">Offline-friendly · Private local progress<br>Examples use Canadian English</div>
+  </aside>
+  <main class="main"><header class="topbar"><span class="eyebrow" id="crumb">Overview</span><div class="top-right"><span id="session-stat" class="top-count">0 exercises completed</span><span class="hide-mobile">· Private, on this device</span></div></header><div id="view" class="content" tabindex="-1"></div></main>
+</div>
+<div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+<script src="./data.js" defer></script><script src="./app.js" defer></script>
+<script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));}</script>
+</body></html>
