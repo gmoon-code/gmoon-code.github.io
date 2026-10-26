@@ -408,6 +408,10 @@ function validLiveLayout(layout){
       if(values[key]!==undefined&&
         (!Number.isFinite(values[key])||values[key]<min||values[key]>max))return false;
     }
+    const width=values.wrapWidth,height=values.reserveHeight;
+    if((width===undefined)!==(height===undefined))return false;
+    if(width!==undefined&&(!Number.isFinite(width)||width<64||width>4000||
+      !Number.isFinite(height)||height<24||height>5000))return false;
   }
   return true;
 }
@@ -456,12 +460,16 @@ function liveLayoutRules(){
       if(!entry||!validLiveLayout({[device]:entry}))continue;
       // Both values are bounded, strictly numeric data. Selectors are
       // validated source-rooted nth-of-type paths; no arbitrary CSS allowed.
+      const reflow=entry.wrapWidth!==undefined?
+        "width:"+entry.wrapWidth+"px!important;height:"+entry.reserveHeight+
+        "px!important;box-sizing:border-box!important;min-width:0!important;"+
+        "max-width:none!important;max-height:none!important;overflow:visible!important;":"";
       selectors.push(patch.selector+"{translate:"+
         (Math.round(((entry.ox||0)+entry.dx)*1000)/1000)+"px "+
         (Math.round(((entry.oy||0)+entry.dy)*1000)/1000)+"px!important;scale:"+
         (Math.round(((entry.osx||1)*entry.sx)*1000)/1000)+" "+
         (Math.round(((entry.osy||1)*entry.sy)*1000)/1000)+
-        "!important;transform-origin:top left!important;}");
+        "!important;transform-origin:top left!important;"+reflow+"}");
     }
     if(selectors.length)result.push("@media "+media+"{"+selectors.join("")+"}");
   }
@@ -519,6 +527,41 @@ function applyLiveLayoutInput(key,value){
   patch.layout={...patch.layout,[device]:{...liveLayoutFor(patch.selector),[key]:next}};
   livePatches.set(patch.selector,patch);
   if(recordLiveHistory(before)){refreshLiveLayoutRules();renderLiveInspector();syncLiveOverlay();}
+}
+function setLiveReflow(enabled){
+  const node=liveSelected?.node;
+  if(!node?.matches("h1,h2,h3,h4,h5,h6,p,blockquote,figcaption"))return;
+  const patch=livePatchForSelected();if(!patch)return;
+  const before=liveSnapshot(),device=liveDevice();
+  const layout={...liveLayoutFor(patch.selector)};
+  if(enabled){
+    layout.wrapWidth=clamp(Math.round(node.offsetWidth),64,4000);
+    layout.reserveHeight=clamp(Math.round(node.offsetHeight),24,5000);
+  }else{
+    delete layout.wrapWidth;delete layout.reserveHeight;
+  }
+  patch.layout={...patch.layout,[device]:layout};
+  livePatches.set(patch.selector,patch);
+  if(recordLiveHistory(before)){
+    refreshLiveLayoutRules();renderLiveInspector();syncLiveOverlay();
+  }
+}
+function setLiveReflowDimension(key,value){
+  const node=liveSelected?.node;
+  if(!node?.matches("h1,h2,h3,h4,h5,h6,p,blockquote,figcaption"))return;
+  const patch=livePatchForSelected();if(!patch)return;
+  const layout=liveLayoutFor(patch.selector);
+  if(layout.wrapWidth===undefined)return;
+  const number=Number(value);
+  if(!Number.isFinite(number))return;
+  const before=liveSnapshot();
+  layout[key]=Math.round(clamp(number,key==="wrapWidth"?64:24,
+    key==="wrapWidth"?4000:5000));
+  patch.layout={...patch.layout,[liveDevice()]:layout};
+  livePatches.set(patch.selector,patch);
+  if(recordLiveHistory(before)){
+    refreshLiveLayoutRules();renderLiveInspector();syncLiveOverlay();
+  }
 }
 function resetSelectedLiveLayout(){
   const patch=livePatchForSelected();if(!patch?.layout?.[liveDevice()])return;
@@ -605,6 +648,14 @@ function renderLiveInspector(){
     $("liveScaleY").value=String(Math.round(entry.sy*100));
     $("liveScaleX").disabled=false;
     $("liveScaleY").disabled=false;
+    const canReflow=!!node.matches("h1,h2,h3,h4,h5,h6,p,blockquote,figcaption");
+    $("liveTextReflowControls").hidden=!canReflow;
+    const on=canReflow&&entry.wrapWidth!==undefined;
+    $("liveTextReflow").checked=on;
+    $("liveTextBoxWidth").disabled=!on;
+    $("liveTextBoxHeight").disabled=!on;
+    $("liveTextBoxWidth").value=String(Math.round(entry.wrapWidth||node.offsetWidth));
+    $("liveTextBoxHeight").value=String(Math.round(entry.reserveHeight||node.offsetHeight));
     $("resetLiveLayout").disabled=!livePatches.get(selector)?.layout?.[liveDevice()];
   }
   renderLiveEditCount();
@@ -826,6 +877,23 @@ function moveLiveGesture(event){
   if(g.dir==="move"){
     next.dx=clamp(Math.round(g.layout.dx+deltaX),-4000,4000);
     next.dy=clamp(Math.round(g.layout.dy+deltaY),-4000,4000);
+  }else if(g.layout.wrapWidth!==undefined&&g.node.matches(
+    "h1,h2,h3,h4,h5,h6,p,blockquote,figcaption")){
+    const dir=g.dir;
+    const appliedScale=Math.max(.2,Math.abs((g.layout.osx||1)*g.layout.sx));
+    const heightScale=Math.max(.2,Math.abs((g.layout.osy||1)*g.layout.sy));
+    if(dir.includes("e")||dir.includes("w")){
+      const amount=deltaX/appliedScale*(dir.includes("w")?-1:1);
+      next.wrapWidth=Math.round(clamp(g.layout.wrapWidth+amount,64,4000));
+      if(dir.includes("w"))next.dx=clamp(Math.round(g.layout.dx+
+        (g.layout.wrapWidth-next.wrapWidth)*appliedScale),-4000,4000);
+    }
+    if(dir.includes("n")||dir.includes("s")){
+      const amount=deltaY/heightScale*(dir.includes("n")?-1:1);
+      next.reserveHeight=Math.round(clamp(g.layout.reserveHeight+amount,24,5000));
+      if(dir.includes("n"))next.dy=clamp(Math.round(g.layout.dy+
+        (g.layout.reserveHeight-next.reserveHeight)*heightScale),-4000,4000);
+    }
   }else{
     const dir=g.dir;
     let width=clamp(g.rect.width+(dir.includes("e")?deltaX:0)-
@@ -1533,6 +1601,12 @@ function attachEvents(){
   ])$(field).addEventListener("change",event=>
     applyLiveLayoutInput(key,Number(event.target.value)*multiplier));
   $("resetLiveLayout").addEventListener("click",resetSelectedLiveLayout);
+  $("liveTextReflow").addEventListener("change",event=>
+    setLiveReflow(event.target.checked));
+  $("liveTextBoxWidth").addEventListener("change",event=>
+    setLiveReflowDimension("wrapWidth",event.target.value));
+  $("liveTextBoxHeight").addEventListener("change",event=>
+    setLiveReflowDimension("reserveHeight",event.target.value));
   for(const [field,key] of [
     ["liveFontFamily","family"],["liveFontSize","fontSize"],
     ["liveTextColour","color"],["liveBackgroundColour","backgroundColor"]
