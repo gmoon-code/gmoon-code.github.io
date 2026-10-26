@@ -177,3 +177,45 @@ test('Live shape type can become a line, with clean reset and no changes to sour
   await expect(shape).toHaveCSS('clip-path','none');
   expect(await frame.locator('main > p').first().textContent()).toContain('This original paragraph');
 });
+
+test('Original website image resizing uses box geometry, never uneven CSS scale',async({page})=>{
+  const frame=page.frameLocator('#livePageFrame');
+  const image=frame.locator('main > img').first();
+  await image.click();
+  await expect(page.locator('#liveOriginalDimensions')).toBeVisible();
+  await expect(page.locator('#liveLockImageRatio')).toBeChecked();
+  await page.locator('#liveOriginalWidth').fill('240');
+  await page.locator('#liveOriginalWidth').press('Tab');
+  await expect(image).toHaveCSS('width','240px');
+  await expect(image).toHaveCSS('object-fit','contain');
+  const ratio=await image.evaluate(node=>{
+    const box=node.getBoundingClientRect();
+    return box.width/box.height;
+  });
+  expect(Number.isFinite(ratio)).toBe(true);
+  await page.locator('#preview').click();
+  const publishedImage=page.frameLocator('#previewFrame').locator('main > img').first();
+  await expect(publishedImage).toHaveCSS('width','240px');
+  await expect(publishedImage).toHaveCSS('object-fit','contain');
+  await page.locator('#closePreview').click();
+  await page.locator('#undo').click();
+  await expect(image).not.toHaveCSS('width','240px');
+});
+test('Added photos fit or crop their frame without stretching',async({page})=>{
+  const frame=page.frameLocator('#livePageFrame');
+  await page.locator('#imageLibrary button').first().click();
+  const image=frame.locator('img[data-moon-v2-added-id]').first();
+  await expect(image).toHaveCount(1);
+  await expect(image).toHaveCSS('object-fit','contain');
+  await page.locator('#liveImageFit').selectOption('cover');
+  await expect(image).toHaveCSS('object-fit','cover');
+  await page.locator('#liveLockImageRatio').uncheck();
+  await page.locator('#liveAddedWidth').fill('410');
+  await page.locator('#liveAddedWidth').press('Tab');
+  await expect(image).toHaveCSS('width','410px');
+  await expect(image).toHaveCSS('object-fit','cover');
+  await page.locator('#preview').click();
+  const preview=page.frameLocator('#previewFrame').locator('img[data-moon-v2-added-id]');
+  await expect(preview).toHaveCSS('object-fit','cover');
+  await expect(preview).toHaveCSS('width','410px');
+});
