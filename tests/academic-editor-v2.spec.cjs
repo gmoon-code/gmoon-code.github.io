@@ -595,3 +595,22 @@ test('top-bar preview and compare show faithful original-layout edits in live mo
   await expect(page.frameLocator('#sceneFrame').locator('main h2')).toHaveText('Live mode preview heading');
   await page.locator('#closeCompare').click();
 });
+
+test('real academic pages load with source styles inside the faithful live workspace',async({page})=>{
+  test.setTimeout(90000);
+  for(const file of ['index.html','research.html','teaching.html','pungmul.html']){
+    await page.locator('#page').selectOption(file);
+    const frame=page.frameLocator('#livePageFrame');
+    await expect(frame.locator('main')).toBeVisible({timeout:20000});
+    const state=await frame.locator('main').evaluate(node=>({
+      text:node.textContent.trim().slice(0,300),
+      width:node.getBoundingClientRect().width,
+      styles:[...document.styleSheets].length
+    }));
+    expect(state.text.length).toBeGreaterThan(30);
+    expect(state.width).toBeGreaterThan(250);
+    expect(state.styles).toBeGreaterThan(0);
+    await expect(page.locator('#liveViewport')).toBeVisible();
+    await expect(page.locator('#scrollspace')).toBeHidden();
+  }
+});
