@@ -23,6 +23,11 @@ Each scene is `{version:2,page,width,height,nextId,objects}`. Objects have `id,t
 - Inline text edits, typography, colours, shape background and image insertion/replacement
 - Per-page browser-local draft persistence, Undo/Redo, import/export JSON backups
 - Read-only measurement-based import from existing site pages, without modifying their source files
+- Safe imported inline hyperlinks, emphasis and heading semantics
+- Coloured section panels imported as independently positioned editable backdrops
+- Image library from each imported source page, file drops, and direct image replacement
+- Rectangle, ellipse and line shapes, along with fit-to-content text boxes
+- Side-by-side comparison of the original website and independent canvas
 - Responsive standalone HTML preview and export
 - Optional GitHub API publication **only into the staging subdirectory**, requiring a short-lived token entered by the user
 - Automated Chromium tests in `.github/workflows/academic-editor-v2.yml`
@@ -35,13 +40,13 @@ Do not direct-publish this new scene over `index.html`, `research.html` or other
 
 ## Next engineering milestones
 
-1. Confirm all Chromium tests are passing and add visual screenshot-diff tests.
-2. Extend the structured text model to preserve inline links, emphasis, paragraphs and accessibility.
-3. Import existing site backgrounds, sections, groups and relative media sizes without flattening their semantics.
-4. Add explicit desktop/tablet/mobile design canvases with editable responsive properties.
-5. Add grouping, alignment/distribution guides, snapping, layers reordering and clear visual text editing.
-6. Review a full representative page against its existing site for visual, responsive and semantic fidelity.
-7. After a user-reviewed migration, introduce a guarded transition from staging preview to existing live pages.
+1. Add visual screenshot-difference testing and detailed fidelity comparisons for each academic page.
+2. Improve import fidelity for nested section layouts, rich text, links, backgrounds, images and accessible semantics.
+3. Build dedicated desktop, tablet and mobile design canvases with independently editable responsive layouts.
+4. Add persistent object grouping, layer reordering, rulers, optional snapping and alignment guides.
+5. Support robust asset upload and draft persistence for larger collections of images.
+6. Review complete page migrations for layout, keyboard navigation, responsiveness and performance.
+7. After user-reviewed migration and passing regression tests, introduce a guarded transition from staging preview to existing live pages.
 
 ## Publishing
 
