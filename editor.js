@@ -4377,6 +4377,7 @@
     main.style.setProperty("--moon-free-canvas-height",
       Math.min(20064,Math.max(0,Math.ceil(lowest)))+"px");
   }
+  const previewFreePlaceholderCache=new WeakMap();
   function synchronizeFreeReadingOrder(doc){
     const main=doc?.querySelector("main");
     if(!main)return;
@@ -4389,6 +4390,19 @@
       const marker=walker.currentNode;
       if(marker.data.startsWith("moon-free-slot:"))
         markers.set(marker.data.slice(15),marker);
+    }
+    // Temporarily remove empty layout holders from the mobile DOM; hiding
+    // them with CSS alone leaves ghost headings/items in child lists.
+    const stored=previewFreePlaceholderCache.get(doc)||new Map();
+    for(const placeholder of main.querySelectorAll("[data-moon-free-placeholder]")){
+      stored.set(placeholder.getAttribute("data-moon-free-placeholder"),placeholder);
+    }
+    previewFreePlaceholderCache.set(doc,stored);
+    for(const [slot,placeholder] of stored){
+      const marker=markers.get(slot);
+      if(narrow)placeholder.remove();
+      else if(marker?.parentNode&&placeholder.nextSibling!==marker)
+        marker.parentNode.insertBefore(placeholder,marker);
     }
     for(const node of [...main.querySelectorAll(".moon-free-absolute[data-moon-free-slot]")]){
       const marker=markers.get(node.getAttribute("data-moon-free-slot"));
@@ -4876,7 +4890,7 @@
       const scripts=[...publishedDoc.querySelectorAll('script[id="moon-free-responsive-runtime"]')];
       const runtime=scripts.shift()||publishedDoc.createElement("script");
       runtime.id="moon-free-responsive-runtime";
-      runtime.src="moon-free-responsive.js?v=20261024-canvas-height-1";runtime.defer=true;
+      runtime.src="moon-free-responsive.js?v=20261026-mobile-slots-v1";runtime.defer=true;
       if(!runtime.parentElement)publishedDoc.body.append(runtime);
       for(const duplicate of scripts)duplicate.remove();
       next="<!doctype html>\n"+publishedDoc.documentElement.outerHTML;
