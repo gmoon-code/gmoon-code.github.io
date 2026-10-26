@@ -571,6 +571,30 @@ function addedStyleCss(p){
   }
   return result;
 }
+function updateAddedPageHeight(doc){
+  const main=doc.querySelector("main"),layer=main?.querySelector(":scope > [data-moon-v2-added-layer]");
+  const id="moon-v2-added-extent";
+  if(!main||!layer)return;
+  const extent={desktop:0,tablet:0,phone:0};
+  for(const node of layer.querySelectorAll("[data-moon-v2-added-id]")){
+    let geom;
+    try{geom=JSON.parse(node.getAttribute("data-moon-v2-added-geometry")||"{}");}
+    catch{continue;}
+    if(!validAddedGeometry(geom))continue;
+    for(const device of Object.keys(extent)){
+      const g=addedDeviceGeometry({geometry:geom},device);
+      extent[device]=Math.max(extent[device],g.y+g.h+32);
+    }
+  }
+  let rule=doc.getElementById(id);
+  if(!Object.values(extent).some(x=>x>0)){
+    rule?.remove();return;
+  }
+  if(!rule){rule=doc.createElement("style");rule.id=id;doc.head.append(rule);}
+  rule.textContent=Object.entries(LIVE_DEVICE_RULES).map(([device,media])=>
+    "@media "+media+"{main[data-moon-v2-added-host]{min-height:"+
+      Math.ceil(extent[device])+"px!important;}}").join("\n");
+}
 function applyAddedPatch(doc,p){
   if(!validAddedPatch(p))throw Error("Invalid independent webpage object.");
   const layer=ensureAddedLayer(doc),id=addedObjectId(p);
@@ -599,6 +623,7 @@ function applyAddedPatch(doc,p){
     doc.head.append(css);
   }
   css.textContent=addedStyleCss(p);
+  updateAddedPageHeight(doc);
   return node;
 }
 function removeAddedPatchFromDoc(doc,selector){
@@ -615,7 +640,8 @@ function removeAddedPatchFromDoc(doc,selector){
     layer.remove();
     main.removeAttribute("data-moon-v2-added-host");
     doc.getElementById("moon-v2-added-foundation")?.remove();
-  }
+    doc.getElementById("moon-v2-added-extent")?.remove();
+  }else updateAddedPageHeight(doc);
 }
 function findAddedNode(doc,selector){
   const found=selector?.match(LIVE_ADDED_ID);
