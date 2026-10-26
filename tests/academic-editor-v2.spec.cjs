@@ -144,8 +144,8 @@ test('portable JSON export restores the validated scene',async({page})=>{
   await page.locator('#layers [data-layer-id="1"]').click();
   await page.locator('#remove').click();
   await expect(page.locator('#stage .scene-object')).toHaveCount(2);
-  await page.locator('#sceneFile').setInputFiles({name:'backup.json',mimeType:'application/json',buffer:original});
   page.once('dialog',dialog=>dialog.accept());
+  await page.locator('#sceneFile').setInputFiles({name:'backup.json',mimeType:'application/json',buffer:original});
   await expect(page.locator('#stage .scene-object')).toHaveCount(3);
   await expect(page.locator('#status')).toContainText('Canvas restored from JSON');
 });
