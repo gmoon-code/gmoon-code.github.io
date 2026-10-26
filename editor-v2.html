@@ -231,6 +231,20 @@
             <label>Width scale <input type="number" id="liveScaleX" min="20" max="500" step="1" value="100"></label>
             <label>Height scale <input type="number" id="liveScaleY" min="20" max="500" step="1" value="100"></label>
           </div>
+          <div id="liveImageSizing" hidden>
+            <label class="checkbox-line">
+              <input id="liveLockImageRatio" type="checkbox" checked>
+              Keep image proportions when resizing
+            </label>
+            <p class="help">Resize the image frame with its handles. Its contents keep their natural proportions. Uncheck to freely size the frame without stretching the photo.</p>
+          </div>
+          <div id="liveOriginalDimensions" hidden>
+            <div class="property-grid">
+              <label>Box width (px) <input id="liveOriginalWidth" type="number" min="64" max="4000" step="1"></label>
+              <label>Box height (px) <input id="liveOriginalHeight" type="number" min="24" max="5000" step="1"></label>
+            </div>
+            <p class="help">Changes the selected element's actual dimensions. Text and images inside keep their proportions. A resized section may reflow surrounding content.</p>
+          </div>
           <div id="liveAddedDimensions" hidden>
             <div class="property-grid">
               <label>Object width (px) <input id="liveAddedWidth" type="number" min="40" max="4000" step="1"></label>
