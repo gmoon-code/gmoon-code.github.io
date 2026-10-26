@@ -252,7 +252,29 @@ test('coloured source sections import as independent editable background shapes'
   const headingZ=Number(await page.locator('#stage [data-kind="text"]').first().evaluate(node=>node.style.zIndex));
   expect(backgroundZ).toBeLessThan(headingZ);
   await bg.click({position:{x:12,y:12}});
-  await page.locator('#propBg').fill('#ddffdd');
-  await page.locator('#propBg').dispatchEvent('change');
+  await page.locator('#propBg').evaluate(node=>{
+    node.value='#ddffdd';node.dispatchEvent(new Event('change',{bubbles:true}));
+  });
   await expect(bg).toHaveCSS('background-color','rgb(221, 255, 221)');
+});
+
+test('a locked canvas object cannot be moved, deleted, or restyled',async({page})=>{
+  await importScene(page);
+  await page.locator('#layers [data-layer-id="1"]').click();
+  const original=await page.locator('#stage [data-id="1"]').evaluate(node=>node.style.left);
+  await page.locator('#lock').click();
+  await expect(page.locator('#remove')).toBeDisabled();
+  await expect(page.locator('#propX')).toBeDisabled();
+  const before=await page.locator('#stage [data-id="1"]').boundingBox();
+  await page.mouse.move(before.x+30,before.y+8);
+  await page.mouse.down();
+  await page.mouse.move(before.x+95,before.y+30,{steps:6});
+  await page.mouse.up();
+  await expect(page.locator('#stage [data-id="1"]')).toHaveCSS('left',original);
+  await page.locator('#lock').click();
+  await expect(page.locator('#remove')).toBeEnabled();
+  await page.locator('#remove').click();
+  await expect(page.locator('#stage [data-id="1"]')).toHaveCount(0);
+  await page.locator('#undo').click();
+  await expect(page.locator('#stage [data-id="1"]')).toHaveCount(1);
 });
