@@ -323,6 +323,10 @@ function liveSelector(node){
   }
   return steps.length?"main > "+steps.join(" > "):null;
 }
+const LIVE_CONTAINER_TAGS="section,article,aside,figure,div,nav,ul,ol";
+const LIVE_EDITABLE_TAGS="h1,h2,h3,h4,h5,h6,p,li,figcaption,blockquote,img";
+const LIVE_SELECTABLE_TAGS=LIVE_EDITABLE_TAGS+","+LIVE_CONTAINER_TAGS;
+const LIVE_CONTAINER_SET=new Set(["SECTION","ARTICLE","ASIDE","FIGURE","DIV","NAV","UL","OL"]);
 const LIVE_DEVICE_RULES={
   desktop:"(min-width:1025px)",
   tablet:"(min-width:701px) and (max-width:1024px)",
@@ -408,6 +412,8 @@ function livePatchForSelected(){
   if(node.tagName==="IMG")
     return {selector,kind:"image",expected:node.getAttribute("src")||"",
       src:node.getAttribute("src")||"",alt:node.alt||""};
+  if(LIVE_CONTAINER_SET.has(node.tagName))
+    return {selector,kind:"layout",expected:(node.textContent||"").trim().slice(0,300)};
   return {selector,kind:"text",expected:(node.textContent||"").trim().slice(0,300),
     html:cleanRich(node.innerHTML)};
 }
@@ -458,7 +464,8 @@ function validLivePatch(p){
     /^main(?: > [a-z][a-z0-9-]*:nth-of-type\(\d{1,4}\)){1,12}$/.test(p.selector)&&
     typeof p.expected==="string"&&p.expected.length<=350&&
     (p.kind==="text"&&typeof p.html==="string"&&p.html.length<=70000||
-     p.kind==="image"&&safeImageSource(p.src)&&typeof p.alt==="string"&&p.alt.length<=300)&&
+     p.kind==="image"&&safeImageSource(p.src)&&typeof p.alt==="string"&&p.alt.length<=300||
+     p.kind==="layout")&&
     (p.layout===undefined||validLiveLayout(p.layout));
 }
 function loadLiveDraft(page){
@@ -493,9 +500,9 @@ function renderLiveInspector(){
     tag.toLowerCase()+" · "+(node.alt||node.textContent||"").trim()
       .replace(/\s+/g," ").slice(0,95):
     "Choose a heading, paragraph or image in the live website.";
-  $("liveTextControls").hidden=!node||tag==="IMG";
+  $("liveTextControls").hidden=!node||tag==="IMG"||LIVE_CONTAINER_SET.has(tag);
   $("liveImageControls").hidden=!node||tag!=="IMG";
-  $("editLiveText").disabled=!node||tag==="IMG"||!!liveEditing;
+  $("editLiveText").disabled=!node||tag==="IMG"||LIVE_CONTAINER_SET.has(tag)||!!liveEditing;
   $("saveLiveText").disabled=!liveEditing;
   $("cancelLiveText").disabled=!liveEditing;
   if(node&&tag==="IMG"&&!liveEditing){
@@ -524,7 +531,9 @@ function applyPatchesToDocument(doc,strict=false){
       if(strict)throw Error("Invalid saved live-page edit");continue;
     }
     const node=doc.querySelector(patch.selector);
-    if(!node||(patch.kind==="image")!==(node.tagName==="IMG")){
+    if(!node||(patch.kind==="image"&&node.tagName!=="IMG")||
+      (patch.kind==="text"&&(node.tagName==="IMG"||LIVE_CONTAINER_SET.has(node.tagName)))||
+      (patch.kind==="layout"&&!LIVE_CONTAINER_SET.has(node.tagName))){
       if(strict)throw Error("The saved edit's element is missing");continue;
     }
     const original=patch.kind==="image"?node.getAttribute("src")||"":
@@ -535,7 +544,8 @@ function applyPatchesToDocument(doc,strict=false){
     if(patch.kind==="image"){
       node.setAttribute("src",patch.src);
       node.setAttribute("alt",patch.alt);
-    }else node.innerHTML=cleanRich(patch.html);
+    }else if(patch.kind==="text")node.innerHTML=cleanRich(patch.html);
+    // Layout-only patches change CSS geometry, never descendants or markup.
     count++;
   }
   refreshLiveLayoutRules(doc);
@@ -543,7 +553,7 @@ function applyPatchesToDocument(doc,strict=false){
 }
 function editLiveText(){
   const node=liveSelected?.node;
-  if(!node||node.tagName==="IMG"||liveEditing)return;
+  if(!node||node.tagName==="IMG"||LIVE_CONTAINER_SET.has(node.tagName)||liveEditing)return;
   const selector=liveSelector(node);if(!selector)return;
   liveEditing={node,selector,originalHtml:node.innerHTML,
     expected:livePatches.get(selector)?.expected||
@@ -676,7 +686,7 @@ function syncLiveOverlay(){
     move.setAttribute("aria-label","Move selected live-page object");
     move.dataset.direction="move";
     liveOverlay.append(move);
-    if(node.matches("h1,h2,h3,h4,h5,h6,p,li,figcaption,blockquote,img")){
+    if(node.matches(LIVE_SELECTABLE_TAGS)){
       for(const dir of ["nw","n","ne","e","se","s","sw","w"]){
         const grip=doc.createElement("button");
         grip.type="button";grip.className="moon-v2-grip";
@@ -706,8 +716,7 @@ function syncLiveOverlay(){
 function startLiveGesture(event,direction,anchor){
   if(event.button!==0||workspaceMode!=="live"||liveEditing||liveGesture)return;
   if(!liveSelected?.node?.isConnected)return;
-  if(direction!=="move"&&!liveSelected.node.matches(
-    "h1,h2,h3,h4,h5,h6,p,li,figcaption,blockquote,img"))return;
+  if(direction!=="move"&&!liveSelected.node.matches(LIVE_SELECTABLE_TAGS))return;
   const node=liveSelected.node,selector=liveSelector(node);
   const patch=livePatchForSelected();
   if(!patch||!validLivePatch(patch))return;
@@ -781,7 +790,7 @@ function selectLiveElement(node){
   if(!node||!doc?.querySelector("main")?.contains(node))return;
   liveSelected={node,page:currentPage};
   node.setAttribute("data-moon-v2-live-selected","");
-  $("copyLiveObject").disabled=false;
+  $("copyLiveObject").disabled=LIVE_CONTAINER_SET.has(node.tagName);
   renderLiveInspector();syncLiveOverlay();
   const label=(node.tagName==="IMG"?node.alt||"image":node.textContent||"text")
     .trim().replace(/\s+/g," ").slice(0,80);
@@ -841,7 +850,7 @@ function bindLiveDocument(){
   },true);
   doc.addEventListener("pointerdown",event=>{
     if(!liveSelected?.node||liveEditing||event.button!==0)return;
-    const target=event.target.closest?.("h1,h2,h3,h4,h5,h6,p,li,figcaption,blockquote,img");
+    const target=event.target.closest?.(LIVE_SELECTABLE_TAGS);
     if(target===liveSelected.node&&!event.target.closest("a[href]"))
       startLiveGesture(event,"move",target);
   },true);
@@ -877,7 +886,11 @@ function bindLiveDocument(){
         return;
       }catch{status("Cannot open an invalid webpage link");return;}
     }
-    const node=event.target.closest?.("h1,h2,h3,h4,h5,h6,p,li,figcaption,blockquote,img");
+    const node=event.altKey?
+      event.target.closest?.(LIVE_CONTAINER_TAGS)||
+        event.target.closest?.(LIVE_EDITABLE_TAGS):
+      event.target.closest?.(LIVE_EDITABLE_TAGS)||
+        event.target.closest?.(LIVE_CONTAINER_TAGS);
     if(node)selectLiveElement(node);
     else clearLiveSelection();
   },true);
@@ -909,7 +922,8 @@ function loadLivePage(page=currentPage){
 }
 function copySelectedLiveElement(){
   const selection=liveSelected;
-  if(!selection||selection.page!==currentPage||!selection.node?.isConnected)return;
+  if(!selection||selection.page!==currentPage||!selection.node?.isConnected||
+    LIVE_CONTAINER_SET.has(selection.node.tagName))return;
   const node=selection.node,doc=node.ownerDocument,main=doc.querySelector("main");
   if(!main||!main.contains(node))return;
   const rect=node.getBoundingClientRect(),base=main.getBoundingClientRect();
