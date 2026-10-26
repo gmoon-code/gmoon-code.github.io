@@ -393,6 +393,7 @@
         refreshFreeCanvasExtent(d);
         updateStagedPreview();
         d.addEventListener("click",onPreviewClick,true);
+        d.addEventListener("dblclick",onPreviewDoubleClick,true);
         d.addEventListener("pointerdown",onFreeObjectPointerDown,true);
         d.addEventListener("pointermove",freeGestureMove,true);
         d.addEventListener("pointerup",freeGestureEnd,true);
@@ -563,6 +564,11 @@
     const typing=Boolean(event.target?.closest?.("input,textarea,select,[contenteditable='true'],[role='textbox']"));
     const blocked=Boolean(event.target?.closest?.(
       "#moon-quick-properties,#moon-quick-composer,#moon-quick-layout,#moon-quick-size"));
+    if(freeCanvasActive&&event.key==="Escape"&&event.target.closest?.('[data-moon-inline-editing="true"]')){
+      event.preventDefault();event.stopPropagation();
+      event.target.blur();
+      return;
+    }
     if(freeCanvasActive&&!typing&&!blocked&&event.key==="Escape"&&
       (state.selected!==null||state.selectedAddition!==null)){
       event.preventDefault();event.stopPropagation();
@@ -599,7 +605,45 @@
     selectAddedBlock(Number(added.getAttribute("data-editor-added-index")));
   }
 
+  // Inline text editing is local to the selected block. The surrounding
+  // canvas remains in free move mode, so the user need not toggle modes.
+  function beginFreeTextEdit(node){
+    const doc=state.frameDoc;
+    if(!freeCanvasActive||!doc||!node||!TEXT_TAGS.has(node.tagName)||
+       node.tagName==="A"||!node.hasAttribute("data-editor-key"))return;
+    node.setAttribute("contenteditable","true");
+    node.setAttribute("data-moon-inline-editing","true");
+    node.setAttribute("spellcheck","true");
+    doc.getElementById("moon-quick-toolbar")?.remove();
+    doc.getElementById("moon-free-selection")?.remove();
+    const finish=()=>{
+      node.removeAttribute("data-moon-inline-editing");
+      node.removeAttribute("contenteditable");
+      node.removeAttribute("spellcheck");
+      if(state.frameDoc!==doc||!freeCanvasActive)return;
+      // Wait until the focus-triggering click has selected any next object.
+      doc.defaultView.requestAnimationFrame(()=>{
+        if(state.frameDoc===doc&&freeCanvasActive){
+          createFreeSelection();
+          createQuickToolbar();
+        }
+      });
+    };
+    node.addEventListener("blur",finish,{once:true});
+    node.focus({preventScroll:true});
+    updateStatus("Editing text in place · Changes save to your local draft");
+  }
+  function onPreviewDoubleClick(event){
+    if(!freeCanvasActive||event.target.closest("#moon-quick-toolbar,#moon-free-selection"))return;
+    const node=event.target.closest("[data-editor-key]");
+    if(!node||!TEXT_TAGS.has(node.tagName)||node.tagName==="A")return;
+    if(state.selected!==node.getAttribute("data-editor-key"))selectElement(node);
+    beginFreeTextEdit(node);
+    event.preventDefault();
+    event.stopPropagation();
+  }
   function onPreviewClick(event) {
+    if(freeCanvasActive&&event.target.closest('[data-moon-inline-editing="true"]'))return;
     // Pointer-down already cycles overlapping objects. Do not let the
     // subsequent Ctrl/Command-click reselect the topmost target.
     if(freeCanvasActive&&(event.ctrlKey||event.metaKey)){
@@ -1177,6 +1221,7 @@
   }
   function onFreeObjectPointerDown(event){
     if(!freeCanvasActive||event.button!==0||event.defaultPrevented)return;
+    if(event.target.closest('[data-moon-inline-editing="true"]'))return;
     if(event.target.closest("#moon-free-selection,#moon-quick-toolbar,#moon-quick-composer,#moon-quick-layout,#moon-quick-size,#moon-quick-properties"))return;
     // Ctrl/Command-click cycles overlapping floating objects without dragging.
     if((event.ctrlKey||event.metaKey)&&selectOverlappingFreeObject(event))return;
@@ -1626,6 +1671,10 @@
     if(chosenImage){
       bar.append(make("Image",openQuickProperties,null,"Edit selected image on the page"));
     }else if(!selectedFigure){
+      if(freeCanvasActive&&!selected.added&&TEXT_TAGS.has(selected.node.tagName)&&
+          selected.node.tagName!=="A")
+        bar.append(make("Edit text",()=>beginFreeTextEdit(selected.node),null,
+          "Edit selected text directly without leaving free move mode"));
       bar.append(make("Style",openQuickProperties,null,"Change font, size and colours of selected text"));
     }
     if(freeCanvasActive&&freeSelected()){
