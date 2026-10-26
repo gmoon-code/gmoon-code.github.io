@@ -1810,7 +1810,12 @@ function startLiveGesture(event,direction,anchor){
   if(!patch||!validLivePatch(patch))return;
   const rect=node.getBoundingClientRect();
   if(rect.width<2||rect.height<2)return;
-  event.preventDefault();event.stopPropagation();
+  // A normal click/double-click must retain its native behaviour. Prevent
+  // pointer defaults immediately only for overlay grips; a body drag calls
+  // preventDefault after it crosses the movement threshold.
+  if(direction!=="move"||anchor.closest?.("#moon-v2-live-overlay"))
+    event.preventDefault();
+  event.stopPropagation();
   liveGesture={pointer:event.pointerId,anchor,dir:direction,
     startX:event.clientX,startY:event.clientY,rect,
     patch,layout:liveLayoutFor(selector),snapshot:liveSnapshot(),
