@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>Academic Website Editor 2 | Ye Eun Moon</title>
-<link rel="stylesheet" href="editor-v2.css?v=20261026-image-reconnect-v12">
-<script src="editor-v2.js?v=20261026-reflow-delete-style-v23" defer></script>
+<link rel="stylesheet" href="editor-v2.css?v=20261026-parity-v24">
+<script src="editor-v2.js?v=20261026-parity-v24" defer></script>
 </head>
 <body>
 <a class="skip" href="#workspace">Skip to editor canvas</a>
@@ -19,8 +19,8 @@
       <button id="redo" title="Redo (Ctrl+Shift+Z)" disabled>↷ Redo</button>
       <button id="save" class="subtle">Save draft</button>
       <button id="exportScene" class="subtle">Export canvas JSON</button>
-      <button id="preview" class="primary">Preview page</button>
-      <button id="compare" class="subtle">Compare original</button>
+      <button id="preview" class="primary" title="Build the same HTML that Publish Live would submit to GitHub">Verified preview</button>
+      <button id="compare" class="subtle" title="Compare before and after from one GitHub source revision">Before / after</button>
       <button id="publish" class="primary outline">Publish live website</button>
     </div>
   </header>
@@ -326,18 +326,23 @@
     <div class="dialog-actions"><button type="button" id="cancelPublish">Cancel</button><button id="confirmPublish" class="primary" type="submit" value="publish">Publish live page</button></div>
   </form>
 </dialog>
-<dialog id="previewDialog"><div class="preview-top"><strong>Page preview</strong><button id="closePreview" aria-label="Close preview">Close</button></div><iframe id="previewFrame" title="Standalone editor preview" sandbox="allow-same-origin"></iframe></dialog>
+<dialog id="previewDialog">
+  <div class="preview-top"><strong>Publication preview</strong><button id="closePreview" aria-label="Close preview">Close</button></div>
+  <p class="verification-note" id="previewSourceStatus" role="status">Preparing source-verified preview</p>
+  <iframe id="previewFrame" title="Preview of HTML prepared for publication" sandbox="allow-same-origin allow-scripts"></iframe>
+</dialog>
 <dialog id="compareDialog">
   <div class="preview-top">
-    <strong>Compare original website and editable canvas</strong>
+    <strong>Compare original and edited webpage</strong>
     <button id="closeCompare">Close</button>
   </div>
+  <p class="verification-note" id="compareSourceStatus" role="status">Comparing both versions of the same source</p>
   <div class="compare-grid">
-    <section><span>Original page · read-only</span>
-      <iframe id="originalFrame" title="Original published website" sandbox="allow-same-origin"></iframe>
+    <section><span>Original GitHub source · before</span>
+      <iframe id="originalFrame" title="Original website from GitHub main" sandbox="allow-same-origin allow-scripts"></iframe>
     </section>
-    <section><span>New scene · staging draft</span>
-      <iframe id="sceneFrame" title="Independent canvas preview" sandbox="allow-same-origin"></iframe>
+    <section><span>Edited output · after</span>
+      <iframe id="sceneFrame" title="Edited HTML assembled for live publishing" sandbox="allow-same-origin allow-scripts"></iframe>
     </section>
   </div>
 </dialog>
