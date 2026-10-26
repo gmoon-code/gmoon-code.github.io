@@ -1783,7 +1783,7 @@ function standaloneHtml(assetPrefix=""){
     '.item img{width:100%;height:auto;max-height:500px;object-fit:contain}.item.backdrop{display:none!important}}'+
     '</style></head><body><header class="site-bar"><strong>Ye Eun Moon</strong>'+
     '<nav><a href="'+assetPrefix+'index.html">Home</a><a href="'+assetPrefix+'research.html">Research</a>'+
-    '<a href="'+assetPrefix+'teaching.html">Teaching</a><a href="'+assetPrefix+'about.html">About</a></nav></header>'+
+    '<a href="'+assetPrefix+'teaching.html">Teaching</a><a href="'+assetPrefix+'contact.html">Contact</a></nav></header>'+
     '<main class="canvas" aria-label="'+esc(name)+'">'+items+'</main></body></html>';
 }
 function download(name,contents,type){
