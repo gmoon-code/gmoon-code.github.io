@@ -234,3 +234,25 @@ test('unsafe HTML inside a saved rich-text scene is not rendered or exported',as
   expect(exported).not.toContain('javascript:');
   expect(exported).not.toContain('<script>window.polluted');
 });
+
+test('coloured source sections import as independent editable background shapes',async({page})=>{
+  const source='<!doctype html><html><body><main style="width:800px">'+
+    '<section style="padding:24px;background-color:rgb(226,245,229)">'+
+    '<h2>Inclusive biology</h2><p>Students examine classroom models.</p>'+
+    '</section></main></body></html>';
+  await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',body:source}));
+  await page.locator('#importPage').click();
+  await expect(page.locator('#status')).toContainText('Imported');
+  const bg=page.locator('#stage [data-kind="shape"]');
+  await expect(bg).toHaveCount(1);
+  await expect(bg).toHaveCSS('background-color','rgb(226, 245, 229)');
+  await expect(bg).toHaveCSS('border-top-style','none');
+  await expect(page.locator('#stage [data-kind="text"]')).toHaveCount(2);
+  const backgroundZ=Number(await bg.evaluate(node=>node.style.zIndex));
+  const headingZ=Number(await page.locator('#stage [data-kind="text"]').first().evaluate(node=>node.style.zIndex));
+  expect(backgroundZ).toBeLessThan(headingZ);
+  await bg.click({position:{x:12,y:12}});
+  await page.locator('#propBg').fill('#ddffdd');
+  await page.locator('#propBg').dispatchEvent('change');
+  await expect(bg).toHaveCSS('background-color','rgb(221, 255, 221)');
+});
