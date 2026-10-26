@@ -1911,6 +1911,13 @@ function attachEvents(){
   });
   window.addEventListener("blur",cancelCanvasGesture);
   $("selectTool").addEventListener("click",()=>{
+    if(workspaceMode==="live"){
+      if(liveEditing)saveLiveText();
+      clearLiveSelection();
+      $("livePageFrame").focus({preventScroll:true});
+      status("Select tool active · Click webpage content or Alt-click a section");
+      return;
+    }
     if(editingId!==null)finishTextEdit();
     select(null);
     $("stage").focus({preventScroll:true});
