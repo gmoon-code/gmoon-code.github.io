@@ -564,6 +564,15 @@
     const typing=Boolean(event.target?.closest?.("input,textarea,select,[contenteditable='true'],[role='textbox']"));
     const blocked=Boolean(event.target?.closest?.(
       "#moon-quick-properties,#moon-quick-composer,#moon-quick-layout,#moon-quick-size"));
+    if(freeCanvasActive&&!typing&&!blocked&&!event.ctrlKey&&!event.metaKey&&
+      !event.altKey&&event.key==="F2"){
+      const sel=freeSelected();
+      if(sel&&!sel.added&&TEXT_TAGS.has(sel.node.tagName)&&sel.node.tagName!=="A"){
+        event.preventDefault();event.stopPropagation();
+        beginFreeTextEdit(sel.node);
+        return;
+      }
+    }
     if(freeCanvasActive&&event.key==="Escape"&&event.target.closest?.('[data-moon-inline-editing="true"]')){
       event.preventDefault();event.stopPropagation();
       event.target.blur();
