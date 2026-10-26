@@ -46,7 +46,7 @@ test('right-to-left selection includes touched objects and Shift preserves previ
   await setPosition(page,1,150,150);
   await setPosition(page,2,420,150);
   await setPosition(page,3,700,500);
-  await boxDrag(page,[35,40],[375,430]);
+  await boxDrag(page,[35,40],[395,430]);
   await expect(page.locator('#stage .scene-object[aria-selected="true"]')).toHaveCount(1);
   await boxDrag(page,[995,760],[855,620],['Shift']);
   await expect(page.locator('#stage [data-id="1"]')).toHaveAttribute('aria-selected','true');
