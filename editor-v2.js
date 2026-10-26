@@ -905,6 +905,12 @@ function attachEvents(){
     if(!button)return;
     const item=pageImages[Number(button.dataset.imageIndex)];
     if(!item)return;
+    if(workspaceMode==="live"&&liveSelected?.node?.tagName==="IMG"){
+      $("liveImageSrc").value=item.src;
+      $("liveImageAlt").value=item.alt||"";
+      applyLiveImage();
+      return;
+    }
     const chosen=lookup(activeId);
     if(chosen?.type==="image"&&!chosen.locked&&selected.size===1){
       mutate(()=>{chosen.src=item.src;chosen.alt=item.alt;chosen.name=(item.alt||"Image").slice(0,120);});
