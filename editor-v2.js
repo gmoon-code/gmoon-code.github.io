@@ -19,6 +19,8 @@ const LIVE_DRAFT_KEY="moon-academic-editor-v2:source:";
 let livePatches=new Map(),liveEditing=null,liveHistory=[],liveRedo=[],liveGesture=null,liveOverlay=null;
 let githubTabToken=""; // In-memory only. Never written to storage or page files.
 let reconnectImages=[],reconnectForPage="";
+const liveGithubSources=new Map();
+let liveSourceProvenance="loading"; // verified GitHub main or fallback deployed HTML
 const copy=data=>JSON.parse(JSON.stringify(data));
 const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
 const number=v=>Number.isFinite(Number(v))?Number(v):0;
@@ -1131,12 +1133,31 @@ function rewriteSourceReferences(doc,rootHref){
   for(const node of doc.querySelectorAll("style"))
     node.textContent=rewriteCss(node.textContent||"");
 }
+async function fetchGithubPageSource(page,{force=false}={}){
+  if(!PAGES.has(page))throw Error("This page is not in the editor's site list.");
+  if(!force&&liveGithubSources.has(page))return liveGithubSources.get(page);
+  const endpoint="https://api.github.com/repos/"+REPO+"/contents/"+encodeURIComponent(page)+"?ref=main";
+  const response=await fetch(endpoint,{
+    headers:{Accept:"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28"},
+    cache:"no-store"
+  });
+  if(!response.ok)throw Error("GitHub source verification unavailable (HTTP "+response.status+").");
+  const info=await response.json();
+  if(info.type!=="file"||typeof info.sha!=="string")throw Error("GitHub supplied no source file.");
+  const data={html:decodeGithubHtml(info),sha:info.sha,verified:true};
+  if(!/<main\\b/i.test(data.html))throw Error("The GitHub source page has no main element.");
+  liveGithubSources.set(page,data);
+  return data;
+}
 async function sourcePreservingHtml(rootHref){
-  const response=await fetch(new URL(currentPage,location.href),{cache:"no-store"});
-  if(!response.ok)throw Error("Could not load the original HTML");
-  const doc=new DOMParser().parseFromString(await response.text(),"text/html");
-  if(applyPatchesToDocument(doc,true)!==livePatches.size)
-    throw Error("Some saved edits no longer match this page");
+  // The original HTML used for the draft preview is read from the same
+  // GitHub Contents API as production publication. Never silently fall
+  // back to a potentially stale Pages deployment for a verified preview.
+  const page=currentPage;
+  const source=await fetchGithubPageSource(page,{force:true});
+  if(page!==currentPage)throw Error("The selected page changed during preview. Try again.");
+  const published=applyLiveEditsToGithubHtml(source.html);
+  const doc=new DOMParser().parseFromString(published.html,"text/html");
   for(const base of doc.querySelectorAll("base"))base.remove();
   rewriteSourceReferences(doc,rootHref);
   return "<!doctype html>\n"+doc.documentElement.outerHTML;
@@ -1442,7 +1463,8 @@ function reportLiveAssets(){
   if(missingStyles.length)warnings.push(missingStyles.length+" missing stylesheet"+(missingStyles.length===1?"":"s"));
   label.textContent=warnings.length?
     "Original-page resource warning · "+warnings.join(" · "):
-    "Original webpage loaded · "+liveWidth+"px browser viewport";
+    (liveSourceProvenance==="github"?"GitHub main source verified · ":
+      "Deployed-page fallback (not GitHub verified) · ")+liveWidth+"px viewport";
   label.classList.toggle("has-warning",!!warnings.length);
 }
 function bindLiveDocument(){
@@ -1562,19 +1584,42 @@ function bindLiveDocument(){
   }
   fitLivePage();reportLiveAssets();
 }
-function loadLivePage(page=currentPage){
+async function loadLivePage(page=currentPage,{force=false}={}){
   if(!PAGES.has(page))return;
   if(liveEditing)saveLiveText();
-  ++liveSerial;
-  $("liveAssetStatus").textContent="Loading the original webpage…";
+  const serial=++liveSerial;
+  $("liveAssetStatus").textContent="Loading GitHub main source…";
   $("liveAssetStatus").classList.remove("has-warning");
-  // Keep the image library in sync when the original website is refreshed.
   loadPageImageLibrary(page,loadSerial);
   if(liveObserver){liveObserver.disconnect();liveObserver=null;}
   clearLiveSelection();
   const frame=$("livePageFrame");
-  frame.onload=()=>bindLiveDocument();
-  frame.src=new URL(page,location.href).href;
+  let source;
+  try{
+    source=await fetchGithubPageSource(page,{force});
+  }catch(error){
+    // Keep an explicit fallback for offline editors or API rate limits.
+    // It can be edited, but it is NEVER described as publication-verified.
+    try{
+      const response=await fetch(new URL(page,location.href),{cache:"no-store"});
+      if(!response.ok)throw Error("Website returned HTTP "+response.status);
+      source={html:await response.text(),sha:null,verified:false};
+      status("Showing deployed-page fallback · GitHub verification is needed before publishing");
+    }catch{
+      if(serial!==liveSerial||page!==currentPage)return;
+      $("liveAssetStatus").textContent="Cannot load either GitHub main or the website. "+error.message;
+      $("liveAssetStatus").classList.add("has-warning");return;
+    }
+  }
+  if(serial!==liveSerial||page!==currentPage)return;
+  liveSourceProvenance=source.verified?"github":"fallback";
+  frame.onload=()=>{
+    if(serial===liveSerial&&page===currentPage)bindLiveDocument();
+  };
+  // srcdoc resolves relative CSS, fonts, scripts, and assets against the
+  // editor's same-origin base, using the real website's own HTML unchanged.
+  // It is never serialized back to GitHub from this iframe.
+  frame.srcdoc=source.html;
 }
 function copySelectedLiveElement(){
   const selection=liveSelected;
@@ -2329,7 +2374,7 @@ function attachEvents(){
     renderLiveInspector();syncLiveOverlay();
   });
   $("focusPage").addEventListener("click",togglePageFocus);
-  $("reloadLive").addEventListener("click",()=>loadLivePage());
+  $("reloadLive").addEventListener("click",()=>loadLivePage(currentPage,{force:true}));
   $("copyLiveObject").addEventListener("click",copySelectedLiveElement);
   $("editLiveText").addEventListener("click",editLiveText);
   $("saveLiveText").addEventListener("click",saveLiveText);
