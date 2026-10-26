@@ -258,7 +258,9 @@
     <p class="help">The editor checks the latest file in GitHub before publishing. If an edited element no longer matches, publication stops without overwriting it.</p>
     <label for="githubToken">GitHub fine-grained personal access token (Contents: Read and write)</label>
     <input id="githubToken" type="password" autocomplete="off" spellcheck="false" placeholder="github_pat_…" required>
-    <p class="help">Select only the <strong>gmoon-code.github.io</strong> repository when creating a token. Your token is not saved to browser storage or included in the website. <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener noreferrer">Create a fine-grained GitHub token</a>.</p>
+    <p class="help">Select only the <strong>gmoon-code.github.io</strong> repository when creating a token. Your token is never saved to browser storage or included in the website. <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener noreferrer">Create a fine-grained GitHub token</a>.</p>
+    <label class="publish-acknowledgement"><input type="checkbox" id="keepGithubToken"> Reuse this token in memory for further publications until this tab closes.</label>
+    <button type="button" id="forgetGithubToken" class="subtle" hidden>Forget token for this tab</button>
     <label class="publish-acknowledgement"><input type="checkbox" id="acknowledgeLive"> I reviewed this page and want to publish these edits to the public website.</label>
     <p id="publishError" class="publish-error" role="alert" hidden></p>
     <div class="dialog-actions"><button type="button" id="cancelPublish">Cancel</button><button id="confirmPublish" class="primary" type="submit" value="publish">Publish live page</button></div>
