@@ -1101,7 +1101,9 @@
       sel.node.style.cssText=addedBlockStyle(next);
       relocateFreeObjects(doc);
       synchronizeFreeReadingOrder(doc);
-      refreshFreeCanvasExtent(doc);
+      // Do not reflow the page underneath the pointer on every resize tick.
+      // Update the canvas extent once when the gesture ends.
+      if(!freeGesture?.moved)refreshFreeCanvasExtent(doc);
       const image=sel.node.querySelector("img");
       if(image)image.style.width="100%";
     }else{
@@ -1133,7 +1135,7 @@
       }
       relocateFreeObjects(doc);
       synchronizeFreeReadingOrder(doc);
-      refreshFreeCanvasExtent(doc);
+      if(!freeGesture?.moved)refreshFreeCanvasExtent(doc);
     }
     positionFreeSelection();
     return true;
@@ -1403,8 +1405,10 @@
       if(drag.moved)undo();
       return;
     }
-    if(drag.moved)finishFreeGeometry();
-    else positionFreeSelection();
+    if(drag.moved){
+      refreshFreeCanvasExtent(state.frameDoc);
+      finishFreeGeometry();
+    }else positionFreeSelection();
     const dimensions=state.frameDoc?.querySelector("#moon-free-selection [data-free-dimensions]");
     if(dimensions)dimensions.hidden=true;
   }
