@@ -367,12 +367,12 @@ function setWorkspaceMode(mode){
   $("save").textContent=isLive?"Save live-page edits":"Save canvas draft";
   $("selectTool").textContent=isLive?"↖ Select webpage":"↖ Select canvas";
   $("workspaceTitle").textContent=isLive?"Live website":"Free design canvas";
-  $("workspacePill").textContent=isLive?"Original layout · safe content edits":"Independent objects · staging only";
+  $("workspacePill").textContent=isLive?"GitHub main · source-matched editing":"Independent objects · staging only";
   $("workspaceExplanation").textContent=isLive?
-    "This displays the existing page with its real styles and responsive layout. Select text or an image to edit it in the original-page inspector. Copy creates an independent free-design object. Production files remain unchanged.":
+    "The editing view uses the website's GitHub main HTML, styles, scripts and responsive layout. Verified preview and before/after use the same HTML assembler as live publishing, at the selected screen width. GitHub Pages may display a previous deployment until publication completes.":
     "This canvas is a simplified, independent reconstruction. It does not yet reproduce every original section or responsive rule. Use Live website to verify the real page; only the staging preview can be published.";
   $("workspaceFooter").textContent=isLive?
-    "Original page · Drag text or images directly · Double-click text to edit · Alt-click linked text or a section · Resize with handles":
+    "GitHub source · Drag elements · Resize handles · Double-click text · Search website elements · Stack forward/back · Undo and verified preview":
     "Drag to move · Eight resize handles · Double-click text to edit · Double-click empty canvas to add text · Drop images · Shift-click for multiple selection";
   renderLiveInspector();refreshUndo();
   if(isLive){fitLivePage();syncLiveOverlay();}
