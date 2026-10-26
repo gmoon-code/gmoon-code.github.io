@@ -1417,6 +1417,21 @@ function gestureMove(event){
   }
   refreshLiveBoxes();
 }
+// Return the free-design canvas to its saved state when pointer capture
+// or browser focus is unexpectedly lost during a drag/resize.
+function cancelCanvasGesture(){
+  const pending=gesture;
+  if(!pending)return;
+  gesture=null;lastTap=null;
+  scene=pending.snapshot;
+  try{
+    const stage=$("stage");
+    if(stage.hasPointerCapture?.(pending.pointer))
+      stage.releasePointerCapture(pending.pointer);
+  }catch{/* Pointer capture may already be gone. */}
+  render();
+  status("Interrupted canvas gesture cancelled · Previous layout restored");
+}
 function endGesture(event){
   if(!gesture||event.pointerId!==gesture.pointer)return;
   const g=gesture;gesture=null;
@@ -1889,6 +1904,16 @@ function attachEvents(){
   $("stage").addEventListener("pointermove",gestureMove);
   $("stage").addEventListener("pointerup",endGesture);
   $("stage").addEventListener("pointercancel",endGesture);
+  $("stage").addEventListener("lostpointercapture",event=>{
+    if(gesture?.pointer===event.pointerId)cancelCanvasGesture();
+  });
+  window.addEventListener("blur",cancelCanvasGesture);
+  $("selectTool").addEventListener("click",()=>{
+    if(editingId!==null)finishTextEdit();
+    select(null);
+    $("stage").focus({preventScroll:true});
+    status("Select tool active · Click or Shift-click objects on the canvas");
+  });
   $("stage").addEventListener("dblclick",event=>{
     if(editingId!==null)return;
     const node=event.target.closest(".scene-object");
@@ -2122,6 +2147,9 @@ function attachEvents(){
       return;
     }
     if(isTextField(event.target))return;
+    if(event.key==="Escape"&&gesture){
+      event.preventDefault();cancelCanvasGesture();return;
+    }
     if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==="z"){
       event.preventDefault();if(event.shiftKey)redoAction();else undo();return;
     }
