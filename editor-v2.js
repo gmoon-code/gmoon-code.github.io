@@ -446,7 +446,7 @@ async function importPage(force=false){
       if(node.closest(".moon-free-placeholder,[data-moon-free-placeholder]"))continue;
       const css=doc.defaultView.getComputedStyle(node);
       const colour=css.backgroundColor;
-      const match=/^rgba?\\(\\s*(\\d+)\\s*,\\s*(\\d+)\\s*,\\s*(\\d+)(?:\\s*,\\s*([\\d.]+))?\\)/.exec(colour);
+      const match=/^rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)(?:\s*,\s*([\d.]+))?\)/.exec(colour);
       if(!match||match[5]!==undefined&&Number(match[5])<.7)continue;
       const [red,green,blue]=match.slice(1,4).map(Number);
       if(red>245&&green>245&&blue>245)continue;
@@ -454,7 +454,7 @@ async function importPage(force=false){
       if(rect.width<80||rect.height<35||!Number.isFinite(rect.width)||!Number.isFinite(rect.height)||
         css.display==="none"||css.visibility==="hidden")continue;
       const label=(node.className&&typeof node.className==="string"?
-        node.className.split(/\\s+/).slice(0,2).join(" "):node.tagName.toLowerCase());
+        node.className.split(/\s+/).slice(0,2).join(" "):node.tagName.toLowerCase());
       next.objects.push({
         id:next.nextId++,type:"shape",name:("Background · "+label).slice(0,120),
         x:Math.round(rect.left-base.left),y:Math.round(rect.top-base.top),
