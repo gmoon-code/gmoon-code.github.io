@@ -784,6 +784,28 @@ function bindLiveDocument(){
   const sheet=doc.createElement("style");
   sheet.textContent='[data-moon-v2-live-selected]{outline:2px solid #287dbb!important;outline-offset:2px!important;cursor:crosshair!important}';
   (doc.head||doc.documentElement).append(sheet);
+  doc.addEventListener("keydown",event=>{
+    if(workspaceMode!=="live"||liveEditing)return;
+    if(event.target.closest?.("input,textarea,select,[contenteditable=true]"))return;
+    if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==="z"){
+      event.preventDefault();
+      liveUndoAction(event.shiftKey);return;
+    }
+    if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==="y"){
+      event.preventDefault();liveUndoAction(true);return;
+    }
+    if(event.key==="Escape"){clearLiveSelection();return;}
+    const moves={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]};
+    const change=moves[event.key];
+    if(change&&liveSelected?.node){
+      event.preventDefault();
+      const selector=liveSelector(liveSelected.node),layout=liveLayoutFor(selector);
+      const step=event.shiftKey?10:1;
+      applyLiveLayoutInput("dx",layout.dx+change[0]*step);
+      if(change[1])applyLiveLayoutInput("dy",layout.dy+change[1]*step);
+      syncLiveOverlay();
+    }
+  },true);
   doc.addEventListener("pointerdown",event=>{
     if(!liveSelected?.node||liveEditing||event.button!==0)return;
     const target=event.target.closest?.("h1,h2,h3,h4,h5,h6,p,li,figcaption,blockquote,img");
