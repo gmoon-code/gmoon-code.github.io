@@ -4210,8 +4210,11 @@
     "main > .moon-free-layer > p.moon-free-absolute > img{max-width:100%;max-height:100%;width:100%;height:100%;object-fit:contain}",
     "main > .moon-free-layer > img.moon-free-absolute{object-fit:contain!important;object-position:center!important;min-width:0!important;min-height:0!important}",
     "main > .moon-free-layer > .moon-free-absolute{pointer-events:auto!important}",
-    "@media(min-width:701px){main > .moon-free-layer > .moon-free-absolute{width:var(--moon-free-width)!important;height:var(--moon-free-height)!important}}",
-    "html.moon-free-mode main > .moon-free-layer > .moon-free-absolute{width:var(--moon-free-width)!important;height:var(--moon-free-height)!important}",
+    // Specificity includes #main to outrank the earlier Website Studio
+    // #main .studio-unrestricted-size rules. Those previously locked floating
+    // paragraph width at 640px and could override saved positions.
+    "@media(min-width:701px){#main > .moon-free-layer > .moon-free-absolute,main > .moon-free-layer > .moon-free-absolute{left:var(--moon-page-x)!important;top:var(--moon-page-y)!important;width:var(--moon-free-width)!important;height:var(--moon-free-height)!important}}",
+    "html.moon-free-mode #main > .moon-free-layer > .moon-free-absolute,html.moon-free-mode main > .moon-free-layer > .moon-free-absolute{left:var(--moon-page-x)!important;top:var(--moon-page-y)!important;width:var(--moon-free-width)!important;height:var(--moon-free-height)!important}",
     "main .moon-free-placeholder{visibility:hidden!important;pointer-events:none!important;user-select:none!important}",
     "@media(max-width:700px){html:not(.moon-free-mode) main .moon-free-placeholder{display:none!important}}",
     "@media(max-width:700px){html:not(.moon-free-mode) main:has(> .moon-free-layer){min-height:0!important}html:not(.moon-free-mode) main > .moon-free-layer{position:static!important;inset:auto!important;display:contents!important;pointer-events:auto!important}html:not(.moon-free-mode) main .moon-free-absolute{position:static!important;left:auto!important;top:auto!important;right:auto!important;bottom:auto!important;translate:none!important;width:auto!important;max-width:100%!important;min-height:0!important;height:auto!important}html:not(.moon-free-mode) main p.moon-free-absolute > img{height:auto!important;max-height:none!important}html:not(.moon-free-mode) img.moon-free-object{width:auto!important;max-width:100%!important;height:auto!important}}"
