@@ -1820,12 +1820,11 @@ function decodeGithubHtml(info){
 function applyLiveEditsToGithubHtml(html){
   if(!/<main\b/i.test(html))throw Error("The GitHub page has no main section. No changes were published.");
   const doc=new DOMParser().parseFromString(html,"text/html");
-  const resolved=[];
-  if(applyPatchesToDocument(doc,true,resolved)!==livePatches.size)
+  const resolved=[],normalized=[];
+  if(applyPatchesToDocument(doc,true,resolved,normalized)!==livePatches.size)
     throw Error("Some edits did not match the latest GitHub page. Nothing was published.");
-  // Keep all existing relative assets and links exactly as they appear in
-  // the real website. Save the verified selectors for future publications.
-  return {html:"<!doctype html>\n"+doc.documentElement.outerHTML,resolved};
+  // Keep source HTML and CSS intact and return one merged patch per element.
+  return {html:"<!doctype html>\n"+doc.documentElement.outerHTML,resolved,normalized};
 }
 async function publishGithub(token,target){
   if(!token)throw Error("Enter your GitHub token to publish.");
@@ -1874,7 +1873,8 @@ async function publishGithub(token,target){
   return {url:"https://gmoon-code.github.io/"+path,
     commit:result.commit.sha,target,path,
     publishedHtml:production?.html||null,
-    publishedMatches:production?.resolved||[]};
+    publishedMatches:production?.resolved||[],
+    publishedNormalized:production?.normalized||[]};
 }
 function renderPublishPatchList(){
   const list=$("publishPatchList");
@@ -2440,16 +2440,14 @@ function attachEvents(){
         // changes in the same tab then compare with what was just published,
         // even if GitHub Pages is still serving the previous deployed build.
         const committed=new DOMParser().parseFromString(result.publishedHtml,"text/html");
-        const remapped=new Map(result.publishedMatches.map(item=>[item.from,item.to]));
         const rebased=new Map();
-        for(const patch of livePatches.values()){
-          const selector=remapped.get(patch.selector)||patch.selector;
-          const node=committed.querySelector(selector);
-          if(node)patch.expected=patch.kind==="image"?
+        for(const item of result.publishedNormalized){
+          const patch={...item},node=committed.querySelector(patch.selector);
+          if(!node)continue;
+          patch.expected=patch.kind==="image"?
             node.getAttribute("src")||"":
             (node.textContent||"").trim().slice(0,300);
-          patch.selector=selector;
-          rebased.set(selector,patch);
+          rebased.set(patch.selector,patch);
         }
         livePatches=rebased;
         liveHistory=[];liveRedo=[];
