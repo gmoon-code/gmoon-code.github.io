@@ -1269,17 +1269,22 @@
     const sel=freeSelected();
     if(!sel||event.button!==0||freeGesture)return;
     event.preventDefault();event.stopPropagation();
-    // Safety lock: legacy resize reparents original content and can destabilize
-    // document flow. Never mutate the draft through these broken handles.
-    if(direction!=="move"){
-      notice("Resizing is temporarily disabled to protect your page while the resize engine is repaired. Your current layout has not been changed.","Resize safety lock");
+    // Resizing an element that is still in normal document flow can lift it
+    // into another parent and cause the rest of the page to jump. Only resize
+    // objects that are already detached in the dedicated page canvas.
+    if(direction!=="move"&&(!sel.node.classList.contains("moon-free-absolute")||
+      !sel.node.parentElement?.classList.contains("moon-free-layer"))){
+      notice("This object is still part of the page layout. Resizing it here is disabled to protect nearby content. Already free-positioned objects can be resized safely.","Resize protection");
       return;
     }
     const base=freeGeometry(sel);
+    const isImage=sel.node.tagName==="IMG"||
+      (sel.added&&insertionKind(state.additions[state.selectedAddition])==="image");
+    const ratio=isImage&&base.height>0?base.width/base.height:null;
     const view=state.frameDoc.defaultView;
     freeGesture={id:event.pointerId,direction,startX:event.clientX,startY:event.clientY,
       startScrollX:view.scrollX,startScrollY:view.scrollY,
-      base,added:sel.added,key:state.selected,index:state.selectedAddition,moved:false};
+      base,ratio,added:sel.added,key:state.selected,index:state.selectedAddition,moved:false};
     // Delay pointer capture until an actual drag starts. Capturing clicks
     // redirects their targets to documentElement and breaks native dblclick.
   }
@@ -1359,6 +1364,15 @@
     let dy=Math.round(event.clientY-drag.startY+view.scrollY-drag.startScrollY);
     if(Math.abs(dx)<3&&Math.abs(dy)<3&&!drag.moved)return;
     if(!drag.moved){
+      // Guard again before the very first mutation, as selection can change
+      // after pointerdown in a live document.
+      if(drag.direction!=="move"){
+        const selected=freeSelected();
+        if(!selected?.node.classList.contains("moon-free-absolute")||
+          !selected.node.parentElement?.classList.contains("moon-free-layer")){
+          freeGesture=null;return;
+        }
+      }
       checkpoint();
       drag.moved=true;
       // A moving object can be reparented to the page canvas. Capturing
@@ -1378,9 +1392,10 @@
         dy=Math.min(dy,drag.base.height-18);
         next.y+=dy;next.height-=dy;
       }else if(d.includes("s"))next.height+=dy;
-      // Shift constrains corner resizing to the initial aspect ratio.
-      if(event.shiftKey&&d.length===2){
-        const ratio=drag.base.width/drag.base.height;
+      // Images maintain their existing aspect ratio by default. Shift
+      // provides proportional resizing for non-image objects.
+      if((drag.ratio||event.shiftKey)&&d.length===2){
+        const ratio=drag.ratio||drag.base.width/drag.base.height;
         const widthChange=Math.abs(next.width-drag.base.width);
         const heightChange=Math.abs(next.height-drag.base.height)*ratio;
         if(widthChange>=heightChange){
