@@ -1,0 +1,62 @@
+name: Academic editor v2 browser checks
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'editor-v2.html'
+      - 'editor-v2.css'
+      - 'editor-v2.js'
+      - 'tests/academic-editor-v2.spec.cjs'
+      - '.github/workflows/academic-editor-v2.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  statuses: write
+concurrency:
+  group: academic-editor-v2-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  test-editor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: JavaScript syntax
+        run: node --check editor-v2.js
+      - run: npm install --no-save --no-package-lock @playwright/test
+      - run: npx playwright install --with-deps chromium
+      - name: Start local website
+        run: python3 -m http.server 8765 --bind 127.0.0.1 > /tmp/academic-editor-v2.log 2>&1 &
+      - name: Check canvas import, movement, resizing, undo, saving, and safe staging
+        id: browser
+        continue-on-error: true
+        run: npx playwright test tests/academic-editor-v2.spec.cjs --browser chromium --workers=1 --reporter=list
+      - name: Report test status
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RESULT: ${{ steps.browser.outcome }}
+        run: |
+          if [ "$RESULT" = "success" ]; then STATE=success; else STATE=failure; fi
+          jq -n --arg state "$STATE" --arg context "academic-editor-v2/chromium" \
+            --arg description "Independent canvas editor browser tests" \
+            --arg target_url "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" \
+            '{state:$state,context:$context,description:$description,target_url:$target_url}' >/tmp/v2-status.json
+          curl --fail -sS -X POST -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            --data-binary @/tmp/v2-status.json \
+            "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/statuses/$GITHUB_SHA"
+      - name: Fail if browser checks failed
+        if: ${{ steps.browser.outcome != 'success' }}
+        run: exit 1
+      - name: Upload failure report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: editor-v2-failure
+          path: test-results/
+          if-no-files-found: ignore
+          retention-days: 7
