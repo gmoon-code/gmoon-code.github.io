@@ -1355,6 +1355,7 @@ function attachEvents(){
   $("designMode").addEventListener("click",()=>setWorkspaceMode("design"));
   $("devicePreview").addEventListener("change",()=>{
     liveManualScale=null;fitLivePage();
+    renderLiveInspector();syncLiveOverlay();
   });
   $("focusPage").addEventListener("click",togglePageFocus);
   $("reloadLive").addEventListener("click",()=>loadLivePage());
