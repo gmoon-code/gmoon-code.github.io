@@ -152,6 +152,17 @@ function makeSceneElement(obj){
   }
   return node;
 }
+function fitCanvas(){
+  const viewport=$("scrollspace");
+  if(!viewport||!viewport.clientWidth)return;
+  // Keep all edge handles accessible within the available centre column.
+  const available=Math.max(250,viewport.clientWidth-80);
+  zoom=Math.round(clamp(available/scene.width,.4,1)*20)/20;
+  $("zoom").value=String(Math.round(zoom*100));
+  $("zoomValue").textContent=Math.round(zoom*100)+"%";
+  render();
+  viewport.scrollLeft=0;
+}
 function render(){
   const stage=$("stage");
   stage.replaceChildren();
@@ -351,7 +362,7 @@ async function importPage(force=false){
     const before=copy(scene);
     scene=validateScene(next,page);selected.clear();activeId=null;
     history.push(before);if(history.length>60)history.shift();redo.length=0;
-    render();save();
+    render();fitCanvas();save();
     status("Imported "+scene.objects.length+" independent objects · Original website unchanged");
   }catch(error){status("Import stopped · "+(error.message||error));}
 }
@@ -367,6 +378,7 @@ function changePage(page){
     status(raw?"Saved canvas restored · Original website unchanged":"New canvas · Use Import page layout");
   }catch{scene=empty;status("Saved canvas invalid · Original website unchanged");}
   render();
+  fitCanvas();
 }
 function esc(s){return String(s??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
 function standaloneHtml(){
@@ -449,6 +461,7 @@ function attachEvents(){
   $("importPage").addEventListener("click",()=>importPage());
   $("sourcePage").addEventListener("click",()=>window.open(new URL(currentPage,location.href).href,"_blank","noopener"));
   $("zoom").addEventListener("input",event=>{zoom=Number(event.target.value)/100;$("zoomValue").textContent=Math.round(zoom*100)+"%";render();});
+  $("fitCanvas").addEventListener("click",fitCanvas);
   $("stage").addEventListener("pointerdown",event=>{
     if(editingId!==null)return;
     const node=event.target.closest(".scene-object");
