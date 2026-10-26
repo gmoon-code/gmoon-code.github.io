@@ -94,6 +94,12 @@
         <div id="properties" hidden>
           <label for="objectName">Layer name</label>
           <input id="objectName" maxlength="90">
+          <label for="propShapeKind" id="shapeKindLabel" hidden>Shape type</label>
+          <select id="propShapeKind" hidden>
+            <option value="rectangle">Rectangle</option>
+            <option value="ellipse">Ellipse / circle</option>
+            <option value="line">Line</option>
+          </select>
           <div class="property-grid">
             <label>X <input type="number" id="propX" step="1"></label>
             <label>Y <input type="number" id="propY" step="1"></label>
