@@ -2949,6 +2949,8 @@ function cancelCanvasMarquee(){
       stage.releasePointerCapture(pending.pointer);
   }catch{/* The capture may have been lost when leaving the application. */}
   clearCanvasMarquee();
+  $("stage")?.querySelectorAll(".marquee-preview").forEach(node=>
+    node.classList.remove("marquee-preview"));
 }
 function startCanvasMarquee(event){
   if(workspaceMode!=="design"||editingId!==null||gesture||
