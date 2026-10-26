@@ -1365,17 +1365,19 @@
     return [...main.querySelectorAll("h1,h2,h3,p,li,figure,img,section,article")]
       .filter(node=>node!==selected&&!node.contains(selected)&&
         !selected.contains(node)&&!node.closest(".moon-free-layer"))
-      .slice(0,180).map(node=>{
+      .slice(0,320).map(node=>{
         const r=node.getBoundingClientRect(),win=node.ownerDocument.defaultView;
-        return {node,x:r.left+win.scrollX,y:r.top+win.scrollY};
+        return {node,x:r.left+win.scrollX,y:r.top+win.scrollY,
+          width:r.width,height:r.height};
       });
   }
   function freeLayoutShifted(snapshot){
-    return snapshot.some(({node,x,y})=>{
+    return snapshot.some(({node,x,y,width,height})=>{
       if(!node.isConnected)return true;
       const r=node.getBoundingClientRect(),win=node.ownerDocument.defaultView;
       return Math.abs(r.left+win.scrollX-x)>3||
-        Math.abs(r.top+win.scrollY-y)>3;
+        Math.abs(r.top+win.scrollY-y)>3||
+        Math.abs(r.width-width)>3||Math.abs(r.height-height)>3;
     });
   }
   function freeGestureMove(event){
@@ -4233,6 +4235,9 @@
       data[name]=String(css[name]||"").slice(0,160);
     }
     const encoded=encodeURIComponent(JSON.stringify(data));
+    // Unsupported or oversized computed styles must never create an
+    // unvalidated floating object with no preserved layout footprint.
+    if(!readFreeFootprint(encoded))return false;
     sel.node.setAttribute("data-moon-free-footprint",encoded);
     if(sel.added){
       const index=state.selectedAddition;
