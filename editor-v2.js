@@ -999,26 +999,28 @@ function refreshLiveLayoutRules(doc=$("livePageFrame").contentDocument,patches=[
   const existing=liveSourceCss.get(doc),next=liveLayoutRules(patches);
   sheet.textContent=[existing,next].filter(Boolean).join("\n");
 }
+function addedPatchFromNode(node,selector=liveSelector(node)){
+  if(!node||!LIVE_ADDED_ID.test(selector))return null;
+  let geometry,appearance;
+  try{geometry=JSON.parse(node.getAttribute("data-moon-v2-added-geometry")||"{}");}
+  catch{geometry={};}
+  try{appearance=JSON.parse(node.getAttribute("data-moon-v2-added-appearance")||"{}");}
+  catch{appearance={};}
+  const patch={selector,kind:"insert",expected:"",
+    objectType:node.getAttribute("data-moon-v2-object-type")||
+      (node.tagName==="IMG"?"image":node.tagName==="P"?"text":"shape"),
+    geometry,appearance,
+    ...(node.tagName==="IMG"?{src:node.getAttribute("src")||"",alt:node.alt||""}:
+      node.tagName==="P"?{html:cleanRich(node.innerHTML)}:
+      {fill:node.getAttribute("data-moon-v2-shape-fill")||"#e1eee4"})};
+  return validAddedPatch(patch)?patch:null;
+}
 function livePatchForSelected(){
   const node=liveSelected?.node,selector=node&&liveSelector(node);
   if(!selector)return null;
   const existing=livePatches.get(selector);
   if(existing)return copy(existing);
-  if(LIVE_ADDED_ID.test(selector)){
-    let geometry,appearance;
-    try{geometry=JSON.parse(node.getAttribute("data-moon-v2-added-geometry")||"{}");}
-    catch{geometry={};}
-    try{appearance=JSON.parse(node.getAttribute("data-moon-v2-added-appearance")||"{}");}
-    catch{appearance={};}
-    const patch={selector,kind:"insert",expected:"",
-      objectType:node.getAttribute("data-moon-v2-object-type")||
-        (node.tagName==="IMG"?"image":node.tagName==="P"?"text":"shape"),
-      geometry,appearance,
-      ...(node.tagName==="IMG"?{src:node.getAttribute("src")||"",alt:node.alt||""}:
-        node.tagName==="P"?{html:cleanRich(node.innerHTML)}:
-        {fill:node.getAttribute("data-moon-v2-shape-fill")||"#e1eee4"})};
-    return validAddedPatch(patch)?patch:null;
-  }
+  if(LIVE_ADDED_ID.test(selector))return addedPatchFromNode(node,selector);
   if(node.tagName==="IMG")
     return {selector,kind:"image",expected:node.getAttribute("src")||"",
       src:node.getAttribute("src")||"",alt:node.alt||""};
@@ -2124,7 +2126,7 @@ function selectedAddedPatches(){
   const doc=$("livePageFrame").contentDocument;
   return [...liveAddedMulti].map(selector=>{
     const node=findAddedNode(doc,selector);
-    const patch=node&&livePatches.get(selector);
+    const patch=node&&(livePatches.get(selector)||addedPatchFromNode(node,selector));
     return node?.isConnected&&patch?.kind==="insert"?{selector,node,patch}:null;
   }).filter(Boolean);
 }
@@ -2153,7 +2155,10 @@ function selectAllLiveAdded(){
   if(workspaceMode!=="live")return;
   const doc=$("livePageFrame").contentDocument;
   liveAddedMulti=new Set([...doc.querySelectorAll("[data-moon-v2-added-id]")]
-    .map(node=>liveSelector(node)).filter(key=>livePatches.get(key)?.kind==="insert"));
+    .filter(node=>{
+      const key=liveSelector(node);
+      return livePatches.get(key)?.kind==="insert"||!!addedPatchFromNode(node,key);
+    }).map(node=>liveSelector(node)));
   const last=[...liveAddedMulti].at(-1);
   const node=last&&findAddedNode(doc,last);
   if(node)selectLiveElement(node,false,true);
