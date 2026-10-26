@@ -1007,7 +1007,7 @@
 
   // Free mode uses viewport-positioned selection controls without adding
   // editor-only markup to the exported website HTML.
-  let freeCanvasActive=true,freeGesture=null,freeTextPointerTap=null;
+  let freeCanvasActive=true,freeGesture=null;
   function freeSelected(){
     let sel=quickSelection();
     if(!sel&&freeCanvasActive&&state.selected){
@@ -1228,24 +1228,6 @@
     if((event.ctrlKey||event.metaKey)&&selectOverlappingFreeObject(event))return;
     const added=event.target.closest("[data-editor-added-index]");
     const original=added?null:event.target.closest("[data-editor-key]");
-    // The selection layer captures pointer gestures. Detect a rapid second
-    // click on the same text block before starting another drag; native
-    // dblclick does not fire reliably after pointer capture.
-    const textTap=!added&&original&&TEXT_TAGS.has(original.tagName)&&
-      original.tagName!=="A"&&!event.shiftKey&&!event.ctrlKey&&
-      !event.metaKey&&!event.altKey;
-    const key=textTap?original.getAttribute("data-editor-key"):null;
-    const prior=freeTextPointerTap;
-    const doubleTap=textTap&&prior?.key===key&&
-      event.timeStamp-prior.at>=0&&event.timeStamp-prior.at<480&&
-      Math.abs(event.clientX-prior.x)<12&&Math.abs(event.clientY-prior.y)<12;
-    freeTextPointerTap=textTap?{key,at:event.timeStamp,x:event.clientX,y:event.clientY}:null;
-    if(doubleTap){
-      if(state.selected!==key)selectElement(original);
-      beginFreeTextEdit(original);
-      event.preventDefault();event.stopPropagation();
-      return;
-    }
     // Shift-dragging an image or caption selects its containing figure so
     // both travel together. Normal dragging keeps child-level editing.
     const group=event.shiftKey&&!added&&original&&
@@ -1266,10 +1248,8 @@
     freeGesture={id:event.pointerId,direction,startX:event.clientX,startY:event.clientY,
       startScrollX:view.scrollX,startScrollY:view.scrollY,
       base,added:sel.added,key:state.selected,index:state.selectedAddition,moved:false};
-    // Capture on a stable ancestor: the dragged node moves into the canvas
-    // layer after the first pointer movement and would otherwise lose capture.
-    try{state.frameDoc.documentElement.setPointerCapture(event.pointerId)}
-    catch(error){freeGesture=null;}
+    // Delay pointer capture until an actual drag starts. Capturing clicks
+    // redirects their targets to documentElement and breaks native dblclick.
   }
   // Snap free-moving objects to page edges/centre or neighbouring objects.
   // Guides live only in the sandboxed preview document, never in page HTML.
@@ -1346,7 +1326,14 @@
     let dx=Math.round(event.clientX-drag.startX+view.scrollX-drag.startScrollX);
     let dy=Math.round(event.clientY-drag.startY+view.scrollY-drag.startScrollY);
     if(Math.abs(dx)<3&&Math.abs(dy)<3&&!drag.moved)return;
-    if(!drag.moved){checkpoint();drag.moved=true;freeTextPointerTap=null;}
+    if(!drag.moved){
+      checkpoint();
+      drag.moved=true;
+      // A moving object can be reparented to the page canvas. Capturing
+      // a stable ancestor now keeps the rest of this gesture continuous.
+      try{state.frameDoc.documentElement.setPointerCapture(event.pointerId)}
+      catch{/* Existing document-level pointer listeners continue handling it. */}
+    }
     const next={...drag.base},d=drag.direction;
     if(d==="move"){
       next.x+=dx;next.y+=dy;
