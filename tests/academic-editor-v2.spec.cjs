@@ -763,18 +763,20 @@ test('live text in progress is saved when switching modes, reloading or changing
 });
 
 test('direct movement on actual webpage changes only selected text and supports undo',async({page})=>{
+  test.setTimeout(18000);
+  const trace=(step)=>console.log("LIVE-DRAG-TRACE",step);
   const live=page.frameLocator('#livePageFrame');
   const paragraph=live.locator('main p').first(),heading=live.locator('main h2');
-  await paragraph.click();
+  trace("before paragraph click");await paragraph.click();trace("clicked");
   const before=await paragraph.boundingBox();
   const headingBefore=await heading.boundingBox();
   const grip=live.locator('#moon-v2-live-overlay .moon-v2-move');
-  await expect(grip).toBeVisible();
+  trace("looking for overlay handle");await expect(grip).toBeVisible({timeout:3500});trace("overlay visible");
   const box=await grip.boundingBox();
   await page.mouse.move(box.x+box.width/2,box.y+box.height/2);
-  await page.mouse.down();
+  await page.mouse.down();trace("pointer down");
   await page.mouse.move(box.x+box.width/2+38,box.y+box.height/2+27,{steps:8});
-  await page.mouse.up();
+  await page.mouse.up();trace("pointer up");
   const moved=await paragraph.boundingBox();
   expect(moved.x).toBeGreaterThan(before.x+20);
   expect(moved.y).toBeGreaterThan(before.y+15);
@@ -782,10 +784,10 @@ test('direct movement on actual webpage changes only selected text and supports 
   expect(Math.abs(headingAfter.x-headingBefore.x)).toBeLessThan(1);
   expect(Math.abs(headingAfter.y-headingBefore.y)).toBeLessThan(1);
   await expect(page.locator('#liveEditCount')).toContainText('1 saved edit');
-  await page.locator('#undo').click();
+  trace("undo button "+await page.locator('#undo').isEnabled());await page.locator('#undo').click({timeout:3500});trace("undo clicked");
   const undone=await paragraph.boundingBox();
   expect(Math.abs(undone.x-before.x)).toBeLessThan(1);
-  await page.locator('#redo').click();
+  trace("redo button "+await page.locator('#redo').isEnabled());await page.locator('#redo').click({timeout:3500});trace("redo clicked");
   const redone=await paragraph.boundingBox();
   expect(redone.x).toBeGreaterThan(before.x+20);
   await page.reload();
