@@ -394,3 +394,22 @@ test('fit-to-text expands long paragraphs without moving neighbouring objects',a
   await page.locator('#undo').click();
   expect(await heading.evaluate(node=>parseInt(node.style.height))).toBe(24);
 });
+
+test('line breaks inserted during inline editing survive save, reload and export',async({page})=>{
+  await importScene(page);
+  const content=page.locator('#stage [data-id="1"] .scene-content');
+  await content.dblclick();
+  await expect(content).toHaveAttribute('contenteditable','true');
+  await content.evaluate(node=>{
+    node.innerHTML='First line<div>Second line</div>';
+    node.dispatchEvent(new Event('input',{bubbles:true}));
+  });
+  await content.press('Escape');
+  await expect(page.locator('#stage [data-id="1"] .scene-content')).toContainText('First line');
+  const pending=page.waitForEvent('download');
+  await page.locator('#exportHtml').click();
+  const html=fs.readFileSync(await (await pending).path(),'utf8');
+  expect(html).toContain('First line<br>Second line');
+  await page.reload({waitUntil:'domcontentloaded'});
+  await expect(page.locator('#stage [data-id="1"] .scene-content')).toContainText('Second line');
+});
