@@ -192,11 +192,15 @@ function pagePoint(event){
 }
 function insertImageFile(file,position={}){
   if(!file)return;
+  const requestedPage=currentPage;
   if(file.size>3000000||!["image/png","image/jpeg","image/webp"].includes(file.type)){
     status("Choose PNG, JPEG or WebP under 3 MB");return;
   }
   const reader=new FileReader();
   reader.onload=()=>{
+    if(currentPage!==requestedPage){
+      status("Image insertion cancelled because the selected website page changed");return;
+    }
     add("image",{src:String(reader.result),alt:file.name.replace(/\.[^.]+$/,""),
       name:file.name,w:340,h:260,...position});
   };
@@ -2208,10 +2212,14 @@ function attachEvents(){
   $("importScene").addEventListener("click",()=>$("sceneFile").click());
   $("sceneFile").addEventListener("change",async event=>{
     const file=event.target.files?.[0];event.target.value="";
+    const requestedPage=currentPage;
     if(!file)return;
     if(file.size>3000000){status("JSON backup exceeds 3 MB");return;}
     try{
-      const restored=validateScene(JSON.parse(await file.text()),currentPage);
+      const restored=validateScene(JSON.parse(await file.text()),requestedPage);
+      if(currentPage!==requestedPage){
+        status("JSON import cancelled because the website page changed");return;
+      }
       if(scene.objects.length&&!confirm("Replace this page's local canvas with the selected JSON backup?"))return;
       const before=copy(scene);
       scene=restored;selected.clear();activeId=null;
@@ -2383,6 +2391,7 @@ function attachEvents(){
   });
   $("replaceFile").addEventListener("change",event=>{
     const file=event.target.files?.[0];
+    const requestedPage=currentPage;
     const target=Number(event.target.dataset.target);
     event.target.value="";
     if(!file)return;
@@ -2391,6 +2400,9 @@ function attachEvents(){
     }
     const reader=new FileReader();
     reader.onload=()=>{
+      if(requestedPage!==currentPage){
+        status("Image replacement cancelled because you switched pages");return;
+      }
       const obj=lookup(target);if(!obj||obj.type!=="image"||obj.locked)return;
       mutate(()=>{obj.src=String(reader.result);obj.alt=file.name.replace(/\.[^.]+$/,"");});
     };
