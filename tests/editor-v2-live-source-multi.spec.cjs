@@ -27,11 +27,12 @@ test('Shift-click selects two existing paragraphs and nudges them without rewrit
   await expect(first).toHaveAttribute('data-moon-v2-source-selected','');
   await expect(second).toHaveAttribute('data-moon-v2-source-selected','');
   await expect(page.locator('#liveMultiCount')).toHaveText('2 selected');
+  await expect(page.locator('#liveClearAdded')).toBeEnabled();
   const before=await first.evaluate(node=>node.getBoundingClientRect().x);
   const thirdBefore=await third.evaluate(node=>node.getBoundingClientRect().x);
   await second.press('ArrowRight');
-  await expect(first).toHaveCSS('translate','1px 0px');
-  await expect(second).toHaveCSS('translate','1px 0px');
+  await expect(first).toHaveCSS('translate',/^1px(?: 0px)?$/);
+  await expect(second).toHaveCSS('translate',/^1px(?: 0px)?$/);
   const after=await first.evaluate(node=>node.getBoundingClientRect().x);
   expect(after).toBeGreaterThan(before);
   const thirdAfter=await third.evaluate(node=>node.getBoundingClientRect().x);
@@ -89,4 +90,16 @@ test('dragging a different selected source member retains the original group',as
   expect(firstAfter).toBeGreaterThan(firstBefore+20);
   expect(secondAfter).toBeGreaterThan(secondBefore+20);
   await expect(page.locator('#liveMultiCount')).toHaveText('2 selected');
+});
+
+test('Clear selection removes source multi-outlines without discarding layout edits',async({page})=>{
+  const live=page.frameLocator('#livePageFrame');
+  await live.locator('main p.second').click();
+  await live.locator('main p.first a').click({modifiers:['Shift']});
+  await expect(page.locator('#liveMultiCount')).toHaveText('2 selected');
+  await page.locator('#liveClearAdded').click();
+  await expect(page.locator('#liveMultiCount')).toHaveText('0 selected');
+  await expect(live.locator('[data-moon-v2-source-selected]')).toHaveCount(0);
+  await expect(page.locator('#liveClearAdded')).toBeDisabled();
+  await expect(live.locator('main p.first a')).toHaveAttribute('href','teaching.html');
 });

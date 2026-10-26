@@ -2366,7 +2366,7 @@ function syncLiveMultiSelection(){
   }
   const count=selectedAddedPatches().length;
   $("liveMultiCount").textContent=(count+selectedSourcePatches().length)+" selected";
-  $("liveClearAdded").disabled=!count;
+  $("liveClearAdded").disabled=!count&&!liveSourceMulti.size;
   $("liveSelectAdded").disabled=workspaceMode!=="live";
   for(const id of LIVE_ARRANGE_TOOLS)
     $(id).disabled=workspaceMode!=="live"||count<(id.startsWith("liveDistribute")?3:2);
@@ -2379,6 +2379,7 @@ function syncLiveMultiSelection(){
 }
 function selectAllLiveAdded(){
   if(workspaceMode!=="live")return;
+  liveSourceMulti.clear();
   const doc=$("livePageFrame").contentDocument;
   liveAddedMulti=new Set([...doc.querySelectorAll("[data-moon-v2-added-id]")]
     .filter(node=>{
@@ -2514,6 +2515,7 @@ function selectLiveElement(node,additive=false,preserveMulti=false){
     return;
   }
   if(additive&&isAdded){
+    liveSourceMulti.clear();
     if(liveAddedMulti.has(key))liveAddedMulti.delete(key);
     else liveAddedMulti.add(key);
     const last=[...liveAddedMulti].at(-1);
