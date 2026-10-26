@@ -433,7 +433,131 @@ function fitLivePage(){
   $("zoom").value=String(Math.round(liveScale*100));
   $("zoomValue").textContent=Math.round(liveScale*100)+"%";
 }
+// Independent objects live in the actual page, above the original content.
+// They are identified by stable IDs, not by fragile nth-of-type selectors.
+const LIVE_ADDED_ID=/^added:([a-z0-9-]{6,50})$/;
+const LIVE_ADDED_LAYER="moon-v2-added-layer";
+function isAddedPatch(p){
+  return p?.kind==="insert"&&LIVE_ADDED_ID.test(p.selector);
+}
+function validAddedGeometry(geometry){
+  if(!geometry||typeof geometry!=="object"||Array.isArray(geometry))return false;
+  const keys=Object.keys(geometry);
+  if(!keys.length||keys.some(device=>!LIVE_DEVICE_RULES[device]))return false;
+  return keys.every(device=>{
+    const v=geometry[device];
+    return v&&["x","y","w","h"].every(key=>
+      Number.isInteger(v[key])&&Math.abs(v[key])<=40000)&&
+      v.x>=-4000&&v.x<=10000&&v.y>=-4000&&v.y<=40000&&
+      v.w>=40&&v.w<=4000&&v.h>=24&&v.h<=5000;
+  });
+}
+function validAddedPatch(p){
+  return !!p&&isAddedPatch(p)&&typeof p.expected==="string"&&p.expected===""&&
+    ["text","image","shape"].includes(p.objectType)&&
+    validAddedGeometry(p.geometry)&&
+    (p.objectType!=="text"||
+      typeof p.html==="string"&&p.html.length<=30000)&&
+    (p.objectType!=="image"||
+      safeImageSource(p.src)&&typeof p.alt==="string"&&p.alt.length<=300)&&
+    (p.objectType!=="shape"||
+      typeof p.fill==="string"&&/^#[0-9a-f]{6}$/i.test(p.fill))&&
+    (p.appearance===undefined||validLiveAppearance(p.appearance));
+}
+function addedObjectId(p){return p.selector.slice("added:".length);}
+function addedDeviceGeometry(p,device){
+  return p.geometry[device]||p.geometry.desktop||
+    p.geometry.tablet||p.geometry.phone;
+}
+function ensureAddedLayer(doc){
+  const main=doc.querySelector("main");
+  if(!main)throw Error("The webpage has no main element for independent objects.");
+  main.setAttribute("data-moon-v2-added-host","");
+  let layer=main.querySelector(":scope > [data-moon-v2-added-layer]");
+  if(!layer){
+    layer=doc.createElement("div");
+    layer.setAttribute("data-moon-v2-added-layer","");
+    main.append(layer);
+  }
+  return layer;
+}
+function addedStyleCss(p){
+  const id=addedObjectId(p),tag='[data-moon-v2-added-id="'+id+'"]';
+  const styles=[
+    "box-sizing:border-box","position:absolute","margin:0","display:block",
+    "pointer-events:auto","overflow:visible","max-width:none",
+    "transform:none","transform-origin:top left"
+  ];
+  const appearance=p.appearance||{};
+  if(p.objectType==="text"){
+    styles.push("overflow-wrap:anywhere","white-space:normal",
+      "line-height:1.4","padding:3px","min-width:0");
+    styles.push("font-size:"+(appearance.fontSize||20)+"px");
+    styles.push("font-family:"+(appearance.family||"Georgia, serif"));
+    styles.push("color:"+(appearance.color||"#1c2622"));
+  }
+  if(p.objectType==="shape")styles.push("background:"+p.fill);
+  if(p.objectType==="image")styles.push("object-fit:contain");
+  for(const [key,name] of [["backgroundColor","background-color"],
+    ["weight","font-weight"],["style","font-style"],
+    ["decoration","text-decoration-line"],["align","text-align"]]){
+    if(appearance[key]!==undefined)styles.push(name+":"+
+      (key==="decoration"?appearance[key]:appearance[key]));
+  }
+  if(p.objectType!=="text"&&appearance.color)
+    styles.push("color:"+appearance.color);
+  styles.push("z-index:"+(appearance.layer??100));
+  let result=tag+"{"+styles.map(s=>s+"!important").join(";")+";}";
+  for(const [device,media] of Object.entries(LIVE_DEVICE_RULES)){
+    const g=addedDeviceGeometry(p,device);
+    if(!g)continue;
+    result+="@media "+media+"{"+tag+"{left:"+g.x+
+      "px!important;top:"+g.y+"px!important;width:"+g.w+
+      "px!important;height:"+g.h+"px!important;}}";
+  }
+  return result;
+}
+function applyAddedPatch(doc,p){
+  if(!validAddedPatch(p))throw Error("Invalid independent webpage object.");
+  const layer=ensureAddedLayer(doc),id=addedObjectId(p);
+  const wanted=p.objectType==="image"?"img":p.objectType==="text"?"p":"div";
+  let node=[...layer.children].find(el=>
+    el.getAttribute("data-moon-v2-added-id")===id);
+  if(node&&node.tagName.toLowerCase()!==wanted){
+    throw Error("A webpage object ID is already assigned to a different kind of element.");
+  }
+  if(!node){
+    node=doc.createElement(wanted);
+    node.setAttribute("data-moon-v2-added-id",id);
+    layer.append(node);
+  }
+  if(p.objectType==="image"){
+    node.setAttribute("src",p.src);node.setAttribute("alt",p.alt);
+  }else if(p.objectType==="text")node.innerHTML=cleanRich(p.html);
+  let css=doc.querySelector('style[data-moon-v2-added-style="'+id+'"]');
+  if(!css){
+    css=doc.createElement("style");
+    css.setAttribute("data-moon-v2-added-style",id);
+    doc.head.append(css);
+  }
+  css.textContent=addedStyleCss(p);
+  return node;
+}
+function removeAddedPatchFromDoc(doc,selector){
+  const id=selector.slice(6);
+  for(const node of doc.querySelectorAll("[data-moon-v2-added-id]")){
+    if(node.getAttribute("data-moon-v2-added-id")===id)node.remove();
+  }
+  for(const node of doc.querySelectorAll("[data-moon-v2-added-style]")){
+    if(node.getAttribute("data-moon-v2-added-style")===id)node.remove();
+  }
+}
 function liveSelector(node){
+  const added=node?.closest?.("[data-moon-v2-added-id]");
+  if(added){
+    const id=added.getAttribute("data-moon-v2-added-id");
+    if(LIVE_ADDED_ID.test("added:"+id))return "added:"+id;
+  }
   const steps=[];
   for(let current=node;current&&current.tagName!=="MAIN";current=current.parentElement){
     if(!current.parentElement||steps.length>12)return null;
@@ -611,7 +735,7 @@ function liveLayoutFor(selector,device=liveDevice()){
 function liveLayoutRules(patches=[...livePatches.values()]){
   const result=[];
   for(const patch of patches){
-    if(patch.kind==="delete")continue;
+    if(patch.kind==="delete"||patch.kind==="insert")continue;
     const value=patch.appearance;
     if(!value||!validLiveAppearance(value))continue;
     const style=[];
@@ -634,7 +758,7 @@ function liveLayoutRules(patches=[...livePatches.values()]){
   for(const [device,media] of Object.entries(LIVE_DEVICE_RULES)){
     const selectors=[];
     for(const patch of patches){
-      if(patch.kind==="delete")continue;
+      if(patch.kind==="delete"||patch.kind==="insert")continue;
       const entry=patch.layout?.[device];
       if(!entry||!validLiveLayout({[device]:entry}))continue;
       // Both values are bounded, strictly numeric data. Selectors are
@@ -792,6 +916,7 @@ function resetSelectedLiveLayout(){
   if(recordLiveHistory(before)){refreshLiveLayoutRules();renderLiveInspector();syncLiveOverlay();}
 }
 function validLivePatch(p){
+  if(p?.kind==="insert")return validAddedPatch(p);
   return p&&typeof p.selector==="string"&&p.selector.length<800&&
     /^main(?: > [a-z][a-z0-9-]*:nth-of-type\(\d{1,4}\)){1,12}$/.test(p.selector)&&
     typeof p.expected==="string"&&p.expected.length<=350&&
