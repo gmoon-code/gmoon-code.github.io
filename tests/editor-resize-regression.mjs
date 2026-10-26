@@ -128,6 +128,25 @@ try{
     'main [data-moon-free-placeholder][data-editor-key]').count(),0,
     "Published placeholders were incorrectly registered as editable content");
   console.log("PASS published page reopens without ghost editable objects");
+  const mobile=await browser.newPage({viewport:{width:390,height:844}});
+  try{
+    await mobile.goto(base+"/index.html",{waitUntil:"load"});
+    const mobileImage=mobile.locator('main img[src*="profile-portrait"]').first();
+    await mobileImage.waitFor({state:"visible",timeout:15000});
+    await mobile.waitForFunction(()=>{
+      const node=document.querySelector('main img[src*="profile-portrait"]');
+      return node&&!node.parentElement?.classList.contains("moon-free-layer");
+    },{timeout:10000});
+    const mobileImageBox=await mobileImage.boundingBox();
+    assert(mobileImageBox&&mobileImageBox.width<=390,
+      "Published image overflows the mobile screen");
+    const placeholder=mobile.locator('main [data-moon-free-placeholder]');
+    assert(await placeholder.count()>=1,"Missing published layout marker");
+    assert.equal(await placeholder.first().evaluate(node=>
+      getComputedStyle(node).display),"none",
+      "Layout placeholder occupies space on mobile");
+    console.log("PASS published mobile sizing and reading order");
+  }finally{await mobile.close();}
 }catch(error){
   const {mkdir}=await import("node:fs/promises");
   await mkdir("test-artifacts",{recursive:true});
