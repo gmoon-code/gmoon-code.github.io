@@ -429,6 +429,10 @@
         d.addEventListener("pointermove",freeGestureMove,true);
         d.addEventListener("pointerup",freeGestureEnd,true);
         d.addEventListener("pointercancel",freeGestureEnd,true);
+        d.addEventListener("lostpointercapture",event=>{
+          if(freeGesture?.id===event.pointerId)cancelInterruptedFreeGesture();
+        },true);
+        d.defaultView.addEventListener("blur",cancelInterruptedFreeGesture);
         d.addEventListener("keydown",onPreviewKeydown,true);
         d.addEventListener("input",onPreviewInput,true);
         d.addEventListener("focusin",onPreviewFocus,true);
@@ -1516,6 +1520,21 @@
       }));
     }
     return match;
+  }
+  // A pointer gesture may be interrupted by a tab switch, focus loss, or
+  // browser pointer-capture cancellation. Restore the undo checkpoint rather
+  // than leaving an uncommitted page geometry behind.
+  function cancelInterruptedFreeGesture(){
+    const drag=freeGesture;
+    if(!drag)return;
+    freeGesture=null;
+    clearFreeSnapGuides();
+    try{
+      const root=state.frameDoc?.documentElement;
+      if(root?.hasPointerCapture?.(drag.id))root.releasePointerCapture(drag.id);
+    }catch{/* Pointer capture may already have been released. */}
+    if(drag.moved)undo();
+    else positionFreeSelection();
   }
   function freeGestureEnd(event){
     const drag=freeGesture;if(!drag||drag.id!==event.pointerId)return;
