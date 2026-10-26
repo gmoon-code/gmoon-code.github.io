@@ -20,6 +20,7 @@
       <button id="save" class="subtle">Save draft</button>
       <button id="exportScene" class="subtle">Export JSON</button>
       <button id="preview" class="primary">Preview page</button>
+      <button id="compare" class="subtle">Compare original</button>
       <button id="publish" class="primary outline">Publish staging preview</button>
     </div>
   </header>
@@ -148,6 +149,20 @@
   </form>
 </dialog>
 <dialog id="previewDialog"><div class="preview-top"><strong>Independent responsive preview</strong><button id="closePreview" aria-label="Close preview">Close</button></div><iframe id="previewFrame" title="Standalone editor preview" sandbox="allow-same-origin"></iframe></dialog>
+<dialog id="compareDialog">
+  <div class="preview-top">
+    <strong>Compare original website and editable canvas</strong>
+    <button id="closeCompare">Close</button>
+  </div>
+  <div class="compare-grid">
+    <section><span>Original page · read-only</span>
+      <iframe id="originalFrame" title="Original published website" sandbox="allow-same-origin"></iframe>
+    </section>
+    <section><span>New scene · staging draft</span>
+      <iframe id="sceneFrame" title="Independent canvas preview" sandbox="allow-same-origin"></iframe>
+    </section>
+  </div>
+</dialog>
 <iframe id="importFrame" aria-hidden="true" tabindex="-1" sandbox="allow-same-origin"></iframe>
 </body>
 </html>
