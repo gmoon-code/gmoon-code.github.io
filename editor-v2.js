@@ -273,7 +273,7 @@ function setWorkspaceMode(mode){
     "This displays the existing page with its real styles and responsive layout. Select text or an image to edit it in the original-page inspector. Copy creates an independent free-design object. Production files remain unchanged.":
     "This canvas is a simplified, independent reconstruction. It does not yet reproduce every original section or responsive rule. Use Live website to verify the real page; only the staging preview can be published.";
   $("workspaceFooter").textContent=isLive?
-    "Original page · browse links, switch pages, and edit selected text or images · Choose Desktop, Tablet or Phone":
+    "Original page · Click text or images · Alt-click to select a card or section · Drag or resize without changing production files":
     "Drag to move · Eight resize handles · Double-click text to edit · Double-click empty canvas to add text · Drop images · Shift-click for multiple selection";
   renderLiveInspector();refreshUndo();
   if(isLive){fitLivePage();syncLiveOverlay();}
@@ -800,7 +800,15 @@ function selectLiveElement(node){
   renderLiveInspector();syncLiveOverlay();
   const label=(node.tagName==="IMG"?node.alt||"image":node.textContent||"text")
     .trim().replace(/\s+/g," ").slice(0,80);
-  status("Live element selected: "+label+" · Original website unchanged");
+  let clipped=false;
+  for(let p=node.parentElement;p&&p.tagName!=="MAIN";p=p.parentElement){
+    const css=node.ownerDocument.defaultView.getComputedStyle(p);
+    if(["hidden","clip"].includes(css.overflowX)||["hidden","clip"].includes(css.overflowY)){
+      clipped=true;break;
+    }
+  }
+  status("Live element selected: "+label+
+    (clipped?" · Parent container may clip movements outside its bounds":" · Original website unchanged"));
 }
 function reportLiveAssets(){
   const label=$("liveAssetStatus"),doc=$("livePageFrame").contentDocument;
