@@ -2960,6 +2960,9 @@ function startCanvasMarquee(event){
     additive:event.shiftKey,previous:new Set(selected),moved:false};
   lastTap=null;
   event.preventDefault();
+  // A previous inspector input may still own keyboard focus. Pointing at
+  // the canvas must restore its arrow-key and Escape shortcuts.
+  $("stage").focus({preventScroll:true});
   $("stage").setPointerCapture(event.pointerId);
 }
 function moveCanvasMarquee(event){
