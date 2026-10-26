@@ -36,9 +36,24 @@ test('independent drag and resize preserve neighbours, undo redo and reload',asy
   await page.locator('#layers [data-layer-id="1"]').click();
   const handle=heading.locator('[data-dir=se]');await expect(handle).toBeVisible();
   const grip=await handle.boundingBox();
+  await page.evaluate(()=>{
+    window.v2EventTrace=[];
+    for(const type of ['pointerdown','pointermove','pointerup']){
+      document.querySelector('#stage').addEventListener(type,e=>{
+        if(window.v2EventTrace.length<15)
+          window.v2EventTrace.push([type,e.target.className,e.target.dataset?.dir,e.clientX,e.clientY]);
+      },true);
+    }
+  });
+  const beforeHit=await page.evaluate(point=>{
+    const node=document.elementFromPoint(point.x,point.y);
+    return [node?.className,node?.dataset?.dir,node?.closest?.('.scene-object')?.dataset?.id];
+  },{x:grip.x+grip.width/2,y:grip.y+grip.height/2});
   await page.mouse.move(grip.x+grip.width/2,grip.y+grip.height/2);await page.mouse.down();
   await page.mouse.move(grip.x+grip.width/2+40,grip.y+grip.height/2+18,{steps:7});await page.mouse.up();
   const enlarged=await heading.evaluate(n=>parseInt(n.style.width));
+  console.log('SOUTHEAST DIAGNOSTIC',JSON.stringify({beforeHit,grip,enlarged,
+    eventTrace:await page.evaluate(()=>window.v2EventTrace)}));
   expect(enlarged).toBeGreaterThan(original.w+30);
   await page.locator('#undo').click();
   expect(await heading.evaluate(n=>parseInt(n.style.width))).toBe(original.w);
