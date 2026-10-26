@@ -15,6 +15,7 @@ let selected=new Set(),activeId=null,history=[],redo=[],zoom=.8,gesture=null,edi
 let workspaceMode="live",liveWidth=1160,liveScale=1,liveManualScale=null,liveSelected=null,liveObserver=null,liveSerial=0;
 const LIVE_DRAFT_KEY="moon-academic-editor-v2:source:";
 let livePatches=new Map(),liveEditing=null,liveHistory=[],liveRedo=[],liveGesture=null,liveOverlay=null;
+let githubTabToken=""; // In-memory only. Never written to storage or page files.
 const copy=data=>JSON.parse(JSON.stringify(data));
 const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
 const number=v=>Number.isFinite(Number(v))?Number(v):0;
@@ -2100,11 +2101,20 @@ function attachEvents(){
     $("publishTarget").value=workspaceMode==="live"?"live":"staging";
     $("publishTarget").querySelector('[value="live"]').disabled=workspaceMode!=="live";
     $("acknowledgeLive").checked=false;
-    $("githubToken").value="";
+    $("githubToken").value=githubTabToken;
+    $("keepGithubToken").checked=!!githubTabToken;
+    $("forgetGithubToken").hidden=!githubTabToken;
     updatePublishTarget();
     $("publishDialog").showModal();
   });
   $("publishTarget").addEventListener("change",updatePublishTarget);
+  $("forgetGithubToken").addEventListener("click",()=>{
+    githubTabToken="";
+    $("githubToken").value="";
+    $("keepGithubToken").checked=false;
+    $("forgetGithubToken").hidden=true;
+    status("GitHub token cleared from this editor tab");
+  });
   $("cancelPublish").addEventListener("click",()=>{
     if($("confirmPublish").disabled)return;
     $("githubToken").value="";$("publishDialog").close();
@@ -2123,6 +2133,8 @@ function attachEvents(){
     status("Checking the latest GitHub file before publishing…");
     try{
       const result=await publishGithub(token,target);
+      githubTabToken=$("keepGithubToken").checked?token:"";
+      $("forgetGithubToken").hidden=!githubTabToken;
       $("publishDialog").close();
       showPublishResult(result);
       status(result.target==="live"?
