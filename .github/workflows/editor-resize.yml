@@ -4,6 +4,10 @@ on:
     paths:
       - editor.js
       - editor.html
+      - editor.css
+      - index.html
+      - styles-20261013.css
+      - moon-free-responsive.js
       - tests/editor-resize-regression.mjs
       - .github/workflows/editor-resize.yml
   workflow_dispatch:
