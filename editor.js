@@ -1453,6 +1453,22 @@
       }
     }
   }
+  function freeGeometryMatchesSelection(){
+    const sel=freeSelected(),doc=state.frameDoc;
+    if(!sel||!doc)return false;
+    const main=sel.node.closest("main");
+    if(!main||!sel.node.classList.contains("moon-free-absolute"))return false;
+    const expected=freeGeometry(sel),actual=sel.node.getBoundingClientRect();
+    const origin=main.getBoundingClientRect(),css=doc.defaultView.getComputedStyle(main);
+    const x=origin.left+(parseFloat(css.borderLeftWidth)||0)+expected.x;
+    const y=origin.top+(parseFloat(css.borderTopWidth)||0)+expected.y;
+    // A mismatch indicates that inherited !important styles, transforms,
+    // or an unsupported container has overridden the requested geometry.
+    return [actual.x,actual.y,actual.width,actual.height].every(Number.isFinite)&&
+      Math.abs(actual.left-x)<=5&&Math.abs(actual.top-y)<=5&&
+      Math.abs(actual.width-expected.width)<=5&&
+      Math.abs(actual.height-expected.height)<=5;
+  }
   function freeGestureEnd(event){
     const drag=freeGesture;if(!drag||drag.id!==event.pointerId)return;
     event.preventDefault();event.stopPropagation();
@@ -1464,6 +1480,11 @@
     }
     if(drag.moved){
       refreshFreeCanvasExtent(state.frameDoc);
+      if(!freeGeometryMatchesSelection()){
+        undo();
+        notice("The browser changed this object's position or dimensions unexpectedly. The resize was undone to protect your page.","Resize cancelled");
+        return;
+      }
       finishFreeGeometry();
     }else positionFreeSelection();
     const dimensions=state.frameDoc?.querySelector("#moon-free-selection [data-free-dimensions]");
