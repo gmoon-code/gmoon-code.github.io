@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex,nofollow">
 <title>Academic Website Editor 2 | Ye Eun Moon</title>
 <link rel="stylesheet" href="editor-v2.css?v=20261026-image-reconnect-v12">
-<script src="editor-v2.js?v=20261026-editor-actions-v17" defer></script>
+<script src="editor-v2.js?v=20261026-editor-actions-v18" defer></script>
 </head>
 <body>
 <a class="skip" href="#workspace">Skip to editor canvas</a>
@@ -75,7 +75,12 @@
       <section id="canvasLayersPanel" class="panel-section" hidden>
         <div class="panel-title"><h2>Layers</h2><span id="layerCount">0</span></div>
         <div id="layers" class="layers" aria-label="Page objects"></div>
-        <p class="help">Click an object or its layer to select it. Drag on the canvas, or use the arrow keys for precise movement.</p>
+        <div class="inline-actions">
+          <button id="copyObjects" type="button" disabled title="Copy selected canvas objects (Ctrl+C)">Copy</button>
+          <button id="pasteObjects" type="button" disabled title="Paste copied objects (Ctrl+V)">Paste</button>
+          <button id="selectAllObjects" type="button" title="Select all visible, unlocked canvas objects (Ctrl+A)">Select all</button>
+        </div>
+        <p class="help">Click or Shift-click to select objects. Copy and paste work across pages during this editor session. Drag to move or resize using the handles; arrow keys nudge the selection.</p>
       </section>
       <section class="panel-section">
         <h2>Page image library</h2>
