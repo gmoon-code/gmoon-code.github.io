@@ -255,7 +255,9 @@
     </select>
     <p id="publishTargetHelp" class="help">Live publishing is available only for edits made in Live website mode.</p>
     <p>GitHub file to update: <code id="stagePath">index.html</code></p>
-    <p class="help">The editor checks the latest file in GitHub before publishing. If an edited element no longer matches, publication stops without overwriting it.</p>
+    <div id="publishPatchList" class="publish-patches" aria-label="Saved edits that will be published"></div>
+    <button type="button" id="checkPublishEdits">Check saved edits before publishing</button>
+    <p class="help">Each edit must match a unique element in the original page. You can remove an unmatched edit from the list above without discarding the others. The editor checks the latest file in GitHub when you publish.</p>
     <label for="githubToken">GitHub fine-grained personal access token (Contents: Read and write)</label>
     <input id="githubToken" type="password" autocomplete="off" spellcheck="false" placeholder="github_pat_…" required>
     <p class="help">Select only the <strong>gmoon-code.github.io</strong> repository when creating a token. Your token is never saved to browser storage or included in the website. <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener noreferrer">Create a fine-grained GitHub token</a>.</p>
