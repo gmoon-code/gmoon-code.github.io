@@ -11,7 +11,7 @@ const HANDLES=["nw","n","ne","e","se","s","sw","w"];
 const NEW_DRAFT="moon-academic-editor-v2:";
 let currentPage="index.html";
 let scene={version:VERSION,page:currentPage,width:STANDARD_WIDTH,height:1080,objects:[],nextId:1};
-let selected=new Set(),activeId=null,history=[],redo=[],zoom=.8,gesture=null,editingId=null,saveTimer=null,loadSerial=0,lastTap=null;
+let selected=new Set(),activeId=null,history=[],redo=[],zoom=.8,gesture=null,editingId=null,saveTimer=null,loadSerial=0,lastTap=null,pageImages=[];
 const copy=data=>JSON.parse(JSON.stringify(data));
 const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
 const number=v=>Number.isFinite(Number(v))?Number(v):0;
@@ -253,6 +253,29 @@ function render(){
   for(const obj of [...scene.objects].sort((a,b)=>a.z-b.z||a.id-b.id))stage.append(makeSceneElement(obj));
   renderLayers();renderProperties();refreshUndo();
 }
+function renderImageLibrary(){
+  const container=$("imageLibrary");
+  container.replaceChildren();
+  if(!pageImages.length){
+    const empty=document.createElement("p");
+    empty.className="help";
+    empty.textContent="Import a page to see its available images.";
+    container.append(empty);return;
+  }
+  for(let i=0;i<pageImages.length;i++){
+    const item=pageImages[i],button=document.createElement("button");
+    button.type="button";button.dataset.imageIndex=String(i);
+    button.title=item.alt||item.src;
+    button.setAttribute("aria-label","Insert or replace image: "+(item.alt||item.src));
+    const thumb=document.createElement("img");
+    thumb.loading="lazy";thumb.src=item.src;
+    thumb.alt="";
+    const label=document.createElement("span");
+    label.textContent=(item.alt||item.src.split("/").at(-1)).slice(0,54);
+    button.append(thumb,label);
+    container.append(button);
+  }
+}
 function renderLayers(){
   const host=$("layers");host.replaceChildren();
   for(const obj of [...scene.objects].sort((a,b)=>b.z-a.z||b.id-a.id)){
@@ -458,6 +481,14 @@ async function importPage(force=false){
     }));
     if(serial!==loadSerial)return;
     const main=doc.querySelector("main"),base=main.getBoundingClientRect();
+    const images=new Map();
+    for(const image of main.querySelectorAll("img[src]")){
+      const src=image.getAttribute("src")||"";
+      if(!safeImageSource(src)||images.has(src))continue;
+      images.set(src,{src,alt:image.alt||"",w:image.naturalWidth||260,
+        h:image.naturalHeight||190});
+      if(images.size>=75)break;
+    }
     const next={version:VERSION,page,width:STANDARD_WIDTH,height:Math.max(980,Math.ceil(main.scrollHeight+90)),
       objects:[],nextId:1};
     // Import coloured cards and section panels as editable background
@@ -520,13 +551,16 @@ async function importPage(force=false){
     const before=copy(scene);
     scene=validateScene(next,page);selected.clear();activeId=null;
     history.push(before);if(history.length>60)history.shift();redo.length=0;
+    pageImages=[...images.values()];
+    renderImageLibrary();
     render();fitCanvas();save();
     status("Imported "+scene.objects.length+" independent objects · Original website unchanged");
   }catch(error){status("Import stopped · "+(error.message||error));}
 }
 function changePage(page){
   if(!PAGES.has(page))return;
-  ++loadSerial;clearTimeout(saveTimer);lastTap=null;
+  ++loadSerial;clearTimeout(saveTimer);lastTap=null;pageImages=[];
+  renderImageLibrary();
   currentPage=page;
   history=[];redo=[];selected.clear();activeId=null;
   const empty={version:VERSION,page,width:STANDARD_WIDTH,height:1080,objects:[],nextId:1};
@@ -629,6 +663,22 @@ function attachEvents(){
     }catch(error){status("JSON import rejected · "+(error.message||error));}
   });
   $("importPage").addEventListener("click",()=>importPage());
+  $("imageLibrary").addEventListener("click",event=>{
+    const button=event.target.closest("[data-image-index]");
+    if(!button)return;
+    const item=pageImages[Number(button.dataset.imageIndex)];
+    if(!item)return;
+    const chosen=lookup(activeId);
+    if(chosen?.type==="image"&&!chosen.locked&&selected.size===1){
+      mutate(()=>{chosen.src=item.src;chosen.alt=item.alt;chosen.name=(item.alt||"Image").slice(0,120);});
+      status("Selected image replaced using website asset · Saved locally");
+      return;
+    }
+    const ratio=item.h>0?item.w/item.h:1.4;
+    const width=Math.min(340,Math.max(120,item.w));
+    add("image",{src:item.src,alt:item.alt,name:(item.alt||"Website image").slice(0,120),
+      w:width,h:Math.round(clamp(width/ratio,80,450))});
+  });
   $("sourcePage").addEventListener("click",()=>window.open(new URL(currentPage,location.href).href,"_blank","noopener"));
   $("zoom").addEventListener("input",event=>{zoom=Number(event.target.value)/100;$("zoomValue").textContent=Math.round(zoom*100)+"%";render();});
   $("fitCanvas").addEventListener("click",fitCanvas);
