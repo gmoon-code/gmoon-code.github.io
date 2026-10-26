@@ -269,7 +269,7 @@ function setWorkspaceMode(mode){
     "This displays the existing page with its real styles, images and responsive layout. Click a text block or image to select it. Copy creates a separate canvas object and does not change the original.":
     "This canvas is a simplified, independent reconstruction. It does not yet reproduce every original section or responsive rule. Use Live website to verify the real page; only the staging preview can be published.";
   $("workspaceFooter").textContent=isLive?
-    "Original page · read-only · Choose Desktop, Tablet or Phone · Click a text block or image to copy into the free canvas":
+    "Original page · browse links, switch pages, and edit selected text or images · Choose Desktop, Tablet or Phone":
     "Drag to move · Eight resize handles · Double-click text to edit · Double-click empty canvas to add text · Drop images · Shift-click for multiple selection";
   renderLiveInspector();
   if(isLive)fitLivePage();
@@ -495,7 +495,28 @@ function bindLiveDocument(){
     if(workspaceMode!=="live")return;
     if(liveEditing)return;
     const link=event.target.closest?.("a[href]");
-    if(link){event.preventDefault();}
+    if(link){
+      event.preventDefault();
+      const raw=link.getAttribute("href")||"";
+      try{
+        const destination=new URL(raw,doc.baseURI);
+        if(!["http:","https:","mailto:"].includes(destination.protocol))return;
+        if(destination.origin===location.origin){
+          const name=decodeURIComponent(destination.pathname.split("/").at(-1));
+          if(PAGES.has(name)){
+            if(name===currentPage&&destination.hash){
+              doc.getElementById(decodeURIComponent(destination.hash.slice(1)))?.scrollIntoView();
+            }else{
+              $("page").value=name;
+              changePage(name);
+            }
+            return;
+          }
+        }
+        window.open(destination.href,"_blank","noopener,noreferrer");
+        return;
+      }catch{status("Cannot open an invalid webpage link");return;}
+    }
     const node=event.target.closest?.("h1,h2,h3,h4,h5,h6,p,li,figcaption,blockquote,img");
     if(node)selectLiveElement(node);
     else clearLiveSelection();
