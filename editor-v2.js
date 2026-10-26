@@ -690,6 +690,18 @@ function livePatchExcerpt(patch){
   const excerpt=(patch.expected||"").replace(/\s+/g," ").slice(0,90);
   return excerpt||patch.selector.split(" > ").at(-1)||"Unnamed element";
 }
+function equivalentSiteImageSource(actual,expected){
+  if(actual===expected)return true;
+  // A source image can be written as assets/photo.webp, ./assets/photo.webp,
+  // or a same-origin absolute URL. Their URL paths identify the same file.
+  // Never match on filename alone or against a different origin.
+  try{
+    const base=new URL(currentPage,location.href);
+    const left=new URL(actual,base),right=new URL(expected,base);
+    return left.origin===base.origin&&right.origin===base.origin&&
+      left.pathname===right.pathname;
+  }catch{return false;}
+}
 function livePatchNodeMatches(node,patch){
   if(!node||!node.closest("main"))return false;
   if(patch.kind==="image"&&node.tagName!=="IMG")return false;
@@ -697,20 +709,27 @@ function livePatchNodeMatches(node,patch){
   if(patch.kind==="layout"&&!node.matches(LIVE_SELECTABLE_TAGS))return false;
   const original=patch.kind==="image"?node.getAttribute("src")||"":
     (node.textContent||"").trim().slice(0,300);
-  return original===patch.expected;
+  return patch.kind==="image"?
+    equivalentSiteImageSource(original,patch.expected):original===patch.expected;
 }
 function resolveLivePatchTarget(doc,patch,claimed){
   const direct=doc.querySelector(patch.selector);
   if(direct&&!claimed.has(direct)&&livePatchNodeMatches(direct,patch))return direct;
-  const tag=patch.selector.match(/ > ([a-z][a-z0-9-]*):nth-of-type\(\d{1,4}\)$/)?.[1];
+  const tag=patch.kind==="image"?"img":
+    patch.selector.match(/ > ([a-z][a-z0-9-]*):nth-of-type\(\d{1,4}\)$/)?.[1];
   if(!tag||!patch.expected||patch.expected.trim().length<5)
     throw Error("Could not match saved edit \""+livePatchExcerpt(patch)+"\" to the original webpage. The draft is preserved.");
   const matches=[...doc.querySelectorAll("main "+tag)].filter(node=>
     !claimed.has(node)&&livePatchNodeMatches(node,patch));
   if(matches.length!==1){
     const reason=matches.length?"Multiple matching elements":"No matching original element";
+    const images=patch.kind==="image"?
+      [...doc.querySelectorAll("main img[src]")].slice(0,8)
+        .map(img=>img.getAttribute("src")).join(", "):"";
     throw Error(reason+" for saved edit \""+livePatchExcerpt(patch)+
-      "\". Review or remove this saved edit before publishing. The draft is preserved.");
+      "\" on "+currentPage+". "+(patch.kind==="image"?
+        "Images in this page: "+(images||"none")+". ":"")+
+      "The draft is preserved. Use the image-reconnection tool if the source was updated.");
   }
   return matches[0];
 }
