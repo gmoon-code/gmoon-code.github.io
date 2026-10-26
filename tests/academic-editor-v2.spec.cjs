@@ -13,6 +13,14 @@ test.beforeEach(async({page})=>{
     await route.fulfill({response,body});
   });
   await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',body:fixture}));
+  // The real About URL now redirects to Contact. Mirror the local fixture
+  // through the verified GitHub source endpoint used by Live Website mode.
+  // This keeps the historic scene tests meaningful without pretending the
+  // public repository still contains the retired About page.
+  await page.route('https://api.github.com/repos/gmoon-code/gmoon-code.github.io/contents/about.html*',
+    route=>route.fulfill({status:200,contentType:'application/json',
+      body:JSON.stringify({type:'file',sha:'isolated-about-test-fixture',
+        encoding:'base64',content:Buffer.from(fixture).toString('base64')})}));
   await page.goto('http://127.0.0.1:8765/editor-v2.html?page=about.html',{waitUntil:'domcontentloaded'});
   await page.evaluate(()=>localStorage.removeItem('moon-academic-editor-v2:about.html'));
   await page.reload({waitUntil:'domcontentloaded'});
@@ -238,6 +246,9 @@ test('unsafe HTML inside a saved rich-text scene is not rendered or exported',as
   await expect(element.locator('script,img')).toHaveCount(0);
   await expect(element.locator('a[href]')).toHaveCount(0);
   expect(await page.evaluate(()=>window.polluted)).toBeUndefined();
+  // A fresh page load defaults to Live Website mode; the scene is still
+  // saved, but HTML scene export is intentionally a free-canvas action.
+  await page.locator('#designMode').click();
   const pending=page.waitForEvent('download');await page.locator('#exportHtml').click();
   const exported=fs.readFileSync(await (await pending).path(),'utf8');
   expect(exported).not.toContain('onerror=');
@@ -476,10 +487,14 @@ test('live text selection copies a separate object without altering the source',
   await expect(page.locator('#stage [data-kind="text"]')).toHaveCount(1);
 });
 test('new page selection loads the correct live original, not a stale canvas',async({page})=>{
+  const researchFixture='<!doctype html><html><body><main><h1>Research page original</h1></main></body></html>';
   await page.route('**/research.html',route=>route.fulfill({
-    status:200,contentType:'text/html',
-    body:'<!doctype html><html><body><main><h1>Research page original</h1></main></body></html>'
+    status:200,contentType:'text/html',body:researchFixture
   }));
+  await page.route('https://api.github.com/repos/gmoon-code/gmoon-code.github.io/contents/research.html*',
+    route=>route.fulfill({status:200,contentType:'application/json',
+      body:JSON.stringify({type:'file',sha:'isolated-research-test-fixture',
+        encoding:'base64',content:Buffer.from(researchFixture).toString('base64')})}));
   await page.locator('#page').selectOption('research.html');
   await expect(page.frameLocator('#livePageFrame').locator('main h1')).toHaveText('Research page original');
   await expect(page.locator('#liveViewport')).toBeVisible();
