@@ -563,6 +563,16 @@ function setLiveReflowDimension(key,value){
     refreshLiveLayoutRules();renderLiveInspector();syncLiveOverlay();
   }
 }
+function fitLiveTextHeight(){
+  const node=liveSelected?.node,selector=node&&liveSelector(node);
+  if(!selector||!node||!node.matches("h1,h2,h3,h4,h5,h6,p,blockquote,figcaption"))return;
+  const entry=liveLayoutFor(selector);
+  if(entry.wrapWidth===undefined)return;
+  const wanted=Math.round(clamp(Math.ceil(node.scrollHeight+2),24,5000));
+  if(wanted<=entry.reserveHeight)return;
+  setLiveReflowDimension("reserveHeight",wanted);
+  status("Text box height fitted to wrapped content · Following page elements may move");
+}
 function resetSelectedLiveLayout(){
   const patch=livePatchForSelected();if(!patch?.layout?.[liveDevice()])return;
   const before=liveSnapshot();
@@ -656,6 +666,11 @@ function renderLiveInspector(){
     $("liveTextBoxHeight").disabled=!on;
     $("liveTextBoxWidth").value=String(Math.round(entry.wrapWidth||node.offsetWidth));
     $("liveTextBoxHeight").value=String(Math.round(entry.reserveHeight||node.offsetHeight));
+    const extra=on?Math.max(0,Math.ceil(node.scrollHeight-node.clientHeight)):0;
+    $("liveReflowWarning").hidden=extra<=3;
+    $("liveReflowWarning").textContent=extra>3?
+      "Wrapped text extends about "+extra+"px beyond the reserved height and may overlap the next element.":"";
+    $("liveFitReflowHeight").disabled=!on||extra<=3;
     $("resetLiveLayout").disabled=!livePatches.get(selector)?.layout?.[liveDevice()];
   }
   renderLiveEditCount();
@@ -1682,6 +1697,7 @@ function attachEvents(){
     setLiveReflowDimension("wrapWidth",event.target.value));
   $("liveTextBoxHeight").addEventListener("change",event=>
     setLiveReflowDimension("reserveHeight",event.target.value));
+  $("liveFitReflowHeight").addEventListener("click",fitLiveTextHeight);
   for(const [field,key] of [
     ["liveFontFamily","family"],["liveFontSize","fontSize"],
     ["liveTextColour","color"],["liveBackgroundColour","backgroundColor"]
