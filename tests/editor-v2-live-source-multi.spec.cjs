@@ -103,3 +103,70 @@ test('Clear selection removes source multi-outlines without discarding layout ed
   await expect(page.locator('#liveClearAdded')).toBeDisabled();
   await expect(live.locator('main p.first a')).toHaveAttribute('href','teaching.html');
 });
+
+async function selectSourceGroup(page,names){
+  const live=page.frameLocator('#livePageFrame');
+  await live.locator('main p.'+names[0]).click();
+  for(const name of names.slice(1))
+    await live.locator('main p.'+name).click({modifiers:['Shift']});
+  await expect(page.locator('#liveMultiCount')).toHaveText(names.length+' selected');
+  return live;
+}
+async function localRect(locator){
+  return locator.evaluate(node=>{
+    const b=node.getBoundingClientRect();
+    return {x:b.x,y:b.y,w:b.width,h:b.height};
+  });
+}
+test('alignment tools arrange original paragraphs without moving unselected neighbours',async({page})=>{
+  const live=await selectSourceGroup(page,['first','second']);
+  const first=live.locator('main p.first'),second=live.locator('main p.second');
+  const third=live.locator('main p.third'),thirdBefore=await localRect(third);
+  await expect(page.locator('#liveAlignLeft')).toBeEnabled();
+  await page.locator('#liveAlignLeft').click();
+  const a=await localRect(first),b=await localRect(second);
+  expect(Math.abs(a.x-b.x)).toBeLessThan(1.5);
+  expect(Math.abs((await localRect(third)).x-thirdBefore.x)).toBeLessThan(1.5);
+  await expect(first.locator('a')).toHaveAttribute('href','teaching.html');
+  await expect(page.locator('#liveMultiCount')).toHaveText('2 selected');
+  await page.locator('#undo').click();
+  const original=await localRect(live.locator('main p.second'));
+  expect(original.x).toBeGreaterThan(a.x+70);
+});
+test('distribution equalises original-element centre spacing in one undoable edit',async({page})=>{
+  const live=page.frameLocator('#livePageFrame');
+  await live.locator('main p.second').click();
+  await page.locator('#liveMoveX').fill('95');
+  await page.locator('#liveMoveX').press('Tab');
+  const first=live.locator('main p.first'),second=live.locator('main p.second');
+  const third=live.locator('main p.third');
+  const middleBefore=await localRect(second);
+  await selectSourceGroup(page,['first','second','third']);
+  await expect(page.locator('#liveDistributeH')).toBeEnabled();
+  await page.locator('#liveDistributeH').click();
+  const a=await localRect(first),b=await localRect(second),c=await localRect(third);
+  const mid=r=>r.x+r.w/2;
+  expect(Math.abs((mid(b)-mid(a))-(mid(c)-mid(b)))).toBeLessThan(1.5);
+  expect(Math.abs(b.x-middleBefore.x)).toBeGreaterThan(40);
+  await expect(first.locator('a')).toHaveAttribute('href','teaching.html');
+  await page.locator('#undo').click();
+  const reverted=await localRect(live.locator('main p.second'));
+  expect(Math.abs(reverted.x-middleBefore.x)).toBeLessThan(1.5);
+});
+test('original-element alignment applies only to selected device and survives a reload',async({page})=>{
+  const live=await selectSourceGroup(page,['first','second']);
+  const first=live.locator('main p.first'),second=live.locator('main p.second');
+  await page.locator('#liveAlignLeft').click();
+  const desktopA=await localRect(first),desktopB=await localRect(second);
+  expect(Math.abs(desktopA.x-desktopB.x)).toBeLessThan(1.5);
+  await page.locator('#devicePreview').selectOption('phone');
+  const phoneA=await localRect(first),phoneB=await localRect(second);
+  expect(Math.abs(phoneA.x-phoneB.x)).toBeGreaterThan(50);
+  await page.locator('#devicePreview').selectOption('desktop');
+  await page.reload({waitUntil:'domcontentloaded'});
+  await expect(live.locator('main p.third')).toHaveText('Third neighbour');
+  const afterA=await localRect(live.locator('main p.first'));
+  const afterB=await localRect(live.locator('main p.second'));
+  expect(Math.abs(afterA.x-afterB.x)).toBeLessThan(1.5);
+  await expect(live.locator('main p.first a')).toHaveAttribute('href','teaching.html');
+});

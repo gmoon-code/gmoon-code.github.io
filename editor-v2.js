@@ -2365,11 +2365,13 @@ function syncLiveMultiSelection(){
       item.node.setAttribute("data-moon-v2-source-selected","");
   }
   const count=selectedAddedPatches().length;
-  $("liveMultiCount").textContent=(count+selectedSourcePatches().length)+" selected";
-  $("liveClearAdded").disabled=!count&&!liveSourceMulti.size;
+  const sourceCount=selectedSourcePatches().length;
+  $("liveMultiCount").textContent=(count+sourceCount)+" selected";
+  $("liveClearAdded").disabled=!count&&!sourceCount;
   $("liveSelectAdded").disabled=workspaceMode!=="live";
   for(const id of LIVE_ARRANGE_TOOLS)
-    $(id).disabled=workspaceMode!=="live"||count<(id.startsWith("liveDistribute")?3:2);
+    $(id).disabled=workspaceMode!=="live"||
+      Math.max(count,sourceCount)<(id.startsWith("liveDistribute")?3:2);
   for(const button of $("liveElementList").querySelectorAll("[data-live-selector]")){
     const key=button.dataset.liveSelector;
     button.setAttribute("aria-selected",String(liveAddedMulti.has(key)||
@@ -2433,12 +2435,9 @@ function nudgeLiveSelection(dx,dy){
     status(selected.length+" webpage objects nudged together · Undo available");
   }
 }
-function arrangeSelectedLive(mode){
-  if(workspaceMode!=="live"||liveEditing||liveGesture)return;
-  const entries=selectedAddedPatches(),device=liveDevice();
-  if(entries.length<(mode.startsWith("distribute")?3:2))return;
-  const items=entries.map(({selector,patch,node})=>({selector,patch,node,
-    g:{...addedDeviceGeometry(patch,device)}}));
+// Single geometry calculation for added objects and original website
+// elements. Source objects are moved only via device-scoped layout patches.
+function arrangeLiveBounds(items,mode){
   const minX=Math.min(...items.map(o=>o.g.x));
   const maxX=Math.max(...items.map(o=>o.g.x+o.g.w));
   const minY=Math.min(...items.map(o=>o.g.y));
@@ -2446,23 +2445,64 @@ function arrangeSelectedLive(mode){
   if(mode==="distributeH"||mode==="distributeV"){
     const horizontal=mode==="distributeH";
     const key=horizontal?"x":"y",size=horizontal?"w":"h";
-    items.sort((a,b)=>(a.g[key]+a.g[size]/2)-(b.g[key]+b.g[size]/2));
-    const first=items[0].g[key]+items[0].g[size]/2;
-    const end=items.at(-1).g[key]+items.at(-1).g[size]/2;
-    for(let i=1;i<items.length-1;i++)
-      items[i].g[key]=Math.round(first+(end-first)*i/(items.length-1)-
-        items[i].g[size]/2);
+    const sorted=[...items].sort((a,b)=>
+      (a.g[key]+a.g[size]/2)-(b.g[key]+b.g[size]/2));
+    const first=sorted[0].g[key]+sorted[0].g[size]/2;
+    const last=sorted.at(-1).g[key]+sorted.at(-1).g[size]/2;
+    for(let i=1;i<sorted.length-1;i++){
+      sorted[i].g[key]=first+(last-first)*i/(sorted.length-1)-
+        sorted[i].g[size]/2;
+    }
   }else{
     for(const item of items){
       const g=item.g;
       if(mode==="alignLeft")g.x=minX;
-      if(mode==="alignCenter")g.x=Math.round((minX+maxX-g.w)/2);
+      if(mode==="alignCenter")g.x=(minX+maxX-g.w)/2;
       if(mode==="alignRight")g.x=maxX-g.w;
       if(mode==="alignTop")g.y=minY;
-      if(mode==="alignMiddle")g.y=Math.round((minY+maxY-g.h)/2);
+      if(mode==="alignMiddle")g.y=(minY+maxY-g.h)/2;
       if(mode==="alignBottom")g.y=maxY-g.h;
     }
   }
+}
+function arrangeSelectedLive(mode){
+  if(workspaceMode!=="live"||liveEditing||liveGesture)return;
+  const device=liveDevice(),source=selectedSourcePatches();
+  const needed=mode.startsWith("distribute")?3:2;
+  if(source.length>=needed){
+    const items=source.map(item=>{
+      const rect=item.node.getBoundingClientRect();
+      return {...item,rect,g:{x:rect.x,y:rect.y,w:rect.width,h:rect.height}};
+    });
+    arrangeLiveBounds(items,mode);
+    const previous=liveSnapshot();
+    let changed=false;
+    for(const item of items){
+      const dx=Math.round(item.g.x-item.rect.x);
+      const dy=Math.round(item.g.y-item.rect.y);
+      if(!dx&&!dy)continue;
+      const layout={...item.layout,
+        dx:clamp(Math.round(item.layout.dx+dx),-4000,4000),
+        dy:clamp(Math.round(item.layout.dy+dy),-4000,4000)};
+      if(layout.dx===item.layout.dx&&layout.dy===item.layout.dy)continue;
+      const patch=copy(item.patch);
+      patch.layout={...patch.layout,[device]:layout};
+      livePatches.set(item.selector,patch);
+      changed=true;
+    }
+    if(changed&&recordLiveHistory(previous)){
+      refreshLiveLayoutRules(items[0].node.ownerDocument);
+      renderLiveInspector();syncLiveOverlay();syncLiveMultiSelection();
+      status(items.length+" original webpage elements arranged on "+device+
+        " · Source markup preserved · Undo available");
+    }
+    return;
+  }
+  const entries=selectedAddedPatches();
+  if(entries.length<needed)return;
+  const items=entries.map(({selector,patch,node})=>({selector,patch,node,
+    g:{...addedDeviceGeometry(patch,device)}}));
+  arrangeLiveBounds(items,mode);
   const previous=liveSnapshot();let changed=false;
   for(const item of items){
     item.g.x=Math.round(clamp(item.g.x,-4000,10000));
