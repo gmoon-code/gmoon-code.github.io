@@ -92,6 +92,30 @@ try{
   assert(undoneImage&&closeTo(undoneImage.width,imageResult.before.width),
     "undo did not restore the original image dimensions");
   console.log("PASS image resize undo");
+  await page.locator("#redoBtn").click();
+  const redoneImage=await image.boundingBox();
+  assert(redoneImage&&closeTo(redoneImage.width,imageResult.after.width),
+    "Redo did not restore the image resize");
+  // Verify that exported HTML contains a retained layout slot and the
+  // corresponding floating image. This exercises the publishing assembler.
+  const pendingDownload=page.waitForEvent("download",{timeout:15000});
+  await page.locator("#exportBtn").click();
+  const download=await pendingDownload;
+  const exported=await readFile(await download.path(),"utf8");
+  assert(exported.includes("data-moon-free-placeholder="),
+    "Published HTML omitted the layout-preserving placeholder");
+  assert(exported.includes("data-moon-free-footprint="),
+    "Published HTML omitted the original geometry measurements");
+  assert(exported.includes("moon-free-responsive.js"),
+    "Published HTML omitted the mobile reading-order runtime");
+  console.log("PASS exported layout footprint and responsive runtime");
+}catch(error){
+  const {mkdir}=await import("node:fs/promises");
+  await mkdir("test-artifacts",{recursive:true});
+  await page.screenshot({path:"test-artifacts/resizing-failure.png",fullPage:true})
+    .catch(()=>{});
+  console.error("Resize regression failed:",error.stack||String(error));
+  throw error;
 }finally{
   await browser.close();
   await new Promise(ok=>server.close(ok));
