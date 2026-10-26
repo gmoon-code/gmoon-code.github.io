@@ -16,8 +16,8 @@ test('imports editable objects without changing original page',async({page})=>{
   await importScene(page);
   await expect(page.locator('#stage [data-kind=text]')).toHaveCount(2);
   await expect(page.locator('#stage [data-kind=image]')).toHaveCount(1);
-  const original=await page.request.get('http://127.0.0.1:8765/about.html');
-  expect(await original.text()).toBe(fixture);
+  const original=await page.evaluate(()=>fetch('/about.html').then(result=>result.text()));
+  expect(original).toBe(fixture);
 });
 test('independent drag and resize preserve neighbours, undo redo and reload',async({page})=>{
   await importScene(page);
@@ -32,7 +32,8 @@ test('independent drag and resize preserve neighbours, undo redo and reload',asy
   expect(moved.x).toBeGreaterThanOrEqual(original.x+90);
   expect(moved.y).toBeGreaterThanOrEqual(original.y+50);
   expect(await paragraph.evaluate(n=>n.getAttribute('style'))).toBe(sibling);
-  await heading.click();
+  // Layers reliably select objects even when two canvas objects overlap.
+  await page.locator('#layers [data-layer-id="1"]').click();
   const handle=heading.locator('[data-dir=se]');await expect(handle).toBeVisible();
   const grip=await handle.boundingBox();
   await page.mouse.move(grip.x+grip.width/2,grip.y+grip.height/2);await page.mouse.down();
