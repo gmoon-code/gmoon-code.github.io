@@ -426,7 +426,8 @@ const LIVE_DEVICE_RULES={
 const defaultLiveLayout=()=>({dx:0,dy:0,sx:1,sy:1});
 const LIVE_FONT_OPTIONS=new Set([
   "Georgia, serif","Arial, sans-serif","system-ui, sans-serif",
-  "Times New Roman, Times, serif"
+  "Times New Roman, Times, serif", // Backward compatible with saved drafts.
+  '"Times New Roman", Times, serif'
 ]);
 function validLiveAppearance(value){
   if(!value||typeof value!=="object"||Array.isArray(value))return false;
@@ -538,7 +539,11 @@ function liveLayoutRules(patches=[...livePatches.values()]){
     const value=patch.appearance;
     if(!value||!validLiveAppearance(value))continue;
     const style=[];
-    if(value.family)style.push("font-family:"+value.family+"!important");
+    if(value.family){
+      const family=value.family==="Times New Roman, Times, serif"?
+        '"Times New Roman", Times, serif':value.family;
+      style.push("font-family:"+family+"!important");
+    }
     if(value.fontSize)style.push("font-size:"+value.fontSize+"px!important");
     if(value.color)style.push("color:"+value.color+"!important");
     if(value.backgroundColor)style.push("background-color:"+value.backgroundColor+"!important");
