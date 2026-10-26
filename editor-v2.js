@@ -2203,7 +2203,9 @@ function bindLiveDocument(){
   if(livePatches.size&&count<livePatches.size)
     status("Some live-page edits could not be reapplied; the source may have changed");
   const sheet=doc.createElement("style");
-  sheet.textContent='[data-moon-v2-live-selected]{outline:2px solid #287dbb!important;outline-offset:2px!important;cursor:crosshair!important}';
+  sheet.textContent='[data-moon-v2-live-selected]{outline:2px solid #287dbb!important;outline-offset:2px!important;cursor:crosshair!important}'+
+    '[data-moon-v2-multi-selected]{outline:2px dashed #bf3d8a!important;outline-offset:3px!important;}'+
+    '[data-moon-v2-live-selected][data-moon-v2-multi-selected]{outline:3px solid #287dbb!important;}';
   (doc.head||doc.documentElement).append(sheet);
   doc.addEventListener("keydown",event=>{
     if(workspaceMode!=="live")return;
@@ -2215,6 +2217,9 @@ function bindLiveDocument(){
       return;
     }
     if(event.target.closest?.("input,textarea,select,[contenteditable=true]"))return;
+    if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==="a"){
+      event.preventDefault();selectAllLiveAdded();return;
+    }
     if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==="c"&&liveSelected?.node){
       if(doc.defaultView.getSelection()?.toString().trim())return;
       event.preventDefault();copyLiveSelection();return;
@@ -2262,6 +2267,12 @@ function bindLiveDocument(){
     if(link&&!event.altKey)return; // Normal link navigation remains possible.
     const target=liveEventTarget(event);
     if(!target||!doc.querySelector("main")?.contains(target))return;
+    if(event.shiftKey&&LIVE_ADDED_ID.test(liveSelector(target))){
+      event.preventDefault();
+      liveSuppressClickUntil=performance.now()+250;
+      selectLiveElement(target,true);
+      return;
+    }
     if(target!==liveSelected?.node)selectLiveElement(target);
     // A touch tap selects without capturing the pointer, so users can still
     // scroll the responsive webpage. Mouse/pen can drag immediately.
@@ -2307,7 +2318,7 @@ function bindLiveDocument(){
       }catch{status("Cannot open an invalid webpage link");return;}
     }
     const node=liveEventTarget(event);
-    if(node)selectLiveElement(node);
+    if(node)selectLiveElement(node,event.shiftKey);
     else clearLiveSelection();
   },true);
   doc.addEventListener("dblclick",event=>{
@@ -3155,6 +3166,16 @@ function showPublishResult(result){
 function attachEvents(){
   $("page").addEventListener("change",event=>changePage(event.target.value));
   $("liveElementSearch").addEventListener("input",renderLiveLayers);
+  $("liveSelectAdded").addEventListener("click",selectAllLiveAdded);
+  $("liveClearAdded").addEventListener("click",()=>clearLiveSelection());
+  const arrangement={
+    liveAlignLeft:"alignLeft",liveAlignCenter:"alignCenter",
+    liveAlignRight:"alignRight",liveAlignTop:"alignTop",
+    liveAlignMiddle:"alignMiddle",liveAlignBottom:"alignBottom",
+    liveDistributeH:"distributeH",liveDistributeV:"distributeV"
+  };
+  for(const [id,mode] of Object.entries(arrangement))
+    $(id).addEventListener("click",()=>arrangeSelectedLive(mode));
   $("liveElementList").addEventListener("click",event=>{
     const button=event.target.closest?.("button[data-live-selector]");
     if(!button||workspaceMode!=="live")return;
@@ -3163,7 +3184,7 @@ function attachEvents(){
     const node=LIVE_ADDED_ID.test(key)?findAddedNode(doc,key):
       doc?.querySelector(key);
     if(!node)return;
-    selectLiveElement(node);
+    selectLiveElement(node,event.shiftKey);
     node.scrollIntoView({block:"center",inline:"nearest"});
     syncLiveOverlay();
   });
@@ -3734,6 +3755,9 @@ function attachEvents(){
       event.preventDefault();redoAction();return;
     }
     if(workspaceMode==="live"){
+      if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==="a"){
+        event.preventDefault();selectAllLiveAdded();return;
+      }
       if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==="c"&&liveSelected?.node){
         event.preventDefault();copyLiveSelection();return;
       }
