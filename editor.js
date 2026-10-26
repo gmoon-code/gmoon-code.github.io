@@ -1269,6 +1269,12 @@
     const sel=freeSelected();
     if(!sel||event.button!==0||freeGesture)return;
     event.preventDefault();event.stopPropagation();
+    // Safety lock: legacy resize reparents original content and can destabilize
+    // document flow. Never mutate the draft through these broken handles.
+    if(direction!=="move"){
+      notice("Resizing is temporarily disabled to protect your page while the resize engine is repaired. Your current layout has not been changed.","Resize safety lock");
+      return;
+    }
     const base=freeGeometry(sel);
     const view=state.frameDoc.defaultView;
     freeGesture={id:event.pointerId,direction,startX:event.clientX,startY:event.clientY,
