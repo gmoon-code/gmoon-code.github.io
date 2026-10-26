@@ -6,6 +6,7 @@ const original='<!doctype html><html lang="en"><head><style>'+
   'main{margin:24px auto;padding:24px;width:760px}p{font:18px Georgia}'+
   '</style></head><body><main><h1>Contact</h1>'+
   '<p>This original paragraph must remain unchanged.</p>'+
+  '<img src="assets/profile-portrait.webp" alt="Original portrait">'+
   '</main></body></html>';
 let submitted;
 test.beforeEach(async({page})=>{
@@ -84,14 +85,31 @@ test('Add Shape, Duplicate and Delete remain reversible in live mode',async({pag
   await page.locator('#redo').click();
   await expect(frame.locator('[data-moon-v2-added-id]')).toHaveCount(1);
 });
-test('Add Image from website asset library without changing modes',async({page})=>{
+test('Add an image from the real-page asset library without switching modes',async({page})=>{
   const frame=page.frameLocator('#livePageFrame');
-  await page.locator('#page').selectOption('index.html');
-  // Index images are loaded from GitHub; the test supplies its own page source.
-  await page.locator('#page').selectOption('contact.html');
-  await page.locator('#addText').click();
-  await expect(frame.locator('[data-moon-v2-added-id]')).toHaveCount(1);
+  await expect(page.locator('#imageLibrary button')).not.toHaveCount(0);
+  await page.locator('#imageLibrary button').first().click();
+  await expect(frame.locator('img[data-moon-v2-added-id]')).toHaveCount(1);
+  await expect(frame.locator('img[data-moon-v2-added-id]'))
+    .toHaveAttribute('src','assets/profile-portrait.webp');
   await expect(page.locator('#liveMode')).toHaveAttribute('aria-pressed','true');
+  await page.locator('#liveAddedWidth').fill('240');
+  await page.locator('#liveAddedWidth').press('Tab');
+  await expect(frame.locator('img[data-moon-v2-added-id]')).toHaveCSS('width','240px');
+});
+test('Copy and paste an independent shape without duplicating its stable ID',async({page})=>{
+  const frame=page.frameLocator('#livePageFrame');
+  await page.locator('#addShape').click();
+  await expect(page.locator('#liveCopyObject')).toBeEnabled();
+  await page.locator('#liveCopyObject').click();
+  await expect(page.locator('#livePasteObject')).toBeEnabled();
+  await page.locator('#livePasteObject').click();
+  await expect(frame.locator('div[data-moon-v2-added-id]')).toHaveCount(2);
+  const ids=await frame.locator('div[data-moon-v2-added-id]').evaluateAll(nodes=>
+    nodes.map(node=>node.getAttribute('data-moon-v2-added-id')));
+  expect(new Set(ids).size).toBe(2);
+  await page.reload({waitUntil:'domcontentloaded'});
+  await expect(frame.locator('div[data-moon-v2-added-id]')).toHaveCount(2);
 });
 test('Github live publishing retains original HTML and inserts new objects once',async({page})=>{
   const frame=page.frameLocator('#livePageFrame');
