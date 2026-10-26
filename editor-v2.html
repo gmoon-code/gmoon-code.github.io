@@ -127,6 +127,20 @@
           <textarea id="liveImageAlt" rows="2"></textarea>
           <button id="applyLiveImage" type="button">Apply image change</button>
         </div>
+        <div id="liveLayoutControls" class="live-layout-controls" hidden>
+          <h3>Free placement on this screen</h3>
+          <p class="help">Drag the selected text or image to move it. Resize images using the corner and edge handles. Other page elements stay in their original flow.</p>
+          <div class="property-grid">
+            <label>Horizontal offset <input type="number" id="liveMoveX" step="1" value="0"></label>
+            <label>Vertical offset <input type="number" id="liveMoveY" step="1" value="0"></label>
+            <label>Width scale <input type="number" id="liveScaleX" min="20" max="500" step="1" value="100"></label>
+            <label>Height scale <input type="number" id="liveScaleY" min="20" max="500" step="1" value="100"></label>
+          </div>
+          <div class="inline-actions">
+            <button id="resetLiveLayout" type="button">Reset position on this screen</button>
+          </div>
+          <p class="help">Positioning is saved independently for desktop, tablet and phone and included only in draft previews or staging.</p>
+        </div>
         <div class="inline-actions">
           <button id="revertLiveElement" type="button" disabled>Revert this element</button>
           <button id="previewLiveEdits" type="button">Preview live-page draft</button>
