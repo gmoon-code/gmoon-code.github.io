@@ -614,3 +614,23 @@ test('real academic pages load with source styles inside the faithful live works
     await expect(page.locator('#scrollspace')).toBeHidden();
   }
 });
+
+test('Focus page expands actual live website without changing its viewport or draft',async({page})=>{
+  const live=page.frameLocator('#livePageFrame');
+  await expect(live.locator('main h2')).toHaveText('Research overview');
+  const before=await page.locator('#livePageShell').boundingBox();
+  await page.locator('#focusPage').click();
+  await expect(page.locator('#focusPage')).toHaveAttribute('aria-pressed','true');
+  await expect(page.locator('.left-panel')).toBeHidden();
+  await expect(page.locator('.right-panel')).toBeHidden();
+  const enlarged=await page.locator('#livePageShell').boundingBox();
+  expect(enlarged.width).toBeGreaterThan(before.width+120);
+  await expect(page.locator('#livePageFrame')).toHaveCSS('width','1160px');
+  await expect(live.locator('main h2')).toHaveCSS('font-size','30px');
+  await page.locator('#devicePreview').selectOption('phone');
+  await expect(page.locator('#livePageFrame')).toHaveCSS('width','390px');
+  await page.locator('#focusPage').click();
+  await expect(page.locator('.left-panel')).toBeVisible();
+  await expect(page.locator('.right-panel')).toBeVisible();
+  await expect(live.locator('main h2')).toHaveText('Research overview');
+});
