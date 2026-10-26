@@ -257,6 +257,17 @@
     <p>GitHub file to update: <code id="stagePath">index.html</code></p>
     <div id="publishPatchList" class="publish-patches" aria-label="Saved edits that will be published"></div>
     <button type="button" id="checkPublishEdits">Check saved edits before publishing</button>
+    <details id="imageReconnectPanel" class="image-reconnect" hidden>
+      <summary>Reconnect an image edit to the original page</summary>
+      <p class="help">If an image was moved or its original reference changed, select the saved edit and the correct original image. Your image replacement, size and styling edits will be kept. Nothing publishes until you explicitly confirm.</p>
+      <label for="reconnectSavedImage">Saved image edit</label>
+      <select id="reconnectSavedImage"></select>
+      <label for="reconnectSourceImage">Existing image in <span id="reconnectPageName">this page</span></label>
+      <select id="reconnectSourceImage"></select>
+      <img id="reconnectImagePreview" alt="Preview of selected image in original webpage" hidden>
+      <p id="reconnectSourceInfo" class="help"></p>
+      <button type="button" id="reconnectImageButton">Use this original image for the saved edit</button>
+    </details>
     <p class="help">Each edit must match a unique element in the original page. You can remove an unmatched edit from the list above without discarding the others. The editor checks the latest file in GitHub when you publish.</p>
     <label for="githubToken">GitHub fine-grained personal access token (Contents: Read and write)</label>
     <input id="githubToken" type="password" autocomplete="off" spellcheck="false" placeholder="github_pat_…" required>
