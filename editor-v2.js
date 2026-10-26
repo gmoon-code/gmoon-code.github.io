@@ -251,6 +251,7 @@ function makeSceneElement(obj){
 const LIVE_WIDTHS={desktop:1160,tablet:768,phone:390};
 function setWorkspaceMode(mode){
   if(mode!=="live"&&mode!=="design")return;
+  if(mode!=="live")cancelLiveText();
   workspaceMode=mode;
   const isLive=mode==="live";
   $("liveViewport").hidden=!isLive;
@@ -270,6 +271,7 @@ function setWorkspaceMode(mode){
   $("workspaceFooter").textContent=isLive?
     "Original page · read-only · Choose Desktop, Tablet or Phone · Click a text block or image to copy into the free canvas":
     "Drag to move · Eight resize handles · Double-click text to edit · Double-click empty canvas to add text · Drop images · Shift-click for multiple selection";
+  renderLiveInspector();
   if(isLive)fitLivePage();
   else fitCanvas();
 }
@@ -444,6 +446,7 @@ function clearLiveSelection(){
     liveSelected.node.removeAttribute("data-moon-v2-live-selected");
   liveSelected=null;
   $("copyLiveObject").disabled=true;
+  renderLiveInspector();
 }
 function selectLiveElement(node){
   clearLiveSelection();
@@ -452,6 +455,7 @@ function selectLiveElement(node){
   liveSelected={node,page:currentPage};
   node.setAttribute("data-moon-v2-live-selected","");
   $("copyLiveObject").disabled=false;
+  renderLiveInspector();
   const label=(node.tagName==="IMG"?node.alt||"image":node.textContent||"text")
     .trim().replace(/\s+/g," ").slice(0,80);
   status("Live element selected: "+label+" · Original website unchanged");
@@ -465,11 +469,15 @@ function bindLiveDocument(){
       "This page could not be displayed. Check that the selected HTML page exists in the site repository.";
     fitLivePage();return;
   }
+  const count=applyPatchesToDocument(doc);
+  if(livePatches.size&&count<livePatches.size)
+    status("Some live-page edits could not be reapplied; the source may have changed");
   const sheet=doc.createElement("style");
   sheet.textContent='[data-moon-v2-live-selected]{outline:2px solid #287dbb!important;outline-offset:2px!important;cursor:crosshair!important}';
   (doc.head||doc.documentElement).append(sheet);
   doc.addEventListener("click",event=>{
     if(workspaceMode!=="live")return;
+    if(liveEditing)return;
     const link=event.target.closest?.("a[href]");
     if(link){event.preventDefault();}
     const node=event.target.closest?.("h1,h2,h3,h4,h5,h6,p,li,figcaption,blockquote,img");
@@ -893,8 +901,10 @@ async function importPage(force=false){
 function changePage(page){
   if(!PAGES.has(page))return;
   ++loadSerial;clearTimeout(saveTimer);lastTap=null;pageImages=[];
+  cancelLiveText();
   renderImageLibrary();
   currentPage=page;
+  loadLiveDraft(page);
   history=[];redo=[];selected.clear();activeId=null;
   const empty={version:VERSION,page,width:STANDARD_WIDTH,height:1080,objects:[],nextId:1};
   try{
@@ -992,6 +1002,23 @@ function attachEvents(){
   $("devicePreview").addEventListener("change",()=>fitLivePage());
   $("reloadLive").addEventListener("click",()=>loadLivePage());
   $("copyLiveObject").addEventListener("click",copySelectedLiveElement);
+  $("editLiveText").addEventListener("click",editLiveText);
+  $("saveLiveText").addEventListener("click",saveLiveText);
+  $("cancelLiveText").addEventListener("click",cancelLiveText);
+  $("applyLiveImage").addEventListener("click",applyLiveImage);
+  $("revertLiveElement").addEventListener("click",revertLiveElement);
+  $("previewLiveEdits").addEventListener("click",async()=>{
+    try{
+      $("previewFrame").srcdoc=await sourcePreservingHtml(new URL(".",location.href).href);
+      $("previewDialog").showModal();
+    }catch(error){status(error.message||"Could not prepare original-layout preview");}
+  });
+  $("exportLiveEdits").addEventListener("click",async()=>{
+    try{
+      const html=await sourcePreservingHtml("https://gmoon-code.github.io/");
+      download(currentPage.replace(".html","-original-layout-draft.html"),html,"text/html");
+    }catch(error){status(error.message||"Could not export original-layout draft");}
+  });
   window.addEventListener("resize",()=>{if(workspaceMode==="live")fitLivePage();});
   $("importScene").addEventListener("click",()=>$("sceneFile").click());
   $("sceneFile").addEventListener("change",async event=>{
