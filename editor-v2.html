@@ -164,7 +164,10 @@
               <label>Text box width (px) <input type="number" id="liveTextBoxWidth" min="64" max="4000" step="1"></label>
               <label>Reserved height (px) <input type="number" id="liveTextBoxHeight" min="24" max="5000" step="1"></label>
             </div>
-            <p class="help">When enabled, resize handles change the text box and its line breaks. Reserved height keeps following page elements in their original positions. Text extending beyond this height may overlap other content.</p>
+            <p class="help">When enabled, resize handles change the text box and its line breaks. Its height reserves space in the page. If the text becomes taller, it may overlap content below.</p>
+            <p id="liveReflowWarning" class="help reflow-warning" role="status" hidden></p>
+            <button id="liveFitReflowHeight" type="button" disabled>Fit height to wrapped text</button>
+            <p class="help">Fitting the height deliberately makes room for the whole paragraph and can move following sections down. Undo is available.</p>
           </div>
           <div class="inline-actions">
             <button id="resetLiveLayout" type="button">Reset position on this screen</button>
