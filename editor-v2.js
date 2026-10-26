@@ -261,7 +261,7 @@ function startGesture(event,id,dir){
   if(dir&&selected.size>1){setSelection([id],id);}
   const ids=dir?[id]:[...selected];
   const baselines=ids.map(key=>({id:key,...copy(lookup(key))}));
-  gesture={pointer:event.pointerId,dir:dir||"move",x:event.clientX,y:event.clientY,
+  gesture={pointer:event.pointerId,clickedId:id,dir:dir||"move",x:event.clientX,y:event.clientY,
     ids,baselines,snapshot:copy(scene),moved:false,aspect:obj.w/obj.h,kind:obj.type};
   $("stage").setPointerCapture(event.pointerId);
 }
@@ -310,7 +310,7 @@ function endGesture(event){
   }
   render();
   if(g.moved||g.dir!=="move"){lastTap=null;return;}
-  const current={id:g.ids[0],x:event.clientX,y:event.clientY,time:performance.now()};
+  const current={id:g.clickedId,x:event.clientX,y:event.clientY,time:performance.now()};
   if(lastTap&&lastTap.id===current.id&&current.time-lastTap.time<440&&
      Math.hypot(current.x-lastTap.x,current.y-lastTap.y)<10){
     lastTap=null;
@@ -524,7 +524,7 @@ function attachEvents(){
   $("stage").addEventListener("pointercancel",endGesture);
   $("stage").addEventListener("dblclick",event=>{
     const node=event.target.closest(".scene-object");
-    if(node)beginTextEdit(Number(node.dataset.id));
+    if(node&&editingId===null)beginTextEdit(Number(node.dataset.id));
   });
   $("stage").addEventListener("focusout",event=>{
     if(editingId!==null&&
