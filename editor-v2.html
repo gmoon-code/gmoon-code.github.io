@@ -237,6 +237,13 @@
               Keep image proportions when resizing
             </label>
             <p class="help">Resize the image frame with its handles. Its contents keep their natural proportions. Uncheck to freely size the frame without stretching the photo.</p>
+            <div id="liveAddedImageFit" hidden>
+              <label for="liveImageFit">Photo framing</label>
+              <select id="liveImageFit">
+                <option value="contain">Fit entire photo</option>
+                <option value="cover">Fill frame and crop edges</option>
+              </select>
+            </div>
           </div>
           <div id="liveOriginalDimensions" hidden>
             <div class="property-grid">
