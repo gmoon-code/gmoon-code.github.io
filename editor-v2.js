@@ -653,11 +653,13 @@ function setLiveReflow(enabled){
   if(!node?.matches("h1,h2,h3,h4,h5,h6,p,blockquote,figcaption"))return;
   const patch=livePatchForSelected();if(!patch)return;
   const before=liveSnapshot(),device=liveDevice();
-  const layout={...liveLayoutFor(patch.selector)};
+  const layout=normaliseTextBoxLayout(node,liveLayoutFor(patch.selector));
   if(enabled){
-    layout.wrapWidth=clamp(Math.round(node.offsetWidth),64,4000);
-    layout.reserveHeight=clamp(Math.round(node.offsetHeight),24,5000);
+    layout.wrapWidth=clamp(Math.round(node.getBoundingClientRect().width),64,4000);
+    layout.reserveHeight=clamp(Math.round(node.getBoundingClientRect().height),24,5000);
   }else{
+    // The legacy switch is kept for imported drafts. Text reflow remains
+    // enabled by default whenever a user resizes a text element.
     delete layout.wrapWidth;delete layout.reserveHeight;
   }
   patch.layout={...patch.layout,[device]:layout};
@@ -1197,23 +1199,24 @@ function moveLiveGesture(event){
     next.dx=clamp(Math.round(g.layout.dx+snap.dx),-4000,4000);
     next.dy=clamp(Math.round(g.layout.dy+snap.dy),-4000,4000);
     drawLiveSnapGuides(snap.x,snap.y,g.node.ownerDocument);
-  }else if(g.layout.wrapWidth!==undefined&&g.node.matches(
-    "h1,h2,h3,h4,h5,h6,p,blockquote,figcaption")){
+  }else if(g.node.matches(LIVE_REFLOW_TEXT)){
+    // Text-box handles change CSS width/height, never transform scale.
+    // This behaves like a document or presentation text box: words wrap
+    // naturally and glyph width/height remain unchanged.
     const dir=g.dir;
-    const appliedScale=Math.max(.2,Math.abs((g.layout.osx||1)*g.layout.sx));
-    const heightScale=Math.max(.2,Math.abs((g.layout.osy||1)*g.layout.sy));
-    if(dir.includes("e")||dir.includes("w")){
-      const amount=deltaX/appliedScale*(dir.includes("w")?-1:1);
-      next.wrapWidth=Math.round(clamp(g.layout.wrapWidth+amount,64,4000));
-      if(dir.includes("w"))next.dx=clamp(Math.round(g.layout.dx+
-        (g.layout.wrapWidth-next.wrapWidth)*appliedScale),-4000,4000);
-    }
-    if(dir.includes("n")||dir.includes("s")){
-      const amount=deltaY/heightScale*(dir.includes("n")?-1:1);
-      next.reserveHeight=Math.round(clamp(g.layout.reserveHeight+amount,24,5000));
-      if(dir.includes("n"))next.dy=clamp(Math.round(g.layout.dy+
-        (g.layout.reserveHeight-next.reserveHeight)*heightScale),-4000,4000);
-    }
+    const originalWidth=g.rect.width,originalHeight=g.rect.height;
+    const nextWidth=Math.round(clamp(originalWidth+
+      (dir.includes("e")?deltaX:0)-(dir.includes("w")?deltaX:0),64,4000));
+    const nextHeight=Math.round(clamp(originalHeight+
+      (dir.includes("s")?deltaY:0)-(dir.includes("n")?deltaY:0),24,5000));
+    const normal=normaliseTextBoxLayout(g.node,g.layout);
+    Object.assign(next,normal);
+    next.wrapWidth=nextWidth;
+    next.reserveHeight=nextHeight;
+    if(dir.includes("w"))next.dx=clamp(Math.round(g.layout.dx+
+      (originalWidth-nextWidth)),-4000,4000);
+    if(dir.includes("n"))next.dy=clamp(Math.round(g.layout.dy+
+      (originalHeight-nextHeight)),-4000,4000);
   }else{
     const dir=g.dir;
     let width=clamp(g.rect.width+(dir.includes("e")?deltaX:0)-
