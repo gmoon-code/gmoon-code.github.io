@@ -300,6 +300,153 @@ function fitLivePage(){
   $("zoom").value=String(Math.round(liveScale*100));
   $("zoomValue").textContent=Math.round(liveScale*100)+"%";
 }
+function liveSelector(node){
+  const steps=[];
+  for(let current=node;current&&current.tagName!=="MAIN";current=current.parentElement){
+    if(!current.parentElement||steps.length>12)return null;
+    const siblings=[...current.parentElement.children].filter(el=>el.tagName===current.tagName);
+    steps.unshift(current.tagName.toLowerCase()+":nth-of-type("+(siblings.indexOf(current)+1)+")");
+  }
+  return steps.length?"main > "+steps.join(" > "):null;
+}
+function validLivePatch(p){
+  return p&&typeof p.selector==="string"&&p.selector.length<800&&
+    /^main(?: > [a-z][a-z0-9-]*:nth-of-type\(\d{1,4}\)){1,12}$/.test(p.selector)&&
+    typeof p.expected==="string"&&p.expected.length<=350&&
+    (p.kind==="text"&&typeof p.html==="string"&&p.html.length<=70000||
+     p.kind==="image"&&safeImageSource(p.src)&&typeof p.alt==="string"&&p.alt.length<=300);
+}
+function loadLiveDraft(page){
+  livePatches=new Map();
+  try{
+    const patches=JSON.parse(localStorage.getItem(LIVE_DRAFT_KEY+page)||"[]");
+    if(!Array.isArray(patches)||patches.length>180)return;
+    for(const patch of patches){
+      if(validLivePatch(patch))livePatches.set(patch.selector,patch);
+    }
+  }catch{}
+}
+function renderLiveEditCount(){
+  $("liveEditCount").textContent=livePatches.size?
+    livePatches.size+" saved edit"+(livePatches.size===1?"":"s")+
+      " · Original website unchanged":
+    "No saved live-page edits. Original website unchanged.";
+}
+function storeLiveDraft(){
+  try{
+    localStorage.setItem(LIVE_DRAFT_KEY+currentPage,
+      JSON.stringify([...livePatches.values()]));
+    status("Original-layout edits saved locally · Website unchanged");
+  }catch{status("Local draft could not be saved · Export the edited HTML");}
+  renderLiveEditCount();
+}
+function renderLiveInspector(){
+  const live=workspaceMode==="live",sel=liveSelected;
+  $("liveInspector").hidden=!live;
+  const node=sel?.node,tag=node?.tagName;
+  $("liveSelectionLabel").textContent=node?
+    tag.toLowerCase()+" · "+(node.alt||node.textContent||"").trim()
+      .replace(/\s+/g," ").slice(0,95):
+    "Choose a heading, paragraph or image in the live website.";
+  $("liveTextControls").hidden=!node||tag==="IMG";
+  $("liveImageControls").hidden=!node||tag!=="IMG";
+  $("editLiveText").disabled=!node||tag==="IMG"||!!liveEditing;
+  $("saveLiveText").disabled=!liveEditing;
+  $("cancelLiveText").disabled=!liveEditing;
+  if(node&&tag==="IMG"&&!liveEditing){
+    $("liveImageSrc").value=node.getAttribute("src")||"";
+    $("liveImageAlt").value=node.alt||"";
+  }
+  const selector=node&&liveSelector(node);
+  $("revertLiveElement").disabled=!selector||!livePatches.has(selector);
+  renderLiveEditCount();
+}
+function applyPatchesToDocument(doc,strict=false){
+  let count=0;
+  for(const patch of livePatches.values()){
+    if(!validLivePatch(patch)){
+      if(strict)throw Error("Invalid saved live-page edit");continue;
+    }
+    const node=doc.querySelector(patch.selector);
+    if(!node||(patch.kind==="image")!==(node.tagName==="IMG")){
+      if(strict)throw Error("The saved edit's element is missing");continue;
+    }
+    const original=patch.kind==="image"?node.getAttribute("src")||"":
+      (node.textContent||"").trim().slice(0,300);
+    if(original!==patch.expected){
+      if(strict)throw Error("The original page has changed since the edit");continue;
+    }
+    if(patch.kind==="image"){
+      node.setAttribute("src",patch.src);
+      node.setAttribute("alt",patch.alt);
+    }else node.innerHTML=cleanRich(patch.html);
+    count++;
+  }
+  return count;
+}
+function editLiveText(){
+  const node=liveSelected?.node;
+  if(!node||node.tagName==="IMG"||liveEditing)return;
+  const selector=liveSelector(node);if(!selector)return;
+  liveEditing={node,selector,originalHtml:node.innerHTML,
+    expected:livePatches.get(selector)?.expected||
+      (node.textContent||"").trim().slice(0,300)};
+  node.contentEditable="true";node.focus();
+  renderLiveInspector();
+  status("Editing original-layout draft · Save or cancel when finished");
+}
+function saveLiveText(){
+  if(!liveEditing)return;
+  const edit=liveEditing;liveEditing=null;
+  const html=cleanRich(edit.node.innerHTML);
+  edit.node.removeAttribute("contenteditable");
+  edit.node.innerHTML=html;
+  livePatches.set(edit.selector,{
+    selector:edit.selector,kind:"text",expected:edit.expected,html
+  });
+  storeLiveDraft();renderLiveInspector();fitLivePage();
+}
+function cancelLiveText(){
+  if(!liveEditing)return;
+  const edit=liveEditing;liveEditing=null;
+  if(edit.node?.isConnected){
+    edit.node.removeAttribute("contenteditable");
+    edit.node.innerHTML=edit.originalHtml;
+  }
+  renderLiveInspector();
+}
+function applyLiveImage(){
+  const node=liveSelected?.node;
+  if(!node||node.tagName!=="IMG")return;
+  const src=$("liveImageSrc").value.trim();
+  const alt=$("liveImageAlt").value.slice(0,300);
+  if(!safeImageSource(src)){
+    status("Please choose a site image under assets/");return;
+  }
+  const selector=liveSelector(node);if(!selector)return;
+  const expected=livePatches.get(selector)?.expected||node.getAttribute("src")||"";
+  node.setAttribute("src",src);node.setAttribute("alt",alt);
+  livePatches.set(selector,{selector,kind:"image",expected,src,alt});
+  storeLiveDraft();renderLiveInspector();
+}
+function revertLiveElement(){
+  const selector=liveSelected&&liveSelector(liveSelected.node);
+  if(!selector||!livePatches.has(selector))return;
+  cancelLiveText();livePatches.delete(selector);
+  storeLiveDraft();loadLivePage();
+}
+async function sourcePreservingHtml(rootHref){
+  const response=await fetch(new URL(currentPage,location.href),{cache:"no-store"});
+  if(!response.ok)throw Error("Could not load the original HTML");
+  const doc=new DOMParser().parseFromString(await response.text(),"text/html");
+  if(applyPatchesToDocument(doc,true)!==livePatches.size)
+    throw Error("Some saved edits no longer match this page");
+  for(const base of doc.querySelectorAll("base"))base.remove();
+  const base=doc.createElement("base");
+  base.setAttribute("href",rootHref);
+  doc.head.prepend(base);
+  return "<!doctype html>\n"+doc.documentElement.outerHTML;
+}
 function clearLiveSelection(){
   if(liveSelected?.node?.isConnected)
     liveSelected.node.removeAttribute("data-moon-v2-live-selected");
