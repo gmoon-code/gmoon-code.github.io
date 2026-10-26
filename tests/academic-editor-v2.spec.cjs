@@ -939,3 +939,36 @@ test('text scaling can be changed numerically and reset for individual viewport'
   const reset=await heading.boundingBox();
   expect(Math.abs(reset.width-original.width)).toBeLessThan(1);
 });
+
+test('selecting and moving a real website section preserves nested links and HTML on staging',async({page})=>{
+  const fixture='<!doctype html><html><body><main>'+
+    '<section class="research-card" style="padding:25px;background:#edf6e8">'+
+    '<h2>Whole card</h2><p>Text and <em>emphasis</em> remain intact.</p>'+
+    '<a href="#citation">Read reference</a><img src="assets/photo.webp" alt="Illustration">'+
+    '</section><p id="citation">A linked reference.</p></main></body></html>';
+  await page.route('**/about.html',route=>route.fulfill({
+    status:200,contentType:'text/html',body:fixture
+  }));
+  await page.locator('#reloadLive').click();
+  const live=page.frameLocator('#livePageFrame');
+  const card=live.locator('main section.research-card');
+  await live.locator('main section h2').click({modifiers:['Alt']});
+  await expect(live.locator('#moon-v2-live-overlay [data-direction="se"]')).toBeVisible();
+  await expect(page.locator('#liveTextControls')).toBeHidden();
+  await expect(page.locator('#liveImageControls')).toBeHidden();
+  await page.locator('#liveMoveX').fill('75');
+  await page.locator('#liveMoveX').press('Tab');
+  const style=await card.evaluate(node=>getComputedStyle(node).translate);
+  expect(style).toContain('75px');
+  const pending=page.waitForEvent('download');
+  await page.locator('#exportLiveEdits').click();
+  const output=fs.readFileSync(await (await pending).path(),'utf8');
+  expect(output).toContain('<section class="research-card"');
+  expect(output).toContain('<em>emphasis</em>');
+  expect(output).toContain('href="#citation"');
+  expect(output).toContain('id="moon-v2-live-layout"');
+  await page.locator('#resetLiveLayout').click();
+  await expect(page.locator('#liveEditCount')).toContainText('No saved live-page edits');
+  await page.reload();
+  await expect(live.locator('main section h2')).toHaveText('Whole card');
+});
