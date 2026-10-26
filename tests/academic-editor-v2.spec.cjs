@@ -720,3 +720,18 @@ test('source-preserving export keeps reference anchors local and resolves site a
   expect(html).toContain('src="https://gmoon-code.github.io/assets/portrait.webp"');
   expect(html).toContain('url(https://gmoon-code.github.io/assets/portrait.webp)');
 });
+
+test('live-page asset status identifies missing original resources',async({page})=>{
+  await page.route('**/about.html',route=>route.fulfill({
+    status:200,contentType:'text/html',
+    body:'<!doctype html><html><head><link rel="stylesheet" href="missing-editor-test.css"></head>'+
+      '<body><main><h1>Resource test</h1>'+
+      '<img src="assets/missing-editor-test-picture.webp" alt="Missing"></main></body></html>'
+  }));
+  await page.locator('#reloadLive').click();
+  const live=page.frameLocator('#livePageFrame');
+  await expect(live.locator('main h1')).toHaveText('Resource test');
+  await expect(page.locator('#liveAssetStatus')).toContainText('resource warning');
+  await expect(page.locator('#liveAssetStatus')).toContainText('missing image');
+  await expect(page.locator('#liveAssetStatus')).toHaveClass(/has-warning/);
+});
