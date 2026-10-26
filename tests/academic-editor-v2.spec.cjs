@@ -94,6 +94,8 @@ test('responsive HTML export and staging publication only, with no saved token',
   await page.locator('#githubToken').fill('testing-token-only');await page.locator('#confirmPublish').click();
   await expect(page.locator('#status')).toContainText('Staging published');
   expect(observed.message).toContain('staging preview');
-  expect(Buffer.from(observed.content,'base64').toString('utf8')).toContain('Research overview');
+  const stagedHtml=Buffer.from(observed.content,'base64').toString('utf8');
+  expect(stagedHtml).toContain('Research overview');
+  expect(stagedHtml).toContain('../assets/profile-portrait.webp');
   expect(await page.evaluate(()=>JSON.stringify(localStorage))).not.toContain('testing-token-only');
 });
