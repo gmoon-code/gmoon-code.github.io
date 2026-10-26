@@ -1762,7 +1762,8 @@ async function publishGithub(token,target){
   const result=await response.json();
   if(!result?.commit?.sha)throw Error("GitHub did not confirm a commit.");
   return {url:"https://gmoon-code.github.io/"+path,
-    commit:result.commit.sha,target,path};
+    commit:result.commit.sha,target,path,
+    publishedHtml:target==="live"?html:null};
 }
 function updatePublishTarget(){
   const target=$("publishTarget").value,live=target==="live";
@@ -2137,6 +2138,20 @@ function attachEvents(){
       $("forgetGithubToken").hidden=!githubTabToken;
       $("publishDialog").close();
       showPublishResult(result);
+      if(result.target==="live"&&result.publishedHtml){
+        // Rebase draft expectations on the *confirmed* GitHub commit. Future
+        // changes in the same tab then compare with what was just published,
+        // even if GitHub Pages is still serving the previous deployed build.
+        const committed=new DOMParser().parseFromString(result.publishedHtml,"text/html");
+        for(const patch of livePatches.values()){
+          const node=committed.querySelector(patch.selector);
+          if(node)patch.expected=patch.kind==="image"?
+            node.getAttribute("src")||"":
+            (node.textContent||"").trim().slice(0,300);
+        }
+        liveHistory=[];liveRedo=[];
+        storeLiveDraft();refreshUndo();
+      }
       status(result.target==="live"?
         "Live page committed to GitHub · Deployment may be pending":
         "Staging page committed to GitHub · Deployment may be pending");
