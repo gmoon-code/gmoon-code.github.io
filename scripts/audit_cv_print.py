@@ -40,9 +40,16 @@ async def main():
 
     pdf = fitz.open(OUT / "cv-a4.pdf")
     checks = []
+    section_titles = {
+        "Education", "Research Interests", "Research",
+        "Professional Experience", "Student Research Supervision and Mentorship",
+        "Academic and Professional Service", "Languages and Technical Skills",
+        "Licensure and Selected Professional Development",
+    }
     for n, sheet in enumerate(pdf):
         rect = sheet.rect
         spans = []
+        orphaned_headings = []
         for block in sheet.get_text("dict")["blocks"]:
             if block.get("type") != 0:
                 continue
@@ -55,11 +62,20 @@ async def main():
             # crossings indicate clipped content or broken print layout.
             if x0 < 12 or y0 < 12 or x1 > rect.width - 12 or y1 > rect.height - 12:
                 out_of_bounds.append({"text": span["text"][:80], "bbox": span["bbox"]})
+        # A visible section heading with no explanatory content after it on
+        # this sheet is a page-flow defect even if nothing crosses the paper.
+        ordered_text = [span["text"].strip() for span in spans if span["text"].strip()]
+        for index, entry in enumerate(ordered_text):
+            if entry in section_titles:
+                following = " ".join(ordered_text[index + 1:])
+                if len(following) < 75:
+                    orphaned_headings.append(entry)
         page_pix = sheet.get_pixmap(matrix=fitz.Matrix(1.25, 1.25), alpha=False)
         page_pix.save(str(OUT / f"cv-a4-page-{n+1}.png"))
         checks.append({
             "page": n + 1, "width": rect.width, "height": rect.height,
-            "textSpanCount": len(spans), "outOfBounds": out_of_bounds
+            "textSpanCount": len(spans), "outOfBounds": out_of_bounds,
+            "orphanedHeadings": orphaned_headings
         })
     result = {"source": URL, "status": response.status if response else None,
               "pageCount": len(pdf), "computedPrintStyles": screen, "pages": checks}
@@ -77,6 +93,10 @@ async def main():
     for item in checks:
         if item["outOfBounds"]:
             failures.append(f"Text outside printable page on sheet {item['page']}.")
+        if item["orphanedHeadings"]:
+            failures.append(
+                f"Orphaned headings on sheet {item['page']}: "
+                + ", ".join(item["orphanedHeadings"]))
     print(json.dumps({"summary": result, "failures": failures}, indent=2))
     return 1 if failures else 0
 
