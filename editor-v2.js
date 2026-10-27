@@ -2350,7 +2350,8 @@ function syncLiveOverlay(){
     doc.head.append(css);
     const move=doc.createElement("button");
     move.className="moon-v2-move";move.type="button";
-    move.textContent=grouped?"Move group":"Move";
+    move.textContent=grouped?"Move group":
+      liveCropMode&&node.tagName==="IMG"?"Crop active · drag image":"Move";
     move.setAttribute("aria-label",grouped?
       "Move selected original webpage elements together":
       "Move selected live-page object");
@@ -2590,6 +2591,23 @@ function moveLiveGesture(event){
   const deltaX=event.clientX-g.startX,deltaY=event.clientY-g.startY;
   if(!g.moved&&Math.hypot(deltaX,deltaY)<3)return;
   g.moved=true;
+  if(g.dir==="crop"&&g.node.tagName==="IMG"){
+    const frame=g.rect,nw=g.node.naturalWidth,nh=g.node.naturalHeight;
+    if(!nw||!nh||frame.width<1||frame.height<1)return;
+    const scale=Math.max(frame.width/nw,frame.height/nh);
+    const overflowX=Math.max(0,nw*scale-frame.width);
+    const overflowY=Math.max(0,nh*scale-frame.height);
+    const origin=selectedImageCrop(g.patch,liveDevice());
+    const crop={fit:"cover",
+      x:overflowX?Math.round(clamp(origin.x-deltaX/overflowX*100,0,100)):50,
+      y:overflowY?Math.round(clamp(origin.y-deltaY/overflowY*100,0,100)):50};
+    const patch=copy(g.patch);
+    patch.imageCrop={...(patch.imageCrop||{}),[liveDevice()]:crop};
+    livePatches.set(g.selector,patch);
+    if(patch.kind==="insert")refreshAddedObject(g.node.ownerDocument,patch);
+    else refreshLiveLayoutRules(g.node.ownerDocument);
+    return;
+  }
   if(g.sourceGroup&&g.dir!=="move"){
     resizeLiveSourceGroup(g,deltaX,deltaY,event.shiftKey);
     syncLiveOverlay();return;
@@ -2785,7 +2803,8 @@ function finishLiveGesture(event){
     // link or selecting a different element after a drag.
     liveSuppressClickUntil=performance.now()+250;
     recordLiveHistory(g.snapshot);
-    status(g.sourceGroup?
+    status(g.dir==="crop"?"Picture crop repositioned · Undo available":
+      g.sourceGroup?
       g.sourceGroup.length+" original webpage objects "+
         (g.dir==="move"?"moved":"resized")+" together · Review before publishing":
       "Moved/resized live-page draft saved · Review changes before publishing");
@@ -3375,7 +3394,7 @@ function bindLiveDocument(){
     // Select and start a move in one pointer gesture. Previously a user had
     // to click, release and then start a *second* drag on the same element.
     const link=event.target.closest?.("a[href]");
-    if(link&&!liveSectionPickMode&&!event.altKey&&!event.shiftKey)return; // Ordinary clicks still navigate.
+    if(link&&!liveSectionPickMode&&!liveCropMode&&!event.altKey&&!event.shiftKey)return; // Ordinary clicks still navigate.
     const target=liveEventTarget(event);
     if(!target||!doc.querySelector("main")?.contains(target))return;
     if(event.shiftKey){
@@ -3392,7 +3411,9 @@ function bindLiveDocument(){
     }
     // A touch tap selects without capturing the pointer, so users can still
     // scroll the responsive webpage. Mouse/pen can drag immediately.
-    if(event.pointerType!=="touch")startLiveGesture(event,"move",target);
+    if(event.pointerType!=="touch")
+      startLiveGesture(event,liveCropMode&&target.tagName==="IMG"?
+        "crop":"move",target);
   },true);
   doc.addEventListener("pointermove",event=>{
     if(!liveSectionPickMode||liveGesture||liveEditing||workspaceMode!=="live"){
@@ -4566,6 +4587,19 @@ function attachEvents(){
   $("saveLiveText").addEventListener("click",saveLiveText);
   $("cancelLiveText").addEventListener("click",cancelLiveText);
   $("applyLiveImage").addEventListener("click",applyLiveImage);
+  $("liveCropToggle").addEventListener("click",()=>setLiveCropMode(!liveCropMode));
+  $("liveCropFit").addEventListener("change",event=>
+    applySelectedImageCrop({fit:event.target.value}));
+  for(const [id,field,out] of [
+    ["liveCropX","x","liveCropXValue"],["liveCropY","y","liveCropYValue"]]){
+    $(id).addEventListener("input",event=>{$(out).textContent=event.target.value+"%";});
+    $(id).addEventListener("change",event=>
+      applySelectedImageCrop({[field]:Number(event.target.value)}));
+  }
+  $("liveCropReset").addEventListener("click",resetSelectedImageCrop);
+  for(const [id,ratio] of [["liveCropSquare",1],["liveCrop43",4/3],
+    ["liveCrop169",16/9],["liveCropPortrait",3/4]])
+    $(id).addEventListener("click",()=>cropImageToRatio(ratio));
   for(const [field,key,multiplier] of [
     ["liveMoveX","dx",1],["liveMoveY","dy",1],
     ["liveScaleX","sx",.01],["liveScaleY","sy",.01]
