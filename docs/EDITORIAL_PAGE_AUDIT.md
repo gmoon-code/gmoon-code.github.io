@@ -13,7 +13,7 @@ A content pass is **not** equivalent to final visual approval. Automated browser
 | Page | Editorial status | Remaining verification |
 | --- | --- | --- |
 | `index.html` | Revised in preceding conversation; filename-style photo alt text fixed `fa0be6f`; full line-by-line sign-off pending | Responsive layout, all content and repetition across linked pages |
-| `research.html` | Multiple documented editorial passes in preceding conversation | Source and visual recheck after subsequent changes |
+| `research.html` | Prior full editorial passes; two missing nested section closures repaired `4c5f652`, restoring Research Interests and Related Writing to intended hierarchy | Desktop/phone layout review after DOM repair and cross-page prose verification |
 | `research-action.html` | Crosschecked against original manuscript and the teaching case; malformed table and duplicated figure fixed, commit `6467157` | Final rendered desktop/mobile and diagram flow review |
 | `research-scoping.html` | Checked against source manuscripts, selection ledger and Pierson/Kane publications; evidence and layout revisions `880c3f5`, `b267a1b` | Confirm deployment, inspect at desktop/phone, verify OSF DOI availability |
 | `projects.html` | Content and image-source pass completed, commit `0db43f0` | Full manual layout and thumbnail review at desktop and phone widths |
@@ -46,6 +46,8 @@ A content pass is **not** equivalent to final visual approval. Automated browser
 - Source-level HTML checks and GitHub Actions accessibility/external-resource audits have passed for earlier revision commits. Some screenshot and artifact-upload jobs have failed at the publishing-artifact stage even when their browser checks succeeded. Inspect each job before treating a workflow failure as a content failure.
 - An academic-editor resize regression currently fails because the test waits for a `profile-portrait` image filename removed from the Homepage markup when its images were embedded through the visual editor. Its failure occurs before image resizing is tested, so it cannot establish whether resizing works. The test and editor must be examined separately.
 - Editor V2's image-library accessible names were revised in commit `b2bc88c` after a reported `label-content-name-mismatch` on two buttons. The regression run still requires confirmation.
+- A fresh structural count across all 23 HTML source pages detected two missing `</section>` elements in `research.html`, corrected in commit `4c5f652`. All checked ordinary pages now have balanced section, division, figure, list, and table tags. This is source-level evidence, not visual verification.
+- The root HTML source scan found no unresolved in-page fragment IDs or remaining filename-style photo descriptions in ordinary markup. Generated content needs runtime inspection.
 - CSS has received targeted spacing changes; final human visual judgment is still outstanding for the edited pages.
 
 ## Next content pass
