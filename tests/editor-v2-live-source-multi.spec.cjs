@@ -686,245 +686,166 @@ test('section selection mode never navigates embedded page links',async({page})=
 });
 
 // Real 12x6 two-colour image, to verify actual visible crop pixels.
+// Use a two-colour image so cropping can be verified visually and numerically.
 const cropPng='iVBORw0KGgoAAAANSUhEUgAAAAwAAAAGCAIAAAB4jOjWAAAAGklEQVR4nGN8pizCgAr0lM+iiTAxEAEGoyIA3OwCR28dY84AAAAASUVORK5CYII=';
 const cropSource='<!doctype html><html><head><style>'+
   'body{margin:0}main{padding:90px 45px}'+
-  'img.picture{display:block;width:220px;height:120px;object-fit:contain}'+
+  'img.picture{display:block;width:240px;height:120px;object-fit:contain}'+
   '</style></head><body><main>'+
-  '<img class="picture" alt="Crop test picture" src="data:image/png;base64,'+cropPng+'">'+
-  '<p>Neighbouring original content should stay unchanged</p></main></body></html>';
+  '<img class="picture" alt="Two-colour crop test" src="data:image/png;base64,'+cropPng+'">'+
+  '<p>Following webpage content</p></main></body></html>';
 async function loadCropFixture(page){
   await page.route('https://api.github.com/repos/gmoon-code/gmoon-code.github.io/contents/research.html*',
     route=>route.fulfill({status:200,contentType:'application/json',
-      body:JSON.stringify({type:'file',sha:'crop-fixture-v1',encoding:'base64',
-        content:Buffer.from(cropSource).toString('base64')})}));
+      body:JSON.stringify({type:'file',sha:'crop-v49-fixture',
+        encoding:'base64',content:Buffer.from(cropSource).toString('base64')})}));
   await page.route('**/research.html',
     route=>route.fulfill({status:200,contentType:'text/html',body:cropSource}));
   await page.reload({waitUntil:'domcontentloaded'});
-  await expect(page.frameLocator('#livePageFrame').locator('img.picture'))
-    .toHaveCount(1);
+  await expect(page.frameLocator('#livePageFrame').locator('img.picture')).toHaveCount(1);
 }
-test('original picture crop is responsive, non-destructive and survives reload',async({page})=>{
+async function cropSide(page,side,percent){
+  const name=side[0].toUpperCase()+side.slice(1);
+  await page.locator('#liveCrop'+name).evaluate((el,v)=>{
+    el.value=String(v);el.dispatchEvent(new Event('change',{bubbles:true}));
+  },percent);
+}
+async function cropBox(node){
+  return node.evaluate(el=>{
+    const b=el.getBoundingClientRect();
+    return {x:b.x,y:b.y,w:b.width,h:b.height};
+  });
+}
+test('crop cuts the right edge without moving the left edge or modifying the image source',async({page})=>{
   await loadCropFixture(page);
   const image=page.frameLocator('#livePageFrame').locator('img.picture');
-  const initialSrc=await image.getAttribute('src');
+  const src=await image.getAttribute('src');
   await image.click();
-  await expect(page.locator('#liveCropControls')).toBeVisible();
-  await page.locator('#liveCropFit').selectOption('cover');
-  await page.locator('#liveCropX').evaluate(input=>{
-    input.value='20';input.dispatchEvent(new Event('change',{bubbles:true}));
-  });
-  await page.locator('#liveCropY').evaluate(input=>{
-    input.value='70';input.dispatchEvent(new Event('change',{bubbles:true}));
-  });
-  await expect(image).toHaveCSS('object-fit','none');
-  await expect(image).toHaveCSS('background-position','20% 70%');
-  expect(await image.getAttribute('src')).toBe(initialSrc);
-  await page.locator('#devicePreview').selectOption('phone');
-  await expect(image).toHaveCSS('object-fit','contain');
-  await page.locator('#devicePreview').selectOption('desktop');
-  await expect(image).toHaveCSS('background-position','20% 70%');
-  await page.reload({waitUntil:'domcontentloaded'});
-  await expect(image).toHaveCSS('object-fit','none');
-  await expect(image).toHaveCSS('background-position','20% 70%');
-  expect(await image.getAttribute('src')).toBe(initialSrc);
-});
-test('picture crop aspect preset changes frame without stretching source pixels',async({page})=>{
-  await loadCropFixture(page);
-  const image=page.frameLocator('#livePageFrame').locator('img.picture');
-  await image.click();
-  await page.locator('#liveCropSquare').click();
-  const box=await image.evaluate(node=>{
-    const rect=node.getBoundingClientRect();
-    return {width:rect.width,height:rect.height};
-  });
-  expect(Math.abs(box.width-box.height)).toBeLessThan(3);
-  await expect(image).toHaveCSS('object-fit','none');
-  await page.locator('#liveCropReset').click();
-  await expect(image).toHaveCSS('object-fit','contain');
-});
-test('crop mode exposes photo drag reframing without moving image frame',async({page})=>{
-  await loadCropFixture(page);
-  const image=page.frameLocator('#livePageFrame').locator('img.picture');
-  await image.click();
-  await page.locator('#liveCropToggle').click();
-  await expect(page.locator('#liveCropToggle')).toHaveAttribute('aria-pressed','true');
-  await expect(image).toHaveCSS('object-fit','none');
-  await page.locator('#liveCropZoom').evaluate(input=>{
-    input.value='200';
-    input.dispatchEvent(new Event('input',{bubbles:true}));
-    input.dispatchEvent(new Event('change',{bubbles:true}));
-  });
-  const initialPosition=await image.evaluate(node=>getComputedStyle(node).backgroundPosition);
-  const before=await image.boundingBox();
-  expect(before).toBeTruthy();
-  const x=before.x+before.width/2,y=before.y+before.height/2;
-  await page.mouse.move(x,y);
-  await page.mouse.down();
-  await page.mouse.move(x,y-24,{steps:7});
-  await page.mouse.up();
-  const after=await image.boundingBox();
+  await page.locator('#cropImageTool').click();
+  const before=await cropBox(image);
+  await cropSide(page,'right',20);
+  const after=await cropBox(image);
   expect(Math.abs(after.x-before.x)).toBeLessThan(2);
-  expect(Math.abs(after.y-before.y)).toBeLessThan(2);
-  await expect(page.locator('#liveCropToggle')).toHaveAttribute('aria-pressed','true');
-  await expect(image).toHaveCSS('object-fit','none');
-  const croppedPosition=await image.evaluate(node=>getComputedStyle(node).backgroundPosition);
-  expect(croppedPosition).not.toBe(initialPosition);
-  await page.locator('#liveCropToggle').click();
-  await expect(page.locator('#liveCropToggle')).toHaveAttribute('aria-pressed','false');
+  expect(after.w).toBeLessThan(before.w-30);
+  expect(Math.abs(after.h-before.h)).toBeLessThan(2);
+  await expect(page.locator('#liveCropRightValue')).toHaveText('20%');
+  await expect(page.locator('#liveCropLeftValue')).toHaveText('0%');
+  expect(await image.getAttribute('src')).toBe(src);
 });
-
-test('crop-to-shape options provide reversible circle and rounded photo masks',async({page})=>{
+test('left, top and bottom can be cut independently without stretching the remainder',async({page})=>{
   await loadCropFixture(page);
   const image=page.frameLocator('#livePageFrame').locator('img.picture');
   await image.click();
-  await page.locator('#liveCropSquare').click();
-  await page.locator('#liveCropShape').selectOption('circle');
+  await page.locator('#cropImageTool').click();
+  const before=await cropBox(image);
+  await cropSide(page,'left',20);
+  const left=await cropBox(image);
+  expect(left.x).toBeGreaterThan(before.x+30);
+  expect(left.w).toBeLessThan(before.w-30);
+  await cropSide(page,'top',15);
+  const top=await cropBox(image);
+  expect(top.y).toBeGreaterThan(left.y+10);
+  expect(top.h).toBeLessThan(left.h-10);
+  await cropSide(page,'bottom',10);
+  await expect(page.locator('#liveCropLeftValue')).toHaveText('20%');
+  await expect(page.locator('#liveCropRightValue')).toHaveText('0%');
+  await expect(page.locator('#liveCropTopValue')).toHaveText('15%');
+  await expect(page.locator('#liveCropBottomValue')).toHaveText('10%');
+  await expect(image).toHaveCSS('object-fit','none');
+  const css=await image.evaluate(el=>{
+    const st=getComputedStyle(el);
+    return {size:st.backgroundSize,position:st.backgroundPosition};
+  });
+  expect(css.size).toMatch(/px/);
+  expect(css.position).toMatch(/px/);
+});
+test('pink crop grip cuts the selected side without moving the opposite edge',async({page})=>{
+  await loadCropFixture(page);
+  const live=page.frameLocator('#livePageFrame'),image=live.locator('img.picture');
+  await image.click();
+  await page.locator('#cropImageTool').click();
+  const before=await cropBox(image);
+  const grip=live.locator('#moon-v2-live-overlay .moon-v2-grip[data-direction="e"]');
+  const b=await grip.boundingBox();expect(b).toBeTruthy();
+  await page.mouse.move(b.x+b.width/2,b.y+b.height/2);
+  await page.mouse.down();
+  await page.mouse.move(b.x+b.width/2-55,b.y+b.height/2,{steps:8});
+  await page.mouse.up();
+  const after=await cropBox(image);
+  expect(after.w).toBeLessThan(before.w-25);
+  expect(Math.abs(after.x-before.x)).toBeLessThan(2);
+  const croppedRight=await page.locator('#liveCropRight').inputValue();
+  expect(Number(croppedRight)).toBeGreaterThan(10);
+});
+test('resizing a finished crop scales visible source pixels and preserves each cut',async({page})=>{
+  await loadCropFixture(page);
+  const live=page.frameLocator('#livePageFrame'),image=live.locator('img.picture');
+  await image.click();
+  await page.locator('#cropImageTool').click();
+  await cropSide(page,'right',20);
+  await page.locator('#cropImageTool').click();
+  const before=await cropBox(image);
+  const background=await image.evaluate(el=>parseFloat(getComputedStyle(el).backgroundSize));
+  const grip=live.locator('#moon-v2-live-overlay .moon-v2-grip[data-direction="se"]');
+  const b=await grip.boundingBox();expect(b).toBeTruthy();
+  await page.mouse.move(b.x+b.width/2,b.y+b.height/2);
+  await page.mouse.down();
+  await page.mouse.move(b.x+b.width/2+55,b.y+b.height/2+35,{steps:8});
+  await page.mouse.up();
+  const after=await cropBox(image);
+  expect(after.w).toBeGreaterThan(before.w+20);
+  expect(after.h).toBeGreaterThan(before.h+10);
+  const grown=await image.evaluate(el=>parseFloat(getComputedStyle(el).backgroundSize));
+  expect(grown).toBeGreaterThan(background+20);
+  await image.click();
+  await expect(page.locator('#liveCropRightValue')).toHaveText('20%');
+  await expect(page.locator('#liveCropLeftValue')).toHaveText('0%');
+});
+test('photo shape choices include circle, oval, pill, rounded rectangle and polygons',async({page})=>{
+  await loadCropFixture(page);
+  const image=page.frameLocator('#livePageFrame').locator('img.picture');
+  await image.click();
+  for(const [shape,fragment] of [
+    ['circle','circle('],['oval','none'],['pill','none'],
+    ['rounded','none'],['diamond','polygon('],['hexagon','polygon('],
+    ['star','polygon('],['heart','polygon(']]){
+    await page.locator('#liveCropShape').selectOption(shape);
+    const clip=await image.evaluate(el=>getComputedStyle(el).clipPath);
+    expect(clip).toContain(fragment);
+  }
+  await page.locator('#liveCropShape').selectOption('oval');
   await expect(image).toHaveCSS('border-radius','50%');
-  await page.locator('#liveCropShape').selectOption('rounded');
-  await expect(image).toHaveCSS('border-radius','20px');
-  await page.locator('#liveCropShape').selectOption('rectangle');
-  await expect(image).toHaveCSS('border-radius','0px');
+  await page.locator('#liveCropShape').selectOption('pill');
+  await expect(image).toHaveCSS('border-radius','999px');
 });
-test('crop keyboard arrows reframe the photo while keeping its box stationary',async({page})=>{
+test('resetting cut restores original dimensions and frame position',async({page})=>{
   await loadCropFixture(page);
   const image=page.frameLocator('#livePageFrame').locator('img.picture');
   await image.click();
-  await page.locator('#liveCropToggle').click();
-  const box=await image.boundingBox();
-  await page.keyboard.press('ArrowRight');
-  await expect(image).toHaveCSS('background-position','51% 50%');
-  const after=await image.boundingBox();
-  expect(Math.abs(after.x-box.x)).toBeLessThan(2);
-  expect(Math.abs(after.y-box.y)).toBeLessThan(2);
-  await page.keyboard.press('Escape');
-  await expect(page.locator('#liveCropToggle')).toHaveAttribute('aria-pressed','false');
-});
-
-test('crop frame handles ignore image proportion lock and visibly trim the picture',async({page})=>{
-  await loadCropFixture(page);
-  const live=page.frameLocator('#livePageFrame');
-  const photo=live.locator('img.picture');
-  await photo.click();
-  await expect(page.locator('#liveLockImageRatio')).toBeChecked();
-  const src=await photo.getAttribute('src');
-  const original=await photo.evaluate(node=>{
-    const r=node.getBoundingClientRect();
-    return {w:r.width,h:r.height};
-  });
+  const before=await cropBox(image);
   await page.locator('#cropImageTool').click();
-  await expect(page.locator('#liveCropToggle')).toHaveAttribute('aria-pressed','true');
-  await expect(page.locator('#liveLockImageRatio')).toBeDisabled();
-  const pictureSizeBefore=await photo.evaluate(node=>getComputedStyle(node).backgroundSize);
-  const edge=live.locator('#moon-v2-live-overlay .moon-v2-grip[data-direction="e"]');
-  const r=await edge.boundingBox();expect(r).toBeTruthy();
-  await page.mouse.move(r.x+r.width/2,r.y+r.height/2);
-  await page.mouse.down();
-  await page.mouse.move(r.x+r.width/2-64,r.y+r.height/2,{steps:9});
-  await page.mouse.up();
-  const changed=await photo.evaluate(node=>{
-    const r=node.getBoundingClientRect();
-    return {w:r.width,h:r.height,fit:getComputedStyle(node).objectFit};
-  });
-  expect(changed.w).toBeLessThan(original.w-25);
-  expect(Math.abs(changed.h-original.h)).toBeLessThan(3);
-  expect(changed.fit).toBe('none');
-  expect(await photo.evaluate(node=>getComputedStyle(node).backgroundSize))
-    .toBe(pictureSizeBefore);
-  expect(await photo.getAttribute('src')).toBe(src);
-  await page.locator('#cropImageTool').click();
-  await expect(page.locator('#liveCropToggle')).toHaveAttribute('aria-pressed','false');
+  await cropSide(page,'left',20);
+  await cropSide(page,'bottom',15);
+  await page.locator('#liveCropReset').click();
+  const restored=await cropBox(image);
+  expect(Math.abs(before.x-restored.x)).toBeLessThan(3);
+  expect(Math.abs(before.y-restored.y)).toBeLessThan(3);
+  expect(Math.abs(before.w-restored.w)).toBeLessThan(3);
+  expect(Math.abs(before.h-restored.h)).toBeLessThan(3);
+  await expect(image).toHaveCSS('object-fit','contain');
 });
-test('crop sliders update the photo live and save the whole adjustment as undoable action',async({page})=>{
-  await loadCropFixture(page);
-  const live=page.frameLocator('#livePageFrame');
-  const photo=live.locator('img.picture');
-  await photo.click();
-  await page.locator('#liveCropFit').selectOption('cover');
-  const x=page.locator('#liveCropX');
-  await x.evaluate(node=>{
-    node.value='18';
-    node.dispatchEvent(new Event('input',{bubbles:true}));
-  });
-  await expect(photo).toHaveCSS('background-position','18% 50%');
-  await x.evaluate(node=>node.dispatchEvent(new Event('change',{bubbles:true})));
-  await expect(page.locator('#liveCropXValue')).toHaveText('18%');
-  await page.locator('#liveMode').focus();
-  await page.keyboard.press('Control+z');
-  await expect(photo).toHaveCSS('background-position','50% 50%');
-});
-
-test('linked images are selectable for cropping without opening their link',async({page})=>{
-  await loadCropFixture(page);
-  const live=page.frameLocator('#livePageFrame');
-  const photo=live.locator('img.picture');
-  await photo.evaluate(node=>{
-    const a=node.ownerDocument.createElement('a');
-    a.href='teaching.html';
-    node.replaceWith(a);
-    a.append(node);
-  });
-  await photo.click();
-  await expect(page.locator('#cropImageTool')).toBeEnabled();
-  await page.locator('#cropImageTool').click();
-  await expect(live.locator('#moon-v2-live-overlay'))
-    .toHaveAttribute('data-crop-mode','true');
-  await expect(photo).toHaveCSS('object-fit','none');
-  await expect(live.locator('a img.picture')).toHaveCount(1);
-});
-
-test('zoom and pan visibly change picture pixels while the crop frame stays fixed',async({page})=>{
+test('crop settings persist after reload without changing phone layout',async({page})=>{
   await loadCropFixture(page);
   const image=page.frameLocator('#livePageFrame').locator('img.picture');
   await image.click();
-  await page.locator('#liveCropToggle').click();
-  const box=await image.boundingBox();
-  const original=await image.screenshot();
-  const zoom=page.locator('#liveCropZoom');
-  await zoom.evaluate(input=>{
-    input.value='200';
-    input.dispatchEvent(new Event('input',{bubbles:true}));
-    input.dispatchEvent(new Event('change',{bubbles:true}));
-  });
-  const magnified=await image.screenshot();
-  expect(Buffer.compare(original,magnified)).not.toBe(0);
-  const x=page.locator('#liveCropX');
-  await x.evaluate(input=>{
-    input.value='0';input.dispatchEvent(new Event('input',{bubbles:true}));
-    input.dispatchEvent(new Event('change',{bubbles:true}));
-  });
-  const left=await image.screenshot();
-  await x.evaluate(input=>{
-    input.value='100';input.dispatchEvent(new Event('input',{bubbles:true}));
-    input.dispatchEvent(new Event('change',{bubbles:true}));
-  });
-  const right=await image.screenshot();
-  expect(Buffer.compare(left,right)).not.toBe(0);
-  const current=await image.boundingBox();
-  expect(Math.abs(current.width-box.width)).toBeLessThan(2);
-  expect(Math.abs(current.height-box.height)).toBeLessThan(2);
-  await expect(image).toHaveCSS('object-fit','none');
-});
-
-test('gold picture outline can resize photo independently of pink crop window',async({page})=>{
-  await loadCropFixture(page);
-  const live=page.frameLocator('#livePageFrame');
-  const photo=live.locator('img.picture');
-  await photo.click();
   await page.locator('#cropImageTool').click();
-  const before=await photo.boundingBox();
-  const sizeBefore=await photo.evaluate(node=>parseFloat(getComputedStyle(node).backgroundSize));
-  const handle=live.locator('#moon-v2-crop-image-guide .moon-v2-picture-zoom-grip');
-  await expect(handle).toBeVisible();
-  const pos=await handle.boundingBox();expect(pos).toBeTruthy();
-  await page.mouse.move(pos.x+pos.width/2,pos.y+pos.height/2);
-  await page.mouse.down();
-  await page.mouse.move(pos.x+pos.width/2+55,pos.y+pos.height/2+35,{steps:8});
-  await page.mouse.up();
-  const sizeAfter=await photo.evaluate(node=>parseFloat(getComputedStyle(node).backgroundSize));
-  expect(sizeAfter).toBeGreaterThan(sizeBefore);
-  const after=await photo.boundingBox();
-  expect(Math.abs(after.width-before.width)).toBeLessThan(2);
-  expect(Math.abs(after.height-before.height)).toBeLessThan(2);
-  await expect(page.locator('#liveCropZoom')).not.toHaveValue('100');
+  await cropSide(page,'right',25);
+  const desktop=await cropBox(image);
+  await page.locator('#devicePreview').selectOption('phone');
+  const phone=await cropBox(image);
+  expect(phone.w).toBeGreaterThan(desktop.w+35);
+  await page.locator('#devicePreview').selectOption('desktop');
+  await page.reload({waitUntil:'domcontentloaded'});
+  const restored=await cropBox(image);
+  expect(Math.abs(restored.w-desktop.w)).toBeLessThan(2);
 });
