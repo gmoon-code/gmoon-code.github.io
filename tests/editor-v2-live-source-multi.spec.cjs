@@ -1035,8 +1035,10 @@ test('match size changes inserted objects as one undoable operation',async({page
   await page.locator('#liveAddedWidth').dispatchEvent('change');
   await page.locator('#liveAddedHeight').fill('180');
   await page.locator('#liveAddedHeight').dispatchEvent('change');
-  await live.locator('[data-moon-v2-added-id="'+secondID+'"]').click();
-  await live.locator('[data-moon-v2-added-id="'+firstID+'"]').click({modifiers:['Shift']});
+  // New shapes overlap by default. Select via Layers, which remains
+  // reachable regardless of object stacking or opaque backgrounds.
+  await page.locator('#liveElementList [data-live-selector="added:'+secondID+'"]').click();
+  await page.locator('#liveElementList [data-live-selector="added:'+firstID+'"]').click({modifiers:['Shift']});
   const before=await localRect(live.locator('[data-moon-v2-added-id="'+firstID+'"]'));
   const key=await localRect(live.locator('[data-moon-v2-added-id="'+secondID+'"]'));
   await expect(page.locator('#liveMatchSize')).toBeEnabled();
@@ -1048,4 +1050,40 @@ test('match size changes inserted objects as one undoable operation',async({page
   const restored=await localRect(live.locator('[data-moon-v2-added-id="'+firstID+'"]'));
   expect(Math.abs(restored.w-before.w)).toBeLessThan(2);
   expect(Math.abs(restored.h-before.h)).toBeLessThan(2);
+});
+
+test('content-column centering positions a group without altering object size or source links',async({page})=>{
+  const live=await selectSourceGroup(page,['first','second']);
+  const first=live.locator('p.first'),second=live.locator('p.second');
+  const aBefore=await localRect(first),bBefore=await localRect(second);
+  const main=await live.locator('main').evaluate(el=>{
+    const r=el.getBoundingClientRect(),css=getComputedStyle(el);
+    return {left:r.left+(parseFloat(css.paddingLeft)||0),
+      right:r.right-(parseFloat(css.paddingRight)||0)};
+  });
+  await page.locator('#livePageCenter').click();
+  const a=await localRect(first),b=await localRect(second);
+  const minX=Math.min(a.x,b.x),maxX=Math.max(a.x+a.w,b.x+b.w);
+  expect(Math.abs((minX+maxX)/2-(main.left+main.right)/2)).toBeLessThan(2);
+  expect(Math.abs(a.w-aBefore.w)).toBeLessThan(2);
+  expect(Math.abs(b.w-bBefore.w)).toBeLessThan(2);
+  expect(Math.abs((b.x-a.x)-(bBefore.x-aBefore.x))).toBeLessThan(2);
+  await expect(first.locator('a')).toHaveAttribute('href','teaching.html');
+});
+test('distribution equalises gaps between differently sized source boxes',async({page})=>{
+  const live=page.frameLocator('#livePageFrame');
+  await live.locator('p.first').evaluate(node=>node.style.width='115px');
+  await live.locator('p.second').evaluate(node=>node.style.width='230px');
+  await live.locator('p.third').evaluate(node=>node.style.width='135px');
+  await live.locator('p.second').click();
+  await page.locator('#liveMoveX').fill('90');
+  await page.locator('#liveMoveX').press('Tab');
+  await selectSourceGroup(page,['first','second','third']);
+  await page.locator('#liveDistributeH').click();
+  const a=await localRect(live.locator('p.first'));
+  const b=await localRect(live.locator('p.second'));
+  const c=await localRect(live.locator('p.third'));
+  // Test the *edge* gaps, not the centre-to-centre distances.
+  expect(Math.abs((b.x-a.x-a.w)-(c.x-b.x-b.w))).toBeLessThan(2);
+  expect(Math.abs(a.w-b.w)).toBeGreaterThan(40);
 });
