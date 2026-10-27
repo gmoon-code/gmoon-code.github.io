@@ -18,8 +18,8 @@ PAGES = (
     "research-scoping.html", "teaching.html", "teaching-ap-biology.html",
     "teaching-ap-chemistry.html", "teaching-ap-evolution.html",
     "teaching-osmosis-practice.html", "projects.html", "story-method.html",
-    "research-methods-studio.html", "interests.html", "about.html",
-    "cv.html", "writing-biological-classification.html", "404.html",
+    "research-methods-studio.html", "interests.html", "pungmul.html",
+    "contact.html", "about.html", "cv.html", "writing-biological-classification.html", "404.html",
 )
 WIDTHS = (320, 375, 768, 1024, 1440)
 CORE_SCREENSHOT_PAGES = (
@@ -31,6 +31,7 @@ EXTENDED_SCREENSHOT_PAGES = (
     "research-action.html", "research-scoping.html",
     "teaching-ap-biology.html", "teaching-ap-evolution.html",
     "story-method.html", "research-methods-studio.html",
+    "contact.html", "pungmul.html", "404.html",
 )
 EXPECTED_SECTION = {
     "index.html": "Home",
@@ -47,6 +48,8 @@ EXPECTED_SECTION = {
     "teaching-ap-evolution.html": "Teaching",
     "teaching-osmosis-practice.html": "Teaching",
     "interests.html": "Interests",
+    "pungmul.html": "Interests",
+    "contact.html": "Contact",
     "about.html": "Contact",
     "cv.html": "CV",
     "404.html": None,
