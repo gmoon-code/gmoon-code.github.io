@@ -132,7 +132,9 @@ test('Github live publishing retains original HTML and inserts new objects once'
       .querySelectorAll('main [data-moon-v2-added-id]').length,published);
   expect(inserted).toBe(1);
   expect(submitted.sha).toBe('sha-source-123');
-  expect(JSON.stringify(localStorage)).not.toContain('mock-token-only');
+  const storedValues=await page.evaluate(()=>Object.keys(localStorage)
+    .map(key=>localStorage.getItem(key)).join('\n'));
+  expect(storedValues).not.toContain('mock-token-only');
   // The confirmed GitHub source is loaded without duplicating the object.
   await expect(frame.locator('[data-moon-v2-added-id]')).toHaveCount(1);
 });

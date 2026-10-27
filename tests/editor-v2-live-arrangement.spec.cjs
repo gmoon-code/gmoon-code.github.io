@@ -83,8 +83,10 @@ test('Group arrow nudge moves all selected objects once and undo restores all',a
   const after=await geom(page);
   expect(after.map((o,i)=>o.x-before[i].x)).toEqual([1,1]);
   await page.locator('#undo').click();
-  const undone=await geom(page);
-  expect(undone.map(o=>o.x)).toEqual(before.map(o=>o.x));
+  // Undo may reload the verified-source iframe. Poll until the actual
+  // source objects are reattached, then compare their restored positions.
+  await expect.poll(async()=>(await geom(page)).map(o=>o.x),{timeout:12000})
+    .toEqual(before.map(o=>o.x));
 });
 test('Shift-click selects added objects without selecting original headings',async({page})=>{
   await positionLast(page,20,140);
@@ -142,6 +144,6 @@ test('Alignment can edit existing published added objects without a local draft'
   const result=await geom(page);
   expect(result[0].x).toBe(result[1].x);
   await page.locator('#undo').click();
-  const original=await geom(page);
-  expect(original.map(o=>o.x)).toEqual([40,260]);
+  await expect.poll(async()=>(await geom(page)).map(o=>o.x),{timeout:12000})
+    .toEqual([40,260]);
 });
