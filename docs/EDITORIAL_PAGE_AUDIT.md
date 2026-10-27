@@ -12,11 +12,11 @@ A content pass is **not** equivalent to final visual approval. Automated browser
 
 | Page | Editorial status | Remaining verification |
 | --- | --- | --- |
-| `index.html` | Revised in preceding conversation; full line-by-line sign-off pending | Responsive layout, all on-page content and repetition across linked pages |
+| `index.html` | Revised in preceding conversation; filename-style photo alt text fixed `fa0be6f`; full line-by-line sign-off pending | Responsive layout, all content and repetition across linked pages |
 | `research.html` | Multiple documented editorial passes in preceding conversation | Source and visual recheck after subsequent changes |
 | `research-action.html` | Crosschecked against Teaching cases in this conversation | Full independent line-by-line audit, manuscript comparison, figures |
 | `research-scoping.html` | Not yet given a dedicated pass here | Data, methods, numerical integrity, source references, visuals |
-| `projects.html` | Pending dedicated full audit | Content, destinations, layout, visual assets |
+| `projects.html` | Content and image-source pass completed, commit `0db43f0` | Full manual layout and thumbnail review at desktop and phone widths |
 | `teaching.html` | Content pass completed, commits `91b001d`, `8784ed8`, `cbb6fdc` | Final manual visual check at desktop and phone widths |
 | `teaching-ap-chemistry.html` | Content and equilibrium calculation pass completed, commits `81ffbab`, `40a2476` | Final manual visual and responsive check |
 | `teaching-ap-biology.html` | Science, empirical claim, prose and references pass completed, commits `bde0b87`, `8d1af09`, `cff539b` | Final manual figure and responsive check |
@@ -25,9 +25,9 @@ A content pass is **not** equivalent to final visual approval. Automated browser
 | `story-method.html` | Pending dedicated pass | Content, interactivity, teaching claims, small-screen reading |
 | `research-methods-studio.html` | Pending dedicated pass | Functionality, classroom claims, accessibility and layout |
 | `writing-biological-classification.html` | Revised in preceding conversation; final sign-off pending | Line-by-line argument, citations, scientific interpretation |
-| `interests.html` | Revised in preceding conversation; final sign-off pending | Every text/image element and responsive layout |
-| `pungmul.html` | History and image rights addressed previously; minor ARIA fix `209f965` | Entire long-form and media layout, history source audit |
-| `contact.html` | Revised in preceding conversation; final sign-off pending | Wording, contact destinations, all screen sizes |
+| `interests.html` | Revised in preceding conversation; inaccessible photo filename alt fixed `ea80850`; final sign-off pending | Every text/image element and responsive layout |
+| `pungmul.html` | History and image rights addressed previously; ARIA fix `209f965`, photo alt fix `8184b09` | Entire long-form and media layout, history source audit |
+| `contact.html` | Revised in preceding conversation; photo alt fixed `667ed11`; final sign-off pending | Wording, contact destinations, all screen sizes |
 | `cv.html` | Pending dedicated pass | All claims, dates, alignment with current applications |
 | `about.html` | Pending purpose/redirect check | Destination, metadata and navigation |
 | `404.html` | Pending | Copy, navigation, accessibility |
@@ -42,9 +42,11 @@ A content pass is **not** equivalent to final visual approval. Automated browser
 - The 2005 Williams and colleagues cohort reports approximately 50%, 75% and 90% protective estimates against different malaria outcomes; it does not give the hypothetical fitness values used in the teaching model.
 - The illustrative HbS selection model is internally consistent, with a weighted contribution of 0.776, next-generation HbS allele frequency approximately 0.2165, and Hardy–Weinberg zygote frequencies approximately 0.6139, 0.3392 and 0.0469.
 - The osmosis illustrative percentage changes are +8%, −4%, and −13%. It cannot locate an exact isotonic concentration from the stated three samples.
+- A source-level image-alt triage scanned all 23 root HTML pages. Filename-like alt text was replaced on Home (2 images), Interests, Pungmul and Contact; image bytes and geometry were preserved. An empty alt in `fluid-layout-lab.html` was found in a JavaScript template string, so it needs runtime rather than regex assessment.
 - Source-level HTML checks and GitHub Actions accessibility/external-resource audits have passed for earlier revision commits. Some screenshot and artifact-upload jobs have failed at the publishing-artifact stage even when their browser checks succeeded. Inspect each job before treating a workflow failure as a content failure.
+- An academic-editor resize regression currently fails because the test waits for a `profile-portrait` image filename removed from the Homepage markup when its images were embedded through the visual editor. Its failure occurs before image resizing is tested, so it cannot establish whether resizing works. The test and editor must be examined separately.
 - CSS has received targeted spacing changes; final human visual judgment is still outstanding for the edited pages.
 
 ## Next content pass
 
-Start with `projects.html`, then review each listed pending page systematically. Return to prior partial revisions for full verification. Do not mark a page fully finished merely because a prior commit polished part of it.
+Start with `story-method.html` and `research-methods-studio.html`, then the remaining public pages, followed by separate editor QA. Return to prior partial revisions for full verification. Do not mark a page fully finished merely because a prior commit polished part of it.
