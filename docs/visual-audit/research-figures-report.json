@@ -1,5 +1,5 @@
 {
-  "testedAt": "2026-10-27T14:40:39.794Z",
+  "testedAt": "2026-10-27T15:36:32.286Z",
   "checks": [
     {
       "size": "desktop",
@@ -58,9 +58,9 @@
         "figures": [
           {
             "name": "research-published-figure",
-            "boxWidth": 342,
-            "left": 32,
-            "right": 374,
+            "boxWidth": 326,
+            "left": 40,
+            "right": 366,
             "captionBelow": true,
             "cited": true,
             "caption": true,
