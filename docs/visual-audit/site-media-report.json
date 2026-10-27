@@ -1,5 +1,5 @@
 {
-  "testedAt": "2026-10-27T10:18:27.936Z",
+  "testedAt": "2026-10-27T12:11:56.339Z",
   "results": [
     {
       "path": "index.html",
@@ -80,9 +80,9 @@
             "className": "research-published-figure",
             "hasCaption": true,
             "hasAccessibleName": true,
-            "width": 800,
-            "left": 160,
-            "right": 960,
+            "width": 736,
+            "left": 486,
+            "right": 1222,
             "contentChars": 556
           }
         ]
@@ -93,10 +93,10 @@
           "naturalWidth": 1087,
           "naturalHeight": 778,
           "complete": true,
-          "renderedWidth": 760,
-          "renderedHeight": 544,
-          "left": 160,
-          "right": 920,
+          "renderedWidth": 736,
+          "renderedHeight": 527,
+          "left": 486,
+          "right": 1222,
           "alt": "Original published graph comparing focal science practices under linguistic and expansive conceptualizations of language. Modelling is reported for 2 linguistic-view and 8 expansive-view studies; explanation for 6 and 3; and argumentation for 9 and 2, respectively.",
           "loading": "lazy",
           "source": "https://gmoon-code.github.io/assets/gonzalez-howard-2023-figure-1.webp"
@@ -660,9 +660,9 @@
             "className": "research-published-figure",
             "hasCaption": true,
             "hasAccessibleName": true,
-            "width": 362,
-            "left": 14,
-            "right": 376,
+            "width": 342,
+            "left": 32,
+            "right": 374,
             "contentChars": 556
           }
         ]
@@ -673,10 +673,10 @@
           "naturalWidth": 1087,
           "naturalHeight": 778,
           "complete": true,
-          "renderedWidth": 362,
-          "renderedHeight": 259,
-          "left": 14,
-          "right": 376,
+          "renderedWidth": 342,
+          "renderedHeight": 245,
+          "left": 32,
+          "right": 374,
           "alt": "Original published graph comparing focal science practices under linguistic and expansive conceptualizations of language. Modelling is reported for 2 linguistic-view and 8 expansive-view studies; explanation for 6 and 3; and argumentation for 9 and 2, respectively.",
           "loading": "lazy",
           "source": "https://gmoon-code.github.io/assets/gonzalez-howard-2023-figure-1.webp"
