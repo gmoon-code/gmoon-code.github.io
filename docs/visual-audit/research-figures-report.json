@@ -1,5 +1,5 @@
 {
-  "testedAt": "2026-10-27T11:24:41.528Z",
+  "testedAt": "2026-10-27T11:58:37.408Z",
   "checks": [
     {
       "size": "desktop",
@@ -10,9 +10,9 @@
         "figures": [
           {
             "name": "research-published-figure",
-            "boxWidth": 800,
-            "left": 160,
-            "right": 960,
+            "boxWidth": 736,
+            "left": 486,
+            "right": 1222,
             "captionBelow": true,
             "cited": true,
             "caption": true,
@@ -34,9 +34,9 @@
         "figures": [
           {
             "name": "research-published-figure",
-            "boxWidth": 712,
-            "left": 28,
-            "right": 740,
+            "boxWidth": 696,
+            "left": 48,
+            "right": 744,
             "captionBelow": true,
             "cited": true,
             "caption": true,
@@ -58,9 +58,9 @@
         "figures": [
           {
             "name": "research-published-figure",
-            "boxWidth": 362,
-            "left": 14,
-            "right": 376,
+            "boxWidth": 342,
+            "left": 32,
+            "right": 374,
             "captionBelow": true,
             "cited": true,
             "caption": true,
