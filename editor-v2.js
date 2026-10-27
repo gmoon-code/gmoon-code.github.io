@@ -2438,6 +2438,7 @@ async function sourcePreservingHtml(rootHref){
 }
 function removeLiveOverlay(){
   if(liveOverlay?.isConnected)liveOverlay.remove();
+  liveOverlay?.ownerDocument?.getElementById("moon-v2-crop-image-guide")?.remove();
   liveOverlay=null;
 }
 function liveSourceSelectionBounds(node,items=selectedSourcePatches()){
@@ -2449,6 +2450,34 @@ function liveSourceSelectionBounds(node,items=selectedSourcePatches()){
   const right=Math.max(...boxes.map(box=>box.right));
   const bottom=Math.max(...boxes.map(box=>box.bottom));
   return {left,top,right,bottom,x:left,y:top,width:right-left,height:bottom-top};
+}
+function syncLiveCropImageGuide(node,rect){
+  const doc=node.ownerDocument;
+  let guide=doc.getElementById("moon-v2-crop-image-guide");
+  if(!liveCropMode||node.tagName!=="IMG"){
+    guide?.remove();return;
+  }
+  const patch=livePatchForSelected(),crop=selectedImageCrop(patch);
+  const ratio=crop.ratio||node.naturalWidth/Math.max(1,node.naturalHeight);
+  if(!ratio||!Number.isFinite(ratio)){guide?.remove();return;}
+  const cover=Math.max(rect.width,rect.height*ratio);
+  const contain=Math.min(rect.width,rect.height*ratio);
+  const base=crop.fit==="contain"?contain:Math.max(crop.baseW||0,cover);
+  const w=base*(crop.zoom||100)/100,h=w/ratio;
+  if(!Number.isFinite(w)||!Number.isFinite(h)){guide?.remove();return;}
+  if(!guide){
+    guide=doc.createElement("div");
+    guide.id="moon-v2-crop-image-guide";
+    guide.setAttribute("aria-hidden","true");
+    guide.style.cssText="position:fixed!important;pointer-events:none!important;"+
+      "box-sizing:border-box!important;background:rgba(227,168,52,.045)!important;"+
+      "border:2px dashed #bb820c!important;z-index:2147482999!important;";
+    doc.body.append(guide);
+  }
+  guide.style.left=(rect.left+(rect.width-w)*crop.x/100)+"px";
+  guide.style.top=(rect.top+(rect.height-h)*crop.y/100)+"px";
+  guide.style.width=w+"px";
+  guide.style.height=h+"px";
 }
 function syncLiveOverlay(){
   if(workspaceMode!=="live"||!liveSelected?.node?.isConnected||liveEditing){
@@ -2592,6 +2621,7 @@ function syncLiveOverlay(){
     Math.round(clamp(22/scale,22,76))+"px");
   liveOverlay.style.setProperty("--moon-edge",
     Math.round(clamp(22/scale,22,72))+"px");
+  syncLiveCropImageGuide(node,rect);
 }
 function removeLiveSnapGuides(){
   const doc=$("livePageFrame")?.contentDocument;
@@ -2783,6 +2813,7 @@ function moveLiveGesture(event){
     livePatches.set(g.selector,patch);
     if(patch.kind==="insert")refreshAddedObject(g.node.ownerDocument,patch);
     else refreshLiveLayoutRules(g.node.ownerDocument);
+    syncLiveOverlay();
     return;
   }
   if(g.sourceGroup&&g.dir!=="move"){
