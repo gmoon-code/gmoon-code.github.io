@@ -1375,6 +1375,12 @@ function setLiveCropMode(enabled){
     "Crop mode · Drag directly on the picture to reposition the image in its frame":
     "Crop finished · Dragging the picture now moves its frame");
 }
+function nudgeLiveImageCrop(dx,dy){
+  const patch=livePatchForSelected(),crop=selectedImageCrop(patch);
+  if(liveSelected?.node?.tagName!=="IMG")return;
+  applySelectedImageCrop({fit:"cover",x:clamp(crop.x+dx,0,100),
+    y:clamp(crop.y+dy,0,100)});
+}
 function resetSelectedImageCrop(){
   const node=liveSelected?.node,selector=node&&liveSelector(node);
   if(node?.tagName!=="IMG"||!selector||workspaceMode!=="live")return;
@@ -3377,16 +3383,22 @@ function bindLiveDocument(){
     if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==="y"){
       event.preventDefault();liveUndoAction(true);return;
     }
-    if(event.key==="Escape"){clearLiveSelection();return;}
+    if(event.key==="Escape"){
+      if(liveCropMode){event.preventDefault();setLiveCropMode(false);}
+      else clearLiveSelection();
+      return;
+    }
     if((event.key==="Delete"||event.key==="Backspace")&&liveSelected?.node){
       event.preventDefault();deleteSelectedLiveElement();return;
     }
     const moves={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]};
     const change=moves[event.key];
-    if(change&&liveSelected?.node){
+    if(change&&liveSelected?.node&&!event.ctrlKey&&!event.metaKey&&!event.altKey){
       event.preventDefault();
       const step=event.shiftKey?10:1;
-      nudgeLiveSelection(change[0]*step,change[1]*step);
+      if(liveCropMode&&liveSelected.node.tagName==="IMG")
+        nudgeLiveImageCrop(change[0]*step,change[1]*step);
+      else nudgeLiveSelection(change[0]*step,change[1]*step);
       syncLiveOverlay();
     }
   },true);
@@ -5214,7 +5226,11 @@ function attachEvents(){
       if((event.ctrlKey||event.metaKey)&&event.key==="["&&liveSelected?.node){
         event.preventDefault();setLiveLayer(false);return;
       }
-      if(event.key==="Escape"){clearLiveSelection();return;}
+      if(event.key==="Escape"){
+      if(liveCropMode){event.preventDefault();setLiveCropMode(false);}
+      else clearLiveSelection();
+      return;
+    }
       if((event.key==="Delete"||event.key==="Backspace")&&liveSelected?.node){
         event.preventDefault();deleteSelectedLiveElement();return;
       }
@@ -5225,7 +5241,9 @@ function attachEvents(){
       if(liveSelected?.node&&liveMoves[event.key]&&!event.ctrlKey&&!event.metaKey&&!event.altKey){
         event.preventDefault();
         const [dx,dy]=liveMoves[event.key],step=event.shiftKey?10:1;
-        nudgeLiveSelection(dx*step,dy*step);
+        if(liveCropMode&&liveSelected.node.tagName==="IMG")
+          nudgeLiveImageCrop(dx*step,dy*step);
+        else nudgeLiveSelection(dx*step,dy*step);
         syncLiveOverlay();
       }
       return;
