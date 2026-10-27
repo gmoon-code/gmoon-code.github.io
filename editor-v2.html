@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>Academic Website Editor 2 | Ye Eun Moon</title>
-<link rel="stylesheet" href="editor-v2.css?v=20261027-crop-free-resize-v47b">
-<script src="editor-v2.js?v=20261027-crop-free-resize-v47b" defer></script>
+<link rel="stylesheet" href="editor-v2.css?v=20261027-true-viewport-zoom-v48">
+<script src="editor-v2.js?v=20261027-true-viewport-zoom-v48" defer></script>
 </head>
 <body>
 <a class="skip" href="#workspace">Skip to editor canvas</a>
@@ -254,7 +254,7 @@
             <p class="help">Resize the image frame with its handles. Its contents keep their natural proportions. Uncheck to freely size the frame without stretching the photo.</p>
             <div id="liveCropControls" class="live-crop-controls" hidden>
               <h3>Picture cropping &amp; framing</h3>
-              <p class="help"><strong>Crop in two steps.</strong> Click Crop picture, then drag the pink corner or side handles inward to trim the visible frame. Drag inside the image to choose which part stays visible. The frame changes size independently of the photo's proportions. Click Finish crop or press Escape when done.</p>
+              <p class="help"><strong>Crop in three steps.</strong> Select a picture and click Crop picture. Drag the pink handles to adjust the visible crop frame. Then drag the photo inside its frame, or use Picture zoom to enlarge the image behind the frame. Click Finish crop or press Escape to keep your crop.</p>
               <p class="help">The original image is preserved. Crop settings can differ for desktop, tablet, and phone.</p>
               <div class="inline-actions">
                 <button type="button" id="liveCropToggle" aria-pressed="false">Crop picture · drag to reframe</button>
@@ -273,6 +273,9 @@
                   <option value="circle">Circle / oval</option>
                 </select>
               </label>
+              <label for="liveCropZoom">Picture zoom <output id="liveCropZoomValue" for="liveCropZoom">100%</output></label>
+              <input id="liveCropZoom" type="range" min="100" max="500" step="5" value="100">
+              <p class="help">Zoom enlarges only the picture inside the crop frame, as in PowerPoint. The outside of the frame remains hidden.</p>
               <label for="liveCropX">Horizontal focal point <output id="liveCropXValue" for="liveCropX">50%</output></label>
               <input id="liveCropX" type="range" min="0" max="100" step="1" value="50">
               <label for="liveCropY">Vertical focal point <output id="liveCropYValue" for="liveCropY">50%</output></label>
