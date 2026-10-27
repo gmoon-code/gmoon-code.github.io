@@ -3492,7 +3492,11 @@ function bindLiveDocument(){
     // Select and start a move in one pointer gesture. Previously a user had
     // to click, release and then start a *second* drag on the same element.
     const link=event.target.closest?.("a[href]");
-    if(link&&!liveSectionPickMode&&!liveCropMode&&!event.altKey&&!event.shiftKey)return; // Ordinary clicks still navigate.
+    // A linked picture is still a selectable photo in an editor.
+    // Ordinary text links retain their navigation behaviour.
+    const onPicture=!!event.target.closest?.("img");
+    if(link&&!onPicture&&!liveSectionPickMode&&!liveCropMode&&
+       !event.altKey&&!event.shiftKey)return;
     const target=liveEventTarget(event);
     if(!target||!doc.querySelector("main")?.contains(target))return;
     if(event.shiftKey){
@@ -3543,6 +3547,9 @@ function bindLiveDocument(){
     if(event.target.closest?.("#moon-v2-live-overlay"))return;
     if(liveEditing)return;
     const link=event.target.closest?.("a[href]");
+    if(link&&event.target.closest?.("img")){
+      event.preventDefault();event.stopPropagation();return;
+    }
     if(liveCropMode&&link&&
        (link.contains(liveSelected?.node)||liveSelected?.node?.contains(link))){
       event.preventDefault();event.stopPropagation();return;
