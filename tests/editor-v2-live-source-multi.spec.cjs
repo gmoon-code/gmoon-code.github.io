@@ -479,3 +479,31 @@ test('locked member blocks whole group alignment but not selection',async({page}
   const after=await live.locator('main p.first').evaluate(node=>node.getBoundingClientRect().x);
   expect(Math.abs(after-before)).toBeLessThan(1);
 });
+
+test('north-west corner resize reflows original text without clipping or distorting glyphs',async({page})=>{
+  const live=page.frameLocator('#livePageFrame');
+  const paragraph=live.locator('main p.second');
+  await paragraph.click();
+  const before=await paragraph.evaluate(node=>{
+    const rect=node.getBoundingClientRect();
+    return {right:rect.right,bottom:rect.bottom,font:getComputedStyle(node).fontSize,
+      width:rect.width};
+  });
+  const grip=live.locator('#moon-v2-live-overlay [data-direction="nw"]');
+  const rect=await grip.boundingBox();
+  expect(rect).toBeTruthy();
+  await page.mouse.move(rect.x+rect.width/2,rect.y+rect.height/2);
+  await page.mouse.down();
+  await page.mouse.move(rect.x+rect.width/2+95,rect.y+rect.height/2+36,{steps:8});
+  await page.mouse.up();
+  const after=await paragraph.evaluate(node=>{
+    const rect=node.getBoundingClientRect();
+    return {right:rect.right,bottom:rect.bottom,font:getComputedStyle(node).fontSize,
+      width:rect.width,scrollHeight:node.scrollHeight,clientHeight:node.clientHeight};
+  });
+  expect(after.width).toBeLessThan(before.width-40);
+  expect(after.font).toBe(before.font);
+  expect(after.scrollHeight).toBeLessThanOrEqual(after.clientHeight+3);
+  expect(Math.abs(after.right-before.right)).toBeLessThan(4);
+  expect(Math.abs(after.bottom-before.bottom)).toBeLessThan(4);
+});
