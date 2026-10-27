@@ -1266,8 +1266,11 @@ test('numeric text widths auto-fit height, while deliberately shortened heights 
   expect(afterFit.y).toBeGreaterThan(beforeFit.y+4);
   await expect(page.locator('#liveReflowWarning')).toBeHidden();
   await page.locator('#undo').click();
-  const restored=await neighbour.boundingBox();
-  expect(Math.abs(restored.y-beforeFit.y)).toBeLessThan(2);
+  // Undo reloads the original-source frame, which can change scroll
+  // offsets. Verify the restored geometry directly in the live document.
+  await expect(live.locator('main h2')).toHaveCSS('height','24px');
+  await expect(page.locator('#liveTextBoxHeight')).toHaveValue('24');
+  await expect(page.locator('#liveReflowWarning')).toBeVisible();
 });
 
 test('free canvas snaps movement to peer objects and Alt allows precise bypass',async({page})=>{
