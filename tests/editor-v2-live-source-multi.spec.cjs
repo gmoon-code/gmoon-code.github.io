@@ -531,3 +531,71 @@ test('multi-selection corner resize keeps wrapped source text readable',async({p
     expect(dimensions.font).toBe(font);
   }
 });
+
+const sectionSource='<!doctype html><html><head><style>'+
+  'body{margin:0}main{margin:85px 60px;width:840px}'+
+  'section.feature{box-sizing:border-box;width:520px;height:340px;'+
+    'padding:20px;background:#e2ece2;border:1px solid #658b74}'+
+  'section.feature p{font:20px/1.5 Arial;margin:0;min-height:240px}'+
+  'section.following{margin-top:30px;width:520px;height:90px;background:#f3e4b3}'+
+  '</style></head><body><main>'+
+  '<section class="feature"><p>Section content stays legible and is never scaled.</p></section>'+
+  '<section class="following"><p>Following section remains present</p></section>'+
+  '</main></body></html>';
+async function loadSectionFixture(page){
+  await page.route('https://api.github.com/repos/gmoon-code/gmoon-code.github.io/contents/research.html*',
+    route=>route.fulfill({status:200,contentType:'application/json',
+      body:JSON.stringify({type:'file',sha:'section-sizing-fixture-v1',
+        encoding:'base64',content:Buffer.from(sectionSource).toString('base64')})}));
+  await page.route('**/research.html',
+    route=>route.fulfill({status:200,contentType:'text/html',body:sectionSource}));
+  await page.reload({waitUntil:'domcontentloaded'});
+  await expect(page.frameLocator('#livePageFrame').locator('section.feature p'))
+    .toHaveText('Section content stays legible and is never scaled.');
+}
+test('semantic website section can shrink vertically and fit content without scaling children',async({page})=>{
+  await loadSectionFixture(page);
+  const live=page.frameLocator('#livePageFrame');
+  const section=live.locator('section.feature'),paragraph=section.locator('p');
+  await paragraph.click();
+  await expect(page.locator('#liveSelectSection')).toBeEnabled();
+  await page.locator('#liveSelectSection').click();
+  await expect(page.locator('#liveSectionSizing')).toBeVisible();
+  await expect(live.locator('#moon-v2-live-overlay .moon-v2-grip')).toHaveCount(8);
+  const before=await section.evaluate(node=>node.getBoundingClientRect().height);
+  const originalFont=await paragraph.evaluate(node=>getComputedStyle(node).fontSize);
+  const handle=live.locator('#moon-v2-live-overlay [data-direction="s"]');
+  const grip=await handle.boundingBox();expect(grip).toBeTruthy();
+  await page.mouse.move(grip.x+grip.width/2,grip.y+grip.height/2);
+  await page.mouse.down();
+  await page.mouse.move(grip.x+grip.width/2,grip.y+grip.height/2-85,{steps:10});
+  await page.mouse.up();
+  const after=await section.evaluate(node=>node.getBoundingClientRect().height);
+  expect(after).toBeLessThan(before-30);
+  await expect(page.locator('#liveSectionHeightMode')).toHaveValue('fixed');
+  await expect(page.locator('#liveSectionOverflow')).toBeVisible();
+  expect(await paragraph.evaluate(node=>getComputedStyle(node).fontSize)).toBe(originalFont);
+  await expect(paragraph).toHaveText('Section content stays legible and is never scaled.');
+  await page.locator('#liveFitSectionHeight').click();
+  await expect(page.locator('#liveSectionHeightMode')).toHaveValue('auto');
+  await expect(page.locator('#liveSectionOverflow')).toBeHidden();
+  const fitted=await section.evaluate(node=>node.getBoundingClientRect().height);
+  expect(fitted).toBeGreaterThan(after+20);
+});
+test('section dimensions can be set precisely in inspector and survive draft reload',async({page})=>{
+  await loadSectionFixture(page);
+  const live=page.frameLocator('#livePageFrame');
+  await live.locator('section.feature p').click();
+  await page.locator('#liveSelectSection').click();
+  await page.locator('#liveOriginalHeight').fill('210');
+  await page.locator('#liveOriginalHeight').dispatchEvent('change');
+  await expect(page.locator('#liveSectionHeightMode')).toHaveValue('fixed');
+  const current=await live.locator('section.feature').evaluate(node=>node.getBoundingClientRect().height);
+  expect(Math.abs(current-210)).toBeLessThan(3);
+  await page.reload({waitUntil:'domcontentloaded'});
+  await expect(live.locator('section.feature')).toHaveCount(1);
+  const restored=await live.locator('section.feature').evaluate(node=>node.getBoundingClientRect().height);
+  expect(Math.abs(restored-210)).toBeLessThan(3);
+  await expect(live.locator('section.feature p')).toHaveText(
+    'Section content stays legible and is never scaled.');
+});
