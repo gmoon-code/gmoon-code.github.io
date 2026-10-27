@@ -12,7 +12,7 @@ A content pass is **not** equivalent to final visual approval. Automated browser
 
 | Page | Editorial status | Remaining verification |
 | --- | --- | --- |
-| `index.html` | Editorial passes and photo-alt corrections; phone screenshots revealed overlapping absolute-photo layers. Source-node mobile reflow and responsive CSS added `ca7bea1`, `cc65b78`. | Inspect new 320/375 screenshots to confirm text and both photos do not overlap, and verify desktop unchanged |
+| `index.html` | Phone overlap fixed by source-node mobile flow `ca7bea1`, `cc65b78`; retrieved 320px screenshot verifies unobscured heading/text/portrait and desktop screenshot is pixel-identical to the prior version; lower image and content gutters refined `53f8862` | Recheck latest mobile screenshot after gutter adjustment and run collision regression |
 | `research.html` | Previous editorial passes; nested section structure repaired `4c5f652`; phone horizontal reading inset corrected `647d657` after screenshot review | Verify revised phone screenshots and check desktop unaffected |
 | `research-action.html` | Crosschecked against original manuscript and the teaching case; malformed table and duplicated figure fixed, commit `6467157` | Final rendered desktop/mobile and diagram flow review |
 | `research-scoping.html` | Checked against source manuscripts, selection ledger and Pierson/Kane publications; evidence and layout revisions `880c3f5`, `b267a1b` | Confirm deployment, inspect at desktop/phone, verify OSF DOI availability |
@@ -56,6 +56,7 @@ A content pass is **not** equivalent to final visual approval. Automated browser
 - Actual full-page screenshots were retrieved from GitHub Actions for 320px and 375px phone widths (plus desktop captures). A pronounced Homepage overlap, Research text flush against the page frame, and CV text flush against its frame were observed and targeted. The new pages must be reviewed in newly rendered screenshots before visual sign-off.
 - The existing responsive audit omitted Contact and Pungmul. Both, plus 404 screenshot coverage, were added to `scripts/responsive_smoke.py` in commit `357b4aa`. The new workflow should be checked for results.
 - The audit now tests mobile intersections between free-positioned photographs and readable text on Home and Interests, commit `26ffc4a`. Ordinary viewport-width checks had missed these image/text collisions. Treat the fix as provisional until the run confirms it.
+- A retrieved responsive screenshot at 320px confirmed the formerly overlapping Homepage hero now reads correctly; its 1440px capture was pixel-identical to the previous desktop screenshot (bounding-box of pixel differences was empty). A subsequent phone-only improvement constrained the lower ensemble photo within the frame and added gutters, so final screenshot sign-off is still pending.
 - CSS has received targeted spacing changes; final human visual judgment is still outstanding for the edited pages.
 
 ## Next content pass
