@@ -4821,7 +4821,17 @@ function attachEvents(){
       }
       if(event.key==="Escape"){clearLiveSelection();return;}
       if((event.key==="Delete"||event.key==="Backspace")&&liveSelected?.node){
-        event.preventDefault();deleteSelectedLiveElement();
+        event.preventDefault();deleteSelectedLiveElement();return;
+      }
+      // Match the arrow-key behaviour available inside the live-page iframe.
+      // The selection must remain movable when keyboard focus shifts back to
+      // the editor toolbar or canvas. Never hijack modified browser shortcuts.
+      const liveMoves={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]};
+      if(liveSelected?.node&&liveMoves[event.key]&&!event.ctrlKey&&!event.metaKey&&!event.altKey){
+        event.preventDefault();
+        const [dx,dy]=liveMoves[event.key],step=event.shiftKey?10:1;
+        nudgeLiveSelection(dx*step,dy*step);
+        syncLiveOverlay();
       }
       return;
     }
