@@ -5,6 +5,31 @@
   const media=window.matchMedia("(max-width:700px)");
   const PREFIX="moon-free-slot:";
   const detachedPlaceholders=new Map();
+  // The homepage stores two photographs in a desktop free-positioned layer.
+  // Relocate the original nodes on narrow screens rather than cloning them,
+  // preserving their alt text, bytes, and editability in a single source.
+  let homePhotos=null;
+  function arrangeHomePhotos(main){
+    if(!main?.classList.contains("home-page"))return;
+    const targetLayer=[...main.children].find(node=>node.hasAttribute?.("data-moon-v2-added-layer"));
+    if(!targetLayer)return;
+    if(!homePhotos){
+      const images=[...targetLayer.children].filter(node=>node.tagName==="IMG"&&node.hasAttribute("data-moon-v2-added-id"));
+      if(images.length!==2)return;
+      homePhotos={layer:targetLayer,portrait:images[0],performance:images[1]};
+    }
+    const hero=main.querySelector(".home-intro");
+    const outside=main.querySelector(".home-outside-grid");
+    if(!hero||!outside)return;
+    const mobile=media.matches&&!document.documentElement.classList.contains("moon-free-mode");
+    if(mobile){
+      if(homePhotos.portrait.parentNode!==hero)hero.append(homePhotos.portrait);
+      if(homePhotos.performance.parentNode!==outside)outside.append(homePhotos.performance);
+    }else{
+      if(homePhotos.portrait.parentNode!==homePhotos.layer)homePhotos.layer.append(homePhotos.portrait);
+      if(homePhotos.performance.parentNode!==homePhotos.layer)homePhotos.layer.append(homePhotos.performance);
+    }
+  }
   function reserveHeight(){
     if(media.matches)return;
     const main=document.querySelector("main");
@@ -53,6 +78,7 @@
         layer.append(node);
       }
     }
+    arrangeHomePhotos(main);
     reserveHeight();
   }
   if(document.readyState==="loading")
