@@ -2366,10 +2366,18 @@ function moveLiveGesture(event){
     patch.geometry={...patch.geometry,[device]:geom};
     livePatches.set(g.selector,patch);
     refreshAddedObject(g.node.ownerDocument,patch);
-    if(g.patch.objectType==="text"&&(g.dir==="e"||g.dir==="w")){
+    // Side and corner drags can narrow a text frame and create new lines.
+    // Keep the text readable without scaling its font or clipping its content.
+    // When dragging a north corner, preserve the opposing bottom edge.
+    if(g.patch.objectType==="text"&&
+       (g.dir==="e"||g.dir==="w"||g.dir.length===2)){
       const needed=Math.ceil(g.node.scrollHeight+2);
       if(Number.isFinite(needed)&&needed>geom.h&&needed<=5000){
-        geom.h=needed;patch.geometry[device]=geom;
+        const addedHeight=needed-geom.h;
+        geom.h=needed;
+        if(g.dir.includes("n"))
+          geom.y=Math.round(clamp(geom.y-addedHeight,-4000,40000));
+        patch.geometry[device]=geom;
         livePatches.set(g.selector,patch);
         refreshAddedObject(g.node.ownerDocument,patch);
       }
@@ -2417,13 +2425,17 @@ function moveLiveGesture(event){
   patch.layout={...patch.layout,[liveDevice()]:next};
   livePatches.set(g.selector,patch);
   refreshLiveLayoutRules(g.node.ownerDocument);
-  // If narrowing a text box creates more lines, grow its reserved height
-  // for width-only drags so the text does not cover following content.
+  // Corner drags also narrow text frames, so allow natural wrapping
+  // and reserve enough height to prevent overflow into nearby elements.
+  // A north corner keeps its original bottom edge while the text grows.
   if(g.dir!=="move"&&g.node.matches(LIVE_REFLOW_TEXT)&&
-     (g.dir==="e"||g.dir==="w")){
+     (g.dir==="e"||g.dir==="w"||g.dir.length===2)){
     const needed=Math.ceil(g.node.scrollHeight+2);
     if(Number.isFinite(needed)&&needed>next.reserveHeight&&needed<=5000){
+      const addedHeight=needed-next.reserveHeight;
       next.reserveHeight=needed;
+      if(g.dir.includes("n"))
+        next.dy=clamp(Math.round(next.dy-addedHeight),-4000,4000);
       patch.layout[liveDevice()]=next;
       livePatches.set(g.selector,patch);
       refreshLiveLayoutRules(g.node.ownerDocument);
@@ -3609,11 +3621,15 @@ function gestureMove(event){
     obj.w=w;obj.h=h;
     obj.x=d.includes("w")?base.x+base.w-w:base.x;
     obj.y=d.includes("n")?base.y+base.h-h:base.y;
-    // As in PowerPoint text boxes, narrowing a horizontal text frame wraps
-    // words and adds the needed height. Font geometry remains unchanged.
-    // A deliberate north/south height resize remains fully under user control.
-    if(g.kind==="text"&&(d==="e"||d==="w"))
-      obj.h=Math.max(obj.h,measuredTextHeight(obj));
+    // Width changes from both side and corner grips reflow text naturally.
+    // Pure north/south grips still allow intentional height adjustments.
+    if(g.kind==="text"&&(d==="e"||d==="w"||d.length===2)){
+      const needed=measuredTextHeight(obj);
+      if(needed>obj.h){
+        obj.h=needed;
+        if(d.includes("n"))obj.y=base.y+base.h-obj.h;
+      }
+    }
   }
   refreshLiveBoxes();
 }
