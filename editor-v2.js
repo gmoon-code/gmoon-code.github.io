@@ -21,6 +21,7 @@ let liveSourceMulti=new Set(); // Existing source objects selected on the actual
 let liveLockImageRatio=true;
 let liveSectionPickMode=false; // Editor-only selection behaviour, never published.
 let liveCropMode=false; // Selected photo can be panned inside its crop frame.
+let liveCropSliderBefore=null,liveCropSliderKey=""; // One undo step per slider drag.
 let liveSectionHover=null;
 let workspaceMode="live",liveWidth=1160,liveScale=1,liveManualScale=null,liveSelected=null,liveObserver=null,liveSerial=0;
 let liveSuppressClickUntil=0;
@@ -394,6 +395,7 @@ function setWorkspaceMode(mode){
     if(gesture)cancelCanvasGesture();
     cancelCanvasMarquee();
   }
+  finishCropSliderPreview();
   workspaceMode=mode;
   const isLive=mode==="live";
   if(!isLive)clearLiveSectionHover();
@@ -1350,6 +1352,7 @@ function resetLiveObjectDesign(){
 // Non-destructive image cropping. CSS framing is stored per device and
 // applied by the same assembler used for preview and GitHub publication.
 function applySelectedImageCrop(changes){
+  finishCropSliderPreview();
   const node=liveSelected?.node,selector=node&&liveSelector(node);
   if(workspaceMode!=="live"||node?.tagName!=="IMG"||!selector||liveEditing)return false;
   const patch=livePatchForSelected();if(!patch)return false;
@@ -1371,7 +1374,38 @@ function applySelectedImageCrop(changes){
   }
   return false;
 }
+function previewSelectedImageCrop(changes){
+  const node=liveSelected?.node,selector=node&&liveSelector(node);
+  if(workspaceMode!=="live"||node?.tagName!=="IMG"||!selector||liveEditing)return;
+  const device=liveDevice(),key=selector+"@"+device;
+  if(liveCropSliderBefore&&liveCropSliderKey!==key)finishCropSliderPreview();
+  const patch=livePatchForSelected();if(!patch)return;
+  const crop={...selectedImageCrop(patch,device),...changes};
+  if(!["contain","cover"].includes(crop.fit)||
+     !["rectangle","rounded","circle"].includes(crop.mask))return;
+  crop.x=Math.round(clamp(Number(crop.x),0,100));
+  crop.y=Math.round(clamp(Number(crop.y),0,100));
+  if(!Number.isFinite(crop.x)||!Number.isFinite(crop.y))return;
+  if(!liveCropSliderBefore){
+    liveCropSliderBefore=liveSnapshot();
+    liveCropSliderKey=key;
+  }
+  patch.imageCrop={...(patch.imageCrop||{}),[device]:crop};
+  livePatches.set(selector,patch);
+  if(patch.kind==="insert")refreshAddedObject(node.ownerDocument,patch);
+  else refreshLiveLayoutRules(node.ownerDocument);
+}
+function finishCropSliderPreview(){
+  if(!liveCropSliderBefore)return;
+  const before=liveCropSliderBefore;
+  liveCropSliderBefore=null;liveCropSliderKey="";
+  if(recordLiveHistory(before)){
+    renderLiveInspector();syncLiveOverlay();
+    status("Crop position saved · Undo restores its previous framing");
+  }
+}
 function setLiveCropMode(enabled){
+  finishCropSliderPreview();
   const node=liveSelected?.node;
   if(node?.tagName!=="IMG"||workspaceMode!=="live")return;
   if(enabled&&liveSectionPickMode)toggleLiveSectionPickMode();
@@ -1722,6 +1756,7 @@ function renderLiveInspector(){
   $("cropImageTool").setAttribute("aria-pressed",String(liveCropMode&&tag==="IMG"));
   $("cropImageTool").classList.toggle("active",liveCropMode&&tag==="IMG");
   $("liveLockImageRatio").checked=liveLockImageRatio;
+  $("liveLockImageRatio").disabled=tag==="IMG"&&liveCropMode;
   if(tag==="IMG"){
     const crop=selectedImageCrop(livePatchForSelected());
     $("liveCropFit").value=crop.fit;
@@ -3290,6 +3325,7 @@ function selectLiveElement(node,additive=false,preserveMulti=false){
   else liveSourceMulti.add(key);
   clearLiveSelection(true);
   clearLiveSectionHover();
+  if(liveSelected?.node!==node)finishCropSliderPreview();
   if(liveSelected?.node!==node)liveCropMode=false;
   liveSelected={node,page:currentPage};
   node.setAttribute("data-moon-v2-live-selected","");
@@ -4642,9 +4678,14 @@ function attachEvents(){
     applySelectedImageCrop({mask:event.target.value}));
   for(const [id,field,out] of [
     ["liveCropX","x","liveCropXValue"],["liveCropY","y","liveCropYValue"]]){
-    $(id).addEventListener("input",event=>{$(out).textContent=event.target.value+"%";});
-    $(id).addEventListener("change",event=>
-      applySelectedImageCrop({[field]:Number(event.target.value)}));
+    $(id).addEventListener("input",event=>{
+      $(out).textContent=event.target.value+"%";
+      previewSelectedImageCrop({[field]:Number(event.target.value)});
+    });
+    $(id).addEventListener("change",event=>{
+      if(liveCropSliderBefore)finishCropSliderPreview();
+      else applySelectedImageCrop({[field]:Number(event.target.value)});
+    });
   }
   $("liveCropReset").addEventListener("click",resetSelectedImageCrop);
   for(const [id,ratio] of [["liveCropSquare",1],["liveCrop43",4/3],
