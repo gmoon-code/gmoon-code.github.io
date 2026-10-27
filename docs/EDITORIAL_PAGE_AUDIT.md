@@ -25,10 +25,10 @@ A content pass is **not** equivalent to final visual approval. Automated browser
 | `story-method.html` | Content, source-record, scientific-example, and writing pass completed, commit `a1b5086` | Full live-preview interaction and visual inspection at desktop/phone sizes |
 | `research-methods-studio.html` | Checked against synthetic source CSV, JSON and release README; content and statistical interpretation pass, commit `2865b41` | Live-preview, export, backup and responsive interaction audit outstanding |
 | `writing-biological-classification.html` | Independently reviewed XYY systematic-review conclusion; improved evidence and classroom authority argument, commit `cc9460d` | Final independent visual inspection and cross-page prose repetition review |
-| `interests.html` | Revised in preceding conversation; inaccessible photo filename alt fixed `ea80850`; final sign-off pending | Every text/image element and responsive layout |
-| `pungmul.html` | History and image rights addressed previously; ARIA fix `209f965`, photo alt fix `8184b09` | Entire long-form and media layout, history source audit |
+| `interests.html` | Prior content passes plus independent image inspection and final filename-style alt correction `2fb99ed` | Image positioning, book-cover assets and responsive layout still require visual sign-off |
+| `pungmul.html` | History research and prior content pass; additional four photo labels fixed `234fad1`, introduction refined `c52ceb5` | Photo-layout check; one photograph retains screenshot-viewer chrome and needs careful replacement |
 | `contact.html` | Revised in preceding conversation; photo alt fixed `667ed11`; final sign-off pending | Wording, contact destinations, all screen sizes |
-| `cv.html` | Dedicated date/tense/claims and layout pass, commit `2a53919`; credential names and affiliations retained rather than guessed | Final printed A4 check and credential/document verification |
+| `cv.html` | Date/tense/claims/layout pass `2a53919`; email unified with academic CVs and Contact `be3044d` | A4 print preview, credential verification, degree completion versus formal award date |
 | `about.html` | Reviewed meta-refresh legacy route to Contact; no content change warranted | Check redirect in rendered browser |
 | `404.html` | Copy, semantic markup and links reviewed; no content change warranted | Browser routing and small-screen check |
 | `editor-v2.html` | Separate product QA in progress across prior conversations | PowerPoint-style editing interactions, resize/crop, geometry, publishing, keyboard/mobile |
@@ -48,6 +48,7 @@ A content pass is **not** equivalent to final visual approval. Automated browser
 - Editor V2's image-library accessible names were revised in commit `b2bc88c` after a reported `label-content-name-mismatch` on two buttons. The regression run still requires confirmation.
 - A fresh structural count across all 23 HTML source pages detected two missing `</section>` elements in `research.html`, corrected in commit `4c5f652`. All checked ordinary pages now have balanced section, division, figure, list, and table tags. This is source-level evidence, not visual verification.
 - The root HTML source scan found no unresolved in-page fragment IDs or remaining filename-style photo descriptions in ordinary markup. Generated content needs runtime inspection.
+- Comparison of paragraph text on eleven key pages found only one repeated 14-word factual sequence, the published Williams et al. malaria protection percentages in the Teaching and Classification essay pages. Reference-list repetitions are expected and intentionally retained. A spot-check of substantive research/teaching paragraphs found no em dashes or colons in ordinary prose.
 - The accessibility audit passed on the Research DOM fix (`4c5f652`), as did the research-figure and external-resource audits. The responsive-browser job remained in progress when last inspected.
 - Root-level HTML link and fragment checks found no unresolved references to other root-level `.html` pages. Links into separately deployed project repositories should be tested independently.
 - The apparent duplicate `<main>` in `fluid-layout-lab.html` is an HTML snippet inside the JavaScript export builder, not a second live document landmark.
