@@ -643,15 +643,19 @@ test('real academic pages load with source styles inside the faithful live works
   for(const file of ['index.html','research.html','teaching.html','pungmul.html']){
     await page.locator('#page').selectOption(file);
     const frame=page.frameLocator('#livePageFrame');
-    await expect(frame.locator('main')).toBeVisible({timeout:20000});
-    const state=await frame.locator('main').evaluate(node=>({
-      text:node.textContent.trim().slice(0,300),
-      width:node.getBoundingClientRect().width,
-      styles:[...document.styleSheets].length
-    }));
-    expect(state.text.length).toBeGreaterThan(30);
-    expect(state.width).toBeGreaterThan(250);
-    expect(state.styles).toBeGreaterThan(0);
+    // The verified iframe may replace srcdoc once source loading finishes.
+    // Retry measurements across that navigation rather than reading the
+    // intermediate document and treating it as the final page.
+    await expect.poll(async()=>{
+      try{
+        const state=await frame.locator('main').evaluate(node=>({
+          text:node.textContent.trim().slice(0,300),
+          width:node.getBoundingClientRect().width,
+          styles:[...document.styleSheets].length
+        }));
+        return state.text.length>30&&state.width>250&&state.styles>0;
+      }catch{return false;}
+    },{timeout:20000}).toBe(true);
     await expect(page.locator('#liveViewport')).toBeVisible();
     await expect(page.locator('#scrollspace')).toBeHidden();
   }
@@ -706,8 +710,6 @@ test('real website rendering matches standalone pages at desktop and phone width
         await page.locator('#page').selectOption(filename);
         await page.locator('#devicePreview').selectOption(device.label);
         const iframe=page.frameLocator('#livePageFrame');
-        await iframe.locator('main').waitFor({state:'attached',timeout:15000});
-        await iframe.locator('body').evaluate(node=>node.ownerDocument.fonts?.ready);
         const actual=await direct.locator('html').evaluate(node=>{
           const doc=node.ownerDocument,main=doc.querySelector('main'),h=main?.querySelector('h1,h2');
           const css=h?doc.defaultView.getComputedStyle(h):null;
@@ -719,8 +721,10 @@ test('real website rendering matches standalone pages at desktop and phone width
         // The frame can briefly still contain the previous page while
         // the selected GitHub source is loading. Compare once its actual
         // contents, fonts and viewport match the standalone page.
-        await expect.poll(()=>summary(iframe.locator('html')),{timeout:15000})
-          .toEqual(actual);
+        await expect.poll(async()=>{
+          try{return await summary(iframe.locator('html'));}
+          catch{return null;} // Source-verified srcdoc was replaced.
+        },{timeout:20000}).toEqual(actual);
       }finally{await direct.close();}
     }
   }
