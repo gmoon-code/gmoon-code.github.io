@@ -57,6 +57,7 @@ A content pass is **not** equivalent to final visual approval. Automated browser
 - The existing responsive audit omitted Contact and Pungmul. Both, plus 404 screenshot coverage, were added to `scripts/responsive_smoke.py` in commit `357b4aa`. The new workflow should be checked for results.
 - The audit now tests mobile intersections between free-positioned photographs and readable text on Home and Interests, commit `26ffc4a`. Ordinary viewport-width checks had missed these image/text collisions. Treat the fix as provisional until the run confirms it.
 - A retrieved responsive screenshot at 320px confirmed the formerly overlapping Homepage hero now reads correctly; its 1440px capture was pixel-identical to the previous desktop screenshot (bounding-box of pixel differences was empty). A subsequent phone-only improvement constrained the lower ensemble photo within the frame and added gutters, so final screenshot sign-off is still pending.
+- The three visual-audit GitHub Actions workflows had an evidence-publishing rebase failure (`fatal: empty ident name`) despite successful browser capture. Explicit Git identity configuration was added before commit and rebase in `f8a019e`, `4d9fdb8`, `c218440`. Re-run results are needed before marking publication fixed.
 - CSS has received targeted spacing changes; final human visual judgment is still outstanding for the edited pages.
 
 ## Next content pass
