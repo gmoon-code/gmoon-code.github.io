@@ -2887,6 +2887,16 @@ function removeLiveOverlay(){
   liveOverlay?.ownerDocument?.getElementById("moon-v2-crop-image-guide")?.remove();
   liveOverlay=null;
 }
+function liveAddedSelectionBounds(items){
+  if(!items.length)return null;
+  const rects=items.map(item=>item.node.getBoundingClientRect());
+  const left=Math.min(...rects.map(r=>r.left)),
+    top=Math.min(...rects.map(r=>r.top)),
+    right=Math.max(...rects.map(r=>r.right)),
+    bottom=Math.max(...rects.map(r=>r.bottom));
+  return {left,top,right,bottom,x:left,y:top,
+    width:right-left,height:bottom-top};
+}
 function liveSourceSelectionBounds(node,items=selectedSourcePatches()){
   if(items.length<2||!items.some(item=>item.node===node))
     return node.getBoundingClientRect();
@@ -2948,8 +2958,11 @@ function syncLiveOverlay(){
   const node=liveSelected.node,doc=node.ownerDocument;
   if(node.tagName==="IMG")
     node.toggleAttribute("data-moon-v2-crop-active",liveCropMode);
-  const sourceGroup=selectedSourcePatches();
-  const grouped=sourceGroup.length>1&&sourceGroup.some(item=>item.node===node);
+  const sourceGroup=selectedSourcePatches(),addedGroup=selectedAddedPatches();
+  const groupedSource=sourceGroup.length>1&&sourceGroup.some(item=>item.node===node);
+  const groupedAdded=addedGroup.length>1&&addedGroup.some(item=>item.node===node);
+  const grouped=groupedSource||groupedAdded;
+  const groupCount=groupedSource?sourceGroup.length:groupedAdded?addedGroup.length:1;
   const locked=liveSelectionHasGeometryLock();
   if(liveOverlay?.isConnected&&
     liveOverlay.dataset.positionLocked!==String(locked))removeLiveOverlay();
@@ -2957,7 +2970,7 @@ function syncLiveOverlay(){
      liveOverlay.dataset.cropMode!==String(liveCropMode&&node.tagName==="IMG"))
     removeLiveOverlay();
   if(liveOverlay?.isConnected&&
-      liveOverlay.dataset.groupCount!==(grouped?String(sourceGroup.length):"1"))
+      liveOverlay.dataset.groupCount!==String(groupCount))
     removeLiveOverlay();
   if(!liveOverlay||!liveOverlay.isConnected||liveOverlay.ownerDocument!==doc){
     removeLiveOverlay();
@@ -3023,7 +3036,7 @@ function syncLiveOverlay(){
     move.textContent=grouped?"Move group":
       liveCropMode&&node.tagName==="IMG"?"Crop active · drag image":"Move";
     move.setAttribute("aria-label",grouped?
-      "Move selected original webpage elements together":
+      "Move selected webpage elements together":
       "Move selected live-page object");
     move.dataset.direction=liveCropMode&&node.tagName==="IMG"?"crop":"move";
     if(!locked&&!(liveCropMode&&node.tagName==="IMG"))liveOverlay.append(move);
@@ -3081,12 +3094,14 @@ function syncLiveOverlay(){
       if(button)startLiveGesture(event,button.dataset.direction,button);
     });
   }
-  const rect=liveSourceSelectionBounds(node,sourceGroup);
+  const rect=groupedAdded?
+    liveAddedSelectionBounds(addedGroup):
+    liveSourceSelectionBounds(node,sourceGroup);
   liveOverlay.style.left=rect.left+"px";
   liveOverlay.style.top=rect.top+"px";
   liveOverlay.style.width=rect.width+"px";
   liveOverlay.style.height=rect.height+"px";
-  liveOverlay.dataset.groupCount=grouped?String(sourceGroup.length):"1";
+  liveOverlay.dataset.groupCount=String(groupCount);
   liveOverlay.dataset.positionLocked=String(locked);
   liveOverlay.dataset.cropMode=String(liveCropMode&&node.tagName==="IMG");
   // iframe scaling shrinks ordinary 13px handles to just 3–7 screen pixels.
@@ -3184,21 +3199,21 @@ function startLiveGesture(event,direction,anchor){
   if(direction!=="move"||anchor.closest?.("#moon-v2-live-overlay"))
     event.preventDefault();
   event.stopPropagation();
-  const group=direction==="move"&&LIVE_ADDED_ID.test(selector)&&
+  const group=LIVE_ADDED_ID.test(selector)&&
     liveAddedMulti.has(selector)&&selectedAddedPatches().length>1?
     selectedAddedPatches().map(item=>({selector:item.selector,node:item.node,
-      patch:copy(item.patch)})):null;
+      patch:copy(item.patch),rect:item.node.getBoundingClientRect()})):null;
   const sourceGroup=!LIVE_ADDED_ID.test(selector)&&
     liveSourceMulti.has(selector)&&selectedSourcePatches().length>1?
     selectedSourcePatches().map(item=>({...item,rect:item.node.getBoundingClientRect()})):null;
   const rect=sourceGroup?liveSourceSelectionBounds(node,sourceGroup):
-    node.getBoundingClientRect();
+    group?liveAddedSelectionBounds(group):node.getBoundingClientRect();
   if(rect.width<2||rect.height<2)return;
   liveGesture={pointer:event.pointerId,anchor,dir:direction,
     startX:event.clientX,startY:event.clientY,rect,group,sourceGroup,
     patch,layout:liveLayoutFor(selector),snapshot:liveSnapshot(),
     moved:false,selector,node,snapLines:candidateLiveSnapLines(node,
-      sourceGroup?.map(item=>item.node)||[node])};
+      (sourceGroup||group)?.map(item=>item.node)||[node])};
   anchor.setPointerCapture?.(event.pointerId);
 }
 // Each source box is resized around a shared group frame. We first establish
@@ -3347,6 +3362,29 @@ function moveLiveGesture(event){
     }
     refreshLiveLayoutRules(g.node.ownerDocument);
     drawLiveSnapGuides(snap.x,snap.y,g.node.ownerDocument);
+    syncLiveOverlay();return;
+  }
+  if(g.group&&g.dir!=="move"){
+    const frame=g.rect,device=liveDevice();
+    const next=resizableBoxFromDrag(
+      {x:frame.left,y:frame.top,w:frame.width,h:frame.height},
+      g.dir,deltaX,deltaY,event.shiftKey,90,60,4000,5000);
+    const fx=next.w/frame.width,fy=next.h/frame.height;
+    for(const item of g.group){
+      const old=addedDeviceGeometry(item.patch,device);
+      const pos=item.rect;
+      const targetX=next.x+(pos.left-frame.left)*fx;
+      const targetY=next.y+(pos.top-frame.top)*fy;
+      const patch=copy(item.patch);
+      const dims={...old,
+        x:Math.round(clamp(old.x+targetX-pos.left,-4000,10000)),
+        y:Math.round(clamp(old.y+targetY-pos.top,-4000,40000)),
+        w:Math.round(clamp(old.w*fx,40,4000)),
+        h:Math.round(clamp(old.h*fy,24,5000))};
+      patch.geometry={...patch.geometry,[device]:dims};
+      livePatches.set(item.selector,patch);
+      refreshAddedObject(item.node.ownerDocument,patch);
+    }
     syncLiveOverlay();return;
   }
   if(g.group&&g.dir==="move"){
