@@ -685,7 +685,8 @@ test('section selection mode never navigates embedded page links',async({page})=
   await expect(page.locator('#liveSectionPickMode')).toHaveAttribute('aria-pressed','true');
 });
 
-const cropPng='iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/sx8AAAAASUVORK5CYII=';
+// Real 12x6 two-colour image, to verify actual visible crop pixels.
+const cropPng='iVBORw0KGgoAAAANSUhEUgAAAAwAAAAGCAIAAAB4jOjWAAAAGklEQVR4nGN8pizCgAr0lM+iiTAxEAEGoyIA3OwCR28dY84AAAAASUVORK5CYII=';
 const cropSource='<!doctype html><html><head><style>'+
   'body{margin:0}main{padding:90px 45px}'+
   'img.picture{display:block;width:220px;height:120px;object-fit:contain}'+
@@ -716,16 +717,16 @@ test('original picture crop is responsive, non-destructive and survives reload',
   await page.locator('#liveCropY').evaluate(input=>{
     input.value='70';input.dispatchEvent(new Event('change',{bubbles:true}));
   });
-  await expect(image).toHaveCSS('object-fit','cover');
-  await expect(image).toHaveCSS('object-position','20% 70%');
+  await expect(image).toHaveCSS('object-fit','none');
+  await expect(image).toHaveCSS('background-position','20% 70%');
   expect(await image.getAttribute('src')).toBe(initialSrc);
   await page.locator('#devicePreview').selectOption('phone');
   await expect(image).toHaveCSS('object-fit','contain');
   await page.locator('#devicePreview').selectOption('desktop');
-  await expect(image).toHaveCSS('object-position','20% 70%');
+  await expect(image).toHaveCSS('background-position','20% 70%');
   await page.reload({waitUntil:'domcontentloaded'});
-  await expect(image).toHaveCSS('object-fit','cover');
-  await expect(image).toHaveCSS('object-position','20% 70%');
+  await expect(image).toHaveCSS('object-fit','none');
+  await expect(image).toHaveCSS('background-position','20% 70%');
   expect(await image.getAttribute('src')).toBe(initialSrc);
 });
 test('picture crop aspect preset changes frame without stretching source pixels',async({page})=>{
@@ -738,7 +739,7 @@ test('picture crop aspect preset changes frame without stretching source pixels'
     return {width:rect.width,height:rect.height};
   });
   expect(Math.abs(box.width-box.height)).toBeLessThan(3);
-  await expect(image).toHaveCSS('object-fit','cover');
+  await expect(image).toHaveCSS('object-fit','none');
   await page.locator('#liveCropReset').click();
   await expect(image).toHaveCSS('object-fit','contain');
 });
@@ -748,8 +749,13 @@ test('crop mode exposes photo drag reframing without moving image frame',async({
   await image.click();
   await page.locator('#liveCropToggle').click();
   await expect(page.locator('#liveCropToggle')).toHaveAttribute('aria-pressed','true');
-  await expect(image).toHaveCSS('object-fit','cover');
-  const initialPosition=await image.evaluate(node=>getComputedStyle(node).objectPosition);
+  await expect(image).toHaveCSS('object-fit','none');
+  await page.locator('#liveCropZoom').evaluate(input=>{
+    input.value='200';
+    input.dispatchEvent(new Event('input',{bubbles:true}));
+    input.dispatchEvent(new Event('change',{bubbles:true}));
+  });
+  const initialPosition=await image.evaluate(node=>getComputedStyle(node).backgroundPosition);
   const before=await image.boundingBox();
   expect(before).toBeTruthy();
   const x=before.x+before.width/2,y=before.y+before.height/2;
@@ -761,8 +767,8 @@ test('crop mode exposes photo drag reframing without moving image frame',async({
   expect(Math.abs(after.x-before.x)).toBeLessThan(2);
   expect(Math.abs(after.y-before.y)).toBeLessThan(2);
   await expect(page.locator('#liveCropToggle')).toHaveAttribute('aria-pressed','true');
-  await expect(image).toHaveCSS('object-fit','cover');
-  const croppedPosition=await image.evaluate(node=>getComputedStyle(node).objectPosition);
+  await expect(image).toHaveCSS('object-fit','none');
+  const croppedPosition=await image.evaluate(node=>getComputedStyle(node).backgroundPosition);
   expect(croppedPosition).not.toBe(initialPosition);
   await page.locator('#liveCropToggle').click();
   await expect(page.locator('#liveCropToggle')).toHaveAttribute('aria-pressed','false');
@@ -787,7 +793,7 @@ test('crop keyboard arrows reframe the photo while keeping its box stationary',a
   await page.locator('#liveCropToggle').click();
   const box=await image.boundingBox();
   await page.keyboard.press('ArrowRight');
-  await expect(image).toHaveCSS('object-position','51% 50%');
+  await expect(image).toHaveCSS('background-position','51% 50%');
   const after=await image.boundingBox();
   expect(Math.abs(after.x-box.x)).toBeLessThan(2);
   expect(Math.abs(after.y-box.y)).toBeLessThan(2);
@@ -821,7 +827,7 @@ test('crop frame handles ignore image proportion lock and visibly trim the pictu
   });
   expect(changed.w).toBeLessThan(original.w-25);
   expect(Math.abs(changed.h-original.h)).toBeLessThan(3);
-  expect(changed.fit).toBe('cover');
+  expect(changed.fit).toBe('none');
   expect(await photo.getAttribute('src')).toBe(src);
   await page.locator('#cropImageTool').click();
   await expect(page.locator('#liveCropToggle')).toHaveAttribute('aria-pressed','false');
@@ -837,12 +843,12 @@ test('crop sliders update the photo live and save the whole adjustment as undoab
     node.value='18';
     node.dispatchEvent(new Event('input',{bubbles:true}));
   });
-  await expect(photo).toHaveCSS('object-position','18% 50%');
+  await expect(photo).toHaveCSS('background-position','18% 50%');
   await x.evaluate(node=>node.dispatchEvent(new Event('change',{bubbles:true})));
   await expect(page.locator('#liveCropXValue')).toHaveText('18%');
   await page.locator('#liveMode').focus();
   await page.keyboard.press('Control+z');
-  await expect(photo).toHaveCSS('object-position','50% 50%');
+  await expect(photo).toHaveCSS('background-position','50% 50%');
 });
 
 test('linked images are selectable for cropping without opening their link',async({page})=>{
@@ -860,6 +866,39 @@ test('linked images are selectable for cropping without opening their link',asyn
   await page.locator('#cropImageTool').click();
   await expect(live.locator('#moon-v2-live-overlay'))
     .toHaveAttribute('data-crop-mode','true');
-  await expect(photo).toHaveCSS('object-fit','cover');
+  await expect(photo).toHaveCSS('object-fit','none');
   await expect(live.locator('a img.picture')).toHaveCount(1);
+});
+
+test('zoom and pan visibly change picture pixels while the crop frame stays fixed',async({page})=>{
+  await loadCropFixture(page);
+  const image=page.frameLocator('#livePageFrame').locator('img.picture');
+  await image.click();
+  await page.locator('#liveCropToggle').click();
+  const box=await image.boundingBox();
+  const original=await image.screenshot();
+  const zoom=page.locator('#liveCropZoom');
+  await zoom.evaluate(input=>{
+    input.value='200';
+    input.dispatchEvent(new Event('input',{bubbles:true}));
+    input.dispatchEvent(new Event('change',{bubbles:true}));
+  });
+  const magnified=await image.screenshot();
+  expect(Buffer.compare(original,magnified)).not.toBe(0);
+  const x=page.locator('#liveCropX');
+  await x.evaluate(input=>{
+    input.value='0';input.dispatchEvent(new Event('input',{bubbles:true}));
+    input.dispatchEvent(new Event('change',{bubbles:true}));
+  });
+  const left=await image.screenshot();
+  await x.evaluate(input=>{
+    input.value='100';input.dispatchEvent(new Event('input',{bubbles:true}));
+    input.dispatchEvent(new Event('change',{bubbles:true}));
+  });
+  const right=await image.screenshot();
+  expect(Buffer.compare(left,right)).not.toBe(0);
+  const current=await image.boundingBox();
+  expect(Math.abs(current.width-box.width)).toBeLessThan(2);
+  expect(Math.abs(current.height-box.height)).toBeLessThan(2);
+  await expect(image).toHaveCSS('object-fit','none');
 });
