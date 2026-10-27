@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>Academic Website Editor 2 | Ye Eun Moon</title>
-<link rel="stylesheet" href="editor-v2.css?v=20261027-crop-toolbar-v46c">
-<script src="editor-v2.js?v=20261027-crop-toolbar-v46c" defer></script>
+<link rel="stylesheet" href="editor-v2.css?v=20261027-crop-drag-fix-v47">
+<script src="editor-v2.js?v=20261027-crop-drag-fix-v47" defer></script>
 </head>
 <body>
 <a class="skip" href="#workspace">Skip to editor canvas</a>
@@ -32,7 +32,7 @@
     <button id="addText" title="Add a text box directly to the webpage in Live mode; canvas-only in Design mode">T Add text</button>
     <button id="addImage" title="Add an image to the actual webpage or independent canvas">▧ Add image</button>
     <button id="cropImageTool" type="button" disabled aria-pressed="false"
-      title="Select a photo then drag inside it to reframe the crop. Click again or press Escape to finish.">✂ Crop picture</button>
+      title="Select a photo, trim using the pink handles, then drag the image to choose the visible area.">✂ Crop picture</button>
     <button id="addShape" title="Add a movable coloured shape directly to the webpage or canvas">▢ Add shape</button>
     <span class="divider"></span>
     <button id="duplicate">Duplicate</button>
@@ -254,7 +254,8 @@
             <p class="help">Resize the image frame with its handles. Its contents keep their natural proportions. Uncheck to freely size the frame without stretching the photo.</p>
             <div id="liveCropControls" class="live-crop-controls" hidden>
               <h3>Picture cropping &amp; framing</h3>
-              <p class="help">Crop keeps your original image intact. The photo fills its frame without stretching, and you can reposition which area is visible. Changes are saved separately for desktop, tablet, and phone.</p>
+              <p class="help"><strong>Crop in two steps.</strong> Click Crop picture, then drag the pink corner or side handles inward to trim the visible frame. Drag inside the image to choose which part stays visible. The frame changes size independently of the photo's proportions. Click Finish crop or press Escape when done.</p>
+              <p class="help">The original image is preserved. Crop settings can differ for desktop, tablet, and phone.</p>
               <div class="inline-actions">
                 <button type="button" id="liveCropToggle" aria-pressed="false">Crop picture · drag to reframe</button>
                 <button type="button" id="liveCropReset">Reset crop</button>
