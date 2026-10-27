@@ -25,6 +25,12 @@ test.beforeEach(async({page})=>{
   await page.evaluate(()=>localStorage.removeItem('moon-academic-editor-v2:about.html'));
   await page.reload({waitUntil:'domcontentloaded'});
 });
+async function mockVerifiedSource(page,name,source){
+  await page.route('https://api.github.com/repos/gmoon-code/gmoon-code.github.io/contents/'+name+'*',
+    route=>route.fulfill({status:200,contentType:'application/json',
+      body:JSON.stringify({type:'file',sha:'isolated-'+name+'-test-source',
+        encoding:'base64',content:Buffer.from(source).toString('base64')})}));
+}
 async function importScene(page){
   await page.locator('#importPage').click();
   await expect(page.locator('#status')).toContainText('Imported');
@@ -445,6 +451,7 @@ test('line breaks inserted during inline editing survive save, reload and export
 test('image library is available without replacing or importing a saved page',async({page})=>{
   await expect(page.locator('#stage .scene-object')).toHaveCount(0);
   await expect(page.locator('#imageLibrary button')).toHaveCount(1,{timeout:12000});
+  await page.locator('#designMode').click();
   await page.locator('#imageLibrary button').click();
   await expect(page.locator('#stage [data-kind="image"]')).toHaveCount(1);
   await expect(page.locator('#stage [data-kind="image"] img')).toHaveAttribute('src','assets/profile-portrait.webp');
@@ -553,6 +560,7 @@ test('original-layout image edit publishes to source-only staging path',async({p
     return route.fulfill({status:201,contentType:'application/json',body:JSON.stringify({commit:{sha:'staging-test-commit'}})});
   });
   await page.locator('#publish').click();
+  await page.locator('#publishTarget').selectOption('staging');
   await expect(page.locator('#stagePath')).toHaveText('editor-v2-previews/source-about.html');
   await page.locator('#githubToken').fill('staging-test-token');
   await page.locator('#confirmPublish').click();
@@ -571,6 +579,7 @@ test('live preview retains true 100vh viewport height and scrolls long pages',as
   await page.route('**/about.html',route=>route.fulfill({
     status:200,contentType:'text/html',body:source
   }));
+  await mockVerifiedSource(page,'about.html',source);
   await page.locator('#reloadLive').click();
   const live=page.frameLocator('#livePageFrame');
   await expect(live.locator('#fullHero')).toBeVisible();
@@ -599,6 +608,7 @@ test('live image library replaces source image without creating a canvas object'
   await page.route('**/about.html',route=>route.fulfill({
     status:200,contentType:'text/html',body:site
   }));
+  await mockVerifiedSource(page,'about.html',site);
   await page.locator('#reloadLive').click();
   const live=page.frameLocator('#livePageFrame');
   await live.locator('main img').first().click();
@@ -714,16 +724,18 @@ test('real website rendering matches standalone pages at desktop and phone width
 });
 
 test('internal links in live site navigate pages through editor without stale iframe state',async({page})=>{
+  const aboutSource='<!doctype html><html><body><header><a href="research.html">Research nav</a></header>'+
+    '<main><h1>Original about page</h1><a href="#section">Jump down</a>'+
+    '<p id="section">About section</p></main></body></html>';
+  const researchSource='<!doctype html><html><body><main><h1>Destination research page</h1></main></body></html>';
   await page.route('**/about.html',route=>route.fulfill({
-    status:200,contentType:'text/html',
-    body:'<!doctype html><html><body><header><a href="research.html">Research nav</a></header>'+
-      '<main><h1>Original about page</h1><a href="#section">Jump down</a>'+
-      '<p id="section">About section</p></main></body></html>'
+    status:200,contentType:'text/html',body:aboutSource
   }));
   await page.route('**/research.html',route=>route.fulfill({
-    status:200,contentType:'text/html',
-    body:'<!doctype html><html><body><main><h1>Destination research page</h1></main></body></html>'
+    status:200,contentType:'text/html',body:researchSource
   }));
+  await mockVerifiedSource(page,'about.html',aboutSource);
+  await mockVerifiedSource(page,'research.html',researchSource);
   await page.locator('#reloadLive').click();
   const live=page.frameLocator('#livePageFrame');
   await expect(live.locator('main h1')).toHaveText('Original about page');
@@ -743,6 +755,7 @@ test('source-preserving export keeps reference anchors local and resolves site a
   await page.route('**/about.html',route=>route.fulfill({
     status:200,contentType:'text/html',body:original
   }));
+  await mockVerifiedSource(page,'about.html',original);
   const pending=page.waitForEvent('download');
   await page.locator('#exportLiveEdits').click();
   const html=fs.readFileSync(await (await pending).path(),'utf8');
@@ -754,12 +767,13 @@ test('source-preserving export keeps reference anchors local and resolves site a
 });
 
 test('live-page asset status identifies missing original resources',async({page})=>{
+  const source='<!doctype html><html><head><link rel="stylesheet" href="missing-editor-test.css"></head>'+
+    '<body><main><h1>Resource test</h1>'+
+    '<img src="assets/missing-editor-test-picture.webp" alt="Missing"></main></body></html>';
   await page.route('**/about.html',route=>route.fulfill({
-    status:200,contentType:'text/html',
-    body:'<!doctype html><html><head><link rel="stylesheet" href="missing-editor-test.css"></head>'+
-      '<body><main><h1>Resource test</h1>'+
-      '<img src="assets/missing-editor-test-picture.webp" alt="Missing"></main></body></html>'
+    status:200,contentType:'text/html',body:source
   }));
+  await mockVerifiedSource(page,'about.html',source);
   await page.locator('#reloadLive').click();
   const live=page.frameLocator('#livePageFrame');
   await expect(live.locator('main h1')).toHaveText('Resource test');
@@ -782,9 +796,11 @@ test('live text in progress is saved when switching modes, reloading or changing
   await live.locator('main h2').fill('Draft saved on reload');
   await page.locator('#reloadLive').click();
   await expect(live.locator('main h2')).toHaveText('Draft saved on reload');
+  const researchSource='<!doctype html><html><body><main><h1>Research</h1></main></body></html>';
   await page.route('**/research.html',route=>route.fulfill({
-    status:200,contentType:'text/html',body:'<!doctype html><html><body><main><h1>Research</h1></main></body></html>'
+    status:200,contentType:'text/html',body:researchSource
   }));
+  await mockVerifiedSource(page,'research.html',researchSource);
   await live.locator('main h2').click();
   await page.locator('#editLiveText').click();
   await live.locator('main h2').fill('Draft saved on navigation');
@@ -981,6 +997,7 @@ test('selecting and moving a real website section preserves nested links and HTM
   await page.route('**/about.html',route=>route.fulfill({
     status:200,contentType:'text/html',body:fixture
   }));
+  await mockVerifiedSource(page,'about.html',fixture);
   await page.locator('#reloadLive').click();
   const live=page.frameLocator('#livePageFrame');
   const card=live.locator('main section.research-card');
@@ -1037,6 +1054,7 @@ test('whole-section background changes keep nested markup and reset cleanly',asy
     '<p>Evidence and <a href="#ref">references</a></p></section>'+
     '<p id="ref">Citation remains.</p></main></body></html>';
   await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',body:fixture}));
+  await mockVerifiedSource(page,'about.html',fixture);
   await page.locator('#reloadLive').click();
   const live=page.frameLocator('#livePageFrame');
   const section=live.locator('main section.study');
@@ -1065,6 +1083,7 @@ test('style-only changes preserve original paragraph spans, classes and hyperlin
   await page.route('**/about.html',route=>route.fulfill({
     status:200,contentType:'text/html',body:source
   }));
+  await mockVerifiedSource(page,'about.html',source);
   await page.locator('#reloadLive').click();
   const live=page.frameLocator('#livePageFrame');
   const para=live.locator('main p.science');
@@ -1166,6 +1185,7 @@ test('live drag snaps to a nearby edge with temporary alignment guides',async({p
   await page.route('**/about.html',route=>route.fulfill({
     status:200,contentType:'text/html',body:source
   }));
+  await mockVerifiedSource(page,'about.html',source);
   await page.locator('#reloadLive').click();
   const live=page.frameLocator('#livePageFrame');
   const first=live.locator('main p.first'),second=live.locator('main p.second');
