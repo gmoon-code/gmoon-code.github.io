@@ -545,12 +545,29 @@ function validImageCropMap(map){
 }
 function imageCropCss(crop){
   const mask=crop.mask==="circle"?"border-radius:50%!important;":
-    crop.mask==="rounded"?"border-radius:20px!important;":"";
+    crop.mask==="rounded"?"border-radius:20px!important;":
+    "border-radius:0!important;";
   return "object-fit:"+crop.fit+"!important;object-position:"+
     crop.x+"% "+crop.y+"%!important;"+mask;
 }
 function selectedImageCrop(patch,device=liveDevice()){
-  return {...DEFAULT_IMAGE_CROP,fit:patch?.design?.imageFit||"contain",
+  const node=liveSelected?.node,selector=node&&liveSelector(node);
+  let published={};
+  // Crops published in earlier sessions exist as source CSS, rather
+  // than draft metadata. Use the actual image's framing as a baseline.
+  if(node?.tagName==="IMG"&&selector===patch?.selector&&node.isConnected){
+    const css=node.ownerDocument.defaultView.getComputedStyle(node);
+    const positions=css.objectPosition.match(/^([\d.]+)%\s+([\d.]+)%$/);
+    const fit=["cover","contain"].includes(css.objectFit)?css.objectFit:"contain";
+    const radius=css.borderTopLeftRadius;
+    published={fit,
+      x:positions?Math.round(clamp(Number(positions[1]),0,100)):50,
+      y:positions?Math.round(clamp(Number(positions[2]),0,100)):50,
+      mask:radius==="50%"?"circle":
+        parseFloat(radius)>1?"rounded":"rectangle"};
+  }
+  return {...DEFAULT_IMAGE_CROP,...published,
+    fit:patch?.design?.imageFit||published.fit||"contain",
     ...(patch?.imageCrop?.[device]||{})};
 }
 function validAddedPatch(p){
