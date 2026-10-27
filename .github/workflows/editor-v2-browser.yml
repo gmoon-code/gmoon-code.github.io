@@ -1,0 +1,54 @@
+name: Editor V2 browser regressions
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "editor-v2.js"
+      - "editor-v2.html"
+      - "editor-v2.css"
+      - "tests/editor-v2-*.spec.cjs"
+      - ".github/workflows/editor-v2-browser.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  live-editor-playwright:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout website editor
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install temporary test dependencies
+        run: npm install --no-save --no-package-lock @playwright/test
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Start same-origin test website
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 > /tmp/editor-v2-http.log 2>&1 &
+          echo $! > /tmp/editor-v2-http.pid
+          for i in $(seq 1 20); do
+            if curl --silent --fail http://127.0.0.1:8765/editor-v2.html > /dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/editor-v2-http.log
+          exit 1
+      - name: Run real-browser source element and crop regression tests
+        run: npx playwright test tests/editor-v2-live-source-multi.spec.cjs --project=chromium --workers=1 --reporter=line
+        env:
+          CI: "true"
+      - name: Upload failure traces
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: editor-v2-playwright-failures
+          path: |
+            test-results/
+            /tmp/editor-v2-http.log
+          if-no-files-found: ignore
