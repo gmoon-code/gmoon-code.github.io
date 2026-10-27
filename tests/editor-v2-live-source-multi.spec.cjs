@@ -849,3 +849,73 @@ test('crop settings persist after reload without changing phone layout',async({p
   const restored=await cropBox(image);
   expect(Math.abs(restored.w-desktop.w)).toBeLessThan(2);
 });
+
+test('PowerPoint-format image effects survive reload, stay responsive and reset independently of cropping',async({page})=>{
+  await loadCropFixture(page);
+  const live=page.frameLocator('#livePageFrame');
+  const img=live.locator('img.picture');
+  await img.click();
+  await expect(page.locator('#livePictureFormat')).toBeVisible();
+  await page.locator('#livePictureRotation').fill('37');
+  await page.locator('#livePictureRotation').dispatchEvent('change');
+  await expect(img).toHaveCSS('rotate','37deg');
+  await page.locator('#livePictureFlipH').click();
+  await expect(page.locator('#livePictureFlipH')).toHaveAttribute('aria-pressed','true');
+  await expect(img).toHaveCSS('scale','-1 1');
+  await page.locator('#livePictureOpacity').fill('65');
+  await page.locator('#livePictureOpacity').dispatchEvent('change');
+  await expect(img).toHaveCSS('opacity','0.65');
+  await page.locator('#livePictureBrightness').evaluate(el=>{
+    el.value='120';
+    el.dispatchEvent(new Event('input',{bubbles:true}));
+    el.dispatchEvent(new Event('change',{bubbles:true}));
+  });
+  await expect(img).toHaveCSS('filter',/brightness\(1\.2\)/);
+  await page.locator('#livePictureShadow').check();
+  await expect(img).toHaveCSS('filter',/drop-shadow/);
+  // Other responsive device layouts are not altered by desktop effects.
+  await page.locator('#devicePreview').selectOption('phone');
+  await expect(img).toHaveCSS('rotate','none');
+  await page.locator('#devicePreview').selectOption('desktop');
+  await expect(img).toHaveCSS('rotate','37deg');
+  await page.reload({waitUntil:'domcontentloaded'});
+  await expect(img).toHaveCSS('rotate','37deg');
+  await expect(img).toHaveCSS('scale','-1 1');
+  await img.click();
+  await page.locator('#livePictureReset').click();
+  await expect(img).toHaveCSS('rotate','0deg');
+  await expect(img).toHaveCSS('scale','1 1');
+});
+test('direct rotate grip rotates an image and Shift constrains angles to 15 degrees',async({page})=>{
+  await loadCropFixture(page);
+  const live=page.frameLocator('#livePageFrame');
+  const img=live.locator('img.picture');
+  await img.click();
+  const grip=live.locator('#moon-v2-live-overlay .moon-v2-rotate');
+  await expect(grip).toBeVisible();
+  const b=await grip.boundingBox();
+  expect(b).toBeTruthy();
+  await page.keyboard.down('Shift');
+  await page.mouse.move(b.x+b.width/2,b.y+b.height/2);
+  await page.mouse.down();
+  await page.mouse.move(b.x+b.width/2+85,b.y+b.height/2+60,{steps:8});
+  await page.mouse.up();
+  await page.keyboard.up('Shift');
+  const rotation=await img.evaluate(node=>parseFloat(getComputedStyle(node).rotate));
+  expect(Number.isFinite(rotation)).toBe(true);
+  expect(Math.abs(rotation)).toBeGreaterThanOrEqual(15);
+  expect(Math.abs(rotation%15)).toBeLessThan(.01);
+});
+test('inserted webpage shapes include arrows, stars and speech bubbles',async({page})=>{
+  const live=page.frameLocator('#livePageFrame');
+  await page.locator('#addShape').click();
+  await expect(page.locator('#liveShapeOptions')).toBeVisible();
+  for(const shape of ['star','arrow-right','speech-bubble','diamond','hexagon']){
+    await page.locator('#liveShapeType').selectOption(shape);
+    const element=live.locator('[data-moon-v2-object-type="shape"]').last();
+    await expect(element).toHaveCSS('clip-path',/polygon/);
+  }
+  await page.locator('#liveShapeType').selectOption('ellipse');
+  await expect(live.locator('[data-moon-v2-object-type="shape"]').last())
+    .toHaveCSS('border-radius','50%');
+});
