@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>Academic Website Editor 2 | Ye Eun Moon</title>
-<link rel="stylesheet" href="editor-v2.css?v=20261027-picture-frame-crop-v48b">
-<script src="editor-v2.js?v=20261027-picture-frame-crop-v48b" defer></script>
+<link rel="stylesheet" href="editor-v2.css?v=20261027-four-edge-crop-v49">
+<script src="editor-v2.js?v=20261027-four-edge-crop-v49" defer></script>
 </head>
 <body>
 <a class="skip" href="#workspace">Skip to editor canvas</a>
@@ -254,7 +254,7 @@
             <p class="help">Resize the image frame with its handles. Its contents keep their natural proportions. Uncheck to freely size the frame without stretching the photo.</p>
             <div id="liveCropControls" class="live-crop-controls" hidden>
               <h3>Picture cropping &amp; framing</h3>
-              <p class="help"><strong>PowerPoint-style crop.</strong> The pink outline is the visible crop frame. Drag its pink handles to trim the picture. The gold dashed outline shows the larger picture behind the frame. Drag the gold corner handle to resize the picture, or drag inside the frame to reposition the picture. Finish crop or press Escape to keep it.</p>
+              <p class="help"><strong>Trim the picture directly.</strong> Click Crop picture, then drag the pink handles inward from the left, right, top, or bottom. Each side cuts independently from the original image. Click Finish crop before resizing the resulting picture normally. Cropping never stretches the photo.</p>
               <p class="help">The original image is preserved. Crop settings can differ for desktop, tablet, and phone.</p>
               <div class="inline-actions">
                 <button type="button" id="liveCropToggle" aria-pressed="false">Crop picture · drag to reframe</button>
@@ -270,17 +270,39 @@
                 <select id="liveCropShape">
                   <option value="rectangle">Rectangle</option>
                   <option value="rounded">Rounded rectangle</option>
-                  <option value="circle">Circle / oval</option>
+                  <option value="round-large">Extra-rounded rectangle</option>
+                  <option value="pill">Capsule / pill</option>
+                  <option value="circle">Circle</option>
+                  <option value="oval">Oval / ellipse</option>
+                  <option value="squircle">Squircle</option>
+                  <option value="diamond">Diamond</option>
+                  <option value="hexagon">Hexagon</option>
+                  <option value="octagon">Octagon</option>
+                  <option value="triangle">Triangle</option>
+                  <option value="pentagon">Pentagon</option>
+                  <option value="star">Star</option>
+                  <option value="heart">Heart</option>
+                  <option value="arch">Arch</option>
                 </select>
               </label>
+              <h4>Cut from each side</h4>
+              <p class="help">These values remove the selected percentage from the original image. The opposite side stays where it is.</p>
+              <label for="liveCropLeft">Left edge <output id="liveCropLeftValue" for="liveCropLeft">0%</output></label>
+              <input id="liveCropLeft" type="range" min="0" max="90" value="0" step="1">
+              <label for="liveCropRight">Right edge <output id="liveCropRightValue" for="liveCropRight">0%</output></label>
+              <input id="liveCropRight" type="range" min="0" max="90" value="0" step="1">
+              <label for="liveCropTop">Top edge <output id="liveCropTopValue" for="liveCropTop">0%</output></label>
+              <input id="liveCropTop" type="range" min="0" max="90" value="0" step="1">
+              <label for="liveCropBottom">Bottom edge <output id="liveCropBottomValue" for="liveCropBottom">0%</output></label>
+              <input id="liveCropBottom" type="range" min="0" max="90" value="0" step="1">
               <label for="liveCropZoom">Picture zoom <output id="liveCropZoomValue" for="liveCropZoom">100%</output></label>
               <input id="liveCropZoom" type="range" min="100" max="500" step="5" value="100">
-              <p class="help">Zoom enlarges only the picture inside the crop frame, as in PowerPoint. The outside of the frame remains hidden.</p>
+              <p class="help">Optional picture zoom and focal controls are available for special framing. Normal cropping uses the four cut-edge controls above.</p>
               <label for="liveCropX">Horizontal focal point <output id="liveCropXValue" for="liveCropX">50%</output></label>
               <input id="liveCropX" type="range" min="0" max="100" step="1" value="50">
               <label for="liveCropY">Vertical focal point <output id="liveCropYValue" for="liveCropY">50%</output></label>
               <input id="liveCropY" type="range" min="0" max="100" step="1" value="50">
-              <p class="help">Drag the photo in Crop mode, or use arrow keys to adjust the focal point by 1%. Hold Shift for 10%. Press Escape to finish. The picture file remains intact.</p>
+              <p class="help">Press Escape to finish cropping. The original picture file is preserved, and Undo reverses cropping.</p>
               <p class="help">Frame aspect ratio · adjusts the visible crop frame without deforming the photograph.</p>
               <div class="inline-actions">
                 <button type="button" id="liveCropSquare">1:1</button>
