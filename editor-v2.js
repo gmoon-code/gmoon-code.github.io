@@ -3631,13 +3631,16 @@ function renderLiveLayers(){
     const name=liveElementName(node);
     label.textContent=(node.hasAttribute("data-moon-v2-added-id")?
       "Added "+(node.getAttribute("data-moon-v2-object-type")||"object")+" · ":"")+
-      (liveGeometryIsLocked(key)?"🔒 ":"")+name.replace(/\s+/g," ").slice(0,105);
+      (liveGeometryIsLocked(key)?"🔒 ":"")+
+      (liveGroupId(node,key)?"⛓ ":"")+name.replace(/\s+/g," ").slice(0,105);
     if(node===chosen&&!matching.includes(node))
       label.textContent="Selected · "+label.textContent;
     const depth=Math.max(0,key.split(" > ").length-2);
     button.dataset.depth=String(depth);
     button.style.paddingInlineStart=Math.min(70,8+depth*5)+"px";
-    button.title=(depth?"Level "+depth+" · ":"")+name.replace(/\s+/g," ").slice(0,240);
+    button.title=(depth?"Level "+depth+" · ":"")+
+      (liveGroupId(node,key)?"Grouped · Click to select whole group, Alt-click to edit this member · ":"")+
+      name.replace(/\s+/g," ").slice(0,200);
     button.append(type,label);host.append(button);
   }
   if(!host.childElementCount){
@@ -4094,7 +4097,7 @@ function setLiveClippingRelease(enabled){
       "Clipping restored on this screen · Undo available");
   }
 }
-function selectLiveElement(node,additive=false,preserveMulti=false){
+function selectLiveElement(node,additive=false,preserveMulti=false,onlyMember=false){
   const doc=$("livePageFrame").contentDocument;
   if(!node||!doc?.querySelector("main")?.contains(node))return;
   const key=liveSelector(node);
@@ -4130,7 +4133,7 @@ function selectLiveElement(node,additive=false,preserveMulti=false){
   if(!preserveMulti){liveAddedMulti.clear();liveSourceMulti.clear();}
   // One click reselects all persistent group members. Shift-click bypasses
   // this expansion and retains the existing temporary multi-select behavior.
-  const groupId=!additive&&!preserveMulti?liveGroupId(node,key):null;
+  const groupId=!additive&&!preserveMulti&&!onlyMember?liveGroupId(node,key):null;
   if(groupId){
     const members=liveGroupMembers(groupId,isAdded,doc);
     const selected=isAdded?liveAddedMulti:liveSourceMulti;
@@ -5494,7 +5497,7 @@ function attachEvents(){
     const node=LIVE_ADDED_ID.test(key)?findAddedNode(doc,key):
       doc?.querySelector(key);
     if(!node)return;
-    selectLiveElement(node,event.shiftKey);
+    selectLiveElement(node,event.shiftKey,false,event.altKey);
     node.scrollIntoView({block:"center",inline:"nearest"});
     syncLiveOverlay();
   });
