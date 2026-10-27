@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>Academic Website Editor 2 | Ye Eun Moon</title>
-<link rel="stylesheet" href="editor-v2.css?v=20261027-crop-mask-v46b">
-<script src="editor-v2.js?v=20261027-crop-mask-v46b" defer></script>
+<link rel="stylesheet" href="editor-v2.css?v=20261027-crop-toolbar-v46c">
+<script src="editor-v2.js?v=20261027-crop-toolbar-v46c" defer></script>
 </head>
 <body>
 <a class="skip" href="#workspace">Skip to editor canvas</a>
@@ -31,6 +31,8 @@
       title="Click anywhere inside a section to select it, then drag the edges to resize">▣ Edit sections</button>
     <button id="addText" title="Add a text box directly to the webpage in Live mode; canvas-only in Design mode">T Add text</button>
     <button id="addImage" title="Add an image to the actual webpage or independent canvas">▧ Add image</button>
+    <button id="cropImageTool" type="button" disabled aria-pressed="false"
+      title="Select a photo then drag inside it to reframe the crop. Click again or press Escape to finish.">✂ Crop picture</button>
     <button id="addShape" title="Add a movable coloured shape directly to the webpage or canvas">▢ Add shape</button>
     <span class="divider"></span>
     <button id="duplicate">Duplicate</button>
@@ -274,6 +276,7 @@
               <input id="liveCropX" type="range" min="0" max="100" step="1" value="50">
               <label for="liveCropY">Vertical focal point <output id="liveCropYValue" for="liveCropY">50%</output></label>
               <input id="liveCropY" type="range" min="0" max="100" step="1" value="50">
+              <p class="help">Drag the photo in Crop mode, or use arrow keys to adjust the focal point by 1%. Hold Shift for 10%. Press Escape to finish. The picture file remains intact.</p>
               <p class="help">Frame aspect ratio · adjusts the visible crop frame without deforming the photograph.</p>
               <div class="inline-actions">
                 <button type="button" id="liveCropSquare">1:1</button>
