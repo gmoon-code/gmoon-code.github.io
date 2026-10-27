@@ -20,6 +20,7 @@ let liveAddedMulti=new Set(); // Selected stable IDs for added objects
 let liveSourceMulti=new Set(); // Existing source objects selected on the actual webpage
 let liveLockImageRatio=true;
 let liveSectionPickMode=false; // Editor-only selection behaviour, never published.
+let liveCropMode=false; // Selected photo can be panned inside its crop frame.
 let liveSectionHover=null;
 let workspaceMode="live",liveWidth=1160,liveScale=1,liveManualScale=null,liveSelected=null,liveObserver=null,liveSerial=0;
 let liveSuppressClickUntil=0;
@@ -543,7 +544,8 @@ function imageCropCss(crop){
     crop.x+"% "+crop.y+"%!important;";
 }
 function selectedImageCrop(patch,device=liveDevice()){
-  return {...DEFAULT_IMAGE_CROP,...(patch?.imageCrop?.[device]||{})};
+  return {...DEFAULT_IMAGE_CROP,fit:patch?.design?.imageFit||"contain",
+    ...(patch?.imageCrop?.[device]||{})};
 }
 function validAddedPatch(p){
   return !!p&&isAddedPatch(p)&&typeof p.expected==="string"&&p.expected===""&&
@@ -1339,6 +1341,84 @@ function resetLiveObjectDesign(){
     renderLiveInspector();syncLiveOverlay();
   }
 }
+// Non-destructive image cropping. CSS framing is stored per device and
+// applied by the same assembler used for preview and GitHub publication.
+function applySelectedImageCrop(changes){
+  const node=liveSelected?.node,selector=node&&liveSelector(node);
+  if(workspaceMode!=="live"||node?.tagName!=="IMG"||!selector||liveEditing)return false;
+  const patch=livePatchForSelected();if(!patch)return false;
+  const device=liveDevice(),before=liveSnapshot();
+  const next={...selectedImageCrop(patch,device),...changes};
+  if(!["contain","cover"].includes(next.fit)||!["x","y"].every(k=>
+    Number.isFinite(Number(next[k]))))return false;
+  next.x=Math.round(clamp(Number(next.x),0,100));
+  next.y=Math.round(clamp(Number(next.y),0,100));
+  patch.imageCrop={...(patch.imageCrop||{}),[device]:next};
+  livePatches.set(selector,patch);
+  if(patch.kind==="insert")refreshAddedObject(node.ownerDocument,patch);
+  else refreshLiveLayoutRules(node.ownerDocument);
+  if(recordLiveHistory(before)){
+    renderLiveInspector();syncLiveOverlay();
+    status("Photo framing updated for "+device+" · Original photo preserved · Undo available");
+    return true;
+  }
+  return false;
+}
+function setLiveCropMode(enabled){
+  const node=liveSelected?.node;
+  if(node?.tagName!=="IMG"||workspaceMode!=="live")return;
+  if(enabled&&liveSectionPickMode)toggleLiveSectionPickMode();
+  liveCropMode=!!enabled;
+  if(enabled)applySelectedImageCrop({fit:"cover"});
+  removeLiveOverlay();renderLiveInspector();syncLiveOverlay();
+  status(enabled?
+    "Crop mode · Drag directly on the picture to reposition the image in its frame":
+    "Crop finished · Dragging the picture now moves its frame");
+}
+function resetSelectedImageCrop(){
+  const node=liveSelected?.node,selector=node&&liveSelector(node);
+  if(node?.tagName!=="IMG"||!selector||workspaceMode!=="live")return;
+  const patch=livePatchForSelected(),device=liveDevice();
+  if(!patch?.imageCrop?.[device])return;
+  const before=liveSnapshot();
+  delete patch.imageCrop[device];
+  if(!Object.keys(patch.imageCrop).length)delete patch.imageCrop;
+  if(patch.kind!=="insert"&&pruneLivePatch(patch,node))livePatches.delete(selector);
+  else livePatches.set(selector,patch);
+  if(patch.kind==="insert")refreshAddedObject(node.ownerDocument,patch);
+  else refreshLiveLayoutRules(node.ownerDocument);
+  liveCropMode=false;
+  if(recordLiveHistory(before)){
+    removeLiveOverlay();renderLiveInspector();syncLiveOverlay();
+    status("Original picture framing restored on "+device+" · Undo available");
+  }
+}
+function cropImageToRatio(ratio){
+  const node=liveSelected?.node,selector=node&&liveSelector(node);
+  if(node?.tagName!=="IMG"||!selector||workspaceMode!=="live"||
+     !Number.isFinite(ratio)||ratio<=0||liveEditing)return;
+  if(preventLockedLiveGeometry())return;
+  const patch=livePatchForSelected();if(!patch)return;
+  const before=liveSnapshot(),device=liveDevice();
+  if(patch.kind==="insert"){
+    const old=addedDeviceGeometry(patch,device);
+    patch.geometry={...patch.geometry,[device]:
+      {...old,h:Math.round(clamp(old.w/ratio,24,5000))}};
+  }else{
+    const layout=normaliseElementBoxLayout(node,liveLayoutFor(selector));
+    layout.reserveHeight=Math.round(clamp(layout.wrapWidth/ratio,24,5000));
+    patch.layout={...patch.layout,[device]:layout};
+  }
+  patch.imageCrop={...(patch.imageCrop||{}),
+    [device]:{...selectedImageCrop(patch,device),fit:"cover"}};
+  livePatches.set(selector,patch);
+  if(patch.kind==="insert")refreshAddedObject(node.ownerDocument,patch);
+  else refreshLiveLayoutRules(node.ownerDocument);
+  if(recordLiveHistory(before)){
+    renderLiveInspector();syncLiveOverlay();
+    status("Picture frame aspect ratio updated · Pixels kept undistorted · Undo available");
+  }
+}
 function setOriginalBoxDimension(key,value){
   if(preventLockedLiveGeometry())return;
   const node=liveSelected?.node,patch=livePatchForSelected();
@@ -1624,7 +1704,19 @@ function renderLiveInspector(){
   refreshUndo();
   $("liveLayoutControls").hidden=!node;
   $("liveImageSizing").hidden=tag!=="IMG";
+  $("liveCropControls").hidden=tag!=="IMG";
   $("liveLockImageRatio").checked=liveLockImageRatio;
+  if(tag==="IMG"){
+    const crop=selectedImageCrop(livePatchForSelected());
+    $("liveCropFit").value=crop.fit;
+    $("liveCropX").value=String(crop.x);
+    $("liveCropY").value=String(crop.y);
+    $("liveCropXValue").textContent=crop.x+"%";
+    $("liveCropYValue").textContent=crop.y+"%";
+    $("liveCropToggle").setAttribute("aria-pressed",String(liveCropMode));
+    $("liveCropToggle").textContent=liveCropMode?"Finish crop":"Crop picture · drag to reframe";
+    $("liveCropReset").disabled=!livePatchForSelected()?.imageCrop?.[liveDevice()];
+  }
   $("liveAddedImageFit").hidden=tag!=="IMG"||!LIVE_ADDED_ID.test(selector);
   if(tag==="IMG"&&LIVE_ADDED_ID.test(selector)){
     const imagePatch=livePatchForSelected();
@@ -3143,6 +3235,7 @@ function selectLiveElement(node,additive=false,preserveMulti=false){
   else liveSourceMulti.add(key);
   clearLiveSelection(true);
   clearLiveSectionHover();
+  if(liveSelected?.node!==node)liveCropMode=false;
   liveSelected={node,page:currentPage};
   node.setAttribute("data-moon-v2-live-selected","");
   $("copyLiveObject").disabled=LIVE_CONTAINER_SET.has(node.tagName)&&
