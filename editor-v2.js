@@ -1717,7 +1717,9 @@ function renderLiveInspector(){
     $("liveCropToggle").textContent=liveCropMode?"Finish crop":"Crop picture · drag to reframe";
     $("liveCropReset").disabled=!livePatchForSelected()?.imageCrop?.[liveDevice()];
   }
-  $("liveAddedImageFit").hidden=tag!=="IMG"||!LIVE_ADDED_ID.test(selector);
+  // The unified crop inspector handles image fitting for both original
+  // and inserted photographs. Keep the legacy control for old drafts only.
+  $("liveAddedImageFit").hidden=true;
   if(tag==="IMG"&&LIVE_ADDED_ID.test(selector)){
     const imagePatch=livePatchForSelected();
     $("liveImageFit").value=imagePatch?.design?.imageFit||"contain";
@@ -1937,6 +1939,11 @@ function mergeLiveTargetPatches(first,second,node){
   const appearance={...(first.appearance||{}),...(second.appearance||{})};
   if(Object.keys(appearance).length)merged.appearance=appearance;
   else delete merged.appearance;
+  // Two edits can refer to the same source image after a published
+  // reparenting. Merge their independent responsive crop settings too.
+  const crop={...(first.imageCrop||{}),...(second.imageCrop||{})};
+  if(Object.keys(crop).length)merged.imageCrop=crop;
+  else delete merged.imageCrop;
   return merged;
 }
 function captureExistingLiveStyles(doc){
