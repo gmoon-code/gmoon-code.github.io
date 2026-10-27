@@ -75,7 +75,14 @@
       .resume-section{padding:11pt 0!important;break-inside:auto}
       .resume-section h2{font-size:14pt!important;margin-bottom:8pt!important;
         background:none!important;color:#111!important;padding:0 0 2pt!important;
-        border-bottom:1pt solid #333!important}
+        border-bottom:1pt solid #333!important;
+        break-after:avoid-page;page-break-after:avoid}
+      /* A heading cannot finish a printed sheet without its first content. */
+      .resume-section>.resume-entry:first-of-type{
+        break-before:avoid-page;page-break-before:avoid}
+      #resume-skills,#resume-development{
+        break-inside:avoid-page;page-break-inside:avoid}
+      .resume-skills,.resume-credentials{break-inside:avoid-page}
       .resume-entry{break-inside:avoid-page}
       .resume-entry+.resume-entry{margin-top:11pt!important}
       .resume-entry-heading h3{font-size:11.5pt!important}
