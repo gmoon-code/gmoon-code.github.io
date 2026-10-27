@@ -104,6 +104,49 @@ async def main():
                     await page.locator("main").wait_for(timeout=5000)
                     await page.wait_for_timeout(160)
                     result = await page.evaluate(MEASURE)
+                    # A document can have no horizontal overflow and still
+                    # place photographs on top of readable paragraphs. Audit
+                    # the mobile free-positioned images against the text they
+                    # must not obscure on Home and Interests.
+                    if filename in ("index.html", "interests.html") and width in (320, 375):
+                        overlaps = await page.evaluate("""(filename) => {
+                          const main = document.querySelector('main');
+                          const photos = [...main.querySelectorAll('img[data-moon-v2-added-id]')];
+                          const gallery = main.querySelector('.pungmul-gallery');
+                          const text = filename === 'index.html'
+                            ? [...main.querySelectorAll(
+                                '.home-intro h1, .home-intro .home-lead, ' +
+                                '.home-intro .controls, .home-outside-grid p, ' +
+                                '.home-outside-grid h2')]
+                            : [...(gallery?.closest('section')?.querySelectorAll(
+                                '.section-head h2, .reading p') || [])];
+                          const collisions = [];
+                          for (const photo of photos) {
+                            const a = photo.getBoundingClientRect();
+                            if (a.width < 80 || a.height < 70) {
+                              collisions.push({issue:'image has no usable mobile footprint'});
+                              continue;
+                            }
+                            for (const target of text) {
+                              const b = target.getBoundingClientRect();
+                              const overlapX = Math.min(a.right,b.right)-Math.max(a.left,b.left);
+                              const overlapY = Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top);
+                              if (overlapX>5 && overlapY>5)
+                                collisions.push({photo:photo.getAttribute('alt'),
+                                  text:target.textContent.trim().slice(0,90),
+                                  overlapX:Math.round(overlapX),
+                                  overlapY:Math.round(overlapY)});
+                            }
+                          }
+                          if (photos.length!==2)
+                            collisions.push({issue:'Expected two responsive source photographs',
+                              found:photos.length});
+                          return collisions;
+                        }""", filename)
+                        result["photoTextOverlaps"] = overlaps
+                        if overlaps:
+                            failures.append({"page": filename, "viewport": width,
+                                             "photoTextOverlaps": overlaps})
                     # Exercise the actual sequential keyboard route through
                     # the skip link, identity link and all seven navigation links.
                     # This catches broken keyboard order that structural rules
