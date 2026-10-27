@@ -133,7 +133,7 @@ test('alignment tools arrange original paragraphs without moving unselected neig
   const original=await localRect(live.locator('main p.second'));
   expect(original.x).toBeGreaterThan(a.x+70);
 });
-test('distribution equalises original-element centre spacing in one undoable edit',async({page})=>{
+test('distribution equalises visible gaps between original elements in one undoable edit',async({page})=>{
   const live=page.frameLocator('#livePageFrame');
   await live.locator('main p.second').click();
   await page.locator('#liveMoveX').fill('95');
@@ -145,8 +145,9 @@ test('distribution equalises original-element centre spacing in one undoable edi
   await expect(page.locator('#liveDistributeH')).toBeEnabled();
   await page.locator('#liveDistributeH').click();
   const a=await localRect(first),b=await localRect(second),c=await localRect(third);
-  const mid=r=>r.x+r.w/2;
-  expect(Math.abs((mid(b)-mid(a))-(mid(c)-mid(b)))).toBeLessThan(1.5);
+  const gapAB=b.x-(a.x+a.w);
+  const gapBC=c.x-(b.x+b.w);
+  expect(Math.abs(gapAB-gapBC)).toBeLessThan(1.5);
   expect(Math.abs(b.x-middleBefore.x)).toBeGreaterThan(40);
   await expect(first.locator('a')).toHaveAttribute('href','teaching.html');
   await page.locator('#undo').click();
@@ -987,4 +988,64 @@ test('shape format painter transfers polygon and fill to another shape without r
     w:node.getBoundingClientRect().width,h:node.getBoundingClientRect().height
   }));
   expect(after).toEqual(original);
+});
+
+test('match widths uses the first selected webpage object while preserving text size and selection',async({page})=>{
+  const live=page.frameLocator('#livePageFrame');
+  await live.locator('p.first').evaluate(node=>node.style.width='310px');
+  await selectSourceGroup(page,['first','second']);
+  const a=live.locator('p.first'),b=live.locator('p.second');
+  const beforeFont=await b.evaluate(el=>getComputedStyle(el).fontSize);
+  const firstWidth=(await localRect(a)).w;
+  const before=await localRect(b);
+  await expect(page.locator('#liveMatchWidth')).toBeEnabled();
+  await page.locator('#liveMatchWidth').click();
+  const after=await localRect(b);
+  expect(Math.abs(after.w-firstWidth)).toBeLessThan(2);
+  expect(Math.abs(after.x-before.x)).toBeLessThan(3);
+  expect(await b.evaluate(el=>getComputedStyle(el).fontSize)).toBe(beforeFont);
+  await expect(page.locator('#liveMultiCount')).toHaveText('2 selected');
+  await expect(a.locator('a')).toHaveAttribute('href','teaching.html');
+});
+test('match heights preserves each original object width and allows undo',async({page})=>{
+  const live=page.frameLocator('#livePageFrame');
+  await live.locator('p.first').evaluate(node=>node.style.height='165px');
+  await selectSourceGroup(page,['first','second']);
+  const a=live.locator('p.first'),b=live.locator('p.second');
+  const before=await localRect(b);
+  const keyHeight=(await localRect(a)).h;
+  await page.locator('#liveMatchHeight').click();
+  const after=await localRect(b);
+  expect(Math.abs(after.h-keyHeight)).toBeLessThan(3);
+  expect(Math.abs(after.w-before.w)).toBeLessThan(2);
+  await page.locator('#undo').click();
+  const undone=await localRect(live.locator('p.second'));
+  expect(Math.abs(undone.h-before.h)).toBeLessThan(3);
+});
+test('match size changes inserted objects as one undoable operation',async({page})=>{
+  const live=page.frameLocator('#livePageFrame');
+  await page.locator('#addShape').click();
+  const one=live.locator('[data-moon-v2-added-id]').last();
+  const firstID=await one.getAttribute('data-moon-v2-added-id');
+  await page.locator('#addShape').click();
+  const two=live.locator('[data-moon-v2-added-id]').last();
+  const secondID=await two.getAttribute('data-moon-v2-added-id');
+  expect(firstID).not.toBe(secondID);
+  await page.locator('#liveAddedWidth').fill('245');
+  await page.locator('#liveAddedWidth').dispatchEvent('change');
+  await page.locator('#liveAddedHeight').fill('180');
+  await page.locator('#liveAddedHeight').dispatchEvent('change');
+  await live.locator('[data-moon-v2-added-id="'+secondID+'"]').click();
+  await live.locator('[data-moon-v2-added-id="'+firstID+'"]').click({modifiers:['Shift']});
+  const before=await localRect(live.locator('[data-moon-v2-added-id="'+firstID+'"]'));
+  const key=await localRect(live.locator('[data-moon-v2-added-id="'+secondID+'"]'));
+  await expect(page.locator('#liveMatchSize')).toBeEnabled();
+  await page.locator('#liveMatchSize').click();
+  const sized=await localRect(live.locator('[data-moon-v2-added-id="'+firstID+'"]'));
+  expect(Math.abs(sized.w-key.w)).toBeLessThan(2);
+  expect(Math.abs(sized.h-key.h)).toBeLessThan(2);
+  await page.locator('#undo').click();
+  const restored=await localRect(live.locator('[data-moon-v2-added-id="'+firstID+'"]'));
+  expect(Math.abs(restored.w-before.w)).toBeLessThan(2);
+  expect(Math.abs(restored.h-before.h)).toBeLessThan(2);
 });
