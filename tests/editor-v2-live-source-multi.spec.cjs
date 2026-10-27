@@ -269,6 +269,11 @@ test('resizing selected original pictures keeps image fitting and normalizes onl
   await page.locator('#reloadLive').click();
   const live=page.frameLocator('#livePageFrame'),imgs=live.locator('main img');
   await imgs.first().click();await imgs.last().click({modifiers:['Shift']});
+  // A flex gallery can naturally be narrower on phones. Compare the
+  // unchanged phone layout against its own pre-resize dimensions.
+  await page.locator('#devicePreview').selectOption('phone');
+  const phoneBaseline=await localRect(imgs.first());
+  await page.locator('#devicePreview').selectOption('desktop');
   const before1=await localRect(imgs.first()),before2=await localRect(imgs.last());
   const grip=live.locator('#moon-v2-live-overlay [data-direction="se"]');
   const box=await grip.boundingBox();
@@ -284,7 +289,7 @@ test('resizing selected original pictures keeps image fitting and normalizes onl
   await expect(imgs.first()).toHaveAttribute('src','assets/profile-portrait.webp');
   await page.locator('#devicePreview').selectOption('phone');
   const phone1=await localRect(imgs.first());
-  expect(Math.abs(phone1.w-before1.w)).toBeLessThan(3);
+  expect(Math.abs(phone1.w-phoneBaseline.w)).toBeLessThan(3);
 });
 test('Ctrl-click cycles through overlapping independent source objects without changing source',async({page})=>{
   const source='<!doctype html><html><head><style>'+
