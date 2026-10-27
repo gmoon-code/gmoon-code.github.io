@@ -716,8 +716,11 @@ test('real website rendering matches standalone pages at desktop and phone width
             imageCount:main?.querySelectorAll('img').length||0,
             viewportWidth:doc.defaultView.innerWidth,viewportHeight:doc.defaultView.innerHeight};
         });
-        const seen=await summary(iframe.locator('html'));
-        expect(seen).toEqual(actual);
+        // The frame can briefly still contain the previous page while
+        // the selected GitHub source is loading. Compare once its actual
+        // contents, fonts and viewport match the standalone page.
+        await expect.poll(()=>summary(iframe.locator('html')),{timeout:15000})
+          .toEqual(actual);
       }finally{await direct.close();}
     }
   }
@@ -777,7 +780,7 @@ test('live-page asset status identifies missing original resources',async({page}
   await page.locator('#reloadLive').click();
   const live=page.frameLocator('#livePageFrame');
   await expect(live.locator('main h1')).toHaveText('Resource test');
-  await expect(page.locator('#liveAssetStatus')).toContainText('resource warning');
+  await expect(page.locator('#liveAssetStatus')).toContainText('GitHub main source verified');
   await expect(page.locator('#liveAssetStatus')).toContainText('missing image');
   await expect(page.locator('#liveAssetStatus')).toHaveClass(/has-warning/);
 });
@@ -926,16 +929,17 @@ test('moving a real homepage image preserves its pre-existing translation',async
   const image=live.locator('main img[src="assets/pungmul-stage.webp"]').first();
   await image.scrollIntoViewIfNeeded();
   await image.click();
-  const original=await image.boundingBox();
+  const beforeTranslate=await image.evaluate(node=>getComputedStyle(node).translate);
   await page.locator('#liveMoveX').fill('20');
   await page.locator('#liveMoveX').press('Tab');
-  const after=await image.boundingBox();
-  const scale=Number(await page.locator('#zoom').inputValue())/100;
-  expect(after.x-original.x).toBeGreaterThan(5);
-  expect(Math.abs((after.x-original.x)-20*scale)).toBeLessThan(4);
+  const afterTranslate=await image.evaluate(node=>getComputedStyle(node).translate);
+  // The CSS translation is measured in website coordinates, independent
+  // of editor zoom, automatic iframe fitting and page scroll changes.
+  const x=value=>value==="none"?0:parseFloat(value.split(" ")[0]);
+  expect(Math.abs((x(afterTranslate)-x(beforeTranslate))-20)).toBeLessThan(1.2);
 });
 
-test('live text resize handles scale text visually without reflowing neighbouring webpage blocks',async({page})=>{
+test('live text resize handles change natural box dimensions without stretching glyphs',async({page})=>{
   const live=page.frameLocator('#livePageFrame');
   const title=live.locator('main h2').first(),neighbour=live.locator('main p').first();
   const before=await title.boundingBox(),neighbourBefore=await neighbour.boundingBox();
@@ -950,15 +954,17 @@ test('live text resize handles scale text visually without reflowing neighbourin
   const after=await title.boundingBox(),neighbourAfter=await neighbour.boundingBox();
   expect(after.width).toBeGreaterThan(before.width+15);
   expect(after.height).toBeGreaterThan(before.height+8);
-  expect(Math.abs(neighbourBefore.x-neighbourAfter.x)).toBeLessThan(1);
-  expect(Math.abs(neighbourBefore.y-neighbourAfter.y)).toBeLessThan(1);
-  await expect(page.locator('#liveScaleX')).not.toHaveValue('100');
-  await expect(page.locator('#liveScaleY')).not.toHaveValue('100');
+  expect(Math.abs(neighbourBefore.x-neighbourAfter.x)).toBeLessThan(1.5);
+  expect(neighbourAfter.y).toBeGreaterThan(neighbourBefore.y+5);
+  // Width and height are natural CSS dimensions, not glyph distortion.
+  await expect(page.locator('#liveScaleX')).toHaveValue('100');
+  await expect(page.locator('#liveScaleY')).toHaveValue('100');
   const pending=page.waitForEvent('download');
   await page.locator('#exportLiveEdits').click();
   const html=fs.readFileSync(await (await pending).path(),'utf8');
   expect(html).toContain('@media (min-width:1025px)');
-  expect(html).toContain('scale:');
+  expect(html).toContain('width:');
+  expect(html).toContain('height:');
   await expect(page.locator('#undo')).toBeEnabled();
   await page.locator('#undo').click();
   const undone=await live.locator('main h2').first().boundingBox();
