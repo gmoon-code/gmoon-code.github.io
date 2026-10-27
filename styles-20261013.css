@@ -748,6 +748,7 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
 .research-prose p{font-size:17px;line-height:1.72;color:#343434;margin-bottom:16px}
 .research-route-section .section-head>p{font-size:15px;line-height:1.6;max-width:80ch}
 .research-route-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.research-scoping-page .research-route-interpretation{font-size:15px;line-height:1.72;max-width:90ch;margin:20px 0 0;color:#484848}
 .research-route-card{padding:19px 17px;border:1px solid var(--moon-rule);border-top:4px solid var(--section-green-line)}
 .research-route-count{margin:0 0 14px;display:flex;align-items:baseline;gap:9px}
 .research-route-count strong{font-size:35px;line-height:1}
@@ -772,6 +773,8 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
 .research-evidence-table td:nth-child(2){white-space:nowrap;font-variant-numeric:tabular-nums}
 .research-table-note{font-size:14px;color:#595959;line-height:1.65;max-width:89ch;margin:12px 0 0}
 .research-selection-flow{display:flex;align-items:center;gap:13px;flex-wrap:wrap;margin:0 0 21px}
+.research-scoping-page .research-selection-flow{margin-bottom:12px}
+.research-scoping-page .research-selection-detail{font-size:15px;line-height:1.7;max-width:89ch;color:#464646;margin:0 0 24px}
 .research-selection-flow>div{min-height:100px;flex:1 1 185px;padding:15px 15px;border:1px solid var(--moon-rule);display:flex;flex-direction:column;justify-content:center}
 .research-selection-flow>div strong{font-size:31px;line-height:1.1}
 .research-selection-flow>div span{font-size:14px;line-height:1.5;margin-top:8px}
@@ -814,6 +817,8 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
 
 /* Data tables remain readable on narrow screens without compressing scientific terms. */
 .research-table-wrap{overflow-x:auto;max-width:100%;-webkit-overflow-scrolling:touch;margin-top:16px}
+.research-scoping-page .section[id]{scroll-margin-top:80px}
+@media(max-width:630px){.research-scoping-page .section[id]{scroll-margin-top:24px}}
 .research-table-wrap .research-evidence-table{margin-top:0;min-width:650px}
 .research-table-wrap:focus-visible{outline:2px solid #426f50;outline-offset:3px}
 @media(max-width:700px){
