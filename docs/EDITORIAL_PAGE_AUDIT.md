@@ -15,7 +15,7 @@ A content pass is **not** equivalent to final visual approval. Automated browser
 | `index.html` | Revised in preceding conversation; filename-style photo alt text fixed `fa0be6f`; full line-by-line sign-off pending | Responsive layout, all content and repetition across linked pages |
 | `research.html` | Multiple documented editorial passes in preceding conversation | Source and visual recheck after subsequent changes |
 | `research-action.html` | Crosschecked against Teaching cases in this conversation | Full independent line-by-line audit, manuscript comparison, figures |
-| `research-scoping.html` | Not yet given a dedicated pass here | Data, methods, numerical integrity, source references, visuals |
+| `research-scoping.html` | Checked against source manuscripts, selection ledger and Pierson/Kane publications; evidence and layout revisions `880c3f5`, `b267a1b` | Confirm deployment, inspect at desktop/phone, verify OSF DOI availability |
 | `projects.html` | Content and image-source pass completed, commit `0db43f0` | Full manual layout and thumbnail review at desktop and phone widths |
 | `teaching.html` | Content pass completed, commits `91b001d`, `8784ed8`, `cbb6fdc` | Final manual visual check at desktop and phone widths |
 | `teaching-ap-chemistry.html` | Content and equilibrium calculation pass completed, commits `81ffbab`, `40a2476` | Final manual visual and responsive check |
@@ -49,4 +49,4 @@ A content pass is **not** equivalent to final visual approval. Automated browser
 
 ## Next content pass
 
-Start with `research-scoping.html` and the remaining pending public pages, then the remaining public pages, followed by separate editor QA. Return to prior partial revisions for full verification. Do not mark a page fully finished merely because a prior commit polished part of it.
+Continue with `research-action.html`, then independent line-by-line reviews of the remaining pending pages, then the remaining public pages, followed by separate editor QA. Return to prior partial revisions for full verification. Do not mark a page fully finished merely because a prior commit polished part of it.
