@@ -749,6 +749,7 @@ test('crop mode exposes photo drag reframing without moving image frame',async({
   await page.locator('#liveCropToggle').click();
   await expect(page.locator('#liveCropToggle')).toHaveAttribute('aria-pressed','true');
   await expect(image).toHaveCSS('object-fit','cover');
+  const initialPosition=await image.evaluate(node=>getComputedStyle(node).objectPosition);
   const before=await image.boundingBox();
   expect(before).toBeTruthy();
   const x=before.x+before.width/2,y=before.y+before.height/2;
@@ -761,6 +762,35 @@ test('crop mode exposes photo drag reframing without moving image frame',async({
   expect(Math.abs(after.y-before.y)).toBeLessThan(2);
   await expect(page.locator('#liveCropToggle')).toHaveAttribute('aria-pressed','true');
   await expect(image).toHaveCSS('object-fit','cover');
+  const croppedPosition=await image.evaluate(node=>getComputedStyle(node).objectPosition);
+  expect(croppedPosition).not.toBe(initialPosition);
   await page.locator('#liveCropToggle').click();
+  await expect(page.locator('#liveCropToggle')).toHaveAttribute('aria-pressed','false');
+});
+
+test('crop-to-shape options provide reversible circle and rounded photo masks',async({page})=>{
+  await loadCropFixture(page);
+  const image=page.frameLocator('#livePageFrame').locator('img.picture');
+  await image.click();
+  await page.locator('#liveCropSquare').click();
+  await page.locator('#liveCropShape').selectOption('circle');
+  await expect(image).toHaveCSS('border-radius','50%');
+  await page.locator('#liveCropShape').selectOption('rounded');
+  await expect(image).toHaveCSS('border-radius','20px');
+  await page.locator('#liveCropShape').selectOption('rectangle');
+  await expect(image).toHaveCSS('border-radius','0px');
+});
+test('crop keyboard arrows reframe the photo while keeping its box stationary',async({page})=>{
+  await loadCropFixture(page);
+  const image=page.frameLocator('#livePageFrame').locator('img.picture');
+  await image.click();
+  await page.locator('#liveCropToggle').click();
+  const box=await image.boundingBox();
+  await page.keyboard.press('ArrowRight');
+  await expect(image).toHaveCSS('object-position','51% 50%');
+  const after=await image.boundingBox();
+  expect(Math.abs(after.x-box.x)).toBeLessThan(2);
+  expect(Math.abs(after.y-box.y)).toBeLessThan(2);
+  await page.keyboard.press('Escape');
   await expect(page.locator('#liveCropToggle')).toHaveAttribute('aria-pressed','false');
 });
