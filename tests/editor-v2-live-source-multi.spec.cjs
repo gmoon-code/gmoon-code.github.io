@@ -319,3 +319,69 @@ test('Ctrl-click cycles through overlapping independent source objects without c
   await expect(page.locator('#liveMultiCount')).toHaveText('1 selected');
   await expect(under).toHaveText('Bottom original object');
 });
+
+test('deeply nested source objects can be selected, moved and navigated by parent and child',async({page})=>{
+  const nesting=16;
+  const source='<!doctype html><html><head><style>main{padding:70px}'+
+    '.wrapper{padding:2px}</style></head><body><main>'+
+    '<div class="wrapper">'.repeat(nesting)+
+    '<p id="deep">Deep original object</p>'+
+    '</div>'.repeat(nesting)+'</main></body></html>';
+  await page.route('https://api.github.com/repos/gmoon-code/gmoon-code.github.io/contents/research.html*',
+    route=>route.fulfill({status:200,contentType:'application/json',
+      body:JSON.stringify({type:'file',sha:'deep-test',encoding:'base64',
+        content:Buffer.from(source).toString('base64')})}));
+  await page.route('**/research.html',route=>route.fulfill({status:200,contentType:'text/html',body:source}));
+  await page.locator('#reloadLive').click();
+  const live=page.frameLocator('#livePageFrame'),deep=live.locator('#deep');
+  await deep.click();
+  await expect(page.locator('#liveElementPath')).toContainText('p');
+  await expect(page.locator('#liveSelectParent')).toBeEnabled();
+  await page.locator('#liveMoveX').fill('31');
+  await page.locator('#liveMoveX').press('Tab');
+  await expect(deep).toHaveCSS('translate',/^31px(?: 0px)?$/);
+  await page.locator('#liveSelectParent').click();
+  await expect(page.locator('#liveElementPath')).toContainText('div');
+  await expect(page.locator('#liveSelectChild')).toBeEnabled();
+  await page.locator('#liveSelectChild').click();
+  await expect(deep).toHaveAttribute('data-moon-v2-live-selected','');
+  await page.reload({waitUntil:'domcontentloaded'});
+  await expect(live.locator('#deep')).toHaveCSS('translate',/^31px(?: 0px)?$/);
+  await expect(live.locator('#deep')).toHaveText('Deep original object');
+});
+test('releasing container clipping is device-scoped, reversible and survives page reload',async({page})=>{
+  const source='<!doctype html><html><head><style>'+
+    'main{padding:100px;overflow:visible}'+
+    'section.frame{position:relative;width:180px;height:120px;overflow:hidden;border:1px solid}'+
+    'section.frame p{position:absolute;top:20px;left:10px;margin:0;'+
+    'width:120px;height:50px;background:#f4c6a4;font:18px Arial}'+
+    '</style></head><body><main><section class="frame">'+
+    '<p id="moving">Move beyond frame</p></section></main></body></html>';
+  await page.route('https://api.github.com/repos/gmoon-code/gmoon-code.github.io/contents/research.html*',
+    route=>route.fulfill({status:200,contentType:'application/json',
+      body:JSON.stringify({type:'file',sha:'clip-test',encoding:'base64',
+        content:Buffer.from(source).toString('base64')})}));
+  await page.route('**/research.html',route=>route.fulfill({status:200,contentType:'text/html',body:source}));
+  await page.locator('#reloadLive').click();
+  const live=page.frameLocator('#livePageFrame');
+  const child=live.locator('#moving'),parent=live.locator('section.frame');
+  await child.click();
+  await expect(page.locator('#liveReleaseClip')).toBeEnabled();
+  await page.locator('#liveMoveX').fill('210');
+  await page.locator('#liveMoveX').press('Tab');
+  await expect(parent).toHaveCSS('overflow-x','hidden');
+  await page.locator('#liveReleaseClip').check();
+  await expect(parent).toHaveCSS('overflow-x','visible');
+  await expect(child).toHaveCSS('translate',/^210px(?: 0px)?$/);
+  await page.locator('#devicePreview').selectOption('phone');
+  await expect(parent).toHaveCSS('overflow-x','hidden');
+  await page.locator('#devicePreview').selectOption('desktop');
+  await expect(parent).toHaveCSS('overflow-x','visible');
+  await page.locator('#undo').click();
+  await expect(parent).toHaveCSS('overflow-x','hidden');
+  await expect(child).toHaveCSS('translate',/^210px(?: 0px)?$/);
+  await page.locator('#liveReleaseClip').check();
+  await page.reload({waitUntil:'domcontentloaded'});
+  await expect(live.locator('section.frame')).toHaveCSS('overflow-x','visible');
+  await expect(live.locator('#moving')).toHaveText('Move beyond frame');
+});
