@@ -42,7 +42,9 @@ jobs:
         run: |
           git add docs/visual-audit/
           if git diff --cached --quiet; then exit 0; fi
-          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m "Record rendered project-page visual audit"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m "Record rendered project-page visual audit"
           git fetch origin main
           git rebase origin/main
           git push origin HEAD:main
