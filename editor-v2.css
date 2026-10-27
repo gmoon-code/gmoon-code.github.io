@@ -159,3 +159,6 @@
 #liveLayersPanel .live-container-toggle{display:flex;align-items:center;gap:7px;margin-top:8px;font-size:12px;color:var(--muted,#52655b)}
 #liveLayersPanel .live-container-toggle input{flex:none}
 #liveLayersPanel .live-element-list [aria-current='true']{scroll-margin:6px}
+
+/* Layers are navigable by keyboard and inspectable by hover. */
+#liveElementList button[data-live-selector]:focus-visible{outline:2px solid var(--focus,#287dbb);outline-offset:-2px}

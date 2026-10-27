@@ -420,3 +420,25 @@ test('nested layout containers are visible on demand and siblings can be selecte
   await expect(page.locator('#liveElementList [aria-current="true"]')).toHaveCount(1);
   await expect(page.locator('#liveShowContainers')).toBeChecked();
 });
+
+test('hover preview and keyboard layer navigation identify real source elements without editing them',async({page})=>{
+  const live=page.frameLocator('#livePageFrame');
+  const rows=page.locator('#liveElementList button[data-live-selector]');
+  await expect(rows).toHaveCount(3);
+  await rows.nth(0).hover();
+  await expect(live.locator('main p').nth(0)).toHaveAttribute('data-moon-v2-layer-preview','');
+  await expect(live.locator('main p').nth(0)).not.toHaveAttribute('data-moon-v2-live-selected','');
+  await rows.nth(0).focus();
+  await page.keyboard.press('ArrowDown');
+  await expect(rows.nth(1)).toBeFocused();
+  await expect(live.locator('main p').nth(1)).toHaveAttribute('data-moon-v2-layer-preview','');
+  await page.keyboard.press('Enter');
+  await expect(live.locator('main p').nth(1)).toHaveAttribute('data-moon-v2-live-selected','');
+  await page.keyboard.press('End');
+  await expect(rows.last()).toBeFocused();
+  await page.keyboard.press('Home');
+  await expect(rows.first()).toBeFocused();
+  await page.locator('#liveElementSearch').focus();
+  await expect(live.locator('[data-moon-v2-layer-preview]')).toHaveCount(0);
+  await expect(page.locator('#liveEditCount')).toContainText('No saved live-page edits');
+});

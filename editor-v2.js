@@ -2447,6 +2447,32 @@ function liveSiblingChoices(node){
     candidate.ownerDocument.defaultView.getComputedStyle(candidate).display!=="none"&&
     liveSelector(candidate));
 }
+function clearLiveLayerPreview(){
+  const doc=$("livePageFrame")?.contentDocument;
+  for(const node of doc?.querySelectorAll("[data-moon-v2-layer-preview]")||[])
+    node.removeAttribute("data-moon-v2-layer-preview");
+}
+function previewLiveLayer(button){
+  const doc=$("livePageFrame")?.contentDocument;
+  clearLiveLayerPreview();
+  if(!button||workspaceMode!=="live"||!doc)return;
+  const key=button.dataset.liveSelector;
+  let node=null;
+  if(LIVE_ADDED_ID.test(key))node=findAddedNode(doc,key);
+  else try{node=doc.querySelector(key);}catch{return;}
+  if(node?.isConnected)
+    node.setAttribute("data-moon-v2-layer-preview","");
+}
+function focusLiveLayer(direction){
+  const items=[...$("liveElementList").querySelectorAll("button[data-live-selector]")];
+  if(!items.length)return;
+  const current=items.indexOf(document.activeElement);
+  const next=direction==="first"?0:direction==="last"?items.length-1:
+    Math.max(0,Math.min(items.length-1,current+(direction==="next"?1:-1)));
+  items[next].focus({preventScroll:true});
+  items[next].scrollIntoView({block:"nearest",inline:"nearest"});
+  previewLiveLayer(items[next]);
+}
 function renderLiveLayers(){
   const host=$("liveElementList"),doc=$("livePageFrame").contentDocument;
   host.replaceChildren();
@@ -2891,6 +2917,7 @@ function bindLiveDocument(){
   sheet.textContent='[data-moon-v2-live-selected]{outline:2px solid #287dbb!important;outline-offset:2px!important;cursor:crosshair!important}'+
     '[data-moon-v2-multi-selected]{outline:2px dashed #bf3d8a!important;outline-offset:3px!important;}'+
     '[data-moon-v2-source-selected]{outline:2px dashed #bf3d8a!important;outline-offset:3px!important;}'+
+    '[data-moon-v2-layer-preview]:not([data-moon-v2-live-selected]){outline:3px dotted #8250b5!important;outline-offset:5px!important;}'+
     '[data-moon-v2-live-selected][data-moon-v2-multi-selected],'+
     '[data-moon-v2-live-selected][data-moon-v2-source-selected]{outline:3px solid #287dbb!important;}';
   (doc.head||doc.documentElement).append(sheet);
@@ -4065,6 +4092,22 @@ function attachEvents(){
   $("liveNextSibling").addEventListener("click",()=>navigateLiveSibling(1));
   $("liveLocateSelected").addEventListener("click",locateLiveSelected);
   $("liveShowContainers").addEventListener("change",renderLiveLayers);
+  $("liveElementList").addEventListener("pointerover",event=>{
+    previewLiveLayer(event.target.closest?.("button[data-live-selector]"));
+  });
+  $("liveElementList").addEventListener("pointerleave",clearLiveLayerPreview);
+  $("liveElementList").addEventListener("focusin",event=>{
+    previewLiveLayer(event.target.closest?.("button[data-live-selector]"));
+  });
+  $("liveElementList").addEventListener("focusout",event=>{
+    if(!$("liveElementList").contains(event.relatedTarget))clearLiveLayerPreview();
+  });
+  $("liveElementList").addEventListener("keydown",event=>{
+    if(!["ArrowUp","ArrowDown","Home","End"].includes(event.key))return;
+    event.preventDefault();
+    focusLiveLayer(event.key==="Home"?"first":event.key==="End"?"last":
+      event.key==="ArrowDown"?"next":"previous");
+  });
   $("liveReleaseClip").addEventListener("change",event=>
     setLiveClippingRelease(event.target.checked));
   $("liveSelectAdded").addEventListener("click",selectAllLiveAdded);
