@@ -488,6 +488,7 @@ function fitLivePage(){
   shell.style.height=Math.ceil(height*liveScale)+"px";
   $("zoom").value=String(Math.round(liveScale*100));
   $("zoomValue").textContent=Math.round(liveScale*100)+"%";
+  if(liveSelected?.node?.isConnected)syncLiveOverlay();
 }
 // Independent objects live in the actual page, above the original content.
 // They are identified by stable IDs, not by fragile nth-of-type selectors.
@@ -3291,6 +3292,14 @@ function bindLiveDocument(){
     if(event.target.closest?.("#moon-v2-live-overlay"))return;
     if(liveEditing)return;
     const link=event.target.closest?.("a[href]");
+    if(liveSectionPickMode){
+      // Section-selection clicks must never navigate away or activate
+      // embedded links/buttons in the page being edited.
+      if(link||event.target.closest?.("button,input,[role=button]")){
+        event.preventDefault();event.stopPropagation();
+      }
+      return;
+    }
     if(link&&!event.altKey){
       event.preventDefault();
       const raw=link.getAttribute("href")||"";
@@ -3382,6 +3391,7 @@ async function loadLivePage(page=currentPage,{force=false}={}){
   $("liveAssetStatus").textContent="Loading GitHub main source…";
   $("liveAssetStatus").classList.remove("has-warning");
   if(liveObserver){liveObserver.disconnect();liveObserver=null;}
+  clearLiveSectionHover();
   clearLiveSelection();
   const frame=$("livePageFrame");
   let source;
