@@ -2186,6 +2186,8 @@ function syncLiveOverlay(){
       "#moon-v2-live-overlay[data-position-locked='true']{border-style:dashed!important;border-color:#875e9d!important;}"+
       "#moon-v2-live-overlay button{position:absolute!important;pointer-events:auto!important;"+
       "touch-action:none!important;box-sizing:border-box!important;cursor:move!important;"+
+      "appearance:none!important;min-width:0!important;min-height:0!important;"+
+      "max-width:none!important;max-height:none!important;transition:none!important;"+
       "z-index:2147483001!important;border:1px solid #287dbb!important;"+
       "background:#fff!important;color:#14547e!important;font:12px Arial,sans-serif!important;}"+
       "#moon-v2-live-overlay .moon-v2-grip{"+
