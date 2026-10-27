@@ -514,6 +514,27 @@ function validAddedGeometry(geometry){
       v.w>=40&&v.w<=4000&&v.h>=24&&v.h<=5000;
   });
 }
+const LIVE_SHAPE_TYPES=Object.freeze([
+  "rectangle","rounded","ellipse","line","triangle","diamond","pentagon",
+  "hexagon","octagon","star","heart","chevron","arrow-right",
+  "arrow-left","cross","parallelogram","trapezoid","speech-bubble"
+]);
+const LIVE_SHAPE_POLYGONS=Object.freeze({
+  triangle:"50% 0%,100% 100%,0% 100%",
+  diamond:"50% 0%,100% 50%,50% 100%,0% 50%",
+  pentagon:"50% 0%,100% 38%,82% 100%,18% 100%,0% 38%",
+  hexagon:"25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%",
+  octagon:"30% 0%,70% 0%,100% 30%,100% 70%,70% 100%,30% 100%,0% 70%,0% 30%",
+  star:"50% 0%,61% 35%,98% 35%,68% 57%,79% 94%,50% 72%,21% 94%,32% 57%,2% 35%,39% 35%",
+  heart:"50% 20%,65% 0%,85% 0%,100% 20%,100% 50%,50% 100%,0% 50%,0% 20%,15% 0%,35% 0%",
+  chevron:"0% 0%,60% 0%,100% 50%,60% 100%,0% 100%,40% 50%",
+  "arrow-right":"0% 23%,62% 23%,62% 0%,100% 50%,62% 100%,62% 77%,0% 77%",
+  "arrow-left":"100% 23%,38% 23%,38% 0%,0% 50%,38% 100%,38% 77%,100% 77%",
+  cross:"35% 0%,65% 0%,65% 35%,100% 35%,100% 65%,65% 65%,65% 100%,35% 100%,35% 65%,0% 65%,0% 35%,35% 35%",
+  parallelogram:"25% 0%,100% 0%,75% 100%,0% 100%",
+  trapezoid:"25% 0%,75% 0%,100% 100%,0% 100%",
+  "speech-bubble":"0% 0%,100% 0%,100% 77%,38% 77%,16% 100%,20% 77%,0% 77%"
+});
 const DEFAULT_LIVE_OBJECT_DESIGN=Object.freeze({
   shape:"rectangle",rotation:0,opacity:100,radius:0,
   borderWidth:0,borderColour:"#394e46",imageFit:"contain"
@@ -523,7 +544,7 @@ function validAddedDesign(design){
   const allowed=new Set(["shape","rotation","opacity","radius","borderWidth","borderColour","imageFit"]);
   for(const [key,value] of Object.entries(design)){
     if(!allowed.has(key))return false;
-    if(key==="shape"&&!["rectangle","ellipse","line"].includes(value))return false;
+    if(key==="shape"&&!LIVE_SHAPE_TYPES.includes(value))return false;
     if(key==="imageFit"&&!["contain","cover"].includes(value))return false;
     if(key==="borderColour"&&(typeof value!=="string"||
        !/^#[0-9a-f]{6}$/i.test(value)))return false;
@@ -737,6 +758,9 @@ function addedStyleCss(p){
   if(p.objectType==="shape"){
     styles.push("background:"+p.fill);
     if(design.shape==="ellipse")styles.push("border-radius:50%");
+    if(design.shape==="rounded")styles.push("border-radius:24px");
+    if(LIVE_SHAPE_POLYGONS[design.shape])
+      styles.push("clip-path:polygon("+LIVE_SHAPE_POLYGONS[design.shape]+")");
     if(design.shape==="line"){
       styles.push("clip-path:polygon(0 47%,100% 47%,100% 53%,0 53%)");
       styles.push("border:0");
@@ -1443,7 +1467,7 @@ function setLiveObjectDesign(key,value){
     if(patch.objectType!=="shape"||!/^#[0-9a-f]{6}$/i.test(value))return;
     patch.fill=value.toLowerCase();
   }else if(key==="shape"){
-    if(patch.objectType!=="shape"||!["rectangle","ellipse","line"].includes(value))return;
+    if(patch.objectType!=="shape"||!LIVE_SHAPE_TYPES.includes(value))return;
     design.shape=value;
   }else if(key==="imageFit"){
     if(patch.objectType!=="image"||!["contain","cover"].includes(value))return;
