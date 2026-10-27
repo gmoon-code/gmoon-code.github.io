@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>Academic Website Editor 2 | Ye Eun Moon</title>
-<link rel="stylesheet" href="editor-v2.css?v=20261027-powerpoint-tools-v50c">
-<script src="editor-v2.js?v=20261027-powerpoint-tools-v50c" defer></script>
+<link rel="stylesheet" href="editor-v2.css?v=20261027-equal-spacing-v51">
+<script src="editor-v2.js?v=20261027-equal-spacing-v51" defer></script>
 </head>
 <body>
 <a class="skip" href="#workspace">Skip to editor canvas</a>
@@ -112,10 +112,15 @@
             <button id="liveAlignTop" type="button" disabled>Align top</button>
             <button id="liveAlignMiddle" type="button" disabled>Centre vertically</button>
             <button id="liveAlignBottom" type="button" disabled>Align bottom</button>
-            <button id="liveDistributeH" type="button" disabled>Space horizontally</button>
-            <button id="liveDistributeV" type="button" disabled>Space vertically</button>
+            <button id="liveDistributeH" type="button" disabled>Equal horizontal gaps</button>
+            <button id="liveDistributeV" type="button" disabled>Equal vertical gaps</button>
           </div>
-          <p class="help">Align, centre and distribute selected original webpage elements or added objects. Changes are saved for this desktop, tablet or phone layout only. Undo restores the previous arrangement.</p>
+          <div class="live-arrange-grid">
+            <button id="liveMatchWidth" type="button" disabled>Match widths</button>
+            <button id="liveMatchHeight" type="button" disabled>Match heights</button>
+            <button id="liveMatchSize" type="button" disabled>Same width + height</button>
+          </div>
+          <p class="help">Shift-click 2 or more independent original webpage elements or added objects. Align their edges, make gaps equal, or match sizes to the <strong>first selected object</strong>. Matching width keeps the text size unchanged; text can reflow. The opposite dimension remains unchanged unless you choose Same width + height. Changes apply to the selected screen layout only and Undo restores them.</p>
         </div>
         <p class="help">Ctrl+C and Ctrl+V copy and paste a webpage object. Ctrl+D duplicates, Ctrl+S saves, Ctrl+Z undoes, and Ctrl+[ or Ctrl+] changes stacking.</p>
       </section>
