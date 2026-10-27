@@ -148,3 +148,9 @@
 #stage .scene-object.marquee-preview{
   outline:2px solid #2977bd;outline-offset:1px;
 }
+
+/* Nested source-object navigation */
+#liveElementPath.live-hierarchy-path{overflow-wrap:anywhere;line-height:1.5;margin:9px 0 2px}
+#liveElementList [data-depth]:not([data-depth="0"]) .layer-type{border-style:dashed}
+#liveReleaseClipSection{margin-top:11px;padding-top:8px;border-top:1px solid var(--rule,#d6e0d9)}
+#liveReleaseClipSection .checkbox-line{display:flex;align-items:flex-start;gap:7px;line-height:1.45}

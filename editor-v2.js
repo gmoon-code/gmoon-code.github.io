@@ -794,7 +794,7 @@ function liveSelector(node){
   }
   const steps=[];
   for(let current=node;current&&current.tagName!=="MAIN";current=current.parentElement){
-    if(!current.parentElement||steps.length>12)return null;
+    if(!current.parentElement||steps.length>=24)return null;
     const siblings=[...current.parentElement.children].filter(el=>el.tagName===current.tagName);
     steps.unshift(current.tagName.toLowerCase()+":nth-of-type("+(siblings.indexOf(current)+1)+")");
   }
@@ -939,6 +939,7 @@ function validLiveLayout(layout){
       if(values[key]!==undefined&&
         (!Number.isFinite(values[key])||values[key]<min||values[key]>max))return false;
     }
+    if(values.releaseClip!==undefined&&typeof values.releaseClip!=="boolean")return false;
     const width=values.wrapWidth,height=values.reserveHeight;
     if((width===undefined)!==(height===undefined))return false;
     if(width!==undefined&&(!Number.isFinite(width)||width<64||width>4000||
@@ -1035,7 +1036,20 @@ function liveLayoutRules(patches=[...livePatches.values()]){
         (Math.round(((entry.osy||1)*entry.sy)*1000)/1000)+
         "!important;transform-origin:top left!important;"+reflow+"}");
     }
-    if(selectors.length)result.push("@media "+media+"{"+selectors.join("")+"}");
+    // The user explicitly opts in to removing clipping for the chosen
+    // source element's ancestors, scoped to the current device.
+    const released=new Set();
+    for(const patch of patches){
+      if(patch.kind==="delete"||patch.kind==="insert"||
+         patch.layout?.[device]?.releaseClip!==true)continue;
+      const parts=patch.selector.split(" > ");
+      for(let depth=2;depth<parts.length;depth++)
+        released.add(parts.slice(0,depth).join(" > "));
+    }
+    const unclipped=[...released].map(s=>s+
+      "{overflow:visible!important;clip-path:none!important;}");
+    if(selectors.length||unclipped.length)
+      result.push("@media "+media+"{"+unclipped.join("")+selectors.join("")+"}");
   }
   return result.join("\n");
 }
@@ -1390,8 +1404,8 @@ function validLivePatch(p){
   if(p?.kind==="insert")return validAddedPatch(p);
   if(p?.kind==="remove-added")
     return LIVE_ADDED_ID.test(p.selector)&&p.expected==="";
-  return p&&typeof p.selector==="string"&&p.selector.length<800&&
-    /^main(?: > [a-z][a-z0-9-]*:nth-of-type\(\d{1,4}\)){1,12}$/.test(p.selector)&&
+  return p&&typeof p.selector==="string"&&p.selector.length<1600&&
+    /^main(?: > [a-z][a-z0-9-]*:nth-of-type\(\d{1,4}\)){1,24}$/.test(p.selector)&&
     typeof p.expected==="string"&&p.expected.length<=350&&
     (p.kind==="text"&&typeof p.html==="string"&&p.html.length<=70000||
      p.kind==="image"&&safeImageSource(p.src)&&typeof p.alt==="string"&&p.alt.length<=300||
@@ -1477,6 +1491,17 @@ function renderLiveInspector(){
     $("liveAddedWidth").value=String(g?.w||Math.round(node.getBoundingClientRect().width));
     $("liveAddedHeight").value=String(g?.h||Math.round(node.getBoundingClientRect().height));
   }
+  const isSource=!!node&&!!selector&&!LIVE_ADDED_ID.test(selector);
+  $("liveSelectParent").disabled=!isSource||!eligibleLiveParent(node)||!!liveEditing;
+  $("liveSelectChild").disabled=!isSource||!node.querySelector(LIVE_SELECTABLE_TAGS)||!!liveEditing;
+  $("liveElementPath").textContent=isSource?
+    "main › "+selector.split(" > ").slice(1)
+      .map(part=>part.split(":nth-of-type(")[0]).join(" › "):
+    node?"Added independent object":"Select an element to see its hierarchy";
+  $("liveReleaseClipSection").hidden=!isSource;
+  $("liveReleaseClip").checked=isSource&&
+    livePatches.get(selector)?.layout?.[liveDevice()]?.releaseClip===true;
+  $("liveReleaseClip").disabled=!isSource||!!liveEditing;
   $("liveBringFront").disabled=!node||!!liveEditing;
   $("liveSendBack").disabled=!node||!!liveEditing;
   $("liveResetStack").disabled=!node||!!liveEditing||
@@ -2431,7 +2456,10 @@ function renderLiveLayers(){
       (node.tagName==="IMG"?
       node.alt||node.getAttribute("src")||"Image":
       node.textContent?.trim()||"Container").replace(/\s+/g," ").slice(0,105);
-    button.title=label.textContent;
+    const depth=Math.max(0,selector.split(" > ").length-2);
+    button.dataset.depth=String(depth);
+    button.style.paddingInlineStart=Math.min(70,8+depth*5)+"px";
+    button.title=(depth?"Level "+depth+" · ":"")+label.textContent;
     button.append(type,label);host.append(button);
   }
   if(!host.childElementCount){
@@ -2656,10 +2684,48 @@ function clearLiveSelection(preserveMulti=false){
   updateLiveLayerSelection();
   syncLiveMultiSelection();
 }
+function eligibleLiveParent(node){
+  const main=node?.ownerDocument?.querySelector("main");
+  for(let ancestor=node?.parentElement;ancestor&&ancestor!==main;
+      ancestor=ancestor.parentElement)
+    if(ancestor.matches(LIVE_SELECTABLE_TAGS))return ancestor;
+  return null;
+}
+function selectLiveHierarchy(direction){
+  const node=liveSelected?.node;
+  if(!node||workspaceMode!=="live"||liveEditing)return;
+  const target=direction==="parent"?eligibleLiveParent(node):
+    node.querySelector(LIVE_SELECTABLE_TAGS);
+  if(!target)return;
+  selectLiveElement(target);
+  target.scrollIntoView({block:"nearest",inline:"nearest"});
+  syncLiveOverlay();
+}
+function setLiveClippingRelease(enabled){
+  const node=liveSelected?.node,selector=node&&liveSelector(node);
+  if(!node||!selector||LIVE_ADDED_ID.test(selector)||
+     workspaceMode!=="live"||liveEditing)return;
+  const patch=livePatchForSelected(),before=liveSnapshot();
+  const device=liveDevice();
+  const layout=patch.layout?.[device]?
+    {...patch.layout[device]}:{...liveLayoutFor(selector)};
+  if(enabled)layout.releaseClip=true;
+  else delete layout.releaseClip;
+  patch.layout={...patch.layout,[device]:layout};
+  livePatches.set(selector,patch);
+  if(recordLiveHistory(before)){
+    refreshLiveLayoutRules(node.ownerDocument);
+    renderLiveInspector();syncLiveOverlay();
+    status(enabled?"Clipping released on this screen · Review neighbouring elements · Undo available":
+      "Clipping restored on this screen · Undo available");
+  }
+}
 function selectLiveElement(node,additive=false,preserveMulti=false){
   const doc=$("livePageFrame").contentDocument;
   if(!node||!doc?.querySelector("main")?.contains(node))return;
-  const key=liveSelector(node),isAdded=LIVE_ADDED_ID.test(key);
+  const key=liveSelector(node);
+  if(!key){status("This element exceeds the editor's safe hierarchy depth");return;}
+  const isAdded=LIVE_ADDED_ID.test(key);
   if(additive&&!isAdded){
     const group=selectedSourcePatches();
     // Selecting nested containers and children together would double-move
@@ -3933,6 +3999,10 @@ function showPublishResult(result){
 function attachEvents(){
   $("page").addEventListener("change",event=>changePage(event.target.value));
   $("liveElementSearch").addEventListener("input",renderLiveLayers);
+  $("liveSelectParent").addEventListener("click",()=>selectLiveHierarchy("parent"));
+  $("liveSelectChild").addEventListener("click",()=>selectLiveHierarchy("child"));
+  $("liveReleaseClip").addEventListener("change",event=>
+    setLiveClippingRelease(event.target.checked));
   $("liveSelectAdded").addEventListener("click",selectAllLiveAdded);
   $("liveClearAdded").addEventListener("click",()=>clearLiveSelection());
   const arrangement={

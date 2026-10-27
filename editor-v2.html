@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>Academic Website Editor 2 | Ye Eun Moon</title>
-<link rel="stylesheet" href="editor-v2.css?v=20261027-live-group-resize-v37">
-<script src="editor-v2.js?v=20261027-live-group-resize-v37" defer></script>
+<link rel="stylesheet" href="editor-v2.css?v=20261027-release-containers-v38">
+<script src="editor-v2.js?v=20261027-release-containers-v38" defer></script>
 </head>
 <body>
 <a class="skip" href="#workspace">Skip to editor canvas</a>
@@ -78,6 +78,11 @@
         </div>
         <label for="liveElementSearch">Find text, headings or images</label>
         <input id="liveElementSearch" type="search" placeholder="Search elements on this page" autocomplete="off">
+        <p id="liveElementPath" class="help live-hierarchy-path" aria-live="polite">Select an element to see its hierarchy</p>
+        <div class="inline-actions">
+          <button id="liveSelectParent" type="button" disabled>Select parent</button>
+          <button id="liveSelectChild" type="button" disabled>Select first child</button>
+        </div>
         <div id="liveElementList" class="layers live-element-list" role="group" aria-label="Selectable elements in the actual webpage"></div>
         <div class="inline-actions">
           <button id="liveCopyObject" type="button" disabled title="Copy selected webpage object (Ctrl+C)">Copy object</button>
@@ -303,7 +308,11 @@
             <button id="liveSendBack" type="button" disabled>Send backward</button>
             <button id="liveResetStack" type="button" disabled>Reset stacking</button>
           </div>
-          <p class="help">Layer controls change the selected element's stacking order within its existing website container. They cannot break out of a clipped parent.</p>
+          <p class="help">Layer controls change stacking order inside the current container. If a parent clips an object, the optional setting below can release its clipping on one screen.</p>
+          <div id="liveReleaseClipSection" hidden>
+            <label class="checkbox-line"><input id="liveReleaseClip" type="checkbox" disabled> Allow this object outside its container</label>
+            <p class="help">Releases ancestor clipping for the current desktop, tablet or phone layout. Nearby content may become visible too. Uncheck or Undo to restore clipping. Original HTML nesting stays intact.</p>
+          </div>
           <div class="inline-actions">
             <button id="resetLiveLayout" type="button">Reset position on this screen</button>
           </div>
