@@ -184,7 +184,7 @@ test('original multi-selection draws one group outline and exposes only a group 
   expect(Math.abs(frameBounds.x-Math.min(first.x,second.x))).toBeLessThan(1.5);
   expect(frameBounds.w).toBeGreaterThan(second.x-first.x+second.w-2);
   await expect(overlay.locator('.moon-v2-move')).toHaveText('Move group');
-  await expect(overlay.locator('.moon-v2-grip')).toHaveCount(0);
+  await expect(overlay.locator('.moon-v2-grip')).toHaveCount(8);
   await expect(overlay.locator('.moon-v2-delete')).toHaveCount(0);
   await page.locator('#liveClearAdded').click();
   await expect(overlay).toHaveCount(0);
@@ -226,4 +226,91 @@ test('published source translations remain the baseline when moving an original 
   await page.reload({waitUntil:'domcontentloaded'});
   const retained=await live.locator('main img').evaluate(node=>getComputedStyle(node).translate);
   expect(Math.abs(parseFloat(retained)-(-92))).toBeLessThan(1.2);
+});
+
+test('group resize expands original text boxes together without scaling glyphs and can be undone',async({page})=>{
+  const live=await selectSourceGroup(page,['first','second']);
+  const first=live.locator('main p.first'),second=live.locator('main p.second');
+  const beforeA=await localRect(first),beforeB=await localRect(second);
+  const beforeFont=await first.evaluate(node=>getComputedStyle(node).fontSize);
+  const grip=live.locator('#moon-v2-live-overlay [data-direction="e"]');
+  await expect(grip).toBeVisible();
+  const box=await grip.boundingBox();
+  await page.mouse.move(box.x+box.width/2,box.y+box.height/2);
+  await page.mouse.down();
+  await page.mouse.move(box.x+box.width/2+90,box.y+box.height/2,{steps:7});
+  await page.mouse.up();
+  const afterA=await localRect(first),afterB=await localRect(second);
+  expect(afterA.w).toBeGreaterThan(beforeA.w+10);
+  expect(afterB.w).toBeGreaterThan(beforeB.w+10);
+  expect(afterB.x).toBeGreaterThan(beforeB.x+15);
+  await expect(first).toHaveCSS('font-size',beforeFont);
+  await expect(second).toHaveCSS('font-size',beforeFont);
+  await expect(first.locator('a')).toHaveAttribute('href','teaching.html');
+  await expect(page.locator('#liveMultiCount')).toHaveText('2 selected');
+  await page.locator('#undo').click();
+  const oldA=await localRect(live.locator('main p.first'));
+  const oldB=await localRect(live.locator('main p.second'));
+  expect(Math.abs(oldA.w-beforeA.w)).toBeLessThan(2);
+  expect(Math.abs(oldB.w-beforeB.w)).toBeLessThan(2);
+});
+test('resizing selected original pictures keeps image fitting and normalizes only the active device',async({page})=>{
+  const source='<!doctype html><html><head><style>main{padding:90px 40px}'+
+    '.gallery{display:flex;gap:70px}img{width:160px;height:120px;object-fit:contain}'+
+    '</style></head><body><main><div class="gallery">'+
+    '<img alt="Picture one" src="assets/profile-portrait.webp">'+
+    '<img alt="Picture two" src="assets/pungmul-stage.webp">'+
+    '</div></main></body></html>';
+  await page.route('https://api.github.com/repos/gmoon-code/gmoon-code.github.io/contents/research.html*',
+    route=>route.fulfill({status:200,contentType:'application/json',
+      body:JSON.stringify({type:'file',sha:'two-photos',encoding:'base64',
+        content:Buffer.from(source).toString('base64')})}));
+  await page.route('**/research.html',route=>route.fulfill({status:200,body:source,contentType:'text/html'}));
+  await page.locator('#reloadLive').click();
+  const live=page.frameLocator('#livePageFrame'),imgs=live.locator('main img');
+  await imgs.first().click();await imgs.last().click({modifiers:['Shift']});
+  const before1=await localRect(imgs.first()),before2=await localRect(imgs.last());
+  const grip=live.locator('#moon-v2-live-overlay [data-direction="se"]');
+  const box=await grip.boundingBox();
+  await page.mouse.move(box.x+box.width/2,box.y+box.height/2);
+  await page.mouse.down();
+  await page.mouse.move(box.x+box.width/2+70,box.y+box.height/2+35,{steps:9});
+  await page.mouse.up();
+  const after1=await localRect(imgs.first()),after2=await localRect(imgs.last());
+  expect(after1.w).toBeGreaterThan(before1.w+5);
+  expect(after2.w).toBeGreaterThan(before2.w+5);
+  await expect(imgs.first()).toHaveCSS('object-fit','contain');
+  await expect(imgs.last()).toHaveCSS('object-fit','contain');
+  await expect(imgs.first()).toHaveAttribute('src','assets/profile-portrait.webp');
+  await page.locator('#devicePreview').selectOption('phone');
+  const phone1=await localRect(imgs.first());
+  expect(Math.abs(phone1.w-before1.w)).toBeLessThan(3);
+});
+test('Ctrl-click cycles through overlapping independent source objects without changing source',async({page})=>{
+  const source='<!doctype html><html><head><style>'+
+    'main{position:relative;margin:60px;width:700px;height:540px}'+
+    'main>p{position:absolute;left:90px;top:60px;width:290px;height:170px;'+
+    'margin:0;padding:15px;box-sizing:border-box;background:#d3eee4;font:20px Arial}'+
+    'main>p.top{left:130px;top:90px;z-index:2;background:#f1dfc9}'+
+    '</style></head><body><main>'+
+    '<p class="bottom">Bottom original object</p>'+
+    '<p class="top">Top original object</p></main></body></html>';
+  await page.route('https://api.github.com/repos/gmoon-code/gmoon-code.github.io/contents/research.html*',
+    route=>route.fulfill({status:200,contentType:'application/json',
+      body:JSON.stringify({type:'file',sha:'overlap-test-v1',encoding:'base64',
+        content:Buffer.from(source).toString('base64')})}));
+  await page.route('**/research.html',route=>route.fulfill({status:200,body:source,contentType:'text/html'}));
+  await page.locator('#reloadLive').click();
+  const live=page.frameLocator('#livePageFrame'),top=live.locator('main p.top');
+  const under=live.locator('main p.bottom');
+  await top.click({position:{x:75,y:75}});
+  await expect(top).toHaveAttribute('data-moon-v2-live-selected','');
+  const rect=await top.boundingBox(),point={x:rect.x+40,y:rect.y+40};
+  await page.keyboard.down('Control');
+  await page.mouse.click(point.x,point.y);
+  await page.keyboard.up('Control');
+  await expect(under).toHaveAttribute('data-moon-v2-live-selected','');
+  await expect(top).not.toHaveAttribute('data-moon-v2-live-selected','');
+  await expect(page.locator('#liveMultiCount')).toHaveText('1 selected');
+  await expect(under).toHaveText('Bottom original object');
 });

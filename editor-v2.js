@@ -2724,6 +2724,31 @@ function reportLiveAssets(){
     (warnings.length?" · "+warnings.join(" · "):"");
   label.classList.toggle("has-warning",!!warnings.length||liveSourceProvenance!=="github");
 }
+// Ctrl/Command-click repeatedly at one point to reach objects occluded by
+// other objects, including overlapping photos and their parent containers.
+// The candidates come from the real iframe's element hit-test stack.
+function selectLiveUnderneath(event){
+  const doc=event.target.ownerDocument,main=doc.querySelector("main");
+  if(!main)return false;
+  const stack=[],seen=new Set();
+  for(const hit of doc.elementsFromPoint(event.clientX,event.clientY)){
+    if(hit.closest?.("#moon-v2-live-overlay"))continue;
+    for(let node=hit;node&&node!==main;node=node.parentElement){
+      if(!main.contains(node))break;
+      if(!node.matches(LIVE_SELECTABLE_TAGS))continue;
+      const key=liveSelector(node);
+      if(!key||seen.has(key))continue;
+      seen.add(key);stack.push(node);
+    }
+  }
+  if(!stack.length)return false;
+  const current=stack.indexOf(liveSelected?.node);
+  const next=stack[(current+1)%stack.length];
+  selectLiveElement(next);
+  status("Overlapping object "+(stack.indexOf(next)+1)+"/"+stack.length+
+    " selected · Ctrl/Command-click again to choose beneath it");
+  return true;
+}
 function bindLiveDocument(){
   const frame=$("livePageFrame"),doc=frame.contentDocument;
   if(liveObserver){liveObserver.disconnect();liveObserver=null;}
@@ -2795,6 +2820,11 @@ function bindLiveDocument(){
   doc.addEventListener("pointerdown",event=>{
     if(workspaceMode!=="live"||liveEditing||event.button!==0)return;
     if(event.target.closest?.("#moon-v2-live-overlay"))return;
+    if((event.ctrlKey||event.metaKey)&&!event.shiftKey){
+      event.preventDefault();event.stopPropagation();
+      liveSuppressClickUntil=performance.now()+300;
+      selectLiveUnderneath(event);return;
+    }
     // Select and start a move in one pointer gesture. Previously a user had
     // to click, release and then start a *second* drag on the same element.
     const link=event.target.closest?.("a[href]");
