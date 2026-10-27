@@ -1087,3 +1087,66 @@ test('distribution equalises gaps between differently sized source boxes',async(
   expect(Math.abs((b.x-a.x-a.w)-(c.x-b.x-b.w))).toBeLessThan(2);
   expect(Math.abs(a.w-b.w)).toBeGreaterThan(40);
 });
+
+test('persistent source group reselects on click, moves as one and survives reload',async({page})=>{
+  const live=await selectSourceGroup(page,['first','second']);
+  const first=live.locator('main p.first'),second=live.locator('main p.second');
+  await expect(page.locator('#liveGroup')).toBeEnabled();
+  await page.locator('#liveGroup').click();
+  await expect(page.locator('#liveUngroup')).toBeEnabled();
+  await expect(page.locator('#liveGroupIndicator')).toContainText('Grouped selection');
+  await live.locator('main p.third').click();
+  await first.click();
+  await expect(page.locator('#liveMultiCount')).toHaveText('2 selected');
+  const beforeA=await localRect(first),beforeB=await localRect(second);
+  await first.press('ArrowRight');
+  const afterA=await localRect(first),afterB=await localRect(second);
+  expect(afterA.x-beforeA.x).toBeGreaterThan(0);
+  expect(Math.abs((afterA.x-beforeA.x)-(afterB.x-beforeB.x))).toBeLessThan(2);
+  await page.reload({waitUntil:'domcontentloaded'});
+  await live.locator('main p.first').click();
+  await expect(page.locator('#liveMultiCount')).toHaveText('2 selected');
+  await expect(page.locator('#liveUngroup')).toBeEnabled();
+  await expect(live.locator('main p.first a')).toHaveAttribute('href','teaching.html');
+});
+test('ungroup stops automatic group selection and is undoable',async({page})=>{
+  const live=await selectSourceGroup(page,['first','second']);
+  await page.locator('#liveGroup').click();
+  await page.locator('#liveUngroup').click();
+  await live.locator('main p.third').click();
+  await live.locator('main p.first').click();
+  await expect(page.locator('#liveMultiCount')).toHaveText('1 selected');
+  await page.locator('#undo').click();
+  await live.locator('main p.third').click();
+  await live.locator('main p.first').click();
+  await expect(page.locator('#liveMultiCount')).toHaveText('2 selected');
+});
+test('persistent inserted-object group is selected from layers after reload',async({page})=>{
+  const live=page.frameLocator('#livePageFrame');
+  await page.locator('#addShape').click();
+  const idA=await live.locator('[data-moon-v2-added-id]').last()
+    .getAttribute('data-moon-v2-added-id');
+  await page.locator('#addShape').click();
+  const idB=await live.locator('[data-moon-v2-added-id]').last()
+    .getAttribute('data-moon-v2-added-id');
+  const a='added:'+idA,b='added:'+idB;
+  await page.locator('#liveElementList [data-live-selector="'+a+'"]').click();
+  await page.locator('#liveElementList [data-live-selector="'+b+'"]')
+    .click({modifiers:['Shift']});
+  await expect(page.locator('#liveMultiCount')).toHaveText('2 selected');
+  await page.locator('#liveGroup').click();
+  const id1=await live.locator('[data-moon-v2-added-id="'+idA+'"]')
+    .getAttribute('data-moon-v2-editor-group');
+  const id2=await live.locator('[data-moon-v2-added-id="'+idB+'"]')
+    .getAttribute('data-moon-v2-editor-group');
+  expect(id1).toMatch(/^grp-/);
+  expect(id2).toBe(id1);
+  await page.reload({waitUntil:'domcontentloaded'});
+  await page.locator('#liveElementList [data-live-selector="'+b+'"]').click();
+  await expect(page.locator('#liveMultiCount')).toHaveText('2 selected');
+  await page.locator('#liveUngroup').click();
+  await expect(live.locator('[data-moon-v2-added-id="'+idA+'"]'))
+    .not.toHaveAttribute('data-moon-v2-editor-group');
+  await expect(live.locator('[data-moon-v2-added-id="'+idB+'"]'))
+    .not.toHaveAttribute('data-moon-v2-editor-group');
+});
