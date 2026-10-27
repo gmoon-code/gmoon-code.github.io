@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>Academic Website Editor 2 | Ye Eun Moon</title>
-<link rel="stylesheet" href="editor-v2.css?v=20261027-page-alignment-v51b">
-<script src="editor-v2.js?v=20261027-page-alignment-v51b" defer></script>
+<link rel="stylesheet" href="editor-v2.css?v=20261027-persistent-groups-v52">
+<script src="editor-v2.js?v=20261027-persistent-groups-v52" defer></script>
 </head>
 <body>
 <a class="skip" href="#workspace">Skip to editor canvas</a>
@@ -104,7 +104,10 @@
           <div class="inline-actions">
             <button id="liveSelectAdded" type="button">Select all added</button>
             <button id="liveClearAdded" type="button">Clear selection</button>
+            <button id="liveGroup" type="button" disabled title="Group selected objects (Ctrl+G)">Group</button>
+            <button id="liveUngroup" type="button" disabled title="Separate a permanent group (Ctrl+Shift+G)">Ungroup</button>
           </div>
+          <p class="help" id="liveGroupIndicator" aria-live="polite">Groups remember their members after reloading</p>
           <div class="live-arrange-grid">
             <button id="liveAlignLeft" type="button" disabled>Align left</button>
             <button id="liveAlignCenter" type="button" disabled>Centre horizontally</button>
@@ -125,7 +128,7 @@
             <button id="livePageCenter" type="button" disabled>Centre on page</button>
             <button id="livePageRight" type="button" disabled>To page right</button>
           </div>
-          <p class="help">Shift-click 2 or more independent original webpage elements or added objects. Align their edges, make gaps equal, or match sizes to the <strong>first selected object</strong>. Matching width keeps the text size unchanged; text can reflow. The opposite dimension remains unchanged unless you choose Same width + height. You can also align a single object or the whole selection to the webpage content column. Changes apply to the selected screen layout only and Undo restores them.</p>
+          <p class="help">Shift-click 2 or more independent original webpage elements or added objects. Select Group (Ctrl+G) to keep them together when reselecting; use Ungroup (Ctrl+Shift+G) to edit members independently. Align their edges, make gaps equal, or match sizes to the <strong>first selected object</strong>. Matching width keeps the text size unchanged; text can reflow. The opposite dimension remains unchanged unless you choose Same width + height. You can also align a single object or the whole selection to the webpage content column. Changes apply to the selected screen layout only and Undo restores them.</p>
         </div>
         <p class="help">Ctrl+C and Ctrl+V copy and paste a webpage object. Ctrl+D duplicates, Ctrl+S saves, Ctrl+Z undoes, and Ctrl+[ or Ctrl+] changes stacking.</p>
       </section>
