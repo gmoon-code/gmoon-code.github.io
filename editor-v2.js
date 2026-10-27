@@ -534,6 +534,32 @@ function validAddedDesign(design){
   return true;
 }
 const DEFAULT_IMAGE_CROP=Object.freeze({fit:"contain",x:50,y:50,mask:"rectangle",zoom:100});
+const DEFAULT_PICTURE_EFFECTS=Object.freeze({
+  rotation:0,flipH:false,flipV:false,opacity:100,
+  brightness:100,contrast:100,saturation:100,blur:0,shadow:false
+});
+function validPictureEffects(map){
+  if(!map||typeof map!=="object"||Array.isArray(map))return false;
+  const limits={rotation:[-180,180],opacity:[0,100],
+    brightness:[20,200],contrast:[20,200],saturation:[0,250],blur:[0,20]};
+  return Object.entries(map).every(([device,fx])=>
+    !!LIVE_DEVICE_RULES[device]&&fx&&typeof fx==="object"&&!Array.isArray(fx)&&
+    Object.entries(fx).every(([key,value])=>
+      ["flipH","flipV","shadow"].includes(key)?typeof value==="boolean":
+      !!limits[key]&&Number.isInteger(value)&&
+        value>=limits[key][0]&&value<=limits[key][1]));
+}
+function pictureEffectsCss(fx,scaleX=1,scaleY=1){
+  const f={...DEFAULT_PICTURE_EFFECTS,...fx};
+  return "rotate:"+f.rotation+"deg!important;"+
+    "scale:"+(Math.round(scaleX*(f.flipH?-1:1)*1000)/1000)+" "+
+      (Math.round(scaleY*(f.flipV?-1:1)*1000)/1000)+"!important;"+
+    "opacity:"+(f.opacity/100)+"!important;"+
+    "filter:brightness("+f.brightness+"%) contrast("+f.contrast+
+      "%) saturate("+f.saturation+"%) blur("+f.blur+"px)"+
+      (f.shadow?" drop-shadow(2px 4px 6px rgba(0,0,0,.32))":"")+
+      "!important;";
+}
 function validImageCropMap(map){
   if(!map||typeof map!=="object"||Array.isArray(map))return false;
   return Object.entries(map).every(([device,crop])=>
@@ -652,7 +678,9 @@ function validAddedPatch(p){
     (p.appearance===undefined||validLiveAppearance(p.appearance))&&
     (p.design===undefined||validAddedDesign(p.design))&&
     (p.imageCrop===undefined||
-      p.objectType==="image"&&validImageCropMap(p.imageCrop));
+      p.objectType==="image"&&validImageCropMap(p.imageCrop))&&
+    (p.pictureEffects===undefined||
+      p.objectType==="image"&&validPictureEffects(p.pictureEffects));
 }
 function addedObjectId(p){return p.selector.slice("added:".length);}
 function addedDeviceGeometry(p,device){
@@ -728,10 +756,12 @@ function addedStyleCss(p){
     const g=addedDeviceGeometry(p,device);
     if(!g)continue;
     const crop=p.objectType==="image"?p.imageCrop?.[device]:null;
+    const fx=p.objectType==="image"?p.pictureEffects?.[device]:null;
     result+="@media "+media+"{"+tag+"{left:"+g.x+
       "px!important;top:"+g.y+"px!important;width:"+g.w+
       "px!important;height:"+g.h+"px!important;"+
-      (crop?imageCropCss(crop,p.src,g):"")+"}}";
+      (crop?imageCropCss(crop,p.src,g):"")+
+      (fx?pictureEffectsCss(fx):"")+"}}";
   }
   return result;
 }
@@ -778,8 +808,10 @@ function applyAddedPatch(doc,p){
   node.setAttribute("data-moon-v2-added-geometry",JSON.stringify(p.geometry));
   node.setAttribute("data-moon-v2-added-appearance",JSON.stringify(p.appearance||{}));
   node.setAttribute("data-moon-v2-added-design",JSON.stringify(p.design||{}));
-  if(p.objectType==="image")
+  if(p.objectType==="image"){
     node.setAttribute("data-moon-v2-added-crop",JSON.stringify(p.imageCrop||{}));
+    node.setAttribute("data-moon-v2-picture-effects",JSON.stringify(p.pictureEffects||{}));
+  }
   if(p.objectType==="image"){
     node.setAttribute("src",p.src);node.setAttribute("alt",p.alt);
   }else if(p.objectType==="text")node.innerHTML=cleanRich(p.html);
@@ -1012,7 +1044,7 @@ function pruneLivePatch(patch,node){
     patch.expected===(node.textContent||"").trim().slice(0,300);
   const unchangedImage=patch.kind==="image"&&
     patch.src===(node.getAttribute("src")||"")&&patch.alt===(node.alt||"");
-  return !patch.layout&&!patch.appearance&&!patch.imageCrop&&
+  return !patch.layout&&!patch.appearance&&!patch.imageCrop&&!patch.pictureEffects&&
     (patch.kind==="layout"||unchangedText||unchangedImage);
 }
 function setLiveAppearance(key,value){
@@ -1224,6 +1256,12 @@ function liveLayoutRules(patches=[...livePatches.values()]){
     const unclipped=[...released].map(s=>s+
       "{overflow:visible!important;clip-path:none!important;}");
     for(const patch of patches){
+      if(patch.kind==="insert"||patch.kind==="delete"||!patch.pictureEffects?.[device])continue;
+      const e=patch.layout?.[device];
+      const sx=e?(e.osx||1)*e.sx:1,sy=e?(e.osy||1)*e.sy:1;
+      selectors.push(patch.selector+"{"+pictureEffectsCss(patch.pictureEffects[device],sx,sy)+"}");
+    }
+    for(const patch of patches){
       if(patch.kind==="insert"||patch.kind==="delete"||!patch.imageCrop?.[device])continue;
       const tail=patch.selector.match(/ > ([a-z][a-z0-9-]*):nth-of-type\(\d+\)$/)?.[1];
       if(tail!=="img")continue;
@@ -1254,7 +1292,9 @@ function refreshLiveLayoutRules(doc=$("livePageFrame").contentDocument,patches=[
 }
 function addedPatchFromNode(node,selector=liveSelector(node)){
   if(!node||!LIVE_ADDED_ID.test(selector))return null;
-  let geometry,appearance,design,imageCrop;
+  let geometry,appearance,design,imageCrop,pictureEffects;
+  try{pictureEffects=JSON.parse(node.getAttribute("data-moon-v2-picture-effects")||"{}");}
+  catch{pictureEffects={};}
   try{imageCrop=JSON.parse(node.getAttribute("data-moon-v2-added-crop")||"{}");}
   catch{imageCrop={};}
   try{geometry=JSON.parse(node.getAttribute("data-moon-v2-added-geometry")||"{}");}
@@ -1268,7 +1308,8 @@ function addedPatchFromNode(node,selector=liveSelector(node)){
       (node.tagName==="IMG"?"image":node.tagName==="P"?"text":"shape"),
     geometry,appearance,design,
     ...(node.tagName==="IMG"?{src:node.getAttribute("src")||"",alt:node.alt||"",
-      ...(Object.keys(imageCrop).length?{imageCrop}:{})}:
+      ...(Object.keys(imageCrop).length?{imageCrop}:{}),
+      ...(Object.keys(pictureEffects).length?{pictureEffects}:{})}:
       node.tagName==="P"?{html:cleanRich(node.innerHTML)}:
       {fill:node.getAttribute("data-moon-v2-shape-fill")||"#e1eee4"})};
   return validAddedPatch(patch)?patch:null;
@@ -1911,7 +1952,10 @@ function validLivePatch(p){
     (p.appearance===undefined||validLiveAppearance(p.appearance))&&
     (p.imageCrop===undefined||
       (p.kind==="image"||p.kind==="layout")&&p.tag!=="section"&&
-      validImageCropMap(p.imageCrop));
+      validImageCropMap(p.imageCrop))&&
+    (p.pictureEffects===undefined||
+      (p.kind==="image"||p.kind==="layout")&&
+      validPictureEffects(p.pictureEffects));
 }
 function liveGeometryIsLocked(selector){
   return !!selector&&livePositionLocks.has(selector);
@@ -2248,6 +2292,9 @@ function mergeLiveTargetPatches(first,second,node){
   const crop={...(first.imageCrop||{}),...(second.imageCrop||{})};
   if(Object.keys(crop).length)merged.imageCrop=crop;
   else delete merged.imageCrop;
+  const effects={...(first.pictureEffects||{}),...(second.pictureEffects||{})};
+  if(Object.keys(effects).length)merged.pictureEffects=effects;
+  else delete merged.pictureEffects;
   return merged;
 }
 function captureExistingLiveStyles(doc){
