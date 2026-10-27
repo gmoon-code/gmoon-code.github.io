@@ -40,7 +40,7 @@ jobs:
           cat /tmp/editor-v2-http.log
           exit 1
       - name: Run real-browser source element and crop regression tests
-        run: npx playwright test tests/editor-v2-live-source-multi.spec.cjs --project=chromium --workers=1 --reporter=line
+        run: npx playwright test tests/editor-v2-live-source-multi.spec.cjs --workers=1 --reporter=line
         env:
           CI: "true"
       - name: Upload failure traces
