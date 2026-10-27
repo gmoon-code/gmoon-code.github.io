@@ -688,6 +688,18 @@ function selectedImageCrop(patch,device=liveDevice()){
     fit:patch?.design?.imageFit||published.fit||"contain",
     ...(patch?.imageCrop?.[device]||{})};
 }
+const LIVE_GROUP_ID=/^grp-[a-z0-9-]{8,48}$/;
+function validLiveGroupId(value){
+  return value===null||typeof value==="string"&&LIVE_GROUP_ID.test(value);
+}
+function liveGroupId(node,selector=node&&liveSelector(node)){
+  const patch=selector&&livePatches.get(selector);
+  if(patch&&Object.hasOwn(patch,"groupId"))
+    return typeof patch.groupId==="string"&&LIVE_GROUP_ID.test(patch.groupId)?
+      patch.groupId:null;
+  const published=node?.getAttribute("data-moon-v2-editor-group");
+  return published&&LIVE_GROUP_ID.test(published)?published:null;
+}
 function validAddedPatch(p){
   return !!p&&isAddedPatch(p)&&typeof p.expected==="string"&&p.expected===""&&
     ["text","image","shape"].includes(p.objectType)&&
@@ -703,7 +715,8 @@ function validAddedPatch(p){
     (p.imageCrop===undefined||
       p.objectType==="image"&&validImageCropMap(p.imageCrop))&&
     (p.pictureEffects===undefined||
-      p.objectType==="image"&&validPictureEffects(p.pictureEffects));
+      p.objectType==="image"&&validPictureEffects(p.pictureEffects))&&
+    (p.groupId===undefined||validLiveGroupId(p.groupId));
 }
 function addedObjectId(p){return p.selector.slice("added:".length);}
 function addedDeviceGeometry(p,device){
@@ -830,6 +843,9 @@ function applyAddedPatch(doc,p){
     layer.append(node);
   }
   node.setAttribute("data-moon-v2-object-type",p.objectType);
+  if(p.groupId&&LIVE_GROUP_ID.test(p.groupId))
+    node.setAttribute("data-moon-v2-editor-group",p.groupId);
+  else node.removeAttribute("data-moon-v2-editor-group");
   if(p.objectType==="shape")node.setAttribute("data-moon-v2-shape-fill",p.fill);
   node.setAttribute("data-moon-v2-added-geometry",JSON.stringify(p.geometry));
   node.setAttribute("data-moon-v2-added-appearance",JSON.stringify(p.appearance||{}));
@@ -1070,7 +1086,7 @@ function pruneLivePatch(patch,node){
     patch.expected===(node.textContent||"").trim().slice(0,300);
   const unchangedImage=patch.kind==="image"&&
     patch.src===(node.getAttribute("src")||"")&&patch.alt===(node.alt||"");
-  return !patch.layout&&!patch.appearance&&!patch.imageCrop&&!patch.pictureEffects&&
+  return patch.groupId===undefined&&!patch.layout&&!patch.appearance&&!patch.imageCrop&&!patch.pictureEffects&&
     (patch.kind==="layout"||unchangedText||unchangedImage);
 }
 function setLiveAppearance(key,value){
@@ -1333,6 +1349,7 @@ function addedPatchFromNode(node,selector=liveSelector(node)){
     objectType:node.getAttribute("data-moon-v2-object-type")||
       (node.tagName==="IMG"?"image":node.tagName==="P"?"text":"shape"),
     geometry,appearance,design,
+    ...(liveGroupId(node,selector)?{groupId:liveGroupId(node,selector)}:{}),
     ...(node.tagName==="IMG"?{src:node.getAttribute("src")||"",alt:node.alt||"",
       ...(Object.keys(imageCrop).length?{imageCrop}:{}),
       ...(Object.keys(pictureEffects).length?{pictureEffects}:{})}:
@@ -2149,7 +2166,8 @@ function validLivePatch(p){
       validImageCropMap(p.imageCrop))&&
     (p.pictureEffects===undefined||
       (p.kind==="image"||p.kind==="layout")&&
-      validPictureEffects(p.pictureEffects));
+      validPictureEffects(p.pictureEffects))&&
+    (p.groupId===undefined||validLiveGroupId(p.groupId));
 }
 function liveGeometryIsLocked(selector){
   return !!selector&&livePositionLocks.has(selector);
@@ -2506,6 +2524,8 @@ function mergeLiveTargetPatches(first,second,node){
   const effects={...(first.pictureEffects||{}),...(second.pictureEffects||{})};
   if(Object.keys(effects).length)merged.pictureEffects=effects;
   else delete merged.pictureEffects;
+  if(second.groupId!==undefined)merged.groupId=second.groupId;
+  else if(first.groupId!==undefined)merged.groupId=first.groupId;
   return merged;
 }
 function captureExistingLiveStyles(doc){
@@ -2596,6 +2616,11 @@ function applyPatchesToDocument(doc,strict=false,resolved=[],normalized=[]){
         if(validPictureEffects(from))older=from;
       }catch{/* First picture format edit. */}
       node.setAttribute("data-moon-v2-picture-effects",JSON.stringify({...older,...patch.pictureEffects}));
+    }
+    if(patch.groupId!==undefined){
+      if(typeof patch.groupId==="string"&&LIVE_GROUP_ID.test(patch.groupId))
+        node.setAttribute("data-moon-v2-editor-group",patch.groupId);
+      else node.removeAttribute("data-moon-v2-editor-group");
     }
     if(patch.kind==="text")node.innerHTML=cleanRich(patch.html);
   }
