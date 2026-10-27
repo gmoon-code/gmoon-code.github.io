@@ -684,3 +684,78 @@ test('section selection mode never navigates embedded page links',async({page})=
   await expect(live.locator('section.feature')).toHaveCount(1);
   await expect(page.locator('#liveSectionPickMode')).toHaveAttribute('aria-pressed','true');
 });
+
+const cropPng='iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/sx8AAAAASUVORK5CYII=';
+const cropSource='<!doctype html><html><head><style>'+
+  'body{margin:0}main{padding:90px 45px}'+
+  'img.picture{display:block;width:220px;height:120px;object-fit:contain}'+
+  '</style></head><body><main>'+
+  '<img class="picture" alt="Crop test picture" src="data:image/png;base64,'+cropPng+'">'+
+  '<p>Neighbouring original content should stay unchanged</p></main></body></html>';
+async function loadCropFixture(page){
+  await page.route('https://api.github.com/repos/gmoon-code/gmoon-code.github.io/contents/research.html*',
+    route=>route.fulfill({status:200,contentType:'application/json',
+      body:JSON.stringify({type:'file',sha:'crop-fixture-v1',encoding:'base64',
+        content:Buffer.from(cropSource).toString('base64')})}));
+  await page.route('**/research.html',
+    route=>route.fulfill({status:200,contentType:'text/html',body:cropSource}));
+  await page.reload({waitUntil:'domcontentloaded'});
+  await expect(page.frameLocator('#livePageFrame').locator('img.picture'))
+    .toHaveCount(1);
+}
+test('original picture crop is responsive, non-destructive and survives reload',async({page})=>{
+  await loadCropFixture(page);
+  const image=page.frameLocator('#livePageFrame').locator('img.picture');
+  const initialSrc=await image.getAttribute('src');
+  await image.click();
+  await expect(page.locator('#liveCropControls')).toBeVisible();
+  await page.locator('#liveCropFit').selectOption('cover');
+  await page.locator('#liveCropX').fill('20');
+  await page.locator('#liveCropX').dispatchEvent('change');
+  await page.locator('#liveCropY').fill('70');
+  await page.locator('#liveCropY').dispatchEvent('change');
+  await expect(image).toHaveCSS('object-fit','cover');
+  await expect(image).toHaveCSS('object-position','20% 70%');
+  expect(await image.getAttribute('src')).toBe(initialSrc);
+  await page.locator('#devicePreview').selectOption('phone');
+  await expect(image).toHaveCSS('object-fit','contain');
+  await page.locator('#devicePreview').selectOption('desktop');
+  await expect(image).toHaveCSS('object-position','20% 70%');
+  await page.reload({waitUntil:'domcontentloaded'});
+  await expect(image).toHaveCSS('object-fit','cover');
+  await expect(image).toHaveCSS('object-position','20% 70%');
+  expect(await image.getAttribute('src')).toBe(initialSrc);
+});
+test('picture crop aspect preset changes frame without stretching source pixels',async({page})=>{
+  await loadCropFixture(page);
+  const image=page.frameLocator('#livePageFrame').locator('img.picture');
+  await image.click();
+  await page.locator('#liveCropSquare').click();
+  const box=await image.evaluate(node=>node.getBoundingClientRect());
+  expect(Math.abs(box.width-box.height)).toBeLessThan(3);
+  await expect(image).toHaveCSS('object-fit','cover');
+  await page.locator('#liveCropReset').click();
+  await expect(image).toHaveCSS('object-fit','contain');
+});
+test('crop mode exposes photo drag reframing without moving image frame',async({page})=>{
+  await loadCropFixture(page);
+  const image=page.frameLocator('#livePageFrame').locator('img.picture');
+  await image.click();
+  await page.locator('#liveCropToggle').click();
+  await expect(page.locator('#liveCropToggle')).toHaveAttribute('aria-pressed','true');
+  await expect(image).toHaveCSS('object-fit','cover');
+  const before=await image.boundingBox();
+  expect(before).toBeTruthy();
+  const x=before.x+before.width/2,y=before.y+before.height/2;
+  await page.mouse.move(x,y);
+  await page.mouse.down();
+  await page.mouse.move(x,y-24,{steps:7});
+  await page.mouse.up();
+  const after=await image.boundingBox();
+  expect(Math.abs(after.x-before.x)).toBeLessThan(2);
+  expect(Math.abs(after.y-before.y)).toBeLessThan(2);
+  await expect(page.locator('#liveCropToggle')).toHaveAttribute('aria-pressed','true');
+  await expect(image).toHaveCSS('object-fit','cover');
+  await page.locator('#liveCropToggle').click();
+  await expect(page.locator('#liveCropToggle')).toHaveAttribute('aria-pressed','false');
+});
