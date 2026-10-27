@@ -816,7 +816,10 @@ function liveEventTarget(event){
   if(liveSectionPickMode){
     const main=event.target.closest?.("main");
     if(main){
-      const section=event.target.closest?.("section,article,aside,figure");
+      // Prefer the enclosing semantic section over a nested figure or card
+      // so the selection covers the whole region the user sees.
+      const section=event.target.closest?.("section")||
+        event.target.closest?.("article,aside,figure");
       if(section&&main.contains(section))return section;
       const direct=[...main.children].find(node=>node.contains(event.target)&&
         node.matches(LIVE_CONTAINER_TAGS));
