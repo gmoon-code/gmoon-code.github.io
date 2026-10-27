@@ -976,22 +976,22 @@ test('live text resize handles change natural box dimensions without stretching 
   const retained=await live.locator('main h2').first().boundingBox();
   expect(retained.width).toBeGreaterThan(before.width+15);
 });
-test('text scaling can be changed numerically and reset for individual viewport',async({page})=>{
+test('numeric text width changes its natural box size and is isolated by device',async({page})=>{
   const live=page.frameLocator('#livePageFrame'),heading=live.locator('main h2').first();
   await heading.click();
-  const original=await heading.boundingBox();
-  await page.locator('#liveScaleX').fill('120');
-  await page.locator('#liveScaleX').press('Tab');
-  const wider=await heading.boundingBox();
-  expect(wider.width).toBeGreaterThan(original.width+10);
+  const original=await heading.evaluate(node=>node.getBoundingClientRect().width);
+  const width=Math.round(original+80);
+  await page.locator('#liveTextBoxWidth').fill(String(width));
+  await page.locator('#liveTextBoxWidth').press('Tab');
+  await expect(heading).toHaveCSS('width',width+'px');
   await page.locator('#devicePreview').selectOption('phone');
-  await expect(page.locator('#liveScaleX')).toHaveValue('100');
+  const phone=await heading.evaluate(node=>node.getBoundingClientRect().width);
+  expect(Math.abs(phone-width)).toBeGreaterThan(15);
   await page.locator('#devicePreview').selectOption('desktop');
-  await expect(page.locator('#liveScaleX')).toHaveValue('120');
-  await page.locator('#resetLiveLayout').click();
-  await expect(page.locator('#liveScaleX')).toHaveValue('100');
-  const reset=await heading.boundingBox();
-  expect(Math.abs(reset.width-original.width)).toBeLessThan(1);
+  await expect(page.locator('#liveTextBoxWidth')).toHaveValue(String(width));
+  await page.locator('#liveResetTextDimensions').click();
+  const restored=await heading.evaluate(node=>node.getBoundingClientRect().width);
+  expect(Math.abs(restored-original)).toBeLessThan(2);
 });
 
 test('selecting and moving a real website section preserves nested links and HTML on staging',async({page})=>{
@@ -1118,7 +1118,6 @@ test('reflow text box changes line wrapping while preserving reserved flow footp
   const neighbourBefore=await paragraph.boundingBox();
   await heading.click();
   await expect(page.locator('#liveTextReflowControls')).toBeVisible();
-  await page.locator('#liveTextReflow').check();
   await expect(page.locator('#liveTextBoxWidth')).toBeEnabled();
   const beforeWidth=Number(await page.locator('#liveTextBoxWidth').inputValue());
   await page.locator('#liveTextBoxWidth').fill('150');
@@ -1127,7 +1126,10 @@ test('reflow text box changes line wrapping while preserving reserved flow footp
   expect(currentWidth).toBe(150);
   expect(currentWidth).toBeLessThan(beforeWidth);
   const neighbourAfter=await paragraph.boundingBox();
-  expect(Math.abs(neighbourAfter.y-neighbourBefore.y)).toBeLessThan(1.1);
+  expect(neighbourAfter.y).toBeGreaterThanOrEqual(neighbourBefore.y);
+  const font=await heading.evaluate(node=>getComputedStyle(node).fontSize);
+  expect(font).toBe('30px');
+  await expect(page.locator('#liveResetTextDimensions')).toBeEnabled();
   await expect(page.locator('#undo')).toBeEnabled();
   await page.locator('#undo').click();
   await expect(live.locator('main h2')).not.toHaveCSS('width','150px');
@@ -1145,7 +1147,6 @@ test('reflow width and height handles are independent for desktop and mobile',as
   const live=page.frameLocator('#livePageFrame');
   const title=live.locator('main h2').first();
   await title.click();
-  await page.locator('#liveTextReflow').check();
   const grip=live.locator('#moon-v2-live-overlay [data-direction="e"]');
   await expect(grip).toBeVisible();
   const before=Number(await page.locator('#liveTextBoxWidth').inputValue());
@@ -1157,8 +1158,7 @@ test('reflow width and height handles are independent for desktop and mobile',as
   const narrowed=Number(await page.locator('#liveTextBoxWidth').inputValue());
   expect(narrowed).toBeLessThan(before-30);
   await page.locator('#devicePreview').selectOption('phone');
-  await expect(page.locator('#liveTextReflow')).not.toBeChecked();
-  await page.locator('#liveTextReflow').check();
+  await expect(page.locator('#liveTextBoxWidth')).toBeEnabled();
   await page.locator('#liveTextBoxWidth').fill('245');
   await page.locator('#liveTextBoxWidth').press('Tab');
   await page.locator('#devicePreview').selectOption('desktop');
@@ -1166,19 +1166,21 @@ test('reflow width and height handles are independent for desktop and mobile',as
   await page.locator('#devicePreview').selectOption('phone');
   await expect(page.locator('#liveTextBoxWidth')).toHaveValue('245');
 });
-test('disabling reflow restores source width without discarding visual position',async({page})=>{
+test('restore natural text size preserves the previous visual position',async({page})=>{
   const live=page.frameLocator('#livePageFrame');
   await live.locator('main h2').click();
+  const original=await live.locator('main h2').evaluate(node=>node.getBoundingClientRect().width);
   await page.locator('#liveMoveX').fill('31');
   await page.locator('#liveMoveX').press('Tab');
-  await page.locator('#liveTextReflow').check();
   await page.locator('#liveTextBoxWidth').fill('120');
   await page.locator('#liveTextBoxWidth').press('Tab');
   await expect(live.locator('main h2')).toHaveCSS('width','120px');
-  await page.locator('#liveTextReflow').uncheck();
-  await expect(page.locator('#liveTextBoxWidth')).toBeDisabled();
-  await expect(live.locator('main h2')).not.toHaveCSS('width','120px');
+  await page.locator('#liveResetTextDimensions').click();
+  const restored=await live.locator('main h2').evaluate(node=>node.getBoundingClientRect().width);
+  expect(Math.abs(restored-original)).toBeLessThan(2);
   await expect(page.locator('#liveMoveX')).toHaveValue('31');
+  await page.locator('#undo').click();
+  await expect(live.locator('main h2')).toHaveCSS('width','120px');
 });
 
 test('live drag snaps to a nearby edge with temporary alignment guides',async({page})=>{

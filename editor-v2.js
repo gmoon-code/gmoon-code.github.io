@@ -949,11 +949,17 @@ function validLiveLayout(layout){
 function liveDevice(){return $("devicePreview").value;}
 function originalLiveTransform(node){
   if(!node?.isConnected)return {ox:0,oy:0,osx:1,osy:1};
-  const sheet=node.ownerDocument.getElementById("moon-v2-live-layout");
-  const wasDisabled=sheet?.disabled;
-  if(sheet)sheet.disabled=true;
+  const doc=node.ownerDocument;
+  const sheet=doc.getElementById("moon-v2-live-layout");
+  const previous=sheet?.textContent;
+  const committed=liveSourceCss.get(doc);
+  // The page may already contain published, original positioning in this
+  // stylesheet. Replacing it with empty CSS would erase that baseline and
+  // make a 20px move jump by the amount of the published translation.
+  // Temporarily show only the exact original source rules, not draft rules.
+  if(sheet&&committed!==undefined)sheet.textContent=committed;
   try{
-    const style=node.ownerDocument.defaultView.getComputedStyle(node);
+    const style=doc.defaultView.getComputedStyle(node);
     const translate=style.translate;
     const match=translate.match(/^(-?(?:\d+\.?\d*|\.\d+))px(?:\s+(-?(?:\d+\.?\d*|\.\d+))px)?$/);
     const scale=style.scale==="none"?[]:style.scale.split(/\s+/).map(Number);
@@ -962,7 +968,7 @@ function originalLiveTransform(node){
       osx:Number.isFinite(scale[0])?scale[0]:1,
       osy:Number.isFinite(scale[1])?scale[1]:Number.isFinite(scale[0])?scale[0]:1
     };
-  }finally{if(sheet)sheet.disabled=wasDisabled;}
+  }finally{if(sheet&&committed!==undefined)sheet.textContent=previous;}
 }
 function liveLayoutFor(selector,device=liveDevice()){
   const added=livePatches.get(selector)||
@@ -1315,8 +1321,36 @@ function setLiveReflowDimension(key,value){
     key==="wrapWidth"?4000:5000));
   patch.layout={...patch.layout,[liveDevice()]:layout};
   livePatches.set(patch.selector,patch);
+  if(key==="wrapWidth"){
+    // Numeric inspector resizing should behave like the canvas grips:
+    // preserve glyph size, rewrap text, and reserve its actual height.
+    refreshLiveLayoutRules(node.ownerDocument);
+    const needed=Math.ceil(node.scrollHeight+2);
+    if(Number.isFinite(needed)&&needed>layout.reserveHeight&&needed<=5000){
+      layout.reserveHeight=needed;
+      patch.layout[liveDevice()]=layout;
+      livePatches.set(patch.selector,patch);
+    }
+  }
   if(recordLiveHistory(before)){
     refreshLiveLayoutRules();renderLiveInspector();syncLiveOverlay();
+  }
+}
+function resetLiveTextDimensions(){
+  const node=liveSelected?.node;
+  if(!node?.matches(LIVE_REFLOW_TEXT)||workspaceMode!=="live")return;
+  const patch=livePatchForSelected(),device=liveDevice();
+  if(!patch||patch.kind==="insert"||!patch.layout?.[device])return;
+  const before=liveSnapshot(),next={...patch.layout[device]};
+  delete next.wrapWidth;delete next.reserveHeight;
+  // The original source transform is restored while the user's dx/dy
+  // remain. Natural size can be restored without jumping back in position.
+  next.sx=1;next.sy=1;
+  patch.layout[device]=next;
+  livePatches.set(patch.selector,patch);
+  if(recordLiveHistory(before)){
+    refreshLiveLayoutRules(node.ownerDocument);renderLiveInspector();syncLiveOverlay();
+    status("Natural text dimensions restored · Position preserved · Undo available");
   }
 }
 function fitLiveTextHeight(){
@@ -1485,6 +1519,8 @@ function renderLiveInspector(){
     $("liveTextBoxHeight").disabled=!on;
     $("liveTextBoxWidth").value=String(Math.round(entry.wrapWidth||node.getBoundingClientRect().width));
     $("liveTextBoxHeight").value=String(Math.round(entry.reserveHeight||node.getBoundingClientRect().height));
+    $("liveResetTextDimensions").disabled=!canReflow||
+      livePatches.get(selector)?.layout?.[liveDevice()]?.wrapWidth===undefined;
     const extra=canReflow&&entry.wrapWidth!==undefined?
       Math.max(0,Math.ceil(node.scrollHeight-node.clientHeight)):0;
     $("liveReflowWarning").hidden=extra<=3;
@@ -3874,6 +3910,7 @@ function attachEvents(){
     setLiveReflowDimension("wrapWidth",event.target.value));
   $("liveTextBoxHeight").addEventListener("change",event=>
     setLiveReflowDimension("reserveHeight",event.target.value));
+  $("liveResetTextDimensions").addEventListener("click",resetLiveTextDimensions);
   $("liveFitReflowHeight").addEventListener("click",fitLiveTextHeight);
   for(const [field,key] of [
     ["liveFontFamily","family"],["liveFontSize","fontSize"],
