@@ -404,7 +404,7 @@
   }
 }
 @media(max-width:710px){
-  .research-essay.site-shell{width:min(calc(100% - 32px),1110px)}
+  .research-essay.site-shell{width:min(calc(100% - 20px),1110px);padding-inline:14px;box-sizing:border-box}
   .research-essay .research-essay-hero h1{font-size:41px}
   .research-essay .research-essay-hero .research-essay-lead{
     font-size:19px!important;
