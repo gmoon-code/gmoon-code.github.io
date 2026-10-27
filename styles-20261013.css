@@ -2162,3 +2162,15 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
 @media(max-width:480px){
   #main .media-shelf-shows .media-logo{width:90px;height:74px}
 }
+
+/* Screenshot-led mobile reading inset for long-form Teaching pages.
+   Keep the page border and all desktop/tablet layouts unchanged. */
+@media(max-width:700px){
+  #main.site-shell.page.teaching-case-page,
+  #main.site-shell.page.teaching-page{
+    width:min(calc(100% - 20px),var(--page-max));
+    box-sizing:border-box;
+    padding-left:14px;
+    padding-right:14px;
+  }
+}
