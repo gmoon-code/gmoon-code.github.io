@@ -919,3 +919,50 @@ test('inserted webpage shapes include arrows, stars and speech bubbles',async({p
   await expect(live.locator('[data-moon-v2-object-type="shape"]').last())
     .toHaveCSS('border-radius','50%');
 });
+
+test('format painter transfers picture adjustments without replacing photo content',async({page})=>{
+  await loadCropFixture(page);
+  const live=page.frameLocator('#livePageFrame');
+  const first=live.locator('img.picture');
+  await first.evaluate(node=>{
+    const copy=node.cloneNode(true);
+    copy.className='picture-second';
+    copy.alt='Another picture';
+    copy.style.marginTop='25px';
+    node.after(copy);
+  });
+  const second=live.locator('img.picture-second');
+  await first.click();
+  await page.locator('#livePictureRotation').fill('25');
+  await page.locator('#livePictureRotation').dispatchEvent('change');
+  await page.locator('#livePictureFlipV').click();
+  await page.locator('#liveCopyFormat').click();
+  const untouchedSrc=await second.getAttribute('src');
+  const before=await second.evaluate(node=>{
+    const box=node.getBoundingClientRect();
+    return {w:node.offsetWidth,h:node.offsetHeight};
+  });
+  await second.click();
+  await expect(page.locator('#livePasteFormat')).toBeEnabled();
+  await page.locator('#livePasteFormat').click();
+  await expect(second).toHaveCSS('rotate','25deg');
+  await expect(second).toHaveCSS('scale','1 -1');
+  expect(await second.getAttribute('src')).toBe(untouchedSrc);
+  const after=await second.evaluate(node=>({w:node.offsetWidth,h:node.offsetHeight}));
+  expect(after).toEqual(before);
+});
+test('format painter copies typography between original paragraphs without changing their words',async({page})=>{
+  const live=page.frameLocator('#livePageFrame'),first=live.locator('p.first');
+  const second=live.locator('p.second');
+  await first.click();
+  await page.locator('#liveFontSize').fill('27');
+  await page.locator('#liveFontSize').dispatchEvent('change');
+  await page.locator('#liveFontWeight').selectOption('bold');
+  await page.locator('#liveCopyFormat').click();
+  const text=await second.textContent();
+  await second.click();
+  await page.locator('#livePasteFormat').click();
+  await expect(second).toHaveCSS('font-size','27px');
+  await expect(second).toHaveCSS('font-weight','700');
+  expect(await second.textContent()).toBe(text);
+});
