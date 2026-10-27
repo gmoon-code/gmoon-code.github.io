@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>Academic Website Editor 2 | Ye Eun Moon</title>
-<link rel="stylesheet" href="editor-v2.css?v=20261027-independent-side-crop-v49b">
-<script src="editor-v2.js?v=20261027-independent-side-crop-v49b" defer></script>
+<link rel="stylesheet" href="editor-v2.css?v=20261027-picture-format-v50">
+<script src="editor-v2.js?v=20261027-picture-format-v50" defer></script>
 </head>
 <body>
 <a class="skip" href="#workspace">Skip to editor canvas</a>
@@ -320,6 +320,33 @@
                 <option value="cover">Fill frame and crop edges</option>
               </select>
             </div>
+          </div>
+          <div id="livePictureFormat" hidden>
+            <h3>Picture format</h3>
+            <p class="help">Rotate, flip, adjust photo colour and add a drop shadow. These effects work on original webpage images and newly inserted images, and can differ by screen size.</p>
+            <div class="property-grid">
+              <label>Rotation (°) <input id="livePictureRotation" type="number" min="-180" max="180" step="1" value="0"></label>
+              <label>Opacity (%) <input id="livePictureOpacity" type="number" min="0" max="100" step="5" value="100"></label>
+            </div>
+            <div class="inline-actions">
+              <button type="button" id="livePictureTurnLeft" title="Rotate 90 degrees anticlockwise">↶ Rotate 90°</button>
+              <button type="button" id="livePictureTurnRight" title="Rotate 90 degrees clockwise">↷ Rotate 90°</button>
+              <button type="button" id="livePictureFlipH" aria-pressed="false">↔ Flip horizontal</button>
+              <button type="button" id="livePictureFlipV" aria-pressed="false">↕ Flip vertical</button>
+            </div>
+            <label for="livePictureBrightness">Brightness <output id="livePictureBrightnessValue" for="livePictureBrightness">100%</output></label>
+            <input id="livePictureBrightness" type="range" min="20" max="200" step="5" value="100">
+            <label for="livePictureContrast">Contrast <output id="livePictureContrastValue" for="livePictureContrast">100%</output></label>
+            <input id="livePictureContrast" type="range" min="20" max="200" step="5" value="100">
+            <label for="livePictureSaturation">Colour saturation <output id="livePictureSaturationValue" for="livePictureSaturation">100%</output></label>
+            <input id="livePictureSaturation" type="range" min="0" max="250" step="5" value="100">
+            <label for="livePictureBlur">Blur <output id="livePictureBlurValue" for="livePictureBlur">0px</output></label>
+            <input id="livePictureBlur" type="range" min="0" max="20" step="1" value="0">
+            <div class="inline-actions">
+              <label><input id="livePictureShadow" type="checkbox"> Drop shadow</label>
+              <button id="livePictureReset" type="button">Reset picture effects</button>
+            </div>
+            <p class="help">Drag the circular rotation handle above a selected picture to rotate it directly. Picture effects preserve the original file and can be undone.</p>
           </div>
           <div id="liveOriginalDimensions" hidden>
             <div class="property-grid">
