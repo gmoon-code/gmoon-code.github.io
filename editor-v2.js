@@ -529,6 +529,22 @@ function validAddedDesign(design){
   }
   return true;
 }
+const DEFAULT_IMAGE_CROP=Object.freeze({fit:"contain",x:50,y:50});
+function validImageCropMap(map){
+  if(!map||typeof map!=="object"||Array.isArray(map))return false;
+  return Object.entries(map).every(([device,crop])=>
+    !!LIVE_DEVICE_RULES[device]&&crop&&typeof crop==="object"&&!Array.isArray(crop)&&
+    Object.keys(crop).every(key=>["fit","x","y"].includes(key))&&
+    ["contain","cover"].includes(crop.fit)&&
+    ["x","y"].every(key=>Number.isInteger(crop[key])&&crop[key]>=0&&crop[key]<=100));
+}
+function imageCropCss(crop){
+  return "object-fit:"+crop.fit+"!important;object-position:"+
+    crop.x+"% "+crop.y+"%!important;";
+}
+function selectedImageCrop(patch,device=liveDevice()){
+  return {...DEFAULT_IMAGE_CROP,...(patch?.imageCrop?.[device]||{})};
+}
 function validAddedPatch(p){
   return !!p&&isAddedPatch(p)&&typeof p.expected==="string"&&p.expected===""&&
     ["text","image","shape"].includes(p.objectType)&&
@@ -540,7 +556,9 @@ function validAddedPatch(p){
     (p.objectType!=="shape"||
       typeof p.fill==="string"&&/^#[0-9a-f]{6}$/i.test(p.fill))&&
     (p.appearance===undefined||validLiveAppearance(p.appearance))&&
-    (p.design===undefined||validAddedDesign(p.design));
+    (p.design===undefined||validAddedDesign(p.design))&&
+    (p.imageCrop===undefined||
+      p.objectType==="image"&&validImageCropMap(p.imageCrop));
 }
 function addedObjectId(p){return p.selector.slice("added:".length);}
 function addedDeviceGeometry(p,device){
@@ -615,9 +633,11 @@ function addedStyleCss(p){
   for(const [device,media] of Object.entries(LIVE_DEVICE_RULES)){
     const g=addedDeviceGeometry(p,device);
     if(!g)continue;
+    const crop=p.objectType==="image"?p.imageCrop?.[device]:null;
     result+="@media "+media+"{"+tag+"{left:"+g.x+
       "px!important;top:"+g.y+"px!important;width:"+g.w+
-      "px!important;height:"+g.h+"px!important;}}";
+      "px!important;height:"+g.h+"px!important;"+
+      (crop?imageCropCss(crop):"")+"}}";
   }
   return result;
 }
@@ -664,6 +684,8 @@ function applyAddedPatch(doc,p){
   node.setAttribute("data-moon-v2-added-geometry",JSON.stringify(p.geometry));
   node.setAttribute("data-moon-v2-added-appearance",JSON.stringify(p.appearance||{}));
   node.setAttribute("data-moon-v2-added-design",JSON.stringify(p.design||{}));
+  if(p.objectType==="image")
+    node.setAttribute("data-moon-v2-added-crop",JSON.stringify(p.imageCrop||{}));
   if(p.objectType==="image"){
     node.setAttribute("src",p.src);node.setAttribute("alt",p.alt);
   }else if(p.objectType==="text")node.innerHTML=cleanRich(p.html);
@@ -894,7 +916,7 @@ function pruneLivePatch(patch,node){
     patch.expected===(node.textContent||"").trim().slice(0,300);
   const unchangedImage=patch.kind==="image"&&
     patch.src===(node.getAttribute("src")||"")&&patch.alt===(node.alt||"");
-  return !patch.layout&&!patch.appearance&&
+  return !patch.layout&&!patch.appearance&&!patch.imageCrop&&
     (patch.kind==="layout"||unchangedText||unchangedImage);
 }
 function setLiveAppearance(key,value){
@@ -1105,6 +1127,12 @@ function liveLayoutRules(patches=[...livePatches.values()]){
     }
     const unclipped=[...released].map(s=>s+
       "{overflow:visible!important;clip-path:none!important;}");
+    for(const patch of patches){
+      if(patch.kind==="insert"||patch.kind==="delete"||!patch.imageCrop?.[device])continue;
+      const tail=patch.selector.match(/ > ([a-z][a-z0-9-]*):nth-of-type\(\d+\)$/)?.[1];
+      if(tail!=="img")continue;
+      selectors.push(patch.selector+"{"+imageCropCss(patch.imageCrop[device])+"}");
+    }
     if(selectors.length||unclipped.length)
       result.push("@media "+media+"{"+unclipped.join("")+selectors.join("")+"}");
   }
@@ -1128,7 +1156,9 @@ function refreshLiveLayoutRules(doc=$("livePageFrame").contentDocument,patches=[
 }
 function addedPatchFromNode(node,selector=liveSelector(node)){
   if(!node||!LIVE_ADDED_ID.test(selector))return null;
-  let geometry,appearance,design;
+  let geometry,appearance,design,imageCrop;
+  try{imageCrop=JSON.parse(node.getAttribute("data-moon-v2-added-crop")||"{}");}
+  catch{imageCrop={};}
   try{geometry=JSON.parse(node.getAttribute("data-moon-v2-added-geometry")||"{}");}
   catch{geometry={};}
   try{appearance=JSON.parse(node.getAttribute("data-moon-v2-added-appearance")||"{}");}
@@ -1139,7 +1169,8 @@ function addedPatchFromNode(node,selector=liveSelector(node)){
     objectType:node.getAttribute("data-moon-v2-object-type")||
       (node.tagName==="IMG"?"image":node.tagName==="P"?"text":"shape"),
     geometry,appearance,design,
-    ...(node.tagName==="IMG"?{src:node.getAttribute("src")||"",alt:node.alt||""}:
+    ...(node.tagName==="IMG"?{src:node.getAttribute("src")||"",alt:node.alt||"",
+      ...(Object.keys(imageCrop).length?{imageCrop}:{})}:
       node.tagName==="P"?{html:cleanRich(node.innerHTML)}:
       {fill:node.getAttribute("data-moon-v2-shape-fill")||"#e1eee4"})};
   return validAddedPatch(patch)?patch:null;
@@ -1505,7 +1536,10 @@ function validLivePatch(p){
      p.kind==="layout"||p.kind==="delete")&&
     (p.tag===undefined||/^(?:h[1-6]|p|li|figcaption|blockquote|img|section|article|aside|figure|div|nav|ul|ol)$/.test(p.tag))&&
     (p.layout===undefined||validLiveLayout(p.layout))&&
-    (p.appearance===undefined||validLiveAppearance(p.appearance));
+    (p.appearance===undefined||validLiveAppearance(p.appearance))&&
+    (p.imageCrop===undefined||
+      (p.kind==="image"||p.kind==="layout")&&p.tag!=="section"&&
+      validImageCropMap(p.imageCrop));
 }
 function liveGeometryIsLocked(selector){
   return !!selector&&livePositionLocks.has(selector);
