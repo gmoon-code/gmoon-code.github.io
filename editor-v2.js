@@ -2938,6 +2938,11 @@ function selectLiveContainingSection(){
   if(workspaceMode!=="live"||liveEditing||!node)return;
   const ancestor=liveSectionAncestor(node);
   if(!ancestor)return;
+  // Make the selected section visible in the layer list as well as on-page.
+  if(!$("liveShowContainers").checked){
+    $("liveShowContainers").checked=true;
+    renderLiveLayers();
+  }
   selectLiveElement(ancestor);
   ancestor.scrollIntoView({block:"nearest",inline:"nearest"});
   syncLiveOverlay();
