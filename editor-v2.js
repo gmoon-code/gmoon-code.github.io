@@ -760,6 +760,8 @@ function copyLiveSelection(){
       status("This image needs to be imported into website assets before copying");return;
     }
     liveObjectClipboard=newAddedPatch("image",{src,alt:node.alt||""});
+    if(saved?.imageCrop&&Object.keys(saved.imageCrop).length)
+      liveObjectClipboard.imageCrop=copy(saved.imageCrop);
   }else if(!LIVE_CONTAINER_SET.has(node.tagName)){
     liveObjectClipboard=newAddedPatch("text",{html:cleanRich(node.innerHTML)});
     const style=node.ownerDocument.defaultView.getComputedStyle(node);
@@ -2618,7 +2620,7 @@ function moveLiveGesture(event){
     const overflowX=Math.max(0,nw*scale-frame.width);
     const overflowY=Math.max(0,nh*scale-frame.height);
     const origin=selectedImageCrop(g.patch,liveDevice());
-    const crop={fit:"cover",
+    const crop={fit:"cover",mask:origin.mask,
       x:overflowX?Math.round(clamp(origin.x-deltaX/overflowX*100,0,100)):50,
       y:overflowY?Math.round(clamp(origin.y-deltaY/overflowY*100,0,100)):50};
     const patch=copy(g.patch);
