@@ -966,3 +966,25 @@ test('format painter copies typography between original paragraphs without chang
   await expect(second).toHaveCSS('font-weight','700');
   expect(await second.textContent()).toBe(text);
 });
+
+test('shape format painter transfers polygon and fill to another shape without resizing it',async({page})=>{
+  const live=page.frameLocator('#livePageFrame');
+  await page.locator('#addShape').click();
+  await page.locator('#liveShapeType').selectOption('star');
+  await page.locator('#liveShapeFill').fill('#aa66cc');
+  await page.locator('#liveShapeFill').dispatchEvent('change');
+  await page.locator('#liveCopyFormat').click();
+  await page.locator('#addShape').click();
+  const target=live.locator('[data-moon-v2-object-type="shape"]').last();
+  const original=await target.evaluate(node=>({
+    w:node.getBoundingClientRect().width,h:node.getBoundingClientRect().height
+  }));
+  await page.locator('#livePasteFormat').click();
+  await expect(page.locator('#liveShapeType')).toHaveValue('star');
+  await expect(target).toHaveCSS('clip-path',/polygon/);
+  await expect(target).toHaveCSS('background-color','rgb(170, 102, 204)');
+  const after=await target.evaluate(node=>({
+    w:node.getBoundingClientRect().width,h:node.getBoundingClientRect().height
+  }));
+  expect(after).toEqual(original);
+});
