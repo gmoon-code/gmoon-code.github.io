@@ -569,6 +569,12 @@ function imageCropCss(crop,src="",geometry=null){
 function selectedImageCrop(patch,device=liveDevice()){
   const node=liveSelected?.node,selector=node&&liveSelector(node);
   let published={};
+  if(node?.tagName==="IMG"&&!LIVE_ADDED_ID.test(selector||"")){
+    try{
+      const record=JSON.parse(node.getAttribute("data-moon-v2-image-crop")||"{}");
+      if(validImageCropMap(record)&&record[device])published={...record[device]};
+    }catch{/* Old webpage with no crop metadata. */}
+  }
   // Crops published in earlier sessions exist as source CSS, rather
   // than draft metadata. Use the actual image's framing as a baseline.
   if(node?.tagName==="IMG"&&selector===patch?.selector&&node.isConnected){
@@ -576,7 +582,7 @@ function selectedImageCrop(patch,device=liveDevice()){
     const positions=css.objectPosition.match(/^([\d.]+)%\s+([\d.]+)%$/);
     const fit=["cover","contain"].includes(css.objectFit)?css.objectFit:"contain";
     const radius=css.borderTopLeftRadius;
-    published={fit,
+    if(!Object.keys(published).length)published={fit,
       x:positions?Math.round(clamp(Number(positions[1]),0,100)):50,
       y:positions?Math.round(clamp(Number(positions[2]),0,100)):50,
       mask:radius==="50%"?"circle":
@@ -1385,20 +1391,41 @@ function resetLiveObjectDesign(){
     renderLiveInspector();syncLiveOverlay();
   }
 }
-// Non-destructive image cropping. CSS framing is stored per device and
-// applied by the same assembler used for preview and GitHub publication.
+// Always provide the real displayed frame size and intrinsic image ratio.
+// Without these there is no independent picture layer or zoomable crop.
+function prepareImageCrop(node,patch,device=liveDevice()){
+  const rect=node.getBoundingClientRect();
+  const nw=node.naturalWidth||Number(node.getAttribute("width"));
+  const nh=node.naturalHeight||Number(node.getAttribute("height"));
+  const ratio=nw>0&&nh>0?nw/nh:
+    Math.max(.01,rect.width/Math.max(1,rect.height));
+  if(!Number.isFinite(ratio)||!rect.width||!rect.height)return null;
+  const crop={...selectedImageCrop(patch,device)};
+  crop.ratio=Math.round(clamp(ratio,.01,100)*100000)/100000;
+  crop.zoom=Math.round(clamp(crop.zoom||100,100,500));
+  if(patch.kind!=="insert"){
+    const layout=normaliseElementBoxLayout(node,liveLayoutFor(patch.selector));
+    if(!layout.wrapWidth||!layout.reserveHeight)return null;
+    patch.layout={...patch.layout,[device]:layout};
+  }
+  return crop;
+}
+// Non-destructive image cropping. The original photo remains accessible.
 function applySelectedImageCrop(changes){
   finishCropSliderPreview();
   const node=liveSelected?.node,selector=node&&liveSelector(node);
   if(workspaceMode!=="live"||node?.tagName!=="IMG"||!selector||liveEditing)return false;
   const patch=livePatchForSelected();if(!patch)return false;
   const device=liveDevice(),before=liveSnapshot();
-  const next={...selectedImageCrop(patch,device),...changes};
+  const prepared=prepareImageCrop(node,patch,device);
+  if(!prepared){status("Image dimensions are not yet ready for cropping");return false;}
+  const next={...prepared,...changes};
   if(!["contain","cover"].includes(next.fit)||
      !["rectangle","rounded","circle"].includes(next.mask)||
      !["x","y"].every(k=>Number.isFinite(Number(next[k]))))return false;
   next.x=Math.round(clamp(Number(next.x),0,100));
   next.y=Math.round(clamp(Number(next.y),0,100));
+  next.zoom=Math.round(clamp(Number(next.zoom)||100,100,500));
   patch.imageCrop={...(patch.imageCrop||{}),[device]:next};
   livePatches.set(selector,patch);
   if(patch.kind==="insert")refreshAddedObject(node.ownerDocument,patch);
@@ -1416,11 +1443,14 @@ function previewSelectedImageCrop(changes){
   const device=liveDevice(),key=selector+"@"+device;
   if(liveCropSliderBefore&&liveCropSliderKey!==key)finishCropSliderPreview();
   const patch=livePatchForSelected();if(!patch)return;
-  const crop={...selectedImageCrop(patch,device),...changes};
+  const prepared=prepareImageCrop(node,patch,device);
+  if(!prepared)return;
+  const crop={...prepared,...changes};
   if(!["contain","cover"].includes(crop.fit)||
      !["rectangle","rounded","circle"].includes(crop.mask))return;
   crop.x=Math.round(clamp(Number(crop.x),0,100));
   crop.y=Math.round(clamp(Number(crop.y),0,100));
+  crop.zoom=Math.round(clamp(Number(crop.zoom)||100,100,500));
   if(!Number.isFinite(crop.x)||!Number.isFinite(crop.y))return;
   if(!liveCropSliderBefore){
     liveCropSliderBefore=liveSnapshot();
@@ -1483,6 +1513,8 @@ function cropImageToRatio(ratio){
   if(preventLockedLiveGeometry())return;
   const patch=livePatchForSelected();if(!patch)return;
   const before=liveSnapshot(),device=liveDevice();
+  const prepared=prepareImageCrop(node,patch,device);
+  if(!prepared)return;
   if(patch.kind==="insert"){
     const old=addedDeviceGeometry(patch,device);
     patch.geometry={...patch.geometry,[device]:
@@ -1493,7 +1525,7 @@ function cropImageToRatio(ratio){
     patch.layout={...patch.layout,[device]:layout};
   }
   patch.imageCrop={...(patch.imageCrop||{}),
-    [device]:{...selectedImageCrop(patch,device),fit:"cover"}};
+    [device]:{...prepared,fit:"cover"}};
   livePatches.set(selector,patch);
   if(patch.kind==="insert")refreshAddedObject(node.ownerDocument,patch);
   else refreshLiveLayoutRules(node.ownerDocument);
@@ -2703,7 +2735,7 @@ function moveLiveGesture(event){
     const overflowX=Math.max(0,nw*scale-frame.width);
     const overflowY=Math.max(0,nh*scale-frame.height);
     const origin=selectedImageCrop(g.patch,liveDevice());
-    const crop={fit:"cover",mask:origin.mask,
+    const crop={...origin,fit:"cover",
       x:overflowX?Math.round(clamp(origin.x-deltaX/overflowX*100,0,100)):50,
       y:overflowY?Math.round(clamp(origin.y-deltaY/overflowY*100,0,100)):50};
     const patch=copy(g.patch);
