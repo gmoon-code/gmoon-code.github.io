@@ -3623,7 +3623,8 @@ function renderLiveLayers(){
 }
 const LIVE_ARRANGE_TOOLS=["liveAlignLeft","liveAlignCenter","liveAlignRight",
   "liveAlignTop","liveAlignMiddle","liveAlignBottom","liveDistributeH","liveDistributeV",
-  "liveMatchWidth","liveMatchHeight","liveMatchSize"];
+  "liveMatchWidth","liveMatchHeight","liveMatchSize",
+  "livePageLeft","livePageCenter","livePageRight"];
 function selectedAddedPatches(){
   const doc=$("livePageFrame").contentDocument;
   return [...liveAddedMulti].map(selector=>{
@@ -3677,7 +3678,8 @@ function syncLiveMultiSelection(){
   $("liveSelectAdded").disabled=workspaceMode!=="live";
   for(const id of LIVE_ARRANGE_TOOLS)
     $(id).disabled=workspaceMode!=="live"||selectionLocked||
-      Math.max(count,sourceCount)<(id.startsWith("liveDistribute")?3:2);
+      Math.max(count,sourceCount)<(id.startsWith("liveDistribute")?3:
+        id.startsWith("livePage")?1:2);
   for(const button of $("liveElementList").querySelectorAll("[data-live-selector]")){
     const key=button.dataset.liveSelector;
     button.setAttribute("aria-selected",String(liveAddedMulti.has(key)||
@@ -3867,6 +3869,32 @@ function arrangeSelectedLive(mode){
     syncLiveOverlay();renderLiveInspector();syncLiveMultiSelection();
     status("Objects arranged on "+device+" · Undo restores the previous arrangement");
   }
+}
+// Align the selected group to the actual webpage's content column, not
+// the editor sidebar or the current browser viewport. Source and inserted
+// objects both retain their own sizes and original DOM parent containers.
+function alignLiveSelectionToPage(edge){
+  if(!["left","center","right"].includes(edge)||workspaceMode!=="live"||
+     liveEditing||liveGesture||preventLockedLiveGeometry())return;
+  const main=$("livePageFrame").contentDocument?.querySelector("main");
+  if(!main)return;
+  const source=selectedSourcePatches(),added=selectedAddedPatches();
+  const group=source.length?source:added.length?added:[];
+  if(!group.length)return;
+  const boxes=group.map(item=>item.node.getBoundingClientRect());
+  const left=Math.min(...boxes.map(b=>b.left));
+  const right=Math.max(...boxes.map(b=>b.right));
+  const root=main.getBoundingClientRect();
+  const css=main.ownerDocument.defaultView.getComputedStyle(main);
+  const contentLeft=root.left+(parseFloat(css.paddingLeft)||0);
+  const contentRight=root.right-(parseFloat(css.paddingRight)||0);
+  if(!(contentRight>contentLeft))return;
+  const target=edge==="left"?contentLeft:
+    edge==="right"?contentRight-(right-left):
+      (contentLeft+contentRight-(right-left))/2;
+  const dx=Math.round(target-left);
+  if(dx) nudgeLiveSelection(dx,0);
+  else status("Selection is already aligned to the "+edge+" of the webpage content");
 }
 function updateLiveLayerSelection(){
   syncLiveMultiSelection();
@@ -5333,6 +5361,9 @@ function attachEvents(){
   };
   for(const [id,mode] of Object.entries(arrangement))
     $(id).addEventListener("click",()=>arrangeSelectedLive(mode));
+  for(const [id,edge] of [["livePageLeft","left"],["livePageCenter","center"],
+    ["livePageRight","right"]])
+    $(id).addEventListener("click",()=>alignLiveSelectionToPage(edge));
   $("liveElementList").addEventListener("click",event=>{
     const button=event.target.closest?.("button[data-live-selector]");
     if(!button||workspaceMode!=="live")return;
