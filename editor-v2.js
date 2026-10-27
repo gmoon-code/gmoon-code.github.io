@@ -22,6 +22,7 @@ let liveLockImageRatio=true;
 let liveSectionPickMode=false; // Editor-only selection behaviour, never published.
 let liveCropMode=false; // Selected photo can be panned inside its crop frame.
 let liveCropSliderBefore=null,liveCropSliderKey=""; // One undo step per slider drag.
+let pictureFxBefore=null; // Coalesce each range-slider gesture into one undo step.
 let liveSectionHover=null;
 let workspaceMode="live",liveWidth=1160,liveScale=1,liveManualScale=null,liveSelected=null,liveObserver=null,liveSerial=0;
 let liveSuppressClickUntil=0;
@@ -395,7 +396,7 @@ function setWorkspaceMode(mode){
     if(gesture)cancelCanvasGesture();
     cancelCanvasMarquee();
   }
-  finishCropSliderPreview();
+  finishCropSliderPreview();finishPictureEffectPreview();
   workspaceMode=mode;
   const isLive=mode==="live";
   if(!isLive)clearLiveSectionHover();
@@ -1338,7 +1339,7 @@ function recordLiveHistory(before){
   return true;
 }
 function liveUndoAction(again=false){
-  finishCropSliderPreview();
+  finishCropSliderPreview();finishPictureEffectPreview();
   const from=again?liveRedo:liveHistory,to=again?liveHistory:liveRedo;
   if(!from.length)return;
   if(liveEditing)saveLiveText();
@@ -1565,6 +1566,71 @@ function finishCropSliderPreview(){
   if(recordLiveHistory(before)){
     renderLiveInspector();syncLiveOverlay();
     status("Crop position saved · Undo restores its previous framing");
+  }
+}
+function selectedPictureEffects(patch,device=liveDevice()){
+  const node=liveSelected?.node;
+  let base={};
+  if(node?.tagName==="IMG"&&!LIVE_ADDED_ID.test(patch?.selector||"")){
+    try{
+      const stored=JSON.parse(node.getAttribute("data-moon-v2-picture-effects")||"{}");
+      if(validPictureEffects(stored))base=stored[device]||{};
+    }catch{/* Website image has no published editor effects. */}
+  }
+  return {...DEFAULT_PICTURE_EFFECTS,...base,...(patch?.pictureEffects?.[device]||{})};
+}
+function finishPictureEffectPreview(){
+  if(!pictureFxBefore)return;
+  const previous=pictureFxBefore;pictureFxBefore=null;
+  if(recordLiveHistory(previous)){renderLiveInspector();syncLiveOverlay();}
+}
+function setPictureEffect(key,value,preview=false){
+  const node=liveSelected?.node,selector=node&&liveSelector(node);
+  if(workspaceMode!=="live"||node?.tagName!=="IMG"||!selector||liveEditing)return;
+  const patch=livePatchForSelected();if(!patch)return;
+  const device=liveDevice(),before=preview?
+    (pictureFxBefore||liveSnapshot()):liveSnapshot();
+  const current={...selectedPictureEffects(patch,device),[key]:value};
+  if(!validPictureEffects({[device]:current}))return;
+  if(preview&&!pictureFxBefore)pictureFxBefore=before;
+  if(patch.kind!=="insert"&&!patch.layout?.[device]){
+    patch.layout={...(patch.layout||{}),[device]:liveLayoutFor(selector)};
+  }
+  // The earlier inserted-object rotation is folded into this single
+  // responsive rotation setting, so applying formatting never double-rotates.
+  if(patch.kind==="insert"&&key==="rotation"&&patch.design?.rotation){
+    patch.design={...patch.design,rotation:0};
+  }
+  patch.pictureEffects={...(patch.pictureEffects||{}),[device]:current};
+  livePatches.set(selector,patch);
+  if(patch.kind==="insert")refreshAddedObject(node.ownerDocument,patch);
+  else refreshLiveLayoutRules(node.ownerDocument);
+  if(!preview&&recordLiveHistory(before)){
+    renderLiveInspector();syncLiveOverlay();
+    status("Picture format updated on "+device+" · Undo available");
+  }
+}
+function resetPictureEffects(){
+  finishPictureEffectPreview();
+  const node=liveSelected?.node,selector=node&&liveSelector(node);
+  if(node?.tagName!=="IMG"||!selector)return;
+  const patch=livePatchForSelected(),device=liveDevice();
+  if(!patch)return;
+  const before=liveSnapshot(),published=node.hasAttribute("data-moon-v2-picture-effects");
+  if(published&&patch.kind!=="insert"){
+    patch.pictureEffects={...(patch.pictureEffects||{}),
+      [device]:{...DEFAULT_PICTURE_EFFECTS}};
+  }else if(patch.pictureEffects){
+    delete patch.pictureEffects[device];
+    if(!Object.keys(patch.pictureEffects).length)delete patch.pictureEffects;
+  }
+  if(patch.kind!=="insert"&&pruneLivePatch(patch,node))livePatches.delete(selector);
+  else livePatches.set(selector,patch);
+  if(patch.kind==="insert")refreshAddedObject(node.ownerDocument,patch);
+  else refreshLiveLayoutRules(node.ownerDocument);
+  if(recordLiveHistory(before)){
+    renderLiveInspector();syncLiveOverlay();
+    status("Picture effects reset for "+device+" · Crop remains unchanged");
   }
 }
 function setLiveCropMode(enabled){
@@ -2041,6 +2107,20 @@ function renderLiveInspector(){
   $("liveLayoutControls").hidden=!node;
   $("liveImageSizing").hidden=tag!=="IMG";
   $("liveCropControls").hidden=tag!=="IMG";
+  $("livePictureFormat").hidden=tag!=="IMG";
+  if(tag==="IMG"){
+    const fx=selectedPictureEffects(livePatchForSelected());
+    $("livePictureRotation").value=String(fx.rotation);
+    $("livePictureOpacity").value=String(fx.opacity);
+    $("livePictureFlipH").setAttribute("aria-pressed",String(fx.flipH));
+    $("livePictureFlipV").setAttribute("aria-pressed",String(fx.flipV));
+    for(const key of ["brightness","contrast","saturation","blur"]){
+      const capital=key[0].toUpperCase()+key.slice(1);
+      $("livePicture"+capital).value=String(fx[key]);
+      $("livePicture"+capital+"Value").textContent=fx[key]+(key==="blur"?"px":"%");
+    }
+    $("livePictureShadow").checked=fx.shadow;
+  }
   $("cropImageTool").disabled=!live||tag!=="IMG"||!!liveEditing;
   $("cropImageTool").setAttribute("aria-pressed",String(liveCropMode&&tag==="IMG"));
   $("cropImageTool").classList.toggle("active",liveCropMode&&tag==="IMG");
@@ -2378,6 +2458,14 @@ function applyPatchesToDocument(doc,strict=false,resolved=[],normalized=[]){
         }catch{return {};}})(),
         ...patch.imageCrop
       }));
+    if(node.tagName==="IMG"&&patch.pictureEffects&&validPictureEffects(patch.pictureEffects)){
+      let older={};
+      try{
+        const from=JSON.parse(node.getAttribute("data-moon-v2-picture-effects")||"{}");
+        if(validPictureEffects(from))older=from;
+      }catch{/* First picture format edit. */}
+      node.setAttribute("data-moon-v2-picture-effects",JSON.stringify({...older,...patch.pictureEffects}));
+    }
     if(patch.kind==="text")node.innerHTML=cleanRich(patch.html);
   }
   for(const {patch,node} of changes){
@@ -3575,7 +3663,7 @@ function updateLiveLayerSelection(){
   syncLiveMultiSelection();
 }
 function clearLiveSelection(preserveMulti=false){
-  finishCropSliderPreview();
+  finishCropSliderPreview();finishPictureEffectPreview();
   if(!preserveMulti){liveAddedMulti.clear();liveSourceMulti.clear();}
   removeLiveSnapGuides();
   if(liveSelected?.node?.isConnected){
@@ -3701,7 +3789,7 @@ function selectLiveElement(node,additive=false,preserveMulti=false){
   else liveSourceMulti.add(key);
   clearLiveSelection(true);
   clearLiveSectionHover();
-  if(liveSelected?.node!==node)finishCropSliderPreview();
+  if(liveSelected?.node!==node){finishCropSliderPreview();finishPictureEffectPreview();}
   if(liveSelected?.node!==node)liveCropMode=false;
   liveSelected={node,page:currentPage};
   node.setAttribute("data-moon-v2-live-selected","");
@@ -5078,6 +5166,39 @@ function attachEvents(){
     });
   }
   $("liveCropReset").addEventListener("click",resetSelectedImageCrop);
+  $("livePictureRotation").addEventListener("change",event=>
+    setPictureEffect("rotation",Number(event.target.value)));
+  $("livePictureOpacity").addEventListener("change",event=>
+    setPictureEffect("opacity",Number(event.target.value)));
+  for(const [id,step] of [["livePictureTurnLeft",-90],["livePictureTurnRight",90]]){
+    $(id).addEventListener("click",()=>{
+      const degree=selectedPictureEffects(livePatchForSelected()).rotation;
+      let next=degree+step;
+      if(next>180)next-=360;
+      if(next< -180)next+=360;
+      setPictureEffect("rotation",next);
+    });
+  }
+  for(const key of ["flipH","flipV"]){
+    $("livePicture"+(key==="flipH"?"FlipH":"FlipV")).addEventListener("click",()=>{
+      setPictureEffect(key,!selectedPictureEffects(livePatchForSelected())[key]);
+    });
+  }
+  for(const key of ["brightness","contrast","saturation","blur"]){
+    const control=$("livePicture"+key[0].toUpperCase()+key.slice(1));
+    control.addEventListener("input",event=>{
+      const output=$("livePicture"+key[0].toUpperCase()+key.slice(1)+"Value");
+      output.textContent=event.target.value+(key==="blur"?"px":"%");
+      setPictureEffect(key,Number(event.target.value),true);
+    });
+    control.addEventListener("change",event=>{
+      if(pictureFxBefore)finishPictureEffectPreview();
+      else setPictureEffect(key,Number(event.target.value));
+    });
+  }
+  $("livePictureShadow").addEventListener("change",event=>
+    setPictureEffect("shadow",event.target.checked));
+  $("livePictureReset").addEventListener("click",resetPictureEffects);
   for(const [id,ratio] of [["liveCropSquare",1],["liveCrop43",4/3],
     ["liveCrop169",16/9],["liveCropPortrait",3/4]])
     $(id).addEventListener("click",()=>cropImageToRatio(ratio));
