@@ -530,18 +530,21 @@ function validAddedDesign(design){
   }
   return true;
 }
-const DEFAULT_IMAGE_CROP=Object.freeze({fit:"contain",x:50,y:50});
+const DEFAULT_IMAGE_CROP=Object.freeze({fit:"contain",x:50,y:50,mask:"rectangle"});
 function validImageCropMap(map){
   if(!map||typeof map!=="object"||Array.isArray(map))return false;
   return Object.entries(map).every(([device,crop])=>
     !!LIVE_DEVICE_RULES[device]&&crop&&typeof crop==="object"&&!Array.isArray(crop)&&
-    Object.keys(crop).every(key=>["fit","x","y"].includes(key))&&
+    Object.keys(crop).every(key=>["fit","x","y","mask"].includes(key))&&
+    (crop.mask===undefined||["rectangle","rounded","circle"].includes(crop.mask))&&
     ["contain","cover"].includes(crop.fit)&&
     ["x","y"].every(key=>Number.isInteger(crop[key])&&crop[key]>=0&&crop[key]<=100));
 }
 function imageCropCss(crop){
+  const mask=crop.mask==="circle"?"border-radius:50%!important;":
+    crop.mask==="rounded"?"border-radius:20px!important;":"";
   return "object-fit:"+crop.fit+"!important;object-position:"+
-    crop.x+"% "+crop.y+"%!important;";
+    crop.x+"% "+crop.y+"%!important;"+mask;
 }
 function selectedImageCrop(patch,device=liveDevice()){
   return {...DEFAULT_IMAGE_CROP,fit:patch?.design?.imageFit||"contain",
@@ -1349,8 +1352,9 @@ function applySelectedImageCrop(changes){
   const patch=livePatchForSelected();if(!patch)return false;
   const device=liveDevice(),before=liveSnapshot();
   const next={...selectedImageCrop(patch,device),...changes};
-  if(!["contain","cover"].includes(next.fit)||!["x","y"].every(k=>
-    Number.isFinite(Number(next[k]))))return false;
+  if(!["contain","cover"].includes(next.fit)||
+     !["rectangle","rounded","circle"].includes(next.mask)||
+     !["x","y"].every(k=>Number.isFinite(Number(next[k]))))return false;
   next.x=Math.round(clamp(Number(next.x),0,100));
   next.y=Math.round(clamp(Number(next.y),0,100));
   patch.imageCrop={...(patch.imageCrop||{}),[device]:next};
@@ -1715,6 +1719,7 @@ function renderLiveInspector(){
   if(tag==="IMG"){
     const crop=selectedImageCrop(livePatchForSelected());
     $("liveCropFit").value=crop.fit;
+    $("liveCropShape").value=crop.mask;
     $("liveCropX").value=String(crop.x);
     $("liveCropY").value=String(crop.y);
     $("liveCropXValue").textContent=crop.x+"%";
@@ -4618,6 +4623,8 @@ function attachEvents(){
   $("liveCropToggle").addEventListener("click",()=>setLiveCropMode(!liveCropMode));
   $("liveCropFit").addEventListener("change",event=>
     applySelectedImageCrop({fit:event.target.value}));
+  $("liveCropShape").addEventListener("change",event=>
+    applySelectedImageCrop({mask:event.target.value}));
   for(const [id,field,out] of [
     ["liveCropX","x","liveCropXValue"],["liveCropY","y","liveCropYValue"]]){
     $(id).addEventListener("input",event=>{$(out).textContent=event.target.value+"%";});
