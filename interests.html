@@ -69,4 +69,45 @@
   </footer>
 
 
+<style id="interests-phone-photo-flow">
+@media(max-width:700px){
+  html:not(.moon-free-mode) #main .pungmul-gallery{
+    display:grid!important;grid-template-columns:minmax(0,1fr)!important;
+    gap:15px!important;margin:23px 0 15px!important;
+    width:100%!important;max-width:100%!important;
+  }
+  html:not(.moon-free-mode) #main .pungmul-gallery>img[data-moon-v2-added-id]{
+    display:block!important;position:static!important;
+    left:auto!important;top:auto!important;right:auto!important;bottom:auto!important;
+    width:100%!important;height:195px!important;max-width:100%!important;max-height:195px!important;
+    min-width:0!important;margin:0!important;padding:0!important;
+    object-fit:cover!important;object-position:center!important;background-image:none!important;
+    border-radius:9px!important;opacity:1!important;transform:none!important;
+  }
+}
+</style>
+<script>
+(function(){
+  "use strict";
+  const media=window.matchMedia("(max-width:700px)");
+  let original=null;
+  function placePhotos(){
+    const main=document.querySelector("#main");
+    const gallery=main?.querySelector(".pungmul-gallery");
+    const layer=main&&[...main.children].find(x=>x.hasAttribute?.("data-moon-v2-added-layer"));
+    if(!gallery||!layer)return;
+    if(!original){
+      const images=[...layer.children].filter(x=>x.tagName==="IMG"&&x.hasAttribute("data-moon-v2-added-id"));
+      if(images.length!==2)return;
+      original={layer,images};
+    }
+    const target=(media.matches&&!document.documentElement.classList.contains("moon-free-mode"))?gallery:original.layer;
+    for(const photo of original.images)if(photo.parentNode!==target)target.append(photo);
+  }
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",placePhotos,{once:true});
+  else placePhotos();
+  if(media.addEventListener)media.addEventListener("change",placePhotos);
+  else media.addListener(placePhotos);
+})();
+</script>
 </body></html>
