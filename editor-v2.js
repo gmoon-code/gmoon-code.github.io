@@ -3622,7 +3622,8 @@ function renderLiveLayers(){
   }
 }
 const LIVE_ARRANGE_TOOLS=["liveAlignLeft","liveAlignCenter","liveAlignRight",
-  "liveAlignTop","liveAlignMiddle","liveAlignBottom","liveDistributeH","liveDistributeV"];
+  "liveAlignTop","liveAlignMiddle","liveAlignBottom","liveDistributeH","liveDistributeV",
+  "liveMatchWidth","liveMatchHeight","liveMatchSize"];
 function selectedAddedPatches(){
   const doc=$("livePageFrame").contentDocument;
   return [...liveAddedMulti].map(selector=>{
@@ -3749,15 +3750,27 @@ function arrangeLiveBounds(items,mode){
   const minY=Math.min(...items.map(o=>o.g.y));
   const maxY=Math.max(...items.map(o=>o.g.y+o.g.h));
   if(mode==="distributeH"||mode==="distributeV"){
+    // PowerPoint's Distribute creates equal *gaps* between the visible
+    // object edges, even if every box has a different width or height.
     const horizontal=mode==="distributeH";
     const key=horizontal?"x":"y",size=horizontal?"w":"h";
-    const sorted=[...items].sort((a,b)=>
-      (a.g[key]+a.g[size]/2)-(b.g[key]+b.g[size]/2));
-    const first=sorted[0].g[key]+sorted[0].g[size]/2;
-    const last=sorted.at(-1).g[key]+sorted.at(-1).g[size]/2;
-    for(let i=1;i<sorted.length-1;i++){
-      sorted[i].g[key]=first+(last-first)*i/(sorted.length-1)-
-        sorted[i].g[size]/2;
+    const sorted=[...items].sort((a,b)=>a.g[key]-b.g[key]);
+    const start=sorted[0].g[key];
+    const end=Math.max(...sorted.map(item=>item.g[key]+item.g[size]));
+    const occupied=sorted.reduce((sum,item)=>sum+item.g[size],0);
+    const spacing=(end-start-occupied)/(sorted.length-1);
+    let next=start;
+    for(const item of sorted){
+      item.g[key]=next;
+      next+=item.g[size]+spacing;
+    }
+  }else if(["matchWidth","matchHeight","matchSize"].includes(mode)){
+    // First selected object is the key object. Keep every object's own
+    // position and its other dimension, including the original key box.
+    const key=items[0].g;
+    for(const item of items.slice(1)){
+      if(mode!=="matchHeight")item.g.w=key.w;
+      if(mode!=="matchWidth")item.g.h=key.h;
     }
   }else{
     for(const item of items){
@@ -3784,21 +3797,50 @@ function arrangeSelectedLive(mode){
     arrangeLiveBounds(items,mode);
     const previous=liveSnapshot();
     let changed=false;
+    const sizing=mode.startsWith("match");
     for(const item of items){
       const dx=Math.round(item.g.x-item.rect.x);
       const dy=Math.round(item.g.y-item.rect.y);
-      if(!dx&&!dy)continue;
-      const layout={...item.layout,
-        dx:clamp(Math.round(item.layout.dx+dx),-4000,4000),
-        dy:clamp(Math.round(item.layout.dy+dy),-4000,4000)};
-      if(layout.dx===item.layout.dx&&layout.dy===item.layout.dy)continue;
+      const widthChanged=sizing&&Math.abs(item.g.w-item.rect.width)>0.5;
+      const heightChanged=sizing&&Math.abs(item.g.h-item.rect.height)>0.5;
+      if(!dx&&!dy&&!widthChanged&&!heightChanged)continue;
+      const layout=sizing?
+        normaliseElementBoxLayout(item.node,item.layout):{...item.layout};
+      layout.dx=clamp(Math.round(item.layout.dx+dx),-4000,4000);
+      layout.dy=clamp(Math.round(item.layout.dy+dy),-4000,4000);
+      if(sizing){
+        layout.wrapWidth=Math.round(clamp(item.g.w,64,4000));
+        layout.reserveHeight=Math.round(clamp(item.g.h,24,5000));
+        if(LIVE_CONTAINER_SET.has(item.node.tagName))
+          layout.sectionHeightMode="fixed";
+      }
       const patch=copy(item.patch);
       patch.layout={...patch.layout,[device]:layout};
       livePatches.set(item.selector,patch);
       changed=true;
     }
+    if(changed&&sizing){
+      const doc=items[0].node.ownerDocument;
+      refreshLiveLayoutRules(doc);
+      // Changing source widths can reflow neighbouring paragraphs. Realign
+      // all selected items to their original page positions after reflow.
+      for(const item of items){
+        const patch=livePatches.get(item.selector);
+        if(!patch?.layout?.[device])continue;
+        const layout=patch.layout[device];
+        if(mode==="matchWidth"&&item.node.matches(LIVE_REFLOW_TEXT)){
+          const needed=Math.ceil(item.node.scrollHeight+2);
+          if(Number.isFinite(needed)&&needed>layout.reserveHeight&&needed<=5000)
+            layout.reserveHeight=needed;
+        }
+        const actual=item.node.getBoundingClientRect();
+        layout.dx=clamp(Math.round(layout.dx+item.g.x-actual.x),-4000,4000);
+        layout.dy=clamp(Math.round(layout.dy+item.g.y-actual.y),-4000,4000);
+      }
+      refreshLiveLayoutRules(doc);
+    }
     if(changed&&recordLiveHistory(previous)){
-      refreshLiveLayoutRules(items[0].node.ownerDocument);
+      if(!sizing)refreshLiveLayoutRules(items[0].node.ownerDocument);
       renderLiveInspector();syncLiveOverlay();syncLiveMultiSelection();
       status(items.length+" original webpage elements arranged on "+device+
         " · Source markup preserved · Undo available");
@@ -3815,7 +3857,8 @@ function arrangeSelectedLive(mode){
     item.g.x=Math.round(clamp(item.g.x,-4000,10000));
     item.g.y=Math.round(clamp(item.g.y,-4000,40000));
     const original=addedDeviceGeometry(item.patch,device);
-    if(item.g.x===original.x&&item.g.y===original.y)continue;
+    if(item.g.x===original.x&&item.g.y===original.y&&
+       item.g.w===original.w&&item.g.h===original.h)continue;
     item.patch.geometry={...item.patch.geometry,[device]:item.g};
     livePatches.set(item.selector,item.patch);
     refreshAddedObject(item.node.ownerDocument,item.patch);changed=true;
@@ -5284,7 +5327,9 @@ function attachEvents(){
     liveAlignLeft:"alignLeft",liveAlignCenter:"alignCenter",
     liveAlignRight:"alignRight",liveAlignTop:"alignTop",
     liveAlignMiddle:"alignMiddle",liveAlignBottom:"alignBottom",
-    liveDistributeH:"distributeH",liveDistributeV:"distributeV"
+    liveDistributeH:"distributeH",liveDistributeV:"distributeV",
+    liveMatchWidth:"matchWidth",liveMatchHeight:"matchHeight",
+    liveMatchSize:"matchSize"
   };
   for(const [id,mode] of Object.entries(arrangement))
     $(id).addEventListener("click",()=>arrangeSelectedLive(mode));
