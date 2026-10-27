@@ -22,6 +22,8 @@ let liveLockImageRatio=true;
 let workspaceMode="live",liveWidth=1160,liveScale=1,liveManualScale=null,liveSelected=null,liveObserver=null,liveSerial=0;
 let liveSuppressClickUntil=0;
 const LIVE_DRAFT_KEY="moon-academic-editor-v2:source:";
+const LIVE_POSITION_LOCK_KEY="moon-academic-editor-v2:position-lock:";
+let livePositionLocks=new Set(); // Local editor preference, never published.
 let livePatches=new Map(),liveEditing=null,liveHistory=[],liveRedo=[],liveGesture=null,liveOverlay=null;
 let githubTabToken=""; // In-memory only. Never written to storage or page files.
 let reconnectImages=[],reconnectForPage="";
@@ -1130,6 +1132,7 @@ function liveUndoAction(again=false){
   storeLiveDraft();refreshUndo();loadLivePage();
 }
 function applyLiveLayoutInput(key,value){
+  if(preventLockedLiveGeometry())return;
   const patch=livePatchForSelected();if(!patch)return;
   if(patch.kind==="insert"){
     const geometry=addedDeviceGeometry(patch,liveDevice()),v=Number(value);
@@ -1251,6 +1254,7 @@ function resetLiveObjectDesign(){
   }
 }
 function setOriginalBoxDimension(key,value){
+  if(preventLockedLiveGeometry())return;
   const node=liveSelected?.node,patch=livePatchForSelected();
   if(!node||!patch||patch.kind==="insert"||!["wrapWidth","reserveHeight"].includes(key))return;
   const number=Number(value);
@@ -1273,6 +1277,7 @@ function setOriginalBoxDimension(key,value){
   }
 }
 function setAddedDimension(key,value){
+  if(preventLockedLiveGeometry())return;
   const node=liveSelected?.node,patch=livePatchForSelected();
   if(!node||patch?.kind!=="insert"||!["w","h"].includes(key))return;
   const parsed=Number(value);
@@ -1292,6 +1297,7 @@ function setAddedDimension(key,value){
   }
 }
 function setLiveReflow(enabled){
+  if(preventLockedLiveGeometry())return;
   const node=liveSelected?.node;
   if(!node?.matches("h1,h2,h3,h4,h5,h6,p,blockquote,figcaption"))return;
   const patch=livePatchForSelected();if(!patch)return;
@@ -1312,6 +1318,7 @@ function setLiveReflow(enabled){
   }
 }
 function setLiveReflowDimension(key,value){
+  if(preventLockedLiveGeometry())return;
   const node=liveSelected?.node;
   if(!node?.matches("h1,h2,h3,h4,h5,h6,p,blockquote,figcaption"))return;
   const patch=livePatchForSelected();if(!patch)return;
@@ -1351,6 +1358,7 @@ function setLiveReflowDimension(key,value){
   }
 }
 function resetLiveTextDimensions(){
+  if(preventLockedLiveGeometry())return;
   const node=liveSelected?.node;
   if(!node?.matches(LIVE_REFLOW_TEXT)||workspaceMode!=="live")return;
   const patch=livePatchForSelected(),device=liveDevice();
@@ -1377,6 +1385,7 @@ function fitLiveTextHeight(){
   status("Text box height fitted to wrapped content · Following page elements may move");
 }
 function resetSelectedLiveLayout(){
+  if(preventLockedLiveGeometry())return;
   const patch=livePatchForSelected();
   if(patch?.kind==="insert"){
     const current=addedDeviceGeometry(patch,liveDevice());
@@ -1414,8 +1423,44 @@ function validLivePatch(p){
     (p.layout===undefined||validLiveLayout(p.layout))&&
     (p.appearance===undefined||validLiveAppearance(p.appearance));
 }
+function liveGeometryIsLocked(selector){
+  return !!selector&&livePositionLocks.has(selector);
+}
+function liveSelectionHasGeometryLock(){
+  const keys=[...liveAddedMulti,...liveSourceMulti];
+  if(!keys.length&&liveSelected?.node)keys.push(liveSelector(liveSelected.node));
+  return keys.some(liveGeometryIsLocked);
+}
+function preventLockedLiveGeometry(){
+  if(!liveSelectionHasGeometryLock())return false;
+  status("Object position and size locked · Unlock it to move or resize");
+  renderLiveInspector();
+  return true;
+}
+function toggleLiveGeometryLock(){
+  const selector=liveSelected?.node&&liveSelector(liveSelected.node);
+  if(!selector||workspaceMode!=="live"||liveEditing||liveGesture)return;
+  const wasLocked=liveGeometryIsLocked(selector);
+  if(wasLocked)livePositionLocks.delete(selector);
+  else livePositionLocks.add(selector);
+  try{localStorage.setItem(LIVE_POSITION_LOCK_KEY+currentPage,
+    JSON.stringify([...livePositionLocks]));}
+  catch{status("Could not save position lock in this browser");}
+  renderLiveInspector();syncLiveOverlay();renderLiveLayers();syncLiveMultiSelection();
+  status(wasLocked?"Position and size unlocked":"Position and size locked · Local to this browser");
+}
 function loadLiveDraft(page){
   livePatches=new Map();liveHistory=[];liveRedo=[];
+  livePositionLocks=new Set();
+  try{
+    const ids=JSON.parse(localStorage.getItem(LIVE_POSITION_LOCK_KEY+page)||"[]");
+    if(Array.isArray(ids)&&ids.length<=350)
+      for(const selector of ids)
+        if(typeof selector==="string"&&selector.length<=1600&&
+          (LIVE_ADDED_ID.test(selector)||
+            validLivePatch({selector,kind:"layout",expected:""})))
+          livePositionLocks.add(selector);
+  }catch{}
   try{
     const patches=JSON.parse(localStorage.getItem(LIVE_DRAFT_KEY+page)||"[]");
     if(!Array.isArray(patches)||patches.length>180)return;
@@ -1508,6 +1553,14 @@ function renderLiveInspector(){
   $("liveReleaseClip").checked=isSource&&
     livePatches.get(selector)?.layout?.[liveDevice()]?.releaseClip===true;
   $("liveReleaseClip").disabled=!isSource||!!liveEditing;
+  const locked=liveGeometryIsLocked(selector);
+  $("liveTogglePositionLock").disabled=!node||!!liveEditing;
+  $("liveTogglePositionLock").textContent=locked?"Unlock position & size":"Lock position & size";
+  $("liveTogglePositionLock").setAttribute("aria-pressed",String(locked));
+  for(const id of ["liveMoveX","liveMoveY","liveOriginalWidth","liveOriginalHeight",
+    "liveAddedWidth","liveAddedHeight","liveTextBoxWidth","liveTextBoxHeight",
+    "liveFitReflowHeight","liveResetTextDimensions","resetLiveLayout"])
+    $(id).disabled=locked;
   $("liveBringFront").disabled=!node||!!liveEditing;
   $("liveSendBack").disabled=!node||!!liveEditing;
   $("liveResetStack").disabled=!node||!!liveEditing||
@@ -1561,6 +1614,14 @@ function renderLiveInspector(){
     $("resetLiveLayout").disabled=!livePatches.get(selector)?.layout?.[liveDevice()]&&
       livePatches.get(selector)?.kind!=="insert";
   }
+  // Inspector's reflow and reset calculations can enable fields later in
+  // this render. Apply the position lock last so no control reopens it.
+  if(locked)for(const id of [
+    "liveMoveX","liveMoveY","liveOriginalWidth","liveOriginalHeight",
+    "liveAddedWidth","liveAddedHeight","liveTextBoxWidth","liveTextBoxHeight",
+    "liveFitReflowHeight","liveResetTextDimensions","resetLiveLayout",
+    "liveTextReflow"
+  ])$(id).disabled=true;
   renderLiveEditCount();
 }
 // A selector recorded in the rendered (script-enabled) website can differ
@@ -2009,6 +2070,9 @@ function syncLiveOverlay(){
   const node=liveSelected.node,doc=node.ownerDocument;
   const sourceGroup=selectedSourcePatches();
   const grouped=sourceGroup.length>1&&sourceGroup.some(item=>item.node===node);
+  const locked=liveSelectionHasGeometryLock();
+  if(liveOverlay?.isConnected&&
+    liveOverlay.dataset.positionLocked!==String(locked))removeLiveOverlay();
   if(liveOverlay?.isConnected&&
       liveOverlay.dataset.groupCount!==(grouped?String(sourceGroup.length):"1"))
     removeLiveOverlay();
@@ -2023,6 +2087,7 @@ function syncLiveOverlay(){
       "box-sizing:border-box!important;border:2px solid #287dbb!important;"+
       "z-index:2147483000!important;background:transparent!important;"+
       "outline:0!important;contain:layout!important;}"+
+      "#moon-v2-live-overlay[data-position-locked='true']{border-style:dashed!important;border-color:#875e9d!important;}"+
       "#moon-v2-live-overlay button{position:absolute!important;pointer-events:auto!important;"+
       "touch-action:none!important;box-sizing:border-box!important;cursor:move!important;"+
       "z-index:2147483001!important;border:1px solid #287dbb!important;"+
@@ -2043,7 +2108,7 @@ function syncLiveOverlay(){
       "Move selected original webpage elements together":
       "Move selected live-page object");
     move.dataset.direction="move";
-    liveOverlay.append(move);
+    if(!locked)liveOverlay.append(move);
     const remove=doc.createElement("button");
     remove.className="moon-v2-delete";remove.type="button";remove.textContent="Delete";
     remove.setAttribute("aria-label","Delete selected webpage element (undo is available)");
@@ -2057,7 +2122,7 @@ function syncLiveOverlay(){
     if(!grouped)liveOverlay.append(remove);
     // Group grips resize independent original boxes together. Text always
     // reflows naturally, and images retain object-fit:contain.
-    if(node.matches(LIVE_SELECTABLE_TAGS)){
+    if(!locked&&node.matches(LIVE_SELECTABLE_TAGS)){
       for(const dir of ["nw","n","ne","e","se","s","sw","w"]){
         const grip=doc.createElement("button");
         grip.type="button";grip.className="moon-v2-grip";
@@ -2084,6 +2149,7 @@ function syncLiveOverlay(){
   liveOverlay.style.width=rect.width+"px";
   liveOverlay.style.height=rect.height+"px";
   liveOverlay.dataset.groupCount=grouped?String(sourceGroup.length):"1";
+  liveOverlay.dataset.positionLocked=String(locked);
 }
 function removeLiveSnapGuides(){
   const doc=$("livePageFrame")?.contentDocument;
@@ -2160,6 +2226,7 @@ function drawLiveSnapGuides(x,y,doc){
 function startLiveGesture(event,direction,anchor){
   if(event.button!==0||workspaceMode!=="live"||liveEditing||liveGesture)return;
   if(!liveSelected?.node?.isConnected)return;
+  if(preventLockedLiveGeometry())return;
   if(direction!=="move"&&!liveSelected.node.matches(LIVE_SELECTABLE_TAGS))return;
   const node=liveSelected.node,selector=liveSelector(node);
   const patch=livePatchForSelected();
@@ -2506,6 +2573,7 @@ function renderLiveLayers(){
     const button=document.createElement("button");
     button.type="button";button.className="layer";
     button.dataset.liveSelector=key;
+    button.dataset.positionLocked=String(liveGeometryIsLocked(key));
     button.setAttribute("aria-current",String(liveSelected?.node===node));
     button.setAttribute("aria-selected",String(liveAddedMulti.has(key)||
       liveSourceMulti.has(key)));
@@ -2515,7 +2583,7 @@ function renderLiveLayers(){
     const name=liveElementName(node);
     label.textContent=(node.hasAttribute("data-moon-v2-added-id")?
       "Added "+(node.getAttribute("data-moon-v2-object-type")||"object")+" · ":"")+
-      name.replace(/\s+/g," ").slice(0,105);
+      (liveGeometryIsLocked(key)?"🔒 ":"")+name.replace(/\s+/g," ").slice(0,105);
     if(node===chosen&&!matching.includes(node))
       label.textContent="Selected · "+label.textContent;
     const depth=Math.max(0,key.split(" > ").length-2);
@@ -2579,11 +2647,12 @@ function syncLiveMultiSelection(){
   }
   const count=selectedAddedPatches().length;
   const sourceCount=selectedSourcePatches().length;
+  const selectionLocked=liveSelectionHasGeometryLock();
   $("liveMultiCount").textContent=(count+sourceCount)+" selected";
   $("liveClearAdded").disabled=!count&&!sourceCount;
   $("liveSelectAdded").disabled=workspaceMode!=="live";
   for(const id of LIVE_ARRANGE_TOOLS)
-    $(id).disabled=workspaceMode!=="live"||
+    $(id).disabled=workspaceMode!=="live"||selectionLocked||
       Math.max(count,sourceCount)<(id.startsWith("liveDistribute")?3:2);
   for(const button of $("liveElementList").querySelectorAll("[data-live-selector]")){
     const key=button.dataset.liveSelector;
@@ -2608,6 +2677,7 @@ function selectAllLiveAdded(){
   status(liveAddedMulti.size+" independent webpage objects selected");
 }
 function nudgeLiveSelection(dx,dy){
+  if(preventLockedLiveGeometry())return;
   const sources=selectedSourcePatches();
   if(sources.length>1){
     const before=liveSnapshot(),device=liveDevice();
@@ -2679,6 +2749,7 @@ function arrangeLiveBounds(items,mode){
   }
 }
 function arrangeSelectedLive(mode){
+  if(preventLockedLiveGeometry())return;
   if(workspaceMode!=="live"||liveEditing||liveGesture)return;
   const device=liveDevice(),source=selectedSourcePatches();
   const needed=mode.startsWith("distribute")?3:2;
@@ -4154,6 +4225,7 @@ function attachEvents(){
   $("liveBringFront").addEventListener("click",()=>setLiveLayer(true));
   $("liveSendBack").addEventListener("click",()=>setLiveLayer(false));
   $("liveResetStack").addEventListener("click",()=>setLiveLayer(false,true));
+  $("liveTogglePositionLock").addEventListener("click",toggleLiveGeometryLock);
   $("liveTextReflow").addEventListener("change",event=>
     setLiveReflow(event.target.checked));
   const liveDesignFields={

@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>Academic Website Editor 2 | Ye Eun Moon</title>
-<link rel="stylesheet" href="editor-v2.css?v=20261027-layer-preview-v40">
-<script src="editor-v2.js?v=20261027-layer-preview-v40" defer></script>
+<link rel="stylesheet" href="editor-v2.css?v=20261027-position-lock-v41">
+<script src="editor-v2.js?v=20261027-position-lock-v41" defer></script>
 </head>
 <body>
 <a class="skip" href="#workspace">Skip to editor canvas</a>
@@ -319,8 +319,10 @@
             <p class="help">Releases ancestor clipping for the current desktop, tablet or phone layout. Nearby content may become visible too. Uncheck or Undo to restore clipping. Original HTML nesting stays intact.</p>
           </div>
           <div class="inline-actions">
+            <button id="liveTogglePositionLock" type="button" aria-pressed="false" disabled>Lock position & size</button>
             <button id="resetLiveLayout" type="button">Reset position on this screen</button>
           </div>
+          <p class="help">A position lock prevents moving, resizing and alignment in this editor. The lock is saved in this browser and does not change the published website. Text editing remains available.</p>
           <p class="help">Positioning is saved independently for desktop, tablet and phone. Validated changes can be published from Live website mode after review.</p>
         </div>
         <div class="inline-actions">
