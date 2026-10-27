@@ -922,21 +922,31 @@ test('arrow keys nudge live text and reset position only for active device',asyn
   expect(Math.abs(reset.y-original.y)).toBeLessThan(1);
 });
 
-test('moving a real homepage image preserves its pre-existing translation',async({page})=>{
-  test.setTimeout(25000);
+test('moving a published source image preserves its original translation',async({page})=>{
+  // Keep this a stable fixture. The real homepage can be redesigned while
+  // the editor's published-translation behaviour still needs regression tests.
+  const source='<!doctype html><html><head><style id="moon-v2-live-layout">'+
+    '@media (min-width:1025px){main > img:nth-of-type(1){'+
+    'translate:-132px 17px!important;scale:0.92 0.92!important;}}</style>'+
+    '</head><body><main style="padding:120px 220px">'+
+    '<img src="assets/pungmul-stage.webp" width="180" height="140" alt="Site photo">'+
+    '</main></body></html>';
+  await page.route('**/index.html',route=>route.fulfill({
+    status:200,contentType:'text/html',body:source
+  }));
+  await mockVerifiedSource(page,'index.html',source);
   await page.locator('#page').selectOption('index.html');
   const live=page.frameLocator('#livePageFrame');
-  const image=live.locator('main img[src="assets/pungmul-stage.webp"]').first();
-  await image.scrollIntoViewIfNeeded();
+  const image=live.locator('main img').first();
+  await expect(image).toHaveAttribute('alt','Site photo');
   await image.click();
-  const beforeTranslate=await image.evaluate(node=>getComputedStyle(node).translate);
+  const before=await image.evaluate(node=>getComputedStyle(node).translate);
+  expect(parseFloat(before)).toBe(-132);
   await page.locator('#liveMoveX').fill('20');
   await page.locator('#liveMoveX').press('Tab');
-  const afterTranslate=await image.evaluate(node=>getComputedStyle(node).translate);
-  // The CSS translation is measured in website coordinates, independent
-  // of editor zoom, automatic iframe fitting and page scroll changes.
-  const x=value=>value==="none"?0:parseFloat(value.split(" ")[0]);
-  expect(Math.abs((x(afterTranslate)-x(beforeTranslate))-20)).toBeLessThan(1.2);
+  const after=await image.evaluate(node=>getComputedStyle(node).translate);
+  expect(Math.abs(parseFloat(after)-(-112))).toBeLessThan(1.2);
+  await expect(image).toHaveCSS('scale','0.92');
 });
 
 test('live text resize handles change natural box dimensions without stretching glyphs',async({page})=>{
