@@ -30,6 +30,7 @@
     .resume-section h2{display:inline-block;font-size:25px;line-height:1.2;
       margin:0 0 21px;padding:2px 5px 1px;background:var(--section-blue)}
     .resume-entry+.resume-entry{margin-top:23px}
+    .resume-print-continued{display:none}
     .resume-entry-heading{display:flex;justify-content:space-between;gap:10px 24px;
       flex-wrap:wrap;align-items:baseline;margin-bottom:3px}
     .resume-entry-heading h3{font-size:19px;line-height:1.33;margin:0;font-weight:700}
@@ -84,6 +85,10 @@
         break-inside:avoid-page;page-break-inside:avoid}
       .resume-skills,.resume-credentials{break-inside:avoid-page}
       .resume-entry{break-inside:avoid-page}
+      #resume-experience .resume-entry.resume-continued{break-before:page;page-break-before:always}
+      .resume-print-continued{display:block!important;font-size:13pt!important;
+        line-height:1.2;font-weight:700;margin:0 0 10pt!important;
+        padding:0 0 3pt!important;border-bottom:1pt solid #333}
       .resume-entry+.resume-entry{margin-top:8pt!important}
       .resume-entry-heading h3{font-size:11.2pt!important}
       .resume-institution,.resume-citation,.resume-section>p,.resume-bullets li,
@@ -167,7 +172,8 @@
           <li>Adapt course materials and learning tasks using Universal Design for Learning principles, with opportunities for students to explain scientific ideas through different forms of representation.</li>
         </ul>
       </div>
-      <div class="resume-entry">
+      <div class="resume-entry resume-continued">
+        <p class="resume-print-continued">Professional Experience, continued</p>
         <div class="resume-entry-heading"><h3>Science Teacher (Full-time) · Saint Paul Academy Daechi · Seoul, South Korea</h3><span class="resume-date">Aug 2022 – Jun 2024</span></div>
         <p class="resume-subline">Courses · AP Biology, AP Chemistry, Physical Science, Computer Science</p>
         <ul class="resume-bullets">
