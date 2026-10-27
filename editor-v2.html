@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>Academic Website Editor 2 | Ye Eun Moon</title>
-<link rel="stylesheet" href="editor-v2.css?v=20261027-corner-reflow-v43">
-<script src="editor-v2.js?v=20261027-corner-reflow-v43" defer></script>
+<link rel="stylesheet" href="editor-v2.css?v=20261027-section-sizing-v44">
+<script src="editor-v2.js?v=20261027-section-sizing-v44" defer></script>
 </head>
 <body>
 <a class="skip" href="#workspace">Skip to editor canvas</a>
@@ -82,6 +82,7 @@
         <p id="liveElementPath" class="help live-hierarchy-path" aria-live="polite">Select an element to see its hierarchy</p>
         <div class="inline-actions">
           <button id="liveSelectParent" type="button" disabled>Select parent</button>
+          <button id="liveSelectSection" type="button" disabled>Select section</button>
           <button id="liveSelectChild" type="button" disabled>Select first child</button>
           <button id="livePrevSibling" type="button" disabled>Previous sibling</button>
           <button id="liveNextSibling" type="button" disabled>Next sibling</button>
@@ -234,7 +235,7 @@
         </div>
         <div id="liveLayoutControls" class="live-layout-controls" hidden>
           <h3>Free placement on this screen</h3>
-          <p class="help">Click or drag any text or image to select and move it. Double-click text to edit. Alt-click a card, section, or linked text to select without following a link. Drag resize handles, using Alt while dragging to disable snapping.</p>
+          <p class="help">Click or drag any text or image to select and move it. Double-click text to edit. Alt-click a container, or click Select section beside the layer list to select its enclosing section. Text and images inside do not stretch when the section changes size. Drag resize handles, using Alt while dragging to disable snapping.</p>
           <div class="property-grid">
             <label>Horizontal offset <input type="number" id="liveMoveX" step="1" value="0"></label>
             <label>Vertical offset <input type="number" id="liveMoveY" step="1" value="0"></label>
@@ -260,7 +261,21 @@
               <label>Box width (px) <input id="liveOriginalWidth" type="number" min="64" max="4000" step="1"></label>
               <label>Box height (px) <input id="liveOriginalHeight" type="number" min="24" max="5000" step="1"></label>
             </div>
-            <p class="help">Changes the selected element's actual dimensions. Text and images inside keep their proportions. A resized section may reflow surrounding content.</p>
+            <p class="help">Drag a section's handles or enter exact dimensions. Resizing adjusts the container without stretching its text or images.</p>
+          </div>
+          <div id="liveSectionSizing" hidden>
+            <h3>Section and container size</h3>
+            <label for="liveSectionHeightMode">Height behaviour
+              <select id="liveSectionHeightMode">
+                <option value="auto">Fit content (natural height)</option>
+                <option value="fixed">Exact height (freely resize)</option>
+              </select>
+            </label>
+            <div class="inline-actions">
+              <button id="liveFitSectionHeight" type="button">Fit height to content</button>
+            </div>
+            <p class="help">Select a section from its content with Select section, then drag any of its eight handles. Top and bottom handles set an exact height, including when you make a section shorter. Width-only resizing keeps a natural height unless an exact height was chosen. Text and images keep their proportions. These changes apply to the selected screen only.</p>
+            <p id="liveSectionOverflow" class="help reflow-warning" role="status" hidden></p>
           </div>
           <div id="liveAddedDimensions" hidden>
             <div class="property-grid">
