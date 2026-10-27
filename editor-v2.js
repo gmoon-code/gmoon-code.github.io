@@ -814,6 +814,14 @@ function liveEventTarget(event){
     nearestContainer||nearestText:nearestText||nearestContainer;
 }
 const LIVE_CONTAINER_SET=new Set(["SECTION","ARTICLE","ASIDE","FIGURE","DIV","NAV","UL","OL"]);
+// All source containers have their own resizable box. Their children keep
+// native font sizes, object-fit and document layout.
+function liveSectionAncestor(node){
+  if(!node||!node.closest)return null;
+  const ancestor=node.matches("section")?
+    node.parentElement?.closest("section"):node.closest("section");
+  return ancestor?.closest("main")?ancestor:null;
+}
 const LIVE_DEVICE_RULES={
   desktop:"(min-width:1025px)",
   tablet:"(min-width:701px) and (max-width:1024px)",
@@ -942,6 +950,10 @@ function validLiveLayout(layout){
         (!Number.isFinite(values[key])||values[key]<min||values[key]>max))return false;
     }
     if(values.releaseClip!==undefined&&typeof values.releaseClip!=="boolean")return false;
+    // "min" is the legacy behaviour for saved section edits. Newly resized
+    // sections choose "fixed" or "auto" explicitly, per device.
+    if(values.sectionHeightMode!==undefined&&
+       !["min","fixed","auto"].includes(values.sectionHeightMode))return false;
     const width=values.wrapWidth,height=values.reserveHeight;
     if((width===undefined)!==(height===undefined))return false;
     if(width!==undefined&&(!Number.isFinite(width)||width<64||width>4000||
@@ -1023,10 +1035,16 @@ function liveLayoutRules(patches=[...livePatches.values()]){
       const tag=patch.tag||
         patch.selector.match(/ > ([a-z][a-z0-9-]*):nth-of-type\(\d+\)$/)?.[1]||"";
       const sectionLike=["section","article","aside","figure","div","nav","ul","ol"].includes(tag);
+      const containerHeight=entry.sectionHeightMode==="fixed"?
+        "height:"+entry.reserveHeight+"px!important;min-height:0!important;":
+        entry.sectionHeightMode==="auto"?
+          "height:auto!important;min-height:0!important;":
+          // Preserve older saved edits which used a minimum-height box.
+          "height:auto!important;min-height:"+entry.reserveHeight+"px!important;";
       const reflow=entry.wrapWidth!==undefined?
         "width:"+entry.wrapWidth+"px!important;"+
-        (sectionLike?"height:auto!important;min-height:"+entry.reserveHeight+
-          "px!important;":"height:"+entry.reserveHeight+"px!important;")+
+        (sectionLike?containerHeight:
+          "height:"+entry.reserveHeight+"px!important;")+
         "box-sizing:border-box!important;min-width:0!important;"+
         "max-width:none!important;max-height:none!important;overflow:visible!important;"+
         (patch.kind==="image"||tag==="img"?
@@ -1263,6 +1281,12 @@ function setOriginalBoxDimension(key,value){
     liveLayoutFor(patch.selector));
   layout[key]=Math.round(clamp(number,key==="wrapWidth"?64:24,
     key==="wrapWidth"?4000:5000));
+  if(LIVE_CONTAINER_SET.has(node.tagName)){
+    // Explicit height really changes the section box in both directions.
+    // Changing only width still lets its content determine natural height.
+    if(key==="reserveHeight")layout.sectionHeightMode="fixed";
+    else if(layout.sectionHeightMode!=="fixed")layout.sectionHeightMode="auto";
+  }
   if(node.tagName==="IMG"&&liveLockImageRatio){
     const rect=node.getBoundingClientRect(),ratio=
       (node.naturalWidth&&node.naturalHeight?
@@ -1274,6 +1298,29 @@ function setOriginalBoxDimension(key,value){
   livePatches.set(patch.selector,patch);
   if(recordLiveHistory(previous)){
     refreshLiveLayoutRules();renderLiveInspector();syncLiveOverlay();
+  }
+}
+function setLiveSectionHeightMode(mode){
+  if(preventLockedLiveGeometry())return;
+  const node=liveSelected?.node,selector=node&&liveSelector(node);
+  if(!node||!LIVE_CONTAINER_SET.has(node.tagName)||!selector||
+     LIVE_ADDED_ID.test(selector)||workspaceMode!=="live"||liveEditing||
+     !["auto","fixed"].includes(mode))return;
+  const patch=livePatchForSelected(),before=liveSnapshot();
+  const layout=normaliseElementBoxLayout(node,liveLayoutFor(selector));
+  layout.sectionHeightMode=mode;
+  // An explicit height starts at the current on-screen size, never a
+  // surprising value inherited from an older minimum-height draft.
+  if(mode==="fixed")layout.reserveHeight=Math.round(clamp(
+    node.getBoundingClientRect().height,24,5000));
+  patch.layout={...patch.layout,[liveDevice()]:layout};
+  livePatches.set(selector,patch);
+  if(recordLiveHistory(before)){
+    refreshLiveLayoutRules(node.ownerDocument);
+    renderLiveInspector();syncLiveOverlay();
+    status(mode==="auto"?
+      "Section height fitted to its content · Width preserved · Undo available":
+      "Section height set to exact size · Drag top or bottom handles · Undo available");
   }
 }
 function setAddedDimension(key,value){
@@ -1513,6 +1560,17 @@ function renderLiveInspector(){
     $("liveImageFit").value=imagePatch?.design?.imageFit||"contain";
   }
   const added=!!selector&&LIVE_ADDED_ID.test(selector);
+  const sectionBox=!!node&&!added&&LIVE_CONTAINER_SET.has(tag);
+  $("liveSectionSizing").hidden=!sectionBox;
+  if(sectionBox){
+    const layout=liveLayoutFor(selector);
+    $("liveSectionHeightMode").value=layout.sectionHeightMode==="fixed"?"fixed":"auto";
+    const overflow=Math.max(0,Math.ceil(node.scrollHeight-node.clientHeight));
+    $("liveSectionOverflow").hidden=overflow<=4;
+    $("liveSectionOverflow").textContent=overflow>4?
+      "Some section content extends beyond this height by about "+overflow+
+        "px. Increase the height or choose Fit content before publishing.":"";
+  }
   const originalBox=!!node&&!added&&!node.matches(LIVE_REFLOW_TEXT);
   $("liveOriginalDimensions").hidden=!originalBox;
   if(originalBox){
@@ -1538,6 +1596,7 @@ function renderLiveInspector(){
   }
   const isSource=!!node&&!!selector&&!LIVE_ADDED_ID.test(selector);
   $("liveSelectParent").disabled=!isSource||!eligibleLiveParent(node)||!!liveEditing;
+  $("liveSelectSection").disabled=!isSource||!liveSectionAncestor(node)||!!liveEditing;
   $("liveSelectChild").disabled=!isSource||!node.querySelector(LIVE_SELECTABLE_TAGS)||!!liveEditing;
   const siblingChoices=isSource?liveSiblingChoices(node):[];
   const siblingIndex=siblingChoices.indexOf(node);
@@ -1620,7 +1679,7 @@ function renderLiveInspector(){
     "liveMoveX","liveMoveY","liveOriginalWidth","liveOriginalHeight",
     "liveAddedWidth","liveAddedHeight","liveTextBoxWidth","liveTextBoxHeight",
     "liveFitReflowHeight","liveResetTextDimensions","resetLiveLayout",
-    "liveTextReflow"
+    "liveTextReflow","liveSectionHeightMode","liveFitSectionHeight"
   ])$(id).disabled=true;
   renderLiveEditCount();
 }
@@ -2276,6 +2335,9 @@ function resizeLiveSourceGroup(g,dx,dy,lockRatio=false){
     const layout=normaliseElementBoxLayout(item.node,item.layout);
     layout.wrapWidth=target.w;
     layout.reserveHeight=target.h;
+    if(LIVE_CONTAINER_SET.has(item.node.tagName))
+      layout.sectionHeightMode=g.dir.includes("n")||g.dir.includes("s")?
+        "fixed":layout.sectionHeightMode==="fixed"?"fixed":"auto";
     const patch=copy(item.patch);
     patch.layout={...patch.layout,[device]:layout};
     livePatches.set(item.selector,patch);
@@ -2423,6 +2485,9 @@ function moveLiveGesture(event){
     Object.assign(next,normaliseElementBoxLayout(g.node,g.layout));
     next.wrapWidth=box.w;
     next.reserveHeight=box.h;
+    if(LIVE_CONTAINER_SET.has(g.node.tagName))
+      next.sectionHeightMode=g.dir.includes("n")||g.dir.includes("s")?
+        "fixed":g.layout.sectionHeightMode==="fixed"?"fixed":"auto";
     next.dx=clamp(Math.round(g.layout.dx+box.x),-4000,4000);
     next.dy=clamp(Math.round(g.layout.dy+box.y),-4000,4000);
   }
@@ -2430,6 +2495,23 @@ function moveLiveGesture(event){
   patch.layout={...patch.layout,[liveDevice()]:next};
   livePatches.set(g.selector,patch);
   refreshLiveLayoutRules(g.node.ownerDocument);
+  // Reflow can move an existing section's native origin. Compensate for
+  // that shift so the dragged handle stays under the pointer.
+  if(g.dir!=="move"&&LIVE_CONTAINER_SET.has(g.node.tagName)){
+    const actual=g.node.getBoundingClientRect();
+    const box=resizableBoxFromDrag(
+      {x:0,y:0,w:g.rect.width,h:g.rect.height},g.dir,deltaX,deltaY,
+      false,64,24);
+    const shiftX=Math.round(g.rect.left+box.x-actual.left);
+    const shiftY=Math.round(g.rect.top+box.y-actual.top);
+    if(shiftX||shiftY){
+      next.dx=clamp(Math.round(next.dx+shiftX),-4000,4000);
+      next.dy=clamp(Math.round(next.dy+shiftY),-4000,4000);
+      patch.layout[liveDevice()]=next;
+      livePatches.set(g.selector,patch);
+      refreshLiveLayoutRules(g.node.ownerDocument);
+    }
+  }
   // Corner drags also narrow text frames, so allow natural wrapping
   // and reserve enough height to prevent overflow into nearby elements.
   // A north corner keeps its original bottom edge while the text grows.
@@ -2849,6 +2931,15 @@ function selectLiveHierarchy(direction){
   if(!target)return;
   selectLiveElement(target);
   target.scrollIntoView({block:"nearest",inline:"nearest"});
+  syncLiveOverlay();
+}
+function selectLiveContainingSection(){
+  const node=liveSelected?.node;
+  if(workspaceMode!=="live"||liveEditing||!node)return;
+  const ancestor=liveSectionAncestor(node);
+  if(!ancestor)return;
+  selectLiveElement(ancestor);
+  ancestor.scrollIntoView({block:"nearest",inline:"nearest"});
   syncLiveOverlay();
 }
 function navigateLiveSibling(step){
@@ -4247,6 +4338,10 @@ function attachEvents(){
   $("liveSendBack").addEventListener("click",()=>setLiveLayer(false));
   $("liveResetStack").addEventListener("click",()=>setLiveLayer(false,true));
   $("liveTogglePositionLock").addEventListener("click",toggleLiveGeometryLock);
+  $("liveSelectSection").addEventListener("click",selectLiveContainingSection);
+  $("liveSectionHeightMode").addEventListener("change",event=>
+    setLiveSectionHeightMode(event.target.value));
+  $("liveFitSectionHeight").addEventListener("click",()=>setLiveSectionHeightMode("auto"));
   $("liveTextReflow").addEventListener("change",event=>
     setLiveReflow(event.target.checked));
   const liveDesignFields={
