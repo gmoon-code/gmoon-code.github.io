@@ -442,3 +442,38 @@ test('hover preview and keyboard layer navigation identify real source elements 
   await expect(live.locator('[data-moon-v2-layer-preview]')).toHaveCount(0);
   await expect(page.locator('#liveEditCount')).toContainText('No saved live-page edits');
 });
+
+test('original webpage position lock persists after reload and prevents nudging',async({page})=>{
+  const live=page.frameLocator('#livePageFrame');
+  await live.locator('main p.second').click();
+  await page.locator('#liveMoveX').fill('25');
+  await page.locator('#liveMoveX').press('Tab');
+  await page.locator('#liveTogglePositionLock').click();
+  await expect(page.locator('#liveTogglePositionLock')).toHaveAttribute('aria-pressed','true');
+  await expect(page.locator('#liveMoveX')).toBeDisabled();
+  await expect(live.locator('#moon-v2-live-overlay .moon-v2-grip')).toHaveCount(0);
+  await expect(page.locator('#liveElementList [data-position-locked="true"]')).toHaveCount(1);
+  await page.keyboard.press('ArrowRight');
+  await expect(live.locator('main p.second')).toHaveCSS('translate',/^25px(?: 0px)?$/);
+  await page.reload({waitUntil:'domcontentloaded'});
+  await live.locator('main p.second').click();
+  await expect(page.locator('#liveTogglePositionLock')).toHaveAttribute('aria-pressed','true');
+  await page.locator('#liveTogglePositionLock').click();
+  await expect(page.locator('#liveMoveX')).toBeEnabled();
+  await page.locator('#liveMoveX').fill('48');
+  await page.locator('#liveMoveX').press('Tab');
+  await expect(live.locator('main p.second')).toHaveCSS('translate',/^48px(?: 0px)?$/);
+});
+test('locked member blocks whole group alignment but not selection',async({page})=>{
+  const live=page.frameLocator('#livePageFrame');
+  await live.locator('main p.second').click();
+  await page.locator('#liveTogglePositionLock').click();
+  await live.locator('main p.first a').click({modifiers:['Shift']});
+  await expect(page.locator('#liveMultiCount')).toHaveText('2 selected');
+  await expect(page.locator('#liveAlignLeft')).toBeDisabled();
+  await expect(live.locator('#moon-v2-live-overlay .moon-v2-grip')).toHaveCount(0);
+  const before=await live.locator('main p.first').evaluate(node=>node.getBoundingClientRect().x);
+  await page.keyboard.press('ArrowRight');
+  const after=await live.locator('main p.first').evaluate(node=>node.getBoundingClientRect().x);
+  expect(Math.abs(after-before)).toBeLessThan(1);
+});
