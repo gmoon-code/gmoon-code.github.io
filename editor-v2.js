@@ -3646,6 +3646,80 @@ function renderLiveLayers(){
     host.append(none);
   }
 }
+function liveGroupMembers(groupId,added,doc=$("livePageFrame").contentDocument){
+  if(!groupId||!LIVE_GROUP_ID.test(groupId))return [];
+  const main=doc?.querySelector("main");if(!main)return [];
+  const selector=added?"[data-moon-v2-added-id]":LIVE_SELECTABLE_TAGS;
+  return [...main.querySelectorAll(selector)].filter(node=>{
+    const key=liveSelector(node);
+    return !!key&&LIVE_ADDED_ID.test(key)===added&&
+      liveGroupId(node,key)===groupId;
+  });
+}
+function groupSelectedLive(){
+  if(workspaceMode!=="live"||liveEditing||liveGesture||
+     preventLockedLiveGeometry())return;
+  const sources=selectedSourcePatches(),added=selectedAddedPatches();
+  // Mixed added/original selections are deliberately rejected until the
+  // same geometry engine can resize them together without layout damage.
+  const members=sources.length>1&&!added.length?sources:
+    added.length>1&&!sources.length?added:null;
+  if(!members){status("Select at least two original objects OR two added objects to group");return;}
+  for(let i=0;i<members.length;i++)
+    for(let j=i+1;j<members.length;j++)
+      if(members[i].node.contains(members[j].node)||
+         members[j].node.contains(members[i].node)){
+        status("Choose independent objects; parent and child cannot be grouped together");
+        return;
+      }
+  const before=liveSnapshot();
+  const id="grp-"+(crypto.randomUUID?.()||Math.random().toString(36).slice(2))
+    .toLowerCase().replace(/[^a-z0-9-]/g,"").slice(0,36).padEnd(8,"0");
+  for(const member of members){
+    const p=copy(member.patch);
+    p.groupId=id;
+    livePatches.set(member.selector,p);
+    if(p.kind==="insert")refreshAddedObject(member.node.ownerDocument,p);
+  }
+  if(recordLiveHistory(before)){
+    renderLiveLayers();syncLiveMultiSelection();syncLiveOverlay();
+    status(members.length+" objects grouped · Click any member to select the group · Undo available");
+  }
+}
+function ungroupSelectedLive(){
+  if(workspaceMode!=="live"||liveEditing||liveGesture)return;
+  const primary=liveSelected?.node,groupId=liveGroupId(primary);
+  if(!groupId){status("Select a previously grouped object first");return;}
+  const added=LIVE_ADDED_ID.test(liveSelector(primary)||"");
+  const members=liveGroupMembers(groupId,added);
+  if(!members.length)return;
+  const before=liveSnapshot();
+  for(const node of members){
+    const selector=liveSelector(node);
+    const stored=livePatches.get(selector);
+    const patch=stored?copy(stored):added?
+      addedPatchFromNode(node,selector):
+      node.tagName==="IMG"?
+        {selector,kind:"image",expected:node.getAttribute("src")||"",
+          src:node.getAttribute("src")||"",alt:node.alt||""}:
+        {selector,kind:"layout",expected:(node.textContent||"").trim().slice(0,300)};
+    if(!patch)continue;
+    if(node.hasAttribute("data-moon-v2-editor-group"))
+      patch.groupId=null; // Explicit override for groups already published.
+    else delete patch.groupId; // Unpublished group needs no override.
+    if(patch.kind!=="insert"&&pruneLivePatch(patch,node))
+      livePatches.delete(selector);
+    else livePatches.set(selector,patch);
+    if(patch.kind==="insert")refreshAddedObject(node.ownerDocument,patch);
+  }
+  if(recordLiveHistory(before)){
+    liveAddedMulti.clear();liveSourceMulti.clear();
+    if(added)liveAddedMulti.add(liveSelector(primary));
+    else liveSourceMulti.add(liveSelector(primary));
+    renderLiveLayers();syncLiveOverlay();syncLiveMultiSelection();
+    status("Group separated into "+members.length+" editable objects · Undo available");
+  }
+}
 const LIVE_ARRANGE_TOOLS=["liveAlignLeft","liveAlignCenter","liveAlignRight",
   "liveAlignTop","liveAlignMiddle","liveAlignBottom","liveDistributeH","liveDistributeV",
   "liveMatchWidth","liveMatchHeight","liveMatchSize",
@@ -3701,6 +3775,13 @@ function syncLiveMultiSelection(){
   $("liveMultiCount").textContent=(count+sourceCount)+" selected";
   $("liveClearAdded").disabled=!count&&!sourceCount;
   $("liveSelectAdded").disabled=workspaceMode!=="live";
+  $("liveGroup").disabled=workspaceMode!=="live"||selectionLocked||
+    Math.max(count,sourceCount)<2;
+  $("liveUngroup").disabled=workspaceMode!=="live"||
+    !liveGroupId(liveSelected?.node);
+  $("liveGroupIndicator").textContent=liveGroupId(liveSelected?.node)?
+    "Grouped selection · click any member to select all":
+    "Groups remember their members after reloading";
   for(const id of LIVE_ARRANGE_TOOLS)
     $(id).disabled=workspaceMode!=="live"||selectionLocked||
       Math.max(count,sourceCount)<(id.startsWith("liveDistribute")?3:
@@ -4047,6 +4128,14 @@ function selectLiveElement(node,additive=false,preserveMulti=false){
     return;
   }
   if(!preserveMulti){liveAddedMulti.clear();liveSourceMulti.clear();}
+  // One click reselects all persistent group members. Shift-click bypasses
+  // this expansion and retains the existing temporary multi-select behavior.
+  const groupId=!additive&&!preserveMulti?liveGroupId(node,key):null;
+  if(groupId){
+    const members=liveGroupMembers(groupId,isAdded,doc);
+    const selected=isAdded?liveAddedMulti:liveSourceMulti;
+    for(const member of members)selected.add(liveSelector(member));
+  }
   if(isAdded)liveAddedMulti.add(key);
   else liveSourceMulti.add(key);
   clearLiveSelection(true);
@@ -5376,6 +5465,8 @@ function attachEvents(){
     setLiveClippingRelease(event.target.checked));
   $("liveSelectAdded").addEventListener("click",selectAllLiveAdded);
   $("liveClearAdded").addEventListener("click",()=>clearLiveSelection());
+  $("liveGroup").addEventListener("click",groupSelectedLive);
+  $("liveUngroup").addEventListener("click",ungroupSelectedLive);
   const arrangement={
     liveAlignLeft:"alignLeft",liveAlignCenter:"alignCenter",
     liveAlignRight:"alignRight",liveAlignTop:"alignTop",
