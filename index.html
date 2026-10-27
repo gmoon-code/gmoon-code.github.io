@@ -186,7 +186,14 @@ main > div:nth-of-type(1) > p:nth-of-type(1){font-size:20px!important;}
     height:245px!important;max-height:245px!important;
   }
   html:not(.moon-free-mode) #main.home-page .home-outside-grid>img[data-moon-v2-added-id]{
-    height:185px!important;max-height:185px!important;margin-top:20px!important;
+    width:calc(100% - 32px)!important;max-width:calc(100% - 32px)!important;
+    height:185px!important;max-height:185px!important;
+    margin:20px auto 0!important;box-sizing:border-box!important;
+  }
+  html:not(.moon-free-mode) #main.home-page .home-pathways,
+  html:not(.moon-free-mode) #main.home-page .home-making,
+  html:not(.moon-free-mode) #main.home-page .home-outside{
+    padding-left:16px!important;padding-right:16px!important;
   }
   html:not(.moon-free-mode) #main.home-page .home-outside-grid>.studio-unrestricted-size{
     width:100%!important;max-width:100%!important;min-width:0!important;
