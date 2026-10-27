@@ -710,10 +710,12 @@ test('original picture crop is responsive, non-destructive and survives reload',
   await image.click();
   await expect(page.locator('#liveCropControls')).toBeVisible();
   await page.locator('#liveCropFit').selectOption('cover');
-  await page.locator('#liveCropX').fill('20');
-  await page.locator('#liveCropX').dispatchEvent('change');
-  await page.locator('#liveCropY').fill('70');
-  await page.locator('#liveCropY').dispatchEvent('change');
+  await page.locator('#liveCropX').evaluate(input=>{
+    input.value='20';input.dispatchEvent(new Event('change',{bubbles:true}));
+  });
+  await page.locator('#liveCropY').evaluate(input=>{
+    input.value='70';input.dispatchEvent(new Event('change',{bubbles:true}));
+  });
   await expect(image).toHaveCSS('object-fit','cover');
   await expect(image).toHaveCSS('object-position','20% 70%');
   expect(await image.getAttribute('src')).toBe(initialSrc);
@@ -731,7 +733,10 @@ test('picture crop aspect preset changes frame without stretching source pixels'
   const image=page.frameLocator('#livePageFrame').locator('img.picture');
   await image.click();
   await page.locator('#liveCropSquare').click();
-  const box=await image.evaluate(node=>node.getBoundingClientRect());
+  const box=await image.evaluate(node=>{
+    const rect=node.getBoundingClientRect();
+    return {width:rect.width,height:rect.height};
+  });
   expect(Math.abs(box.width-box.height)).toBeLessThan(3);
   await expect(image).toHaveCSS('object-fit','cover');
   await page.locator('#liveCropReset').click();
