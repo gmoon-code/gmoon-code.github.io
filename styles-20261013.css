@@ -2141,6 +2141,8 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
 /* Source-based research image, distinct from original conceptual diagrams. */
 #main .research-published-figure{max-width:800px;min-width:0;margin:29px 0 12px}
 #main .research-published-image{display:block;max-width:760px;background:#fff}
+/* The source-image link already has an accessible name; avoid an empty icon row. */
+#main a.research-published-image[target="_blank"]::after{content:none!important;display:none!important}
 #main .research-published-image:focus-visible{outline:2px solid currentColor;outline-offset:4px}
 #main .research-published-figure img{display:block;width:100%;height:auto;aspect-ratio:auto 1087 / 778;object-fit:contain}
 #main .research-published-figure figcaption{max-width:76ch;margin:12px 0 0;padding-top:10px;border-top:1px solid var(--moon-rule);font-size:14px;line-height:1.6;color:var(--moon-ink)}
