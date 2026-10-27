@@ -1648,6 +1648,7 @@ function pasteLiveFormat(){
   if(!patch)return;
   const before=liveSnapshot(),clipboard=liveFormatClipboard;
   if(clipboard.kind==="image"){
+    migrateLegacyAddedPictureDesign(patch);
     if(patch.kind!=="insert"&&!patch.layout?.[device])
       patch.layout={...(patch.layout||{}),[device]:liveLayoutFor(selector)};
     if(patch.kind==="insert"&&patch.design?.rotation)
@@ -1677,6 +1678,20 @@ function pasteLiveFormat(){
     status("Formatting applied to "+clipboard.kind+" · Content and dimensions preserved · Undo available");
   }
 }
+function migrateLegacyAddedPictureDesign(patch){
+  if(patch.kind!=="insert"||patch.objectType!=="image")return;
+  const rotation=patch.design?.rotation||0,opacity=patch.design?.opacity??100;
+  if(rotation===0&&opacity===100)return;
+  const effects={...(patch.pictureEffects||{})};
+  for(const device of Object.keys(LIVE_DEVICE_RULES)){
+    const previous=effects[device]||{};
+    effects[device]={
+      ...DEFAULT_PICTURE_EFFECTS,rotation,opacity,...previous
+    };
+  }
+  patch.pictureEffects=effects;
+  patch.design={...patch.design,rotation:0,opacity:100};
+}
 function selectedPictureEffects(patch,device=liveDevice()){
   const node=liveSelected?.node;
   let base={};
@@ -1686,7 +1701,9 @@ function selectedPictureEffects(patch,device=liveDevice()){
       if(validPictureEffects(stored))base=stored[device]||{};
     }catch{/* Website image has no published editor effects. */}
   }
-  return {...DEFAULT_PICTURE_EFFECTS,...base,...(patch?.pictureEffects?.[device]||{})};
+  const legacy=patch?.kind==="insert"&&patch.objectType==="image"?
+    {rotation:patch.design?.rotation||0,opacity:patch.design?.opacity??100}:{};
+  return {...DEFAULT_PICTURE_EFFECTS,...base,...legacy,...(patch?.pictureEffects?.[device]||{})};
 }
 function finishPictureEffectPreview(){
   if(!pictureFxBefore)return;
@@ -1702,6 +1719,7 @@ function setPictureEffect(key,value,preview=false){
   const current={...selectedPictureEffects(patch,device),[key]:value};
   if(!validPictureEffects({[device]:current}))return;
   if(preview&&!pictureFxBefore)pictureFxBefore=before;
+  migrateLegacyAddedPictureDesign(patch);
   if(patch.kind!=="insert"&&!patch.layout?.[device]){
     patch.layout={...(patch.layout||{}),[device]:liveLayoutFor(selector)};
   }
@@ -1726,6 +1744,7 @@ function resetPictureEffects(){
   const patch=livePatchForSelected(),device=liveDevice();
   if(!patch)return;
   const before=liveSnapshot(),published=node.hasAttribute("data-moon-v2-picture-effects");
+  migrateLegacyAddedPictureDesign(patch);
   if(published&&patch.kind!=="insert"){
     patch.pictureEffects={...(patch.pictureEffects||{}),
       [device]:{...DEFAULT_PICTURE_EFFECTS}};
