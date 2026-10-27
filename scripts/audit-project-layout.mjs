@@ -49,6 +49,7 @@ try{
       if(fig.imageWidth<200)failures.push('image too narrow '+fig.index);
       if(fig.imageWidth===0)failures.push('image zero width '+fig.index);
       if(fig.captionGap< -2)failures.push('caption overlaps image '+fig.index);
+      if(fig.captionGap>18)failures.push('excessive gap between screenshot and caption '+fig.index);
       if(fig.overflowLeft||fig.overflowRight)failures.push('image outside viewport '+fig.index);
       if(!fig.alt||!fig.captionText||!fig.opensNewTab)failures.push('missing alt, caption or link '+fig.index);
     }
