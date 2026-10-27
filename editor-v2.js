@@ -1526,7 +1526,9 @@ function setLiveCropMode(enabled){
   if(node?.tagName!=="IMG"||workspaceMode!=="live")return;
   if(enabled&&liveSectionPickMode)toggleLiveSectionPickMode();
   liveCropMode=!!enabled;
-  if(enabled)applySelectedImageCrop({fit:"cover"});
+  if(enabled)applySelectedImageCrop({
+    fit:"contain",left:0,right:0,top:0,bottom:0,zoom:100
+  });
   removeLiveOverlay();renderLiveInspector();syncLiveOverlay();
   status(enabled?
     "Crop active · Drag pink frame handles to trim edges, or drag the photo to reposition":
@@ -1563,6 +1565,92 @@ function resetSelectedImageCrop(){
   if(recordLiveHistory(before)){
     removeLiveOverlay();renderLiveInspector();syncLiveOverlay();
     status("Original picture framing restored on "+device+" · Undo available");
+  }
+}
+// Frame handles remove independent strips of the ORIGINAL picture.
+// Updating the frame geometry keeps the remaining crop rectangle aligned.
+// No drag ever changes focal-position offsets when trimming a crop edge.
+function cropFrameGeometry(rect,origin,dir,dx,dy){
+  const crop={...origin,...croppedEdges(origin),fit:"contain",zoom:100,reset:false};
+  const initial=croppedEdges(crop);
+  const fullW=rect.width/Math.max(.05,1-(initial.left+initial.right)/100);
+  const fullH=rect.height/Math.max(.05,1-(initial.top+initial.bottom)/100);
+  const next={...crop};
+  for(const [edge,delta,opposite,source,min] of [
+    ["left",dx,"right",fullW,64],
+    ["right",-dx,"left",fullW,64],
+    ["top",dy,"bottom",fullH,24],
+    ["bottom",-dy,"top",fullH,24]]){
+    if(!dir.includes(({left:"w",right:"e",top:"n",bottom:"s"})[edge]))continue;
+    const maximum=Math.min(90,95-next[opposite],100*(1-min/source)-next[opposite]);
+    next[edge]=Math.round(clamp(initial[edge]+delta/source*100,0,Math.max(0,maximum))*100)/100;
+  }
+  const w=Math.round(clamp(fullW*(1-(next.left+next.right)/100),64,4000));
+  const h=Math.round(clamp(fullH*(1-(next.top+next.bottom)/100),24,5000));
+  const x=fullW*(next.left-initial.left)/100;
+  const y=fullH*(next.top-initial.top)/100;
+  return {crop:next,x:Math.round(x),y:Math.round(y),w,h};
+}
+function updateCropFrame(node,selector,originalPatch,initialRect,dir,dx,dy){
+  const device=liveDevice(),patch=copy(originalPatch);
+  const baseline=patch.imageCrop?.[device]||
+    {...selectedImageCrop(patch,device),left:0,right:0,top:0,bottom:0};
+  const result=cropFrameGeometry(initialRect,baseline,dir,dx,dy);
+  patch.imageCrop={...(patch.imageCrop||{}),[device]:result.crop};
+  if(patch.kind==="insert"){
+    const initial=addedDeviceGeometry(originalPatch,device);
+    patch.geometry={...patch.geometry,[device]:{
+      ...initial,x:Math.round(initial.x+result.x),
+      y:Math.round(initial.y+result.y),w:result.w,h:result.h
+    }};
+    livePatches.set(selector,patch);
+    refreshAddedObject(node.ownerDocument,patch);
+  }else{
+    const old=liveLayoutFor(selector);
+    const base=originalPatch.layout?.[device]||old;
+    const layout=normaliseElementBoxLayout(node,base);
+    layout.wrapWidth=result.w;layout.reserveHeight=result.h;
+    layout.dx=clamp(Math.round(base.dx+result.x),-4000,4000);
+    layout.dy=clamp(Math.round(base.dy+result.y),-4000,4000);
+    patch.layout={...patch.layout,[device]:layout};
+    livePatches.set(selector,patch);
+    refreshLiveLayoutRules(node.ownerDocument);
+    // Normal CSS flow may shift the original origin when the image shrinks.
+    const actual=node.getBoundingClientRect();
+    const wantX=initialRect.left+result.x,wantY=initialRect.top+result.y;
+    const shiftX=Math.round(wantX-actual.left),shiftY=Math.round(wantY-actual.top);
+    if(shiftX||shiftY){
+      layout.dx=clamp(layout.dx+shiftX,-4000,4000);
+      layout.dy=clamp(layout.dy+shiftY,-4000,4000);
+      livePatches.set(selector,patch);
+      refreshLiveLayoutRules(node.ownerDocument);
+    }
+  }
+  return result;
+}
+function setCropEdge(side,value){
+  if(!["left","right","top","bottom"].includes(side)||preventLockedLiveGeometry())return;
+  const node=liveSelected?.node,selector=node&&liveSelector(node);
+  if(node?.tagName!=="IMG"||!selector||!Number.isFinite(Number(value)))return;
+  finishCropSliderPreview();
+  const base=livePatchForSelected(),before=liveSnapshot(),device=liveDevice();
+  if(!base)return;
+  const prepared=prepareImageCrop(node,base,device);
+  if(!prepared)return;
+  const current={...prepared,...croppedEdges(prepared)};
+  base.imageCrop={...(base.imageCrop||{}),[device]:current};
+  const frame=node.getBoundingClientRect(),fraction=
+    side==="left"||side==="right"?
+    frame.width/(1-(current.left+current.right)/100):
+    frame.height/(1-(current.top+current.bottom)/100);
+  const delta=(Number(value)-current[side])/100*fraction;
+  const dir={left:"w",right:"e",top:"n",bottom:"s"}[side];
+  updateCropFrame(node,selector,base,frame,dir,
+    side==="left"?delta:side==="right"?-delta:0,
+    side==="top"?delta:side==="bottom"?-delta:0);
+  if(recordLiveHistory(before)){
+    renderLiveInspector();syncLiveOverlay();
+    status("Trimmed "+side+" edge · Other image sides unchanged · Undo available");
   }
 }
 function cropImageToRatio(ratio){
@@ -1612,7 +1700,9 @@ function setOriginalBoxDimension(key,value){
   if(node.tagName==="IMG"&&liveLockImageRatio){
     const rect=node.getBoundingClientRect(),ratio=
       (node.naturalWidth&&node.naturalHeight?
-        node.naturalWidth/node.naturalHeight:rect.width/Math.max(1,rect.height));
+        node.naturalWidth/node.naturalHeight:rect.width/Math.max(1,rect.height))*
+      (1-((selectedImageCrop(patch).left||0)+(selectedImageCrop(patch).right||0))/100)/
+      (1-((selectedImageCrop(patch).top||0)+(selectedImageCrop(patch).bottom||0))/100);
     if(key==="wrapWidth")layout.reserveHeight=Math.round(clamp(layout.wrapWidth/ratio,24,5000));
     else layout.wrapWidth=Math.round(clamp(layout.reserveHeight*ratio,64,4000));
   }
@@ -2873,6 +2963,11 @@ function moveLiveGesture(event){
     else refreshLiveLayoutRules(g.node.ownerDocument);
     syncLiveOverlay();
     return;
+  }
+  if(liveCropMode&&g.node.tagName==="IMG"&&
+     ["nw","n","ne","e","se","s","sw","w"].includes(g.dir)){
+    updateCropFrame(g.node,g.selector,g.patch,g.rect,g.dir,deltaX,deltaY);
+    syncLiveOverlay();return;
   }
   if(g.sourceGroup&&g.dir!=="move"){
     resizeLiveSourceGroup(g,deltaX,deltaY,event.shiftKey);
