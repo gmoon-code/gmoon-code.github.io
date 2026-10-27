@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>Academic Website Editor 2 | Ye Eun Moon</title>
-<link rel="stylesheet" href="editor-v2.css?v=20261027-release-containers-v38">
-<script src="editor-v2.js?v=20261027-release-containers-v38" defer></script>
+<link rel="stylesheet" href="editor-v2.css?v=20261027-layer-explorer-v39">
+<script src="editor-v2.js?v=20261027-layer-explorer-v39" defer></script>
 </head>
 <body>
 <a class="skip" href="#workspace">Skip to editor canvas</a>
@@ -78,10 +78,14 @@
         </div>
         <label for="liveElementSearch">Find text, headings or images</label>
         <input id="liveElementSearch" type="search" placeholder="Search elements on this page" autocomplete="off">
+        <label class="checkbox-line live-container-toggle"><input type="checkbox" id="liveShowContainers"> Include nested layout containers</label>
         <p id="liveElementPath" class="help live-hierarchy-path" aria-live="polite">Select an element to see its hierarchy</p>
         <div class="inline-actions">
           <button id="liveSelectParent" type="button" disabled>Select parent</button>
           <button id="liveSelectChild" type="button" disabled>Select first child</button>
+          <button id="livePrevSibling" type="button" disabled>Previous sibling</button>
+          <button id="liveNextSibling" type="button" disabled>Next sibling</button>
+          <button id="liveLocateSelected" type="button" disabled>Find selected in list</button>
         </div>
         <div id="liveElementList" class="layers live-element-list" role="group" aria-label="Selectable elements in the actual webpage"></div>
         <div class="inline-actions">

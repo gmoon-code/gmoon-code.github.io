@@ -1494,6 +1494,12 @@ function renderLiveInspector(){
   const isSource=!!node&&!!selector&&!LIVE_ADDED_ID.test(selector);
   $("liveSelectParent").disabled=!isSource||!eligibleLiveParent(node)||!!liveEditing;
   $("liveSelectChild").disabled=!isSource||!node.querySelector(LIVE_SELECTABLE_TAGS)||!!liveEditing;
+  const siblingChoices=isSource?liveSiblingChoices(node):[];
+  const siblingIndex=siblingChoices.indexOf(node);
+  $("livePrevSibling").disabled=!isSource||siblingIndex<=0||!!liveEditing;
+  $("liveNextSibling").disabled=!isSource||siblingIndex<0||
+    siblingIndex===siblingChoices.length-1||!!liveEditing;
+  $("liveLocateSelected").disabled=!node||!!liveEditing;
   $("liveElementPath").textContent=isSource?
     "main › "+selector.split(" > ").slice(1)
       .map(part=>part.split(":nth-of-type(")[0]).join(" › "):
@@ -2420,46 +2426,76 @@ function finishLiveGesture(event){
   renderLiveInspector();syncLiveOverlay();
 }
 const LIVE_PANE_TAGS="h1,h2,h3,h4,h5,h6,p,li,figcaption,blockquote,img,section,article,figure,aside,[data-moon-v2-added-id]";
+const LIVE_LAYOUT_PANE_TAGS="div,nav,ul,ol";
+function liveElementName(node){
+  if(node.tagName==="IMG")return node.alt||node.getAttribute("src")||"Image";
+  const id=node.id?"#"+node.id:"";
+  const className=[...node.classList||[]].filter(c=>!c.startsWith("moon-")).slice(0,2)
+    .map(c=>"."+c).join("");
+  const direct=[...node.childNodes].filter(n=>n.nodeType===Node.TEXT_NODE)
+    .map(n=>n.textContent.trim()).filter(Boolean).join(" ");
+  const text=direct||node.textContent?.trim()||"";
+  if(node.matches(LIVE_LAYOUT_PANE_TAGS))
+    return (node.tagName.toLowerCase()+id+className+" · "+text).trim();
+  return text||node.tagName.toLowerCase()+id+className;
+}
+function liveSiblingChoices(node){
+  const main=node?.ownerDocument.querySelector("main");
+  if(!main||!node?.parentElement||node===main)return [];
+  return [...node.parentElement.children].filter(candidate=>
+    candidate.matches(LIVE_SELECTABLE_TAGS)&&
+    candidate.ownerDocument.defaultView.getComputedStyle(candidate).display!=="none"&&
+    liveSelector(candidate));
+}
 function renderLiveLayers(){
   const host=$("liveElementList"),doc=$("livePageFrame").contentDocument;
   host.replaceChildren();
   const root=doc?.querySelector("main");
   if(!root)return;
   const filter=$("liveElementSearch").value.toLowerCase().trim();
-  const nodes=[...root.querySelectorAll(LIVE_PANE_TAGS)].filter(node=>{
+  const includeLayout=$("liveShowContainers").checked;
+  const selector=includeLayout||filter?
+    LIVE_PANE_TAGS+","+LIVE_LAYOUT_PANE_TAGS:LIVE_PANE_TAGS;
+  const nodes=[...root.querySelectorAll(selector)].filter(node=>{
     const css=node.ownerDocument.defaultView.getComputedStyle(node);
     if(css.display==="none"||css.visibility==="hidden")return false;
-    const label=node.tagName==="IMG"?
-      node.alt||node.getAttribute("src")||"Image":node.textContent||"";
-    return !!label.trim()||node.hasAttribute("data-moon-v2-added-id")||
-      ["SECTION","ARTICLE","FIGURE","ASIDE"].includes(node.tagName);
+    return !!liveElementName(node)||node.hasAttribute("data-moon-v2-added-id");
   });
   const matching=nodes.filter(node=>{
     if(!filter)return true;
-    return (node.tagName+" "+node.textContent+" "+(node.alt||"")+" "+
-      (node.getAttribute("src")||"")).toLowerCase().includes(filter);
+    const terms=(node.tagName+" "+liveElementName(node)+" "+node.textContent+" "+
+      (node.alt||"")+" "+(node.getAttribute("src")||"")).toLowerCase();
+    return terms.includes(filter);
   });
-  $("liveLayerCount").textContent=matching.length+"/"+nodes.length;
-  for(const node of matching.slice(0,160)){
-    const selector=liveSelector(node);if(!selector)continue;
+  // Keep the current selection discoverable even when the list contains
+  // hundreds of webpage objects or an unrelated search term.
+  const visible=matching.slice(0,160);
+  const chosen=liveSelected?.node;
+  if(chosen?.isConnected&&root.contains(chosen)&&
+      !visible.includes(chosen)&&liveSelector(chosen))visible.unshift(chosen);
+  $("liveLayerCount").textContent=visible.length+"/"+matching.length+
+    (filter?" matches":" objects");
+  for(const node of visible){
+    const key=liveSelector(node);if(!key)continue;
     const button=document.createElement("button");
     button.type="button";button.className="layer";
-    button.dataset.liveSelector=selector;
+    button.dataset.liveSelector=key;
     button.setAttribute("aria-current",String(liveSelected?.node===node));
-    button.setAttribute("aria-selected",String(liveAddedMulti.has(selector)||
-      liveSourceMulti.has(selector)));
+    button.setAttribute("aria-selected",String(liveAddedMulti.has(key)||
+      liveSourceMulti.has(key)));
     const type=document.createElement("span"),label=document.createElement("span");
     type.className="layer-type";type.textContent=node.tagName.toLowerCase();
     label.className="layer-name";
+    const name=liveElementName(node);
     label.textContent=(node.hasAttribute("data-moon-v2-added-id")?
       "Added "+(node.getAttribute("data-moon-v2-object-type")||"object")+" · ":"")+
-      (node.tagName==="IMG"?
-      node.alt||node.getAttribute("src")||"Image":
-      node.textContent?.trim()||"Container").replace(/\s+/g," ").slice(0,105);
-    const depth=Math.max(0,selector.split(" > ").length-2);
+      name.replace(/\s+/g," ").slice(0,105);
+    if(node===chosen&&!matching.includes(node))
+      label.textContent="Selected · "+label.textContent;
+    const depth=Math.max(0,key.split(" > ").length-2);
     button.dataset.depth=String(depth);
     button.style.paddingInlineStart=Math.min(70,8+depth*5)+"px";
-    button.title=(depth?"Level "+depth+" · ":"")+label.textContent;
+    button.title=(depth?"Level "+depth+" · ":"")+name.replace(/\s+/g," ").slice(0,240);
     button.append(type,label);host.append(button);
   }
   if(!host.childElementCount){
@@ -2699,6 +2735,30 @@ function selectLiveHierarchy(direction){
   if(!target)return;
   selectLiveElement(target);
   target.scrollIntoView({block:"nearest",inline:"nearest"});
+  syncLiveOverlay();
+}
+function navigateLiveSibling(step){
+  const node=liveSelected?.node;
+  if(!node||workspaceMode!=="live"||liveEditing)return;
+  const list=liveSiblingChoices(node),index=list.indexOf(node);
+  if(index<0||!list[index+step])return;
+  selectLiveElement(list[index+step]);
+  list[index+step].scrollIntoView({block:"nearest",inline:"nearest"});
+  renderLiveLayers();
+  syncLiveOverlay();
+}
+function locateLiveSelected(){
+  if(!liveSelected?.node||workspaceMode!=="live")return;
+  $("liveElementSearch").value="";
+  if(liveSelected.node.matches(LIVE_LAYOUT_PANE_TAGS))
+    $("liveShowContainers").checked=true;
+  renderLiveLayers();
+  syncLiveMultiSelection();
+  const key=liveSelector(liveSelected.node);
+  const item=[...$("liveElementList").querySelectorAll("[data-live-selector]")]
+    .find(node=>node.dataset.liveSelector===key);
+  item?.scrollIntoView({block:"nearest",inline:"nearest"});
+  liveSelected.node.scrollIntoView({block:"nearest",inline:"nearest"});
   syncLiveOverlay();
 }
 function setLiveClippingRelease(enabled){
@@ -4001,6 +4061,10 @@ function attachEvents(){
   $("liveElementSearch").addEventListener("input",renderLiveLayers);
   $("liveSelectParent").addEventListener("click",()=>selectLiveHierarchy("parent"));
   $("liveSelectChild").addEventListener("click",()=>selectLiveHierarchy("child"));
+  $("livePrevSibling").addEventListener("click",()=>navigateLiveSibling(-1));
+  $("liveNextSibling").addEventListener("click",()=>navigateLiveSibling(1));
+  $("liveLocateSelected").addEventListener("click",locateLiveSelected);
+  $("liveShowContainers").addEventListener("change",renderLiveLayers);
   $("liveReleaseClip").addEventListener("change",event=>
     setLiveClippingRelease(event.target.checked));
   $("liveSelectAdded").addEventListener("click",selectAllLiveAdded);

@@ -154,3 +154,8 @@
 #liveElementList [data-depth]:not([data-depth="0"]) .layer-type{border-style:dashed}
 #liveReleaseClipSection{margin-top:11px;padding-top:8px;border-top:1px solid var(--rule,#d6e0d9)}
 #liveReleaseClipSection .checkbox-line{display:flex;align-items:flex-start;gap:7px;line-height:1.45}
+
+/* Precise nested layer navigation; controls remain visible above the scroll list. */
+#liveLayersPanel .live-container-toggle{display:flex;align-items:center;gap:7px;margin-top:8px;font-size:12px;color:var(--muted,#52655b)}
+#liveLayersPanel .live-container-toggle input{flex:none}
+#liveLayersPanel .live-element-list [aria-current='true']{scroll-margin:6px}

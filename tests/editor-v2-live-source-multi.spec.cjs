@@ -385,3 +385,38 @@ test('releasing container clipping is device-scoped, reversible and survives pag
   await expect(live.locator('section.frame')).toHaveCSS('overflow-x','visible');
   await expect(live.locator('#moving')).toHaveText('Move beyond frame');
 });
+
+test('nested layout containers are visible on demand and siblings can be selected precisely',async({page})=>{
+  const source='<!doctype html><html><head><style>'+
+    'main{padding:55px}div.frame{padding:30px;border:1px solid}p{padding:8px}'+
+    '</style></head><body><main><div class="frame">'+
+    '<p class="first">First sibling</p><p class="second">Second sibling</p>'+
+    '<p class="third">Third sibling</p></div></main></body></html>';
+  await page.route('https://api.github.com/repos/gmoon-code/gmoon-code.github.io/contents/research.html*',
+    route=>route.fulfill({status:200,contentType:'application/json',
+      body:JSON.stringify({type:'file',sha:'layer-explorer-source',encoding:'base64',
+        content:Buffer.from(source).toString('base64')})}));
+  await page.route('**/research.html',
+    route=>route.fulfill({status:200,contentType:'text/html',body:source}));
+  await page.locator('#reloadLive').click();
+  const live=page.frameLocator('#livePageFrame');
+  await live.locator('p.second').click();
+  await expect(page.locator('#livePrevSibling')).toBeEnabled();
+  await expect(page.locator('#liveNextSibling')).toBeEnabled();
+  await page.locator('#liveNextSibling').click();
+  await expect(live.locator('p.third')).toHaveAttribute('data-moon-v2-live-selected','');
+  await page.locator('#livePrevSibling').click();
+  await expect(live.locator('p.second')).toHaveAttribute('data-moon-v2-live-selected','');
+  await page.locator('#liveSelectParent').click();
+  await expect(live.locator('div.frame')).toHaveAttribute('data-moon-v2-live-selected','');
+  await page.locator('#liveShowContainers').check();
+  await expect(page.locator('#liveElementList [data-depth]')).toHaveCount(4);
+  await expect(page.locator('#liveElementList [aria-current="true"]')).toHaveCount(1);
+  await page.locator('#liveElementSearch').fill('no-such-layer');
+  // Selected is always pinned even when the search filters it out.
+  await expect(page.locator('#liveElementList [aria-current="true"]')).toHaveCount(1);
+  await page.locator('#liveLocateSelected').click();
+  await expect(page.locator('#liveElementSearch')).toHaveValue('');
+  await expect(page.locator('#liveElementList [aria-current="true"]')).toHaveCount(1);
+  await expect(page.locator('#liveShowContainers')).toBeChecked();
+});
