@@ -451,6 +451,8 @@ test('original webpage position lock persists after reload and prevents nudging'
   await page.locator('#liveTogglePositionLock').click();
   await expect(page.locator('#liveTogglePositionLock')).toHaveAttribute('aria-pressed','true');
   await expect(page.locator('#liveMoveX')).toBeDisabled();
+  await expect(page.locator('#liveTextBoxWidth')).toBeDisabled();
+  await expect(page.locator('#liveTextBoxHeight')).toBeDisabled();
   await expect(live.locator('#moon-v2-live-overlay .moon-v2-grip')).toHaveCount(0);
   await expect(page.locator('#liveElementList [data-position-locked="true"]')).toHaveCount(1);
   await page.keyboard.press('ArrowRight');
