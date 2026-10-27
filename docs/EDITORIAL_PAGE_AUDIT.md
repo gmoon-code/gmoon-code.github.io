@@ -25,7 +25,7 @@ A content pass is **not** equivalent to final visual approval. Automated browser
 | `story-method.html` | Content, source-record, scientific-example, and writing pass completed, commit `a1b5086` | Full live-preview interaction and visual inspection at desktop/phone sizes |
 | `research-methods-studio.html` | Checked against synthetic source CSV, JSON and release README; content and statistical interpretation pass, commit `2865b41` | Live-preview, export, backup and responsive interaction audit outstanding |
 | `writing-biological-classification.html` | Independently reviewed XYY systematic-review conclusion; improved evidence and classroom authority argument, commit `cc9460d` | Final independent visual inspection and cross-page prose repetition review |
-| `interests.html` | Prior content passes plus independent image inspection and final filename-style alt correction `2fb99ed` | Image positioning, book-cover assets and responsive layout still require visual sign-off |
+| `interests.html` | Previous editorial/image checks; mobile screenshot exposed pungmul photographs overlapping prose. Repositioned original image nodes into in-flow mobile gallery `eff3d04` | Check new phone screenshots for no overlaps and preserve desktop composition |
 | `pungmul.html` | History research and prior content pass; additional four photo labels fixed `234fad1`, introduction refined `c52ceb5` | Photo-layout check; one photograph retains screenshot-viewer chrome and needs careful replacement |
 | `contact.html` | Revised in preceding conversation; photo alt fixed `667ed11`; final sign-off pending | Wording, contact destinations, all screen sizes |
 | `cv.html` | Dates and credentials reconciled against application CVs; coursework Aug versus expected degree award Nov clarified `63f1c32`; phone reading inset corrected `ff60039` | Verify updated phone screenshot, A4 print preview and formal conferral when available |
@@ -55,6 +55,7 @@ A content pass is **not** equivalent to final visual approval. Automated browser
 - The editor's PowerPoint-like crop, resize and live-object tests still have genuine failures. Treat them as separate unresolved product-quality work, not as evidence that the research prose fails.
 - Actual full-page screenshots were retrieved from GitHub Actions for 320px and 375px phone widths (plus desktop captures). A pronounced Homepage overlap, Research text flush against the page frame, and CV text flush against its frame were observed and targeted. The new pages must be reviewed in newly rendered screenshots before visual sign-off.
 - The existing responsive audit omitted Contact and Pungmul. Both, plus 404 screenshot coverage, were added to `scripts/responsive_smoke.py` in commit `357b4aa`. The new workflow should be checked for results.
+- The audit now tests mobile intersections between free-positioned photographs and readable text on Home and Interests, commit `26ffc4a`. Ordinary viewport-width checks had missed these image/text collisions. Treat the fix as provisional until the run confirms it.
 - CSS has received targeted spacing changes; final human visual judgment is still outstanding for the edited pages.
 
 ## Next content pass
