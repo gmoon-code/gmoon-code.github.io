@@ -1301,6 +1301,9 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
 .teaching-case-prose{max-width:83ch}
 .teaching-original-prompt{padding:23px 25px 19px;border-left:4px solid var(--section-magenta-line);background:var(--section-magenta-soft);margin-bottom:23px;max-width:920px}
 .teaching-original-prompt .meta{font-size:13px;margin:0 0 13px}
+.teaching-original-prompt ol{margin:12px 0 0;padding-left:1.5rem}
+.teaching-original-prompt li{font-size:16px;line-height:1.65;margin:0 0 9px;padding-left:3px}
+.teaching-original-prompt li:last-child{margin-bottom:0}
 .teaching-original-prompt blockquote{font-size:clamp(20px,2.3vw,24px);line-height:1.5;font-weight:700;margin:0 0 16px}
 .teaching-small-note{font-size:13px!important;line-height:1.62!important;color:#5f555f!important;margin:0!important}
 .teaching-bio-mechanism{max-width:970px;border:1px solid var(--moon-rule);padding:18px 19px;margin:0 0 24px}
