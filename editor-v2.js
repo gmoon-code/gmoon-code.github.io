@@ -4632,8 +4632,9 @@ function renderImageLibrary(){
     thumb.loading="lazy";thumb.src=item.src;
     thumb.alt="";
     const label=document.createElement("span");
-    label.textContent=displayName.slice(0,54);
-    button.setAttribute("aria-label","Insert or replace image: "+displayName);
+    label.textContent="Use image: "+displayName.slice(0,54);
+    // Let the visible button text provide the accessible name. An explicit
+    // aria-label obscured the text and failed accessible-name matching.
     button.append(thumb,label);
     container.append(button);
   }
