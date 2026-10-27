@@ -1150,3 +1150,21 @@ test('persistent inserted-object group is selected from layers after reload',asy
   await expect(live.locator('[data-moon-v2-added-id="'+idB+'"]'))
     .not.toHaveAttribute('data-moon-v2-editor-group');
 });
+
+test('Alt-click in Layers selects just one group member without breaking the group',async({page})=>{
+  const live=await selectSourceGroup(page,['first','second']);
+  await page.locator('#liveGroup').click();
+  const member=page.locator('#liveElementList [data-live-selector="main > div:nth-of-type(1) > p:nth-of-type(2)"]');
+  await expect(member).toHaveCount(1);
+  await member.click({modifiers:['Alt']});
+  await expect(page.locator('#liveMultiCount')).toHaveText('1 selected');
+  await expect(page.locator('#liveUngroup')).toBeEnabled();
+  const before=await localRect(live.locator('p.second'));
+  await live.locator('p.second').press('ArrowRight');
+  const after=await localRect(live.locator('p.second'));
+  expect(after.x).toBeGreaterThan(before.x);
+  await live.locator('p.third').click();
+  await live.locator('p.first').click();
+  await expect(page.locator('#liveMultiCount')).toHaveText('2 selected');
+  await expect(live.locator('p.first a')).toHaveAttribute('href','teaching.html');
+});
