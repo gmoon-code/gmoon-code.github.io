@@ -552,7 +552,7 @@ function validPictureEffects(map){
 }
 function pictureEffectsCss(fx,scaleX=1,scaleY=1){
   const f={...DEFAULT_PICTURE_EFFECTS,...fx};
-  return "rotate:"+f.rotation+"deg!important;"+
+  return "rotate:"+f.rotation+"deg!important;transform-origin:center center!important;"+
     "scale:"+(Math.round(scaleX*(f.flipH?-1:1)*1000)/1000)+" "+
       (Math.round(scaleY*(f.flipV?-1:1)*1000)/1000)+"!important;"+
     "opacity:"+(f.opacity/100)+"!important;"+
@@ -2850,6 +2850,11 @@ function syncLiveOverlay(){
       "#moon-v2-live-overlay .moon-v2-edge[data-direction='w']{left:0!important;}"+
       "#moon-v2-live-overlay .moon-v2-edge[data-direction='e']{left:100%!important;}"+
 
+      "#moon-v2-live-overlay .moon-v2-rotate{left:50%!important;top:-76px!important;"+
+      "transform:translateX(-50%)!important;width:30px!important;height:30px!important;"+
+      "border-radius:50%!important;background:#e9ddff!important;"+
+      "border:2px solid #7a4baf!important;color:#42275e!important;"+
+      "font:18px Arial,sans-serif!important;cursor:crosshair!important;}"+
       "#moon-v2-live-overlay .moon-v2-move{left:0!important;top:-29px!important;"+
       "height:26px!important;padding:2px 8px!important;border-radius:4px!important;"+
       "white-space:nowrap!important;}"+
@@ -2866,6 +2871,14 @@ function syncLiveOverlay(){
       "Move selected live-page object");
     move.dataset.direction=liveCropMode&&node.tagName==="IMG"?"crop":"move";
     if(!locked&&!(liveCropMode&&node.tagName==="IMG"))liveOverlay.append(move);
+    if(!locked&&!grouped&&node.tagName==="IMG"&&!liveCropMode){
+      const rotor=doc.createElement("button");
+      rotor.type="button";rotor.className="moon-v2-rotate";
+      rotor.textContent="⟳";rotor.dataset.direction="rotate";
+      rotor.title="Drag to rotate picture. Hold Shift to snap by 15 degrees.";
+      rotor.setAttribute("aria-label",rotor.title);
+      liveOverlay.append(rotor);
+    }
     const remove=doc.createElement("button");
     remove.className="moon-v2-delete";remove.type="button";remove.textContent="Delete";
     remove.setAttribute("aria-label","Delete selected webpage element (undo is available)");
@@ -3102,6 +3115,27 @@ function moveLiveGesture(event){
   const deltaX=event.clientX-g.startX,deltaY=event.clientY-g.startY;
   if(!g.moved&&Math.hypot(deltaX,deltaY)<3)return;
   g.moved=true;
+  if(g.dir==="rotate"&&g.node.tagName==="IMG"){
+    const midX=g.rect.left+g.rect.width/2,midY=g.rect.top+g.rect.height/2;
+    const before=Math.atan2(g.startY-midY,g.startX-midX);
+    const now=Math.atan2(event.clientY-midY,event.clientX-midX);
+    const current=selectedPictureEffects(g.patch);
+    let degree=current.rotation+(now-before)*180/Math.PI;
+    degree=((degree+180)%360+360)%360-180;
+    degree=event.shiftKey?Math.round(degree/15)*15:Math.round(degree);
+    const patch=copy(g.patch),device=liveDevice();
+    if(patch.kind!=="insert"&&!patch.layout?.[device]){
+      patch.layout={...(patch.layout||{}),[device]:g.layout};
+    }
+    if(patch.kind==="insert"&&patch.design?.rotation)
+      patch.design={...patch.design,rotation:0};
+    patch.pictureEffects={...(patch.pictureEffects||{}),
+      [device]:{...current,rotation:degree}};
+    livePatches.set(g.selector,patch);
+    if(patch.kind==="insert")refreshAddedObject(g.node.ownerDocument,patch);
+    else refreshLiveLayoutRules(g.node.ownerDocument);
+    syncLiveOverlay();return;
+  }
   if(g.dir==="crop-zoom"&&g.node.tagName==="IMG"){
     const origin=selectedImageCrop(g.patch,liveDevice());
     const change=(deltaX+deltaY)/Math.max(80,g.rect.width)*100;
@@ -3334,7 +3368,8 @@ function finishLiveGesture(event){
     // link or selecting a different element after a drag.
     liveSuppressClickUntil=performance.now()+250;
     recordLiveHistory(g.snapshot);
-    status(g.dir==="crop"?"Picture crop repositioned · Undo available":
+    status(g.dir==="rotate"?"Picture rotated · Undo available":
+      g.dir==="crop"?"Picture crop repositioned · Undo available":
       g.dir==="crop-zoom"?"Picture zoom changed inside crop frame · Undo available":
       g.sourceGroup?
       g.sourceGroup.length+" original webpage objects "+
