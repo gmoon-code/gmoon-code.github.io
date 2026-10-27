@@ -2285,10 +2285,15 @@ function resizeLiveSourceGroup(g,dx,dy,lockRatio=false){
   refreshLiveLayoutRules(doc);
   for(const info of desired){
     if(info.item.node.matches(LIVE_REFLOW_TEXT)&&
-        (g.dir==="e"||g.dir==="w")){
+        (g.dir==="e"||g.dir==="w"||g.dir.length===2)){
       const needed=Math.ceil(info.item.node.scrollHeight+2);
-      if(needed>info.layout.reserveHeight&&needed<=5000){
+      if(Number.isFinite(needed)&&needed>info.layout.reserveHeight&&needed<=5000){
+        const extra=needed-info.layout.reserveHeight;
         info.layout.reserveHeight=needed;
+        // Keep each text box's opposite bottom edge anchored when the
+        // group's north corner is dragged inward.
+        info.target.h=needed;
+        if(g.dir.includes("n"))info.target.y-=extra;
         info.patch.layout[device]=info.layout;
         livePatches.set(info.item.selector,info.patch);
       }
