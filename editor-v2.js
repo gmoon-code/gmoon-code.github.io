@@ -1831,6 +1831,8 @@ function renderLiveInspector(){
     $("liveCropShape").value=crop.mask;
     $("liveCropX").value=String(crop.x);
     $("liveCropY").value=String(crop.y);
+    $("liveCropZoom").value=String(crop.zoom||100);
+    $("liveCropZoomValue").textContent=(crop.zoom||100)+"%";
     $("liveCropXValue").textContent=crop.x+"%";
     $("liveCropYValue").textContent=crop.y+"%";
     $("liveCropToggle").setAttribute("aria-pressed",String(liveCropMode));
@@ -2138,7 +2140,16 @@ function applyPatchesToDocument(doc,strict=false,resolved=[],normalized=[]){
     if(patch.kind==="image"){
       node.setAttribute("src",patch.src);
       node.setAttribute("alt",patch.alt);
-    }else if(patch.kind==="text")node.innerHTML=cleanRich(patch.html);
+    }
+    if(node.tagName==="IMG"&&patch.imageCrop&&validImageCropMap(patch.imageCrop))
+      node.setAttribute("data-moon-v2-image-crop",JSON.stringify({
+        ...(()=>{try{
+          const old=JSON.parse(node.getAttribute("data-moon-v2-image-crop")||"{}");
+          return validImageCropMap(old)?old:{};
+        }catch{return {};}})(),
+        ...patch.imageCrop
+      }));
+    if(patch.kind==="text")node.innerHTML=cleanRich(patch.html);
   }
   for(const {patch,node} of changes){
     if(patch.kind==="delete")node.remove();
@@ -2731,10 +2742,11 @@ function moveLiveGesture(event){
   if(g.dir==="crop"&&g.node.tagName==="IMG"){
     const frame=g.rect,nw=g.node.naturalWidth,nh=g.node.naturalHeight;
     if(!nw||!nh||frame.width<1||frame.height<1)return;
-    const scale=Math.max(frame.width/nw,frame.height/nh);
+    const origin=selectedImageCrop(g.patch,liveDevice());
+    const coverScale=Math.max(frame.width/nw,frame.height/nh);
+    const scale=coverScale*(origin.zoom||100)/100;
     const overflowX=Math.max(0,nw*scale-frame.width);
     const overflowY=Math.max(0,nh*scale-frame.height);
-    const origin=selectedImageCrop(g.patch,liveDevice());
     const crop={...origin,fit:"cover",
       x:overflowX?Math.round(clamp(origin.x-deltaX/overflowX*100,0,100)):50,
       y:overflowY?Math.round(clamp(origin.y-deltaY/overflowY*100,0,100)):50};
@@ -4753,7 +4765,8 @@ function attachEvents(){
   $("liveCropShape").addEventListener("change",event=>
     applySelectedImageCrop({mask:event.target.value}));
   for(const [id,field,out] of [
-    ["liveCropX","x","liveCropXValue"],["liveCropY","y","liveCropYValue"]]){
+    ["liveCropX","x","liveCropXValue"],["liveCropY","y","liveCropYValue"],
+    ["liveCropZoom","zoom","liveCropZoomValue"]]){
     $(id).addEventListener("input",event=>{
       $(out).textContent=event.target.value+"%";
       previewSelectedImageCrop({[field]:Number(event.target.value)});
