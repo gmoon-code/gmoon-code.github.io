@@ -1168,3 +1168,44 @@ test('Alt-click in Layers selects just one group member without breaking the gro
   await expect(page.locator('#liveMultiCount')).toHaveText('2 selected');
   await expect(live.locator('p.first a')).toHaveAttribute('href','teaching.html');
 });
+
+test('permanent added group resize scales both members using a shared group box',async({page})=>{
+  const live=page.frameLocator('#livePageFrame');
+  await page.locator('#addShape').click();
+  const idA=await live.locator('[data-moon-v2-added-id]').last()
+    .getAttribute('data-moon-v2-added-id');
+  await page.locator('#addShape').click();
+  const idB=await live.locator('[data-moon-v2-added-id]').last()
+    .getAttribute('data-moon-v2-added-id');
+  await page.locator('#liveMoveX').fill('500');
+  await page.locator('#liveMoveX').dispatchEvent('change');
+  const a=live.locator('[data-moon-v2-added-id="'+idA+'"]');
+  const b=live.locator('[data-moon-v2-added-id="'+idB+'"]');
+  await page.locator('#liveElementList [data-live-selector="added:'+idA+'"]').click();
+  await page.locator('#liveElementList [data-live-selector="added:'+idB+'"]')
+    .click({modifiers:['Shift']});
+  await page.locator('#liveGroup').click();
+  const aBefore=await localRect(a),bBefore=await localRect(b);
+  const overlay=live.locator('#moon-v2-live-overlay');
+  await expect(overlay).toHaveAttribute('data-group-count','2');
+  const combinedWidth=Math.max(aBefore.x+aBefore.w,bBefore.x+bBefore.w)-
+    Math.min(aBefore.x,bBefore.x);
+  const groupBox=await overlay.boundingBox();
+  expect(groupBox).toBeTruthy();
+  expect(groupBox.width).toBeGreaterThan(Math.max(aBefore.w,bBefore.w)*.45);
+  const grip=overlay.locator('.moon-v2-grip[data-direction="se"]');
+  const c=await grip.boundingBox();
+  expect(c).toBeTruthy();
+  await page.mouse.move(c.x+c.width/2,c.y+c.height/2);
+  await page.mouse.down();
+  await page.mouse.move(c.x+c.width/2+65,c.y+c.height/2+40,{steps:9});
+  await page.mouse.up();
+  const aAfter=await localRect(a),bAfter=await localRect(b);
+  expect(aAfter.w).toBeGreaterThan(aBefore.w);
+  expect(bAfter.w).toBeGreaterThan(bBefore.w);
+  expect(aAfter.h).toBeGreaterThan(aBefore.h);
+  expect(bAfter.h).toBeGreaterThan(bBefore.h);
+  expect(Math.max(aAfter.x+aAfter.w,bAfter.x+bAfter.w)-
+    Math.min(aAfter.x,bAfter.x)).toBeGreaterThan(combinedWidth);
+  await expect(page.locator('#liveMultiCount')).toHaveText('2 selected');
+});
