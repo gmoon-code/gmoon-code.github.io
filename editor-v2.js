@@ -23,6 +23,7 @@ let liveSectionPickMode=false; // Editor-only selection behaviour, never publish
 let liveCropMode=false; // Selected photo can be panned inside its crop frame.
 let liveCropSliderBefore=null,liveCropSliderKey=""; // One undo step per slider drag.
 let pictureFxBefore=null; // Coalesce each range-slider gesture into one undo step.
+let liveFormatClipboard=null; // Appearance only, never text, sources, geometry or private data.
 let liveSectionHover=null;
 let workspaceMode="live",liveWidth=1160,liveScale=1,liveManualScale=null,liveSelected=null,liveObserver=null,liveSerial=0;
 let liveSuppressClickUntil=0;
@@ -1592,6 +1593,90 @@ function finishCropSliderPreview(){
     status("Crop position saved · Undo restores its previous framing");
   }
 }
+function liveFormatKind(node){
+  if(!node||!liveSelector(node))return null;
+  if(node.tagName==="IMG")return "image";
+  const key=liveSelector(node),added=LIVE_ADDED_ID.test(key);
+  if(added){
+    const patch=livePatches.get(key)||addedPatchFromNode(node,key);
+    return patch?.objectType==="shape"?"shape":
+      patch?.objectType==="text"?"text":null;
+  }
+  return node.matches("h1,h2,h3,h4,h5,h6,p,li,blockquote,figcaption")?
+    "text":null;
+}
+function copyLiveFormat(){
+  const node=liveSelected?.node,kind=liveFormatKind(node);
+  if(!kind)return;
+  const patch=livePatchForSelected();if(!patch)return;
+  let copied={kind};
+  if(kind==="image"){
+    copied={kind,pictureEffects:copy(selectedPictureEffects(patch)),
+      mask:selectedImageCrop(patch).mask};
+  }else if(kind==="shape"){
+    copied={kind,design:copy(patch.design||{}),fill:patch.fill};
+  }else{
+    const css=node.ownerDocument.defaultView.getComputedStyle(node);
+    const appearance={...(patch.appearance||{})};
+    if(!appearance.fontSize)
+      appearance.fontSize=Math.round(clamp(parseFloat(css.fontSize)||18,10,120));
+    if(!appearance.family&&LIVE_FONT_OPTIONS.has(css.fontFamily))
+      appearance.family=css.fontFamily;
+    if(!appearance.color)appearance.color=hexColour(css.color,"#1c2622");
+    if(!appearance.weight)
+      appearance.weight=parseInt(css.fontWeight,10)>=600?"bold":"normal";
+    if(!appearance.style)appearance.style=css.fontStyle==="italic"?"italic":"normal";
+    if(!appearance.align&&["left","center","right","justify"].includes(css.textAlign))
+      appearance.align=css.textAlign;
+    if(!appearance.decoration)
+      appearance.decoration=(css.textDecorationLine||"").includes("underline")?"underline":"none";
+    if(!appearance.backgroundColor&&
+       css.backgroundColor!=="transparent"&&!/rgba?\(0, 0, 0, 0\)/.test(css.backgroundColor))
+      appearance.backgroundColor=hexColour(css.backgroundColor,"#ffffff");
+    delete appearance.layer;
+    copied={kind,appearance};
+  }
+  liveFormatClipboard=copied;
+  renderLiveInspector();
+  status("Formatting copied · Select another "+kind+" and choose Paste formatting");
+}
+function pasteLiveFormat(){
+  const node=liveSelected?.node,selector=node&&liveSelector(node);
+  if(!selector||!liveFormatClipboard||
+     liveFormatKind(node)!==liveFormatClipboard.kind)return;
+  const patch=livePatchForSelected(),device=liveDevice();
+  if(!patch)return;
+  const before=liveSnapshot(),clipboard=liveFormatClipboard;
+  if(clipboard.kind==="image"){
+    if(patch.kind!=="insert"&&!patch.layout?.[device])
+      patch.layout={...(patch.layout||{}),[device]:liveLayoutFor(selector)};
+    if(patch.kind==="insert"&&patch.design?.rotation)
+      patch.design={...patch.design,rotation:0};
+    patch.pictureEffects={...(patch.pictureEffects||{}),
+      [device]:copy(clipboard.pictureEffects)};
+    // Mask shape travels with appearance, but independently cropped sides
+    // and source-image content are left unchanged.
+    const prepared=prepareImageCrop(node,patch,device);
+    if(prepared){
+      patch.imageCrop={...(patch.imageCrop||{}),
+        [device]:{...prepared,mask:clipboard.mask,reset:false}};
+    }
+  }else if(clipboard.kind==="shape"){
+    if(patch.kind!=="insert")return;
+    patch.design=copy(clipboard.design);
+    patch.fill=clipboard.fill;
+  }else{
+    patch.appearance={...(patch.appearance||{}),...clipboard.appearance};
+  }
+  if(!validLivePatch(patch)){status("Copied format is not valid for this object");return;}
+  livePatches.set(selector,patch);
+  if(patch.kind==="insert")refreshAddedObject(node.ownerDocument,patch);
+  else refreshLiveLayoutRules(node.ownerDocument);
+  if(recordLiveHistory(before)){
+    renderLiveInspector();syncLiveOverlay();
+    status("Formatting applied to "+clipboard.kind+" · Content and dimensions preserved · Undo available");
+  }
+}
 function selectedPictureEffects(patch,device=liveDevice()){
   const node=liveSelected?.node;
   let base={};
@@ -2117,6 +2202,9 @@ function renderLiveInspector(){
     "Choose a heading, paragraph or image in the live website.";
   $("liveTextControls").hidden=!node||tag==="IMG"||LIVE_CONTAINER_SET.has(tag);
   $("liveImageControls").hidden=!node||tag!=="IMG";
+  $("liveCopyFormat").disabled=!liveFormatKind(node);
+  $("livePasteFormat").disabled=!liveFormatClipboard||
+    liveFormatKind(node)!==liveFormatClipboard.kind;
   $("editLiveText").disabled=!node||tag==="IMG"||LIVE_CONTAINER_SET.has(tag)||!!liveEditing;
   $("saveLiveText").disabled=!liveEditing;
   $("cancelLiveText").disabled=!liveEditing;
@@ -5199,6 +5287,8 @@ function attachEvents(){
   $("saveLiveText").addEventListener("click",saveLiveText);
   $("cancelLiveText").addEventListener("click",cancelLiveText);
   $("applyLiveImage").addEventListener("click",applyLiveImage);
+  $("liveCopyFormat").addEventListener("click",copyLiveFormat);
+  $("livePasteFormat").addEventListener("click",pasteLiveFormat);
   $("liveCropToggle").addEventListener("click",()=>setLiveCropMode(!liveCropMode));
   $("cropImageTool").addEventListener("click",()=>setLiveCropMode(!liveCropMode));
   for(const [side,name] of [["left","Left"],["right","Right"],["top","Top"],["bottom","Bottom"]]){
