@@ -1258,6 +1258,7 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
 .teaching-scholarship .teaching-contents{margin:0 0 13px}
 .teaching-essay-section{padding:34px 0}
 .teaching-essay-section .section-head>p{font-size:15px;line-height:1.65;max-width:79ch}
+.teaching-case-intro{max-width:82ch;font-size:17px;line-height:1.72;margin:0 0 22px;color:#373337}
 .teaching-case-collection{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px}
 .teaching-case-preview{border:1px solid var(--moon-rule);border-top:4px solid var(--section-magenta-line);padding:21px 21px 19px;display:flex;flex-direction:column;min-width:0}
 .teaching-case-preview .meta{font-size:13px;line-height:1.4;margin:0 0 9px}
