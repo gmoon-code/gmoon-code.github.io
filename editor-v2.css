@@ -124,3 +124,41 @@
 .live-arrange-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-top:11px}
 .live-arrange-grid button{min-width:0;white-space:normal;line-height:1.35;min-height:35px;text-align:center}
 #liveElementList button[aria-selected="true"]{background:#e5f0fc;box-shadow:inset 3px 0 #2d75b7}
+
+/* Canvas smart guides use unscaled scene coordinates and do not intercept grabs. */
+#stage .canvas-snap-guide{
+  position:absolute;z-index:2147483000;pointer-events:none;
+  background:#d52880;box-shadow:0 0 0 .35px #fff;
+}
+
+/* Clear heading semantics and keyboard access for the live-page preview. */
+.identity h1{margin:0;font-size:15px;font-weight:700;line-height:normal}
+.identity h1 small{font-size:10px;color:var(--accent);margin-left:3px}
+#liveViewport:focus-visible{outline:3px solid var(--focus);outline-offset:-3px}
+
+/* Drag-selection stays inside the canvas and does not affect saved content. */
+#stage .canvas-marquee{
+  position:absolute;z-index:2147483000;pointer-events:none;
+  box-sizing:border-box;border:1.5px solid #2977bd;
+  background:rgba(41,119,189,.12);
+}
+#stage .canvas-marquee.intersect{
+  border-style:dashed;background:rgba(41,119,189,.18);
+}
+#stage .scene-object.marquee-preview{
+  outline:2px solid #2977bd;outline-offset:1px;
+}
+
+/* Nested source-object navigation */
+#liveElementPath.live-hierarchy-path{overflow-wrap:anywhere;line-height:1.5;margin:9px 0 2px}
+#liveElementList [data-depth]:not([data-depth="0"]) .layer-type{border-style:dashed}
+#liveReleaseClipSection{margin-top:11px;padding-top:8px;border-top:1px solid var(--rule,#d6e0d9)}
+#liveReleaseClipSection .checkbox-line{display:flex;align-items:flex-start;gap:7px;line-height:1.45}
+
+/* Precise nested layer navigation; controls remain visible above the scroll list. */
+#liveLayersPanel .live-container-toggle{display:flex;align-items:center;gap:7px;margin-top:8px;font-size:12px;color:var(--muted,#52655b)}
+#liveLayersPanel .live-container-toggle input{flex:none}
+#liveLayersPanel .live-element-list [aria-current='true']{scroll-margin:6px}
+
+/* Layers are navigable by keyboard and inspectable by hover. */
+#liveElementList button[data-live-selector]:focus-visible{outline:2px solid var(--focus,#287dbb);outline-offset:-2px}

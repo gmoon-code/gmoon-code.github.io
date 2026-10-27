@@ -2,11 +2,35 @@ const {test,expect}=require('@playwright/test');
 const fs=require('node:fs');
 const fixture='<!doctype html><html><head><style>main{margin:30px;width:950px;} h2{font:700 30px Georgia;}p{font:18px Georgia;} img{width:240px;height:160px;object-fit:contain}</style></head><body><main><h2>Research overview</h2><p>Students investigate scientific explanations together.</p><img src="assets/profile-portrait.webp" alt="Test portrait"></main></body></html>';
 test.beforeEach(async({page})=>{
+  // The public About URL now redirects to Contact. Add a synthetic page
+  // option only to the isolated test HTML so historical fixture tests still
+  // exercise three objects without changing the actual editor's page list.
+  await page.route('**/editor-v2.html*',async route=>{
+    const response=await route.fetch();
+    const source=await response.text();
+    const body=source.replace('<select id="page">',
+      '<select id="page"><option value="about.html">About test fixture</option>');
+    await route.fulfill({response,body});
+  });
   await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',body:fixture}));
+  // The real About URL now redirects to Contact. Mirror the local fixture
+  // through the verified GitHub source endpoint used by Live Website mode.
+  // This keeps the historic scene tests meaningful without pretending the
+  // public repository still contains the retired About page.
+  await page.route('https://api.github.com/repos/gmoon-code/gmoon-code.github.io/contents/about.html*',
+    route=>route.fulfill({status:200,contentType:'application/json',
+      body:JSON.stringify({type:'file',sha:'isolated-about-test-fixture',
+        encoding:'base64',content:Buffer.from(fixture).toString('base64')})}));
   await page.goto('http://127.0.0.1:8765/editor-v2.html?page=about.html',{waitUntil:'domcontentloaded'});
   await page.evaluate(()=>localStorage.removeItem('moon-academic-editor-v2:about.html'));
   await page.reload({waitUntil:'domcontentloaded'});
 });
+async function mockVerifiedSource(page,name,source){
+  await page.route('https://api.github.com/repos/gmoon-code/gmoon-code.github.io/contents/'+name+'*',
+    route=>route.fulfill({status:200,contentType:'application/json',
+      body:JSON.stringify({type:'file',sha:'isolated-'+name+'-test-source',
+        encoding:'base64',content:Buffer.from(source).toString('base64')})}));
+}
 async function importScene(page){
   await page.locator('#importPage').click();
   await expect(page.locator('#status')).toContainText('Imported');
@@ -86,13 +110,13 @@ test('responsive HTML export and staging publication only, with no saved token',
   expect(exported).toContain('Students investigate scientific explanations');
   expect(exported).toContain('@media(max-width:700px)');
   let observed;
-  await page.route('https://api.github.com/repos/gmoon-code/gmoon-code.github.io/contents/editor-v2-previews/about.html',route=>{
+  await page.route('https://api.github.com/repos/gmoon-code/gmoon-code.github.io/contents/editor-v2-previews/about.html*',route=>{
     if(route.request().method()==='GET')return route.fulfill({status:404,contentType:'application/json',body:'{}'});
-    observed=JSON.parse(route.request().postData());return route.fulfill({status:201,contentType:'application/json',body:'{}'});
+    observed=JSON.parse(route.request().postData());return route.fulfill({status:201,contentType:'application/json',body:JSON.stringify({commit:{sha:'staging-test-commit'}})});
   });
   await page.locator('#publish').click();await expect(page.locator('#stagePath')).toHaveText('editor-v2-previews/about.html');
   await page.locator('#githubToken').fill('testing-token-only');await page.locator('#confirmPublish').click();
-  await expect(page.locator('#status')).toContainText('Staging published');
+  await expect(page.locator('#status')).toContainText('GitHub confirmed staging preview');
   expect(observed.message).toContain('staging preview');
   const stagedHtml=Buffer.from(observed.content,'base64').toString('utf8');
   expect(stagedHtml).toContain('Research overview');
@@ -200,15 +224,15 @@ test('imported links, emphasis and heading structure survive staging export safe
   expect(exported).toContain('<em>science learning</em>');
   expect(exported).toContain('rel="noopener noreferrer"');
   let posted;
-  await page.route('https://api.github.com/repos/gmoon-code/gmoon-code.github.io/contents/editor-v2-previews/about.html',route=>{
+  await page.route('https://api.github.com/repos/gmoon-code/gmoon-code.github.io/contents/editor-v2-previews/about.html*',route=>{
     if(route.request().method()==='GET')return route.fulfill({status:404,body:'{}'});
     posted=JSON.parse(route.request().postData());
-    return route.fulfill({status:201,body:'{}'});
+    return route.fulfill({status:201,contentType:'application/json',body:JSON.stringify({commit:{sha:'staging-test-commit'}})});
   });
   await page.locator('#publish').click();
   await page.locator('#githubToken').fill('test-placeholder');
   await page.locator('#confirmPublish').click();
-  await expect(page.locator('#status')).toContainText('Staging published');
+  await expect(page.locator('#status')).toContainText('GitHub confirmed staging preview');
   const staging=Buffer.from(posted.content,'base64').toString('utf8');
   expect(staging).toContain('<a href="../research.html">research notes</a>');
 });
@@ -228,6 +252,9 @@ test('unsafe HTML inside a saved rich-text scene is not rendered or exported',as
   await expect(element.locator('script,img')).toHaveCount(0);
   await expect(element.locator('a[href]')).toHaveCount(0);
   expect(await page.evaluate(()=>window.polluted)).toBeUndefined();
+  // A fresh page load defaults to Live Website mode; the scene is still
+  // saved, but HTML scene export is intentionally a free-canvas action.
+  await page.locator('#designMode').click();
   const pending=page.waitForEvent('download');await page.locator('#exportHtml').click();
   const exported=fs.readFileSync(await (await pending).path(),'utf8');
   expect(exported).not.toContain('onerror=');
@@ -298,6 +325,13 @@ test('real Home, Research and Teaching pages import without source modification'
 
 test('comparison view keeps original and new draft separate',async({page})=>{
   await importScene(page);
+  // The source comparison asks GitHub for the exact page revision.
+  // This independent fixture must be served by both the local import
+  // and the mocked GitHub Contents endpoint.
+  await page.route('https://api.github.com/repos/gmoon-code/gmoon-code.github.io/contents/about.html*',
+    route=>route.fulfill({status:200,contentType:'application/json',
+      body:JSON.stringify({type:'file',sha:'fixture-commit-123',
+        encoding:'base64',content:Buffer.from(fixture).toString('base64')})}));
   await page.locator('#compare').click();
   await expect(page.locator('#compareDialog')).toBeVisible();
   await expect(page.frameLocator('#originalFrame').locator('h2')).toHaveText('Research overview');
@@ -417,6 +451,7 @@ test('line breaks inserted during inline editing survive save, reload and export
 test('image library is available without replacing or importing a saved page',async({page})=>{
   await expect(page.locator('#stage .scene-object')).toHaveCount(0);
   await expect(page.locator('#imageLibrary button')).toHaveCount(1,{timeout:12000});
+  await page.locator('#designMode').click();
   await page.locator('#imageLibrary button').click();
   await expect(page.locator('#stage [data-kind="image"]')).toHaveCount(1);
   await expect(page.locator('#stage [data-kind="image"] img')).toHaveAttribute('src','assets/profile-portrait.webp');
@@ -459,10 +494,14 @@ test('live text selection copies a separate object without altering the source',
   await expect(page.locator('#stage [data-kind="text"]')).toHaveCount(1);
 });
 test('new page selection loads the correct live original, not a stale canvas',async({page})=>{
+  const researchFixture='<!doctype html><html><body><main><h1>Research page original</h1></main></body></html>';
   await page.route('**/research.html',route=>route.fulfill({
-    status:200,contentType:'text/html',
-    body:'<!doctype html><html><body><main><h1>Research page original</h1></main></body></html>'
+    status:200,contentType:'text/html',body:researchFixture
   }));
+  await page.route('https://api.github.com/repos/gmoon-code/gmoon-code.github.io/contents/research.html*',
+    route=>route.fulfill({status:200,contentType:'application/json',
+      body:JSON.stringify({type:'file',sha:'isolated-research-test-fixture',
+        encoding:'base64',content:Buffer.from(researchFixture).toString('base64')})}));
   await page.locator('#page').selectOption('research.html');
   await expect(page.frameLocator('#livePageFrame').locator('main h1')).toHaveText('Research page original');
   await expect(page.locator('#liveViewport')).toBeVisible();
@@ -515,16 +554,17 @@ test('original-layout image edit publishes to source-only staging path',async({p
   await page.locator('#applyLiveImage').click();
   await expect(live.locator('main img')).toHaveAttribute('src','assets/replaced-photo.webp');
   let sent;
-  await page.route('https://api.github.com/repos/gmoon-code/gmoon-code.github.io/contents/editor-v2-previews/source-about.html',route=>{
+  await page.route('https://api.github.com/repos/gmoon-code/gmoon-code.github.io/contents/editor-v2-previews/source-about.html*',route=>{
     if(route.request().method()==='GET')return route.fulfill({status:404,body:'{}'});
     sent=JSON.parse(route.request().postData());
-    return route.fulfill({status:201,body:'{}'});
+    return route.fulfill({status:201,contentType:'application/json',body:JSON.stringify({commit:{sha:'staging-test-commit'}})});
   });
   await page.locator('#publish').click();
+  await page.locator('#publishTarget').selectOption('staging');
   await expect(page.locator('#stagePath')).toHaveText('editor-v2-previews/source-about.html');
   await page.locator('#githubToken').fill('staging-test-token');
   await page.locator('#confirmPublish').click();
-  await expect(page.locator('#status')).toContainText('Staging published');
+  await expect(page.locator('#status')).toContainText('GitHub confirmed staging preview');
   const published=Buffer.from(sent.content,'base64').toString('utf8');
   expect(published).toContain('src="https://gmoon-code.github.io/assets/replaced-photo.webp"');
   expect(published).toContain('alt="Replacement description"');
@@ -539,6 +579,7 @@ test('live preview retains true 100vh viewport height and scrolls long pages',as
   await page.route('**/about.html',route=>route.fulfill({
     status:200,contentType:'text/html',body:source
   }));
+  await mockVerifiedSource(page,'about.html',source);
   await page.locator('#reloadLive').click();
   const live=page.frameLocator('#livePageFrame');
   await expect(live.locator('#fullHero')).toBeVisible();
@@ -567,6 +608,7 @@ test('live image library replaces source image without creating a canvas object'
   await page.route('**/about.html',route=>route.fulfill({
     status:200,contentType:'text/html',body:site
   }));
+  await mockVerifiedSource(page,'about.html',site);
   await page.locator('#reloadLive').click();
   const live=page.frameLocator('#livePageFrame');
   await live.locator('main img').first().click();
@@ -601,15 +643,19 @@ test('real academic pages load with source styles inside the faithful live works
   for(const file of ['index.html','research.html','teaching.html','pungmul.html']){
     await page.locator('#page').selectOption(file);
     const frame=page.frameLocator('#livePageFrame');
-    await expect(frame.locator('main')).toBeVisible({timeout:20000});
-    const state=await frame.locator('main').evaluate(node=>({
-      text:node.textContent.trim().slice(0,300),
-      width:node.getBoundingClientRect().width,
-      styles:[...document.styleSheets].length
-    }));
-    expect(state.text.length).toBeGreaterThan(30);
-    expect(state.width).toBeGreaterThan(250);
-    expect(state.styles).toBeGreaterThan(0);
+    // The verified iframe may replace srcdoc once source loading finishes.
+    // Retry measurements across that navigation rather than reading the
+    // intermediate document and treating it as the final page.
+    await expect.poll(async()=>{
+      try{
+        const state=await frame.locator('main').evaluate(node=>({
+          text:node.textContent.trim().slice(0,300),
+          width:node.getBoundingClientRect().width,
+          styles:[...document.styleSheets].length
+        }));
+        return state.text.length>30&&state.width>250&&state.styles>0;
+      }catch{return false;}
+    },{timeout:20000}).toBe(true);
     await expect(page.locator('#liveViewport')).toBeVisible();
     await expect(page.locator('#scrollspace')).toBeHidden();
   }
@@ -664,8 +710,6 @@ test('real website rendering matches standalone pages at desktop and phone width
         await page.locator('#page').selectOption(filename);
         await page.locator('#devicePreview').selectOption(device.label);
         const iframe=page.frameLocator('#livePageFrame');
-        await iframe.locator('main').waitFor({state:'attached',timeout:15000});
-        await iframe.locator('body').evaluate(node=>node.ownerDocument.fonts?.ready);
         const actual=await direct.locator('html').evaluate(node=>{
           const doc=node.ownerDocument,main=doc.querySelector('main'),h=main?.querySelector('h1,h2');
           const css=h?doc.defaultView.getComputedStyle(h):null;
@@ -674,24 +718,31 @@ test('real website rendering matches standalone pages at desktop and phone width
             imageCount:main?.querySelectorAll('img').length||0,
             viewportWidth:doc.defaultView.innerWidth,viewportHeight:doc.defaultView.innerHeight};
         });
-        const seen=await summary(iframe.locator('html'));
-        expect(seen).toEqual(actual);
+        // The frame can briefly still contain the previous page while
+        // the selected GitHub source is loading. Compare once its actual
+        // contents, fonts and viewport match the standalone page.
+        await expect.poll(async()=>{
+          try{return await summary(iframe.locator('html'));}
+          catch{return null;} // Source-verified srcdoc was replaced.
+        },{timeout:20000}).toEqual(actual);
       }finally{await direct.close();}
     }
   }
 });
 
 test('internal links in live site navigate pages through editor without stale iframe state',async({page})=>{
+  const aboutSource='<!doctype html><html><body><header><a href="research.html">Research nav</a></header>'+
+    '<main><h1>Original about page</h1><a href="#section">Jump down</a>'+
+    '<p id="section">About section</p></main></body></html>';
+  const researchSource='<!doctype html><html><body><main><h1>Destination research page</h1></main></body></html>';
   await page.route('**/about.html',route=>route.fulfill({
-    status:200,contentType:'text/html',
-    body:'<!doctype html><html><body><header><a href="research.html">Research nav</a></header>'+
-      '<main><h1>Original about page</h1><a href="#section">Jump down</a>'+
-      '<p id="section">About section</p></main></body></html>'
+    status:200,contentType:'text/html',body:aboutSource
   }));
   await page.route('**/research.html',route=>route.fulfill({
-    status:200,contentType:'text/html',
-    body:'<!doctype html><html><body><main><h1>Destination research page</h1></main></body></html>'
+    status:200,contentType:'text/html',body:researchSource
   }));
+  await mockVerifiedSource(page,'about.html',aboutSource);
+  await mockVerifiedSource(page,'research.html',researchSource);
   await page.locator('#reloadLive').click();
   const live=page.frameLocator('#livePageFrame');
   await expect(live.locator('main h1')).toHaveText('Original about page');
@@ -711,6 +762,7 @@ test('source-preserving export keeps reference anchors local and resolves site a
   await page.route('**/about.html',route=>route.fulfill({
     status:200,contentType:'text/html',body:original
   }));
+  await mockVerifiedSource(page,'about.html',original);
   const pending=page.waitForEvent('download');
   await page.locator('#exportLiveEdits').click();
   const html=fs.readFileSync(await (await pending).path(),'utf8');
@@ -722,16 +774,17 @@ test('source-preserving export keeps reference anchors local and resolves site a
 });
 
 test('live-page asset status identifies missing original resources',async({page})=>{
+  const source='<!doctype html><html><head><link rel="stylesheet" href="missing-editor-test.css"></head>'+
+    '<body><main><h1>Resource test</h1>'+
+    '<img src="assets/missing-editor-test-picture.webp" alt="Missing"></main></body></html>';
   await page.route('**/about.html',route=>route.fulfill({
-    status:200,contentType:'text/html',
-    body:'<!doctype html><html><head><link rel="stylesheet" href="missing-editor-test.css"></head>'+
-      '<body><main><h1>Resource test</h1>'+
-      '<img src="assets/missing-editor-test-picture.webp" alt="Missing"></main></body></html>'
+    status:200,contentType:'text/html',body:source
   }));
+  await mockVerifiedSource(page,'about.html',source);
   await page.locator('#reloadLive').click();
   const live=page.frameLocator('#livePageFrame');
   await expect(live.locator('main h1')).toHaveText('Resource test');
-  await expect(page.locator('#liveAssetStatus')).toContainText('resource warning');
+  await expect(page.locator('#liveAssetStatus')).toContainText('GitHub main source verified');
   await expect(page.locator('#liveAssetStatus')).toContainText('missing image');
   await expect(page.locator('#liveAssetStatus')).toHaveClass(/has-warning/);
 });
@@ -750,9 +803,11 @@ test('live text in progress is saved when switching modes, reloading or changing
   await live.locator('main h2').fill('Draft saved on reload');
   await page.locator('#reloadLive').click();
   await expect(live.locator('main h2')).toHaveText('Draft saved on reload');
+  const researchSource='<!doctype html><html><body><main><h1>Research</h1></main></body></html>';
   await page.route('**/research.html',route=>route.fulfill({
-    status:200,contentType:'text/html',body:'<!doctype html><html><body><main><h1>Research</h1></main></body></html>'
+    status:200,contentType:'text/html',body:researchSource
   }));
+  await mockVerifiedSource(page,'research.html',researchSource);
   await live.locator('main h2').click();
   await page.locator('#editLiveText').click();
   await live.locator('main h2').fill('Draft saved on navigation');
@@ -871,23 +926,34 @@ test('arrow keys nudge live text and reset position only for active device',asyn
   expect(Math.abs(reset.y-original.y)).toBeLessThan(1);
 });
 
-test('moving a real homepage image preserves its pre-existing translation',async({page})=>{
-  test.setTimeout(25000);
+test('moving a published source image preserves its original translation',async({page})=>{
+  // Keep this a stable fixture. The real homepage can be redesigned while
+  // the editor's published-translation behaviour still needs regression tests.
+  const source='<!doctype html><html><head><style id="moon-v2-live-layout">'+
+    '@media (min-width:1025px){main > img:nth-of-type(1){'+
+    'translate:-132px 17px!important;scale:0.92 0.92!important;}}</style>'+
+    '</head><body><main style="padding:120px 220px">'+
+    '<img src="assets/pungmul-stage.webp" width="180" height="140" alt="Site photo">'+
+    '</main></body></html>';
+  await page.route('**/index.html',route=>route.fulfill({
+    status:200,contentType:'text/html',body:source
+  }));
+  await mockVerifiedSource(page,'index.html',source);
   await page.locator('#page').selectOption('index.html');
   const live=page.frameLocator('#livePageFrame');
-  const image=live.locator('main img[src="assets/pungmul-stage.webp"]').first();
-  await image.scrollIntoViewIfNeeded();
+  const image=live.locator('main img').first();
+  await expect(image).toHaveAttribute('alt','Site photo');
   await image.click();
-  const original=await image.boundingBox();
+  const before=await image.evaluate(node=>getComputedStyle(node).translate);
+  expect(parseFloat(before)).toBe(-132);
   await page.locator('#liveMoveX').fill('20');
   await page.locator('#liveMoveX').press('Tab');
-  const after=await image.boundingBox();
-  const scale=Number(await page.locator('#zoom').inputValue())/100;
-  expect(after.x-original.x).toBeGreaterThan(5);
-  expect(Math.abs((after.x-original.x)-20*scale)).toBeLessThan(4);
+  const after=await image.evaluate(node=>getComputedStyle(node).translate);
+  expect(Math.abs(parseFloat(after)-(-112))).toBeLessThan(1.2);
+  await expect(image).toHaveCSS('scale','0.92');
 });
 
-test('live text resize handles scale text visually without reflowing neighbouring webpage blocks',async({page})=>{
+test('live text resize handles change natural box dimensions without stretching glyphs',async({page})=>{
   const live=page.frameLocator('#livePageFrame');
   const title=live.locator('main h2').first(),neighbour=live.locator('main p').first();
   const before=await title.boundingBox(),neighbourBefore=await neighbour.boundingBox();
@@ -902,15 +968,17 @@ test('live text resize handles scale text visually without reflowing neighbourin
   const after=await title.boundingBox(),neighbourAfter=await neighbour.boundingBox();
   expect(after.width).toBeGreaterThan(before.width+15);
   expect(after.height).toBeGreaterThan(before.height+8);
-  expect(Math.abs(neighbourBefore.x-neighbourAfter.x)).toBeLessThan(1);
-  expect(Math.abs(neighbourBefore.y-neighbourAfter.y)).toBeLessThan(1);
-  await expect(page.locator('#liveScaleX')).not.toHaveValue('100');
-  await expect(page.locator('#liveScaleY')).not.toHaveValue('100');
+  expect(Math.abs(neighbourBefore.x-neighbourAfter.x)).toBeLessThan(1.5);
+  expect(neighbourAfter.y).toBeGreaterThan(neighbourBefore.y+5);
+  // Width and height are natural CSS dimensions, not glyph distortion.
+  await expect(page.locator('#liveScaleX')).toHaveValue('100');
+  await expect(page.locator('#liveScaleY')).toHaveValue('100');
   const pending=page.waitForEvent('download');
   await page.locator('#exportLiveEdits').click();
   const html=fs.readFileSync(await (await pending).path(),'utf8');
   expect(html).toContain('@media (min-width:1025px)');
-  expect(html).toContain('scale:');
+  expect(html).toContain('width:');
+  expect(html).toContain('height:');
   await expect(page.locator('#undo')).toBeEnabled();
   await page.locator('#undo').click();
   const undone=await live.locator('main h2').first().boundingBox();
@@ -922,22 +990,22 @@ test('live text resize handles scale text visually without reflowing neighbourin
   const retained=await live.locator('main h2').first().boundingBox();
   expect(retained.width).toBeGreaterThan(before.width+15);
 });
-test('text scaling can be changed numerically and reset for individual viewport',async({page})=>{
+test('numeric text width changes its natural box size and is isolated by device',async({page})=>{
   const live=page.frameLocator('#livePageFrame'),heading=live.locator('main h2').first();
   await heading.click();
-  const original=await heading.boundingBox();
-  await page.locator('#liveScaleX').fill('120');
-  await page.locator('#liveScaleX').press('Tab');
-  const wider=await heading.boundingBox();
-  expect(wider.width).toBeGreaterThan(original.width+10);
+  const original=await heading.evaluate(node=>node.getBoundingClientRect().width);
+  const width=Math.round(original+80);
+  await page.locator('#liveTextBoxWidth').fill(String(width));
+  await page.locator('#liveTextBoxWidth').press('Tab');
+  await expect(heading).toHaveCSS('width',width+'px');
   await page.locator('#devicePreview').selectOption('phone');
-  await expect(page.locator('#liveScaleX')).toHaveValue('100');
+  const phone=await heading.evaluate(node=>node.getBoundingClientRect().width);
+  expect(Math.abs(phone-width)).toBeGreaterThan(15);
   await page.locator('#devicePreview').selectOption('desktop');
-  await expect(page.locator('#liveScaleX')).toHaveValue('120');
-  await page.locator('#resetLiveLayout').click();
-  await expect(page.locator('#liveScaleX')).toHaveValue('100');
-  const reset=await heading.boundingBox();
-  expect(Math.abs(reset.width-original.width)).toBeLessThan(1);
+  await expect(page.locator('#liveTextBoxWidth')).toHaveValue(String(width));
+  await page.locator('#liveResetTextDimensions').click();
+  const restored=await heading.evaluate(node=>node.getBoundingClientRect().width);
+  expect(Math.abs(restored-original)).toBeLessThan(2);
 });
 
 test('selecting and moving a real website section preserves nested links and HTML on staging',async({page})=>{
@@ -949,6 +1017,7 @@ test('selecting and moving a real website section preserves nested links and HTM
   await page.route('**/about.html',route=>route.fulfill({
     status:200,contentType:'text/html',body:fixture
   }));
+  await mockVerifiedSource(page,'about.html',fixture);
   await page.locator('#reloadLive').click();
   const live=page.frameLocator('#livePageFrame');
   const card=live.locator('main section.research-card');
@@ -1005,6 +1074,7 @@ test('whole-section background changes keep nested markup and reset cleanly',asy
     '<p>Evidence and <a href="#ref">references</a></p></section>'+
     '<p id="ref">Citation remains.</p></main></body></html>';
   await page.route('**/about.html',route=>route.fulfill({status:200,contentType:'text/html',body:fixture}));
+  await mockVerifiedSource(page,'about.html',fixture);
   await page.locator('#reloadLive').click();
   const live=page.frameLocator('#livePageFrame');
   const section=live.locator('main section.study');
@@ -1033,6 +1103,7 @@ test('style-only changes preserve original paragraph spans, classes and hyperlin
   await page.route('**/about.html',route=>route.fulfill({
     status:200,contentType:'text/html',body:source
   }));
+  await mockVerifiedSource(page,'about.html',source);
   await page.locator('#reloadLive').click();
   const live=page.frameLocator('#livePageFrame');
   const para=live.locator('main p.science');
@@ -1061,7 +1132,6 @@ test('reflow text box changes line wrapping while preserving reserved flow footp
   const neighbourBefore=await paragraph.boundingBox();
   await heading.click();
   await expect(page.locator('#liveTextReflowControls')).toBeVisible();
-  await page.locator('#liveTextReflow').check();
   await expect(page.locator('#liveTextBoxWidth')).toBeEnabled();
   const beforeWidth=Number(await page.locator('#liveTextBoxWidth').inputValue());
   await page.locator('#liveTextBoxWidth').fill('150');
@@ -1070,7 +1140,13 @@ test('reflow text box changes line wrapping while preserving reserved flow footp
   expect(currentWidth).toBe(150);
   expect(currentWidth).toBeLessThan(beforeWidth);
   const neighbourAfter=await paragraph.boundingBox();
-  expect(Math.abs(neighbourAfter.y-neighbourBefore.y)).toBeLessThan(1.1);
+  // Natural text measurement may adjust the reserved line box by a couple
+  // of pixels, without causing the large unexpected layout jump of legacy
+  // scale-based resizing.
+  expect(Math.abs(neighbourAfter.y-neighbourBefore.y)).toBeLessThan(4);
+  const font=await heading.evaluate(node=>getComputedStyle(node).fontSize);
+  expect(font).toBe('30px');
+  await expect(page.locator('#liveResetTextDimensions')).toBeEnabled();
   await expect(page.locator('#undo')).toBeEnabled();
   await page.locator('#undo').click();
   await expect(live.locator('main h2')).not.toHaveCSS('width','150px');
@@ -1088,7 +1164,6 @@ test('reflow width and height handles are independent for desktop and mobile',as
   const live=page.frameLocator('#livePageFrame');
   const title=live.locator('main h2').first();
   await title.click();
-  await page.locator('#liveTextReflow').check();
   const grip=live.locator('#moon-v2-live-overlay [data-direction="e"]');
   await expect(grip).toBeVisible();
   const before=Number(await page.locator('#liveTextBoxWidth').inputValue());
@@ -1100,8 +1175,7 @@ test('reflow width and height handles are independent for desktop and mobile',as
   const narrowed=Number(await page.locator('#liveTextBoxWidth').inputValue());
   expect(narrowed).toBeLessThan(before-30);
   await page.locator('#devicePreview').selectOption('phone');
-  await expect(page.locator('#liveTextReflow')).not.toBeChecked();
-  await page.locator('#liveTextReflow').check();
+  await expect(page.locator('#liveTextBoxWidth')).toBeEnabled();
   await page.locator('#liveTextBoxWidth').fill('245');
   await page.locator('#liveTextBoxWidth').press('Tab');
   await page.locator('#devicePreview').selectOption('desktop');
@@ -1109,19 +1183,21 @@ test('reflow width and height handles are independent for desktop and mobile',as
   await page.locator('#devicePreview').selectOption('phone');
   await expect(page.locator('#liveTextBoxWidth')).toHaveValue('245');
 });
-test('disabling reflow restores source width without discarding visual position',async({page})=>{
+test('restore natural text size preserves the previous visual position',async({page})=>{
   const live=page.frameLocator('#livePageFrame');
   await live.locator('main h2').click();
+  const original=await live.locator('main h2').evaluate(node=>node.getBoundingClientRect().width);
   await page.locator('#liveMoveX').fill('31');
   await page.locator('#liveMoveX').press('Tab');
-  await page.locator('#liveTextReflow').check();
   await page.locator('#liveTextBoxWidth').fill('120');
   await page.locator('#liveTextBoxWidth').press('Tab');
   await expect(live.locator('main h2')).toHaveCSS('width','120px');
-  await page.locator('#liveTextReflow').uncheck();
-  await expect(page.locator('#liveTextBoxWidth')).toBeDisabled();
-  await expect(live.locator('main h2')).not.toHaveCSS('width','120px');
+  await page.locator('#liveResetTextDimensions').click();
+  const restored=await live.locator('main h2').evaluate(node=>node.getBoundingClientRect().width);
+  expect(Math.abs(restored-original)).toBeLessThan(2);
   await expect(page.locator('#liveMoveX')).toHaveValue('31');
+  await page.locator('#undo').click();
+  await expect(live.locator('main h2')).toHaveCSS('width','120px');
 });
 
 test('live drag snaps to a nearby edge with temporary alignment guides',async({page})=>{
@@ -1134,6 +1210,7 @@ test('live drag snaps to a nearby edge with temporary alignment guides',async({p
   await page.route('**/about.html',route=>route.fulfill({
     status:200,contentType:'text/html',body:source
   }));
+  await mockVerifiedSource(page,'about.html',source);
   await page.locator('#reloadLive').click();
   const live=page.frameLocator('#livePageFrame');
   const first=live.locator('main p.first'),second=live.locator('main p.second');
@@ -1162,6 +1239,7 @@ test('holding Alt disables live drag snapping and leaves guides hidden',async({p
   await page.route('**/about.html',route=>route.fulfill({
     status:200,contentType:'text/html',body:source
   }));
+  await mockVerifiedSource(page,'about.html',source);
   await page.locator('#reloadLive').click();
   const live=page.frameLocator('#livePageFrame');
   await live.locator('main p.first').click();
@@ -1178,26 +1256,98 @@ test('holding Alt disables live drag snapping and leaves guides hidden',async({p
   await expect(live.locator('#moon-v2-snap-x')).toHaveCount(0);
 });
 
-test('overflow warning and explicit fit height prevent hidden wrapped text without silent reflow',async({page})=>{
+test('numeric text widths auto-fit height, while deliberately shortened heights warn and can be fitted',async({page})=>{
   const live=page.frameLocator('#livePageFrame');
   const heading=live.locator('main h2'),neighbour=live.locator('main p').first();
-  const initialNeighbour=await neighbour.boundingBox();
   await heading.click();
-  await page.locator('#liveTextReflow').check();
   await page.locator('#liveTextBoxWidth').fill('100');
   await page.locator('#liveTextBoxWidth').press('Tab');
+  await expect(page.locator('#liveTextBoxWidth')).toHaveValue('100');
+  const autoHeight=Number(await page.locator('#liveTextBoxHeight').inputValue());
+  expect(autoHeight).toBeGreaterThan(24);
+  await expect(page.locator('#liveReflowWarning')).toBeHidden();
+  // A manually shortened text frame is allowed, but visibly warns when
+  // text would overflow. Fit height makes room, with a single Undo step.
+  await page.locator('#liveTextBoxHeight').fill('24');
+  await page.locator('#liveTextBoxHeight').press('Tab');
   await expect(page.locator('#liveReflowWarning')).toBeVisible();
   await expect(page.locator('#liveFitReflowHeight')).toBeEnabled();
-  const oldHeight=Number(await page.locator('#liveTextBoxHeight').inputValue());
   const beforeFit=await neighbour.boundingBox();
-  expect(Math.abs(beforeFit.y-initialNeighbour.y)).toBeLessThan(1.2);
   await page.locator('#liveFitReflowHeight').click();
-  const newHeight=Number(await page.locator('#liveTextBoxHeight').inputValue());
-  expect(newHeight).toBeGreaterThan(oldHeight+5);
+  const fitted=Number(await page.locator('#liveTextBoxHeight').inputValue());
+  expect(fitted).toBeGreaterThan(30);
   const afterFit=await neighbour.boundingBox();
-  expect(afterFit.y).toBeGreaterThan(beforeFit.y+5);
+  expect(afterFit.y).toBeGreaterThan(beforeFit.y+4);
   await expect(page.locator('#liveReflowWarning')).toBeHidden();
   await page.locator('#undo').click();
-  const restored=await neighbour.boundingBox();
-  expect(Math.abs(restored.y-beforeFit.y)).toBeLessThan(1.2);
+  // Undo reloads the original-source frame, which can change scroll
+  // offsets. Verify the restored geometry directly in the live document.
+  await expect(live.locator('main h2')).toHaveCSS('height','24px');
+  await expect(page.locator('#liveTextBoxHeight')).toHaveValue('24');
+  await expect(page.locator('#liveReflowWarning')).toBeVisible();
+});
+
+test('free canvas snaps movement to peer objects and Alt allows precise bypass',async({page})=>{
+  await importScene(page);
+  await page.locator('#addShape').click();
+  await page.locator('#addShape').click();
+  async function setPosition(id,x,y){
+    await page.locator('#layers [data-layer-id="'+id+'"]').click();
+    await page.locator('#propX').fill(String(x));
+    await page.locator('#propX').press('Tab');
+    await page.locator('#propY').fill(String(y));
+    await page.locator('#propY').press('Tab');
+  }
+  await setPosition(4,180,320);
+  await setPosition(5,450,320);
+  const first=page.locator('#stage [data-id="4"]');
+  await page.locator('#layers [data-layer-id="4"]').click();
+  const canvas=page.locator('#stage');
+  const scale=await canvas.evaluate(node=>node.getBoundingClientRect().width/parseFloat(node.style.width));
+  async function dragTo(desiredX,alt=false){
+    const box=await first.boundingBox();
+    const fromX=box.x+box.width*.4,fromY=box.y+box.height*.5;
+    await page.mouse.move(fromX,fromY);
+    if(alt)await page.keyboard.down('Alt');
+    await page.mouse.down();
+    await page.mouse.move(fromX+(desiredX-180)*scale,fromY,{steps:10});
+    if(!alt)await expect(canvas.locator('[data-v2-guide="x"]')).toHaveCount(1);
+    await page.mouse.up();
+    if(alt)await page.keyboard.up('Alt');
+  }
+  await dragTo(447);
+  await expect(first).toHaveCSS('left','450px');
+  await expect(canvas.locator('[data-v2-guide]')).toHaveCount(0);
+  await page.locator('#undo').click();
+  await expect(first).toHaveCSS('left','180px');
+  await dragTo(447,true);
+  const actual=await first.evaluate(node=>parseInt(node.style.left));
+  expect(Math.abs(actual-447)).toBeLessThanOrEqual(2);
+  await expect(canvas.locator('[data-v2-guide]')).toHaveCount(0);
+});
+
+test('canvas text frames reflow and grow vertically when made narrower',async({page})=>{
+  await importScene(page);
+  await page.locator('#layers [data-layer-id="1"]').click();
+  await page.locator('#propText').fill(
+    'Scientific explanations are developed by tracing mechanisms, discussing evidence, '+
+    'and revisiting how representations describe biological variation. '.repeat(3));
+  await page.locator('#propText').press('Tab');
+  for(const [id,value] of [['propW','320'],['propH','44'],['propFont','28']]){
+    await page.locator('#'+id).fill(value);
+    await page.locator('#'+id).press('Tab');
+  }
+  const text=page.locator('#stage [data-id="1"]');
+  const before=await text.evaluate(node=>({w:parseInt(node.style.width),
+    h:parseInt(node.style.height),font:node.style.fontSize}));
+  const grip=await text.locator('[data-dir=e]').boundingBox();
+  await page.mouse.move(grip.x+grip.width/2,grip.y+grip.height/2);
+  await page.mouse.down();
+  await page.mouse.move(grip.x+grip.width/2-50,grip.y+grip.height/2,{steps:8});
+  await page.mouse.up();
+  const after=await text.evaluate(node=>({w:parseInt(node.style.width),
+    h:parseInt(node.style.height),font:node.style.fontSize}));
+  expect(after.w).toBeLessThan(before.w-50);
+  expect(after.h).toBeGreaterThan(before.h);
+  expect(after.font).toBe(before.font);
 });

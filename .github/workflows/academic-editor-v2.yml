@@ -8,6 +8,13 @@ on:
       - 'editor-v2.js'
       - 'tests/academic-editor-v2.spec.cjs'
       - '.github/workflows/academic-editor-v2.yml'
+  pull_request:
+    paths:
+      - 'editor-v2.html'
+      - 'editor-v2.css'
+      - 'editor-v2.js'
+      - 'tests/academic-editor-v2.spec.cjs'
+      - '.github/workflows/academic-editor-v2.yml'
   workflow_dispatch:
 permissions:
   contents: read
@@ -33,7 +40,7 @@ jobs:
       - name: Check canvas import, movement, resizing, undo, saving, and safe staging
         id: browser
         continue-on-error: true
-        run: npx playwright test tests/academic-editor-v2.spec.cjs --browser chromium --workers=1 --reporter=list --max-failures=1
+        run: npx playwright test tests/academic-editor-v2.spec.cjs --browser chromium --workers=1 --reporter=list --max-failures=5
       - name: Report test status
         if: always()
         env:

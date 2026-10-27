@@ -5,14 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>Academic Website Editor 2 | Ye Eun Moon</title>
-<link rel="stylesheet" href="editor-v2.css?v=20261026-shape-styles-v30">
-<script src="editor-v2.js?v=20261026-true-box-resize-v31" defer></script>
+<link rel="stylesheet" href="editor-v2.css?v=20261027-layer-preview-v40">
+<script src="editor-v2.js?v=20261027-layer-preview-v40" defer></script>
 </head>
 <body>
 <a class="skip" href="#workspace">Skip to editor canvas</a>
 <div class="application">
   <header class="topbar">
-    <div class="identity"><span class="brand-mark" aria-hidden="true"></span><span><strong>Academic Editor <small>2.0</small></strong><em>Visual editing · source-safe publishing</em></span></div>
+    <div class="identity"><span class="brand-mark" aria-hidden="true"></span><div><h1>Academic Editor <small>2.0</small></h1><em>Visual editing · source-safe publishing</em></div></div>
     <div class="actions">
       <span class="saving" id="status" role="status" aria-live="polite">Preparing editor</span>
       <button id="undo" title="Undo (Ctrl+Z)" disabled>↶ Undo</button>
@@ -42,7 +42,7 @@
     <span id="zoomValue" class="zoom-value">80%</span>
   </section>
   <div class="editor-body">
-    <aside class="left-panel">
+    <aside class="left-panel" aria-label="Pages and object layers">
       <section class="panel-section">
         <h2>Website pages</h2>
         <label for="page">Choose an existing page</label>
@@ -78,14 +78,24 @@
         </div>
         <label for="liveElementSearch">Find text, headings or images</label>
         <input id="liveElementSearch" type="search" placeholder="Search elements on this page" autocomplete="off">
-        <div id="liveElementList" class="layers live-element-list" aria-label="Selectable elements in the actual webpage"></div>
+        <label class="checkbox-line live-container-toggle"><input type="checkbox" id="liveShowContainers"> Include nested layout containers</label>
+        <p id="liveElementPath" class="help live-hierarchy-path" aria-live="polite">Select an element to see its hierarchy</p>
+        <div class="inline-actions">
+          <button id="liveSelectParent" type="button" disabled>Select parent</button>
+          <button id="liveSelectChild" type="button" disabled>Select first child</button>
+          <button id="livePrevSibling" type="button" disabled>Previous sibling</button>
+          <button id="liveNextSibling" type="button" disabled>Next sibling</button>
+          <button id="liveLocateSelected" type="button" disabled>Find selected in list</button>
+        </div>
+        <p class="help">Hover or focus a layer to highlight it on the webpage. Use ↑ and ↓ to browse layers, then Enter to select.</p>
+        <div id="liveElementList" class="layers live-element-list" role="group" aria-label="Selectable elements in the actual webpage"></div>
         <div class="inline-actions">
           <button id="liveCopyObject" type="button" disabled title="Copy selected webpage object (Ctrl+C)">Copy object</button>
           <button id="livePasteObject" type="button" disabled title="Insert an independent copy onto this webpage (Ctrl+V)">Paste object</button>
         </div>
         <div id="liveArrangePanel" class="live-arrange">
           <div class="panel-title"><h3>Arrange selected objects</h3><span id="liveMultiCount">0 selected</span></div>
-          <p class="help">Shift-click new text, images, or shapes in the webpage or this list to select several. Ctrl+A selects all added objects.</p>
+          <p class="help">Shift-click independent headings, paragraphs, images or added objects to select several. Drag the blue group corner handles to resize together without distorting text or photos. Ctrl/Command-click repeatedly on overlapping objects to select the one underneath. Arrow keys nudge selected objects; Ctrl+A selects added objects.</p>
           <div class="inline-actions">
             <button id="liveSelectAdded" type="button">Select all added</button>
             <button id="liveClearAdded" type="button">Clear selection</button>
@@ -100,7 +110,7 @@
             <button id="liveDistributeH" type="button" disabled>Space horizontally</button>
             <button id="liveDistributeV" type="button" disabled>Space vertically</button>
           </div>
-          <p class="help">Align and distribute affect the current desktop, tablet, or phone view. Undo restores the entire arrangement in one step.</p>
+          <p class="help">Align, centre and distribute selected original webpage elements or added objects. Changes are saved for this desktop, tablet or phone layout only. Undo restores the previous arrangement.</p>
         </div>
         <p class="help">Ctrl+C and Ctrl+V copy and paste a webpage object. Ctrl+D duplicates, Ctrl+S saves, Ctrl+Z undoes, and Ctrl+[ or Ctrl+] changes stacking.</p>
       </section>
@@ -112,7 +122,7 @@
           <button id="pasteObjects" type="button" disabled title="Paste copied objects (Ctrl+V)">Paste</button>
           <button id="selectAllObjects" type="button" title="Select all visible, unlocked canvas objects (Ctrl+A)">Select all</button>
         </div>
-        <p class="help">Click or Shift-click to select objects. Copy and paste work across pages during this editor session. Drag to move or resize using the handles; arrow keys nudge the selection.</p>
+        <p class="help">Click or Shift-click to select objects. Copy and paste work across pages during this editor session. Drag to move or resize using the handles; purple guides snap objects into alignment. Hold Alt to move without snapping or Shift to keep a straight line. Text boxes grow vertically when you narrow them. Drag empty canvas space to select several objects; drag right-to-left to include partially touched objects. Shift adds to the selection. Arrow keys nudge the selection.</p>
       </section>
       <section class="panel-section">
         <h2>Page image library</h2>
@@ -138,7 +148,7 @@
       </div>
       <div id="workspaceExplanation" class="workspace-explanation" role="status">The real website is shown with its existing styling and responsive layout. Select text or an image to edit it using the original-page inspector, or copy it to the free-design canvas.</div>
       <div id="liveAssetStatus" class="live-assets" role="status" aria-live="polite">Loading the original webpage…</div>
-      <div id="liveViewport" class="scrollspace live-scrollspace">
+      <div id="liveViewport" class="scrollspace live-scrollspace" role="region" aria-label="Scrollable live webpage preview" tabindex="0">
         <div id="livePageShell" class="live-page-shell">
           <iframe id="livePageFrame" title="Original academic website page" loading="eager"></iframe>
         </div>
@@ -150,7 +160,7 @@
       </div>
       <div class="workspace-footer" id="workspaceFooter">Live website · Click to select text or images · Alt-click to select a whole section · Drag or resize · Original page preserved</div>
     </main>
-    <aside class="right-panel">
+    <aside class="right-panel" aria-label="Selected object inspector">
       <section id="liveInspector" class="panel-section" hidden>
         <h2>Edit selected webpage object</h2>
         <p class="help">Add and edit text, images and shapes directly on the webpage, or select an existing element. Changes remain browser drafts until you approve publication through GitHub. Verified Preview shows the same assembled HTML as publishing.</p>
@@ -291,8 +301,11 @@
               <label>Reserved height (px) <input type="number" id="liveTextBoxHeight" min="24" max="5000" step="1"></label>
             </div>
             <p class="help">The box reserves its chosen height in the page layout. If text needs more height, use Fit height to wrapped text to avoid overlap.</p>
+            <div class="inline-actions">
+              <button id="liveResetTextDimensions" type="button" disabled>Restore natural text size</button>
+              <button id="liveFitReflowHeight" type="button" disabled>Fit height to wrapped text</button>
+            </div>
             <p id="liveReflowWarning" class="help reflow-warning" role="status" hidden></p>
-            <button id="liveFitReflowHeight" type="button" disabled>Fit height to wrapped text</button>
             <p class="help">Fitting the height deliberately makes room for the whole paragraph and can move following sections down. Undo is available.</p>
           </div>
           <div class="inline-actions">
@@ -300,7 +313,11 @@
             <button id="liveSendBack" type="button" disabled>Send backward</button>
             <button id="liveResetStack" type="button" disabled>Reset stacking</button>
           </div>
-          <p class="help">Layer controls change the selected element's stacking order within its existing website container. They cannot break out of a clipped parent.</p>
+          <p class="help">Layer controls change stacking order inside the current container. If a parent clips an object, the optional setting below can release its clipping on one screen.</p>
+          <div id="liveReleaseClipSection" hidden>
+            <label class="checkbox-line"><input id="liveReleaseClip" type="checkbox" disabled> Allow this object outside its container</label>
+            <p class="help">Releases ancestor clipping for the current desktop, tablet or phone layout. Nearby content may become visible too. Uncheck or Undo to restore clipping. Original HTML nesting stays intact.</p>
+          </div>
           <div class="inline-actions">
             <button id="resetLiveLayout" type="button">Reset position on this screen</button>
           </div>
