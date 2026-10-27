@@ -150,4 +150,47 @@ main > div:nth-of-type(1) > p:nth-of-type(1){font-size:20px!important;}
 
 
 
-<script id="moon-free-responsive-runtime" src="moon-free-responsive.js?v=20261026-mobile-slots-v1" defer=""></script></body></html>
+<style id="home-mobile-reading-layout">
+@media(max-width:700px){
+  html:not(.moon-free-mode) #main.home-page .home-intro{
+    display:flex!important;flex-direction:column!important;
+    align-items:stretch!important;gap:17px!important;
+    padding:23px 17px 29px!important;
+  }
+  html:not(.moon-free-mode) #main.home-page .home-intro .hero-copy{
+    width:100%!important;min-width:0!important;max-width:100%!important;
+  }
+  html:not(.moon-free-mode) #main.home-page .home-intro .hero-copy>p.home-lead.moon-free-absolute{
+    display:block!important;position:static!important;left:auto!important;top:auto!important;
+    right:auto!important;bottom:auto!important;width:100%!important;max-width:100%!important;
+    height:auto!important;min-height:0!important;max-height:none!important;
+    margin:14px 0 0!important;padding:0!important;
+    font-size:19px!important;line-height:1.5!important;
+    transform:none!important;translate:none!important;scale:none!important;
+    overflow-wrap:break-word!important;white-space:normal!important;
+  }
+  html:not(.moon-free-mode) #main.home-page .home-intro .hero-copy .controls{
+    display:flex;flex-wrap:wrap;gap:9px;margin:20px 0 0!important;
+  }
+  html:not(.moon-free-mode) #main.home-page .home-intro>img[data-moon-v2-added-id],
+  html:not(.moon-free-mode) #main.home-page .home-outside-grid>img[data-moon-v2-added-id]{
+    display:block!important;position:static!important;
+    left:auto!important;top:auto!important;right:auto!important;bottom:auto!important;
+    width:100%!important;max-width:100%!important;min-width:0!important;
+    margin:0!important;padding:0!important;
+    border:0!important;border-radius:13px!important;opacity:1!important;
+    object-fit:cover!important;object-position:center center!important;
+    background-image:none!important;transform:none!important;translate:none!important;
+  }
+  html:not(.moon-free-mode) #main.home-page .home-intro>img[data-moon-v2-added-id]{
+    height:245px!important;max-height:245px!important;
+  }
+  html:not(.moon-free-mode) #main.home-page .home-outside-grid>img[data-moon-v2-added-id]{
+    height:185px!important;max-height:185px!important;margin-top:20px!important;
+  }
+  html:not(.moon-free-mode) #main.home-page .home-outside-grid>.studio-unrestricted-size{
+    width:100%!important;max-width:100%!important;min-width:0!important;
+  }
+}
+</style>
+<script id="moon-free-responsive-runtime" src="moon-free-responsive.js?v=20261027-home-photo-flow-v2" defer=""></script></body></html>
