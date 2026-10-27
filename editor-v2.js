@@ -565,9 +565,11 @@ function cropShapeCss(shape){
     heart:"50% 18%,62% 4%,82% 4%,100% 24%,100% 48%,50% 100%,0% 48%,0% 24%,18% 4%,38% 4%",
     arch:"50% 0%,85% 4%,100% 25%,100% 100%,0% 100%,0% 25%,15% 4%"
   };
-  const radius={rounded:"12px","round-large":"28px",pill:"999px",circle:"50%",oval:"50%",squircle:"35%"};
+  const radius={rounded:"12px","round-large":"28px",pill:"999px",oval:"50%",squircle:"35%"};
+  const clip=shape==="circle"?"circle(closest-side at 50% 50%)":
+    polygons[shape]?"polygon("+polygons[shape]+")":"none";
   return "border-radius:"+(radius[shape]||"0")+"!important;"+
-    "clip-path:"+(polygons[shape]?"polygon("+polygons[shape]+")":"none")+"!important;";
+    "clip-path:"+clip+"!important;";
 }
 function croppedEdges(crop){
   return {left:crop.left||0,right:crop.right||0,top:crop.top||0,bottom:crop.bottom||0};
@@ -1469,6 +1471,10 @@ function applySelectedImageCrop(changes){
   const prepared=prepareImageCrop(node,patch,device);
   if(!prepared){status("Image dimensions are not yet ready for cropping");return false;}
   const next={...prepared,...changes,reset:false};
+  if(changes.mask!==undefined)Object.assign(next,{
+    left:next.left||0,right:next.right||0,
+    top:next.top||0,bottom:next.bottom||0,fit:"contain"
+  });
   if(!["contain","cover"].includes(next.fit)||
      !["rectangle","rounded","round-large","pill","circle","oval","squircle","diamond","hexagon","octagon","triangle","pentagon","star","heart","arch"].includes(next.mask)||
      !["x","y"].every(k=>Number.isFinite(Number(next[k]))))return false;
@@ -1549,7 +1555,26 @@ function resetSelectedImageCrop(){
   if(node?.tagName!=="IMG"||!selector||workspaceMode!=="live")return;
   const patch=livePatchForSelected(),device=liveDevice();
   if(!patch?.imageCrop?.[device])return;
-  const before=liveSnapshot();
+  const before=liveSnapshot(),frame=node.getBoundingClientRect();
+  const edges=croppedEdges(selectedImageCrop(patch,device));
+  const fullW=frame.width/Math.max(.05,1-(edges.left+edges.right)/100);
+  const fullH=frame.height/Math.max(.05,1-(edges.top+edges.bottom)/100);
+  const shiftX=Math.round(fullW*edges.left/100),shiftY=Math.round(fullH*edges.top/100);
+  if(["left","right","top","bottom"].some(k=>edges[k]>0)){
+    if(patch.kind==="insert"){
+      const geom=addedDeviceGeometry(patch,device);
+      patch.geometry={...patch.geometry,[device]:{...geom,
+        x:Math.round(geom.x-shiftX),y:Math.round(geom.y-shiftY),
+        w:Math.round(clamp(fullW,40,4000)),h:Math.round(clamp(fullH,24,5000))}};
+    }else{
+      const dims=normaliseElementBoxLayout(node,liveLayoutFor(selector));
+      dims.wrapWidth=Math.round(clamp(fullW,64,4000));
+      dims.reserveHeight=Math.round(clamp(fullH,24,5000));
+      dims.dx=clamp(dims.dx-shiftX,-4000,4000);
+      dims.dy=clamp(dims.dy-shiftY,-4000,4000);
+      patch.layout={...patch.layout,[device]:dims};
+    }
+  }
   const published=!!node.getAttribute("data-moon-v2-image-crop");
   if(published&&patch.kind!=="insert"){
     // Previously published CSS cannot simply be deleted from the source.
