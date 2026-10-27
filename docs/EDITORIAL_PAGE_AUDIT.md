@@ -28,12 +28,12 @@ A content pass is **not** equivalent to final visual approval. Automated browser
 | `interests.html` | Revised in preceding conversation; inaccessible photo filename alt fixed `ea80850`; final sign-off pending | Every text/image element and responsive layout |
 | `pungmul.html` | History and image rights addressed previously; ARIA fix `209f965`, photo alt fix `8184b09` | Entire long-form and media layout, history source audit |
 | `contact.html` | Revised in preceding conversation; photo alt fixed `667ed11`; final sign-off pending | Wording, contact destinations, all screen sizes |
-| `cv.html` | Pending dedicated pass | All claims, dates, alignment with current applications |
-| `about.html` | Pending purpose/redirect check | Destination, metadata and navigation |
-| `404.html` | Pending | Copy, navigation, accessibility |
+| `cv.html` | Dedicated date/tense/claims and layout pass, commit `2a53919`; credential names and affiliations retained rather than guessed | Final printed A4 check and credential/document verification |
+| `about.html` | Reviewed meta-refresh legacy route to Contact; no content change warranted | Check redirect in rendered browser |
+| `404.html` | Copy, semantic markup and links reviewed; no content change warranted | Browser routing and small-screen check |
 | `editor-v2.html` | Separate product QA in progress across prior conversations | PowerPoint-style editing interactions, resize/crop, geometry, publishing, keyboard/mobile |
 | `editor.html` | Pending legacy editor review | Navigation, status and compatibility |
-| `editors.html` | Pending editor landing review | Navigation, clarity and permissions |
+| `editors.html` | Corrected primary academic editor destination to Editor V2 and publication description `d61206b` | Check links and live authentication workflow |
 | `fluid-layout-lab.html` | Pending technical QA | Responsive layout, controls and editor behaviour |
 
 ## Evidence of checks and limitations
@@ -45,8 +45,9 @@ A content pass is **not** equivalent to final visual approval. Automated browser
 - A source-level image-alt triage scanned all 23 root HTML pages. Filename-like alt text was replaced on Home (2 images), Interests, Pungmul and Contact; image bytes and geometry were preserved. An empty alt in `fluid-layout-lab.html` was found in a JavaScript template string, so it needs runtime rather than regex assessment.
 - Source-level HTML checks and GitHub Actions accessibility/external-resource audits have passed for earlier revision commits. Some screenshot and artifact-upload jobs have failed at the publishing-artifact stage even when their browser checks succeeded. Inspect each job before treating a workflow failure as a content failure.
 - An academic-editor resize regression currently fails because the test waits for a `profile-portrait` image filename removed from the Homepage markup when its images were embedded through the visual editor. Its failure occurs before image resizing is tested, so it cannot establish whether resizing works. The test and editor must be examined separately.
+- Editor V2's image-library accessible names were revised in commit `b2bc88c` after a reported `label-content-name-mismatch` on two buttons. The regression run still requires confirmation.
 - CSS has received targeted spacing changes; final human visual judgment is still outstanding for the edited pages.
 
 ## Next content pass
 
-Continue with `cv.html`, then independent line-by-line reviews of the remaining pending pages, then the remaining public pages, followed by separate editor QA. Return to prior partial revisions for full verification. Do not mark a page fully finished merely because a prior commit polished part of it.
+Continue with full `interests.html`, `pungmul.html`, and `contact.html` passes, then the homepage and research hub. Keep technical editor QA separate and retain the outstanding visual checks until verified. Return to prior partial revisions for full verification. Do not mark a page fully finished merely because a prior commit polished part of it.
