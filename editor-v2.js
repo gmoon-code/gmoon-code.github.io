@@ -1379,7 +1379,7 @@ function setLiveCropMode(enabled){
   if(enabled)applySelectedImageCrop({fit:"cover"});
   removeLiveOverlay();renderLiveInspector();syncLiveOverlay();
   status(enabled?
-    "Crop mode · Drag directly on the picture to reposition the image in its frame":
+    "Crop active · Drag pink frame handles to trim edges, or drag the photo to reposition":
     "Crop finished · Dragging the picture now moves its frame");
 }
 function nudgeLiveImageCrop(dx,dy){
@@ -2322,6 +2322,9 @@ function syncLiveOverlay(){
   if(liveOverlay?.isConnected&&
     liveOverlay.dataset.positionLocked!==String(locked))removeLiveOverlay();
   if(liveOverlay?.isConnected&&
+     liveOverlay.dataset.cropMode!==String(liveCropMode&&node.tagName==="IMG"))
+    removeLiveOverlay();
+  if(liveOverlay?.isConnected&&
       liveOverlay.dataset.groupCount!==(grouped?String(sourceGroup.length):"1"))
     removeLiveOverlay();
   if(!liveOverlay||!liveOverlay.isConnected||liveOverlay.ownerDocument!==doc){
@@ -2336,6 +2339,10 @@ function syncLiveOverlay(){
       "z-index:2147483000!important;background:transparent!important;"+
       "outline:0!important;contain:layout!important;}"+
       "#moon-v2-live-overlay[data-position-locked='true']{border-style:dashed!important;border-color:#875e9d!important;}"+
+      "#moon-v2-live-overlay[data-crop-mode='true']{border-style:dashed!important;border-color:#b42887!important;"+
+      "box-shadow:0 0 0 1px #fff8!important;}"+
+      "#moon-v2-live-overlay[data-crop-mode='true'] .moon-v2-grip{"+
+      "border-color:#b42887!important;cursor:crosshair;}"+
       "#moon-v2-live-overlay button{position:absolute!important;pointer-events:auto!important;"+
       "touch-action:none!important;box-sizing:border-box!important;cursor:move!important;"+
       "appearance:none!important;min-width:0!important;min-height:0!important;"+
@@ -2436,6 +2443,7 @@ function syncLiveOverlay(){
   liveOverlay.style.height=rect.height+"px";
   liveOverlay.dataset.groupCount=grouped?String(sourceGroup.length):"1";
   liveOverlay.dataset.positionLocked=String(locked);
+  liveOverlay.dataset.cropMode=String(liveCropMode&&node.tagName==="IMG");
   // iframe scaling shrinks ordinary 13px handles to just 3–7 screen pixels.
   // Compensate for zoom so handles remain usable even at fit-to-page zoom.
   const scale=Math.max(.25,liveScale);
@@ -2677,7 +2685,7 @@ function moveLiveGesture(event){
       drawLiveSnapGuides(snap.x,snap.y,g.node.ownerDocument);
     }else{
       Object.assign(geom,resizableBoxFromDrag(base,g.dir,deltaX,deltaY,
-        g.patch.objectType==="image"&&liveLockImageRatio&&!event.altKey));
+        g.patch.objectType==="image"&&liveLockImageRatio&&!liveCropMode&&!event.altKey));
       geom.x=Math.round(clamp(geom.x,-4000,10000));
       geom.y=Math.round(clamp(geom.y,-4000,40000));
     }
@@ -2732,7 +2740,7 @@ function moveLiveGesture(event){
     // photos are never stretched horizontally or vertically.
     const box=resizableBoxFromDrag(
       {x:0,y:0,w:g.rect.width,h:g.rect.height},g.dir,deltaX,deltaY,
-      g.node.tagName==="IMG"&&liveLockImageRatio&&!event.altKey,64,24);
+      g.node.tagName==="IMG"&&liveLockImageRatio&&!liveCropMode&&!event.altKey,64,24);
     Object.assign(next,normaliseElementBoxLayout(g.node,g.layout));
     next.wrapWidth=box.w;
     next.reserveHeight=box.h;
