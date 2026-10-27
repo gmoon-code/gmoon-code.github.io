@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>Academic Website Editor 2 | Ye Eun Moon</title>
-<link rel="stylesheet" href="editor-v2.css?v=20261027-section-edge-drag-v45">
-<script src="editor-v2.js?v=20261027-section-edge-drag-v45" defer></script>
+<link rel="stylesheet" href="editor-v2.css?v=20261027-image-crop-v46">
+<script src="editor-v2.js?v=20261027-image-crop-v46" defer></script>
 </head>
 <body>
 <a class="skip" href="#workspace">Skip to editor canvas</a>
@@ -250,6 +250,31 @@
               Keep image proportions when resizing
             </label>
             <p class="help">Resize the image frame with its handles. Its contents keep their natural proportions. Uncheck to freely size the frame without stretching the photo.</p>
+            <div id="liveCropControls" class="live-crop-controls" hidden>
+              <h3>Picture cropping &amp; framing</h3>
+              <p class="help">Crop keeps your original image intact. The photo fills its frame without stretching, and you can reposition which area is visible. Changes are saved separately for desktop, tablet, and phone.</p>
+              <div class="inline-actions">
+                <button type="button" id="liveCropToggle" aria-pressed="false">Crop picture · drag to reframe</button>
+                <button type="button" id="liveCropReset">Reset crop</button>
+              </div>
+              <label for="liveCropFit">Picture inside frame
+                <select id="liveCropFit">
+                  <option value="contain">Fit entire picture</option>
+                  <option value="cover">Crop to fill the frame</option>
+                </select>
+              </label>
+              <label for="liveCropX">Horizontal focal point <output id="liveCropXValue" for="liveCropX">50%</output></label>
+              <input id="liveCropX" type="range" min="0" max="100" step="1" value="50">
+              <label for="liveCropY">Vertical focal point <output id="liveCropYValue" for="liveCropY">50%</output></label>
+              <input id="liveCropY" type="range" min="0" max="100" step="1" value="50">
+              <p class="help">Frame aspect ratio · adjusts the visible crop frame without deforming the photograph.</p>
+              <div class="inline-actions">
+                <button type="button" id="liveCropSquare">1:1</button>
+                <button type="button" id="liveCrop43">4:3</button>
+                <button type="button" id="liveCrop169">16:9</button>
+                <button type="button" id="liveCropPortrait">3:4</button>
+              </div>
+            </div>
             <div id="liveAddedImageFit" hidden>
               <label for="liveImageFit">Photo framing</label>
               <select id="liveImageFit">
