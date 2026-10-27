@@ -24,7 +24,7 @@
 <section class="page-hero single">
   <div class="hero-copy">
     <h1>Research Methods Studio</h1>
-    <p>A research question can seem workable until a student begins deciding what to measure, where to find evidence, or whom to involve. Research Methods Studio is a workspace I developed to help students revisit those decisions across eighteen connected stages. The synthetic radish-salinity example below follows one such decision from treatment assignment to analysis. It asks what counts as an independent observation when five seeds share the same assigned treatment in a dish.</p>
+    <p>A research question often becomes more demanding when students must decide what evidence they can collect and which conclusions it could support. I developed Research Methods Studio to help them revisit those choices across eighteen connected stages. In the synthetic radish-salinity study below, the critical decision is the level at which treatments were assigned. Five seeds share the conditions in each Petri dish, so ninety seed measurements cannot be treated as ninety independent treatment replicates.</p>
     <div class="controls"><a class="control primary" href="https://gmoon-code.github.io/research-methods/">Open Research Methods Studio</a></div>
   </div>
 </section>
@@ -43,7 +43,7 @@
     <p>The application's repository includes a <a href="https://github.com/gmoon-code/research-methods/tree/main/examples/radish-salinity" target="_blank" rel="noopener noreferrer">worked radish-salinity exemplar<span class="new-tab-note"> (opens in a new tab)</span></a> in which eighteen Petri dishes are assigned to 0, 50, or 100 mM sodium chloride. Each dish contains five seeds. The experimental procedure, measurements, and findings are constructed for teaching, allowing students to inspect the path from research question to analysis without implying that an experiment was conducted.</p>
   </div>
   <div class="project-decision-sequence">
-    <div><span class="project-sequence-label">Question</span><p>How does assigned salinity concentration affect mean radicle length after 72 hours?</p></div>
+    <div><span class="project-sequence-label">Question</span><p>How does assigned salinity concentration relate to the mean radicle length of germinated seeds after 72 hours?</p></div>
     <div><span class="project-sequence-label">Assignment</span><p>Six independent dishes are assigned to each concentration, with five seed subsamples inside every dish.</p></div>
     <div><span class="project-sequence-label">Measurement</span><p>Record germination for all ninety seeds and radicle length for those that germinate. Calculate dish-level mean length and germination proportion.</p></div>
     <div><span class="project-sequence-label">Analysis</span><p>Compare eighteen dish-level observations. Ninety seed rows do not represent ninety independent assignments of the treatment.</p></div>
@@ -51,12 +51,12 @@
   </div>
   <div class="reading project-reading">
     <h3>The constructed analysis records</h3>
-    <p>The <a href="https://github.com/gmoon-code/research-methods/blob/main/examples/radish-salinity/SYNTHETIC_DISH_LEVEL_ANALYSIS_DATA.csv" target="_blank" rel="noopener noreferrer">dish-level file<span class="new-tab-note"> (opens in a new tab)</span></a> provides one outcome per assigned dish. Its group summaries, checked against the <a href="https://github.com/gmoon-code/research-methods/blob/main/examples/radish-salinity/SYNTHETIC_ANALYSIS_OUTPUT.json" target="_blank" rel="noopener noreferrer">synthetic analysis output<span class="new-tab-note"> (opens in a new tab)</span></a>, appear below.</p>
+    <p>The <a href="https://github.com/gmoon-code/research-methods/blob/main/examples/radish-salinity/SYNTHETIC_DISH_LEVEL_ANALYSIS_DATA.csv" target="_blank" rel="noopener noreferrer">dish-level file<span class="new-tab-note"> (opens in a new tab)</span></a> contains one row per assigned dish, recording both its germination proportion and mean radicle length among germinated seeds. The table reports averages across the six dish-level records within each treatment, checked against the <a href="https://github.com/gmoon-code/research-methods/blob/main/examples/radish-salinity/SYNTHETIC_ANALYSIS_OUTPUT.json" target="_blank" rel="noopener noreferrer">synthetic analysis output<span class="new-tab-note"> (opens in a new tab)</span></a>.</p>
   </div>
   <div class="teaching-sequence-table-wrap" role="region" tabindex="0" aria-label="Constructed radish salinity results">
     <table class="teaching-sequence-table">
       <caption>Invented outcomes after 72 hours, with six dishes per concentration</caption>
-      <thead><tr><th scope="col">NaCl concentration</th><th scope="col">Dishes</th><th scope="col">Mean radicle length per dish</th><th scope="col">Mean germination proportion</th></tr></thead>
+      <thead><tr><th scope="col">NaCl concentration</th><th scope="col">Dishes</th><th scope="col">Mean of dish-level radicle lengths</th><th scope="col">Mean germination proportion</th></tr></thead>
       <tbody>
         <tr><th scope="row">0 mM</th><td>6</td><td>34.7 mm</td><td>1.00</td></tr>
         <tr><th scope="row">50 mM</th><td>6</td><td>26.8 mm</td><td>0.93</td></tr>
@@ -67,7 +67,7 @@
   <div class="rms-analysis-note">
     <h3>Two questions hidden in the same dataset</h3>
     <p>Treatment varies between dishes, while seeds within each dish share its assigned condition and environment. Treating the ninety <a href="https://github.com/gmoon-code/research-methods/blob/main/examples/radish-salinity/SYNTHETIC_SEED_LEVEL_DATA.csv" target="_blank" rel="noopener noreferrer">seed-level rows<span class="new-tab-note"> (opens in a new tab)</span></a> as independent treatment replicates would exaggerate replication. With only one dish per condition, treatment would be inseparable from differences among those individual dishes. The exemplar therefore uses the eighteen independently assigned dishes for its main comparison.</p>
-    <p>The two reported outcomes also involve different sets of seeds. Germination proportion includes all five seeds in each dish, whereas mean radicle length is calculated only among those that germinated. As germination proportions change across the constructed conditions, the mean length needs to be read with that selection in mind. The example makes this choice visible before students interpret differences or make claims about why growth may have changed.</p>
+    <p>Different seeds contribute to the two outcomes. Germination proportion includes all five seeds in its denominator, while radicle length is averaged only for those that germinated. As germination decreases across the constructed salinity conditions, the germinated seeds may no longer represent comparable subsets of the assigned seeds. A comparison of their lengths therefore addresses growth among germinated seeds; it does not describe the growth outcome of every seed placed in a dish.</p>
   </div>
   <figure class="editorial-figure" aria-labelledby="rms-nesting-caption">
     <div class="figure-nesting">
@@ -163,14 +163,14 @@
 <section id="methods-privacy" class="section">
   <div class="section-head"><h2>Exports, backups, and privacy</h2></div>
   <div class="reading project-reading">
-    <p>Saving an independent copy is useful since students' working notebooks normally remain in browser storage. The application offers a Word-compatible .doc export for reading or sharing and a JSON backup for preserving project data across browsers or devices. Optional Research Chat introduces a different boundary by sending selected project context to a server. Students need to understand what remains in the browser and what they choose to send, while retaining responsibility for checking sources and explaining their methodological decisions.</p>
+    <p>Student notebooks are designed to remain in local browser storage unless the user chooses to use a networked feature. An independent backup is therefore important, especially when changing devices or clearing browser data. The application provides a Word-compatible .doc export and a JSON backup and recovery option. Optional Research Chat introduces a different privacy boundary because selected project context is sent to a server. Students should avoid submitting identifiable participant records or other sensitive research data through that feature without appropriate safeguards. They remain responsible for verifying sources and evaluating methodological guidance.</p>
   </div>
 </section>
 
 <section id="methods-implementation" class="section">
   <div class="section-head"><h2>How the workspace handles guidance and records</h2></div>
   <div class="reading project-reading">
-    <p>Research guidance and students' working notebooks are maintained separately. The public <a href="https://github.com/gmoon-code/research-methods/blob/main/README.md" target="_blank" rel="noopener noreferrer">application documentation<span class="new-tab-note"> (opens in a new tab)</span></a> describes a release process that can update instructional guidance without overwriting a locally stored project. It also describes technical checks and the optional network features discussed above. Those documented safeguards have not been independently audited for privacy or security.</p>
+    <p>The application separates published instructional guidance from locally stored student notebooks. Its <a href="https://github.com/gmoon-code/research-methods/blob/main/README.md" target="_blank" rel="noopener noreferrer">public documentation<span class="new-tab-note"> (opens in a new tab)</span></a> describes how guidance can be updated without replacing a student's project, along with the tests used to validate a release. Those technical descriptions concern intended behaviour and are not a substitute for an independent privacy or security assessment.</p>
   </div>
   <details class="project-technical-details">
     <summary>Guidance releases, validation, and recovery</summary>
