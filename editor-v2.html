@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>Academic Website Editor 2 | Ye Eun Moon</title>
-<link rel="stylesheet" href="editor-v2.css?v=20261027-image-crop-v46">
-<script src="editor-v2.js?v=20261027-image-crop-v46" defer></script>
+<link rel="stylesheet" href="editor-v2.css?v=20261027-crop-mask-v46b">
+<script src="editor-v2.js?v=20261027-crop-mask-v46b" defer></script>
 </head>
 <body>
 <a class="skip" href="#workspace">Skip to editor canvas</a>
@@ -261,6 +261,13 @@
                 <select id="liveCropFit">
                   <option value="contain">Fit entire picture</option>
                   <option value="cover">Crop to fill the frame</option>
+                </select>
+              </label>
+              <label for="liveCropShape">Crop to shape
+                <select id="liveCropShape">
+                  <option value="rectangle">Rectangle</option>
+                  <option value="rounded">Rounded rectangle</option>
+                  <option value="circle">Circle / oval</option>
                 </select>
               </label>
               <label for="liveCropX">Horizontal focal point <output id="liveCropXValue" for="liveCropX">50%</output></label>
