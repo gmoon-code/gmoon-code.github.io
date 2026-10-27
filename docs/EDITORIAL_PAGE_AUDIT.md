@@ -23,7 +23,7 @@ A content pass is **not** equivalent to final visual approval. Automated browser
 | `teaching-ap-evolution.html` | Science, cohort source, selection arithmetic, narrative and references pass completed, commits `421909e`, `6486278`, `ab2e94f` | Final manual figure and responsive check |
 | `teaching-osmosis-practice.html` | Worksheet scientific and print-stylesheet pass completed, commit `d04f88c` | Printed-page preview and small-screen review |
 | `story-method.html` | Content, source-record, scientific-example, and writing pass completed, commit `a1b5086` | Full live-preview interaction and visual inspection at desktop/phone sizes |
-| `research-methods-studio.html` | Pending dedicated pass | Functionality, classroom claims, accessibility and layout |
+| `research-methods-studio.html` | Checked against synthetic source CSV, JSON and release README; content and statistical interpretation pass, commit `2865b41` | Live-preview, export, backup and responsive interaction audit outstanding |
 | `writing-biological-classification.html` | Revised in preceding conversation; final sign-off pending | Line-by-line argument, citations, scientific interpretation |
 | `interests.html` | Revised in preceding conversation; inaccessible photo filename alt fixed `ea80850`; final sign-off pending | Every text/image element and responsive layout |
 | `pungmul.html` | History and image rights addressed previously; ARIA fix `209f965`, photo alt fix `8184b09` | Entire long-form and media layout, history source audit |
@@ -49,4 +49,4 @@ A content pass is **not** equivalent to final visual approval. Automated browser
 
 ## Next content pass
 
-Start with `research-methods-studio.html` and the remaining public pages, then the remaining public pages, followed by separate editor QA. Return to prior partial revisions for full verification. Do not mark a page fully finished merely because a prior commit polished part of it.
+Start with `research-scoping.html` and the remaining pending public pages, then the remaining public pages, followed by separate editor QA. Return to prior partial revisions for full verification. Do not mark a page fully finished merely because a prior commit polished part of it.
