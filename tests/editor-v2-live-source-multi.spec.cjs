@@ -840,6 +840,7 @@ test('crop sliders update the photo live and save the whole adjustment as undoab
   await expect(photo).toHaveCSS('object-position','18% 50%');
   await x.evaluate(node=>node.dispatchEvent(new Event('change',{bubbles:true})));
   await expect(page.locator('#liveCropXValue')).toHaveText('18%');
+  await page.locator('#liveMode').focus();
   await page.keyboard.press('Control+z');
   await expect(photo).toHaveCSS('object-position','50% 50%');
 });
