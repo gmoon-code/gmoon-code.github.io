@@ -843,3 +843,22 @@ test('crop sliders update the photo live and save the whole adjustment as undoab
   await page.keyboard.press('Control+z');
   await expect(photo).toHaveCSS('object-position','50% 50%');
 });
+
+test('linked images are selectable for cropping without opening their link',async({page})=>{
+  await loadCropFixture(page);
+  const live=page.frameLocator('#livePageFrame');
+  const photo=live.locator('img.picture');
+  await photo.evaluate(node=>{
+    const a=node.ownerDocument.createElement('a');
+    a.href='teaching.html';
+    node.replaceWith(a);
+    a.append(node);
+  });
+  await photo.click();
+  await expect(page.locator('#cropImageTool')).toBeEnabled();
+  await page.locator('#cropImageTool').click();
+  await expect(live.locator('#moon-v2-live-overlay'))
+    .toHaveAttribute('data-crop-mode','true');
+  await expect(photo).toHaveCSS('object-fit','cover');
+  await expect(live.locator('a img.picture')).toHaveCount(1);
+});
