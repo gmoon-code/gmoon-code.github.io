@@ -564,7 +564,7 @@ test('semantic website section can shrink vertically and fit content without sca
   await expect(live.locator('#moon-v2-live-overlay .moon-v2-grip')).toHaveCount(8);
   const before=await section.evaluate(node=>node.getBoundingClientRect().height);
   const originalFont=await paragraph.evaluate(node=>getComputedStyle(node).fontSize);
-  const handle=live.locator('#moon-v2-live-overlay [data-direction="s"]');
+  const handle=live.locator('#moon-v2-live-overlay .moon-v2-grip[data-direction="s"]');
   const grip=await handle.boundingBox();expect(grip).toBeTruthy();
   await page.mouse.move(grip.x+grip.width/2,grip.y+grip.height/2);
   await page.mouse.down();
@@ -624,4 +624,63 @@ test('section resizing stays scoped to selected device and width-only edits reta
   await page.locator('#devicePreview').selectOption('desktop');
   const restored=await section.evaluate(node=>node.getBoundingClientRect().height);
   expect(Math.abs(restored-195)).toBeLessThan(3);
+});
+
+test('section edit mode exposes draggable edges and selects a section from its text',async({page})=>{
+  await loadSectionFixture(page);
+  const live=page.frameLocator('#livePageFrame');
+  const section=live.locator('section.feature');
+  const button=page.locator('#liveSectionPickMode');
+  await button.click();
+  await expect(button).toHaveAttribute('aria-pressed','true');
+  await section.locator('p').click();
+  await expect(page.locator('#liveSectionSizing')).toBeVisible();
+  await expect(live.locator('#moon-v2-live-overlay .moon-v2-edge')).toHaveCount(4);
+  const edges=live.locator('#moon-v2-live-overlay .moon-v2-edge[data-direction="e"]');
+  const before=await section.evaluate(node=>node.getBoundingClientRect().width);
+  const box=await edges.boundingBox();
+  expect(box).toBeTruthy();
+  expect(box.width).toBeGreaterThanOrEqual(12);
+  await page.mouse.move(box.x+box.width/2,box.y+box.height/2);
+  await page.mouse.down();
+  await page.mouse.move(box.x+box.width/2-85,box.y+box.height/2,{steps:9});
+  await page.mouse.up();
+  const after=await section.evaluate(node=>node.getBoundingClientRect().width);
+  expect(after).toBeLessThan(before-35);
+  await expect(page.locator('#liveSectionHeightMode')).toHaveValue('auto');
+  await expect(section.locator('p')).toHaveCSS('font-size','20px');
+});
+test('zoom-aware section grips retain reachable on-screen size',async({page})=>{
+  await loadSectionFixture(page);
+  const live=page.frameLocator('#livePageFrame');
+  await page.locator('#liveSectionPickMode').click();
+  await live.locator('section.feature p').click();
+  await page.locator('#zoom').evaluate(input=>{
+    input.value='25';
+    input.dispatchEvent(new Event('input',{bubbles:true}));
+  });
+  const overlay=live.locator('#moon-v2-live-overlay');
+  const grip=overlay.locator('.moon-v2-grip[data-direction="se"]');
+  const bounds=await grip.boundingBox();
+  expect(bounds).toBeTruthy();
+  expect(bounds.width).toBeGreaterThanOrEqual(16);
+  expect(bounds.height).toBeGreaterThanOrEqual(16);
+  await expect(overlay.locator('.moon-v2-edge')).toHaveCount(4);
+});
+test('section selection mode never navigates embedded page links',async({page})=>{
+  await loadSectionFixture(page);
+  const live=page.frameLocator('#livePageFrame');
+  await live.locator('section.feature p').evaluate(node=>{
+    const text=node.textContent;
+    node.replaceChildren();
+    const anchor=node.ownerDocument.createElement('a');
+    anchor.href='teaching.html';
+    anchor.textContent=text;
+    node.append(anchor);
+  });
+  await page.locator('#liveSectionPickMode').click();
+  await live.locator('section.feature a').click();
+  await expect(page.locator('#liveSectionSizing')).toBeVisible();
+  await expect(live.locator('section.feature')).toHaveCount(1);
+  await expect(page.locator('#liveSectionPickMode')).toHaveAttribute('aria-pressed','true');
 });
