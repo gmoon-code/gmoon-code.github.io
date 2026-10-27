@@ -1978,6 +1978,9 @@ function syncLiveOverlay(){
   const node=liveSelected.node,doc=node.ownerDocument;
   const sourceGroup=selectedSourcePatches();
   const grouped=sourceGroup.length>1&&sourceGroup.some(item=>item.node===node);
+  if(liveOverlay?.isConnected&&
+      liveOverlay.dataset.groupCount!==(grouped?String(sourceGroup.length):"1"))
+    removeLiveOverlay();
   if(!liveOverlay||!liveOverlay.isConnected||liveOverlay.ownerDocument!==doc){
     removeLiveOverlay();
     liveOverlay=doc.createElement("div");
@@ -2021,9 +2024,9 @@ function syncLiveOverlay(){
     // primary object. Hide that misleading control until group deletion
     // is explicitly supported for original source elements.
     if(!grouped)liveOverlay.append(remove);
-    // Single-object resize remains available. Group edges show move only,
-    // never grips that would resize just one of the selected elements.
-    if(!grouped&&node.matches(LIVE_SELECTABLE_TAGS)){
+    // Group grips resize independent original boxes together. Text always
+    // reflows naturally, and images retain object-fit:contain.
+    if(node.matches(LIVE_SELECTABLE_TAGS)){
       for(const dir of ["nw","n","ne","e","se","s","sw","w"]){
         const grip=doc.createElement("button");
         grip.type="button";grip.className="moon-v2-grip";
@@ -2140,9 +2143,9 @@ function startLiveGesture(event,direction,anchor){
     liveAddedMulti.has(selector)&&selectedAddedPatches().length>1?
     selectedAddedPatches().map(item=>({selector:item.selector,node:item.node,
       patch:copy(item.patch)})):null;
-  const sourceGroup=direction==="move"&&!LIVE_ADDED_ID.test(selector)&&
+  const sourceGroup=!LIVE_ADDED_ID.test(selector)&&
     liveSourceMulti.has(selector)&&selectedSourcePatches().length>1?
-    selectedSourcePatches():null;
+    selectedSourcePatches().map(item=>({...item,rect:item.node.getBoundingClientRect()})):null;
   const rect=sourceGroup?liveSourceSelectionBounds(node,sourceGroup):
     node.getBoundingClientRect();
   if(rect.width<2||rect.height<2)return;
@@ -2153,6 +2156,61 @@ function startLiveGesture(event,direction,anchor){
       sourceGroup?.map(item=>item.node)||[node])};
   anchor.setPointerCapture?.(event.pointerId);
 }
+// Each source box is resized around a shared group frame. We first establish
+// the new natural dimensions, then measure the resulting browser layout and
+// translate each box to the intended location. This second phase compensates
+// for normal document reflow without transforming any glyphs or photo pixels.
+function resizeLiveSourceGroup(g,dx,dy,lockRatio=false){
+  const before=g.rect,device=liveDevice();
+  const box=resizableBoxFromDrag(
+    {x:before.left,y:before.top,w:before.width,h:before.height},
+    g.dir,dx,dy,lockRatio,90,60,4000,5000);
+  const sx=box.w/before.width,sy=box.h/before.height;
+  const desired=[];
+  for(const item of g.sourceGroup){
+    const old=item.rect;
+    const target={
+      x:box.x+(old.left-before.left)*sx,
+      y:box.y+(old.top-before.top)*sy,
+      w:Math.round(clamp(old.width*sx,64,4000)),
+      h:Math.round(clamp(old.height*sy,24,5000))
+    };
+    const layout=normaliseElementBoxLayout(item.node,item.layout);
+    layout.wrapWidth=target.w;
+    layout.reserveHeight=target.h;
+    const patch=copy(item.patch);
+    patch.layout={...patch.layout,[device]:layout};
+    livePatches.set(item.selector,patch);
+    desired.push({item,target,patch,layout});
+  }
+  const doc=g.node.ownerDocument;
+  refreshLiveLayoutRules(doc);
+  for(const info of desired){
+    if(info.item.node.matches(LIVE_REFLOW_TEXT)&&
+        (g.dir==="e"||g.dir==="w")){
+      const needed=Math.ceil(info.item.node.scrollHeight+2);
+      if(needed>info.layout.reserveHeight&&needed<=5000){
+        info.layout.reserveHeight=needed;
+        info.patch.layout[device]=info.layout;
+        livePatches.set(info.item.selector,info.patch);
+      }
+    }
+  }
+  refreshLiveLayoutRules(doc);
+  // Resolve layout after every box has its new dimensions. Translations
+  // never change document flow, so subsequent corrections stay independent.
+  for(const info of desired){
+    const actual=info.item.node.getBoundingClientRect();
+    const old=info.item.layout;
+    info.layout.dx=clamp(Math.round(old.dx+
+      info.target.x-actual.left),-4000,4000);
+    info.layout.dy=clamp(Math.round(old.dy+
+      info.target.y-actual.top),-4000,4000);
+    info.patch.layout[device]=info.layout;
+    livePatches.set(info.item.selector,info.patch);
+  }
+  refreshLiveLayoutRules(doc);
+}
 function moveLiveGesture(event){
   const g=liveGesture;
   if(!g||g.pointer!==event.pointerId)return;
@@ -2160,6 +2218,10 @@ function moveLiveGesture(event){
   const deltaX=event.clientX-g.startX,deltaY=event.clientY-g.startY;
   if(!g.moved&&Math.hypot(deltaX,deltaY)<3)return;
   g.moved=true;
+  if(g.sourceGroup&&g.dir!=="move"){
+    resizeLiveSourceGroup(g,deltaX,deltaY,event.shiftKey);
+    syncLiveOverlay();return;
+  }
   if(g.sourceGroup&&g.dir==="move"){
     const snap=snapLiveMove(deltaX,deltaY,g,event.altKey);
     const device=liveDevice();
@@ -2320,7 +2382,8 @@ function finishLiveGesture(event){
     liveSuppressClickUntil=performance.now()+250;
     recordLiveHistory(g.snapshot);
     status(g.sourceGroup?
-      g.sourceGroup.length+" original webpage objects moved together · Review before publishing":
+      g.sourceGroup.length+" original webpage objects "+
+        (g.dir==="move"?"moved":"resized")+" together · Review before publishing":
       "Moved/resized live-page draft saved · Review changes before publishing");
   }else{
     // Pointer capture re-targets the trailing click to the captured node.
