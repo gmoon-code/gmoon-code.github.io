@@ -2081,6 +2081,12 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
   outline:2px solid currentColor;
   outline-offset:3px;
 }
+/* Full-image links are labelled in HTML. Avoid a generic external-link icon
+   becoming an extra line inside the image frame below the screenshot. */
+#main .project-interface-figure>a[target="_blank"]::after{
+  content:none!important;
+  display:none!important;
+}
 #main .project-interface-figure img{
   display:block;
   width:100%;
