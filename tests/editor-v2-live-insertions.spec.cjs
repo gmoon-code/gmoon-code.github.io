@@ -125,7 +125,12 @@ test('Github live publishing retains original HTML and inserts new objects once'
   expect(published).toContain('This original paragraph must remain unchanged.');
   expect(published).toContain('data-moon-v2-added-layer');
   expect(published).toContain('Double-click to edit text');
-  expect((published.match(/data-moon-v2-added-id=/g)||[]).length).toBe(1);
+  // Published layout CSS can legitimately mention an object's stable ID
+  // several times. Count actual inserted DOM elements, not CSS selectors.
+  const inserted=await page.evaluate(source=>
+    new DOMParser().parseFromString(source,'text/html')
+      .querySelectorAll('main [data-moon-v2-added-id]').length,published);
+  expect(inserted).toBe(1);
   expect(submitted.sha).toBe('sha-source-123');
   expect(JSON.stringify(localStorage)).not.toContain('mock-token-only');
   // The confirmed GitHub source is loaded without duplicating the object.
