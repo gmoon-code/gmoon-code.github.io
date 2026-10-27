@@ -1315,6 +1315,7 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
 .bio-mechanism-consequence{display:block;font-size:14px;font-weight:700;border-top:1px solid var(--moon-rule);padding-top:10px}
 .bio-mechanism-caveat{font-size:13px;line-height:1.63;color:#554f55;margin:15px 0 0}
 .teaching-decision-grid,.teaching-paired-questions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px;margin:23px 0}
+.teaching-bio-decision-grid{grid-template-columns:repeat(2,minmax(0,1fr));max-width:1040px}
 .teaching-decision-grid>div,.teaching-paired-questions>div{padding:17px 14px;border-top:3px solid var(--section-magenta-line)}
 .teaching-decision-grid h3,.teaching-paired-questions h3{font-size:19px;line-height:1.34;margin:0 0 9px}
 .teaching-decision-grid p,.teaching-paired-questions p{font-size:15px;line-height:1.67;margin:0;color:#403940}
@@ -1365,6 +1366,7 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
 }
 @media(max-width:790px){
  .teaching-case-page .teaching-decision-grid,.teaching-paired-questions{grid-template-columns:1fr;gap:10px}
+ .teaching-bio-decision-grid{grid-template-columns:1fr}
  .teaching-record-sequence,.teaching-three-representations,.teaching-chem-responses{grid-template-columns:1fr}
  .teaching-chem-case .chem-equilibrium-example{grid-template-columns:1fr}
  .bio-mechanism-two{grid-template-columns:1fr}
