@@ -794,3 +794,52 @@ test('crop keyboard arrows reframe the photo while keeping its box stationary',a
   await page.keyboard.press('Escape');
   await expect(page.locator('#liveCropToggle')).toHaveAttribute('aria-pressed','false');
 });
+
+test('crop frame handles ignore image proportion lock and visibly trim the picture',async({page})=>{
+  await loadCropFixture(page);
+  const live=page.frameLocator('#livePageFrame');
+  const photo=live.locator('img.picture');
+  await photo.click();
+  await expect(page.locator('#liveLockImageRatio')).toBeChecked();
+  const src=await photo.getAttribute('src');
+  const original=await photo.evaluate(node=>{
+    const r=node.getBoundingClientRect();
+    return {w:r.width,h:r.height};
+  });
+  await page.locator('#cropImageTool').click();
+  await expect(page.locator('#liveCropToggle')).toHaveAttribute('aria-pressed','true');
+  await expect(page.locator('#liveLockImageRatio')).toBeDisabled();
+  const edge=live.locator('#moon-v2-live-overlay .moon-v2-grip[data-direction="e"]');
+  const r=await edge.boundingBox();expect(r).toBeTruthy();
+  await page.mouse.move(r.x+r.width/2,r.y+r.height/2);
+  await page.mouse.down();
+  await page.mouse.move(r.x+r.width/2-64,r.y+r.height/2,{steps:9});
+  await page.mouse.up();
+  const changed=await photo.evaluate(node=>{
+    const r=node.getBoundingClientRect();
+    return {w:r.width,h:r.height,fit:getComputedStyle(node).objectFit};
+  });
+  expect(changed.w).toBeLessThan(original.w-25);
+  expect(Math.abs(changed.h-original.h)).toBeLessThan(3);
+  expect(changed.fit).toBe('cover');
+  expect(await photo.getAttribute('src')).toBe(src);
+  await page.locator('#cropImageTool').click();
+  await expect(page.locator('#liveCropToggle')).toHaveAttribute('aria-pressed','false');
+});
+test('crop sliders update the photo live and save the whole adjustment as undoable action',async({page})=>{
+  await loadCropFixture(page);
+  const live=page.frameLocator('#livePageFrame');
+  const photo=live.locator('img.picture');
+  await photo.click();
+  await page.locator('#liveCropFit').selectOption('cover');
+  const x=page.locator('#liveCropX');
+  await x.evaluate(node=>{
+    node.value='18';
+    node.dispatchEvent(new Event('input',{bubbles:true}));
+  });
+  await expect(photo).toHaveCSS('object-position','18% 50%');
+  await x.evaluate(node=>node.dispatchEvent(new Event('change',{bubbles:true})));
+  await expect(page.locator('#liveCropXValue')).toHaveText('18%');
+  await page.keyboard.press('Control+z');
+  await expect(photo).toHaveCSS('object-position','50% 50%');
+});
