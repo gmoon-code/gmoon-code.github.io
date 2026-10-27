@@ -1,5 +1,5 @@
 {
-  "createdAt": "2026-10-27T15:47:31.738Z",
+  "createdAt": "2026-10-27T22:49:53.173Z",
   "errors": [],
   "results": [
     {
@@ -9,7 +9,7 @@
         "viewport": 1440,
         "docWidth": 1440,
         "bodyWidth": 1440,
-        "pageHeight": 1437,
+        "pageHeight": 1412,
         "figures": [
           {
             "index": 1,
@@ -19,7 +19,7 @@
             "naturalHeight": 800,
             "imageWidth": 504,
             "imageHeight": 315,
-            "captionGap": 35,
+            "captionGap": 10,
             "captionText": "Figure 1. The Story Method course overview. Screenshot of the published eight-unit interface, October 2026, with Unit 1 selected.",
             "fullSize": "assets/story-method-interface.webp",
             "opensNewTab": true,
@@ -34,7 +34,7 @@
             "naturalHeight": 800,
             "imageWidth": 504,
             "imageHeight": 315,
-            "captionGap": 35,
+            "captionGap": 10,
             "captionText": "Figure 2. Research Methods Studio opening screen. Screenshot of the published research-notebook setup, October 2026, before project data have been entered.",
             "fullSize": "assets/research-methods-studio-interface.webp",
             "opensNewTab": true,
@@ -58,7 +58,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 506,
-            "rectHeight": 342,
+            "rectHeight": 317,
             "hidden": false
           },
           {
@@ -67,7 +67,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 506,
-            "rectHeight": 391,
+            "rectHeight": 366,
             "hidden": false
           },
           {
@@ -76,7 +76,7 @@
             "display": "flex",
             "visibility": "visible",
             "rectWidth": 548,
-            "rectHeight": 753,
+            "rectHeight": 728,
             "hidden": false
           },
           {
@@ -85,7 +85,7 @@
             "display": "grid",
             "visibility": "visible",
             "rectWidth": 1120,
-            "rectHeight": 753,
+            "rectHeight": 728,
             "hidden": false
           },
           {
@@ -94,7 +94,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 1120,
-            "rectHeight": 813,
+            "rectHeight": 788,
             "hidden": false
           },
           {
@@ -103,7 +103,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 1120,
-            "rectHeight": 1198,
+            "rectHeight": 1173,
             "hidden": false
           },
           {
@@ -112,7 +112,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 1440,
-            "rectHeight": 1437,
+            "rectHeight": 1412,
             "hidden": false
           },
           {
@@ -121,7 +121,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 1440,
-            "rectHeight": 1437,
+            "rectHeight": 1412,
             "hidden": false
           }
         ]
@@ -140,7 +140,7 @@
         "viewport": 768,
         "docWidth": 768,
         "bodyWidth": 768,
-        "pageHeight": 2334,
+        "pageHeight": 2284,
         "figures": [
           {
             "index": 1,
@@ -150,7 +150,7 @@
             "naturalHeight": 800,
             "imageWidth": 668,
             "imageHeight": 418,
-            "captionGap": 35,
+            "captionGap": 10,
             "captionText": "Figure 1. The Story Method course overview. Screenshot of the published eight-unit interface, October 2026, with Unit 1 selected.",
             "fullSize": "assets/story-method-interface.webp",
             "opensNewTab": true,
@@ -165,7 +165,7 @@
             "naturalHeight": 800,
             "imageWidth": 668,
             "imageHeight": 418,
-            "captionGap": 35,
+            "captionGap": 10,
             "captionText": "Figure 2. Research Methods Studio opening screen. Screenshot of the published research-notebook setup, October 2026, before project data have been entered.",
             "fullSize": "assets/research-methods-studio-interface.webp",
             "opensNewTab": true,
@@ -189,7 +189,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 670,
-            "rectHeight": 444,
+            "rectHeight": 420,
             "hidden": false
           },
           {
@@ -198,7 +198,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 670,
-            "rectHeight": 494,
+            "rectHeight": 469,
             "hidden": false
           },
           {
@@ -207,7 +207,7 @@
             "display": "flex",
             "visibility": "visible",
             "rectWidth": 712,
-            "rectHeight": 803,
+            "rectHeight": 778,
             "hidden": false
           },
           {
@@ -216,7 +216,7 @@
             "display": "grid",
             "visibility": "visible",
             "rectWidth": 712,
-            "rectHeight": 1656,
+            "rectHeight": 1606,
             "hidden": false
           },
           {
@@ -225,7 +225,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 712,
-            "rectHeight": 1716,
+            "rectHeight": 1666,
             "hidden": false
           },
           {
@@ -234,7 +234,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 712,
-            "rectHeight": 2109,
+            "rectHeight": 2059,
             "hidden": false
           },
           {
@@ -243,7 +243,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 768,
-            "rectHeight": 2334,
+            "rectHeight": 2284,
             "hidden": false
           },
           {
@@ -252,7 +252,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 768,
-            "rectHeight": 2334,
+            "rectHeight": 2284,
             "hidden": false
           }
         ]
@@ -268,7 +268,7 @@
         "viewport": 390,
         "docWidth": 390,
         "bodyWidth": 390,
-        "pageHeight": 2471,
+        "pageHeight": 2422,
         "figures": [
           {
             "index": 1,
@@ -278,7 +278,7 @@
             "naturalHeight": 800,
             "imageWidth": 318,
             "imageHeight": 199,
-            "captionGap": 35,
+            "captionGap": 10,
             "captionText": "Figure 1. The Story Method course overview. Screenshot of the published eight-unit interface, October 2026, with Unit 1 selected.",
             "fullSize": "assets/story-method-interface.webp",
             "opensNewTab": true,
@@ -293,7 +293,7 @@
             "naturalHeight": 800,
             "imageWidth": 318,
             "imageHeight": 199,
-            "captionGap": 35,
+            "captionGap": 10,
             "captionText": "Figure 2. Research Methods Studio opening screen. Screenshot of the published research-notebook setup, October 2026, before project data have been entered.",
             "fullSize": "assets/research-methods-studio-interface.webp",
             "opensNewTab": true,
@@ -317,7 +317,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 320,
-            "rectHeight": 226,
+            "rectHeight": 201,
             "hidden": false
           },
           {
@@ -326,7 +326,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 320,
-            "rectHeight": 295,
+            "rectHeight": 270,
             "hidden": false
           },
           {
@@ -335,7 +335,7 @@
             "display": "flex",
             "visibility": "visible",
             "rectWidth": 362,
-            "rectHeight": 753,
+            "rectHeight": 728,
             "hidden": false
           },
           {
@@ -344,7 +344,7 @@
             "display": "grid",
             "visibility": "visible",
             "rectWidth": 362,
-            "rectHeight": 1556,
+            "rectHeight": 1506,
             "hidden": false
           },
           {
@@ -353,7 +353,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 362,
-            "rectHeight": 1616,
+            "rectHeight": 1566,
             "hidden": false
           },
           {
@@ -362,7 +362,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 362,
-            "rectHeight": 2107,
+            "rectHeight": 2057,
             "hidden": false
           },
           {
@@ -371,7 +371,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 390,
-            "rectHeight": 2471,
+            "rectHeight": 2422,
             "hidden": false
           },
           {
@@ -380,7 +380,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 390,
-            "rectHeight": 2471,
+            "rectHeight": 2422,
             "hidden": false
           }
         ]
@@ -399,7 +399,7 @@
         "viewport": 1440,
         "docWidth": 1440,
         "bodyWidth": 1440,
-        "pageHeight": 4600,
+        "pageHeight": 4576,
         "figures": [
           {
             "index": 1,
@@ -409,7 +409,7 @@
             "naturalHeight": 436,
             "imageWidth": 858,
             "imageHeight": 383,
-            "captionGap": 35,
+            "captionGap": 10,
             "captionText": "Figure 1. The Observation Window in the released Unit 1 journey. The interface establishes a location for noticing the unequal reporter-cell signals and revisiting possible explana",
             "fullSize": "assets/story-method-observation-window.webp",
             "opensNewTab": true,
@@ -433,7 +433,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 860,
-            "rectHeight": 409,
+            "rectHeight": 385,
             "hidden": false
           },
           {
@@ -442,7 +442,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 860,
-            "rectHeight": 485,
+            "rectHeight": 460,
             "hidden": false
           },
           {
@@ -451,7 +451,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 1120,
-            "rectHeight": 1303,
+            "rectHeight": 1279,
             "hidden": false
           },
           {
@@ -460,7 +460,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 1120,
-            "rectHeight": 4361,
+            "rectHeight": 4337,
             "hidden": false
           },
           {
@@ -469,7 +469,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 1440,
-            "rectHeight": 4600,
+            "rectHeight": 4576,
             "hidden": false
           },
           {
@@ -478,7 +478,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 1440,
-            "rectHeight": 4600,
+            "rectHeight": 4576,
             "hidden": false
           }
         ]
@@ -500,7 +500,7 @@
         "viewport": 768,
         "docWidth": 768,
         "bodyWidth": 768,
-        "pageHeight": 5092,
+        "pageHeight": 5067,
         "figures": [
           {
             "index": 1,
@@ -510,7 +510,7 @@
             "naturalHeight": 436,
             "imageWidth": 710,
             "imageHeight": 317,
-            "captionGap": 35,
+            "captionGap": 10,
             "captionText": "Figure 1. The Observation Window in the released Unit 1 journey. The interface establishes a location for noticing the unequal reporter-cell signals and revisiting possible explana",
             "fullSize": "assets/story-method-observation-window.webp",
             "opensNewTab": true,
@@ -534,7 +534,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 712,
-            "rectHeight": 343,
+            "rectHeight": 319,
             "hidden": false
           },
           {
@@ -543,7 +543,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 712,
-            "rectHeight": 419,
+            "rectHeight": 394,
             "hidden": false
           },
           {
@@ -552,7 +552,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 712,
-            "rectHeight": 1339,
+            "rectHeight": 1314,
             "hidden": false
           },
           {
@@ -561,7 +561,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 712,
-            "rectHeight": 4867,
+            "rectHeight": 4842,
             "hidden": false
           },
           {
@@ -570,7 +570,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 768,
-            "rectHeight": 5092,
+            "rectHeight": 5067,
             "hidden": false
           },
           {
@@ -579,7 +579,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 768,
-            "rectHeight": 5092,
+            "rectHeight": 5067,
             "hidden": false
           }
         ]
@@ -599,7 +599,7 @@
         "viewport": 390,
         "docWidth": 390,
         "bodyWidth": 390,
-        "pageHeight": 7762,
+        "pageHeight": 7737,
         "figures": [
           {
             "index": 1,
@@ -609,7 +609,7 @@
             "naturalHeight": 436,
             "imageWidth": 360,
             "imageHeight": 160,
-            "captionGap": 35,
+            "captionGap": 10,
             "captionText": "Figure 1. The Observation Window in the released Unit 1 journey. The interface establishes a location for noticing the unequal reporter-cell signals and revisiting possible explana",
             "fullSize": "assets/story-method-observation-window.webp",
             "opensNewTab": true,
@@ -633,7 +633,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 362,
-            "rectHeight": 187,
+            "rectHeight": 162,
             "hidden": false
           },
           {
@@ -642,7 +642,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 362,
-            "rectHeight": 327,
+            "rectHeight": 302,
             "hidden": false
           },
           {
@@ -651,7 +651,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 362,
-            "rectHeight": 1866,
+            "rectHeight": 1841,
             "hidden": false
           },
           {
@@ -660,7 +660,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 362,
-            "rectHeight": 7398,
+            "rectHeight": 7373,
             "hidden": false
           },
           {
@@ -669,7 +669,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 390,
-            "rectHeight": 7762,
+            "rectHeight": 7737,
             "hidden": false
           },
           {
@@ -678,7 +678,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 390,
-            "rectHeight": 7762,
+            "rectHeight": 7737,
             "hidden": false
           }
         ]
@@ -700,7 +700,7 @@
         "viewport": 1440,
         "docWidth": 1440,
         "bodyWidth": 1440,
-        "pageHeight": 5729,
+        "pageHeight": 5705,
         "figures": [
           {
             "index": 1,
@@ -710,7 +710,7 @@
             "naturalHeight": 800,
             "imageWidth": 858,
             "imageHeight": 536,
-            "captionGap": 35,
+            "captionGap": 10,
             "captionText": "Figure 2. Opening the Data and Statistics Lab. The published interface begins with raw-data import and directs students to preserve their original records. No dataset or analysis r",
             "fullSize": "assets/research-methods-data-lab.webp",
             "opensNewTab": true,
@@ -734,7 +734,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 860,
-            "rectHeight": 563,
+            "rectHeight": 538,
             "hidden": false
           },
           {
@@ -743,7 +743,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 860,
-            "rectHeight": 681,
+            "rectHeight": 656,
             "hidden": false
           },
           {
@@ -752,7 +752,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 1120,
-            "rectHeight": 1100,
+            "rectHeight": 1076,
             "hidden": false
           },
           {
@@ -761,7 +761,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 1120,
-            "rectHeight": 5490,
+            "rectHeight": 5466,
             "hidden": false
           },
           {
@@ -770,7 +770,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 1440,
-            "rectHeight": 5729,
+            "rectHeight": 5705,
             "hidden": false
           },
           {
@@ -779,7 +779,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 1440,
-            "rectHeight": 5729,
+            "rectHeight": 5705,
             "hidden": false
           }
         ]
@@ -801,7 +801,7 @@
         "viewport": 768,
         "docWidth": 768,
         "bodyWidth": 768,
-        "pageHeight": 6414,
+        "pageHeight": 6389,
         "figures": [
           {
             "index": 1,
@@ -811,7 +811,7 @@
             "naturalHeight": 800,
             "imageWidth": 710,
             "imageHeight": 444,
-            "captionGap": 35,
+            "captionGap": 10,
             "captionText": "Figure 2. Opening the Data and Statistics Lab. The published interface begins with raw-data import and directs students to preserve their original records. No dataset or analysis r",
             "fullSize": "assets/research-methods-data-lab.webp",
             "opensNewTab": true,
@@ -835,7 +835,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 712,
-            "rectHeight": 471,
+            "rectHeight": 446,
             "hidden": false
           },
           {
@@ -844,7 +844,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 712,
-            "rectHeight": 588,
+            "rectHeight": 563,
             "hidden": false
           },
           {
@@ -853,7 +853,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 712,
-            "rectHeight": 1061,
+            "rectHeight": 1036,
             "hidden": false
           },
           {
@@ -862,7 +862,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 712,
-            "rectHeight": 6189,
+            "rectHeight": 6164,
             "hidden": false
           },
           {
@@ -871,7 +871,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 768,
-            "rectHeight": 6414,
+            "rectHeight": 6389,
             "hidden": false
           },
           {
@@ -880,7 +880,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 768,
-            "rectHeight": 6414,
+            "rectHeight": 6389,
             "hidden": false
           }
         ]
@@ -900,7 +900,7 @@
         "viewport": 390,
         "docWidth": 390,
         "bodyWidth": 390,
-        "pageHeight": 9291,
+        "pageHeight": 9266,
         "figures": [
           {
             "index": 1,
@@ -910,7 +910,7 @@
             "naturalHeight": 800,
             "imageWidth": 360,
             "imageHeight": 225,
-            "captionGap": 35,
+            "captionGap": 10,
             "captionText": "Figure 2. Opening the Data and Statistics Lab. The published interface begins with raw-data import and directs students to preserve their original records. No dataset or analysis r",
             "fullSize": "assets/research-methods-data-lab.webp",
             "opensNewTab": true,
@@ -934,7 +934,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 362,
-            "rectHeight": 252,
+            "rectHeight": 227,
             "hidden": false
           },
           {
@@ -943,7 +943,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 362,
-            "rectHeight": 392,
+            "rectHeight": 367,
             "hidden": false
           },
           {
@@ -952,7 +952,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 362,
-            "rectHeight": 1176,
+            "rectHeight": 1151,
             "hidden": false
           },
           {
@@ -961,7 +961,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 362,
-            "rectHeight": 8926,
+            "rectHeight": 8901,
             "hidden": false
           },
           {
@@ -970,7 +970,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 390,
-            "rectHeight": 9291,
+            "rectHeight": 9266,
             "hidden": false
           },
           {
@@ -979,7 +979,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 390,
-            "rectHeight": 9291,
+            "rectHeight": 9266,
             "hidden": false
           }
         ]
