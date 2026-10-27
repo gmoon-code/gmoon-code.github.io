@@ -1614,6 +1614,14 @@ function renderLiveInspector(){
     $("resetLiveLayout").disabled=!livePatches.get(selector)?.layout?.[liveDevice()]&&
       livePatches.get(selector)?.kind!=="insert";
   }
+  // Inspector's reflow and reset calculations can enable fields later in
+  // this render. Apply the position lock last so no control reopens it.
+  if(locked)for(const id of [
+    "liveMoveX","liveMoveY","liveOriginalWidth","liveOriginalHeight",
+    "liveAddedWidth","liveAddedHeight","liveTextBoxWidth","liveTextBoxHeight",
+    "liveFitReflowHeight","liveResetTextDimensions","resetLiveLayout",
+    "liveTextReflow"
+  ])$(id).disabled=true;
   renderLiveEditCount();
 }
 // A selector recorded in the rendered (script-enabled) website can differ
