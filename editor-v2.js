@@ -533,22 +533,38 @@ function validAddedDesign(design){
   }
   return true;
 }
-const DEFAULT_IMAGE_CROP=Object.freeze({fit:"contain",x:50,y:50,mask:"rectangle"});
+const DEFAULT_IMAGE_CROP=Object.freeze({fit:"contain",x:50,y:50,mask:"rectangle",zoom:100});
 function validImageCropMap(map){
   if(!map||typeof map!=="object"||Array.isArray(map))return false;
   return Object.entries(map).every(([device,crop])=>
     !!LIVE_DEVICE_RULES[device]&&crop&&typeof crop==="object"&&!Array.isArray(crop)&&
-    Object.keys(crop).every(key=>["fit","x","y","mask"].includes(key))&&
+    Object.keys(crop).every(key=>["fit","x","y","mask","zoom","ratio"].includes(key))&&
     (crop.mask===undefined||["rectangle","rounded","circle"].includes(crop.mask))&&
+    (crop.zoom===undefined||Number.isInteger(crop.zoom)&&crop.zoom>=100&&crop.zoom<=500)&&
+    (crop.ratio===undefined||Number.isFinite(crop.ratio)&&crop.ratio>=0.01&&crop.ratio<=100)&&
     ["contain","cover"].includes(crop.fit)&&
     ["x","y"].every(key=>Number.isInteger(crop[key])&&crop[key]>=0&&crop[key]<=100));
 }
-function imageCropCss(crop){
+// The img element retains its source and accessible alt. Its pixels are
+// shifted outside the paint area; a zoomable/pannable background paints
+// inside the original image box, independently from frame resizing.
+function imageCropCss(crop,src="",geometry=null){
   const mask=crop.mask==="circle"?"border-radius:50%!important;":
     crop.mask==="rounded"?"border-radius:20px!important;":
     "border-radius:0!important;";
-  return "object-fit:"+crop.fit+"!important;object-position:"+
-    crop.x+"% "+crop.y+"%!important;"+mask;
+  if(!src||!safeImageSource(src)||!crop.ratio||!geometry?.w||!geometry?.h)
+    return "object-fit:"+crop.fit+"!important;object-position:"+
+      crop.x+"% "+crop.y+"%!important;"+mask;
+  const zoom=clamp(crop.zoom||100,100,500)/100;
+  const cover=Math.max(100,geometry.h*crop.ratio/geometry.w*100);
+  const contain=Math.min(100,geometry.h*crop.ratio/geometry.w*100);
+  const size=Math.round((crop.fit==="contain"?contain:cover)*zoom*1000)/1000;
+  return "object-fit:none!important;object-position:-100000px -100000px!important;"+
+    "background-image:url("+src+")!important;"+
+    "background-size:"+size+"% auto!important;"+
+    "background-position:"+crop.x+"% "+crop.y+"%!important;"+
+    "background-repeat:no-repeat!important;"+
+    "background-origin:content-box!important;"+mask;
 }
 function selectedImageCrop(patch,device=liveDevice()){
   const node=liveSelected?.node,selector=node&&liveSelector(node);
@@ -662,7 +678,7 @@ function addedStyleCss(p){
     result+="@media "+media+"{"+tag+"{left:"+g.x+
       "px!important;top:"+g.y+"px!important;width:"+g.w+
       "px!important;height:"+g.h+"px!important;"+
-      (crop?imageCropCss(crop):"")+"}}";
+      (crop?imageCropCss(crop,p.src,g):"")+"}}";
   }
   return result;
 }
@@ -1158,7 +1174,9 @@ function liveLayoutRules(patches=[...livePatches.values()]){
       if(patch.kind==="insert"||patch.kind==="delete"||!patch.imageCrop?.[device])continue;
       const tail=patch.selector.match(/ > ([a-z][a-z0-9-]*):nth-of-type\(\d+\)$/)?.[1];
       if(tail!=="img")continue;
-      selectors.push(patch.selector+"{"+imageCropCss(patch.imageCrop[device])+"}");
+      const crop=patch.imageCrop[device],layout=patch.layout?.[device];
+      const dims=layout?.wrapWidth?{w:layout.wrapWidth,h:layout.reserveHeight}:null;
+      selectors.push(patch.selector+"{"+imageCropCss(crop,patch.src,dims)+"}");
     }
     if(selectors.length||unclipped.length)
       result.push("@media "+media+"{"+unclipped.join("")+selectors.join("")+"}");
