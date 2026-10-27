@@ -1526,12 +1526,15 @@ function setLiveCropMode(enabled){
   if(node?.tagName!=="IMG"||workspaceMode!=="live")return;
   if(enabled&&liveSectionPickMode)toggleLiveSectionPickMode();
   liveCropMode=!!enabled;
-  if(enabled)applySelectedImageCrop({
-    fit:"contain",left:0,right:0,top:0,bottom:0,zoom:100
-  });
+  if(enabled){
+    const existing=selectedImageCrop(livePatchForSelected());
+    applySelectedImageCrop({
+      ...croppedEdges(existing),fit:"contain",zoom:100
+    });
+  }
   removeLiveOverlay();renderLiveInspector();syncLiveOverlay();
   status(enabled?
-    "Crop active · Drag pink frame handles to trim edges, or drag the photo to reposition":
+    "Crop active · Drag pink handles to cut left, right, top and bottom independently":
     "Crop finished · Dragging the picture now moves its frame");
 }
 function nudgeLiveImageCrop(dx,dy){
@@ -1980,6 +1983,11 @@ function renderLiveInspector(){
     $("liveCropShape").value=crop.mask;
     $("liveCropX").value=String(crop.x);
     $("liveCropY").value=String(crop.y);
+    for(const [side,name] of [["left","Left"],["right","Right"],["top","Top"],["bottom","Bottom"]]){
+      const amount=Math.round(crop[side]||0);
+      $("liveCrop"+name).value=String(amount);
+      $("liveCrop"+name+"Value").textContent=amount+"%";
+    }
     $("liveCropZoom").value=String(crop.zoom||100);
     $("liveCropZoomValue").textContent=(crop.zoom||100)+"%";
     $("liveCropXValue").textContent=crop.x+"%";
@@ -2576,7 +2584,9 @@ function liveSourceSelectionBounds(node,items=selectedSourcePatches()){
 function syncLiveCropImageGuide(node,rect){
   const doc=node.ownerDocument;
   let guide=doc.getElementById("moon-v2-crop-image-guide");
-  if(!liveCropMode||node.tagName!=="IMG"){
+  if(!liveCropMode||node.tagName!=="IMG"||
+     ["left","right","top","bottom"].some(side=>
+       selectedImageCrop(livePatchForSelected())[side]!==undefined)){
     guide?.remove();return;
   }
   const patch=livePatchForSelected(),crop=selectedImageCrop(patch);
@@ -2695,7 +2705,7 @@ function syncLiveOverlay(){
       "Move selected original webpage elements together":
       "Move selected live-page object");
     move.dataset.direction=liveCropMode&&node.tagName==="IMG"?"crop":"move";
-    if(!locked)liveOverlay.append(move);
+    if(!locked&&!(liveCropMode&&node.tagName==="IMG"))liveOverlay.append(move);
     const remove=doc.createElement("button");
     remove.className="moon-v2-delete";remove.type="button";remove.textContent="Delete";
     remove.setAttribute("aria-label","Delete selected webpage element (undo is available)");
@@ -3788,9 +3798,8 @@ function bindLiveDocument(){
     }
     // A touch tap selects without capturing the pointer, so users can still
     // scroll the responsive webpage. Mouse/pen can drag immediately.
-    if(event.pointerType!=="touch"||liveCropMode&&target.tagName==="IMG")
-      startLiveGesture(event,liveCropMode&&target.tagName==="IMG"?
-        "crop":"move",target);
+    if(liveCropMode&&target.tagName==="IMG")return; // Cut with pink edge handles.
+    if(event.pointerType!=="touch")startLiveGesture(event,"move",target);
   },true);
   doc.addEventListener("pointermove",event=>{
     if(!liveSectionPickMode||liveGesture||liveEditing||workspaceMode!=="live"){
@@ -4973,6 +4982,13 @@ function attachEvents(){
   $("applyLiveImage").addEventListener("click",applyLiveImage);
   $("liveCropToggle").addEventListener("click",()=>setLiveCropMode(!liveCropMode));
   $("cropImageTool").addEventListener("click",()=>setLiveCropMode(!liveCropMode));
+  for(const [side,name] of [["left","Left"],["right","Right"],["top","Top"],["bottom","Bottom"]]){
+    $("liveCrop"+name).addEventListener("input",event=>{
+      $("liveCrop"+name+"Value").textContent=event.target.value+"%";
+    });
+    $("liveCrop"+name).addEventListener("change",event=>
+      setCropEdge(side,event.target.value));
+  }
   $("liveCropFit").addEventListener("change",event=>
     applySelectedImageCrop({fit:event.target.value}));
   $("liveCropShape").addEventListener("change",event=>
