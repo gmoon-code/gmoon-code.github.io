@@ -1226,6 +1226,7 @@ function recordLiveHistory(before){
   return true;
 }
 function liveUndoAction(again=false){
+  finishCropSliderPreview();
   const from=again?liveRedo:liveHistory,to=again?liveHistory:liveRedo;
   if(!from.length)return;
   if(liveEditing)saveLiveText();
@@ -2440,7 +2441,7 @@ function syncLiveOverlay(){
     move.setAttribute("aria-label",grouped?
       "Move selected original webpage elements together":
       "Move selected live-page object");
-    move.dataset.direction="move";
+    move.dataset.direction=liveCropMode&&node.tagName==="IMG"?"crop":"move";
     if(!locked)liveOverlay.append(move);
     const remove=doc.createElement("button");
     remove.className="moon-v2-delete";remove.type="button";remove.textContent="Delete";
@@ -3217,6 +3218,7 @@ function updateLiveLayerSelection(){
   syncLiveMultiSelection();
 }
 function clearLiveSelection(preserveMulti=false){
+  finishCropSliderPreview();
   if(!preserveMulti){liveAddedMulti.clear();liveSourceMulti.clear();}
   removeLiveSnapGuides();
   if(liveSelected?.node?.isConnected){
