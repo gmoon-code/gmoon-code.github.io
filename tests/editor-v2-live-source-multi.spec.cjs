@@ -507,3 +507,27 @@ test('north-west corner resize reflows original text without clipping or distort
   expect(Math.abs(after.right-before.right)).toBeLessThan(4);
   expect(Math.abs(after.bottom-before.bottom)).toBeLessThan(4);
 });
+
+test('multi-selection corner resize keeps wrapped source text readable',async({page})=>{
+  const live=page.frameLocator('#livePageFrame');
+  const first=live.locator('main p.first'),second=live.locator('main p.second');
+  await first.locator('a').click({modifiers:['Alt']});
+  await second.click({modifiers:['Shift']});
+  await expect(page.locator('#liveMultiCount')).toHaveText('2 selected');
+  const font=await second.evaluate(node=>getComputedStyle(node).fontSize);
+  const grip=live.locator('#moon-v2-live-overlay [data-direction="nw"]');
+  const box=await grip.boundingBox();
+  expect(box).toBeTruthy();
+  await page.mouse.move(box.x+box.width/2,box.y+box.height/2);
+  await page.mouse.down();
+  await page.mouse.move(box.x+box.width/2+90,box.y+box.height/2+30,{steps:9});
+  await page.mouse.up();
+  for(const paragraph of [first,second]){
+    const dimensions=await paragraph.evaluate(node=>({
+      scroll:node.scrollHeight,client:node.clientHeight,
+      font:getComputedStyle(node).fontSize
+    }));
+    expect(dimensions.scroll).toBeLessThanOrEqual(dimensions.client+3);
+    expect(dimensions.font).toBe(font);
+  }
+});
