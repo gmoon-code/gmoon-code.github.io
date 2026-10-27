@@ -17,10 +17,10 @@ A content pass is **not** equivalent to final visual approval. Automated browser
 | `research-action.html` | Crosschecked against original manuscript and the teaching case; malformed table and duplicated figure fixed, commit `6467157` | Final rendered desktop/mobile and diagram flow review |
 | `research-scoping.html` | Checked against source manuscripts, selection ledger and Pierson/Kane publications; evidence and layout revisions `880c3f5`, `b267a1b` | Confirm deployment, inspect at desktop/phone, verify OSF DOI availability |
 | `projects.html` | Content and image-source pass completed, commit `0db43f0` | Full manual layout and thumbnail review at desktop and phone widths |
-| `teaching.html` | Content pass completed, commits `91b001d`, `8784ed8`, `cbb6fdc` | Final manual visual check at desktop and phone widths |
-| `teaching-ap-chemistry.html` | Content and equilibrium calculation pass completed, commits `81ffbab`, `40a2476` | Final manual visual and responsive check |
-| `teaching-ap-biology.html` | Science, empirical claim, prose and references pass completed, commits `bde0b87`, `8d1af09`, `cff539b` | Final manual figure and responsive check |
-| `teaching-ap-evolution.html` | Science, cohort source, selection arithmetic, narrative and references pass completed, commits `421909e`, `6486278`, `ab2e94f` | Final manual figure and responsive check |
+| `teaching.html` | Completed content audit; new phone gutter adjustment via shared CSS `3d06822` after screenshot review | Recheck small-screen screenshots and final source consistency |
+| `teaching-ap-chemistry.html` | Content/calculations audited; shared mobile text inset `3d06822` | Recheck equations, figure and tables at phone widths |
+| `teaching-ap-biology.html` | Science/evidence audit completed; title and body were flush to phone border, horizontal gutter added in `3d06822` | Recheck full page, visual figure flow and mobile screenshot |
+| `teaching-ap-evolution.html` | Scientific and quantitative review completed; shared mobile text inset `3d06822` | Recheck figures, tables and paragraphs in fresh screenshots |
 | `teaching-osmosis-practice.html` | Worksheet scientific and print-stylesheet pass completed, commit `d04f88c` | Printed-page preview and small-screen review |
 | `story-method.html` | Content, source-record, scientific-example, and writing pass completed, commit `a1b5086` | Full live-preview interaction and visual inspection at desktop/phone sizes |
 | `research-methods-studio.html` | Checked against synthetic source CSV, JSON and release README; content and statistical interpretation pass, commit `2865b41` | Live-preview, export, backup and responsive interaction audit outstanding |
