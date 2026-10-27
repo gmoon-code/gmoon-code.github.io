@@ -538,47 +538,78 @@ function validImageCropMap(map){
   if(!map||typeof map!=="object"||Array.isArray(map))return false;
   return Object.entries(map).every(([device,crop])=>
     !!LIVE_DEVICE_RULES[device]&&crop&&typeof crop==="object"&&!Array.isArray(crop)&&
-    Object.keys(crop).every(key=>["fit","x","y","mask","zoom","ratio","baseW","reset"].includes(key))&&
-    (crop.mask===undefined||["rectangle","rounded","circle"].includes(crop.mask))&&
+    Object.keys(crop).every(key=>["fit","x","y","mask","zoom","ratio","baseW","reset","left","right","top","bottom"].includes(key))&&
+    (crop.mask===undefined||["rectangle","rounded","round-large","pill","circle","oval","squircle","diamond","hexagon","octagon","triangle","pentagon","star","heart","arch"].includes(crop.mask))&&
     (crop.zoom===undefined||Number.isInteger(crop.zoom)&&crop.zoom>=100&&crop.zoom<=500)&&
     (crop.ratio===undefined||Number.isFinite(crop.ratio)&&crop.ratio>=0.01&&crop.ratio<=100)&&
     (crop.baseW===undefined||Number.isFinite(crop.baseW)&&crop.baseW>=24&&crop.baseW<=15000)&&
     (crop.reset===undefined||typeof crop.reset==="boolean")&&
+    ["left","right","top","bottom"].every(k=>crop[k]===undefined||
+      Number.isFinite(crop[k])&&crop[k]>=0&&crop[k]<=90)&&
+    Number(crop.left||0)+Number(crop.right||0)<95&&
+    Number(crop.top||0)+Number(crop.bottom||0)<95&&
     ["contain","cover"].includes(crop.fit)&&
     ["x","y"].every(key=>Number.isInteger(crop[key])&&crop[key]>=0&&crop[key]<=100));
 }
 // The img element retains its source and accessible alt. Its pixels are
 // shifted outside the paint area; a zoomable/pannable background paints
 // inside the original image box, independently from frame resizing.
+function cropShapeCss(shape){
+  const polygons={
+    diamond:"50% 0%,100% 50%,50% 100%,0% 50%",
+    hexagon:"25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%",
+    octagon:"30% 0%,70% 0%,100% 30%,100% 70%,70% 100%,30% 100%,0% 70%,0% 30%",
+    triangle:"50% 0%,100% 100%,0% 100%",
+    pentagon:"50% 0%,100% 38%,82% 100%,18% 100%,0% 38%",
+    star:"50% 0%,61% 35%,98% 35%,68% 57%,79% 94%,50% 72%,21% 94%,32% 57%,2% 35%,39% 35%",
+    heart:"50% 18%,62% 4%,82% 4%,100% 24%,100% 48%,50% 100%,0% 48%,0% 24%,18% 4%,38% 4%",
+    arch:"50% 0%,85% 4%,100% 25%,100% 100%,0% 100%,0% 25%,15% 4%"
+  };
+  const radius={rounded:"12px","round-large":"28px",pill:"999px",circle:"50%",oval:"50%",squircle:"35%"};
+  return "border-radius:"+(radius[shape]||"0")+"!important;"+
+    "clip-path:"+(polygons[shape]?"polygon("+polygons[shape]+")":"none")+"!important;";
+}
+function croppedEdges(crop){
+  return {left:crop.left||0,right:crop.right||0,top:crop.top||0,bottom:crop.bottom||0};
+}
 function imageCropCss(crop,src="",geometry=null){
-  const mask=crop.mask==="circle"?"border-radius:50%!important;":
-    crop.mask==="rounded"?"border-radius:20px!important;":
-    "border-radius:0!important;";
+  const shape=cropShapeCss(crop.mask);
   if(crop.reset===true)
     return "object-fit:contain!important;object-position:50% 50%!important;"+
       "background-image:none!important;background-size:auto!important;"+
-      "background-position:50% 50%!important;border-radius:0!important;";
-  if(!src||!safeImageSource(src)||!crop.ratio||!geometry?.w||!geometry?.h)
-    return "object-fit:"+crop.fit+"!important;object-position:"+
-      crop.x+"% "+crop.y+"%!important;"+mask;
+      "background-position:50% 50%!important;"+cropShapeCss("rectangle");
+  if(!src||!safeImageSource(src)||!geometry?.w||!geometry?.h)
+    return "object-fit:"+crop.fit+"!important;object-position:"+crop.x+"% "+crop.y+"%!important;"+shape;
+  if(["left","right","top","bottom"].some(k=>crop[k]!==undefined)){
+    const {left,right,top,bottom}=croppedEdges(crop);
+    const fx=1-(left+right)/100,fy=1-(top+bottom)/100;
+    const ratio=crop.ratio||geometry.w/geometry.h;
+    const naturalW=crop.fit==="cover"?
+      Math.max(geometry.w/fx,geometry.h*ratio/fy):
+      Math.min(geometry.w/fx,geometry.h*ratio/fy);
+    const fullW=naturalW*clamp(crop.zoom||100,100,500)/100,fullH=fullW/ratio;
+    const px=v=>Math.round(v*1000)/1000+"px";
+    const shiftX=(geometry.w-fullW*fx)/2-fullW*left/100;
+    const shiftY=(geometry.h-fullH*fy)/2-fullH*top/100;
+    return "object-fit:none!important;object-position:-100000px -100000px!important;"+
+      "background-image:url("+src+")!important;"+
+      "background-size:"+px(fullW)+" "+px(fullH)+"!important;"+
+      "background-position:"+px(shiftX)+" "+px(shiftY)+"!important;"+
+      "background-repeat:no-repeat!important;background-origin:border-box!important;"+shape;
+  }
+  // Retain compatibility with earlier focal-position crops.
+  if(!crop.ratio)return "object-fit:"+crop.fit+"!important;object-position:"+
+    crop.x+"% "+crop.y+"%!important;"+shape;
   const zoom=clamp(crop.zoom||100,100,500)/100;
   const cover=Math.max(100,geometry.h*crop.ratio/geometry.w*100);
   const contain=Math.min(100,geometry.h*crop.ratio/geometry.w*100);
-  // Image pixel width is retained when crop handles shrink the frame.
-  // Growing the frame can expand the picture enough to avoid empty margins.
   const baseline=crop.baseW||geometry.w*cover/100;
-  // Fit genuinely shows the whole picture again. Crop keeps its original
-  // picture pixel size when the crop window becomes smaller.
-  const pictureWidth=crop.fit==="contain"?
-    geometry.w*contain/100:
-    Math.max(baseline,geometry.w*cover/100);
-  const size=Math.round(pictureWidth*zoom*1000)/1000;
+  const w=crop.fit==="contain"?geometry.w*contain/100:Math.max(baseline,geometry.w*cover/100);
   return "object-fit:none!important;object-position:-100000px -100000px!important;"+
     "background-image:url("+src+")!important;"+
-    "background-size:"+size+"px auto!important;"+
+    "background-size:"+Math.round(w*zoom*1000)/1000+"px auto!important;"+
     "background-position:"+crop.x+"% "+crop.y+"%!important;"+
-    "background-repeat:no-repeat!important;"+
-    "background-origin:content-box!important;"+mask;
+    "background-repeat:no-repeat!important;background-origin:content-box!important;"+shape;
 }
 function selectedImageCrop(patch,device=liveDevice()){
   const node=liveSelected?.node,selector=node&&liveSelector(node);
@@ -1439,7 +1470,7 @@ function applySelectedImageCrop(changes){
   if(!prepared){status("Image dimensions are not yet ready for cropping");return false;}
   const next={...prepared,...changes,reset:false};
   if(!["contain","cover"].includes(next.fit)||
-     !["rectangle","rounded","circle"].includes(next.mask)||
+     !["rectangle","rounded","round-large","pill","circle","oval","squircle","diamond","hexagon","octagon","triangle","pentagon","star","heart","arch"].includes(next.mask)||
      !["x","y"].every(k=>Number.isFinite(Number(next[k]))))return false;
   next.x=Math.round(clamp(Number(next.x),0,100));
   next.y=Math.round(clamp(Number(next.y),0,100));
@@ -1465,7 +1496,7 @@ function previewSelectedImageCrop(changes){
   if(!prepared)return;
   const crop={...prepared,...changes,reset:false};
   if(!["contain","cover"].includes(crop.fit)||
-     !["rectangle","rounded","circle"].includes(crop.mask))return;
+     !["rectangle","rounded","round-large","pill","circle","oval","squircle","diamond","hexagon","octagon","triangle","pentagon","star","heart","arch"].includes(crop.mask))return;
   crop.x=Math.round(clamp(Number(crop.x),0,100));
   crop.y=Math.round(clamp(Number(crop.y),0,100));
   crop.zoom=Math.round(clamp(Number(crop.zoom)||100,100,500));
