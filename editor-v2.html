@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>Academic Website Editor 2 | Ye Eun Moon</title>
-<link rel="stylesheet" href="editor-v2.css?v=20261027-four-edge-crop-v49">
-<script src="editor-v2.js?v=20261027-four-edge-crop-v49" defer></script>
+<link rel="stylesheet" href="editor-v2.css?v=20261027-independent-side-crop-v49b">
+<script src="editor-v2.js?v=20261027-independent-side-crop-v49b" defer></script>
 </head>
 <body>
 <a class="skip" href="#workspace">Skip to editor canvas</a>
@@ -260,12 +260,12 @@
                 <button type="button" id="liveCropToggle" aria-pressed="false">Crop picture · drag to reframe</button>
                 <button type="button" id="liveCropReset">Reset crop</button>
               </div>
-              <label for="liveCropFit">Picture inside frame
+              <div hidden aria-hidden="true"><label for="liveCropFit">Legacy framing
                 <select id="liveCropFit">
                   <option value="contain">Fit entire picture</option>
                   <option value="cover">Crop to fill the frame</option>
                 </select>
-              </label>
+              </label></div>
               <label for="liveCropShape">Crop to shape
                 <select id="liveCropShape">
                   <option value="rectangle">Rectangle</option>
@@ -298,10 +298,12 @@
               <label for="liveCropZoom">Picture zoom <output id="liveCropZoomValue" for="liveCropZoom">100%</output></label>
               <input id="liveCropZoom" type="range" min="100" max="500" step="5" value="100">
               <p class="help">Optional picture zoom and focal controls are available for special framing. Normal cropping uses the four cut-edge controls above.</p>
-              <label for="liveCropX">Horizontal focal point <output id="liveCropXValue" for="liveCropX">50%</output></label>
+              <div hidden aria-hidden="true">
+              <label for="liveCropX">Legacy horizontal focal point <output id="liveCropXValue" for="liveCropX">50%</output></label>
               <input id="liveCropX" type="range" min="0" max="100" step="1" value="50">
               <label for="liveCropY">Vertical focal point <output id="liveCropYValue" for="liveCropY">50%</output></label>
               <input id="liveCropY" type="range" min="0" max="100" step="1" value="50">
+              </div>
               <p class="help">Press Escape to finish cropping. The original picture file is preserved, and Undo reverses cropping.</p>
               <p class="help">Frame aspect ratio · adjusts the visible crop frame without deforming the photograph.</p>
               <div class="inline-actions">
