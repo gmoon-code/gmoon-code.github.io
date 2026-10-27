@@ -19,6 +19,8 @@ let liveObjectClipboard=null,livePasteCount=0;
 let liveAddedMulti=new Set(); // Selected stable IDs for added objects
 let liveSourceMulti=new Set(); // Existing source objects selected on the actual webpage
 let liveLockImageRatio=true;
+let liveSectionPickMode=false; // Editor-only selection behaviour, never published.
+let liveSectionHover=null;
 let workspaceMode="live",liveWidth=1160,liveScale=1,liveManualScale=null,liveSelected=null,liveObserver=null,liveSerial=0;
 let liveSuppressClickUntil=0;
 const LIVE_DRAFT_KEY="moon-academic-editor-v2:source:";
@@ -393,6 +395,7 @@ function setWorkspaceMode(mode){
   }
   workspaceMode=mode;
   const isLive=mode==="live";
+  if(!isLive)clearLiveSectionHover();
   $("liveViewport").hidden=!isLive;
   $("scrollspace").hidden=isLive;
   $("liveMode").classList.toggle("active",isLive);
@@ -416,6 +419,7 @@ function setWorkspaceMode(mode){
   $("exportScene").title=isLive?"Switch to Free design canvas to export canvas JSON":"Export the current free design canvas";
   $("save").textContent=isLive?"Save live-page edits":"Save canvas draft";
   $("selectTool").textContent=isLive?"↖ Select webpage":"↖ Select canvas";
+  $("liveSectionPickMode").hidden=!isLive;
   $("addText").textContent=isLive?"T Add webpage text":"T Canvas text";
   $("addShape").textContent=isLive?"▢ Add webpage shape":"▢ Canvas shape";
   $("addImage").textContent=isLive?"▧ Add webpage image":"▧ Canvas image";
@@ -806,12 +810,41 @@ const LIVE_CONTAINER_TAGS="section,article,aside,figure,div,nav,ul,ol";
 const LIVE_EDITABLE_TAGS="h1,h2,h3,h4,h5,h6,p,li,figcaption,blockquote,img";
 const LIVE_SELECTABLE_TAGS=LIVE_EDITABLE_TAGS+","+LIVE_CONTAINER_TAGS;
 function liveEventTarget(event){
+  // Section mode chooses a whole section from any descendant, including
+  // links, text, photos, cards and their nested divs.
+  if(liveSectionPickMode){
+    const main=event.target.closest?.("main");
+    if(main){
+      const section=event.target.closest?.("section,article,aside,figure");
+      if(section&&main.contains(section))return section;
+      const direct=[...main.children].find(node=>node.contains(event.target)&&
+        node.matches(LIVE_CONTAINER_TAGS));
+      if(direct)return direct;
+    }
+  }
   // Alt-click selects a container; on an actual hyperlink it selects the
   // enclosing paragraph so the link's text remains editable.
   const nearestText=event.target.closest?.(LIVE_EDITABLE_TAGS);
   const nearestContainer=event.target.closest?.(LIVE_CONTAINER_TAGS);
   return event.altKey&&!event.target.closest?.("a[href]")?
     nearestContainer||nearestText:nearestText||nearestContainer;
+}
+function clearLiveSectionHover(){
+  if(liveSectionHover?.isConnected)
+    liveSectionHover.removeAttribute("data-moon-v2-section-hover");
+  liveSectionHover=null;
+}
+function toggleLiveSectionPickMode(){
+  liveSectionPickMode=!liveSectionPickMode;
+  clearLiveSectionHover();
+  $("liveSectionPickMode").setAttribute("aria-pressed",String(liveSectionPickMode));
+  $("liveSectionPickMode").classList.toggle("active",liveSectionPickMode);
+  $("liveSectionPickMode").textContent=liveSectionPickMode?
+    "▣ Editing sections":"▣ Edit sections";
+  status(liveSectionPickMode?
+    "Section editing on · Click anywhere in a section, then drag its edge or corner to resize":
+    "Section editing off · Individual text and images can be selected again");
+  syncLiveOverlay();
 }
 const LIVE_CONTAINER_SET=new Set(["SECTION","ARTICLE","ASIDE","FIGURE","DIV","NAV","UL","OL"]);
 // All source containers have their own resizable box. Their children keep
@@ -2151,8 +2184,31 @@ function syncLiveOverlay(){
       "touch-action:none!important;box-sizing:border-box!important;cursor:move!important;"+
       "z-index:2147483001!important;border:1px solid #287dbb!important;"+
       "background:#fff!important;color:#14547e!important;font:12px Arial,sans-serif!important;}"+
-      "#moon-v2-live-overlay .moon-v2-grip{width:13px!important;height:13px!important;"+
-      "border-radius:2px!important;padding:0!important;}"+
+      "#moon-v2-live-overlay .moon-v2-grip{"+
+      "width:var(--moon-grip,28px)!important;height:var(--moon-grip,28px)!important;"+
+      "border:2px solid #287dbb!important;border-radius:5px!important;padding:0!important;"+
+      "z-index:2147483003!important;box-shadow:0 1px 6px #132e3866!important;}"+
+      "#moon-v2-live-overlay .moon-v2-edge{"+
+      "border:0!important;border-radius:8px!important;"+
+      "background:transparent!important;z-index:2147483002!important;"+
+      "padding:0!important;}"+
+      "#moon-v2-live-overlay .moon-v2-edge:is(:hover,:focus-visible){"+
+      "background:#287dbb66!important;outline:2px solid #287dbb!important;}"+
+      "#moon-v2-live-overlay .moon-v2-edge[data-direction='n'],"+
+      "#moon-v2-live-overlay .moon-v2-edge[data-direction='s']{"+
+      "left:50%!important;width:calc(100% - var(--moon-grip,28px))!important;"+
+      "height:var(--moon-edge,24px)!important;transform:translate(-50%,-50%)!important;"+
+      "cursor:ns-resize!important;}"+
+      "#moon-v2-live-overlay .moon-v2-edge[data-direction='n']{top:0!important;}"+
+      "#moon-v2-live-overlay .moon-v2-edge[data-direction='s']{top:100%!important;}"+
+      "#moon-v2-live-overlay .moon-v2-edge[data-direction='e'],"+
+      "#moon-v2-live-overlay .moon-v2-edge[data-direction='w']{"+
+      "top:50%!important;height:calc(100% - var(--moon-grip,28px))!important;"+
+      "width:var(--moon-edge,24px)!important;transform:translate(-50%,-50%)!important;"+
+      "cursor:ew-resize!important;}"+
+      "#moon-v2-live-overlay .moon-v2-edge[data-direction='w']{left:0!important;}"+
+      "#moon-v2-live-overlay .moon-v2-edge[data-direction='e']{left:100%!important;}"+
+
       "#moon-v2-live-overlay .moon-v2-move{left:0!important;top:-29px!important;"+
       "height:26px!important;padding:2px 8px!important;border-radius:4px!important;"+
       "white-space:nowrap!important;}"+
@@ -2179,6 +2235,18 @@ function syncLiveOverlay(){
     // primary object. Hide that misleading control until group deletion
     // is explicitly supported for original source elements.
     if(!grouped)liveOverlay.append(remove);
+    // Give sections draggable *edges*, not just tiny midpoint handles.
+    // Full-length rails remain usable on sections taller than the viewport.
+    if(!locked&&LIVE_CONTAINER_SET.has(node.tagName)&&!grouped){
+      for(const dir of ["n","e","s","w"]){
+        const edge=doc.createElement("button");
+        edge.type="button";edge.className="moon-v2-edge";
+        edge.dataset.direction=dir;
+        edge.setAttribute("aria-label","Drag to resize "+node.tagName.toLowerCase()+
+          " "+({n:"top",e:"right",s:"bottom",w:"left"}[dir])+" edge");
+        liveOverlay.append(edge);
+      }
+    }
     // Group grips resize independent original boxes together. Text always
     // reflows naturally, and images retain object-fit:contain.
     if(!locked&&node.matches(LIVE_SELECTABLE_TAGS)){
@@ -2209,6 +2277,13 @@ function syncLiveOverlay(){
   liveOverlay.style.height=rect.height+"px";
   liveOverlay.dataset.groupCount=grouped?String(sourceGroup.length):"1";
   liveOverlay.dataset.positionLocked=String(locked);
+  // iframe scaling shrinks ordinary 13px handles to just 3–7 screen pixels.
+  // Compensate for zoom so handles remain usable even at fit-to-page zoom.
+  const scale=Math.max(.25,liveScale);
+  liveOverlay.style.setProperty("--moon-grip",
+    Math.round(clamp(22/scale,22,76))+"px");
+  liveOverlay.style.setProperty("--moon-edge",
+    Math.round(clamp(22/scale,22,72))+"px");
 }
 function removeLiveSnapGuides(){
   const doc=$("livePageFrame")?.contentDocument;
@@ -3027,6 +3102,7 @@ function selectLiveElement(node,additive=false,preserveMulti=false){
   if(isAdded)liveAddedMulti.add(key);
   else liveSourceMulti.add(key);
   clearLiveSelection(true);
+  clearLiveSectionHover();
   liveSelected={node,page:currentPage};
   node.setAttribute("data-moon-v2-live-selected","");
   $("copyLiveObject").disabled=LIVE_CONTAINER_SET.has(node.tagName)&&
@@ -3102,6 +3178,7 @@ function bindLiveDocument(){
     '[data-moon-v2-multi-selected]{outline:2px dashed #bf3d8a!important;outline-offset:3px!important;}'+
     '[data-moon-v2-source-selected]{outline:2px dashed #bf3d8a!important;outline-offset:3px!important;}'+
     '[data-moon-v2-layer-preview]:not([data-moon-v2-live-selected]){outline:3px dotted #8250b5!important;outline-offset:5px!important;}'+
+    '[data-moon-v2-section-hover]:not([data-moon-v2-live-selected]){outline:3px dashed #287dbb!important;outline-offset:-3px!important;}'+
     '[data-moon-v2-live-selected][data-moon-v2-multi-selected],'+
     '[data-moon-v2-live-selected][data-moon-v2-source-selected]{outline:3px solid #287dbb!important;}';
   (doc.head||doc.documentElement).append(sheet);
@@ -3165,7 +3242,7 @@ function bindLiveDocument(){
     // Select and start a move in one pointer gesture. Previously a user had
     // to click, release and then start a *second* drag on the same element.
     const link=event.target.closest?.("a[href]");
-    if(link&&!event.altKey&&!event.shiftKey)return; // Ordinary clicks still navigate.
+    if(link&&!liveSectionPickMode&&!event.altKey&&!event.shiftKey)return; // Ordinary clicks still navigate.
     const target=liveEventTarget(event);
     if(!target||!doc.querySelector("main")?.contains(target))return;
     if(event.shiftKey){
@@ -3183,6 +3260,19 @@ function bindLiveDocument(){
     // A touch tap selects without capturing the pointer, so users can still
     // scroll the responsive webpage. Mouse/pen can drag immediately.
     if(event.pointerType!=="touch")startLiveGesture(event,"move",target);
+  },true);
+  doc.addEventListener("pointermove",event=>{
+    if(!liveSectionPickMode||liveGesture||liveEditing||workspaceMode!=="live"){
+      clearLiveSectionHover();return;
+    }
+    if(event.target.closest?.("#moon-v2-live-overlay"))return;
+    const target=liveEventTarget(event);
+    if(target===liveSectionHover)return;
+    clearLiveSectionHover();
+    if(target&&target!==liveSelected?.node){
+      liveSectionHover=target;
+      target.setAttribute("data-moon-v2-section-hover","");
+    }
   },true);
   doc.addEventListener("pointermove",moveLiveGesture,true);
   doc.addEventListener("pointerup",finishLiveGesture,true);
@@ -4320,6 +4410,7 @@ function attachEvents(){
     node.scrollIntoView({block:"center",inline:"nearest"});
     syncLiveOverlay();
   });
+  $("liveSectionPickMode").addEventListener("click",toggleLiveSectionPickMode);
   $("liveMode").addEventListener("click",()=>setWorkspaceMode("live"));
   $("designMode").addEventListener("click",()=>setWorkspaceMode("design"));
   $("devicePreview").addEventListener("change",()=>{
