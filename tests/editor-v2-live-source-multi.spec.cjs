@@ -196,3 +196,34 @@ test('one selected original element retains its resize handles',async({page})=>{
   await expect(overlay).toHaveAttribute('data-group-count','1');
   await expect(overlay.locator('.moon-v2-grip')).toHaveCount(8);
 });
+
+test('published source translations remain the baseline when moving an original image',async({page})=>{
+  const published='<!doctype html><html><head><style id="moon-v2-live-layout">'+
+    '@media (min-width:1025px){main > img:nth-of-type(1){'+
+    'translate:-112px 17px!important;scale:0.92 0.92!important;'+
+    'transform-origin:top left!important;}}</style></head>'+
+    '<body><main style="padding:120px 200px">'+
+    '<img src="assets/profile-portrait.webp" width="170" height="130" alt="Published photo">'+
+    '<p>Original paragraph stays in place</p></main></body></html>';
+  await page.route('https://api.github.com/repos/gmoon-code/gmoon-code.github.io/contents/research.html*',
+    route=>route.fulfill({status:200,contentType:'application/json',
+      body:JSON.stringify({type:'file',sha:'published-transform-fixture',
+        encoding:'base64',content:Buffer.from(published).toString('base64')})}));
+  await page.route('**/research.html',route=>
+    route.fulfill({status:200,contentType:'text/html',body:published}));
+  await page.locator('#reloadLive').click();
+  const live=page.frameLocator('#livePageFrame');
+  const image=live.locator('main img');
+  await expect(image).toBeVisible();
+  await image.click();
+  const baseline=await image.evaluate(node=>getComputedStyle(node).translate);
+  expect(parseFloat(baseline)).toBe(-112);
+  await page.locator('#liveMoveX').fill('20');
+  await page.locator('#liveMoveX').press('Tab');
+  const moved=await image.evaluate(node=>getComputedStyle(node).translate);
+  expect(Math.abs(parseFloat(moved)-(-92))).toBeLessThan(1.2);
+  await expect(image).toHaveCSS('scale','0.92');
+  await page.reload({waitUntil:'domcontentloaded'});
+  const retained=await live.locator('main img').evaluate(node=>getComputedStyle(node).translate);
+  expect(Math.abs(parseFloat(retained)-(-92))).toBeLessThan(1.2);
+});
