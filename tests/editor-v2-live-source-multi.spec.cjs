@@ -815,6 +815,7 @@ test('crop frame handles ignore image proportion lock and visibly trim the pictu
   await page.locator('#cropImageTool').click();
   await expect(page.locator('#liveCropToggle')).toHaveAttribute('aria-pressed','true');
   await expect(page.locator('#liveLockImageRatio')).toBeDisabled();
+  const pictureSizeBefore=await photo.evaluate(node=>getComputedStyle(node).backgroundSize);
   const edge=live.locator('#moon-v2-live-overlay .moon-v2-grip[data-direction="e"]');
   const r=await edge.boundingBox();expect(r).toBeTruthy();
   await page.mouse.move(r.x+r.width/2,r.y+r.height/2);
@@ -828,6 +829,8 @@ test('crop frame handles ignore image proportion lock and visibly trim the pictu
   expect(changed.w).toBeLessThan(original.w-25);
   expect(Math.abs(changed.h-original.h)).toBeLessThan(3);
   expect(changed.fit).toBe('none');
+  expect(await photo.evaluate(node=>getComputedStyle(node).backgroundSize))
+    .toBe(pictureSizeBefore);
   expect(await photo.getAttribute('src')).toBe(src);
   await page.locator('#cropImageTool').click();
   await expect(page.locator('#liveCropToggle')).toHaveAttribute('aria-pressed','false');
@@ -901,4 +904,27 @@ test('zoom and pan visibly change picture pixels while the crop frame stays fixe
   expect(Math.abs(current.width-box.width)).toBeLessThan(2);
   expect(Math.abs(current.height-box.height)).toBeLessThan(2);
   await expect(image).toHaveCSS('object-fit','none');
+});
+
+test('gold picture outline can resize photo independently of pink crop window',async({page})=>{
+  await loadCropFixture(page);
+  const live=page.frameLocator('#livePageFrame');
+  const photo=live.locator('img.picture');
+  await photo.click();
+  await page.locator('#cropImageTool').click();
+  const before=await photo.boundingBox();
+  const sizeBefore=await photo.evaluate(node=>parseFloat(getComputedStyle(node).backgroundSize));
+  const handle=live.locator('#moon-v2-crop-image-guide .moon-v2-picture-zoom-grip');
+  await expect(handle).toBeVisible();
+  const pos=await handle.boundingBox();expect(pos).toBeTruthy();
+  await page.mouse.move(pos.x+pos.width/2,pos.y+pos.height/2);
+  await page.mouse.down();
+  await page.mouse.move(pos.x+pos.width/2+55,pos.y+pos.height/2+35,{steps:8});
+  await page.mouse.up();
+  const sizeAfter=await photo.evaluate(node=>parseFloat(getComputedStyle(node).backgroundSize));
+  expect(sizeAfter).toBeGreaterThan(sizeBefore);
+  const after=await photo.boundingBox();
+  expect(Math.abs(after.width-before.width)).toBeLessThan(2);
+  expect(Math.abs(after.height-before.height)).toBeLessThan(2);
+  await expect(page.locator('#liveCropZoom')).not.toHaveValue('100');
 });
