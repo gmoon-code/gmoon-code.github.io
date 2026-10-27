@@ -2303,6 +2303,8 @@ function syncLiveOverlay(){
     removeLiveOverlay();return;
   }
   const node=liveSelected.node,doc=node.ownerDocument;
+  if(node.tagName==="IMG")
+    node.toggleAttribute("data-moon-v2-crop-active",liveCropMode);
   const sourceGroup=selectedSourcePatches();
   const grouped=sourceGroup.length>1&&sourceGroup.some(item=>item.node===node);
   const locked=liveSelectionHasGeometryLock();
@@ -3146,8 +3148,10 @@ function updateLiveLayerSelection(){
 function clearLiveSelection(preserveMulti=false){
   if(!preserveMulti){liveAddedMulti.clear();liveSourceMulti.clear();}
   removeLiveSnapGuides();
-  if(liveSelected?.node?.isConnected)
+  if(liveSelected?.node?.isConnected){
     liveSelected.node.removeAttribute("data-moon-v2-live-selected");
+    liveSelected.node.removeAttribute("data-moon-v2-crop-active");
+  }
   liveSelected=null;
   removeLiveOverlay();
   $("copyLiveObject").disabled=true;
@@ -3344,6 +3348,7 @@ function bindLiveDocument(){
     '[data-moon-v2-source-selected]{outline:2px dashed #bf3d8a!important;outline-offset:3px!important;}'+
     '[data-moon-v2-layer-preview]:not([data-moon-v2-live-selected]){outline:3px dotted #8250b5!important;outline-offset:5px!important;}'+
     '[data-moon-v2-section-hover]:not([data-moon-v2-live-selected]){outline:3px dashed #287dbb!important;outline-offset:-3px!important;}'+
+    '[data-moon-v2-crop-active]{touch-action:none!important;cursor:crosshair!important;}'+
     '[data-moon-v2-live-selected][data-moon-v2-multi-selected],'+
     '[data-moon-v2-live-selected][data-moon-v2-source-selected]{outline:3px solid #287dbb!important;}';
   (doc.head||doc.documentElement).append(sheet);
@@ -3430,7 +3435,7 @@ function bindLiveDocument(){
     }
     // A touch tap selects without capturing the pointer, so users can still
     // scroll the responsive webpage. Mouse/pen can drag immediately.
-    if(event.pointerType!=="touch")
+    if(event.pointerType!=="touch"||liveCropMode&&target.tagName==="IMG")
       startLiveGesture(event,liveCropMode&&target.tagName==="IMG"?
         "crop":"move",target);
   },true);
@@ -3464,6 +3469,10 @@ function bindLiveDocument(){
     if(event.target.closest?.("#moon-v2-live-overlay"))return;
     if(liveEditing)return;
     const link=event.target.closest?.("a[href]");
+    if(liveCropMode&&link&&
+       (link.contains(liveSelected?.node)||liveSelected?.node?.contains(link))){
+      event.preventDefault();event.stopPropagation();return;
+    }
     if(liveSectionPickMode){
       // Section-selection clicks must never navigate away or activate
       // embedded links/buttons in the page being edited.
