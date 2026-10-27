@@ -538,10 +538,11 @@ function validImageCropMap(map){
   if(!map||typeof map!=="object"||Array.isArray(map))return false;
   return Object.entries(map).every(([device,crop])=>
     !!LIVE_DEVICE_RULES[device]&&crop&&typeof crop==="object"&&!Array.isArray(crop)&&
-    Object.keys(crop).every(key=>["fit","x","y","mask","zoom","ratio"].includes(key))&&
+    Object.keys(crop).every(key=>["fit","x","y","mask","zoom","ratio","baseW"].includes(key))&&
     (crop.mask===undefined||["rectangle","rounded","circle"].includes(crop.mask))&&
     (crop.zoom===undefined||Number.isInteger(crop.zoom)&&crop.zoom>=100&&crop.zoom<=500)&&
     (crop.ratio===undefined||Number.isFinite(crop.ratio)&&crop.ratio>=0.01&&crop.ratio<=100)&&
+    (crop.baseW===undefined||Number.isFinite(crop.baseW)&&crop.baseW>=24&&crop.baseW<=15000)&&
     ["contain","cover"].includes(crop.fit)&&
     ["x","y"].every(key=>Number.isInteger(crop[key])&&crop[key]>=0&&crop[key]<=100));
 }
@@ -558,10 +559,15 @@ function imageCropCss(crop,src="",geometry=null){
   const zoom=clamp(crop.zoom||100,100,500)/100;
   const cover=Math.max(100,geometry.h*crop.ratio/geometry.w*100);
   const contain=Math.min(100,geometry.h*crop.ratio/geometry.w*100);
-  const size=Math.round((crop.fit==="contain"?contain:cover)*zoom*1000)/1000;
+  // Image pixel width is retained when crop handles shrink the frame.
+  // Growing the frame can expand the picture enough to avoid empty margins.
+  const baseline=crop.baseW||geometry.w*(crop.fit==="contain"?contain:cover)/100;
+  const pictureWidth=Math.max(baseline,
+    geometry.w*(crop.fit==="contain"?contain:cover)/100);
+  const size=Math.round(pictureWidth*zoom*1000)/1000;
   return "object-fit:none!important;object-position:-100000px -100000px!important;"+
     "background-image:url("+src+")!important;"+
-    "background-size:"+size+"% auto!important;"+
+    "background-size:"+size+"px auto!important;"+
     "background-position:"+crop.x+"% "+crop.y+"%!important;"+
     "background-repeat:no-repeat!important;"+
     "background-origin:content-box!important;"+mask;
@@ -1403,6 +1409,10 @@ function prepareImageCrop(node,patch,device=liveDevice()){
   const crop={...selectedImageCrop(patch,device)};
   crop.ratio=Math.round(clamp(ratio,.01,100)*100000)/100000;
   crop.zoom=Math.round(clamp(crop.zoom||100,100,500));
+  if(!crop.baseW){
+    const fitWidth=Math.max(rect.width,rect.height*ratio);
+    crop.baseW=Math.round(clamp(fitWidth,24,15000)*1000)/1000;
+  }
   if(patch.kind!=="insert"){
     const layout=normaliseElementBoxLayout(node,liveLayoutFor(patch.selector));
     if(!layout.wrapWidth||!layout.reserveHeight)return null;
@@ -2743,10 +2753,11 @@ function moveLiveGesture(event){
     const frame=g.rect,nw=g.node.naturalWidth,nh=g.node.naturalHeight;
     if(!nw||!nh||frame.width<1||frame.height<1)return;
     const origin=selectedImageCrop(g.patch,liveDevice());
-    const coverScale=Math.max(frame.width/nw,frame.height/nh);
-    const scale=coverScale*(origin.zoom||100)/100;
-    const overflowX=Math.max(0,nw*scale-frame.width);
-    const overflowY=Math.max(0,nh*scale-frame.height);
+    const imageWidth=Math.max(origin.baseW||0,frame.width,frame.height*nw/nh)*
+      (origin.zoom||100)/100;
+    const imageHeight=imageWidth*nh/nw;
+    const overflowX=Math.max(0,imageWidth-frame.width);
+    const overflowY=Math.max(0,imageHeight-frame.height);
     const crop={...origin,fit:"cover",
       x:overflowX?Math.round(clamp(origin.x-deltaX/overflowX*100,0,100)):50,
       y:overflowY?Math.round(clamp(origin.y-deltaY/overflowY*100,0,100)):50};
