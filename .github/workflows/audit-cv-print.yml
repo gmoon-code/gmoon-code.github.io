@@ -1,0 +1,43 @@
+name: Audit A4 CV print layout
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "cv.html"
+      - "styles-20261013.css"
+      - "site-theme.css"
+      - "appearance.css"
+      - "scripts/audit_cv_print.py"
+      - ".github/workflows/audit-cv-print.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Check out public website
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install print browser and PDF inspection
+        run: |
+          python -m pip install playwright==1.57.0 pymupdf
+          python -m playwright install --with-deps chromium
+      - name: Capture A4 print pages and inspect geometry
+        run: |
+          python -m http.server 8765 --bind 127.0.0.1 >/tmp/cv-print-http.log 2>&1 &
+          python scripts/audit_cv_print.py
+      - name: Preserve all printed page images and report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cv-a4-print-audit
+          path: visual-audit-cv/
+          retention-days: 14
