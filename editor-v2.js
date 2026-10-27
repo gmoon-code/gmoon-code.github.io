@@ -1478,6 +1478,7 @@ function previewSelectedImageCrop(changes){
   livePatches.set(selector,patch);
   if(patch.kind==="insert")refreshAddedObject(node.ownerDocument,patch);
   else refreshLiveLayoutRules(node.ownerDocument);
+  if(liveCropMode)syncLiveOverlay();
 }
 function finishCropSliderPreview(){
   if(!liveCropSliderBefore)return;
@@ -2472,6 +2473,20 @@ function syncLiveCropImageGuide(node,rect){
     guide.style.cssText="position:fixed!important;pointer-events:none!important;"+
       "box-sizing:border-box!important;background:rgba(227,168,52,.045)!important;"+
       "border:2px dashed #bb820c!important;z-index:2147482999!important;";
+    const zoomGrip=doc.createElement("button");
+    zoomGrip.type="button";
+    zoomGrip.className="moon-v2-picture-zoom-grip";
+    zoomGrip.setAttribute("aria-label","Drag to enlarge or shrink the picture behind its crop frame");
+    zoomGrip.title="Resize underlying picture without changing crop frame";
+    zoomGrip.style.cssText="position:absolute!important;right:-14px!important;"+
+      "bottom:-14px!important;width:28px!important;height:28px!important;"+
+      "border:2px solid #885600!important;border-radius:50%!important;"+
+      "background:#ffe099!important;cursor:nwse-resize!important;"+
+      "pointer-events:auto!important;touch-action:none!important;"+
+      "z-index:2147483004!important;";
+    zoomGrip.addEventListener("pointerdown",event=>
+      startLiveGesture(event,"crop-zoom",zoomGrip));
+    guide.append(zoomGrip);
     doc.body.append(guide);
   }
   guide.style.left=(rect.left+(rect.width-w)*crop.x/100)+"px";
@@ -2796,6 +2811,18 @@ function moveLiveGesture(event){
   const deltaX=event.clientX-g.startX,deltaY=event.clientY-g.startY;
   if(!g.moved&&Math.hypot(deltaX,deltaY)<3)return;
   g.moved=true;
+  if(g.dir==="crop-zoom"&&g.node.tagName==="IMG"){
+    const origin=selectedImageCrop(g.patch,liveDevice());
+    const change=(deltaX+deltaY)/Math.max(80,g.rect.width)*100;
+    const zoom=Math.round(clamp((origin.zoom||100)+change,100,500));
+    const patch=copy(g.patch),crop={...origin,fit:"cover",reset:false,zoom};
+    patch.imageCrop={...(patch.imageCrop||{}),[liveDevice()]:crop};
+    livePatches.set(g.selector,patch);
+    if(patch.kind==="insert")refreshAddedObject(g.node.ownerDocument,patch);
+    else refreshLiveLayoutRules(g.node.ownerDocument);
+    syncLiveOverlay();
+    return;
+  }
   if(g.dir==="crop"&&g.node.tagName==="IMG"){
     const frame=g.rect,nw=g.node.naturalWidth,nh=g.node.naturalHeight;
     if(!nw||!nh||frame.width<1||frame.height<1)return;
@@ -3012,6 +3039,7 @@ function finishLiveGesture(event){
     liveSuppressClickUntil=performance.now()+250;
     recordLiveHistory(g.snapshot);
     status(g.dir==="crop"?"Picture crop repositioned · Undo available":
+      g.dir==="crop-zoom"?"Picture zoom changed inside crop frame · Undo available":
       g.sourceGroup?
       g.sourceGroup.length+" original webpage objects "+
         (g.dir==="move"?"moved":"resized")+" together · Review before publishing":
