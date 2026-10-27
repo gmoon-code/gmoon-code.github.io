@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>Academic Website Editor 2 | Ye Eun Moon</title>
-<link rel="stylesheet" href="editor-v2.css?v=20261027-section-sizing-v44">
-<script src="editor-v2.js?v=20261027-section-sizing-v44" defer></script>
+<link rel="stylesheet" href="editor-v2.css?v=20261027-section-edge-drag-v45">
+<script src="editor-v2.js?v=20261027-section-edge-drag-v45" defer></script>
 </head>
 <body>
 <a class="skip" href="#workspace">Skip to editor canvas</a>
@@ -27,6 +27,8 @@
   <div id="publishResult" class="publish-result" role="status" aria-live="polite" hidden></div>
   <section class="tools" aria-label="Editor tools">
     <button id="selectTool" class="active" aria-pressed="true">↖ Select</button>
+    <button id="liveSectionPickMode" type="button" aria-pressed="false"
+      title="Click anywhere inside a section to select it, then drag the edges to resize">▣ Edit sections</button>
     <button id="addText" title="Add a text box directly to the webpage in Live mode; canvas-only in Design mode">T Add text</button>
     <button id="addImage" title="Add an image to the actual webpage or independent canvas">▧ Add image</button>
     <button id="addShape" title="Add a movable coloured shape directly to the webpage or canvas">▢ Add shape</button>
@@ -274,7 +276,7 @@
             <div class="inline-actions">
               <button id="liveFitSectionHeight" type="button">Fit height to content</button>
             </div>
-            <p class="help">Select a section from its content with Select section, then drag any of its eight handles. Top and bottom handles set an exact height, including when you make a section shorter. Width-only resizing keeps a natural height unless an exact height was chosen. Text and images keep their proportions. These changes apply to the selected screen only.</p>
+            <p class="help">Enable Edit sections in the top toolbar and click anywhere inside a section. Drag the full blue border, especially the right or bottom edge, or use a corner handle. Handles stay large when the preview is zoomed out. Top and bottom edges set an exact height; a width-only resize retains natural height unless an exact height was chosen. Content is not stretched, and edits apply only to this screen layout.</p>
             <p id="liveSectionOverflow" class="help reflow-warning" role="status" hidden></p>
           </div>
           <div id="liveAddedDimensions" hidden>
