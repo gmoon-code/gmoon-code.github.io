@@ -4047,6 +4047,14 @@ function bindLiveDocument(){
       return;
     }
     if(event.target.closest?.("input,textarea,select,[contenteditable=true]"))return;
+    if((event.ctrlKey||event.metaKey)&&event.shiftKey&&liveSelected?.node){
+      if(event.key.toLowerCase()==="c"){
+        event.preventDefault();copyLiveFormat();return;
+      }
+      if(event.key.toLowerCase()==="v"){
+        event.preventDefault();pasteLiveFormat();return;
+      }
+    }
     if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==="a"){
       event.preventDefault();selectAllLiveAdded();return;
     }
@@ -5944,6 +5952,15 @@ function attachEvents(){
       return;
     }
     if(isTextField(event.target))return;
+    if(workspaceMode==="live"&&(event.ctrlKey||event.metaKey)&&
+       event.shiftKey&&liveSelected?.node){
+      if(event.key.toLowerCase()==="c"){
+        event.preventDefault();copyLiveFormat();return;
+      }
+      if(event.key.toLowerCase()==="v"){
+        event.preventDefault();pasteLiveFormat();return;
+      }
+    }
     if(event.key==="Escape"&&gesture){
       event.preventDefault();cancelCanvasGesture();return;
     }
