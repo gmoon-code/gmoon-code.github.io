@@ -1,5 +1,5 @@
 {
-  "createdAt": "2026-10-17T14:20:46.407Z",
+  "createdAt": "2026-10-27T09:16:55.366Z",
   "errors": [],
   "results": [
     {
@@ -9,7 +9,7 @@
         "viewport": 1440,
         "docWidth": 1440,
         "bodyWidth": 1440,
-        "pageHeight": 1465,
+        "pageHeight": 1382,
         "figures": [
           {
             "index": 1,
@@ -20,7 +20,7 @@
             "imageWidth": 504,
             "imageHeight": 315,
             "captionGap": 35,
-            "captionText": "Figure 1. The Story Method course overview. The released eight-unit interface, with Unit 1 selected.\nScreenshot from the public application, October 2026. Select the image to view ",
+            "captionText": "Figure 1. The Story Method course overview. The released eight-unit interface, with Unit 1 selected.",
             "fullSize": "assets/story-method-interface.webp",
             "opensNewTab": true,
             "overflowLeft": false,
@@ -35,7 +35,7 @@
             "imageWidth": 504,
             "imageHeight": 315,
             "captionGap": 35,
-            "captionText": "Figure 2. Research Methods Studio opening screen. The research-notebook setup before any project work has been entered.\nScreenshot from the public application in a fresh browser se",
+            "captionText": "Figure 2. Research Methods Studio opening screen. The research-notebook setup before any project work has been entered.",
             "fullSize": "assets/research-methods-studio-interface.webp",
             "opensNewTab": true,
             "overflowLeft": false,
@@ -67,7 +67,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 506,
-            "rectHeight": 413,
+            "rectHeight": 391,
             "hidden": false
           },
           {
@@ -76,7 +76,7 @@
             "display": "flex",
             "visibility": "visible",
             "rectWidth": 548,
-            "rectHeight": 809,
+            "rectHeight": 726,
             "hidden": false
           },
           {
@@ -85,7 +85,7 @@
             "display": "grid",
             "visibility": "visible",
             "rectWidth": 1120,
-            "rectHeight": 809,
+            "rectHeight": 726,
             "hidden": false
           },
           {
@@ -94,7 +94,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 1120,
-            "rectHeight": 869,
+            "rectHeight": 786,
             "hidden": false
           },
           {
@@ -103,7 +103,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 1120,
-            "rectHeight": 1226,
+            "rectHeight": 1143,
             "hidden": false
           },
           {
@@ -112,7 +112,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 1440,
-            "rectHeight": 1465,
+            "rectHeight": 1382,
             "hidden": false
           },
           {
@@ -121,7 +121,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 1440,
-            "rectHeight": 1465,
+            "rectHeight": 1382,
             "hidden": false
           }
         ]
@@ -140,7 +140,7 @@
         "viewport": 768,
         "docWidth": 768,
         "bodyWidth": 768,
-        "pageHeight": 2351,
+        "pageHeight": 2239,
         "figures": [
           {
             "index": 1,
@@ -151,7 +151,7 @@
             "imageWidth": 668,
             "imageHeight": 418,
             "captionGap": 35,
-            "captionText": "Figure 1. The Story Method course overview. The released eight-unit interface, with Unit 1 selected.\nScreenshot from the public application, October 2026. Select the image to view ",
+            "captionText": "Figure 1. The Story Method course overview. The released eight-unit interface, with Unit 1 selected.",
             "fullSize": "assets/story-method-interface.webp",
             "opensNewTab": true,
             "overflowLeft": false,
@@ -166,7 +166,7 @@
             "imageWidth": 668,
             "imageHeight": 418,
             "captionGap": 35,
-            "captionText": "Figure 2. Research Methods Studio opening screen. The research-notebook setup before any project work has been entered.\nScreenshot from the public application in a fresh browser se",
+            "captionText": "Figure 2. Research Methods Studio opening screen. The research-notebook setup before any project work has been entered.",
             "fullSize": "assets/research-methods-studio-interface.webp",
             "opensNewTab": true,
             "overflowLeft": false,
@@ -198,7 +198,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 670,
-            "rectHeight": 495,
+            "rectHeight": 473,
             "hidden": false
           },
           {
@@ -207,7 +207,7 @@
             "display": "flex",
             "visibility": "visible",
             "rectWidth": 712,
-            "rectHeight": 847,
+            "rectHeight": 783,
             "hidden": false
           },
           {
@@ -216,7 +216,7 @@
             "display": "grid",
             "visibility": "visible",
             "rectWidth": 712,
-            "rectHeight": 1718,
+            "rectHeight": 1590,
             "hidden": false
           },
           {
@@ -225,7 +225,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 712,
-            "rectHeight": 1778,
+            "rectHeight": 1650,
             "hidden": false
           },
           {
@@ -234,7 +234,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 712,
-            "rectHeight": 2142,
+            "rectHeight": 2014,
             "hidden": false
           },
           {
@@ -243,7 +243,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 768,
-            "rectHeight": 2351,
+            "rectHeight": 2239,
             "hidden": false
           },
           {
@@ -252,7 +252,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 768,
-            "rectHeight": 2351,
+            "rectHeight": 2239,
             "hidden": false
           }
         ]
@@ -268,7 +268,7 @@
         "viewport": 390,
         "docWidth": 390,
         "bodyWidth": 390,
-        "pageHeight": 2467,
+        "pageHeight": 2316,
         "figures": [
           {
             "index": 1,
@@ -279,7 +279,7 @@
             "imageWidth": 318,
             "imageHeight": 199,
             "captionGap": 35,
-            "captionText": "Figure 1. The Story Method course overview. The released eight-unit interface, with Unit 1 selected.\nScreenshot from the public application, October 2026. Select the image to view ",
+            "captionText": "Figure 1. The Story Method course overview. The released eight-unit interface, with Unit 1 selected.",
             "fullSize": "assets/story-method-interface.webp",
             "opensNewTab": true,
             "overflowLeft": false,
@@ -294,7 +294,7 @@
             "imageWidth": 318,
             "imageHeight": 199,
             "captionGap": 35,
-            "captionText": "Figure 2. Research Methods Studio opening screen. The research-notebook setup before any project work has been entered.\nScreenshot from the public application in a fresh browser se",
+            "captionText": "Figure 2. Research Methods Studio opening screen. The research-notebook setup before any project work has been entered.",
             "fullSize": "assets/research-methods-studio-interface.webp",
             "opensNewTab": true,
             "overflowLeft": false,
@@ -326,7 +326,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 320,
-            "rectHeight": 315,
+            "rectHeight": 275,
             "hidden": false
           },
           {
@@ -335,7 +335,7 @@
             "display": "flex",
             "visibility": "visible",
             "rectWidth": 362,
-            "rectHeight": 790,
+            "rectHeight": 707,
             "hidden": false
           },
           {
@@ -344,7 +344,7 @@
             "display": "grid",
             "visibility": "visible",
             "rectWidth": 362,
-            "rectHeight": 1623,
+            "rectHeight": 1458,
             "hidden": false
           },
           {
@@ -353,7 +353,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 362,
-            "rectHeight": 1683,
+            "rectHeight": 1518,
             "hidden": false
           },
           {
@@ -362,7 +362,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 362,
-            "rectHeight": 2117,
+            "rectHeight": 1952,
             "hidden": false
           },
           {
@@ -371,7 +371,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 390,
-            "rectHeight": 2467,
+            "rectHeight": 2316,
             "hidden": false
           },
           {
@@ -380,7 +380,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 390,
-            "rectHeight": 2467,
+            "rectHeight": 2316,
             "hidden": false
           }
         ]
@@ -500,7 +500,7 @@
         "viewport": 768,
         "docWidth": 768,
         "bodyWidth": 768,
-        "pageHeight": 4930,
+        "pageHeight": 4946,
         "figures": [
           {
             "index": 1,
@@ -570,7 +570,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 768,
-            "rectHeight": 4930,
+            "rectHeight": 4946,
             "hidden": false
           },
           {
@@ -579,7 +579,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 768,
-            "rectHeight": 4930,
+            "rectHeight": 4946,
             "hidden": false
           }
         ]
@@ -599,7 +599,7 @@
         "viewport": 390,
         "docWidth": 390,
         "bodyWidth": 390,
-        "pageHeight": 7426,
+        "pageHeight": 7441,
         "figures": [
           {
             "index": 1,
@@ -669,7 +669,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 390,
-            "rectHeight": 7426,
+            "rectHeight": 7441,
             "hidden": false
           },
           {
@@ -678,7 +678,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 390,
-            "rectHeight": 7426,
+            "rectHeight": 7441,
             "hidden": false
           }
         ]
@@ -801,7 +801,7 @@
         "viewport": 768,
         "docWidth": 768,
         "bodyWidth": 768,
-        "pageHeight": 6285,
+        "pageHeight": 6301,
         "figures": [
           {
             "index": 1,
@@ -871,7 +871,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 768,
-            "rectHeight": 6285,
+            "rectHeight": 6301,
             "hidden": false
           },
           {
@@ -880,7 +880,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 768,
-            "rectHeight": 6285,
+            "rectHeight": 6301,
             "hidden": false
           }
         ]
@@ -900,7 +900,7 @@
         "viewport": 390,
         "docWidth": 390,
         "bodyWidth": 390,
-        "pageHeight": 9159,
+        "pageHeight": 9174,
         "figures": [
           {
             "index": 1,
@@ -970,7 +970,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 390,
-            "rectHeight": 9159,
+            "rectHeight": 9174,
             "hidden": false
           },
           {
@@ -979,7 +979,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 390,
-            "rectHeight": 9159,
+            "rectHeight": 9174,
             "hidden": false
           }
         ]
