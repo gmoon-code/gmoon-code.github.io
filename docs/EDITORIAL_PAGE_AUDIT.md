@@ -48,6 +48,10 @@ A content pass is **not** equivalent to final visual approval. Automated browser
 - Editor V2's image-library accessible names were revised in commit `b2bc88c` after a reported `label-content-name-mismatch` on two buttons. The regression run still requires confirmation.
 - A fresh structural count across all 23 HTML source pages detected two missing `</section>` elements in `research.html`, corrected in commit `4c5f652`. All checked ordinary pages now have balanced section, division, figure, list, and table tags. This is source-level evidence, not visual verification.
 - The root HTML source scan found no unresolved in-page fragment IDs or remaining filename-style photo descriptions in ordinary markup. Generated content needs runtime inspection.
+- The accessibility audit passed on the Research DOM fix (`4c5f652`), as did the research-figure and external-resource audits. The responsive-browser job remained in progress when last inspected.
+- Root-level HTML link and fragment checks found no unresolved references to other root-level `.html` pages. Links into separately deployed project repositories should be tested independently.
+- The apparent duplicate `<main>` in `fluid-layout-lab.html` is an HTML snippet inside the JavaScript export builder, not a second live document landmark.
+- The editor's PowerPoint-like crop, resize and live-object tests still have genuine failures. Treat them as separate unresolved product-quality work, not as evidence that the research prose fails.
 - CSS has received targeted spacing changes; final human visual judgment is still outstanding for the edited pages.
 
 ## Next content pass
