@@ -12,8 +12,8 @@ A content pass is **not** equivalent to final visual approval. Automated browser
 
 | Page | Editorial status | Remaining verification |
 | --- | --- | --- |
-| `index.html` | Revised in preceding conversation; filename-style photo alt text fixed `fa0be6f`; full line-by-line sign-off pending | Responsive layout, all content and repetition across linked pages |
-| `research.html` | Prior full editorial passes; two missing nested section closures repaired `4c5f652`, restoring Research Interests and Related Writing to intended hierarchy | Desktop/phone layout review after DOM repair and cross-page prose verification |
+| `index.html` | Editorial passes and photo-alt corrections; phone screenshots revealed overlapping absolute-photo layers. Source-node mobile reflow and responsive CSS added `ca7bea1`, `cc65b78`. | Inspect new 320/375 screenshots to confirm text and both photos do not overlap, and verify desktop unchanged |
+| `research.html` | Previous editorial passes; nested section structure repaired `4c5f652`; phone horizontal reading inset corrected `647d657` after screenshot review | Verify revised phone screenshots and check desktop unaffected |
 | `research-action.html` | Crosschecked against original manuscript and the teaching case; malformed table and duplicated figure fixed, commit `6467157` | Final rendered desktop/mobile and diagram flow review |
 | `research-scoping.html` | Checked against source manuscripts, selection ledger and Pierson/Kane publications; evidence and layout revisions `880c3f5`, `b267a1b` | Confirm deployment, inspect at desktop/phone, verify OSF DOI availability |
 | `projects.html` | Content and image-source pass completed, commit `0db43f0` | Full manual layout and thumbnail review at desktop and phone widths |
@@ -28,7 +28,7 @@ A content pass is **not** equivalent to final visual approval. Automated browser
 | `interests.html` | Prior content passes plus independent image inspection and final filename-style alt correction `2fb99ed` | Image positioning, book-cover assets and responsive layout still require visual sign-off |
 | `pungmul.html` | History research and prior content pass; additional four photo labels fixed `234fad1`, introduction refined `c52ceb5` | Photo-layout check; one photograph retains screenshot-viewer chrome and needs careful replacement |
 | `contact.html` | Revised in preceding conversation; photo alt fixed `667ed11`; final sign-off pending | Wording, contact destinations, all screen sizes |
-| `cv.html` | Date/tense/claims/layout pass `2a53919`; email unified with academic CVs and Contact `be3044d` | A4 print preview, credential verification, degree completion versus formal award date |
+| `cv.html` | Dates and credentials reconciled against application CVs; coursework Aug versus expected degree award Nov clarified `63f1c32`; phone reading inset corrected `ff60039` | Verify updated phone screenshot, A4 print preview and formal conferral when available |
 | `about.html` | Reviewed meta-refresh legacy route to Contact; no content change warranted | Check redirect in rendered browser |
 | `404.html` | Copy, semantic markup and links reviewed; no content change warranted | Browser routing and small-screen check |
 | `editor-v2.html` | Separate product QA in progress across prior conversations | PowerPoint-style editing interactions, resize/crop, geometry, publishing, keyboard/mobile |
@@ -53,6 +53,8 @@ A content pass is **not** equivalent to final visual approval. Automated browser
 - Root-level HTML link and fragment checks found no unresolved references to other root-level `.html` pages. Links into separately deployed project repositories should be tested independently.
 - The apparent duplicate `<main>` in `fluid-layout-lab.html` is an HTML snippet inside the JavaScript export builder, not a second live document landmark.
 - The editor's PowerPoint-like crop, resize and live-object tests still have genuine failures. Treat them as separate unresolved product-quality work, not as evidence that the research prose fails.
+- Actual full-page screenshots were retrieved from GitHub Actions for 320px and 375px phone widths (plus desktop captures). A pronounced Homepage overlap, Research text flush against the page frame, and CV text flush against its frame were observed and targeted. The new pages must be reviewed in newly rendered screenshots before visual sign-off.
+- The existing responsive audit omitted Contact and Pungmul. Both, plus 404 screenshot coverage, were added to `scripts/responsive_smoke.py` in commit `357b4aa`. The new workflow should be checked for results.
 - CSS has received targeted spacing changes; final human visual judgment is still outstanding for the edited pages.
 
 ## Next content pass
