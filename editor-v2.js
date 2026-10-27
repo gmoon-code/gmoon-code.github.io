@@ -421,6 +421,7 @@ function setWorkspaceMode(mode){
   $("save").textContent=isLive?"Save live-page edits":"Save canvas draft";
   $("selectTool").textContent=isLive?"↖ Select webpage":"↖ Select canvas";
   $("liveSectionPickMode").hidden=!isLive;
+  $("cropImageTool").hidden=!isLive;
   $("addText").textContent=isLive?"T Add webpage text":"T Canvas text";
   $("addShape").textContent=isLive?"▢ Add webpage shape":"▢ Canvas shape";
   $("addImage").textContent=isLive?"▧ Add webpage image":"▧ Canvas image";
@@ -1717,6 +1718,9 @@ function renderLiveInspector(){
   $("liveLayoutControls").hidden=!node;
   $("liveImageSizing").hidden=tag!=="IMG";
   $("liveCropControls").hidden=tag!=="IMG";
+  $("cropImageTool").disabled=!live||tag!=="IMG"||!!liveEditing;
+  $("cropImageTool").setAttribute("aria-pressed",String(liveCropMode&&tag==="IMG"));
+  $("cropImageTool").classList.toggle("active",liveCropMode&&tag==="IMG");
   $("liveLockImageRatio").checked=liveLockImageRatio;
   if(tag==="IMG"){
     const crop=selectedImageCrop(livePatchForSelected());
@@ -4623,6 +4627,7 @@ function attachEvents(){
   $("cancelLiveText").addEventListener("click",cancelLiveText);
   $("applyLiveImage").addEventListener("click",applyLiveImage);
   $("liveCropToggle").addEventListener("click",()=>setLiveCropMode(!liveCropMode));
+  $("cropImageTool").addEventListener("click",()=>setLiveCropMode(!liveCropMode));
   $("liveCropFit").addEventListener("change",event=>
     applySelectedImageCrop({fit:event.target.value}));
   $("liveCropShape").addEventListener("change",event=>
