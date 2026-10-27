@@ -4626,13 +4626,14 @@ function renderImageLibrary(){
   for(let i=0;i<pageImages.length;i++){
     const item=pageImages[i],button=document.createElement("button");
     button.type="button";button.dataset.imageIndex=String(i);
-    button.title=item.alt||item.src;
-    button.setAttribute("aria-label","Insert or replace image: "+(item.alt||item.src));
+    const displayName=String(item.alt||"").trim()||"Image "+(i+1);
+    button.title="Insert or replace image: "+displayName;
     const thumb=document.createElement("img");
     thumb.loading="lazy";thumb.src=item.src;
     thumb.alt="";
     const label=document.createElement("span");
-    label.textContent=(item.alt||item.src.split("/").at(-1)).slice(0,54);
+    label.textContent=displayName.slice(0,54);
+    button.setAttribute("aria-label","Insert or replace image: "+displayName);
     button.append(thumb,label);
     container.append(button);
   }
