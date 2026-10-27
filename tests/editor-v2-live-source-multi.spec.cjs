@@ -599,3 +599,29 @@ test('section dimensions can be set precisely in inspector and survive draft rel
   await expect(live.locator('section.feature p')).toHaveText(
     'Section content stays legible and is never scaled.');
 });
+
+test('section resizing stays scoped to selected device and width-only edits retain natural height',async({page})=>{
+  await loadSectionFixture(page);
+  const live=page.frameLocator('#livePageFrame');
+  const section=live.locator('section.feature');
+  await live.locator('section.feature p').click();
+  await page.locator('#liveSelectSection').click();
+  // A width-only adjustment should let the content determine section height.
+  await page.locator('#liveOriginalWidth').fill('360');
+  await page.locator('#liveOriginalWidth').dispatchEvent('change');
+  await expect(page.locator('#liveSectionHeightMode')).toHaveValue('auto');
+  const desktopWidth=await section.evaluate(node=>node.getBoundingClientRect().width);
+  expect(Math.abs(desktopWidth-360)).toBeLessThan(3);
+  await page.locator('#liveOriginalHeight').fill('195');
+  await page.locator('#liveOriginalHeight').dispatchEvent('change');
+  await expect(page.locator('#liveSectionHeightMode')).toHaveValue('fixed');
+  const desktopHeight=await section.evaluate(node=>node.getBoundingClientRect().height);
+  expect(Math.abs(desktopHeight-195)).toBeLessThan(3);
+  await page.locator('#devicePreview').selectOption('phone');
+  const phoneHeight=await section.evaluate(node=>node.getBoundingClientRect().height);
+  // The selected device's original 340px height is unchanged.
+  expect(Math.abs(phoneHeight-340)).toBeLessThan(3);
+  await page.locator('#devicePreview').selectOption('desktop');
+  const restored=await section.evaluate(node=>node.getBoundingClientRect().height);
+  expect(Math.abs(restored-195)).toBeLessThan(3);
+});
