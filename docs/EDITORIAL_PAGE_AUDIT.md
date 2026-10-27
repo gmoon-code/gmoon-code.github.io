@@ -22,7 +22,7 @@ A content pass is **not** equivalent to final visual approval. Automated browser
 | `teaching-ap-biology.html` | Science, empirical claim, prose and references pass completed, commits `bde0b87`, `8d1af09`, `cff539b` | Final manual figure and responsive check |
 | `teaching-ap-evolution.html` | Science, cohort source, selection arithmetic, narrative and references pass completed, commits `421909e`, `6486278`, `ab2e94f` | Final manual figure and responsive check |
 | `teaching-osmosis-practice.html` | Worksheet scientific and print-stylesheet pass completed, commit `d04f88c` | Printed-page preview and small-screen review |
-| `story-method.html` | Pending dedicated pass | Content, interactivity, teaching claims, small-screen reading |
+| `story-method.html` | Content, source-record, scientific-example, and writing pass completed, commit `a1b5086` | Full live-preview interaction and visual inspection at desktop/phone sizes |
 | `research-methods-studio.html` | Pending dedicated pass | Functionality, classroom claims, accessibility and layout |
 | `writing-biological-classification.html` | Revised in preceding conversation; final sign-off pending | Line-by-line argument, citations, scientific interpretation |
 | `interests.html` | Revised in preceding conversation; inaccessible photo filename alt fixed `ea80850`; final sign-off pending | Every text/image element and responsive layout |
@@ -49,4 +49,4 @@ A content pass is **not** equivalent to final visual approval. Automated browser
 
 ## Next content pass
 
-Start with `story-method.html` and `research-methods-studio.html`, then the remaining public pages, followed by separate editor QA. Return to prior partial revisions for full verification. Do not mark a page fully finished merely because a prior commit polished part of it.
+Start with `research-methods-studio.html` and the remaining public pages, then the remaining public pages, followed by separate editor QA. Return to prior partial revisions for full verification. Do not mark a page fully finished merely because a prior commit polished part of it.
