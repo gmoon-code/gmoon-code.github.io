@@ -234,9 +234,35 @@ async def main():
                 "() => ({hash:location.hash,scrollY:scrollY})")
             if returned["hash"] != "#page-top" or returned["scrollY"] > 2:
                 violations.append("Back to top link did not return to page header")
+            ax_session=await keyboard_page.context.new_cdp_session(keyboard_page)
+            ax_nodes=(await ax_session.send("Accessibility.getFullAXTree"))["nodes"]
+            ax_visible=[n for n in ax_nodes if not n.get("ignored")]
+            def names_for_role(role):
+                return [n.get("name",{}).get("value","") for n in ax_visible
+                        if n.get("role",{}).get("value")==role]
+            ax_summary={
+                "mains":len(names_for_role("main")),
+                "navigationNames":names_for_role("navigation"),
+                "imageNames":names_for_role("image"),
+                "appearanceNames":names_for_role("combobox"),
+                "headingNames":names_for_role("heading"),
+                "unnamedLinks":sum(not name.strip() for name in names_for_role("link"))
+            }
+            if ax_summary["mains"] != 1:
+                violations.append("Accessibility tree missing unique main landmark")
+            if sorted(ax_summary["navigationNames"]) != ["Additional links","Primary navigation"]:
+                violations.append("Navigation landmarks lack expected names")
+            if len(ax_summary["imageNames"]) != 2 or any(
+                    not name.strip() for name in ax_summary["imageNames"]):
+                violations.append("Home photos lack meaningful accessible names")
+            if "Appearance theme" not in ax_summary["appearanceNames"]:
+                violations.append("Appearance selector lacks accessible name")
+            if ax_summary["unnamedLinks"]:
+                violations.append("Accessibility tree includes unnamed links")
             item={"page":"home-keyboard","width":375,
                   "first":first,"secondIsBrand":second,"darkBrand":brand,
                   "sectionAnchor":section,"backToTop":returned,
+                  "accessibilityTree":ax_summary,
                   "violations":violations}
             results.append(item)
             if violations: failures.append(item)
