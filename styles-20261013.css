@@ -2202,4 +2202,13 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
     break-inside:avoid-page!important;
     page-break-inside:avoid!important;
   }
+  #main.projects-page .project-interface-figure img{
+    display:block;
+    width:auto;
+    max-width:100%;
+    max-height:245px;
+    height:auto;
+    margin-inline:auto;
+    object-fit:contain;
+  }
 }
