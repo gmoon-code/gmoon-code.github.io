@@ -9,7 +9,7 @@ from PIL import Image, ImageDraw
 # Previously hard-coded editions could pass while the live covers were absent.
 page = Path("interests.html").read_text(encoding="utf-8")
 ids = list(dict.fromkeys(re.findall(
-    r"https://covers\\.openlibrary\\.org/b/isbn/(\\d{10,13})-L\\.jpg",
+    r"https://covers\.openlibrary\.org/b/isbn/(\d{10,13})-L\.jpg",
     page,
 )))
 if not ids:
