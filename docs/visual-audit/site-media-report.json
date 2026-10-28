@@ -1,5 +1,5 @@
 {
-  "testedAt": "2026-10-28T00:37:05.109Z",
+  "testedAt": "2026-10-28T00:56:21.737Z",
   "results": [
     {
       "path": "index.html",
@@ -189,16 +189,16 @@
       "images": [
         {
           "src": "https://covers.openlibrary.org/b/isbn/9780547928227-L.jpg",
-          "naturalWidth": 323,
-          "naturalHeight": 500,
-          "complete": true,
+          "naturalWidth": 0,
+          "naturalHeight": 0,
+          "complete": false,
           "renderedWidth": 112,
           "renderedHeight": 168,
           "left": 177,
           "right": 289,
           "alt": "Cover of The Hobbit",
           "loading": "lazy",
-          "source": "https://covers.openlibrary.org/b/isbn/9780547928227-L.jpg"
+          "source": ""
         },
         {
           "src": "https://covers.openlibrary.org/b/isbn/9780062951465-L.jpg",
@@ -297,7 +297,9 @@
           "naturalHeight": 976
         }
       ],
-      "failures": []
+      "failures": [
+        "image 1 failed to load: https://covers.openlibrary.org/b/isbn/9780547928227-L.jpg"
+      ]
     },
     {
       "path": "cv.html",
