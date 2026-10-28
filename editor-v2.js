@@ -2291,7 +2291,7 @@ function renderLiveInspector(){
     $("liveCropXValue").textContent=crop.x+"%";
     $("liveCropYValue").textContent=crop.y+"%";
     $("liveCropToggle").setAttribute("aria-pressed",String(liveCropMode));
-    $("liveCropToggle").textContent=liveCropMode?"Finish crop":"Crop picture · drag to reframe";
+    $("liveCropToggle").textContent=liveCropMode?"Finish crop":"Crop picture · trim edges";
     $("liveCropReset").disabled=!livePatchForSelected()?.imageCrop?.[liveDevice()];
   }
   // The unified crop inspector handles image fitting for both original
