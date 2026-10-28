@@ -1,10 +1,19 @@
 from io import BytesIO
 from pathlib import Path
 import json
+import re
 import urllib.request
 from PIL import Image, ImageDraw
 
-ids = ["9780062951465", "9780008433796", "9780008433833", "9780062951472"]
+# Test the ISBN editions actually displayed on the Interests page.
+# Previously hard-coded editions could pass while the live covers were absent.
+page = Path("interests.html").read_text(encoding="utf-8")
+ids = list(dict.fromkeys(re.findall(
+    r"https://covers\\.openlibrary\\.org/b/isbn/(\\d{10,13})-L\\.jpg",
+    page,
+)))
+if not ids:
+    raise RuntimeError("No Open Library ISBN cover URLs found in interests.html")
 entries = []
 tiles = []
 for isbn in ids:
@@ -28,7 +37,7 @@ for isbn in ids:
 
 out=Path("docs/visual-audit")
 out.mkdir(parents=True,exist_ok=True)
-(out/"interests-cover-probe.json").write_text(json.dumps({"source":"Open Library Covers API","results":entries},indent=2)+"\n")
+(out/"interests-cover-probe.json").write_text(json.dumps({"source":"Open Library Covers API","page":"interests.html","results":entries},indent=2)+"\n")
 sheet=Image.new("RGB",(220*len(ids),320),"white")
 draw=ImageDraw.Draw(sheet)
 for idx,isbn in enumerate(ids):
