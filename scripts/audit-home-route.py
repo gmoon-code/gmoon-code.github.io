@@ -95,8 +95,9 @@ async def main():
                 narrow = width <= 1140
                 violations = []
                 if data["httpStatus"] != 200: violations.append("Home HTTP not 200")
-                if data["scrollWidth"] > width + 3: violations.append("Document overflow")
+                if data["scrollWidth"] > width: violations.append("Document overflow")
                 if data["imageCount"] != 2: violations.append("Unexpected Home image count")
+                if data["kickerRect"] is not None: violations.append("Unused Home kicker still takes layout space")
                 if not data["introBeforeFirstSection"]: violations.append("Intro after later sections")
                 if narrow:
                     if not (data["introInHero"] and data["portraitInHero"] and data["performanceInOutside"]):
