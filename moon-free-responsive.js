@@ -127,4 +127,12 @@
   document.fonts?.ready?.then(()=>{
     reserveHeight();alignPerformancePhoto(document.querySelector("main"));
   });
+  // Appearance changes can alter text wrapping and the section's height.
+  // Re-centre the visitor image when Light/Dark/System or editor mode changes.
+  const appearanceObserver=new MutationObserver(()=>{
+    alignPerformancePhoto(document.querySelector("main"));
+  });
+  appearanceObserver.observe(document.documentElement,{
+    attributes:true,attributeFilter:["data-moon-theme","class"]
+  });
 })();
