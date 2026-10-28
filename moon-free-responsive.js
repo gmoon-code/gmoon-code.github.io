@@ -119,6 +119,13 @@
   window.addEventListener("resize",()=>{
     reserveHeight();alignPerformancePhoto(document.querySelector("main"));
   });
+  // Print styling changes the positions of sections without resizing the
+  // browser viewport. Keep the desktop performance image aligned in print.
+  const printMedia=window.matchMedia("print");
+  const alignAfterMediaChange=()=>alignPerformancePhoto(document.querySelector("main"));
+  if(printMedia.addEventListener)printMedia.addEventListener("change",alignAfterMediaChange);
+  window.addEventListener("beforeprint",alignAfterMediaChange);
+  window.addEventListener("afterprint",alignAfterMediaChange);
   document.addEventListener("load",event=>{
     if(event.target?.tagName==="IMG"){
       reserveHeight();alignPerformancePhoto(document.querySelector("main"));
