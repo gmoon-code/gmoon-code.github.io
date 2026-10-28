@@ -422,3 +422,13 @@ Shared component work remains partly **corrected but unverified at current head*
 
 - An initial broad text replacement in `422d207` moved the hint inside the global page header rather than immediately ahead of the target table. This mistake was identified during source re-fetch and corrected immediately in `838d542bac458afdc331c85e05c23d3d2e62afa3`.
 - Re-fetched the corrected source. The single hint now sits before `.research-table-wrap` and its `.research-evidence-table`, and **not** within the site header. Seven section pairs remain balanced. Treat `838d542`, not the intermediate commit, as the fixed production state. Actual current browser rendering remains unverified.
+
+
+## 28 October 2026 continuation — classroom action research table accessibility
+
+- **Source review:** Re-read the published `research-action.html` research narrative, assessment sequence, summary counts, paired-answer distinctions, retrospective questions and ethics/limitations. The internally reported classifications remain coherent: Unit 2 seven of 28 complete, Unit 3 eighteen of 28, Unit 4 twenty-five of 28; twenty-one initially below complete split 12/9 for specific versus other reflections, with subsequent Unit 3 completion counts 10/3; ten Unit 3 pairs split 5/2/2/1. The page states clearly that the non-equivalent assessments, feedback and more explicit reconstruction prompt preclude claims of a measured shared ability gain or causal intervention effect.
+- **Confirmed public usability issue:** Both wide evidence tables positioned their sideways-scroll hint *after* the table, and the hint used touch-specific 'Swipe' language.
+- **Production correction:** Moved the two hints to immediately before their exact `.research-table-wrap` elements and used 'On a narrow screen, scroll sideways to see all columns.' Commit `44c1363990c70418f32ebf017b256cb48ea68f37`. Student records, classifications, methodological qualifications and CSS untouched.
+- **Re-fetch verification:** Exactly two hints precede the matching table wrappers, none in the site header, ten section opens and ten closes, and no unresolved in-page fragment destination. This is structural/source verification, not live mobile interaction testing.
+- **Remaining:** Independent access to the manuscript/source ledger for ethics and recoding documentation, current mobile/desktop visual examination, functional scrolling and assistive-technology testing. Preserve all earlier pending browser checks.
+- **Next:** Continue other unverified public-facing long-form pages and cross-page consistency, with particular attention to substantive research claims and any horizontal scroll hints placed after content.
