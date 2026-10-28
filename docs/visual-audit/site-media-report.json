@@ -1,5 +1,5 @@
 {
-  "testedAt": "2026-10-28T01:31:00.214Z",
+  "testedAt": "2026-10-28T03:36:27.647Z",
   "results": [
     {
       "path": "index.html",
@@ -189,8 +189,8 @@
       "images": [
         {
           "src": "https://covers.openlibrary.org/b/isbn/9780547928227-L.jpg",
-          "naturalWidth": 0,
-          "naturalHeight": 0,
+          "naturalWidth": 323,
+          "naturalHeight": 500,
           "complete": true,
           "renderedWidth": 112,
           "renderedHeight": 168,
@@ -202,8 +202,8 @@
         },
         {
           "src": "https://covers.openlibrary.org/b/isbn/9780062951465-L.jpg",
-          "naturalWidth": 0,
-          "naturalHeight": 0,
+          "naturalWidth": 337,
+          "naturalHeight": 500,
           "complete": true,
           "renderedWidth": 112,
           "renderedHeight": 168,
@@ -215,8 +215,8 @@
         },
         {
           "src": "https://covers.openlibrary.org/b/isbn/9780918526526-L.jpg",
-          "naturalWidth": 0,
-          "naturalHeight": 0,
+          "naturalWidth": 333,
+          "naturalHeight": 500,
           "complete": true,
           "renderedWidth": 112,
           "renderedHeight": 168,
@@ -297,11 +297,7 @@
           "naturalHeight": 976
         }
       ],
-      "failures": [
-        "image 1 failed to load: https://covers.openlibrary.org/b/isbn/9780547928227-L.jpg",
-        "image 2 failed to load: https://covers.openlibrary.org/b/isbn/9780062951465-L.jpg",
-        "image 3 failed to load: https://covers.openlibrary.org/b/isbn/9780918526526-L.jpg"
-      ]
+      "failures": []
     },
     {
       "path": "cv.html",
@@ -792,8 +788,8 @@
         },
         {
           "src": "https://covers.openlibrary.org/b/isbn/9780547928227-L.jpg",
-          "naturalWidth": 0,
-          "naturalHeight": 0,
+          "naturalWidth": 323,
+          "naturalHeight": 500,
           "complete": true,
           "renderedWidth": 90,
           "renderedHeight": 135,
@@ -805,8 +801,8 @@
         },
         {
           "src": "https://covers.openlibrary.org/b/isbn/9780062951465-L.jpg",
-          "naturalWidth": 0,
-          "naturalHeight": 0,
+          "naturalWidth": 337,
+          "naturalHeight": 500,
           "complete": true,
           "renderedWidth": 90,
           "renderedHeight": 135,
@@ -818,8 +814,8 @@
         },
         {
           "src": "https://covers.openlibrary.org/b/isbn/9780918526526-L.jpg",
-          "naturalWidth": 0,
-          "naturalHeight": 0,
+          "naturalWidth": 333,
+          "naturalHeight": 500,
           "complete": true,
           "renderedWidth": 90,
           "renderedHeight": 135,
@@ -874,11 +870,7 @@
           "naturalHeight": 976
         }
       ],
-      "failures": [
-        "image 3 failed to load: https://covers.openlibrary.org/b/isbn/9780547928227-L.jpg",
-        "image 4 failed to load: https://covers.openlibrary.org/b/isbn/9780062951465-L.jpg",
-        "image 5 failed to load: https://covers.openlibrary.org/b/isbn/9780918526526-L.jpg"
-      ]
+      "failures": []
     },
     {
       "path": "cv.html",
