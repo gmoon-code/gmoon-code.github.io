@@ -92,7 +92,9 @@ async def main():
                 await page.goto(PAGE_URL, wait_until="domcontentloaded", timeout=30000)
                 await page.evaluate("document.fonts.ready")
                 if mode == "dark":
-                    await page.evaluate("document.documentElement.setAttribute('data-moon-theme', 'dark')")
+                    # Use the real appearance control, not an artificial HTML attribute.
+                    await page.locator(".moon-appearance-select").select_option("dark")
+                    await page.wait_for_function("document.documentElement.dataset.moonTheme === 'dark'")
                 else:
                     await page.emulate_media(media="print")
                 await page.screenshot(path=str(OUT / f"research-{mode}-{width}.png"),
@@ -100,7 +102,9 @@ async def main():
                 data = await page.evaluate("""() => ({
                     viewport: innerWidth, documentWidth: document.documentElement.scrollWidth,
                     appearance: document.documentElement.getAttribute('data-moon-theme'),
-                    printNavigationHidden: getComputedStyle(document.querySelector('.research-section-guide')).display === 'none'
+                    printNavigationHidden: getComputedStyle(document.querySelector('.research-section-guide')).display === 'none',
+                    projectCardBackground: getComputedStyle(document.querySelector('.research-study-preview')).backgroundColor,
+                    projectCardText: getComputedStyle(document.querySelector('.research-study-preview p')).color
                 })""")
                 observations.append({"mode": mode, **data})
                 print(json.dumps({"mode": mode, **data}), flush=True)
