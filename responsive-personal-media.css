@@ -46,6 +46,14 @@
     align-self:start;
     border-radius:9px!important;
   }
+  /* The fifth Pungmul photo was saved from a photo viewer. On narrow
+     layouts, its embedded top and bottom viewer bars are outside the
+     performance frame. Keep the desktop editor crop untouched. */
+  html:not(.moon-free-mode) main.personal-media-flow .pungmul-performance-grid > img.personal-photo-in-flow[data-moon-v2-added-id="593f087f-d4ef-4764-837d-36ab3cf9ec71"]{
+    aspect-ratio:1.54 / 1!important;
+    object-fit:cover!important;
+    object-position:center!important;
+  }
   html:not(.moon-free-mode) main.personal-media-flow .contact-background > img.personal-photo-in-flow{
     width:min(100%,340px)!important;
     margin:24px auto 0!important;
