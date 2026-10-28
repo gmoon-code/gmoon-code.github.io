@@ -1,0 +1,41 @@
+name: Shared navigation and appearance browser audit
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - scripts/audit-shared-ui.py
+      - .github/workflows/audit-shared-ui.yml
+      - appearance.js
+      - appearance.css
+      - site-theme.css
+      - styles-20261013.css
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  shared-ui:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: |
+          python -m pip install playwright==1.57.0
+          python -m playwright install --with-deps chromium
+      - name: Test navigation, keyboard skip link and appearance across routes
+        run: |
+          python -m http.server 8765 --bind 127.0.0.1 >/tmp/shared-ui-http.log 2>&1 &
+          python scripts/audit-shared-ui.py
+      - name: Upload screenshots and measurements
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: shared-ui-browser-evidence
+          path: shared-ui-audit-output/
+          if-no-files-found: warn
+          retention-days: 7
