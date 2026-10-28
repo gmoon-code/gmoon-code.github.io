@@ -354,6 +354,7 @@
 @media(max-width:980px){
   .research-essay .research-essay-hero{
     width:100%;
+    max-width:760px;
     padding-left:0;
     padding-top:4px;
     padding-bottom:34px;
