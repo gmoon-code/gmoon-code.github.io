@@ -1,5 +1,5 @@
 {
-  "testedAt": "2026-10-28T12:18:13.905Z",
+  "testedAt": "2026-10-28T12:28:35.940Z",
   "checks": [
     {
       "size": "desktop",
@@ -19,7 +19,7 @@
             "imageLoaded": true,
             "imageWidth": 1087,
             "imageHeight": 778,
-            "childText": "On a narrow screen, scroll sideways to examine the graph.\n\nFigure 1. Science practices examined under different conceptualizations"
+            "childText": "Figure 1. Science practices examined under different conceptualizations of language. This published synthesis compares practices e"
           }
         ]
       },
@@ -43,7 +43,7 @@
             "imageLoaded": true,
             "imageWidth": 1087,
             "imageHeight": 778,
-            "childText": "On a narrow screen, scroll sideways to examine the graph.\n\nFigure 1. Science practices examined under different conceptualizations"
+            "childText": "Figure 1. Science practices examined under different conceptualizations of language. This published synthesis compares practices e"
           }
         ]
       },
