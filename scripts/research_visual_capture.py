@@ -113,9 +113,39 @@ async def main():
                 print(f"RESEARCH {mode} capture error: {error}", flush=True)
             finally:
                 await context.close()
+        # Keyboard navigation and sticky section guide are functional, not just visible.
+        context = await browser.new_context(viewport={"width": 375, "height": 900})
+        page = await context.new_page()
+        try:
+            await page.goto(PAGE_URL, wait_until="domcontentloaded", timeout=30000)
+            await page.keyboard.press("Tab")
+            first_focus = await page.evaluate("document.activeElement.textContent.trim()")
+            await page.keyboard.press("Enter")
+            await page.wait_for_timeout(80)
+            skip_target = await page.evaluate("document.activeElement.id")
+            await page.locator('.research-section-guide a[href="#research-interests"]').click()
+            fragment = await page.evaluate("location.hash")
+            await page.set_viewport_size({"width": 1440, "height": 900})
+            await page.goto(PAGE_URL, wait_until="domcontentloaded", timeout=30000)
+            await page.evaluate("window.scrollTo(0, 2200)")
+            await page.wait_for_timeout(80)
+            sticky_top = await page.locator(".research-section-guide").evaluate(
+                "(el) => Math.round(el.getBoundingClientRect().top)")
+            passed = (first_focus == "Skip to content" and skip_target == "main"
+                      and fragment == "#research-interests" and 23 <= sticky_top <= 34)
+            record = {"mode": "interaction", "viewport": 1440, "firstFocus": first_focus,
+                      "skipTarget": skip_target, "navFragment": fragment,
+                      "stickyGuideTop": sticky_top, "pass": passed}
+            observations.append(record)
+            print(json.dumps(record), flush=True)
+        except Exception as error:
+            observations.append({"mode": "interaction", "error": str(error)})
+            print(f"RESEARCH interaction error: {error}", flush=True)
+        finally:
+            await context.close()
         await browser.close()
     (OUT / "geometry.json").write_text(json.dumps(observations, indent=2), encoding="utf-8")
-    errors = [x for x in observations if "error" in x or x.get("documentWidth", 9999) > x.get("viewport", 0) + 4 or x.get("escapedTextBlockCount", 0) > 0]
+    errors = [x for x in observations if "error" in x or x.get("documentWidth", 9999) > x.get("viewport", 0) + 4 or x.get("escapedTextBlockCount", 0) > 0 or (x.get("mode") == "interaction" and not x.get("pass"))]
     if errors:
         print("Some visual geometry diagnostics require review. See geometry.json.", flush=True)
         return 1
