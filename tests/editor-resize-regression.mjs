@@ -118,9 +118,15 @@ try{
     "Redo did not restore the image resize");
   // Verify that exported HTML contains a retained layout slot and the
   // corresponding floating image. This exercises the publishing assembler.
-  const pendingDownload=page.waitForEvent("download",{timeout:15000});
+  const pendingDownload=page.waitForEvent("download",{timeout:8000}).catch(()=>null);
   await page.locator("#exportBtn").click();
   const download=await pendingDownload;
+  if(!download){
+    const notice=await page.locator("#noticeDialog[open] #noticeMessage").allTextContents();
+    const status=await page.locator("#status").allTextContents();
+    throw new Error("Editor export produced no download. Notice: "+JSON.stringify(notice)+
+      " Status: "+JSON.stringify(status));
+  }
   const exported=await readFile(await download.path(),"utf8");
   assert(exported.includes("data-moon-free-placeholder="),
     "Published HTML omitted the layout-preserving placeholder");
