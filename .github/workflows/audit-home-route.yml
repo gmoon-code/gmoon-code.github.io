@@ -29,7 +29,7 @@ jobs:
         with:
           python-version: '3.12'
       - run: |
-          python -m pip install playwright==1.57.0
+          python -m pip install playwright==1.57.0 PyMuPDF==1.26.7
           python -m playwright install --with-deps chromium
       - name: Test page geometry and nested 404 in Chromium
         run: |
