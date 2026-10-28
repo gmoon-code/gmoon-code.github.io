@@ -111,7 +111,7 @@ async def main():
                         violations.append("Image pixels may spill beyond their boxes")
                     if data["photoRect"]["width"] > 481 or data["photoRect"]["height"] > 321:
                         violations.append("Visitor portrait frame is oversized")
-                if width in (375,701,768,1024,1025,1100,1140,1141,1440):
+                if width in WIDTHS:
                     # Compare the genuine 900px viewport against full-page
                     # capture; screenshots can alter layout transiently.
                     await page.screenshot(path=str(OUT/f"home-{width}-viewport.jpg"),
