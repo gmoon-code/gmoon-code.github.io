@@ -334,6 +334,57 @@ async def main():
                 print(f"RESEARCH R4 KEYBOARD ERROR at {width}: {error}",flush=True)
             finally:
                 await context.close()
+        # Windows-style forced-colour simulation is distinct from Dark
+        # appearance. Verify that citations retain focus and text distinction.
+        for width in (375, 1440):
+            context=await browser.new_context(
+                viewport={"width":width,"height":900},
+                forced_colors="active",reduced_motion="reduce")
+            page=await context.new_page()
+            try:
+                await page.goto(PAGE_URL,wait_until="load",timeout=30000)
+                await page.locator("#reading-zemenick a").focus()
+                info=await page.evaluate("""() => {
+                    const el=document.activeElement;
+                    const s=getComputedStyle(el);
+                    return {
+                        forcedColors:matchMedia('(forced-colors: active)').matches,
+                        viewport:innerWidth,
+                        documentWidth:document.documentElement.scrollWidth,
+                        focusVisible:el.matches(':focus-visible'),
+                        focusOutline:s.outlineStyle,
+                        underlined:s.textDecorationLine.includes('underline'),
+                        linkHeight:el.getBoundingClientRect().height,
+                        graphAlt:!!document.querySelector(
+                            '.research-published-figure img[alt]'),
+                        navigationCount:document.querySelectorAll('nav[aria-label]').length
+                    };
+                }""")
+                problems=[]
+                if not info["forcedColors"]:
+                    problems.append("Forced colours did not apply")
+                if info["documentWidth"]>width+4:
+                    problems.append("Forced-colour page overflows")
+                if (not info["focusVisible"] or info["focusOutline"]=="none"
+                    or not info["underlined"] or info["linkHeight"]<24):
+                    problems.append("Forced-colour bibliography link focus/size invalid")
+                if not info["graphAlt"] or info["navigationCount"]!=3:
+                    problems.append("Forced-colour semantics unexpectedly missing")
+                item={"mode":"R4-forced-colors","viewport":width,
+                      **info,"violations":problems,"pass":not problems}
+                observations.append(item)
+                print(json.dumps(item,ensure_ascii=False),flush=True)
+                if width==375:
+                    await page.screenshot(
+                        path=str(OUT/"research-forced-colors-375.png"),
+                        full_page=False,animations="disabled")
+            except Exception as error:
+                observations.append(
+                    {"mode":"R4-forced-colors","viewport":width,
+                     "error":str(error)})
+                print(f"RESEARCH FORCED COLORS ERROR {width}: {error}",flush=True)
+            finally:
+                await context.close()
         # A4 is a paginated medium, unlike a full-height print screenshot.
         # Check that major headings do not strand on a previous sheet and
         # each reference's beginning and final link remain on the same sheet.
@@ -408,7 +459,7 @@ async def main():
             await print_context.close()
         await browser.close()
     (OUT / "geometry.json").write_text(json.dumps(observations, indent=2), encoding="utf-8")
-    errors = [x for x in observations if "error" in x or ("documentWidth" in x and x["documentWidth"] > x.get("viewport", 0) + 4) or x.get("escapedTextBlockCount", 0) > 0 or (x.get("mode") in ("interaction","print-A4","R4-keyboard") and not x.get("pass"))]
+    errors = [x for x in observations if "error" in x or ("documentWidth" in x and x["documentWidth"] > x.get("viewport", 0) + 4) or x.get("escapedTextBlockCount", 0) > 0 or (x.get("mode") in ("interaction","print-A4","R4-keyboard","R4-forced-colors") and not x.get("pass"))]
     if errors:
         print("Some visual geometry diagnostics require review. See geometry.json.", flush=True)
         return 1
