@@ -103,9 +103,9 @@ try{
   // Start the image test from the original content, not the text test draft.
   await page.evaluate(()=>localStorage.clear());
   await page.reload({waitUntil:"domcontentloaded"});
-  await frame.locator('main img[src*="profile-portrait"]')
+  await frame.locator('main img[data-moon-v2-added-id]')
     .waitFor({state:"visible",timeout:25000});
-  const image=frame.locator('main img[src*="profile-portrait"]').first();
+  const image=frame.locator('main img[data-moon-v2-added-id]').first();
   const imageResult=await resize("image",image,frame.locator("main h1").first());
   await page.locator("#undoBtn").click();
   const undoneImage=await image.boundingBox();
@@ -134,7 +134,7 @@ try{
   publishedIndexOverride=exported;
   await page.evaluate(()=>localStorage.clear());
   await page.reload({waitUntil:"domcontentloaded"});
-  await frame.locator('main img[src*="profile-portrait"]')
+  await frame.locator('main img[data-moon-v2-added-id]')
     .waitFor({state:"visible",timeout:25000});
   const placeholderCount=await frame.locator("main [data-moon-free-placeholder]").count();
   assert(placeholderCount>=1,"Published site did not retain its layout slot");
@@ -145,10 +145,10 @@ try{
   const mobile=await browser.newPage({viewport:{width:390,height:844}});
   try{
     await mobile.goto(base+"/index.html",{waitUntil:"load"});
-    const mobileImage=mobile.locator('main img[src*="profile-portrait"]').first();
+    const mobileImage=mobile.locator('main img[data-moon-v2-added-id]').first();
     await mobileImage.waitFor({state:"visible",timeout:15000});
     await mobile.waitForFunction(()=>{
-      const node=document.querySelector('main img[src*="profile-portrait"]');
+      const node=document.querySelector('main img[data-moon-v2-added-id]');
       return node&&!node.parentElement?.classList.contains("moon-free-layer");
     },null,{timeout:10000});
     const mobileImageBox=await mobileImage.boundingBox();
