@@ -32,8 +32,30 @@ MEASURE = """() => {
   const titleRect=rect(hero.querySelector('h1'));
   const actionsRect=rect(hero.querySelector('.controls'));
   const firstRect=rect(firstSection);
+  const pageRight=innerWidth;
+  const overflowNodes=[...document.querySelectorAll('body *')]
+    .filter(el => {
+      const bounds=el.getBoundingClientRect();
+      const style=getComputedStyle(el);
+      return bounds.right>pageRight+0.1 && bounds.width>0 &&
+        style.display!=="none" && style.visibility!=="hidden";
+    })
+    .sort((a,b)=>b.getBoundingClientRect().right-a.getBoundingClientRect().right)
+    .slice(0,12)
+    .map(el=>({
+      tag:el.tagName.toLowerCase(),id:el.id||"",
+      className:typeof el.className==="string"?el.className.slice(0,140):"",
+      rect:rect(el),position:getComputedStyle(el).position,
+      overflowX:getComputedStyle(el).overflowX,transform:getComputedStyle(el).transform,
+      scrollWidth:el.scrollWidth,clientWidth:el.clientWidth
+    }));
+  const kicker=hero.querySelector(".home-kicker");
   return {
     width:innerWidth,scrollWidth:document.documentElement.scrollWidth,
+    overflowNodes, kickerRect:rect(kicker),
+    kickerText:kicker?.textContent?.trim()||"",
+    kickerMarginTop:kicker?getComputedStyle(kicker).marginTop:null,
+    kickerMarginBottom:kicker?getComputedStyle(kicker).marginBottom:null,
     introParent:intro?.parentElement?.className||null,
     portraitParent:photo?.parentElement?.className||null,
     performanceParent:performance?.parentElement?.className||null,
