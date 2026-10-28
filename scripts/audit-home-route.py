@@ -178,6 +178,56 @@ async def main():
             finally:
                 await page.close()
 
+        # Keyboard smoke: skip link, site title, and title focus on dark background.
+        keyboard_page = await browser.new_page(viewport={"width":375,"height":900},
+                                              reduced_motion="reduce")
+        try:
+            await keyboard_page.goto(BASE+"/index.html",wait_until="load",timeout=20000)
+            await keyboard_page.keyboard.press("Tab")
+            first = await keyboard_page.evaluate(
+                "() => document.activeElement?.getAttribute('href')")
+            await keyboard_page.keyboard.press("Tab")
+            second = await keyboard_page.evaluate(
+                "() => document.activeElement?.classList.contains('brand')")
+            await keyboard_page.locator(".moon-appearance-select").select_option("dark")
+            # Appearance follows the eight preceding navigation links.
+            for _ in range(8):
+                await keyboard_page.keyboard.press("Shift+Tab")
+            brand = await keyboard_page.evaluate("""() => {
+                const el=document.activeElement;
+                const s=getComputedStyle(el);
+                return {isBrand:el.matches('.topbar .brand'),
+                  visibleFocus:el.matches(':focus-visible'),
+                  outlineStyle:s.outlineStyle,
+                  outlineColor:s.outlineColor,
+                  expected:getComputedStyle(document.documentElement)
+                    .getPropertyValue('--moon-link-accent').trim(),
+                  background:getComputedStyle(document.querySelector('.topbar'))
+                    .backgroundColor}
+            }""")
+            violations = []
+            if first != "#main": violations.append("Skip link not first keyboard target")
+            if not second: violations.append("Site title not second keyboard target")
+            if not brand["isBrand"] or not brand["visibleFocus"]:
+                violations.append("Dark site title cannot be found by keyboard focus")
+            if (brand["outlineStyle"] == "none" or
+                brand["outlineColor"] != "rgb(145, 219, 170)"):
+                violations.append("Dark site title focus outline lacks visible contrast")
+            await keyboard_page.screenshot(path=str(OUT/"home-keyboard-dark-brand-375.jpg"),
+                                           full_page=False,type="jpeg",quality=75)
+            item={"page":"home-keyboard","width":375,
+                  "first":first,"secondIsBrand":second,"darkBrand":brand,
+                  "violations":violations}
+            results.append(item)
+            if violations: failures.append(item)
+            print("HOME KEYBOARD","PASS" if not violations else violations,flush=True)
+        except Exception as exc:
+            item={"page":"home-keyboard","width":375,"error":str(exc)}
+            results.append(item);failures.append(item)
+            print("HOME KEYBOARD ERROR",item,flush=True)
+        finally:
+            await keyboard_page.close()
+
         # Simulate GitHub Pages serving its custom 404 at a nonexistent nested URL.
         page = await browser.new_page(viewport={"width":375,"height":820},
                                       reduced_motion="reduce")
