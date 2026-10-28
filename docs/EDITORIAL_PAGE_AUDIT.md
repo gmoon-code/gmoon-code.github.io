@@ -416,3 +416,9 @@ Shared component work remains partly **corrected but unverified at current head*
 - **Verification:** Re-fetched current source; table hint now precedes the table, all seven sections remain balanced and local fragment links resolve. Browser post-change rendering and actual keyboard/touch scroll have not been tested.
 - **Remaining:** Verify original selection and charting ledger independently against report-level counts, refresh OSF metadata as needed, and inspect complete current rendered page at five widths, dark appearance and A4 print. Preserve the differentiation between preprint and publication status.
 - **Next:** Continue unreviewed reader-facing portions of the public Research and Teaching ecosystem, with priority to unfinished current render verification and remaining page-specific issues, not the editor.
+
+
+## 28 October 2026 immediate correction — scoping table hint placement verification
+
+- An initial broad text replacement in `422d207` moved the hint inside the global page header rather than immediately ahead of the target table. This mistake was identified during source re-fetch and corrected immediately in `838d542bac458afdc331c85e05c23d3d2e62afa3`.
+- Re-fetched the corrected source. The single hint now sits before `.research-table-wrap` and its `.research-evidence-table`, and **not** within the site header. Seven section pairs remain balanced. Treat `838d542`, not the intermediate commit, as the fixed production state. Actual current browser rendering remains unverified.
