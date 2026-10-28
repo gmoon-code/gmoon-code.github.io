@@ -2233,3 +2233,8 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
     padding-top:8px;
   }
 }
+
+/* Project detail pages: stable article-to-footer spacing at all breakpoints. */
+#main.project-detail-page{padding-bottom:62px}
+#main.project-detail-page+.site-footer{margin-top:36px}
+@media print{#main.project-detail-page{padding-bottom:0!important}}
