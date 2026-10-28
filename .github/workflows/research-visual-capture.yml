@@ -16,6 +16,7 @@ on:
 
 permissions:
   contents: read
+  statuses: write
 
 jobs:
   visual-capture:
@@ -36,6 +37,11 @@ jobs:
         run: |
           python -m http.server 8765 --bind 127.0.0.1 >/tmp/research-http.log 2>&1 &
           python scripts/research_visual_capture.py
+      - name: Preserve exact Research visual source
+        if: always()
+        run: |
+          mkdir -p research-visual-output/source
+          cp research.html research-layout.css styles-20261013.css site-theme.css appearance.css appearance.js research-visual-output/source/
       - name: Publish screenshots and geometry
         if: always()
         uses: actions/upload-artifact@v4
@@ -43,3 +49,15 @@ jobs:
           name: research-five-width-screenshots
           path: research-visual-output/
           retention-days: 7
+      - name: Publish Research browser audit status
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          AUDIT_RESULT: ${{ job.status }}
+        run: |
+          if [ "$AUDIT_RESULT" = "success" ]; then result=success; else result=failure; fi
+          gh api -X POST "repos/$GITHUB_REPOSITORY/statuses/$GITHUB_SHA" \
+            -f state="$result" \
+            -f context="audit/research-visual" \
+            -f target_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" \
+            -f description="Research five-width browser audit: $AUDIT_RESULT"
