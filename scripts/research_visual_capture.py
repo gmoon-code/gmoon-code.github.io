@@ -96,6 +96,48 @@ async def main():
                                            after_scroll > before["scrollLeft"]}
                     if not data["figurePan"]["works"]:
                         raise RuntimeError("Research image must scroll sideways by keyboard at phone widths")
+                if width in (320, 1440):
+                    refs = await page.evaluate("""() => {
+                      const list=[...document.querySelectorAll('#research-reading li[id^="reading-"]')];
+                      const sourceLinks=[...document.querySelectorAll('main a[href^="#reading-"]')];
+                      const ids=list.map(li=>li.id);
+                      const incoming=new Set(sourceLinks.map(a=>a.getAttribute('href').slice(1)));
+                      const links=list.map(li=>[...li.querySelectorAll('a[href]')]);
+                      const misplaced=sourceLinks.filter(a=>!ids.includes(a.getAttribute('href').slice(1)));
+                      const unnamed=links.flat().filter(a=>!(a.textContent||a.getAttribute('aria-label')||'').trim());
+                      const invalid=links.flat().filter(a=>!/^https:\\/\\//.test(a.getAttribute('href')));
+                      const badDoiText=links.flat().filter(a=>{
+                        const href=a.getAttribute('href');
+                        return href.startsWith('https://doi.org/') &&
+                          a.textContent.trim()!==href;
+                      });
+                      const compact=links.flat().filter(a=>{
+                        const r=a.getBoundingClientRect();
+                        return r.width<24||r.height<24;
+                      }).map(a=>({text:a.textContent.slice(0,60),height:a.getBoundingClientRect().height}));
+                      return {
+                        entries:ids.length,
+                        duplicateIds:ids.filter((id,i)=>ids.indexOf(id)!==i),
+                        uncited:ids.filter(id=>!incoming.has(id)),
+                        unresolvedIncoming:misplaced.length,
+                        linkCounts:links.map(a=>a.length),
+                        duplicateUrls:links.flat().map(a=>a.getAttribute('href'))
+                          .filter((url,i,all)=>all.indexOf(url)!==i),
+                        unnamed:unnamed.length,
+                        invalid:invalid.length,
+                        badDoiText:badDoiText.length,
+                        compactTargets:compact.slice(0,10),
+                        compactTargetCount:compact.length
+                      };
+                    }""")
+                    data["bibliography"] = refs
+                    if (refs["entries"] != 53 or refs["duplicateIds"] or
+                        refs["uncited"] or refs["unresolvedIncoming"] or
+                        refs["duplicateUrls"] or refs["unnamed"] or
+                        refs["invalid"] or refs["badDoiText"] or
+                        any(n != 1 for n in refs["linkCounts"])):
+                        raise RuntimeError("Research bibliography failed 53-entry source/citation/link audit: "+
+                                           json.dumps(refs, ensure_ascii=False))
                 observations.append(data)
                 print(json.dumps(data, ensure_ascii=False), flush=True)
             except Exception as error:
