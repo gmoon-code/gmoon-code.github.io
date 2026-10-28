@@ -277,6 +277,78 @@ async def main():
         finally:
             await keyboard_page.close()
 
+        # Visitor-facing print and forced-colour checks. Screenshot captures
+        # are evidence of CSS media rendering, not physical print pagination.
+        for width in (375, 768, 1440):
+            for mode in ("print", "forced-colors"):
+                options={"viewport":{"width":width,"height":900},
+                         "reduced_motion":"reduce"}
+                if mode=="forced-colors": options["forced_colors"]="active"
+                test_page=await browser.new_page(**options)
+                try:
+                    response=await test_page.goto(BASE+"/index.html",
+                                                  wait_until="load",timeout=20000)
+                    if mode=="print": await test_page.emulate_media(media="print")
+                    await test_page.wait_for_timeout(100)
+                    info=await test_page.evaluate("""() => {
+                      const visible=e=>e&&getComputedStyle(e).display!=='none'&&
+                        e.getBoundingClientRect().width>0&&e.getBoundingClientRect().height>0;
+                      const images=[...document.querySelectorAll('img[data-moon-v2-added-id]')];
+                      const main=document.querySelector('main');
+                      const outside=document.querySelector('#outside-school');
+                      const performance=document.querySelector(
+                        'img[data-moon-v2-added-id="10954918-6ea3-4b9e-b6b1-b86e4ac50f97"]');
+                      const r=outside?.getBoundingClientRect(),p=performance?.getBoundingClientRect();
+                      return {
+                        width:innerWidth,scrollWidth:document.documentElement.scrollWidth,
+                        print:matchMedia('print').matches,
+                        forcedColors:matchMedia('(forced-colors: active)').matches,
+                        topbarDisplay:getComputedStyle(document.querySelector('.topbar')).display,
+                        footerDisplay:getComputedStyle(document.querySelector('.site-footer')).display,
+                        mainVisible:visible(main),outsideVisible:visible(outside),
+                        imageCount:images.length,
+                        imageDecoded:images.every(i=>i.complete&&i.naturalWidth>0),
+                        performanceWithinOutside:!!r&&!!p&&p.top>=r.top-.5&&p.bottom<=r.bottom+.5,
+                        unnamedVisibleLinks:[...document.querySelectorAll('a[href]')]
+                          .filter(visible).filter(a=>!(a.innerText||a.getAttribute('aria-label')||'').trim())
+                          .length
+                      };
+                    }""")
+                    violations=[]
+                    if response is None or response.status!=200:
+                        violations.append("Home did not load")
+                    if info["scrollWidth"]>width:
+                        violations.append("Media mode horizontal overflow")
+                    if not info["mainVisible"] or not info["outsideVisible"]:
+                        violations.append("Media mode hides main content")
+                    if info["imageCount"]!=2 or not info["imageDecoded"]:
+                        violations.append("Media mode image missing or undecoded")
+                    if not info["performanceWithinOutside"]:
+                        violations.append("Media mode performance image outside section")
+                    if info["unnamedVisibleLinks"]:
+                        violations.append("Visible media mode links lack text labels")
+                    if mode=="print":
+                        if not info["print"]:violations.append("Print media not active")
+                        if info["topbarDisplay"]!="none" or info["footerDisplay"]!="none":
+                            violations.append("Print-only navigation/footer visibility unexpected")
+                    elif not info["forcedColors"]:
+                        violations.append("Forced colours not active")
+                    info.update({"page":"home-media","mode":mode,"httpStatus":response.status,
+                                 "violations":violations})
+                    results.append(info)
+                    if violations:failures.append(info)
+                    await test_page.screenshot(
+                        path=str(OUT/f"home-{mode}-{width}.jpg"),
+                        full_page=True,type="jpeg",quality=72)
+                    print("HOME MEDIA",width,mode,"PASS" if not violations else violations,
+                          flush=True)
+                except Exception as exc:
+                    item={"page":"home-media","mode":mode,"width":width,"error":str(exc)}
+                    results.append(item);failures.append(item)
+                    print("HOME MEDIA ERROR",item,flush=True)
+                finally:
+                    await test_page.close()
+
         # Simulate GitHub Pages serving its custom 404 at a nonexistent nested URL.
         page = await browser.new_page(viewport={"width":375,"height":820},
                                       reduced_motion="reduce")
