@@ -443,6 +443,11 @@
   .research-essay .research-editorial-content > .research-essay-section > .section-head h2{
     font-size:29px;
   }
+  /* Bibliographic links remain legible on narrow screens without forcing a fixed width. */
+  .research-essay .research-editorial-content .research-reading-list li{
+    font-size:14px;
+    line-height:1.68;
+  }
 }
 @media print{
   .research-essay .research-essay-hero{padding-left:0}
