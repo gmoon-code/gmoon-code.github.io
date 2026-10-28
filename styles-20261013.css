@@ -2192,3 +2192,8 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
     padding-right:14px;
   }
 }
+
+/* Projects overview: consistent card-to-footer whitespace across viewport sizes. */
+#main.projects-page{padding-bottom:34px}
+#main.projects-page+.site-footer{margin-top:36px}
+@media print{#main.projects-page{padding-bottom:0}}
