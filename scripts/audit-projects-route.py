@@ -195,6 +195,53 @@ async def main():
                 print("PREVIEW ERROR",path,str(error),flush=True)
             finally:
                 await page.close()
+        # Print is paginated, not a tall screenshot. Keep each whole card
+        # (heading, explanation, screenshot, call to action) on one A4 sheet.
+        import fitz
+        page=await browser.new_page(viewport={"width":1440,"height":900},
+                                    reduced_motion="reduce")
+        try:
+            response=await page.goto(BASE+"/projects.html",wait_until="load",
+                                     timeout=25000)
+            await page.locator(".project-interface-figure img").evaluate_all(
+                """async images => {for(const image of images){
+                     image.loading='eager'; await image.decode();}}""")
+            pdf_data=await page.pdf(
+                format="A4",print_background=True,display_header_footer=False,
+                margin={"top":"12mm","bottom":"12mm",
+                        "left":"12mm","right":"12mm"})
+            (OUT/"projects-A4.pdf").write_bytes(pdf_data)
+            pdf=fitz.open(stream=pdf_data,filetype="pdf")
+            text_by_page=[p.get_text("text") for p in pdf]
+            card_pairs=[("The Story Method","Open Unit 1"),
+                        ("Research Methods Studio","Open the workspace")]
+            split=[title for title,cta in card_pairs
+                   if not any(title in text and cta in text
+                              for text in text_by_page)]
+            problems=[]
+            if response is None or response.status!=200:
+                problems.append("Projects print page did not load")
+            if split:
+                problems.append("A4 printed cards split across sheets: "+
+                                ", ".join(split))
+            if not 1<=len(pdf)<=4:
+                problems.append("Unexpected Projects A4 page count")
+            for i,sheet in enumerate(pdf):
+                sheet.get_pixmap(matrix=fitz.Matrix(1.2,1.2)).save(
+                    str(OUT/f"projects-A4-{i+1}.png"))
+            results.append({"page":"projects","mode":"print-A4",
+                            "pageCount":len(pdf),"splitCards":split,
+                            "pageTextLength":[len(t) for t in text_by_page],
+                            "violations":problems})
+            print("PROJECTS A4","PASS" if not problems else problems,
+                  "sheets",len(pdf),flush=True)
+            pdf.close()
+        except Exception as error:
+            results.append({"page":"projects","mode":"print-A4",
+                            "error":str(error)})
+            print("PROJECTS A4 ERROR",str(error),flush=True)
+        finally:
+            await page.close()
         await browser.close()
     (OUT/"report.json").write_text(json.dumps(results,indent=2,ensure_ascii=False),
                                     encoding="utf-8")
