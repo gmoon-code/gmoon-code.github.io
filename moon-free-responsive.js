@@ -74,8 +74,19 @@
       const marker=markers.get(node.getAttribute("data-moon-free-slot"));
       if(media.matches&&marker&&marker.parentNode){
         if(node.nextSibling!==marker)marker.parentNode.insertBefore(node,marker);
-      }else if(node.parentElement!==layer){
-        layer.append(node);
+      }else{
+        // Keep the published Home introduction before its action links in
+        // the DOM at desktop widths while retaining editor-mode geometry.
+        const visitorIntro=main.classList.contains("home-page") &&
+          node.classList.contains("home-lead") &&
+          !document.documentElement.classList.contains("moon-free-mode");
+        const copy=visitorIntro?main.querySelector(".home-intro .hero-copy"):null;
+        const actions=copy?.querySelector(".controls");
+        if(actions){
+          if(node.nextSibling!==actions)copy.insertBefore(node,actions);
+        }else if(node.parentElement!==layer){
+          layer.append(node);
+        }
       }
     }
     arrangeHomePhotos(main);
