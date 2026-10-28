@@ -89,8 +89,14 @@ async def main():
                 "lightBg":light["bodyBg"],"persistence":persisted["selectValue"]})
             await page.locator(".moon-appearance-select").select_option("system")
             await page.emulate_media(color_scheme="dark")
+            await page.wait_for_function(
+                "document.documentElement.getAttribute('data-moon-theme') === 'dark'",
+                timeout=3000)
             systemDark=await page.evaluate(MEASURE)
             await page.emulate_media(color_scheme="light")
+            await page.wait_for_function(
+                "document.documentElement.getAttribute('data-moon-theme') === 'light'",
+                timeout=3000)
             systemLight=await page.evaluate(MEASURE)
             if systemDark["theme"]!="dark" or systemLight["theme"]!="light" or systemLight["preference"]!="system":
                 failures.append({"test":"system-theme","dark":systemDark["theme"],
