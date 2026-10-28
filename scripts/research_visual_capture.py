@@ -222,6 +222,118 @@ async def main():
             print(f"RESEARCH interaction error: {error}", flush=True)
         finally:
             await context.close()
+        # R4: test a real keyboard citation jump and continued Tab into the
+        # reference's URL, plus dark focus contrast and the footer email target.
+        for width in (375, 1440):
+            context = await browser.new_context(
+                viewport={"width":width,"height":900},reduced_motion="reduce")
+            page = await context.new_page()
+            try:
+                response = await page.goto(PAGE_URL,wait_until="load",timeout=30000)
+                await page.evaluate(
+                    "document.documentElement.style.scrollBehavior='auto'")
+                await page.keyboard.press("Tab")
+                first = await page.evaluate(
+                    "document.activeElement?.getAttribute('href')")
+                await page.keyboard.press("Tab")
+                second = await page.evaluate(
+                    "document.activeElement?.classList.contains('brand')")
+                citation = page.locator(
+                    '#curriculum-decisions a[href="#reading-ko"]').first
+                await citation.focus()
+                await page.keyboard.press("Enter")
+                cite = await page.evaluate("""() => {
+                    const el=document.querySelector('#reading-ko');
+                    return {hash:location.hash, top:el.getBoundingClientRect().top};
+                }""")
+                await page.keyboard.press("Tab")
+                next_href = await page.evaluate(
+                    "() => document.activeElement?.getAttribute('href')")
+                await page.locator("#reading-ko a").focus()
+                ref_focus = await page.evaluate("""() => {
+                    const el=document.activeElement,s=getComputedStyle(el);
+                    return {visible:el.matches(':focus-visible'),
+                            outline:s.outlineStyle,
+                            linkHeight:el.getBoundingClientRect().height};
+                }""")
+                contact = await page.locator(".site-footer-inner p a").evaluate(
+                    """el => ({
+                        name:el.textContent.trim(),href:el.getAttribute('href'),
+                        height:el.getBoundingClientRect().height
+                    })""")
+                await page.locator(".site-footer a[href='#page-top']").focus()
+                await page.keyboard.press("Enter")
+                back_top = await page.evaluate(
+                    "() => ({hash:location.hash,y:scrollY})")
+                await page.locator(".moon-appearance-select").select_option("dark")
+                await page.wait_for_function(
+                    "document.documentElement.dataset.moonTheme === 'dark'")
+                await page.locator(".topbar .brand").focus()
+                brand = await page.evaluate("""() => {
+                    const el=document.activeElement,s=getComputedStyle(el);
+                    return {focusVisible:el.matches(':focus-visible'),
+                        outline:s.outlineColor,
+                        header:getComputedStyle(document.querySelector('.topbar'))
+                            .backgroundColor};
+                }""")
+                ax_session = await page.context.new_cdp_session(page)
+                nodes = (await ax_session.send(
+                    "Accessibility.getFullAXTree"))["nodes"]
+                visible = [node for node in nodes if not node.get("ignored")]
+                def named(role):
+                    return [node.get("name",{}).get("value","")
+                            for node in visible
+                            if node.get("role",{}).get("value")==role]
+                ax = {"mainCount":len(named("main")),
+                      "navNames":named("navigation"),
+                      "unnamedLinks":sum(not name.strip() for name in named("link")),
+                      "graphRegion":any("science-practices graph" in name.lower()
+                                        for name in named("region"))}
+                problems = []
+                if response is None or response.status!=200:
+                    problems.append("Research route not 200")
+                if first!="#main" or not second:
+                    problems.append("Initial keyboard order unexpected")
+                if cite["hash"]!="#reading-ko" or cite["top"]< -1 or cite["top"]>150:
+                    problems.append("Citation Enter failed to scroll into reference")
+                if next_href!="https://doi.org/10.1002/sce.21511":
+                    problems.append("Tab after citation did not reach its source link")
+                if (not ref_focus["visible"] or ref_focus["outline"]=="none" or
+                    ref_focus["linkHeight"]<24):
+                    problems.append("Bibliography keyboard focus/target inaccessible")
+                if contact["href"]!="mailto:gracem.0691@gmail.com" or contact["height"]<24:
+                    problems.append("Footer email target is too small")
+                if back_top["hash"]!="#page-top" or back_top["y"]>2:
+                    problems.append("Footer back to top did not activate")
+                if (not brand["focusVisible"] or
+                    brand["outline"]!="rgb(145, 219, 170)" or
+                    brand["header"]!="rgb(15, 15, 15)"):
+                    problems.append("Dark brand focus contrast unexpected")
+                if (ax["mainCount"]!=1 or
+                    sorted(ax["navNames"])!=["Additional links",
+                                              "On this Research page",
+                                              "Primary navigation"] or
+                    ax["unnamedLinks"] or not ax["graphRegion"]):
+                    problems.append("Accessibility tree landmarks/links invalid")
+                item={"mode":"R4-keyboard","viewport":width,
+                      "first":first,"secondBrand":second,"citation":cite,
+                      "nextHref":next_href,"referenceFocus":ref_focus,
+                      "contact":contact,"backToTop":back_top,
+                      "darkBrand":brand,"accessibility":ax,
+                      "violations":problems,"pass":not problems}
+                observations.append(item)
+                print(json.dumps(item,ensure_ascii=False),flush=True)
+                if width==375:
+                    await page.locator(".site-footer-inner p a").focus()
+                    await page.screenshot(
+                        path=str(OUT/"research-keyboard-dark-footer-375.png"),
+                        full_page=False,animations="disabled")
+            except Exception as error:
+                observations.append(
+                    {"mode":"R4-keyboard","viewport":width,"error":str(error)})
+                print(f"RESEARCH R4 KEYBOARD ERROR at {width}: {error}",flush=True)
+            finally:
+                await context.close()
         # A4 is a paginated medium, unlike a full-height print screenshot.
         # Check that major headings do not strand on a previous sheet and
         # each reference's beginning and final link remain on the same sheet.
@@ -296,7 +408,7 @@ async def main():
             await print_context.close()
         await browser.close()
     (OUT / "geometry.json").write_text(json.dumps(observations, indent=2), encoding="utf-8")
-    errors = [x for x in observations if "error" in x or ("documentWidth" in x and x["documentWidth"] > x.get("viewport", 0) + 4) or x.get("escapedTextBlockCount", 0) > 0 or (x.get("mode") in ("interaction","print-A4") and not x.get("pass"))]
+    errors = [x for x in observations if "error" in x or ("documentWidth" in x and x["documentWidth"] > x.get("viewport", 0) + 4) or x.get("escapedTextBlockCount", 0) > 0 or (x.get("mode") in ("interaction","print-A4","R4-keyboard") and not x.get("pass"))]
     if errors:
         print("Some visual geometry diagnostics require review. See geometry.json.", flush=True)
         return 1
