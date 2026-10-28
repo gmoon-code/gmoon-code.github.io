@@ -6,6 +6,10 @@ on:
     paths:
       - "research.html"
       - "research-layout.css"
+      - "styles-20261013.css"
+      - "appearance.css"
+      - "appearance.js"
+      - "site-theme.css"
       - "scripts/research_visual_capture.py"
       - ".github/workflows/research-visual-capture.yml"
   workflow_dispatch:
