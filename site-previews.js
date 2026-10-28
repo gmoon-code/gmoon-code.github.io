@@ -57,4 +57,16 @@
       if(event.key==="Escape"&&!active.hidden){event.preventDefault();removePreview()}
     });
   }
+  // Disclosures are useful on screen, but their hidden content cannot be
+  // expanded on paper. Open them only while printing, then restore the
+  // visitor's original open/closed state.
+  let printOpened=[];
+  window.addEventListener("beforeprint",()=>{
+    printOpened=[...document.querySelectorAll(".project-technical-details:not([open])")];
+    for(const item of printOpened)item.open=true;
+  });
+  window.addEventListener("afterprint",()=>{
+    for(const item of printOpened)item.open=false;
+    printOpened=[];
+  });
 })();
