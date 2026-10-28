@@ -359,3 +359,12 @@ Shared component work remains partly **corrected but unverified at current head*
 - **Verification:** Re-fetched the new source, confirmed zero remaining `:not(*)` instances in the editor layout block, retained five style elements, preserved balanced section elements, the original greeting, and both existing mailto destinations. Since none of the removed CSS rules could match an element, this change is semantics-preserving under normal CSS selector rules; this is a source-level claim, not a screenshot comparison.
 - **Remaining:** The long sequence of repeated *potentially active* desktop editor CSS is still a maintainability issue requiring computed-style comparison and screenshots before consolidation. Contact desktop/mobile visual sign-off and editor publish round-trip are still unverified. The live osmosis print and AP teaching-table interaction issues remain open.
 - **Next:** Inspect remaining Contact metadata and reader-visible content without replacing the established informal welcome, and examine the editor's repeated CSS serialization at its source to prevent new redundant rules. Only undertake active CSS consolidation with a before/after browser baseline.
+
+
+## 28 October 2026 continuation — Home inert editor CSS cleanup
+
+- **Cross-page scan:** Re-fetched `index.html`, `research.html` and `teaching.html`. Found 11 impossible `:not(*)` CSS rules on Home and none on Research or Teaching. These are rules that cannot match any element. Source-level structural scan of the three pages found balanced section pairs and no literal empty paragraphs.
+- **Minimal fix:** Removed only the 11 impossible-selector rules from Home `index.html` (1,073 bytes), commit `574b3ac3c0296c067d29e8963263cea6fc6ba546`. Preserved all active editor layout rules, embedded photo content, copy and navigation.
+- **Verification:** Re-fetched Home; zero `:not(*)` rule occurrences remain, five section open/close pairs remain balanced and no empty paragraph tags appear. Selector semantics establish these removed declarations were inert; browser screenshots and editor round-trip still pending.
+- **Cross-page state:** Research and Teaching contained no rules matching this exact dead-selector pattern. No cleanup needed in either on this evidence.
+- **Next:** Audit editor style serialization for append-only duplicate active CSS, avoiding changes to the effective cascade until computed browser styles and edit/publish tests are available. Independently resume A4 osmosis, mobile table scrolling and broader page-level verification.
