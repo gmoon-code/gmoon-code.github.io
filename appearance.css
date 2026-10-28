@@ -105,6 +105,29 @@ html[data-moon-theme="dark"] :is(.project-interface-figure>a,.research-published
  .project-preview-stage iframe,.media-cover){background:var(--moon-paper)}
 html[data-moon-theme="dark"] :is(pre,code,.research-code,.code-block){background:var(--moon-raised);color:var(--moon-ink)}
 html[data-moon-theme="dark"] :is(.moon-appearance-select){background:var(--moon-raised);color:var(--moon-ink)}
+/* Keep all seven navigation links together at intermediate tablet widths.
+   Without a two-row header, the CV link wraps below the other links. */
+@media (min-width:701px) and (max-width:900px){
+  .topbar-inner:has(>.moon-appearance){
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    grid-template-rows:auto auto;
+    align-items:center;
+    gap:10px 20px;
+    min-height:0;
+    padding:12px 0;
+  }
+  .topbar-inner>.brand{grid-column:1;grid-row:1}
+  .topbar-inner>.moon-appearance{grid-column:2;grid-row:1}
+  .topbar-inner>.site-nav{
+    grid-column:1/-1;
+    grid-row:2;
+    width:100%;
+    justify-content:flex-start;
+    flex-wrap:wrap;
+    gap:clamp(12px,2.5vw,22px);
+  }
+}
 @media(max-width:700px){
  .topbar-inner:has(>.moon-appearance){display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px}
  .topbar-inner>.brand{grid-column:1;grid-row:1}
