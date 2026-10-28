@@ -1,0 +1,64 @@
+/* Mobile and tablet layouts for independently positioned personal photos.
+   No desktop rule is changed, and no source image is duplicated. */
+@media (max-width: 1024px){
+  html:not(.moon-free-mode) main.personal-media-flow{
+    min-width:0!important;
+    overflow-x:clip!important;
+  }
+  html:not(.moon-free-mode) main.personal-media-flow img.personal-photo-in-flow[data-moon-v2-added-id]{
+    position:static!important;
+    left:auto!important;
+    right:auto!important;
+    top:auto!important;
+    bottom:auto!important;
+    translate:none!important;
+    transform:none!important;
+    display:block!important;
+    width:100%!important;
+    height:auto!important;
+    min-width:0!important;
+    min-height:0!important;
+    max-width:100%!important;
+    max-height:none!important;
+    margin:0!important;
+    object-fit:contain!important;
+    object-position:center center!important;
+    background-image:none!important;
+    box-sizing:border-box!important;
+    z-index:auto!important;
+  }
+  html:not(.moon-free-mode) main.personal-media-flow .pungmul-page-hero{
+    min-width:0;
+  }
+  html:not(.moon-free-mode) main.personal-media-flow .pungmul-page-hero > img.personal-photo-in-flow{
+    width:min(100%,560px)!important;
+    margin:22px auto 0!important;
+    border-radius:12px!important;
+  }
+  html:not(.moon-free-mode) main.personal-media-flow .pungmul-performance-grid{
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:14px!important;
+    margin:22px 0 17px!important;
+    min-width:0!important;
+  }
+  html:not(.moon-free-mode) main.personal-media-flow .pungmul-performance-grid > img.personal-photo-in-flow{
+    align-self:start;
+    border-radius:9px!important;
+  }
+  html:not(.moon-free-mode) main.personal-media-flow .contact-background > img.personal-photo-in-flow{
+    width:min(100%,340px)!important;
+    margin:24px auto 0!important;
+    border-radius:12px!important;
+  }
+}
+@media (max-width: 620px){
+  html:not(.moon-free-mode) main.personal-media-flow .pungmul-performance-grid{
+    grid-template-columns:minmax(0,1fr)!important;
+    gap:16px!important;
+  }
+  html:not(.moon-free-mode) main.personal-media-flow .pungmul-performance-grid > img.personal-photo-in-flow{
+    width:min(100%,470px)!important;
+    margin-inline:auto!important;
+  }
+}
