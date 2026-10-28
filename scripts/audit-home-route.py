@@ -60,6 +60,9 @@ MEASURE = """() => {
     portraitParent:photo?.parentElement?.className||null,
     performanceParent:performance?.parentElement?.className||null,
     introInHero:hero.contains(intro),portraitInHero:hero.contains(photo),
+    introBeforeActions:!!intro && !!hero.querySelector('.controls') &&
+      Boolean(intro.compareDocumentPosition(hero.querySelector('.controls')) &
+        Node.DOCUMENT_POSITION_FOLLOWING),
     performanceInOutside:outside.contains(performance),
     introBeforeFirstSection:!!intro && !!firstSection &&
       Boolean(intro.compareDocumentPosition(firstSection) & Node.DOCUMENT_POSITION_FOLLOWING),
@@ -99,6 +102,7 @@ async def main():
                 if data["imageCount"] != 2: violations.append("Unexpected Home image count")
                 if data["kickerRect"] is not None: violations.append("Unused Home kicker still takes layout space")
                 if not data["introBeforeFirstSection"]: violations.append("Intro after later sections")
+                if not data["introBeforeActions"]: violations.append("Introduction appears after the action links in DOM reading order")
                 if narrow:
                     if not (data["introInHero"] and data["portraitInHero"] and data["performanceInOutside"]):
                         violations.append("Phone/tablet reading flow not restored")
