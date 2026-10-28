@@ -109,6 +109,7 @@ async def main():
                       const badDoiText=links.flat().filter(a=>{
                         const href=a.getAttribute('href');
                         return href.startsWith('https://doi.org/') &&
+                          a.textContent.trim().startsWith('https://') &&
                           a.textContent.trim()!==href;
                       });
                       const compact=links.flat().filter(a=>{
@@ -135,6 +136,7 @@ async def main():
                         refs["uncited"] or refs["unresolvedIncoming"] or
                         refs["duplicateUrls"] or refs["unnamed"] or
                         refs["invalid"] or refs["badDoiText"] or
+                        refs["compactTargetCount"] or
                         any(n != 1 for n in refs["linkCounts"])):
                         raise RuntimeError("Research bibliography failed 53-entry source/citation/link audit: "+
                                            json.dumps(refs, ensure_ascii=False))
