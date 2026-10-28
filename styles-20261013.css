@@ -2093,7 +2093,7 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
   display:block;
   width:100%;
   height:auto;
-  aspect-ratio:8/5;
+  aspect-ratio:auto;
   object-fit:contain;
 }
 #main .project-interface-figure figcaption{
