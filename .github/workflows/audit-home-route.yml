@@ -30,6 +30,11 @@ jobs:
         run: |
           python -m http.server 8765 --bind 127.0.0.1 >/tmp/home-route-http.log 2>&1 &
           python scripts/audit-home-route.py
+      - name: Include inspected public source with screenshot evidence
+        if: always()
+        run: |
+          mkdir -p home-route-audit-output/source
+          cp index.html 404.html moon-free-responsive.js styles-20261013.css site-theme.css appearance.css appearance.js home-route-audit-output/source/
       - name: Upload screenshots and measurements
         if: always()
         uses: actions/upload-artifact@v4
