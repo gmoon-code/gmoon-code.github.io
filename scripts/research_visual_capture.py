@@ -76,6 +76,26 @@ async def main():
                     };
                 }""")
                 await page.screenshot(path=str(OUT / f"research-{width}.png"), full_page=True, animations="disabled")
+                if width in (320, 375):
+                    figure = page.locator(".research-figure-pan")
+                    before = await figure.evaluate("""el => ({
+                        clientWidth: el.clientWidth,
+                        scrollWidth: el.scrollWidth,
+                        scrollLeft: el.scrollLeft,
+                        focusable: el.tabIndex === 0,
+                        hintShown: getComputedStyle(document.querySelector('.research-figure-pan-hint')).display !== 'none'
+                    })""")
+                    await figure.focus()
+                    await page.keyboard.press("ArrowRight")
+                    await page.wait_for_timeout(220)
+                    after_scroll = await figure.evaluate("el => el.scrollLeft")
+                    data["figurePan"] = {**before, "afterRightArrow": after_scroll,
+                                         "works": before["focusable"] and
+                                           before["hintShown"] and
+                                           before["scrollWidth"] > before["clientWidth"] + 100 and
+                                           after_scroll > before["scrollLeft"]}
+                    if not data["figurePan"]["works"]:
+                        raise RuntimeError("Research image must scroll sideways by keyboard at phone widths")
                 observations.append(data)
                 print(json.dumps(data, ensure_ascii=False), flush=True)
             except Exception as error:
