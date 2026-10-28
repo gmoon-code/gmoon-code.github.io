@@ -1,0 +1,32 @@
+# Fresh Research page re-audit, 28 October 2026
+
+Public route: `research.html`. This is an internal, visitor-facing editorial, research-accuracy, UX and accessibility audit log. It continues the prior completed Research passes in `docs/EDITORIAL_PAGE_AUDIT.md`; do not restart completed sections or silently treat historic screenshots as current visual verification. Homepage work is preserved separately in `docs/HOMEPAGE_REAUDIT_2026-10-28.md`.
+
+## Stage R1. Opening, research project summaries, navigation and published figure
+
+### Previous work retained and rechecked
+
+The earlier site-wide audit has detailed source-level and five-width visual reviews of the full Research overview, including classroom authority, cultural knowledge, multilingual participation, scientific models, sex determination and variation, sources, scholarly figure, mobile references, focus navigation and sticky guide. Earlier bibliography edits and 2026 primary-source cross-checks remain historical evidence, rather than an invitation to rewrite all 53 entries in this stage.
+
+The current page contains exactly one H1, two Research project H3 headings, the Research interests H2 with three thematic H3 subsections and their H4s, and distinct Related writing/References H2s. Source anchor checks identified **67 unique IDs, no duplicates and no missing local fragment destinations**, with **53 distinct bibliography IDs referenced from body content and none unused**. All eight linked local destination pages tested are present. The cross-page links `research-scoping.html#case-study` and `research-action.html#paired-evidence` resolve to the intended sections, and their prose supports the Luis/S20 examples on this page.
+
+The 20 empirical studies in the ERIC scoping review and 28 students in AP Biology classroom action research are clearly separated. The paragraph does not attribute causal explanation changes to the feedback/reconstruction procedure and explicitly notes that further follow-up questions were proposed, not administered. The opening food-web example is hypothetical; it introduces how the teacher responds to a student question, rather than pretending to describe completed doctoral fieldwork.
+
+### Corrections made
+
+- **Commit `6004d79ec9e1be76322dce2de1e79aa0fab365a3`**: Revised the page's search meta-description to distinguish studied classroom assessment/multilingual science evidence from emerging interests in epistemic agency and justice-oriented science education. Replaced the space before each Research project CTA arrow with a non-breaking space so the arrow stays attached to its final word at narrow widths. Refreshed the appearance CSS URL so the shared dark-mode brand focus repair from Home H5 loads for visitors to Research. GitHub read-back showed that only these four source spans were altered.
+- A real Chromium baseline `research-375.png` had shown the first card's terminal arrow on a line by itself. After the correction, screenshot `research-375.png` from run `40686187478` shows the final word and arrow together on the second line, reducing awkward typography.
+- **Commit `6182c2eaaf5b3a0d260f004a785661602e5902e0`**: Modified the existing focused Research browser workflow to archive its exact HTML and stylesheet sources alongside screenshots and a geometry report, and to publish a `audit/research-visual` status linked to the run. Browser run **`40686187478` passed**, artifact **`12814009484`** downloaded and its `geometry.json` independently inspected. All five light responsive widths (320/375/768/1024/1440px) had zero horizontal overflow, escaped text or failed images. The 375px Dark run had dark card background `rgb(22,22,22)` and readable text `rgb(236,236,236)`; print at 768px hid the article navigation; the functional test confirmed first focus on skip link, Enter focus transfer to main, Research interests fragment navigation and sticky guide at 28px at 1440px. Inspected the 375px and 1440px header/card screenshots as well.
+
+### New figure accessibility finding
+
+A crop of the genuine earlier 320px full-page screenshot shows that the published González-Howard et al. graph is compressed from a 1087px source to approximately 256px display width, leaving internal labels effectively unreadable on a phone. The figure has a descriptive alt text, explicit full-size link, source citation and caption differentiating its 28-article source review from this website's separate 20-study scoping review. Those alternatives help but do not make the embedded graph itself comfortable to use.
+
+- **Commit `bd856a5c81ac984e04d7d663e196da17512381f5`**: Preserved the *same source image* and source details, but added a horizontally scrollable, named and keyboard-focusable region around the graph, plus a short mobile-only horizontal-pan instruction.
+- **Commit `67bd5aa06d33c8e3cd049fffda175faddbea7d47`**: Added Research-only narrow-screen CSS to show the graph at 620px inside its own horizontal-scroll viewport (rather than shrinking the graph to 256px). At desktop widths, content retains normal responsive image sizing. Print mode resets image sizing to the available page width. Neither caption nor page-wide document should overflow.
+- **Commit `f836335b94dd99ec6f7bec134e16d28217a859a5`**: Refreshed Research layout stylesheet URL to ensure mobile users receive the updated rule.
+- **Commit `f19a5a0373b414cd04e75eb3056aa1f3fd79c143`**: Extended the actual Chromium test to check at 320/375px that the figure region has an overflow scroll range, can be keyboard focused and responds to ArrowRight. Need inspect the resulting CI run and screenshots to mark this exact figure fix **verified**. Do not assume a pass or ignore unexpected overflow/focus failures.
+
+### Outstanding work, next exact action
+
+Check focused `audit/research-visual` status for commit `f19a5a0373b414cd04e75eb3056aa1f3fd79c143`, download and inspect the exact source/screenshot artifact and the 320/375 figure crop. If failing, repair and repeat. Check the page's 768/1024/1440 figure presentation and dark 375, and the 768 print screenshot for regressions. Then continue the independent Research audit with theme subsections, detailed paragraph transitions, quantitative claims/source-to-claim checks and bibliography metadata where prior review is not demonstrably current. Physical screen-reader, actual browser 200% zoom, and external-site reachability remain unverified. Do not prematurely sign off the entire page.
