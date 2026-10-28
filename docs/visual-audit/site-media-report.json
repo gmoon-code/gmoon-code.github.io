@@ -1,5 +1,5 @@
 {
-  "testedAt": "2026-10-28T12:18:23.395Z",
+  "testedAt": "2026-10-28T12:28:40.665Z",
   "results": [
     {
       "path": "index.html",
@@ -664,10 +664,10 @@
           "naturalWidth": 1087,
           "naturalHeight": 778,
           "complete": true,
-          "renderedWidth": 326,
-          "renderedHeight": 233,
-          "left": 40,
-          "right": 366,
+          "renderedWidth": 620,
+          "renderedHeight": 444,
+          "left": 41,
+          "right": 661,
           "alt": "Original published graph comparing focal science practices under linguistic and expansive conceptualizations of language. Modelling is reported for 2 linguistic-view and 8 expansive-view studies; explanation for 6 and 3; and argumentation for 9 and 2, respectively.",
           "loading": "lazy",
           "source": "https://gmoon-code.github.io/assets/gonzalez-howard-2023-figure-1.webp"
@@ -675,7 +675,9 @@
       ],
       "showLogoMetrics": [],
       "screenshot": "docs/visual-audit/site-media-research-phone.webp",
-      "failures": []
+      "failures": [
+        "image 1 outside viewport"
+      ]
     },
     {
       "path": "teaching.html",
