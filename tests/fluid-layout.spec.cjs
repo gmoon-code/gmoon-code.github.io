@@ -542,7 +542,7 @@ test('editor toolbar exposes distinct draft, review, export, and handoff groups'
   await expect(page.getByRole('group',{name:'Export drafts'})).toBeVisible();
   await expect(page.getByRole('group',{name:'Editor handoff'})).toBeVisible();
   await expect(page.locator('#viewSitePreview')).toHaveText('Preview inside website');
-  await expect(page.locator('#openPublisher')).toHaveText('Review transferable edits in main editor');
+  await expect(page.locator('#openPublisher')).toHaveText('Review transferable edits in legacy editor');
 });
 
 test('JSON import synchronizes page picker through undo and redo', async ({ page }) => {
