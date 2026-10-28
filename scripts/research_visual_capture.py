@@ -127,7 +127,10 @@ async def main():
             fragment = await page.evaluate("location.hash")
             await page.set_viewport_size({"width": 1440, "height": 900})
             await page.goto(PAGE_URL, wait_until="domcontentloaded", timeout=30000)
-            await page.evaluate("window.scrollTo(0, 2200)")
+            # The site normally uses smooth scrolling; force an immediate scroll
+            # so the sticky-position measurement is not taken mid-animation.
+            await page.evaluate("document.documentElement.style.scrollBehavior = 'auto'; window.scrollTo(0, 2200)")
+            await page.wait_for_function("window.scrollY > 2100", timeout=5000)
             await page.wait_for_timeout(80)
             sticky_top = await page.locator(".research-section-guide").evaluate(
                 "(el) => Math.round(el.getBoundingClientRect().top)")
