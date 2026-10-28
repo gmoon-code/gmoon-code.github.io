@@ -5,6 +5,15 @@
 .moon-appearance-select:focus-visible{outline:2px solid var(--moon-ink,#111);outline-offset:2px}
 @media(max-width:700px){.moon-appearance{justify-content:flex-start;gap:8px}.moon-appearance-select{min-height:36px}}
 @media print{.moon-appearance{display:none!important}}
+/* Research project previews are given pale surfaces by the page stylesheet.
+   Replace the surface as well as the text colours in dark appearance. */
+html[data-moon-theme="dark"] .research-essay .research-study-preview,
+html[data-moon-theme="dark"] .research-essay .research-hub-studies .research-study-preview{
+  background:var(--moon-paper)!important;
+  color:var(--moon-ink)!important;
+  border-color:var(--moon-rule)!important;
+  border-top-color:var(--section-green-line)!important;
+}
 /* Portfolio dark theme: restrained editorial paper, not an inverted light page. */
 html[data-moon-theme="dark"]{
  --moon-page:#0f0f0f;--moon-paper:#161616;--moon-raised:#1c1c1c;
