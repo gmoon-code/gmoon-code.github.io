@@ -220,8 +220,23 @@ async def main():
                 violations.append("Dark site title focus outline lacks visible contrast")
             await keyboard_page.screenshot(path=str(OUT/"home-keyboard-dark-brand-375.jpg"),
                                            full_page=False,type="jpeg",quality=75)
+            await keyboard_page.locator('a[href="#teaching-research"]').click()
+            section = await keyboard_page.evaluate("""() => ({
+                hash:location.hash,
+                sectionTop:document.querySelector('#teaching-research')
+                  .getBoundingClientRect().top,
+                scrollY:scrollY
+            })""")
+            if section["hash"] != "#teaching-research" or section["scrollY"] < 1:
+                violations.append("Explore the work anchor did not navigate to section")
+            await keyboard_page.locator('a[href="#page-top"]').click()
+            returned = await keyboard_page.evaluate(
+                "() => ({hash:location.hash,scrollY:scrollY})")
+            if returned["hash"] != "#page-top" or returned["scrollY"] > 2:
+                violations.append("Back to top link did not return to page header")
             item={"page":"home-keyboard","width":375,
                   "first":first,"secondIsBrand":second,"darkBrand":brand,
+                  "sectionAnchor":section,"backToTop":returned,
                   "violations":violations}
             results.append(item)
             if violations: failures.append(item)
