@@ -1856,17 +1856,19 @@ function cropFrameGeometry(rect,origin,dir,dx,dy){
   const fullW=rect.width/Math.max(.05,1-(initial.left+initial.right)/100);
   const fullH=rect.height/Math.max(.05,1-(initial.top+initial.bottom)/100);
   const next={...crop};
+  // Do not enlarge an already valid small image when trimming its edge.
+  const minW=Math.min(64,rect.width),minH=Math.min(24,rect.height);
   for(const [edge,delta,opposite,source,min] of [
-    ["left",dx,"right",fullW,64],
-    ["right",-dx,"left",fullW,64],
-    ["top",dy,"bottom",fullH,24],
-    ["bottom",-dy,"top",fullH,24]]){
+    ["left",dx,"right",fullW,minW],
+    ["right",-dx,"left",fullW,minW],
+    ["top",dy,"bottom",fullH,minH],
+    ["bottom",-dy,"top",fullH,minH]]){
     if(!dir.includes(({left:"w",right:"e",top:"n",bottom:"s"})[edge]))continue;
     const maximum=Math.min(90,95-next[opposite],100*(1-min/source)-next[opposite]);
     next[edge]=Math.round(clamp(initial[edge]+delta/source*100,0,Math.max(0,maximum))*100)/100;
   }
-  const w=Math.round(clamp(fullW*(1-(next.left+next.right)/100),64,4000));
-  const h=Math.round(clamp(fullH*(1-(next.top+next.bottom)/100),24,5000));
+  const w=Math.round(clamp(fullW*(1-(next.left+next.right)/100),minW,4000));
+  const h=Math.round(clamp(fullH*(1-(next.top+next.bottom)/100),minH,5000));
   const x=fullW*(next.left-initial.left)/100;
   const y=fullH*(next.top-initial.top)/100;
   return {crop:next,x:Math.round(x),y:Math.round(y),w,h};
