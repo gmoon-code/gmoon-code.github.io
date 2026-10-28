@@ -103,7 +103,7 @@ try{
   // Start the image test from the original content, not the text test draft.
   await page.evaluate(()=>localStorage.clear());
   await page.reload({waitUntil:"domcontentloaded"});
-  await frame.locator('main img[data-moon-v2-added-id]')
+  await frame.locator('main img[data-moon-v2-added-id]').first()
     .waitFor({state:"visible",timeout:25000});
   const image=frame.locator('main img[data-moon-v2-added-id]').first();
   const imageResult=await resize("image",image,frame.locator("main h1").first());
@@ -134,7 +134,7 @@ try{
   publishedIndexOverride=exported;
   await page.evaluate(()=>localStorage.clear());
   await page.reload({waitUntil:"domcontentloaded"});
-  await frame.locator('main img[data-moon-v2-added-id]')
+  await frame.locator('main img[data-moon-v2-added-id]').first()
     .waitFor({state:"visible",timeout:25000});
   const placeholderCount=await frame.locator("main [data-moon-free-placeholder]").count();
   assert(placeholderCount>=1,"Published site did not retain its layout slot");
