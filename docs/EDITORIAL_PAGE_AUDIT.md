@@ -260,3 +260,12 @@ Shared component work remains partly **corrected but unverified at current head*
 - Found a second inconsistent crop instruction inside the dynamic inspector toggle, `Crop picture · drag to reframe`, despite the independent-edge trimming guidance. Updated only this label to `Crop picture · trim edges`, preserving `Finish crop` when active (commit `bb8a76834c3d89db50973d1ba6ff6355879cac47`).
 - Re-fetched source after the commit and verified exact new dynamic label present, old label absent. **Source verified; runtime and visual unverified.** No modifications to geometry, crop state, security handling, or other site pages.
 - Next isolated check: inspect `updateCropFrame` for clamping, origin handling, and crop edge preservation; then perform a single Chromium drag test with an existing image and undo before considering broader crop/resize tests. Preserve other open items in the existing register.
+
+
+## 28 October 2026 continuation — crop boundary geometry review
+
+- **Inspected:** Actual `cropFrameGeometry` and `updateCropFrame` functions in `editor-v2.js`, plus their `setCropEdge` caller. Focused on independent sides, percentage limits, sizing minima and original-image layout correction. No browser test executed in this stage.
+- **Verified source mechanics:** The crop routine copies all four edge values, updates only the edges selected by `dir`, clamps their percentages against the opposite edge, and recomputes crop-frame x/y/width/height. It enforces 64px minimum frame width and 24px minimum frame height, plus maximum width 4000px and height 5000px. For existing images, `updateCropFrame` applies a second DOM position correction after CSS reflow; for inserted images it writes new device-specific geometry.
+- **Potential edge case, not proven runtime defect:** For a source frame narrower than 64px or shorter than 24px, final size clamping can expand the frame even when an edge trim was small or refused. Also, percentage rounding and pixel rounding should be checked over repeated cuts and inverse changes. Do not silently classify these as confirmed faults; reproduce with controlled browser fixtures first.
+- **Changes:** No editor logic changed. Audit evidence and next action only.
+- **Exact next:** Add/run one focused Chromium test using an inserted image at or near minimum frame dimensions, crop a single side, assert non-negative dimensions and unchanged opposite edges; then undo. Follow with normal-size real-image edge drag and pixel framing review before undertaking post-crop resize. Retain all other outstanding audit items.
