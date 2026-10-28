@@ -1,5 +1,5 @@
 {
-  "createdAt": "2026-10-28T03:38:54.793Z",
+  "createdAt": "2026-10-28T03:43:34.672Z",
   "errors": [],
   "results": [
     {
@@ -268,7 +268,7 @@
         "viewport": 390,
         "docWidth": 390,
         "bodyWidth": 390,
-        "pageHeight": 2422,
+        "pageHeight": 2450,
         "figures": [
           {
             "index": 1,
@@ -362,7 +362,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 362,
-            "rectHeight": 2057,
+            "rectHeight": 2086,
             "hidden": false
           },
           {
@@ -371,7 +371,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 390,
-            "rectHeight": 2422,
+            "rectHeight": 2450,
             "hidden": false
           },
           {
@@ -380,7 +380,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 390,
-            "rectHeight": 2422,
+            "rectHeight": 2450,
             "hidden": false
           }
         ]
@@ -399,7 +399,7 @@
         "viewport": 1440,
         "docWidth": 1440,
         "bodyWidth": 1440,
-        "pageHeight": 4576,
+        "pageHeight": 4203,
         "figures": [
           {
             "index": 1,
@@ -460,7 +460,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 1120,
-            "rectHeight": 4337,
+            "rectHeight": 3964,
             "hidden": false
           },
           {
@@ -469,7 +469,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 1440,
-            "rectHeight": 4576,
+            "rectHeight": 4203,
             "hidden": false
           },
           {
@@ -478,7 +478,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 1440,
-            "rectHeight": 4576,
+            "rectHeight": 4203,
             "hidden": false
           }
         ]
@@ -500,7 +500,7 @@
         "viewport": 768,
         "docWidth": 768,
         "bodyWidth": 768,
-        "pageHeight": 5084,
+        "pageHeight": 4712,
         "figures": [
           {
             "index": 1,
@@ -561,7 +561,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 712,
-            "rectHeight": 4842,
+            "rectHeight": 4470,
             "hidden": false
           },
           {
@@ -570,7 +570,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 768,
-            "rectHeight": 5084,
+            "rectHeight": 4712,
             "hidden": false
           },
           {
@@ -579,7 +579,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 768,
-            "rectHeight": 5084,
+            "rectHeight": 4712,
             "hidden": false
           }
         ]
@@ -599,7 +599,7 @@
         "viewport": 390,
         "docWidth": 390,
         "bodyWidth": 390,
-        "pageHeight": 7737,
+        "pageHeight": 7155,
         "figures": [
           {
             "index": 1,
@@ -660,7 +660,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 362,
-            "rectHeight": 7373,
+            "rectHeight": 6790,
             "hidden": false
           },
           {
@@ -669,7 +669,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 390,
-            "rectHeight": 7737,
+            "rectHeight": 7155,
             "hidden": false
           },
           {
@@ -678,7 +678,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 390,
-            "rectHeight": 7737,
+            "rectHeight": 7155,
             "hidden": false
           }
         ]
