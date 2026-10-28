@@ -84,7 +84,8 @@ async def main():
                 if width in (375,701,768,1024,1025,1100,1140,1141,1440):
                     await page.screenshot(path=str(OUT/f"home-{width}.jpg"),full_page=True,
                                           type="jpeg",quality=70)
-                print("HOME",width,"PASS" if not violations else violations,\n                      "scrollWidth",data["scrollWidth"],flush=True)
+                print("HOME",width,"PASS" if not violations else violations,
+                      "scrollWidth",data["scrollWidth"],flush=True)
             except Exception as exc:
                 item={"page":"index.html","width":width,"error":str(exc)}
                 results.append(item);failures.append(item)
