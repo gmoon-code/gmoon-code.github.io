@@ -194,6 +194,7 @@ html[data-moon-theme="dark"] .site-footer a:is(:hover,:focus-visible){
  text-decoration-color:currentColor;
 }
 html[data-moon-theme="dark"] #main a:focus-visible,
+html[data-moon-theme="dark"] .topbar .brand:focus-visible,
 html[data-moon-theme="dark"] .site-footer a:focus-visible{
  outline:2px solid var(--moon-link-accent);
  outline-offset:3px;
