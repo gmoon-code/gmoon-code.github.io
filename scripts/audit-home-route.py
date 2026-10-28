@@ -43,6 +43,8 @@ MEASURE = """() => {
       Boolean(intro.compareDocumentPosition(firstSection) & Node.DOCUMENT_POSITION_FOLLOWING),
     imageCount:main.querySelectorAll('img[data-moon-v2-added-id]').length,
     introRect,photoRect,titleRect,actionsRect,firstRect,
+    portraitOverflow:photo ? getComputedStyle(photo).overflow : null,
+    performanceOverflow:performance ? getComputedStyle(performance).overflow : null,
     collisions:{
       introPhoto:overlaps(introRect,photoRect),
       titlePhoto:overlaps(titleRect,photoRect),
@@ -78,6 +80,10 @@ async def main():
                     if not (data["introInHero"] and data["portraitInHero"] and data["performanceInOutside"]):
                         violations.append("Phone/tablet reading flow not restored")
                     if any(data["collisions"].values()): violations.append("Hero or section overlap")
+                    if data["portraitOverflow"] != "hidden" or data["performanceOverflow"] != "hidden":
+                        violations.append("Image pixels may spill beyond their boxes")
+                    if data["photoRect"]["width"] > 481 or data["photoRect"]["height"] > 321:
+                        violations.append("Visitor portrait frame is oversized")
                 if width in (375,701,768,1024,1025,1100,1140,1141,1440):
                     # Compare the genuine 900px viewport against full-page
                     # capture; screenshots can alter layout transiently.
