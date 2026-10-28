@@ -1344,6 +1344,8 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
 .teaching-sequence-table th,.teaching-sequence-table td{vertical-align:top;text-align:left;font-size:14px;line-height:1.56;padding:12px 12px;border-bottom:1px solid var(--moon-rule)}
 .teaching-sequence-table th{font-weight:700}
 .teaching-sequence-table thead th{background:var(--section-magenta-soft)}
+/* Project research tables follow the blue project palette, while teaching tables retain magenta. */
+.project-detail-page .teaching-sequence-table thead th{background:var(--section-blue-soft)}
 .teaching-sequence-table tbody th{width:18%;font-size:15px}
 .teaching-chem-case .chem-equilibrium-example{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border:1px solid var(--moon-rule);border-top:4px solid var(--section-magenta-line);margin:20px 0 15px}
 .chem-equation-panel,.chem-computation-panel{padding:21px 23px;min-width:0}
