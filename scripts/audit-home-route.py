@@ -78,12 +78,18 @@ async def main():
                     if not (data["introInHero"] and data["portraitInHero"] and data["performanceInOutside"]):
                         violations.append("Phone/tablet reading flow not restored")
                     if any(data["collisions"].values()): violations.append("Hero or section overlap")
+                if width in (375,701,768,1024,1025,1100,1140,1141,1440):
+                    # Compare the genuine 900px viewport against full-page
+                    # capture; screenshots can alter layout transiently.
+                    await page.screenshot(path=str(OUT/f"home-{width}-viewport.jpg"),
+                                          full_page=False,type="jpeg",quality=75)
+                    data["afterViewportCapture"] = await page.evaluate(MEASURE)
+                    await page.screenshot(path=str(OUT/f"home-{width}.jpg"),
+                                          full_page=True,type="jpeg",quality=70)
+                    data["afterFullCapture"] = await page.evaluate(MEASURE)
                 data["violations"] = violations
                 results.append(data)
                 if violations: failures.append({"width":width,"violations":violations,"detail":data})
-                if width in (375,701,768,1024,1025,1100,1140,1141,1440):
-                    await page.screenshot(path=str(OUT/f"home-{width}.jpg"),full_page=True,
-                                          type="jpeg",quality=70)
                 print("HOME",width,"PASS" if not violations else violations,
                       "scrollWidth",data["scrollWidth"],flush=True)
             except Exception as exc:
