@@ -1,5 +1,5 @@
 {
-  "testedAt": "2026-10-28T01:22:31.841Z",
+  "testedAt": "2026-10-28T01:27:54.971Z",
   "results": [
     {
       "path": "index.html",
@@ -792,8 +792,8 @@
         },
         {
           "src": "https://covers.openlibrary.org/b/isbn/9780547928227-L.jpg",
-          "naturalWidth": 323,
-          "naturalHeight": 500,
+          "naturalWidth": 0,
+          "naturalHeight": 0,
           "complete": true,
           "renderedWidth": 90,
           "renderedHeight": 135,
@@ -875,6 +875,7 @@
         }
       ],
       "failures": [
+        "image 3 failed to load: https://covers.openlibrary.org/b/isbn/9780547928227-L.jpg",
         "image 4 failed to load: https://covers.openlibrary.org/b/isbn/9780062951465-L.jpg",
         "image 5 failed to load: https://covers.openlibrary.org/b/isbn/9780918526526-L.jpg"
       ]
