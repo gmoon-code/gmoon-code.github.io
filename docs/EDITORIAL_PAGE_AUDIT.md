@@ -1,6 +1,6 @@
 # Website editorial and visual audit
 
-Updated 27 October 2026. This is an internal progress register for the academic website, not a published portfolio page.
+Updated 28 October 2026. This is an internal progress register for the academic website, not a published portfolio page.
 
 ## Audit standard
 
@@ -26,8 +26,8 @@ A content pass is **not** equivalent to final visual approval. Automated browser
 | `research-methods-studio.html` | Synthetic CSV and JSON audited `2865b41`; example figure and live-preview controls checked at three widths; figure caption spacing repaired `ec63c794` | Test full application export/backup/chat boundaries and remaining long-page reading flow |
 | `writing-biological-classification.html` | Independently reviewed XYY systematic-review conclusion; improved evidence and classroom authority argument, commit `cc9460d` | Final independent visual inspection and cross-page prose repetition review |
 | `interests.html` | Previous editorial/image checks; mobile screenshot exposed pungmul photographs overlapping prose. Repositioned original image nodes into in-flow mobile gallery `eff3d04` | Check new phone screenshots for no overlaps and preserve desktop composition |
-| `pungmul.html` | History research and prior content pass; additional four photo labels fixed `234fad1`, introduction refined `c52ceb5` | Photo-layout check; one photograph retains screenshot-viewer chrome and needs careful replacement |
-| `contact.html` | Revised in preceding conversation; photo alt fixed `667ed11`; final sign-off pending | Wording, contact destinations, all screen sizes |
+| `pungmul.html` | UNESCO, National Folk Museum and Park source claims rechecked on 28 October; revised introductory voice, performance description, instrument-section heading and explanation, 1978 samulnori detail, and wording of Park's criticism in `389b571`; image data preserved | Review current desktop and mobile screenshots after prose changes, especially fixed-height desktop sections; one photograph may retain screenshot-viewer chrome and needs comparison with an original file |
+| `contact.html` | Reviewed contact invitation and short personal introduction; removed duplicate footer invitation and clarified nationality-neutral metadata in `3546e50`; email links and embedded photo preserved | Verify live email targets and photo placement on desktop, tablet and phone; independent rendered-page sign-off |
 | `cv.html` | Coursework/degree timeline reconciled `63f1c32`; A4 print rendered and visually reviewed in two pages with a continuation heading `91476c55`, `2b5d56a8`; no clipped text or orphan headings | Formal award confirmation when available; final independent phone layout check |
 | `about.html` | Reviewed meta-refresh legacy route to Contact; no content change warranted | Check redirect in rendered browser |
 | `404.html` | Copy, semantic markup and links reviewed; no content change warranted | Browser routing and small-screen check |
@@ -62,6 +62,8 @@ A content pass is **not** equivalent to final visual approval. Automated browser
 - A dedicated real-browser A4 CV audit produces the printed PDF, image of each page, font/landmark checks, and text-boundary geometry. An initial three-page capture exposed orphaned headings and large trailing white space. Print-only adjustments and a continuation heading now produce two readable pages without content clipping; latest run for `2b5d56a` passed.
 - CSS has received targeted spacing changes; final human visual judgment is still outstanding for the edited pages.
 
+- On 28 October, Pungmul's historical passages were checked against UNESCO's nongak record, the National Folk Museum's account of the February 1978 debut of samulnori, and Park's 2014 study of movement performances. Targeted revisions were committed without changing any of the five embedded image sources, image geometry metadata, section closures or reference links. Contact's footer and metadata revisions likewise preserved its photograph and two primary mailto links. Both pages still need fresh rendered desktop and phone approval.
+
 ## Next content pass
 
-Continue with full `interests.html`, `pungmul.html`, and `contact.html` passes, then the homepage and research hub. Keep technical editor QA separate and retain the outstanding visual checks until verified. Return to prior partial revisions for full verification. Do not mark a page fully finished merely because a prior commit polished part of it.
+Next, review `interests.html` in full, including the relationship of its Pungmul overview to the separate historical page and its fixed desktop text geometry. Then return to the Homepage and Research hub. Recheck `pungmul.html` and `contact.html` against fresh rendered screenshots and the completed responsive test results before calling their layout finished. Keep technical editor QA separate and retain outstanding verification until it is evidenced.
