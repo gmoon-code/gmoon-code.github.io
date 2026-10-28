@@ -170,7 +170,9 @@ try{
   publishedIndexOverride=null;
   await page.evaluate(()=>localStorage.clear());
   await page.reload({waitUntil:"domcontentloaded"});
-  const anchor=frame.locator("main .home-lead").first();
+  // New content uses a stable source paragraph as its insertion anchor,
+  // rather than a separately positioned hero object.
+  const anchor=frame.locator("main #teaching-research .home-path p").first();
   await anchor.waitFor({state:"visible",timeout:25000});
   await anchor.click();
   await page.locator("#insertContentKind").selectOption("image");
@@ -178,7 +180,12 @@ try{
   await page.locator("#insertImageSrc").fill("assets/profile-portrait.webp");
   await page.locator("#insertContentBtn").click();
   const inserted=frame.locator("main [data-editor-added-index]").first();
-  await inserted.waitFor({state:"visible"});
+  try { await inserted.waitFor({state:"visible",timeout:6000}); }
+  catch(error) {
+    const notice=await page.locator("#noticeDialog[open] #noticeMessage").allTextContents();
+    throw new Error("New image insertion did not create a block. Notice: "+
+      JSON.stringify(notice)+"; original: "+error.message);
+  }
   await resize("new image block",inserted,frame.locator("main h1").first());
   const inner=inserted.locator("img").first();
   const outerBox=await inserted.boundingBox(),innerBox=await inner.boundingBox();
