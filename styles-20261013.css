@@ -689,6 +689,7 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
 .worksheet-task-list li:before{content:counter(task) ".";display:inline-block;font-weight:700;min-width:26px}
 .worksheet-task-list strong{font-size:16px}
 .worksheet-answer-space{border-bottom:1px solid #d0d0d0;height:40px;margin:13px 0 4px 26px}
+.worksheet-print-identification{display:none}
 .worksheet-teacher-notes{border-top:1px solid var(--moon-rule);border-bottom:1px solid var(--moon-rule);max-width:850px}
 .worksheet-teacher-notes summary{padding:15px 0;cursor:pointer;font-weight:700}
 .worksheet-teacher-notes .reading{padding:6px 0 19px}
@@ -721,7 +722,14 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
   .teaching-resource-page .hero-copy>p{font-size:11pt}
   .worksheet-data{break-inside:avoid}
   .worksheet-task-list li{break-inside:avoid}
-  .worksheet-answer-space{height:55px}
+  .worksheet-print-identification{display:flex;align-items:baseline;gap:28pt;flex-wrap:wrap;font-size:11pt;margin:6pt 0 14pt}
+  .worksheet-print-identification>span{display:inline-flex;align-items:baseline;gap:8pt}
+  .worksheet-write-in{display:inline-block;width:170pt;max-width:40vw;border-bottom:1px solid #666;height:12pt}
+  .worksheet-print-identification>span:last-child .worksheet-write-in{width:95pt}
+  .worksheet-answer-space{height:85px}
+  .worksheet-task-list li:nth-child(2) .worksheet-answer-space{height:140px}
+  .worksheet-task-list li:nth-child(3) .worksheet-answer-space{height:125px}
+  .worksheet-task-list li:nth-child(4) .worksheet-answer-space{height:110px}
 }
 
 
