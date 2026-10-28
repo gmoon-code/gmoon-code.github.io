@@ -1,0 +1,45 @@
+# Fresh website re-audit, starting at Home
+
+Date: 28 October 2026. Scope: reader-facing academic site. This checkpoint supplements, and does not replace, `docs/EDITORIAL_PAGE_AUDIT.md`. Prior findings remain historical evidence only until checked against current code and live rendering.
+
+## Audit status definitions
+
+- **Not reviewed**: no new-stage inspection.
+- **In progress**: actively being checked.
+- **Reviewed with issues**: inspected, with an identified defect or pending verification.
+- **Corrected but unverified**: changed but not yet rechecked at the required level.
+- **Source verified**: correctness established from current repository source, not runtime.
+- **Verified**: the specific claimed behaviour was directly tested, with a clearly stated scope.
+- **Blocked**: unavailable environment or evidence prevents a required check.
+
+## Public-route inventory and re-audit queue
+
+Fifteen canonical public routes appear in the current `sitemap.xml`: `/` (`index.html`), `contact.html`, `cv.html`, `interests.html`, `projects.html`, `research-action.html`, `research-methods-studio.html`, `research-scoping.html`, `research.html`, `story-method.html`, `teaching-ap-biology.html`, `teaching-ap-chemistry.html`, `teaching-ap-evolution.html`, `teaching.html`, and `writing-biological-classification.html`.
+
+Also listed by the existing project register, and not silently excluded because absent from the sitemap: `teaching-osmosis-practice.html`, `pungmul.html`, `about.html`, `404.html`, `editor-v2.html`, `editor.html`, `editors.html`, and `fluid-layout-lab.html`. Public site content takes priority; editorial review of the editors' controls is secondary to their effects on the visitor-facing site. The linked Story Method and Research Methods Studio applications require separate dependency checks.
+
+Re-audit status: `index.html` **In progress**. All other routes **Not reviewed in this new pass**, despite historical checks in the main register. Navigation/shared components receive an independent global pass.
+
+## Stage H1. Homepage source, wording, metadata, and internal links
+
+**Starting source:** `index.html` blob `3ee3149606bba27c1afd0798e41d6511245408de`; `docs/EDITORIAL_PAGE_AUDIT.md` consulted, blob `2b97040eacb190af085615cf3b4995ad922440d5`.
+
+**Inspected:** metadata, main navigation and footer, hero introductory prose and CTAs, Research and teaching cards, `From the research records` passage and S20 aside, Learning tools cards, Outside school content, heading hierarchy, local links and fragments, photo alternative text and source image representation. Also read `moon-free-responsive.js` to establish runtime reflow intent and its breakpoint. Checked current `sitemap.xml`, `robots.txt`, and the `404.html` source.
+
+**Source-verified findings:**
+- One H1 and hierarchical H2/H3/H4 levels. All listed homepage anchors and destination IDs are present in current repository sources. All ten distinct internally linked HTML destination files exist. The header, footer and skip link have usable semantic labels in markup.
+- The homepage preserves the distinction between observed action research, an initial scoping-review corpus of 20 studies, existing teaching, proposed curriculum sequences, and the learning tools. The S20 comparison is consistent with the de-identified example described in `research-action.html`. These are **cross-page source checks**, not an independent verification of student data or scoping-review ledger.
+- The original homepage meta description led with anti-racist, anti-colonial, and queer-inclusive interests while not clearly describing the teaching and classroom research visitors actually encounter first. Corrected the description to: `Ye Eun Moon teaches secondary biology and chemistry in South Korea. Her work considers student explanations, multilingual learning, and justice-oriented science education.`
+- Production commit `3b6ccf694339c5593c4ddab598e6727de411f991` changed **only that exact description string**. Re-fetch proved all other HTML bytes unchanged; new `index.html` blob `717ad125d49a617bb3285fd17f60e014f7f3d4c4`. This is **source verified**, not yet a live SEO crawl.
+- Combined GitHub commit status reported success for `academic-editor/browser-resize`, but that alone is **not** evidence of a visual inspection or live deployment acceptance.
+
+**Issues and incomplete checks:**
+- **Medium, accessibility, desktop source order.** At widths above 1140px, the hero introduction resides in a positioned `.moon-free-layer` following the hero section in the DOM, so its paragraph comes after the research/explore links in unmodified source reading order. The shared responsive script moves the paragraph before the links on smaller screens. A desktop source-order fix must preserve the absolute-positioned visual layout and both 1140/1141px breakpoint cases. Not edited without fresh visual/browser regression tests.
+- **Medium, maintainability/performance risk.** Homepage HTML is approximately 411KB and contains four base64 image references plus multiple injected style blocks. Two photographs have both data-URI `src` and desktop background-image representations for the special cropping technique. Evaluate resource transfer and LCP; preserve image framing and editing metadata until a tested simplification is available. This is a risk, **not** a measured performance failure.
+- **Low, metadata.** Canonical `/`, title, language, viewport, and description exist. Social-preview metadata, robots behaviour, external link response and actual search-result appearance have not been tested.
+- **Verification blocked in this execution:** direct public-site fetch and browser screenshots were unavailable. Prior GitHub Actions captures are historical and cannot substitute for a fresh visual examination. No new claims of dark-mode, mobile browser, keyboard, print, screen-reader, or physical-device verification.
+- **Other pending:** exact visual spacing and photo cropping at 320/375/701/768/1025/1140/1141/1440px; dark appearance; 404 from nested routes; focus order, operative navigation links, real ORCID and mailto interaction; full-page screenshot; image decoded paint bounds. Existing older GitHub Actions results in the main register may help but must be attached to precise revisions.
+
+**Content judgment at this stage:** Introductory narrative is concrete, restrained and suitable for its purpose. Research, teaching, learning-tools and outside-school sections have distinct functions. No substantive prose rewrite was justified merely to reduce length or repeat key scientific terms. Further visual review could expose spacing or hierarchy issues that source inspection cannot.
+
+**Continuation point:** Homepage stage H2. First establish a browser-rendered desktop and phone baseline against the current commit; then implement and regress-test the desktop introduction source-order fix. Complete hero image/text/CTA pixel-level geometry and keyboard reading order, then inspect `Research and teaching` cards and `From the research records` as their own visual/content stage. Maintain stage-by-stage logs and do not mark the homepage fully verified until every outstanding mode has been examined.
