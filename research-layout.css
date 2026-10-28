@@ -388,6 +388,9 @@
 }
 .research-essay .research-editorial-content .research-reading-list a{
   overflow-wrap:anywhere;
+  /* Extend the tap region of inline DOI/book links without changing
+     line wrapping, line height or the space between reference entries. */
+  padding-block:5px;
 }
 /* Medium screens: navigation becomes a compact row above content. */
 @media(max-width:980px){
