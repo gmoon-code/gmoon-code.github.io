@@ -332,6 +332,45 @@
   line-height:1.65;
   max-width:70ch;
 }
+/* Keep the published graph readable on narrow screens. Text and graph
+   stay at their original source resolution; the caption remains in flow. */
+.research-essay .research-figure-pan{width:100%;max-width:100%;min-width:0}
+.research-essay .research-figure-pan-hint{display:none}
+@media (max-width:700px){
+  .research-essay .research-figure-pan{
+    overflow-x:auto;
+    overscroll-behavior-inline:contain;
+    scrollbar-width:thin;
+    border:1px solid var(--moon-rule);
+    padding:6px 0;
+  }
+  .research-essay .research-figure-pan:focus-visible{
+    outline:2px solid currentColor;
+    outline-offset:2px;
+  }
+  .research-essay .research-figure-pan .research-published-image{
+    width:620px;
+    min-width:620px;
+    max-width:none;
+  }
+  .research-essay .research-figure-pan .research-published-image img{
+    width:620px;
+    max-width:none;
+    height:auto;
+  }
+  .research-essay .research-figure-pan-hint{
+    display:block;
+    font-size:13px;
+    line-height:1.5;
+    color:var(--moon-muted);
+    margin:0 0 8px;
+  }
+}
+@media print{
+  .research-essay .research-figure-pan{overflow:visible!important}
+  .research-essay .research-figure-pan .research-published-image{width:100%;max-width:100%;min-width:0}
+  .research-essay .research-figure-pan .research-published-image img{width:100%;max-width:100%;height:auto}
+}
 /* Reference entries need their own typographic rhythm. */
 .research-essay .research-editorial-content .research-reading-list{
   max-width:100%;
