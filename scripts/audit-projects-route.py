@@ -224,8 +224,11 @@ async def main():
             if split:
                 problems.append("A4 printed cards split across sheets: "+
                                 ", ".join(split))
-            if not 1<=len(pdf)<=4:
-                problems.append("Unexpected Projects A4 page count")
+            if not 1<=len(pdf)<=2:
+                problems.append("Projects A4 output must fit within two coherent sheets")
+            if (not text_by_page or "Projects" not in text_by_page[0] or
+                "The Story Method" not in text_by_page[0]):
+                problems.append("Projects title and first card separated in print")
             for i,sheet in enumerate(pdf):
                 sheet.get_pixmap(matrix=fitz.Matrix(1.2,1.2)).save(
                     str(OUT/f"projects-A4-{i+1}.png"))
