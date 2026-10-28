@@ -1,6 +1,16 @@
 {
   "source": "Open Library Covers API",
+  "page": "interests.html",
   "results": [
+    {
+      "isbn": "9780547928227",
+      "url": "https://covers.openlibrary.org/b/isbn/9780547928227-L.jpg?default=false",
+      "http_status": 200,
+      "available": true,
+      "width": 323,
+      "height": 500,
+      "content_type": "image/jpeg"
+    },
     {
       "isbn": "9780062951465",
       "url": "https://covers.openlibrary.org/b/isbn/9780062951465-L.jpg?default=false",
@@ -11,26 +21,11 @@
       "content_type": "image/jpeg"
     },
     {
-      "isbn": "9780008433796",
-      "url": "https://covers.openlibrary.org/b/isbn/9780008433796-L.jpg?default=false",
-      "available": false,
-      "error": "HTTP Error 404: Not Found"
-    },
-    {
-      "isbn": "9780008433833",
-      "url": "https://covers.openlibrary.org/b/isbn/9780008433833-L.jpg?default=false",
+      "isbn": "9780918526526",
+      "url": "https://covers.openlibrary.org/b/isbn/9780918526526-L.jpg?default=false",
       "http_status": 200,
       "available": true,
-      "width": 254,
-      "height": 400,
-      "content_type": "image/jpeg"
-    },
-    {
-      "isbn": "9780062951472",
-      "url": "https://covers.openlibrary.org/b/isbn/9780062951472-L.jpg?default=false",
-      "http_status": 200,
-      "available": true,
-      "width": 332,
+      "width": 333,
       "height": 500,
       "content_type": "image/jpeg"
     }
