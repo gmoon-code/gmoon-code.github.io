@@ -190,9 +190,14 @@ async def main():
             second = await keyboard_page.evaluate(
                 "() => document.activeElement?.classList.contains('brand')")
             await keyboard_page.locator(".moon-appearance-select").select_option("dark")
-            # Appearance follows the eight preceding navigation links.
-            for _ in range(8):
+            await keyboard_page.locator(".moon-appearance-select").focus()
+            # Move backwards from the appearance control to the site title;
+            # don't assume the browser focuses the selector after select_option.
+            for _ in range(12):
                 await keyboard_page.keyboard.press("Shift+Tab")
+                if await keyboard_page.evaluate(
+                    "() => document.activeElement?.matches('.topbar .brand')"):
+                    break
             brand = await keyboard_page.evaluate("""() => {
                 const el=document.activeElement;
                 const s=getComputedStyle(el);
