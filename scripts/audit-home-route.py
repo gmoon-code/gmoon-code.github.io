@@ -6,7 +6,7 @@ from pathlib import Path
 from playwright.async_api import async_playwright
 
 BASE = "http://127.0.0.1:8765"
-WIDTHS = (320, 375, 700, 701, 768, 1024, 1025, 1200, 1440)
+WIDTHS = (320, 375, 700, 701, 768, 1024, 1025, 1100, 1140, 1141, 1200, 1440)
 OUT = Path("home-route-audit-output")
 OUT.mkdir(exist_ok=True)
 
@@ -68,7 +68,7 @@ async def main():
                 data = await page.evaluate(MEASURE)
                 data["page"] = "index.html"
                 data["httpStatus"] = response.status if response else None
-                narrow = width <= 1024
+                narrow = width <= 1140
                 violations = []
                 if data["httpStatus"] != 200: violations.append("Home HTTP not 200")
                 if data["scrollWidth"] > width + 3: violations.append("Document overflow")
@@ -81,10 +81,10 @@ async def main():
                 data["violations"] = violations
                 results.append(data)
                 if violations: failures.append({"width":width,"violations":violations,"detail":data})
-                if width in (375,701,768,1024,1025,1440):
+                if width in (375,701,768,1024,1025,1100,1140,1141,1440):
                     await page.screenshot(path=str(OUT/f"home-{width}.jpg"),full_page=True,
                                           type="jpeg",quality=70)
-                print("HOME",width,"PASS" if not violations else violations,flush=True)
+                print("HOME",width,"PASS" if not violations else violations,\n                      "scrollWidth",data["scrollWidth"],flush=True)
             except Exception as exc:
                 item={"page":"index.html","width":width,"error":str(exc)}
                 results.append(item);failures.append(item)
