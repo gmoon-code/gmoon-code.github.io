@@ -222,9 +222,81 @@ async def main():
             print(f"RESEARCH interaction error: {error}", flush=True)
         finally:
             await context.close()
+        # A4 is a paginated medium, unlike a full-height print screenshot.
+        # Check that major headings do not strand on a previous sheet and
+        # each reference's beginning and final link remain on the same sheet.
+        import fitz
+        import unicodedata
+        print_context = await browser.new_context(viewport={"width":1440,"height":900},
+                                                   reduced_motion="reduce")
+        print_page = await print_context.new_page()
+        try:
+            response = await print_page.goto(PAGE_URL, wait_until="load", timeout=30000)
+            await print_page.evaluate("document.fonts.ready")
+            await print_page.locator(".research-published-figure img").evaluate(
+                """async img => {img.loading='eager'; await img.decode();}""")
+            raw_refs = await print_page.locator("#research-reading li[id]").evaluate_all(
+                """items => items.map(li => ({
+                    id:li.id,
+                    start:li.innerText.slice(0,45),
+                    link:li.querySelector('a')?.textContent.trim()||''
+                }))""")
+            pdf_bytes = await print_page.pdf(
+                format="A4", print_background=True, display_header_footer=False,
+                margin={"top":"12mm","bottom":"12mm","left":"12mm","right":"12mm"})
+            (OUT/"research-A4.pdf").write_bytes(pdf_bytes)
+            pdf = fitz.open(stream=pdf_bytes,filetype="pdf")
+            def normalize(text):
+                return "".join(ch for ch in unicodedata.normalize("NFKD",text).casefold()
+                               if ch.isalnum())
+            pages = [normalize(p.get_text("text")) for p in pdf]
+            pairs = [
+                ("Research projects","Multilingual science education scoping review"),
+                ("Research interests","I read studies of teacher decision-making"),
+                ("Classroom authority and epistemic agency","During a lesson on cell signalling"),
+                ("Recognizing scientific reasoning","People can know similar things"),
+                ("Multilingual participation and scientific reasoning",
+                 "In an English-medium science classroom"),
+                ("Scientific representations and their limits",
+                 "A simple population-growth model"),
+                ("Sex determination and biological variation","Human sex development"),
+                ("Related writing","These questions also inform my independent essay"),
+                ("References","Airton, L. (2023)")
+            ]
+            stranded = []
+            for heading,opening in pairs:
+                h,o = normalize(heading),normalize(opening)
+                if not any(h in page and o in page for page in pages):
+                    stranded.append(heading)
+            split_refs = []
+            for ref in raw_refs:
+                start,link = normalize(ref["start"]),normalize(ref["link"])
+                if not any(start in page and link in page for page in pages):
+                    split_refs.append(ref["id"])
+            if len(pdf):
+                for i in sorted(set([0,len(pdf)-1,len(pdf)-2,10])):
+                    if i < len(pdf):
+                        pdf[i].get_pixmap(matrix=fitz.Matrix(1.15,1.15)).save(
+                            str(OUT/f"research-A4-page-{i+1}.png"))
+            report = {"mode":"print-A4","pages":len(pdf),
+                      "references":len(raw_refs),"strandedHeadings":stranded,
+                      "splitReferences":split_refs,
+                      "figureDecoded":await print_page.locator(
+                         ".research-published-figure img").evaluate(
+                         "img=>img.complete&&img.naturalWidth>0"),
+                      "pass":(len(raw_refs)==53 and not stranded and not split_refs
+                              and 1<=len(pdf)<=25)}
+            observations.append(report)
+            print(json.dumps(report,ensure_ascii=False),flush=True)
+            pdf.close()
+        except Exception as error:
+            observations.append({"mode":"print-A4","error":str(error)})
+            print(f"RESEARCH A4 PRINT ERROR: {error}",flush=True)
+        finally:
+            await print_context.close()
         await browser.close()
     (OUT / "geometry.json").write_text(json.dumps(observations, indent=2), encoding="utf-8")
-    errors = [x for x in observations if "error" in x or ("documentWidth" in x and x["documentWidth"] > x.get("viewport", 0) + 4) or x.get("escapedTextBlockCount", 0) > 0 or (x.get("mode") == "interaction" and not x.get("pass"))]
+    errors = [x for x in observations if "error" in x or ("documentWidth" in x and x["documentWidth"] > x.get("viewport", 0) + 4) or x.get("escapedTextBlockCount", 0) > 0 or (x.get("mode") in ("interaction","print-A4") and not x.get("pass"))]
     if errors:
         print("Some visual geometry diagnostics require review. See geometry.json.", flush=True)
         return 1
