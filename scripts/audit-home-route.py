@@ -17,6 +17,7 @@ MEASURE = """() => {
   const photo = main.querySelector('img[data-moon-v2-added-id="c2e948d6-fbe2-4cef-96df-725095eb0139"]');
   const outside = main.querySelector('.home-outside-grid');
   const outsideSection = main.querySelector('#outside-school');
+  const footer = document.querySelector('.site-footer');
   const performance = main.querySelector('img[data-moon-v2-added-id="10954918-6ea3-4b9e-b6b1-b86e4ac50f97"]');
   const firstSection = main.querySelector('#teaching-research');
   function rect(el) {
@@ -70,6 +71,8 @@ MEASURE = """() => {
     imageCount:main.querySelectorAll('img[data-moon-v2-added-id]').length,
     introRect,photoRect,titleRect,actionsRect,firstRect,
     outsideRect:rect(outsideSection),performanceRect:rect(performance),
+    footerGap:footer && outsideSection ?
+      footer.getBoundingClientRect().top-outsideSection.getBoundingClientRect().bottom : null,
     performanceWithinOutside:!!outsideSection && !!performance &&
       rect(performance).top >= rect(outsideSection).top - 0.5 &&
       rect(performance).bottom <= rect(outsideSection).bottom + 0.5,
@@ -105,6 +108,8 @@ async def main():
                 if data["httpStatus"] != 200: violations.append("Home HTTP not 200")
                 if data["scrollWidth"] > width: violations.append("Document overflow")
                 if data["imageCount"] != 2: violations.append("Unexpected Home image count")
+                if data["footerGap"] is None or not (95 <= data["footerGap"] <= 110):
+                    violations.append("Inconsistent Outside school to footer spacing")
                 if not data["performanceWithinOutside"]: violations.append("Performance photo exceeds Outside school section")
                 if data["kickerRect"] is not None: violations.append("Unused Home kicker still takes layout space")
                 if not data["introBeforeFirstSection"]: violations.append("Intro after later sections")
