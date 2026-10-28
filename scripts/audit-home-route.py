@@ -309,6 +309,10 @@ async def main():
                         imageCount:images.length,
                         imageDecoded:images.every(i=>i.complete&&i.naturalWidth>0),
                         performanceWithinOutside:!!r&&!!p&&p.top>=r.top-.5&&p.bottom<=r.bottom+.5,
+                        performanceOffsets:!!r&&!!p ? {
+                          fromSectionTop:Math.round((p.top-r.top)*100)/100,
+                          toSectionBottom:Math.round((r.bottom-p.bottom)*100)/100
+                        }:null,
                         unnamedVisibleLinks:[...document.querySelectorAll('a[href]')]
                           .filter(visible).filter(a=>!(a.innerText||a.getAttribute('aria-label')||'').trim())
                           .length
