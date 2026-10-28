@@ -493,7 +493,8 @@ async def main():
                     elif result["overflow"] > 3:
                         failures.append(result)
                     if ((filename in CORE_SCREENSHOT_PAGES and width in (320, 375, 1440)) or
-                            (filename in EXTENDED_SCREENSHOT_PAGES and width in (320, 1440))):
+                            (filename in EXTENDED_SCREENSHOT_PAGES and width in (320, 1440)) or
+                            (filename == "research.html" and width in (768, 1024))):
                         # Screenshots capture the full page, including sections
                         # normally reached by scrolling. Load and decode local
                         # photographs before capture so lazy-loading does not
