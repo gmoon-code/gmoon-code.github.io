@@ -191,13 +191,32 @@
     return /<\s*(?:script|iframe|object|embed|form)\b|\bon(?:click|error|load|mouseover|focus)\s*=|(?:href|src)\s*=\s*["']?\s*(?:javascript|data):/i.test(html);
   }
 
+  // A published page may already contain a raster image embedded as a data URI.
+  // Resizing that image must not rewrite or reject its immutable source.
+  // This exception only applies when the exact published raster URI is retained.
+  // New data URLs, SVG, event handlers and executable markup remain prohibited.
+  function checkEditedMarkupDangerous(markup,originalMarkup) {
+    if(!originalMarkup)return checkDangerousHtml(markup);
+    const parsed=new DOMParser().parseFromString(markup,"text/html").body.firstElementChild;
+    const original=new DOMParser().parseFromString(originalMarkup,"text/html").body.firstElementChild;
+    if(!parsed||!original||parsed.tagName!=="IMG"||original.tagName!=="IMG")
+      return checkDangerousHtml(markup);
+    const src=parsed.getAttribute("src")||"";
+    if(src!==original.getAttribute("src")||
+       !/^data:image\/(?:png|jpeg|webp);base64,[A-Za-z0-9+/]+={0,2}$/i.test(src))
+      return checkDangerousHtml(markup);
+    const test=parsed.cloneNode(true);
+    test.setAttribute("src","assets/unchanged-embedded-raster.webp");
+    return checkDangerousHtml(test.outerHTML);
+  }
+
   function updateDirty(key) {
     const el=getWorking(key);
     if (!el||!state.original.has(key)) return;
     const edited=cleanOuter(el);
     if (edited===state.original.get(key)) state.dirty.delete(key);
     else state.dirty.add(key);
-    if (checkDangerousHtml(edited)) {
+    if (checkEditedMarkupDangerous(edited,state.original.get(key))) {
       updateStatus("Review required · Unsafe markup");
       return;
     }
@@ -281,7 +300,7 @@
         state.additions=validateParagraphAdditions(draft.additions);
       }
       for (const item of draft.items) {
-        if (!state.original.has(item.id)||checkDangerousHtml(item.markup)) continue;
+        if (!state.original.has(item.id)||checkEditedMarkupDangerous(item.markup,state.original.get(item.id))) continue;
         const destination=getWorking(item.id);
         if (!destination) continue;
         const holder=new DOMParser().parseFromString(item.markup,"text/html");
@@ -4215,10 +4234,10 @@
     if (!nav.children.length) nav.textContent="No section headings found.";
   }
 
-  function cleanEditedElement(markup) {
+  function cleanEditedElement(markup,originalMarkup) {
     const parsed=new DOMParser().parseFromString(markup,"text/html");
     const node=parsed.body.firstElementChild;
-    if (!node||checkDangerousHtml(markup)) throw new Error("Potentially unsafe markup in edited element.");
+    if (!node||checkEditedMarkupDangerous(markup,originalMarkup)) throw new Error("Potentially unsafe markup in edited element.");
     return cleanOuter(node);
   }
 
@@ -4810,7 +4829,7 @@
       return !parent||!state.dirty.has(parent.getAttribute("data-editor-key"));
     });
     const ops=toExport.map(key=>({
-      key,before:state.original.get(key),after:cleanEditedElement(getWorking(key).outerHTML)
+      key,before:state.original.get(key),after:cleanEditedElement(getWorking(key).outerHTML,state.original.get(key))
     }));
     for (const op of ops) {
       if (!op.before) throw new Error("A changed block has lost its original markup.");
