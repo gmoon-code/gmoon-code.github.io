@@ -1,5 +1,5 @@
 {
-  "testedAt": "2026-10-28T03:43:30.892Z",
+  "testedAt": "2026-10-28T04:04:45.582Z",
   "results": [
     {
       "path": "index.html",
@@ -469,7 +469,7 @@
           "renderedHeight": 395,
           "left": 460,
           "right": 980,
-          "alt": "Electron micrograph of a chloroplast, showing dark parallel thylakoid membrane stacks and a 500-nanometre scale bar.",
+          "alt": "Electron micrograph of a chloroplast showing dark, parallel thylakoid membrane stacks and a scale bar in the lower-right corner.",
           "loading": "lazy",
           "source": "https://upload.wikimedia.org/wikipedia/commons/4/45/Chloroplast_30000x_%283660656624%29.jpg"
         }
@@ -1042,7 +1042,7 @@
           "renderedHeight": 260,
           "left": 24,
           "right": 366,
-          "alt": "Electron micrograph of a chloroplast, showing dark parallel thylakoid membrane stacks and a 500-nanometre scale bar.",
+          "alt": "Electron micrograph of a chloroplast showing dark, parallel thylakoid membrane stacks and a scale bar in the lower-right corner.",
           "loading": "lazy",
           "source": "https://upload.wikimedia.org/wikipedia/commons/4/45/Chloroplast_30000x_%283660656624%29.jpg"
         }
