@@ -81,6 +81,8 @@ async def main():
                     failures.append("Preview/technical details missing")
                 if data["footerEmailHeight"]<24:
                     failures.append("Footer email target too small")
+                if not 95<=data["lastToFooter"]<=105:
+                    failures.append("Story detail footer gap differs from 100px")
                 data.update({"page":"story-detail","violations":failures})
                 results.append(data)
                 await page.screenshot(path=str(OUT/f"story-{width}.png"),
