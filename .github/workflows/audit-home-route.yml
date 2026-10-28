@@ -7,6 +7,10 @@ on:
       - index.html
       - 404.html
       - moon-free-responsive.js
+      - styles-20261013.css
+      - site-theme.css
+      - appearance.css
+      - appearance.js
       - scripts/audit-home-route.py
       - .github/workflows/audit-home-route.yml
   workflow_dispatch:
