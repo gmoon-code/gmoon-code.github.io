@@ -6,7 +6,10 @@ from pathlib import Path
 from playwright.async_api import async_playwright
 
 BASE = "http://127.0.0.1:8765"
-WIDTHS = (320, 375, 700, 701, 768, 1024, 1025, 1100, 1140, 1141, 1200, 1440)
+# 320/360/375 CSS px cover narrow reflow; 640/720 CSS px approximate
+# the effective layout widths of 1280/1440 windows at 200% browser zoom.
+# These viewport simulations do not replace a native browser zoom check.
+WIDTHS = (320, 360, 375, 640, 700, 701, 720, 768, 1024, 1025, 1100, 1140, 1141, 1200, 1440)
 OUT = Path("home-route-audit-output")
 OUT.mkdir(exist_ok=True)
 
