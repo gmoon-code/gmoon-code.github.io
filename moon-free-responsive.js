@@ -30,6 +30,24 @@
       if(homePhotos.performance.parentNode!==homePhotos.layer)homePhotos.layer.append(homePhotos.performance);
     }
   }
+  // The desktop performance image is absolute for editing, but visitors need
+  // it centred in its actual section even when preceding paragraphs reflow.
+  function alignPerformancePhoto(main){
+    if(!main?.classList.contains("home-page")||!homePhotos)return;
+    const photo=homePhotos.performance;
+    if(media.matches||document.documentElement.classList.contains("moon-free-mode")){
+      photo.style.removeProperty("top");
+      return;
+    }
+    const section=main.querySelector("#outside-school");
+    if(!section)return;
+    const sectionBox=section.getBoundingClientRect();
+    const mainBox=main.getBoundingClientRect();
+    const photoBox=photo.getBoundingClientRect();
+    if(!sectionBox.height||!photoBox.height)return;
+    const centeredTop=sectionBox.top-mainBox.top+(sectionBox.height-photoBox.height)/2;
+    photo.style.setProperty("top",Math.round(centeredTop*100)/100+"px","important");
+  }
   function reserveHeight(){
     if(media.matches)return;
     const main=document.querySelector("main");
@@ -90,6 +108,7 @@
       }
     }
     arrangeHomePhotos(main);
+    alignPerformancePhoto(main);
     reserveHeight();
   }
   if(document.readyState==="loading")
@@ -97,9 +116,15 @@
   else rearrange();
   if(media.addEventListener)media.addEventListener("change",rearrange);
   else if(media.addListener)media.addListener(rearrange);
-  window.addEventListener("resize",reserveHeight);
+  window.addEventListener("resize",()=>{
+    reserveHeight();alignPerformancePhoto(document.querySelector("main"));
+  });
   document.addEventListener("load",event=>{
-    if(event.target?.tagName==="IMG")reserveHeight();
+    if(event.target?.tagName==="IMG"){
+      reserveHeight();alignPerformancePhoto(document.querySelector("main"));
+    }
   },true);
-  document.fonts?.ready?.then(reserveHeight);
+  document.fonts?.ready?.then(()=>{
+    reserveHeight();alignPerformancePhoto(document.querySelector("main"));
+  });
 })();
