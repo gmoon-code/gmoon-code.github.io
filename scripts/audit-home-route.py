@@ -68,6 +68,10 @@ MEASURE = """() => {
       Boolean(intro.compareDocumentPosition(firstSection) & Node.DOCUMENT_POSITION_FOLLOWING),
     imageCount:main.querySelectorAll('img[data-moon-v2-added-id]').length,
     introRect,photoRect,titleRect,actionsRect,firstRect,
+    outsideRect:rect(outside),performanceRect:rect(performance),
+    performanceWithinOutside:!!outside && !!performance &&
+      rect(performance).top >= rect(outside).top - 0.5 &&
+      rect(performance).bottom <= rect(outside).bottom + 0.5,
     portraitOverflow:photo ? getComputedStyle(photo).overflow : null,
     performanceOverflow:performance ? getComputedStyle(performance).overflow : null,
     collisions:{
@@ -100,6 +104,7 @@ async def main():
                 if data["httpStatus"] != 200: violations.append("Home HTTP not 200")
                 if data["scrollWidth"] > width: violations.append("Document overflow")
                 if data["imageCount"] != 2: violations.append("Unexpected Home image count")
+                if not data["performanceWithinOutside"]: violations.append("Performance photo exceeds Outside school section")
                 if data["kickerRect"] is not None: violations.append("Unused Home kicker still takes layout space")
                 if not data["introBeforeFirstSection"]: violations.append("Intro after later sections")
                 if not data["introBeforeActions"]: violations.append("Introduction appears after the action links in DOM reading order")
