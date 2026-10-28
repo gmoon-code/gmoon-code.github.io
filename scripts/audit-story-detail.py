@@ -189,6 +189,66 @@ async def main():
         finally:
             await page.close()
 
+        # Readable focus and landmark names in Windows-style forced colours.
+        for width in (375,1440):
+            page=await browser.new_page(
+                viewport={"width":width,"height":900},
+                forced_colors="active",reduced_motion="reduce")
+            try:
+                await page.goto(ROOT+"/story-method.html",
+                                wait_until="load",timeout=25000)
+                await page.locator(".project-detail-figure>a").focus()
+                data=await page.evaluate("""() => {
+                    const e=document.activeElement,s=getComputedStyle(e);
+                    return {forced:matchMedia('(forced-colors: active)').matches,
+                        viewport:innerWidth,documentWidth:document.documentElement.scrollWidth,
+                        focused:e.matches(':focus-visible'),
+                        outline:s.outlineStyle,
+                        linkLabel:e.getAttribute('aria-label')||'',
+                        alt:document.querySelector('.project-detail-figure img')?.alt||'',
+                        footerEmailHeight:document.querySelector('.site-footer-inner p a')
+                          .getBoundingClientRect().height};
+                }""")
+                client=await page.context.new_cdp_session(page)
+                nodes=(await client.send("Accessibility.getFullAXTree"))["nodes"]
+                visible=[node for node in nodes if not node.get("ignored")]
+                def names(role):
+                    return [node.get("name",{}).get("value","")
+                            for node in visible
+                            if node.get("role",{}).get("value")==role]
+                landmarks=names("navigation")
+                unnamed=[name for name in names("link") if not name.strip()]
+                failures=[]
+                if not data["forced"] or data["documentWidth"]>width:
+                    failures.append("Forced-colour mode missing or page overflows")
+                if not data["focused"] or data["outline"]=="none":
+                    failures.append("Forced-colour figure-link focus not visible")
+                if not data["linkLabel"] or not data["alt"] or data["footerEmailHeight"]<24:
+                    failures.append("Image/contact accessible description or target missing")
+                for name in ("Primary navigation","Breadcrumb","On this project page",
+                             "Additional links"):
+                    if name not in landmarks:
+                        failures.append("Missing accessible nav: "+name)
+                if len(names("main"))!=1 or unnamed:
+                    failures.append("Accessibility tree main/links invalid")
+                if not any("How the release is checked" in str(
+                        node.get("name",{}).get("value","")) for node in visible):
+                    failures.append("Technical summary lacks accessible name")
+                item={"mode":"story-forced-colors","viewport":width,**data,
+                      "navNames":landmarks,"mainCount":len(names("main")),
+                      "unnamedLinks":len(unnamed),"violations":failures}
+                results.append(item)
+                print("STORY FORCED",width,
+                      "PASS" if not failures else failures,flush=True)
+                if width==375:
+                    await page.screenshot(path=str(OUT/"story-forced-375.png"),
+                                          full_page=False,animations="disabled")
+            except Exception as exc:
+                results.append({"mode":"story-forced-colors","viewport":width,
+                                "error":str(exc)})
+                print("STORY FORCED ERROR",width,str(exc),flush=True)
+            finally:
+                await page.close()
         # A true paginated A4 document, not a full-height print screenshot.
         import fitz
         page=await browser.new_page(viewport={"width":1440,"height":900},
