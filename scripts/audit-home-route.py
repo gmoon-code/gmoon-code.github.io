@@ -126,6 +126,25 @@ async def main():
                     await page.screenshot(path=str(OUT/f"home-{width}.jpg"),
                                           full_page=True,type="jpeg",quality=70)
                     data["afterFullCapture"] = await page.evaluate(MEASURE)
+                if width in (375,1141,1440):
+                    # Verify that changing appearance does not leave the
+                    # desktop free-positioned photo outside its section.
+                    await page.locator(".moon-appearance-select").select_option("dark")
+                    await page.wait_for_timeout(100)
+                    dark = await page.evaluate(MEASURE)
+                    data["darkAppearance"] = {
+                        "theme": dark["appearance"],
+                        "scrollWidth": dark["scrollWidth"],
+                        "performanceWithinOutside": dark["performanceWithinOutside"]
+                    }
+                    if dark["appearance"] != "dark":
+                        violations.append("Dark appearance selection did not apply")
+                    if dark["scrollWidth"] > width:
+                        violations.append("Dark appearance document overflow")
+                    if not dark["performanceWithinOutside"]:
+                        violations.append("Dark appearance performance photo exceeds section")
+                    await page.screenshot(path=str(OUT/f"home-{width}-dark.jpg"),
+                                          full_page=True,type="jpeg",quality=70)
                 data["violations"] = violations
                 results.append(data)
                 if violations: failures.append({"width":width,"violations":violations,"detail":data})
