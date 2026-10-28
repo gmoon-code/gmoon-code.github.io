@@ -2212,3 +2212,24 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
     object-fit:contain;
   }
 }
+
+/* Print-facing project detail pages: keep each scholarly section title attached
+   to its opening argument, and avoid an otherwise almost-empty last sheet. */
+@media print{
+  #main.project-detail-page>.section{
+    padding-block:14px!important;
+  }
+  #main.project-detail-page>.section>.section-head,
+  #main.project-detail-page .story-design-comment>h3{
+    break-after:avoid-page!important;
+    page-break-after:avoid!important;
+  }
+  #main.project-detail-page .project-technical-details{
+    margin-top:8px;
+    break-inside:avoid-page;
+  }
+  #main.project-detail-page .project-return{
+    margin-top:10px;
+    padding-top:8px;
+  }
+}
