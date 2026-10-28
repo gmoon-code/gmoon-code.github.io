@@ -54,18 +54,18 @@ async def main():
         try:
             await page.goto(BASE+"/index.html",wait_until="domcontentloaded",timeout=20000)
             await page.keyboard.press("Tab")
-            focused=await page.evaluate("() => ({
+            focused=await page.evaluate("""() => ({
               cls:document.activeElement.className,
               href:document.activeElement.getAttribute('href')
-            })")
+            })""")
             if focused.get("href")!="#main":
                 failures.append({"test":"skip-first-tab","detail":focused})
             else:
                 await page.keyboard.press("Enter")
-                target=await page.evaluate("() => ({
+                target=await page.evaluate("""() => ({
                   hash:location.hash,
                   focus:document.activeElement.id
-                })")
+                })""")
                 if target["hash"]!="#main" or target["focus"]!="main":
                     failures.append({"test":"skip-activation","detail":target})
             results.append({"test":"skip-link","focused":focused})
