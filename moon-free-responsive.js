@@ -2,7 +2,7 @@
    free-positioned desktop coordinates. No credentials or external calls. */
 (function(){
   "use strict";
-  const media=window.matchMedia("(max-width:1024px)");
+  const media=window.matchMedia("(max-width:1140px)");
   const PREFIX="moon-free-slot:";
   const detachedPlaceholders=new Map();
   // The homepage stores two photographs in a desktop free-positioned layer.
