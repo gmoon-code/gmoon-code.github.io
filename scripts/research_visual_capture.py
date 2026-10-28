@@ -117,6 +117,12 @@ async def main():
                     await page.wait_for_function("document.documentElement.dataset.moonTheme === 'dark'")
                 else:
                     await page.emulate_media(media="print")
+                # A full-page screenshot alone does not load lazy images.
+                # Decode the source graph before capturing Dark/Print evidence.
+                await page.locator(".research-published-figure img").evaluate("""async img => {
+                    img.loading = 'eager';
+                    await img.decode();
+                }""")
                 await page.screenshot(path=str(OUT / f"research-{mode}-{width}.png"),
                                       full_page=True, animations="disabled")
                 data = await page.evaluate("""() => ({
@@ -124,8 +130,14 @@ async def main():
                     appearance: document.documentElement.getAttribute('data-moon-theme'),
                     printNavigationHidden: getComputedStyle(document.querySelector('.research-section-guide')).display === 'none',
                     projectCardBackground: getComputedStyle(document.querySelector('.research-study-preview')).backgroundColor,
-                    projectCardText: getComputedStyle(document.querySelector('.research-study-preview p')).color
+                    projectCardText: getComputedStyle(document.querySelector('.research-study-preview p')).color,
+                    publishedFigureLoaded: (() => {
+                        const img=document.querySelector('.research-published-figure img');
+                        return !!img&&img.complete&&img.naturalWidth>0;
+                    })()
                 })""")
+                if not data["publishedFigureLoaded"]:
+                    raise RuntimeError("Research figure not decoded before Dark or Print screenshot")
                 observations.append({"mode": mode, **data})
                 print(json.dumps({"mode": mode, **data}), flush=True)
             except Exception as error:
