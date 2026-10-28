@@ -499,3 +499,18 @@
   .research-essay .research-study-list{grid-template-columns:minmax(0,1fr)}
   .research-essay .research-essay-intro{grid-template-columns:minmax(0,1fr)}
 }
+
+/* Keep a thematic or subsection heading with the first paragraph in A4 print.
+   Individual bibliography entries already use print break-inside avoidance. */
+@media print{
+  .research-essay .research-theme-heading,
+  .research-essay .research-interest-subsection>.section-head,
+  .research-essay .research-essay-section>.section-head{
+    break-after:avoid-page!important;
+    page-break-after:avoid!important;
+  }
+  .research-essay .research-study-preview,
+  .research-essay .research-essay-margin{
+    break-inside:avoid-page!important;
+  }
+}
