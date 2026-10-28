@@ -210,7 +210,6 @@ async def main():
                  "The journey follows a fixed route"),
                 ("Returning to the science through practice",
                  "The journey introduces scientific ideas"),
-                ("Application preview","The preview below opens"),
                 ("Released AP Biology content","AP Biology Units 1–8"),
                 ("Application release and verification","The application repository")
             ]
