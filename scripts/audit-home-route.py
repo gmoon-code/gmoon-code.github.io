@@ -16,6 +16,7 @@ MEASURE = """() => {
   const intro = main.querySelector('.home-lead');
   const photo = main.querySelector('img[data-moon-v2-added-id="c2e948d6-fbe2-4cef-96df-725095eb0139"]');
   const outside = main.querySelector('.home-outside-grid');
+  const outsideSection = main.querySelector('#outside-school');
   const performance = main.querySelector('img[data-moon-v2-added-id="10954918-6ea3-4b9e-b6b1-b86e4ac50f97"]');
   const firstSection = main.querySelector('#teaching-research');
   function rect(el) {
@@ -68,10 +69,10 @@ MEASURE = """() => {
       Boolean(intro.compareDocumentPosition(firstSection) & Node.DOCUMENT_POSITION_FOLLOWING),
     imageCount:main.querySelectorAll('img[data-moon-v2-added-id]').length,
     introRect,photoRect,titleRect,actionsRect,firstRect,
-    outsideRect:rect(outside),performanceRect:rect(performance),
-    performanceWithinOutside:!!outside && !!performance &&
-      rect(performance).top >= rect(outside).top - 0.5 &&
-      rect(performance).bottom <= rect(outside).bottom + 0.5,
+    outsideRect:rect(outsideSection),performanceRect:rect(performance),
+    performanceWithinOutside:!!outsideSection && !!performance &&
+      rect(performance).top >= rect(outsideSection).top - 0.5 &&
+      rect(performance).bottom <= rect(outsideSection).bottom + 0.5,
     portraitOverflow:photo ? getComputedStyle(photo).overflow : null,
     performanceOverflow:performance ? getComputedStyle(performance).overflow : null,
     collisions:{
