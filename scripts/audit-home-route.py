@@ -349,6 +349,57 @@ async def main():
                 finally:
                     await test_page.close()
 
+        # Real A4 pagination: ensure cards' headings and explanations stay
+        # on the same printed sheet, not merely within a long print screenshot.
+        import fitz
+        print_page=await browser.new_page(viewport={"width":1440,"height":900},
+                                          reduced_motion="reduce")
+        try:
+            await print_page.goto(BASE+"/index.html",wait_until="load",timeout=20000)
+            await print_page.wait_for_timeout(200)
+            pdf_bytes=await print_page.pdf(format="A4",print_background=True,
+                display_header_footer=False,margin={"top":"12mm","bottom":"12mm",
+                                                   "left":"12mm","right":"12mm"})
+            (OUT/"home-A4.pdf").write_bytes(pdf_bytes)
+            document=fitz.open(stream=pdf_bytes,filetype="pdf")
+            page_texts=[page.get_text("text") for page in document]
+            pairs=[
+                ("Teaching","I teach AP Biology and Chemistry"),
+                ("Research Methods Studio","This workspace helps students revisit"),
+                ("The Story Method","Fictional journeys introduce biological problems"),
+                ("Outside school","I play pungmul with a queer ensemble")
+            ]
+            orphans=[]
+            for heading,description in pairs:
+                if not any(heading in t and description in t for t in page_texts):
+                    orphans.append(heading)
+            required=["Ye Eun Moon","From the research records",
+                      "Research Methods Studio","The Story Method","Outside school"]
+            missing=[heading for heading in required
+                     if not any(heading in t for t in page_texts)]
+            violations=[]
+            if orphans:violations.append("Printed card split across sheets: "+", ".join(orphans))
+            if missing:violations.append("Missing print content: "+", ".join(missing))
+            if not 1<=len(document)<=6:
+                violations.append("Unexpected A4 page count")
+            for i,page in enumerate(document):
+                page.get_pixmap(matrix=fitz.Matrix(1.3,1.3)).save(
+                    str(OUT/f"home-A4-page-{i+1}.png"))
+            report={"page":"home-print-A4","sheets":len(document),
+                    "textCharacters":[len(t) for t in page_texts],
+                    "orphans":orphans,"missing":missing,"violations":violations}
+            results.append(report)
+            if violations:failures.append(report)
+            print("HOME PRINT A4","PASS" if not violations else violations,
+                  "sheets",len(document),flush=True)
+            document.close()
+        except Exception as exc:
+            item={"page":"home-print-A4","error":str(exc)}
+            results.append(item);failures.append(item)
+            print("HOME PRINT A4 ERROR",item,flush=True)
+        finally:
+            await print_page.close()
+
         # Simulate GitHub Pages serving its custom 404 at a nonexistent nested URL.
         page = await browser.new_page(viewport={"width":375,"height":820},
                                       reduced_motion="reduce")
