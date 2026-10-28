@@ -25,6 +25,26 @@ async def main():
                 failures.append({"test":"directory-links","actual":links,"expected":expected})
             results.append({"test":"directory-links","paths":links})
             await page.goto(BASE+"/fluid-layout-lab.html",wait_until="domcontentloaded")
+            await page.keyboard.press("Tab")
+            first=await page.evaluate("""() => ({
+                href:document.activeElement.getAttribute('href'),
+                text:document.activeElement.textContent.trim()
+            })""")
+            if first["href"]!="#workspace":
+                failures.append({"test":"skip-link-first-tab","focused":first})
+            await page.keyboard.press("Enter")
+            target=await page.evaluate("""() => ({
+                hash:location.hash,
+                id:document.activeElement.id
+            })""")
+            if target["hash"]!="#workspace" or target["id"]!="workspace":
+                failures.append({"test":"skip-link-activation","target":target})
+            results.append({"test":"keyboard-skip","first":first,"target":target})
+            button=await page.locator("#openPublisher").inner_text()
+            labLink=await page.locator("a.editor-link").inner_text()
+            if button!="Review transferable edits in legacy editor" or "Legacy editor" not in labLink:
+                failures.append({"test":"legacy-editor-handoff-label","button":button,"link":labLink})
+            results.append({"test":"handoff-labels","button":button,"link":labLink})
             actual=await page.locator("#sourcePage option").evaluate_all(
                 "(nodes) => nodes.map(o=>({value:o.value,label:o.textContent}))")
             if not any(x["value"]=="contact.html" for x in actual):
