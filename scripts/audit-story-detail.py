@@ -201,6 +201,8 @@ async def main():
                 margin={"top":"12mm","bottom":"12mm",
                         "left":"12mm","right":"12mm"})
             (OUT/"story-A4.pdf").write_bytes(pdfbytes)
+            disclosureRestored=not await page.locator(
+                ".project-technical-details").evaluate("el=>el.open")
             pdf=fitz.open(stream=pdfbytes,filetype="pdf")
             texts=[x.get_text("text") for x in pdf]
             anchors=[
@@ -219,11 +221,15 @@ async def main():
             missing=[title for title in ("The Story Method",
                                         "Observation Window",
                                         "12.0 to 15.0",
-                                        "Released AP Biology content")
+                                        "Released AP Biology content",
+                                        "The GitHub Pages release is assembled",
+                                        "These checks concern the integrity")
                      if not any(title in t for t in texts)]
             problems=[]
             if separated:problems.append("Orphaned print headings: "+repr(separated))
             if missing:problems.append("Missing print content: "+repr(missing))
+            if not disclosureRestored:
+                problems.append("Print-disclosed technical notes did not restore screen state")
             if not 1<=len(pdf)<=8:problems.append("Unreasonable A4 page count")
             for i,leaf in enumerate(pdf):
                 leaf.get_pixmap(matrix=fitz.Matrix(1.15,1.15)).save(
@@ -231,6 +237,7 @@ async def main():
             results.append({"mode":"story-A4","pages":len(pdf),
                             "separatedHeadings":separated,"missing":missing,
                             "textLengths":[len(x) for x in texts],
+                            "technicalDetailsRestored":disclosureRestored,
                             "violations":problems})
             print("STORY A4","PASS" if not problems else problems,flush=True)
             pdf.close()
