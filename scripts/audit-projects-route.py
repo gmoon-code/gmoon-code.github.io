@@ -55,6 +55,8 @@ async def main():
                       type:c.querySelector('[role="list"]')?.getAttribute('aria-label')||'',
                       steps:c.querySelectorAll('[role="listitem"]').length})),
                     footerContactHeight:rect(document.querySelector('.site-footer-inner p a')).height,
+                    footerGap:Math.round(rect(document.querySelector('.site-footer')).top-
+                                         rect(cards[cards.length-1]).bottom),
                     title:document.title,
                     description:document.querySelector('meta[name=description]')?.content,
                     canonical:document.querySelector('link[rel=canonical]')?.href
@@ -83,6 +85,8 @@ async def main():
                     problems.append("Learning route list semantics missing")
                 if result["footerContactHeight"] < 24:
                     problems.append("Footer contact hit target smaller than 24px")
+                if not 95 <= result["footerGap"] <= 105:
+                    problems.append("Project card-to-footer gap is not close to 100px")
                 if not all(u and u.startswith("https://gmoon-code.github.io/")
                            for u in result["primaryLinks"]):
                     problems.append("App URLs malformed")
