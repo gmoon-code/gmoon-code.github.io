@@ -1,0 +1,39 @@
+name: Editor directory and Fluid Lab import audit
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - fluid-layout-lab.html
+      - editors.html
+      - scripts/audit-editor-routes.py
+      - .github/workflows/audit-editor-routes.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  editor-routes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: |
+          python -m pip install playwright==1.57.0
+          python -m playwright install --with-deps chromium
+      - name: Verify editor links and source imports
+        run: |
+          python -m http.server 8765 --bind 127.0.0.1 >/tmp/editor-route-http.log 2>&1 &
+          python scripts/audit-editor-routes.py
+      - name: Upload test results and screenshot
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: editor-route-audit-results
+          path: editor-route-audit-output/
+          if-no-files-found: warn
+          retention-days: 7
