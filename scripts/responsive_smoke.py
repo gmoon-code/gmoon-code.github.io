@@ -147,6 +147,46 @@ async def main():
                         if overlaps:
                             failures.append({"page": filename, "viewport": width,
                                              "photoTextOverlaps": overlaps})
+                    # The public Contact and Pungmul pages contain photos
+                    # positioned independently on desktop. They must enter
+                    # normal document flow on smaller screens, without ever
+                    # obscuring the text or overflowing the viewport.
+                    if filename in ("contact.html", "pungmul.html") and width <= 1024:
+                        photos = await page.evaluate("""() => {
+                          const main=document.querySelector('main');
+                          const images=[...main.querySelectorAll('img[data-moon-v2-added-id]')];
+                          const targets=[...main.querySelectorAll('h1,h2,p,.pungmul-jump-nav')];
+                          const defects=[];
+                          for(const img of images){
+                            const a=img.getBoundingClientRect();
+                            if(a.width<80 || a.height<60 || a.left< -2 ||
+                               a.right>innerWidth+2)
+                              defects.push({type:'photo outside usable viewport',
+                                x:a.x,width:a.width,right:a.right});
+                            if(!img.classList.contains('personal-photo-in-flow'))
+                              defects.push({type:'photo not in reading flow',
+                                alt:img.getAttribute('alt')});
+                            for(const target of targets){
+                              const b=target.getBoundingClientRect();
+                              const overlapX=Math.min(a.right,b.right)-Math.max(a.left,b.left);
+                              const overlapY=Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top);
+                              if(overlapX>5 && overlapY>5)
+                                defects.push({type:'photo overlaps text',
+                                  photo:img.getAttribute('alt'),
+                                  target:target.textContent.trim().slice(0,85),
+                                  overlapX:Math.round(overlapX),
+                                  overlapY:Math.round(overlapY)});
+                            }
+                          }
+                          const expected=main.classList.contains('pungmul-deep-page')?5:1;
+                          if(images.length!==expected)
+                            defects.push({type:'missing photo',expected,actual:images.length});
+                          return defects;
+                        }""")
+                        result["personalPhotoLayout"] = photos
+                        if photos:
+                            failures.append({"page": filename, "viewport": width,
+                                             "personalPhotoLayout": photos})
                     # Exercise the actual sequential keyboard route through
                     # the skip link, identity link and all seven navigation links.
                     # This catches broken keyboard order that structural rules
