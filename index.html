@@ -276,4 +276,16 @@ html:not(.moon-free-mode) body:has(#main.home-page) .site-footer-inner p a {
   #main.home-page + .site-footer {margin-top:46px!important;}
 }
 </style>
+<style id="home-print-card-pagination">
+/* Keep a section's heading, explanation and destination link together
+   when Chromium paginates the homepage for printing. */
+@media print {
+  #main.home-page .home-path,
+  #main.home-page .home-spotlight-note,
+  #main.home-page .home-outside-grid {
+    break-inside:avoid-page!important;
+    page-break-inside:avoid!important;
+  }
+}
+</style>
 <script id="moon-free-responsive-runtime" src="moon-free-responsive.js?v=20261028-performance-section-flow" defer=""></script></body></html>
