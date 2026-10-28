@@ -1,8 +1,8 @@
-/* Restore the source reading order on narrow screens without changing
+/* Restore the source reading order on phone and tablet screens without changing
    free-positioned desktop coordinates. No credentials or external calls. */
 (function(){
   "use strict";
-  const media=window.matchMedia("(max-width:700px)");
+  const media=window.matchMedia("(max-width:1024px)");
   const PREFIX="moon-free-slot:";
   const detachedPlaceholders=new Map();
   // The homepage stores two photographs in a desktop free-positioned layer.
