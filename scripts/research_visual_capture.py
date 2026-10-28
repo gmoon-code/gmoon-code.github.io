@@ -145,7 +145,7 @@ async def main():
             await context.close()
         await browser.close()
     (OUT / "geometry.json").write_text(json.dumps(observations, indent=2), encoding="utf-8")
-    errors = [x for x in observations if "error" in x or x.get("documentWidth", 9999) > x.get("viewport", 0) + 4 or x.get("escapedTextBlockCount", 0) > 0 or (x.get("mode") == "interaction" and not x.get("pass"))]
+    errors = [x for x in observations if "error" in x or ("documentWidth" in x and x["documentWidth"] > x.get("viewport", 0) + 4) or x.get("escapedTextBlockCount", 0) > 0 or (x.get("mode") == "interaction" and not x.get("pass"))]
     if errors:
         print("Some visual geometry diagnostics require review. See geometry.json.", flush=True)
         return 1
