@@ -256,4 +256,12 @@ main > div:nth-of-type(1) > p:nth-of-type(1){font-size:20px!important;}
   }
 }
 </style>
+<style id="home-footer-spacing">
+/* The homepage already has a 100px section-to-footer breathing space
+   on smaller screens. Preserve that balance on larger screens as well. */
+@media (min-width:701px) {
+  #main.home-page {padding-bottom:54px!important;}
+  #main.home-page + .site-footer {margin-top:46px!important;}
+}
+</style>
 <script id="moon-free-responsive-runtime" src="moon-free-responsive.js?v=20261028-performance-section-flow" defer=""></script></body></html>
