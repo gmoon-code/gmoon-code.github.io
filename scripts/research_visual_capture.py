@@ -83,6 +83,32 @@ async def main():
                 print(f"RESEARCH VISUAL CAPTURE ERROR at {width}: {error}", flush=True)
             finally:
                 await context.close()
+        # Sample dark appearance and print CSS without altering the published page.
+        for mode, width in (("dark", 375), ("print", 768)):
+            context = await browser.new_context(viewport={"width": width, "height": 900},
+                                               device_scale_factor=1, reduced_motion="reduce")
+            page = await context.new_page()
+            try:
+                await page.goto(PAGE_URL, wait_until="domcontentloaded", timeout=30000)
+                await page.evaluate("document.fonts.ready")
+                if mode == "dark":
+                    await page.evaluate("document.documentElement.setAttribute('data-moon-theme', 'dark')")
+                else:
+                    await page.emulate_media(media="print")
+                await page.screenshot(path=str(OUT / f"research-{mode}-{width}.png"),
+                                      full_page=True, animations="disabled")
+                data = await page.evaluate("""() => ({
+                    viewport: innerWidth, documentWidth: document.documentElement.scrollWidth,
+                    appearance: document.documentElement.getAttribute('data-moon-theme'),
+                    printNavigationHidden: getComputedStyle(document.querySelector('.research-section-guide')).display === 'none'
+                })""")
+                observations.append({"mode": mode, **data})
+                print(json.dumps({"mode": mode, **data}), flush=True)
+            except Exception as error:
+                observations.append({"mode": mode, "viewport": width, "error": str(error)})
+                print(f"RESEARCH {mode} capture error: {error}", flush=True)
+            finally:
+                await context.close()
         await browser.close()
     (OUT / "geometry.json").write_text(json.dumps(observations, indent=2), encoding="utf-8")
     errors = [x for x in observations if "error" in x or x.get("documentWidth", 9999) > x.get("viewport", 0) + 4 or x.get("escapedTextBlockCount", 0) > 0]
