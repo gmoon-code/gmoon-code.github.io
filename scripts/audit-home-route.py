@@ -84,6 +84,19 @@ MEASURE = """() => {
       actionsPhoto:overlaps(actionsRect,photoRect),
       introFirstSection:overlaps(introRect,firstRect)
     },
+    smallTargets:[...document.querySelectorAll('a[href],button,select,input')]
+      .filter(el=>{
+        const s=getComputedStyle(el), r=el.getBoundingClientRect();
+        return s.display!=='none'&&s.visibility!=='hidden'&&
+          r.width>0&&r.height>0&&r.right>=0&&r.left<=innerWidth;
+      })
+      .filter(el=>{
+        const r=el.getBoundingClientRect();
+        return r.width<24-0.1||r.height<24-0.1;
+      })
+      .map(el=>({tag:el.tagName,text:(el.textContent||'').trim().slice(0,60),
+                 width:el.getBoundingClientRect().width,
+                 height:el.getBoundingClientRect().height})),
     appearance:document.documentElement.getAttribute('data-moon-theme')
   };
 }"""
@@ -108,6 +121,7 @@ async def main():
                 if data["httpStatus"] != 200: violations.append("Home HTTP not 200")
                 if data["scrollWidth"] > width: violations.append("Document overflow")
                 if data["imageCount"] != 2: violations.append("Unexpected Home image count")
+                if data["smallTargets"]: violations.append("Visible interactive targets smaller than 24 CSS pixels")
                 if data["footerGap"] is None or not (95 <= data["footerGap"] <= 110):
                     violations.append("Inconsistent Outside school to footer spacing")
                 if not data["performanceWithinOutside"]: violations.append("Performance photo exceeds Outside school section")
@@ -144,6 +158,8 @@ async def main():
                     }
                     if dark["appearance"] != "dark":
                         violations.append("Dark appearance selection did not apply")
+                    if dark["smallTargets"]:
+                        violations.append("Dark appearance has interactive targets smaller than 24 CSS pixels")
                     if dark["scrollWidth"] > width:
                         violations.append("Dark appearance document overflow")
                     if not dark["performanceWithinOutside"]:
