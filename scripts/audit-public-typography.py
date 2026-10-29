@@ -158,11 +158,11 @@ async def test(browser,engine,page_name,width,mode):
                         row["errors"].append("assessment bar proportion is not preserved")
                     if not bar["labelAndValueShareRow"]:
                         row["errors"].append("assessment label and value do not share a row")
-                    if width<=760 and not bar["trackBelowLabels"]:
+                    if width<=900 and not bar["trackBelowLabels"]:
                         row["errors"].append("narrow assessment track not below label and value")
-                    if width>760 and bar["trackBelowLabels"]:
+                    if width>900 and bar["trackBelowLabels"]:
                         row["errors"].append("wide assessment track moved unexpectedly")
-            if engine=="chromium" and width in (320,375,760):
+            if engine=="chromium" and width in (320,375,768,900,901):
                 try:
                     barshot=OUT/f"s6b-count-bars-{width}.png"
                     await page.locator(".research-count-bars").screenshot(path=str(barshot),
@@ -236,7 +236,7 @@ async def main():
             # Specific S6b breakpoint checks. The original 98-case S6 matrix
             # is preserved; these cases test the fix at and above the new
             # count-chart layout transition in both browser engines.
-            widths=(375,640,760,768) if engine=="chromium" else (320,375,640,760,768)
+            widths=(375,640,760,768,900,901) if engine=="chromium" else (320,375,640,760,768,900,901)
             for width in widths:
                 row=await test(browser,engine,"research-action.html",width,"combined")
                 results.append(row)
