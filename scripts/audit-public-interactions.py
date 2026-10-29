@@ -192,13 +192,31 @@ async def visit(browser,name,width=375):
         if name in PRINT_BUTTONS:
             # Spy only; no print UI invoked. This confirms a real click
             # dispatches the page's advertised window.print() handler.
-            await page.evaluate("window.__s7PrintCount=0;window.print=()=>{window.__s7PrintCount+=1}")
             btn=page.locator(".resume-print" if name=="cv.html" else "button.control.primary")
-            if await btn.count()!=1:row["errors"].append("print button not found")
+            if await btn.count()!=1:
+                row["errors"].append("print button not found")
             else:
+                await btn.evaluate("""e=>{
+                  window.__s7PrintCalls=[];
+                  window.__s7PrintClicks=0;
+                  window.print=()=>window.__s7PrintCalls.push(new Error().stack);
+                  e.addEventListener('click',()=>window.__s7PrintClicks++);
+                }""")
                 await btn.click()
-                row["printInvoked"]=await page.evaluate("window.__s7PrintCount")
-                if row["printInvoked"]!=1:row["errors"].append("print control failed to invoke print")
+                row["printPointer"]=await page.evaluate("""() => ({
+                   clicks:window.__s7PrintClicks,
+                   calls:window.__s7PrintCalls.map(x=>x?.slice(0,400))
+                })""")
+                await page.evaluate("window.__s7PrintClicks=0;window.__s7PrintCalls=[]")
+                await btn.focus()
+                await page.keyboard.press("Enter")
+                row["printKeyboard"]=await page.evaluate("""() => ({
+                   clicks:window.__s7PrintClicks,
+                   calls:window.__s7PrintCalls.map(x=>x?.slice(0,400))
+                })""")
+                if (row["printPointer"]["clicks"]!=1 or row["printKeyboard"]["clicks"]!=1 or
+                        len(row["printPointer"]["calls"])!=1 or len(row["printKeyboard"]["calls"])!=1):
+                    row["errors"].append("print control activation or duplicate print action")
         return row
     except Exception as exc:
         row["errors"].append("exception: "+str(exc)[:330])
@@ -222,7 +240,7 @@ async def main():
        "appearancePreferenceTests":sum("dark" in r for r in cases),
        "disclosureGroups":sum(len(r.get("disclosures",[])) for r in cases),
        "previewOpenCloseSequences":sum("preview" in r for r in cases),
-       "printButtonActions":sum("printInvoked" in r for r in cases),
+       "printButtonActions":sum("printPointer" in r and "printKeyboard" in r for r in cases),
        "failedCases":len(failed),"failures":failed,
        "axeViolations":[{"page":r["page"],"violations":r.get("axe",{}).get("violations",[])} for r in cases if r.get("axe",{}).get("violations")],
        "notes":"Live previews test the parent portfolio interaction and iframe semantics, not the separately deployed applications' internal UI. Headless Chromium/axe does not measure spoken screen-reader output or certify full WCAG conformance."}
