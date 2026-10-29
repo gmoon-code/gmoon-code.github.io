@@ -2378,3 +2378,18 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
     padding:7px 9px;
   }
 }
+
+
+/* Osmosis resource: consistent visitor spacing and economical printed handout. */
+#main.teaching-resource-page{padding-bottom:64px}
+#main.teaching-resource-page+.site-footer{margin-top:36px}
+@media print{
+  #main.teaching-resource-page{padding-bottom:0!important}
+  #main.teaching-resource-page .section-head h2{
+    color:#111!important;
+    background:transparent!important;
+    border-bottom:1px solid #777;
+    padding:0 0 5px;
+    text-decoration:none!important;
+  }
+}
