@@ -34,7 +34,10 @@ def local_target(href, origin):
     p=urlsplit(href)
     if p.netloc and p.netloc not in ("gmoon-code.github.io","www.gmoon-code.github.io"):return None
     if p.scheme and p.scheme not in ("http","https"):return None
-    if p.path.startswith("/"):path=p.path.lstrip("/")
+    if p.netloc in ("gmoon-code.github.io","www.gmoon-code.github.io") and p.path.startswith(("/research-methods/","/memory-palace-u1-8/")):
+        return None  # Independently deployed GitHub Pages projects, not files in this repository.
+    if not p.path:path=origin
+    elif p.path.startswith("/"):path=unquote(p.path.lstrip("/"))
     else:path=str((Path(origin).parent / unquote(p.path)).as_posix())
     if not path or path.endswith("/"):path=path+"index.html"
     path=Path(path)
