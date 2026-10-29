@@ -92,6 +92,7 @@ main > section:nth-of-type(1) > div:nth-of-type(1) > h1:nth-of-type(1){font-size
 <style id="contact-visitor-layout">
   html:not(.moon-free-mode) #main.contact-page{
     padding-bottom:64px!important;
+    min-height:0!important;
   }
   html:not(.moon-free-mode) #main.contact-page+.site-footer{
     margin-top:36px!important;
@@ -156,10 +157,38 @@ main > section:nth-of-type(1) > div:nth-of-type(1) > h1:nth-of-type(1){font-size
     }
   }
   @media print{
-    html:not(.moon-free-mode) #main.contact-page{padding-bottom:0!important}
+    html:not(.moon-free-mode) #main.contact-page{padding:0!important;min-height:0!important}
+    html:not(.moon-free-mode) #main.contact-page .contact-welcome{
+      grid-template-columns:minmax(0,1fr)!important;
+      gap:14px!important;
+      padding:5px 0 23px!important;
+    }
+    html:not(.moon-free-mode) #main.contact-page .contact-welcome h1{
+      font-size:28pt!important;line-height:1.15!important;
+      margin:0 0 12px!important;
+    }
+    html:not(.moon-free-mode) #main.contact-page .contact-introduction{
+      font-size:11pt!important;line-height:1.52!important;
+    }
+    html:not(.moon-free-mode) #main.contact-page .contact-email-card{
+      padding:15px 17px!important;max-width:100%!important;
+    }
+    html:not(.moon-free-mode) #main.contact-page .contact-background{
+      grid-template-columns:minmax(0,1fr) 135px!important;
+      gap:20px!important;align-items:start!important;
+      padding:22px 0 0!important;
+      break-inside:avoid!important;
+    }
+    html:not(.moon-free-mode) #main.contact-page .contact-background h2{
+      font-size:19pt!important;margin-bottom:10px!important;
+    }
+    html:not(.moon-free-mode) #main.contact-page .contact-background p{
+      font-size:11pt!important;line-height:1.52!important;
+      margin-bottom:10px!important;
+    }
     html:not(.moon-free-mode) #main.contact-page .contact-background>img.personal-photo-in-flow{
       width:135px!important;max-width:135px!important;
-      break-inside:avoid;
+      break-inside:avoid!important;
     }
   }
 </style>
