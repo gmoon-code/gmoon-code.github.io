@@ -2300,3 +2300,29 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
     page-break-after:avoid;
   }
 }
+
+
+/* AP Chemistry case: independently verified visitor spacing and print grouping. */
+#main.teaching-chem-case{padding-bottom:64px}
+#main.teaching-chem-case+.site-footer{margin-top:36px}
+@media print{
+  #main.teaching-chem-case{padding-bottom:0}
+  .teaching-chem-case .chem-pressure-check figure{
+    break-inside:avoid;
+    page-break-inside:avoid;
+  }
+  .teaching-chem-case .teaching-chem-responses>article,
+  .teaching-chem-case .teaching-sequence-table tbody tr,
+  .teaching-chem-case .teaching-original-prompt{
+    break-inside:avoid;
+    page-break-inside:avoid;
+  }
+  .teaching-chem-case .section-head{
+    break-after:avoid;
+    page-break-after:avoid;
+  }
+  .teaching-chem-case #chem-disturbance-check{
+    break-before:page;
+    page-break-before:always;
+  }
+}
