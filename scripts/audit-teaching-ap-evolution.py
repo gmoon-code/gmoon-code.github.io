@@ -198,6 +198,16 @@ async def main():
             err=[]
             if not 2<=len(doc)<=15 or missing or orphan or clipping:
                 err.append("print count/missing/orphan/clipped content")
+            if not any("HBB allele variation" in s and
+                       "Population model" in s and
+                       "Figure 2. From haemoglobin variation" in s for s in pages):
+                err.append("evolutionary inference figure is split over A4 sheets")
+            if not any("References and related resources" in s and
+                       "Beards, G." in s and "Williams, T. N." in s for s in pages):
+                err.append("bibliography split over A4 sheets")
+            if not any("Proposed four-meeting sequence" in s and
+                       "1 · Molecular consequences" in s for s in pages):
+                err.append("proposed-sequence heading stranded")
             result.append({"test":"print A4","pages":len(doc),"missing":missing,
                            "orphan":orphan,"clip":clipping[:20],"pageCharacters":[len(p) for p in pages],
                            "headingsByPage":[[t for t in titles if t in pg] for pg in pages],"errors":err})
