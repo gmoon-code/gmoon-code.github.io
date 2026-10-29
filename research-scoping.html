@@ -8,7 +8,49 @@
   <link rel="stylesheet" href="styles-20261013.css">
   <script src="appearance.js?v=20261020-light-default-1"></script>
   <link rel="stylesheet" href="site-theme.css">
-  <link rel="stylesheet" href="appearance.css?v=20261020-dark-8">
+  <link rel="stylesheet" href="appearance.css?v=20261028-visible-focus">
+  <style id="scoping-visitor-print-and-spacing">
+    /* Preserve a consistent 100px gap after the final research section. */
+    #main.research-scoping-page{padding-bottom:64px}
+    #main.research-scoping-page+.site-footer{margin-top:36px}
+    @media print{
+      #main.research-scoping-page{padding:0!important}
+      #main.research-scoping-page .section{padding:14px 0!important}
+      #main.research-scoping-page .section>.section-head{
+        break-after:avoid-page!important;
+        page-break-after:avoid!important;
+      }
+      #main.research-scoping-page .section>.section-head h2{
+        color:#171717!important;
+        background:transparent!important;
+        padding:0 0 5pt!important;
+        border-bottom:1px solid #777!important;
+      }
+      #main.research-scoping-page .research-selection-flow{
+        break-inside:avoid-page!important;
+        page-break-inside:avoid!important;
+      }
+      #main.research-scoping-page .research-route-card{
+        break-inside:avoid-page!important;
+        page-break-inside:avoid!important;
+      }
+      /* A collapsed on-screen disclosure must not omit cited sources in print. */
+      #main.research-scoping-page .research-references>ol{
+        display:block!important;
+        visibility:visible!important;
+        content-visibility:visible!important;
+      }
+      #main.research-scoping-page .research-references summary{
+        list-style:none!important;
+        color:#171717!important;
+      }
+      #main.research-scoping-page .research-references summary::marker{content:""}
+      #main.research-scoping-page .research-example,
+      #main.research-scoping-page .research-example-steps>div{
+        background:#fff!important;
+      }
+    }
+  </style>
 </head>
 <body class="theme-green">
   <a class="skip-link" href="#main">Skip to content</a>
