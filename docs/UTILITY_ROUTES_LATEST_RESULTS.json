@@ -1,0 +1,186 @@
+{
+  "workflow_run_id": "40844334508",
+  "head_sha": "d02adb5b2ba5fad59b0302010839cd8675ba036a",
+  "exit_code": "1",
+  "production_route": "https://gmoon-code.github.io/unlisted/inside/nested/r5-20261029-missing",
+  "errors": [
+    "printed 404 page",
+    "width 320: ['overflow/clipped text']",
+    "width 375: ['overflow/clipped text']",
+    "width 480: ['overflow/clipped text']",
+    "width 560: ['overflow/clipped text']",
+    "width 700: ['overflow/clipped text']",
+    "width 701: ['overflow/clipped text']",
+    "width 768: ['overflow/clipped text']",
+    "width 900: ['overflow/clipped text']",
+    "width 1024: ['overflow/clipped text']",
+    "width 1140: ['overflow/clipped text']",
+    "width 1440: ['overflow/clipped text']"
+  ],
+  "screens": [
+    {
+      "width": 320,
+      "http_status": 404,
+      "footer_gap": 100,
+      "document_width": 320,
+      "errors": [
+        "overflow/clipped text"
+      ],
+      "dark_contrast": null
+    },
+    {
+      "width": 375,
+      "http_status": 404,
+      "footer_gap": 100,
+      "document_width": 375,
+      "errors": [
+        "overflow/clipped text"
+      ],
+      "dark_contrast": [
+        {
+          "selector": "main h1",
+          "ratio": 16.23
+        },
+        {
+          "selector": "main p",
+          "ratio": 16.23
+        },
+        {
+          "selector": "main .control",
+          "ratio": 16.23
+        },
+        {
+          "selector": "footer p",
+          "ratio": 16.23
+        },
+        {
+          "selector": "footer a",
+          "ratio": 15.18
+        },
+        {
+          "selector": ".site-nav a",
+          "ratio": 16.23
+        }
+      ]
+    },
+    {
+      "width": 480,
+      "http_status": 404,
+      "footer_gap": 100,
+      "document_width": 480,
+      "errors": [
+        "overflow/clipped text"
+      ],
+      "dark_contrast": null
+    },
+    {
+      "width": 560,
+      "http_status": 404,
+      "footer_gap": 100,
+      "document_width": 560,
+      "errors": [
+        "overflow/clipped text"
+      ],
+      "dark_contrast": null
+    },
+    {
+      "width": 700,
+      "http_status": 404,
+      "footer_gap": 100,
+      "document_width": 700,
+      "errors": [
+        "overflow/clipped text"
+      ],
+      "dark_contrast": null
+    },
+    {
+      "width": 701,
+      "http_status": 404,
+      "footer_gap": 100,
+      "document_width": 701,
+      "errors": [
+        "overflow/clipped text"
+      ],
+      "dark_contrast": null
+    },
+    {
+      "width": 768,
+      "http_status": 404,
+      "footer_gap": 100,
+      "document_width": 768,
+      "errors": [
+        "overflow/clipped text"
+      ],
+      "dark_contrast": null
+    },
+    {
+      "width": 900,
+      "http_status": 404,
+      "footer_gap": 100,
+      "document_width": 900,
+      "errors": [
+        "overflow/clipped text"
+      ],
+      "dark_contrast": null
+    },
+    {
+      "width": 1024,
+      "http_status": 404,
+      "footer_gap": 100,
+      "document_width": 1024,
+      "errors": [
+        "overflow/clipped text"
+      ],
+      "dark_contrast": null
+    },
+    {
+      "width": 1140,
+      "http_status": 404,
+      "footer_gap": 100,
+      "document_width": 1140,
+      "errors": [
+        "overflow/clipped text"
+      ],
+      "dark_contrast": null
+    },
+    {
+      "width": 1440,
+      "http_status": 404,
+      "footer_gap": 100,
+      "document_width": 1440,
+      "errors": [
+        "overflow/clipped text"
+      ],
+      "dark_contrast": null
+    }
+  ],
+  "keyboard": {
+    "skipFirst": true,
+    "mainFocused": true,
+    "backTop": true,
+    "home": "https://gmoon-code.github.io/"
+  },
+  "about": {
+    "redirectJS": "https://gmoon-code.github.io/contact.html",
+    "redirectNoJS": "https://gmoon-code.github.io/contact.html",
+    "metaRefresh": true,
+    "noindex": true,
+    "canonical": true,
+    "fallbackH1": [
+      "The About page has moved."
+    ],
+    "fallbackHref": "contact.html",
+    "fallbackOverflow": false,
+    "fallbackFocus": true,
+    "fallbackDestination": "https://gmoon-code.github.io/contact.html"
+  },
+  "print": {
+    "pages": 1,
+    "words": [
+      14
+    ],
+    "hasTitle": true,
+    "offPageWords": 3
+  },
+  "log_tail": "{\n  \"errors\": [\n    \"printed 404 page\",\n    \"width 320: ['overflow/clipped text']\",\n    \"width 375: ['overflow/clipped text']\",\n    \"width 480: ['overflow/clipped text']\",\n    \"width 560: ['overflow/clipped text']\",\n    \"width 700: ['overflow/clipped text']\",\n    \"width 701: ['overflow/clipped text']\",\n    \"width 768: ['overflow/clipped text']\",\n    \"width 900: ['overflow/clipped text']\",\n    \"width 1024: ['overflow/clipped text']\",\n    \"width 1140: ['overflow/clipped text']\",\n    \"width 1440: ['overflow/clipped text']\"\n  ],\n  \"keyboard\": {\n    \"skipFirst\": true,\n    \"mainFocused\": true,\n    \"backTop\": true,\n    \"home\": \"https://gmoon-code.github.io/\"\n  },\n  \"about\": {\n    \"redirectJS\": \"https://gmoon-code.github.io/contact.html\",\n    \"redirectNoJS\": \"https://gmoon-code.github.io/contact.html\",\n    \"metaRefresh\": true,\n    \"noindex\": true,\n    \"canonical\": true,\n    \"fallbackH1\": [\n      \"The About page has moved.\"\n    ],\n    \"fallbackHref\": \"contact.html\",\n    \"fallbackOverflow\": false,\n    \"fallbackFocus\": true,\n    \"fallbackDestination\": \"https://gmoon-code.github.io/contact.html\"\n  },\n  \"print\": {\n    \"pages\": 1,\n    \"words\": [\n      14\n    ],\n    \"hasTitle\": true,\n    \"offPageWords\": 3\n  },\n  \"screens\": [\n    {\n      \"width\": 320,\n      \"status\": 404,\n      \"gap\": 100,\n      \"errors\": [\n        \"overflow/clipped text\"\n      ]\n    },\n    {\n      \"width\": 375,\n      \"status\": 404,\n      \"gap\": 100,\n      \"errors\": [\n        \"overflow/clipped text\"\n      ]\n    },\n    {\n      \"width\": 480,\n      \"status\": 404,\n      \"gap\": 100,\n      \"errors\": [\n        \"overflow/clipped text\"\n      ]\n    },\n    {\n      \"width\": 560,\n      \"status\": 404,\n      \"gap\": 100,\n      \"errors\": [\n        \"overflow/clipped text\"\n      ]\n    },\n    {\n      \"width\": 700,\n      \"status\": 404,\n      \"gap\": 100,\n      \"errors\": [\n        \"overflow/clipped text\"\n      ]\n    },\n    {\n      \"width\": 701,\n      \"status\": 404,\n      \"gap\": 100,\n      \"errors\": [\n        \"overflow/clipped text\"\n      ]\n    },\n    {\n      \"width\": 768,\n      \"status\": 404,\n      \"gap\": 100,\n      \"errors\": [\n        \"overflow/clipped text\"\n      ]\n    },\n    {\n      \"width\": 900,\n      \"status\": 404,\n      \"gap\": 100,\n      \"errors\": [\n        \"overflow/clipped text\"\n      ]\n    },\n    {\n      \"width\": 1024,\n      \"status\": 404,\n      \"gap\": 100,\n      \"errors\": [\n        \"overflow/clipped text\"\n      ]\n    },\n    {\n      \"width\": 1140,\n      \"status\": 404,\n      \"gap\": 100,\n      \"errors\": [\n        \"overflow/clipped text\"\n      ]\n    },\n    {\n      \"width\": 1440,\n      \"status\": 404,\n      \"gap\": 100,\n      \"errors\": [\n        \"overflow/clipped text\"\n      ]\n    }\n  ]\n}\n"
+}
