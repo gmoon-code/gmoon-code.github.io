@@ -233,6 +233,16 @@ async def main():
             if missing: errors.append("section titles missing in print")
             if stranded: errors.append("heading orphan(s)")
             if clip: errors.append("text beyond paper edge")
+            if not any("Bentazon inhibits electron transfer" in s and
+                       "Figure 2. A possible pathway" in s for s in pages):
+                errors.append("mechanism diagram is fragmented across printed pages")
+            if not any("Sources and study documentation" in s and
+                       "Battaglino" in s and "University of Minnesota Extension" in s
+                       for s in pages):
+                errors.append("reference list fragmented across printed pages")
+            if not any("Examining evidence and reconstructing a mechanism" in s and
+                       "Newly authored teaching material" in s for s in pages):
+                errors.append("assessment heading separated from introduction")
             data={"test":"print A4","pages":len(doc),"chars":[len(s) for s in pages],
                   "missing":missing,"stranded":stranded,"clip":clip[:15],"errors":errors}
             results.append(data)
