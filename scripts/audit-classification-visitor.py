@@ -64,7 +64,7 @@ async def main():
                     mainCount:document.querySelectorAll('main').length,
                     sections:secs.map(e=>e.id),sectionBoxes:secs.map(e=>({id:e.id,b:box(e)})),
                     refs:refs.map(e=>({id:e.id,links:e.querySelectorAll('a[href^="https://"]').length})),
-                    bodyReferenceLinks:[...main.querySelectorAll('a[href^="#essay-"]')].map(a=>a.getAttribute('href').slice(1)),
+                    bodyReferenceLinks:[...main.querySelectorAll('.research-essay-prose a[href^="#essay-"]')].map(a=>a.getAttribute('href').slice(1)),
                     jumpLinks:[...nav.querySelectorAll('a[href^="#"]')].map(a=>a.getAttribute('href').slice(1)),
                     uniqueIds:ids.length===new Set(ids).size,brokenAnchors:frag.filter(id=>!ids.includes(id)),
                     emptyLinks:[...document.querySelectorAll('a[href]')].filter(e=>!(e.innerText||e.getAttribute('aria-label')||'').trim()).length,
@@ -118,11 +118,12 @@ async def main():
             ref=await page.evaluate("({hash:location.hash,top:Math.round(document.querySelector('#essay-williams').getBoundingClientRect().top)})")
             await page.locator(".moon-appearance-select").select_option("dark")
             await page.wait_for_function("document.documentElement.dataset.moonTheme==='dark'")
-            await page.locator(".topbar .brand").focus()
+            await page.keyboard.press("Tab")
             dark=await page.evaluate("""() => ({
                 theme:document.documentElement.dataset.moonTheme,
                 outline:getComputedStyle(document.activeElement).outlineStyle,
                 focus:document.activeElement.matches(':focus-visible'),
+                focusTag:document.activeElement.tagName,
                 body:getComputedStyle(document.body).backgroundColor,
                 para:getComputedStyle(document.querySelector('.research-essay-prose p')).color,
                 link:getComputedStyle(document.querySelector('#haemoglobin-evidence a')).color,
