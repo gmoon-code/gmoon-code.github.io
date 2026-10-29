@@ -319,3 +319,16 @@ html[data-moon-theme="dark"] .teaching-bio-case
 html[data-moon-theme="dark"] .teaching-bio-case .teaching-step-code{
  color:var(--moon-muted);
 }
+
+
+/* S6: let enlarged navigation labels wrap inside the existing narrow grid.
+   Normal-size labels retain their original single-line appearance. */
+@media (max-width:700px){
+  .site-nav{min-width:0}
+  .site-nav a{
+    min-width:0;
+    max-width:100%;
+    white-space:normal;
+    overflow-wrap:anywhere;
+  }
+}
