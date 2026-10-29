@@ -2362,3 +2362,19 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
     page-break-before:always;
   }
 }
+
+
+/* Compact only the long evolutionary-model calculation when printing. */
+@media print{
+  #main.teaching-evolution-case #variation-selection-model .reading p{
+    line-height:1.55;
+    margin-bottom:11px;
+  }
+  #main.teaching-evolution-case #variation-selection-model .teaching-sequence-table-wrap{
+    margin:11px 0 12px;
+  }
+  #main.teaching-evolution-case #variation-selection-model .teaching-sequence-table th,
+  #main.teaching-evolution-case #variation-selection-model .teaching-sequence-table td{
+    padding:7px 9px;
+  }
+}
