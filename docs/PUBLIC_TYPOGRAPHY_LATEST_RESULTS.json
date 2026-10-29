@@ -8,10 +8,563 @@
   "cases": 98,
   "individualRequirementCases": 92,
   "combinedStressCases": 6,
-  "failedCount": 0,
-  "failures": [],
-  "combinedStressFailedCount": 1,
+  "failedCount": 10,
+  "failures": [
+    {
+      "engine": "chromium",
+      "page": "index.html",
+      "width": 320,
+      "mode": "spacing",
+      "errors": [
+        "required text spacing not applied: marginBottom"
+      ],
+      "metrics": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 28,
+        "outside": [],
+        "clipped": [],
+        "parentClips": [],
+        "culprits": [
+          {
+            "tag": "A",
+            "css": "skip-link",
+            "sample": "Skip to content",
+            "x": -9999,
+            "right": -9868,
+            "width": 131,
+            "scrollWidth": 131,
+            "clientWidth": 131,
+            "scrollHeight": 24,
+            "clientHeight": 24
+          }
+        ],
+        "paragraphStyle": {
+          "fontSize": "19px",
+          "lineHeight": "28.5px",
+          "letterSpacing": "2.28px",
+          "wordSpacing": "3.04px",
+          "marginBottom": "0px"
+        }
+      }
+    },
+    {
+      "engine": "chromium",
+      "page": "index.html",
+      "width": 1280,
+      "mode": "spacing",
+      "errors": [
+        "required text spacing not applied: marginBottom"
+      ],
+      "metrics": {
+        "viewport": 1280,
+        "documentWidth": 1280,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 28,
+        "outside": [],
+        "clipped": [],
+        "parentClips": [],
+        "culprits": [
+          {
+            "tag": "A",
+            "css": "skip-link",
+            "sample": "Skip to content",
+            "x": -9999,
+            "right": -9868,
+            "width": 131,
+            "scrollWidth": 131,
+            "clientWidth": 131,
+            "scrollHeight": 24,
+            "clientHeight": 24
+          }
+        ],
+        "paragraphStyle": {
+          "fontSize": "20px",
+          "lineHeight": "30px",
+          "letterSpacing": "2.4px",
+          "wordSpacing": "3.2px",
+          "marginBottom": "0px"
+        }
+      }
+    },
+    {
+      "engine": "chromium",
+      "page": "research.html",
+      "width": 320,
+      "mode": "spacing",
+      "errors": [
+        "required text spacing not applied: marginBottom"
+      ],
+      "metrics": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 290,
+        "outside": [],
+        "clipped": [],
+        "parentClips": [],
+        "culprits": [
+          {
+            "tag": "A",
+            "css": "skip-link",
+            "sample": "Skip to content",
+            "x": -9999,
+            "right": -9868,
+            "width": 131,
+            "scrollWidth": 131,
+            "clientWidth": 131,
+            "scrollHeight": 24,
+            "clientHeight": 24
+          },
+          {
+            "tag": "A",
+            "css": "research-published-image",
+            "sample": "",
+            "x": 41,
+            "right": 661,
+            "width": 620,
+            "scrollWidth": 620,
+            "clientWidth": 620,
+            "scrollHeight": 444,
+            "clientHeight": 444
+          },
+          {
+            "tag": "IMG",
+            "css": "",
+            "sample": "",
+            "x": 41,
+            "right": 661,
+            "width": 620,
+            "scrollWidth": 620,
+            "clientWidth": 620,
+            "scrollHeight": 444,
+            "clientHeight": 444
+          }
+        ],
+        "paragraphStyle": {
+          "fontSize": "19px",
+          "lineHeight": "29.64px",
+          "letterSpacing": "2.28px",
+          "wordSpacing": "3.04px",
+          "marginBottom": "22px"
+        }
+      }
+    },
+    {
+      "engine": "chromium",
+      "page": "research.html",
+      "width": 1280,
+      "mode": "spacing",
+      "errors": [
+        "required text spacing not applied: marginBottom"
+      ],
+      "metrics": {
+        "viewport": 1280,
+        "documentWidth": 1280,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 292,
+        "outside": [],
+        "clipped": [],
+        "parentClips": [],
+        "culprits": [
+          {
+            "tag": "A",
+            "css": "skip-link",
+            "sample": "Skip to content",
+            "x": -9999,
+            "right": -9868,
+            "width": 131,
+            "scrollWidth": 131,
+            "clientWidth": 131,
+            "scrollHeight": 24,
+            "clientHeight": 24
+          }
+        ],
+        "paragraphStyle": {
+          "fontSize": "23px",
+          "lineHeight": "34.73px",
+          "letterSpacing": "2.76px",
+          "wordSpacing": "3.68px",
+          "marginBottom": "22px"
+        }
+      }
+    },
+    {
+      "engine": "chromium",
+      "page": "writing-biological-classification.html",
+      "width": 320,
+      "mode": "spacing",
+      "errors": [
+        "required text spacing not applied: marginBottom"
+      ],
+      "metrics": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 57,
+        "outside": [],
+        "clipped": [],
+        "parentClips": [],
+        "culprits": [
+          {
+            "tag": "A",
+            "css": "skip-link",
+            "sample": "Skip to content",
+            "x": -9999,
+            "right": -9868,
+            "width": 131,
+            "scrollWidth": 131,
+            "clientWidth": 131,
+            "scrollHeight": 24,
+            "clientHeight": 24
+          }
+        ],
+        "paragraphStyle": {
+          "fontSize": "13px",
+          "lineHeight": "19.5px",
+          "letterSpacing": "1.56px",
+          "wordSpacing": "2.08px",
+          "marginBottom": "13px"
+        }
+      }
+    },
+    {
+      "engine": "chromium",
+      "page": "writing-biological-classification.html",
+      "width": 1280,
+      "mode": "spacing",
+      "errors": [
+        "required text spacing not applied: marginBottom"
+      ],
+      "metrics": {
+        "viewport": 1280,
+        "documentWidth": 1280,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 57,
+        "outside": [],
+        "clipped": [],
+        "parentClips": [],
+        "culprits": [
+          {
+            "tag": "A",
+            "css": "skip-link",
+            "sample": "Skip to content",
+            "x": -9999,
+            "right": -9868,
+            "width": 131,
+            "scrollWidth": 131,
+            "clientWidth": 131,
+            "scrollHeight": 24,
+            "clientHeight": 24
+          }
+        ],
+        "paragraphStyle": {
+          "fontSize": "13px",
+          "lineHeight": "19.5px",
+          "letterSpacing": "1.56px",
+          "wordSpacing": "2.08px",
+          "marginBottom": "13px"
+        }
+      }
+    },
+    {
+      "engine": "firefox",
+      "page": "index.html",
+      "width": 320,
+      "mode": "spacing",
+      "errors": [
+        "required text spacing not applied: marginBottom"
+      ],
+      "metrics": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 28,
+        "outside": [],
+        "clipped": [],
+        "parentClips": [],
+        "culprits": [
+          {
+            "tag": "A",
+            "css": "skip-link",
+            "sample": "Skip to content",
+            "x": -9999,
+            "right": -9868,
+            "width": 131,
+            "scrollWidth": 131,
+            "clientWidth": 131,
+            "scrollHeight": 24,
+            "clientHeight": 24
+          }
+        ],
+        "paragraphStyle": {
+          "fontSize": "19px",
+          "lineHeight": "28.5px",
+          "letterSpacing": "2.28px",
+          "wordSpacing": "3.04px",
+          "marginBottom": "0px"
+        }
+      }
+    },
+    {
+      "engine": "firefox",
+      "page": "index.html",
+      "width": 1280,
+      "mode": "spacing",
+      "errors": [
+        "required text spacing not applied: marginBottom"
+      ],
+      "metrics": {
+        "viewport": 1280,
+        "documentWidth": 1280,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 28,
+        "outside": [],
+        "clipped": [],
+        "parentClips": [],
+        "culprits": [
+          {
+            "tag": "A",
+            "css": "skip-link",
+            "sample": "Skip to content",
+            "x": -9999,
+            "right": -9868,
+            "width": 131,
+            "scrollWidth": 131,
+            "clientWidth": 131,
+            "scrollHeight": 24,
+            "clientHeight": 24
+          }
+        ],
+        "paragraphStyle": {
+          "fontSize": "20px",
+          "lineHeight": "30px",
+          "letterSpacing": "2.4px",
+          "wordSpacing": "3.2px",
+          "marginBottom": "0px"
+        }
+      }
+    },
+    {
+      "engine": "firefox",
+      "page": "research.html",
+      "width": 320,
+      "mode": "spacing",
+      "errors": [
+        "required text spacing not applied: marginBottom"
+      ],
+      "metrics": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 290,
+        "outside": [],
+        "clipped": [],
+        "parentClips": [],
+        "culprits": [
+          {
+            "tag": "A",
+            "css": "skip-link",
+            "sample": "Skip to content",
+            "x": -9999,
+            "right": -9868,
+            "width": 131,
+            "scrollWidth": 131,
+            "clientWidth": 131,
+            "scrollHeight": 24,
+            "clientHeight": 24
+          },
+          {
+            "tag": "A",
+            "css": "research-published-image",
+            "sample": "",
+            "x": 41,
+            "right": 661,
+            "width": 620,
+            "scrollWidth": 620,
+            "clientWidth": 620,
+            "scrollHeight": 444,
+            "clientHeight": 444
+          },
+          {
+            "tag": "IMG",
+            "css": "",
+            "sample": "",
+            "x": 41,
+            "right": 661,
+            "width": 620,
+            "scrollWidth": 620,
+            "clientWidth": 620,
+            "scrollHeight": 444,
+            "clientHeight": 444
+          }
+        ],
+        "paragraphStyle": {
+          "fontSize": "19px",
+          "lineHeight": "29.6333px",
+          "letterSpacing": "2.28px",
+          "wordSpacing": "3.04px",
+          "marginBottom": "22px"
+        }
+      }
+    },
+    {
+      "engine": "firefox",
+      "page": "research.html",
+      "width": 1280,
+      "mode": "spacing",
+      "errors": [
+        "required text spacing not applied: marginBottom"
+      ],
+      "metrics": {
+        "viewport": 1280,
+        "documentWidth": 1280,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 292,
+        "outside": [],
+        "clipped": [],
+        "parentClips": [],
+        "culprits": [
+          {
+            "tag": "A",
+            "css": "skip-link",
+            "sample": "Skip to content",
+            "x": -9999,
+            "right": -9868,
+            "width": 131,
+            "scrollWidth": 131,
+            "clientWidth": 131,
+            "scrollHeight": 24,
+            "clientHeight": 24
+          }
+        ],
+        "paragraphStyle": {
+          "fontSize": "23px",
+          "lineHeight": "34.7333px",
+          "letterSpacing": "2.76px",
+          "wordSpacing": "3.68px",
+          "marginBottom": "22px"
+        }
+      }
+    }
+  ],
+  "combinedStressFailedCount": 5,
   "combinedStressFailures": [
+    {
+      "engine": "chromium",
+      "page": "index.html",
+      "width": 320,
+      "mode": "combined",
+      "errors": [
+        "required text spacing not applied: marginBottom"
+      ],
+      "metrics": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 28,
+        "outside": [],
+        "clipped": [],
+        "parentClips": [],
+        "culprits": [
+          {
+            "tag": "A",
+            "css": "skip-link",
+            "sample": "Skip to content",
+            "x": -9999,
+            "right": -9737,
+            "width": 262,
+            "scrollWidth": 262,
+            "clientWidth": 262,
+            "scrollHeight": 48,
+            "clientHeight": 48
+          }
+        ],
+        "paragraphStyle": {
+          "fontSize": "38px",
+          "lineHeight": "57px",
+          "letterSpacing": "4.56px",
+          "wordSpacing": "6.08px",
+          "marginBottom": "0px"
+        }
+      }
+    },
+    {
+      "engine": "chromium",
+      "page": "research.html",
+      "width": 320,
+      "mode": "combined",
+      "errors": [
+        "required text spacing not applied: marginBottom"
+      ],
+      "metrics": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 290,
+        "outside": [],
+        "clipped": [],
+        "parentClips": [],
+        "culprits": [
+          {
+            "tag": "A",
+            "css": "skip-link",
+            "sample": "Skip to content",
+            "x": -9999,
+            "right": -9737,
+            "width": 262,
+            "scrollWidth": 262,
+            "clientWidth": 262,
+            "scrollHeight": 48,
+            "clientHeight": 48
+          },
+          {
+            "tag": "A",
+            "css": "research-published-image",
+            "sample": "",
+            "x": 41,
+            "right": 661,
+            "width": 620,
+            "scrollWidth": 620,
+            "clientWidth": 620,
+            "scrollHeight": 444,
+            "clientHeight": 444
+          },
+          {
+            "tag": "IMG",
+            "css": "",
+            "sample": "",
+            "x": 41,
+            "right": 661,
+            "width": 620,
+            "scrollWidth": 620,
+            "clientWidth": 620,
+            "scrollHeight": 444,
+            "clientHeight": 444
+          }
+        ],
+        "paragraphStyle": {
+          "fontSize": "38px",
+          "lineHeight": "59.28px",
+          "letterSpacing": "4.56px",
+          "wordSpacing": "6.08px",
+          "marginBottom": "22px"
+        }
+      }
+    },
     {
       "engine": "chromium",
       "page": "research-action.html",
@@ -255,23 +808,127 @@
           "marginBottom": "52px"
         }
       }
+    },
+    {
+      "engine": "firefox",
+      "page": "index.html",
+      "width": 320,
+      "mode": "combined",
+      "errors": [
+        "required text spacing not applied: marginBottom"
+      ],
+      "metrics": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 28,
+        "outside": [],
+        "clipped": [],
+        "parentClips": [],
+        "culprits": [
+          {
+            "tag": "A",
+            "css": "skip-link",
+            "sample": "Skip to content",
+            "x": -9999,
+            "right": -9738,
+            "width": 261,
+            "scrollWidth": 261,
+            "clientWidth": 261,
+            "scrollHeight": 48,
+            "clientHeight": 48
+          }
+        ],
+        "paragraphStyle": {
+          "fontSize": "38px",
+          "lineHeight": "57px",
+          "letterSpacing": "4.56px",
+          "wordSpacing": "6.08px",
+          "marginBottom": "0px"
+        }
+      }
+    },
+    {
+      "engine": "firefox",
+      "page": "research.html",
+      "width": 320,
+      "mode": "combined",
+      "errors": [
+        "required text spacing not applied: marginBottom"
+      ],
+      "metrics": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 290,
+        "outside": [],
+        "clipped": [],
+        "parentClips": [],
+        "culprits": [
+          {
+            "tag": "A",
+            "css": "skip-link",
+            "sample": "Skip to content",
+            "x": -9999,
+            "right": -9738,
+            "width": 261,
+            "scrollWidth": 261,
+            "clientWidth": 261,
+            "scrollHeight": 48,
+            "clientHeight": 48
+          },
+          {
+            "tag": "A",
+            "css": "research-published-image",
+            "sample": "",
+            "x": 41,
+            "right": 661,
+            "width": 620,
+            "scrollWidth": 620,
+            "clientWidth": 620,
+            "scrollHeight": 444,
+            "clientHeight": 444
+          },
+          {
+            "tag": "IMG",
+            "css": "",
+            "sample": "",
+            "x": 41,
+            "right": 661,
+            "width": 620,
+            "scrollWidth": 620,
+            "clientWidth": 620,
+            "scrollHeight": 444,
+            "clientHeight": 444
+          }
+        ],
+        "paragraphStyle": {
+          "fontSize": "38px",
+          "lineHeight": "59.2833px",
+          "letterSpacing": "4.56px",
+          "wordSpacing": "6.08px",
+          "marginBottom": "22px"
+        }
+      }
     }
   ],
   "advisories": [],
   "byEngine": {
     "chromium": {
       "cases": 75,
-      "individualFailures": 0,
-      "combinedStressFailures": 1
+      "individualFailures": 6,
+      "combinedStressFailures": 3
     },
     "firefox": {
       "cases": 23,
-      "individualFailures": 0,
-      "combinedStressFailures": 0
+      "individualFailures": 4,
+      "combinedStressFailures": 2
     }
   },
   "caveats": "The two reading preference tests apply independently. Combined maximum-spacing plus 200% text at 320 CSS pixels is explicitly a supplementary stress case, and any such overflow remains open even when the independent-test exit code is zero. User-style injections are not native browser text-only zoom. Automated results do not certify WCAG.",
-  "workflow_run_id": "40868959780",
-  "head_sha": "2bb6eef3b701393b54b95594d2fe889d773bfa93",
-  "exit_code": "0"
+  "workflow_run_id": "40869062525",
+  "head_sha": "e3faab950d85def12b41394b088273923ba6e391",
+  "exit_code": "1"
 }
