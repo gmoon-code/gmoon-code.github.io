@@ -1,0 +1,62 @@
+name: Research Methods Studio detail visitor audit
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "research-methods-studio.html"
+      - "site-previews.js"
+      - "styles-20261013.css"
+      - "site-theme.css"
+      - "appearance.css"
+      - "appearance.js"
+      - "assets/research-methods-data-lab.webp"
+      - "scripts/audit-methods-detail.py"
+      - ".github/workflows/audit-methods-detail.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  statuses: write
+
+jobs:
+  visitor-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install browser and PDF inspection
+        run: |
+          python -m pip install playwright==1.57.0 PyMuPDF==1.26.7
+          python -m playwright install --with-deps chromium
+      - name: Test Methods page
+        run: |
+          python -m http.server 8766 --bind 127.0.0.1 >/tmp/methods-http.log 2>&1 &
+          python scripts/audit-methods-detail.py
+      - name: Preserve exact visitor source
+        if: always()
+        run: |
+          mkdir -p methods-detail-audit-output/source
+          cp research-methods-studio.html site-previews.js styles-20261013.css site-theme.css appearance.css appearance.js methods-detail-audit-output/source/
+      - name: Save screenshots and report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: methods-detail-visitor-evidence
+          path: methods-detail-audit-output/
+          retention-days: 7
+      - name: Publish status
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          AUDIT_RESULT: ${{ job.status }}
+        run: |
+          if [ "$AUDIT_RESULT" = "success" ]; then result=success; else result=failure; fi
+          gh api -X POST "repos/$GITHUB_REPOSITORY/statuses/$GITHUB_SHA" \
+            -f state="$result" \
+            -f context="audit/methods-detail" \
+            -f target_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" \
+            -f description="Methods detail responsive, keyboard, tables and A4: $AUDIT_RESULT"
