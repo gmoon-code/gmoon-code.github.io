@@ -165,19 +165,30 @@ async def main():
                 row=await test(browser,engine,name,320,"combined");results.append(row)
                 print(engine,name,320,"combined",row["errors"],flush=True)
             await browser.close()
-    failures=[{"engine":r["engine"],"page":r["page"],"width":r["width"],
+    all_findings=[{"engine":r["engine"],"page":r["page"],"width":r["width"],
      "mode":r["mode"],"errors":r["errors"],"metrics":r.get("metrics")}
       for r in results if r["errors"]]
+    # WCAG 1.4.12 text spacing and 1.4.4 text enlargement are independent
+    # user-style tests. Combined maximal spacing + 200% text at 320px is
+    # an extra stress experiment; record any failure prominently, but do not
+    # mislabel it as a failure of either separately tested requirement.
+    failures=[r for r in all_findings if r["mode"]!="combined"]
+    stress_failures=[r for r in all_findings if r["mode"]=="combined"]
     advisories=[{"engine":r["engine"],"page":r["page"],"width":r["width"],
      "mode":r["mode"],"parentClips":r.get("metrics",{}).get("parentClips")}
       for r in results if r.get("metrics",{}).get("parentClips")]
     summary={"modes":["injected WCAG 1.4.12 paragraph/line/letter/word spacing",
      "user-style computed-font-size ×2 simulation","combined 320px stress samples"],
-     "publicPages":len(PAGES),"cases":len(results),"failedCount":len(failures),
-     "failures":failures,"advisories":advisories,
+     "publicPages":len(PAGES),"cases":len(results),
+     "individualRequirementCases":sum(x["mode"]!="combined" for x in results),
+     "combinedStressCases":sum(x["mode"]=="combined" for x in results),
+     "failedCount":len(failures),"failures":failures,
+     "combinedStressFailedCount":len(stress_failures),
+     "combinedStressFailures":stress_failures,"advisories":advisories,
      "byEngine":{e:{"cases":sum(x["engine"]==e for x in results),
-       "failures":sum(x["engine"]==e and bool(x["errors"]) for x in results)} for e in ("chromium","firefox")},
-     "caveats":"User-style injections approximate enhanced text spacing and 200% text-only enlargement. They do not operate the browser's native text-only zoom interface. Page-level overflow and selected clipped text are checked; screenshots and ancestor-clip advisories require human review. Automated results do not certify WCAG."}
+       "individualFailures":sum(x["engine"]==e and x["mode"]!="combined" and bool(x["errors"]) for x in results),
+       "combinedStressFailures":sum(x["engine"]==e and x["mode"]=="combined" and bool(x["errors"]) for x in results)} for e in ("chromium","firefox")},
+     "caveats":"The two reading preference tests apply independently. Combined maximum-spacing plus 200% text at 320 CSS pixels is explicitly a supplementary stress case, and any such overflow remains open even when the independent-test exit code is zero. User-style injections are not native browser text-only zoom. Automated results do not certify WCAG."}
     (OUT/"report.json").write_text(json.dumps(results,ensure_ascii=False,indent=2)+"\n")
     (OUT/"summary.json").write_text(json.dumps(summary,ensure_ascii=False,indent=2)+"\n")
     print(json.dumps(summary,ensure_ascii=False,indent=2),flush=True)
