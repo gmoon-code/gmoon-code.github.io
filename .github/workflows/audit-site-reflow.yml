@@ -52,13 +52,42 @@ jobs:
           PY
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json
-          if ! git diff --cached --quiet; then
-            git commit -m "Record S4 public axe and reflow results [skip ci]"
+          cp docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json /tmp/s4-audit-result.json
+          # Multiple runs can finish together. Recreate the report commit on
+          # the newest remote head, retrying if another job publishes first.
+          for attempt in 1 2 3 4; do
             git fetch origin main
-            git rebase origin/main
-            git push origin HEAD:main
-          fi
+            git reset --hard origin/main
+            # Never overwrite a newer exact-source result with an older run.
+            python - <<'PY'
+          import json,os
+          from pathlib import Path
+          incoming=json.loads(Path("/tmp/s4-audit-result.json").read_text())
+          p=Path("docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json")
+          if p.exists():
+              old=json.loads(p.read_text())
+              if int(old.get("workflow_run_id") or 0)>int(incoming["workflow_run_id"]):
+                  Path("/tmp/s4-audit-skip").touch()
+          PY
+            if [ -f /tmp/s4-audit-skip ]; then
+              echo "A newer run already published; preserving it."
+              break
+            fi
+            cp /tmp/s4-audit-result.json docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json
+            git add docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json
+            if git diff --cached --quiet; then
+              echo "Result already current."
+              break
+            fi
+            git commit -m "Record S4 public axe and reflow results [skip ci]"
+            if git push origin HEAD:main; then
+              break
+            fi
+            if [ "$attempt" -eq 4 ]; then
+              echo "Could not publish after four conflict-safe attempts."
+              exit 1
+            fi
+          done
       - name: Preserve screenshot and full-case diagnostics
         if: always()
         uses: actions/upload-artifact@v4
