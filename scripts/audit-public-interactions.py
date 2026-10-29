@@ -60,7 +60,7 @@ SEMAN=r"""() => {
  };
 }"""
 AXE_SCRIPT=r"""async tags => {
- const r=await axe.run(document,{runOnly:{type:'tag',values:tags},resultTypes:['violations','incomplete']});
+ const r=await axe.run(document,{runOnly:{type:'tag',values:tags},resultTypes:['violations','incomplete'],iframes:false});
  return {violations:r.violations.map(v=>({
    id:v.id,impact:v.impact,nodes:v.nodes.slice(0,12).map(n=>({
      target:n.target,html:n.html.slice(0,220),summary:n.failureSummary?.slice(0,280)}))})),
@@ -135,17 +135,19 @@ async def visit(browser,name,width=375):
                 during=await item.evaluate("(e)=>e.open")
                 await page.evaluate("window.dispatchEvent(new Event('afterprint'))")
                 restored=await item.evaluate("(e)=>e.open")
-                await summary.focus()
-                await page.keyboard.press("Enter")
-                closed=await item.evaluate("(e)=>e.open")
-                row["disclosures"].append(dict(initial=initial,opened=opened,duringPrint=during,afterPrint=restored,closed=closed))
-                if initial or not opened or restored!=opened or closed:
-                    row["errors"].append("details Enter toggle or print restoration failed")
+                # Scan while content is truly expanded, not after hiding it.
                 await page.add_script_tag(path=str(AXE))
                 dynamic=await page.evaluate(AXE_SCRIPT,AXE_TAGS)
                 if dynamic["violations"]:
                     row.setdefault("disclosureAxe",[]).extend(dynamic["violations"])
-                    row["errors"].append("axe disclosure state violations")
+                    row["errors"].append("axe expanded-disclosure violations")
+                await summary.focus()
+                await page.keyboard.press("Enter")
+                closed=await item.evaluate("(e)=>e.open")
+                row["disclosures"].append(dict(initial=initial,opened=opened,duringPrint=during,afterPrint=restored,closed=closed,
+                                           axeViolations=len(dynamic["violations"])))
+                if initial or not opened or restored!=opened or closed:
+                    row["errors"].append("details Enter toggle or print restoration failed")
         if name in PREVIEWS:
             panel=page.locator("[data-live-preview]")
             opener=panel.locator("[data-preview-open]")
@@ -178,6 +180,12 @@ async def visit(browser,name,width=375):
                     "desktop":await desktop.get_attribute("aria-pressed")}
                 if row["preview"]["phone"]!={"device":"phone","pressed":"true","desktop":"false"}:
                     row["errors"].append("preview phone pressed-state semantics failure")
+                await page.add_script_tag(path=str(AXE))
+                liveAxe=await page.evaluate(AXE_SCRIPT,AXE_TAGS)
+                row["preview"]["activeParentAxeViolations"]=len(liveAxe["violations"])
+                if liveAxe["violations"]:
+                    row.setdefault("previewAxe",[]).extend(liveAxe["violations"])
+                    row["errors"].append("axe active preview controls violations")
                 # Escape must work even if focus has moved to the device controls.
                 await page.keyboard.press("Escape")
                 row["preview"]["escapeClosed"]=not await active.is_visible()
@@ -240,6 +248,8 @@ async def main():
        "appearancePreferenceTests":sum("dark" in r for r in cases),
        "disclosureGroups":sum(len(r.get("disclosures",[])) for r in cases),
        "previewOpenCloseSequences":sum("preview" in r for r in cases),
+       "expandedDisclosureAxeScans":sum(len(r.get("disclosures",[])) for r in cases),
+       "activePreviewAxeScans":sum("activeParentAxeViolations" in r.get("preview",{}) for r in cases),
        "printButtonActions":sum("printPointer" in r and "printKeyboard" in r for r in cases),
        "failedCases":len(failed),"failures":failed,
        "axeViolations":[{"page":r["page"],"violations":r.get("axe",{}).get("violations",[])} for r in cases if r.get("axe",{}).get("violations")],
