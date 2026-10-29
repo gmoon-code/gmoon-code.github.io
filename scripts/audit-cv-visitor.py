@@ -88,7 +88,20 @@ async def main():
     dat.update({"test":"responsive", "errors":err})
     results.append(dat)
     print("CV",width,"PASS" if not err else err,"gap",dat["footerGap"],"doc",dat["documentWidth"],flush=True)
-    await page.screenshot(path=str(OUT/f"cv-{width}.png"),full_page=True,animations="disabled",timeout=30000)
+    # Rare Chromium full-page capture hiccups need a retried screenshot, not an
+    # incorrect conclusion that the actual page geometry is broken.
+    shot_error=None
+    for attempt in range(3):
+     try:
+      await page.screenshot(path=str(OUT/f"cv-{width}.png"),full_page=True,
+                            animations="disabled",timeout=30000)
+      shot_error=None
+      break
+     except Exception as ex:
+      shot_error=ex
+      await page.wait_for_timeout(350*(attempt+1))
+    if shot_error:
+     raise shot_error
    except Exception as exc:
     results.append({"test":"responsive","width":width,"errors":[repr(exc)]})
     print("CV",width,"ERROR",repr(exc),flush=True)
