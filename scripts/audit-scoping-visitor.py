@@ -56,7 +56,7 @@ async def main():
                       sections,uniqueIds:ids.length===new Set(ids).size,
                       brokenAnchors:anchors.filter(id=>!ids.includes(id)),
                       unnamedLinks:[...document.querySelectorAll('a[href]')].filter(
-                          e=>!(e.innerText||e.getAttribute('aria-label')||'').trim()).length,
+                          e=>!(e.textContent||e.getAttribute('aria-label')||'').trim()).length,
                       navCurrent:[...document.querySelectorAll('.site-nav [aria-current="page"]')].map(e=>e.innerText),
                       routeCounts:cards.map(e=>e.querySelector('.research-route-count strong')?.innerText),
                       cardCount:cards.length,
@@ -99,8 +99,8 @@ async def main():
                 if data["references"]["count"]!=2 or data["references"]["pdfLinkCount"]!=2:
                     errors.append("Kane/Pierson references")
                 if data["escaped"] or data["clipped"]:errors.append("text overflow/clipping")
-                if data["sectionTailGap"]<50 or data["sectionTailGap"]>180:
-                    errors.append("footer whitespace irregular")
+                if not 95<=data["sectionTailGap"]<=105:
+                    errors.append("footer gap differs from 100px")
                 data.update({"test":"responsive","errors":errors})
                 results.append(data)
                 print("SCOPING",w,"PASS" if not errors else errors,"gap",data["sectionTailGap"],flush=True)
