@@ -120,10 +120,16 @@ async def test(browser,engine,page_name,width,mode):
         if metrics["parentClips"]:row["review"].append("possible clipping by ancestor") if "review" in row else row.update(review=["possible clipping by ancestor"])
         if mode in ("spacing","combined"):
             style=metrics["paragraphStyle"]
-            if not style:row["errors"].append("paragraph not found")
-            elif (abs(float(style["letterSpacing"].replace("px",""))-
-                      float(style["fontSize"].replace("px",""))*.12)>1.0):
-                row["errors"].append("letter spacing override not applied")
+            if not style:
+                row["errors"].append("paragraph not found")
+            else:
+                size=float(style["fontSize"].replace("px",""))
+                for prop,factor in (("lineHeight",1.5),("marginBottom",2.0),
+                                    ("letterSpacing",0.12),("wordSpacing",0.16)):
+                    raw=style.get(prop,"")
+                    actual=float(raw.replace("px","")) if raw.endswith("px") else None
+                    if actual is None or actual+0.7<size*factor:
+                        row["errors"].append(f"required text spacing not applied: {prop}")
         if mode in ("text200","combined"):
             before=baseline["paragraphStyle"]
             after=metrics["paragraphStyle"]
