@@ -81,13 +81,14 @@ async def main():
         (OUT/"action-a4.pdf").write_bytes(pdf)
         doc=fitz.open(stream=pdf,filetype="pdf")
         pages=[pg.get_text() for pg in doc]
-        full=" ".join(pages)
+        full=re.sub(r"\\s+", " ", " ".join(pages))
         must=["Research design and assessment sequence","Reflection specificity","Reconstructing the same mechanism",
               "Examples from paired student records","Methods, ethics, and limitations","What the inquiry contributes",
               "Specified a reasoning difficulty","Earlier pathway extended","Earlier contradiction not repeated",
               "Earlier relationship omitted","Intermediate pathway still undeveloped"]
         missing=[x for x in must if x not in full]
         pdf_report={"pages":len(pages),"words":[len(x.split()) for x in pages],"missing":missing,
+          "page_previews":[{"number":i+1,"first":re.sub(r"\\s+"," ",x[:400]),"last":re.sub(r"\\s+"," ",x[-550:])} for i,x in enumerate(pages)],
           "offPageWords":[sum(1 for word in pg.get_text("words") if word[0]<-1 or word[1]<-1 or word[2]>pg.rect.width+1 or word[3]>pg.rect.height+1) for pg in doc]}
         for i,pg in enumerate(doc):
             pix=pg.get_pixmap(matrix=fitz.Matrix(1.1,1.1),alpha=False)
