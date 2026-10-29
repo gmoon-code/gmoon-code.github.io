@@ -2,13 +2,13 @@
   "pages_scanned": 19,
   "distinct_destinations": 113,
   "counts": {
-    "reachable": 70,
-    "unverified": 43
+    "reachable": 71,
+    "unverified": 42
   },
   "by_category": {
     "external": {
-      "reachable": 47,
-      "unverified": 2
+      "reachable": 48,
+      "unverified": 1
     },
     "scholarly-identifier": {
       "unverified": 41,
@@ -801,23 +801,6 @@
       "warnings": []
     },
     {
-      "url": "https://eric.ed.gov/?id=ED527596",
-      "status": "unverified",
-      "category": "external",
-      "pages": [
-        "research.html"
-      ],
-      "head": {
-        "code": null,
-        "error": "The read operation timed out"
-      },
-      "get": {
-        "code": null,
-        "error": "The read operation timed out"
-      },
-      "warnings": []
-    },
-    {
       "url": "https://onlinelibrary.wiley.com/doi/full/10.1002/sce.21622",
       "status": "unverified",
       "category": "external",
@@ -858,11 +841,27 @@
   "doi_registry": {
     "checked": 41,
     "counts": {
-      "registered": 33,
-      "not-confirmed": 8
+      "not-confirmed": 11,
+      "registered": 30
     },
-    "secondary_index_matches": 8,
+    "secondary_index_matches": 11,
     "not_confirmed": [
+      {
+        "url": "https://doi.org/10.1002/sce.20264",
+        "doi": "10.1002/sce.20264",
+        "pages": [
+          "teaching-ap-biology.html"
+        ],
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.20264",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Recognizing mechanistic reasoning in student scientific inquiry: A framework for discourse analysis developed from philosophy of science",
+        "indexedYear": 2008
+      },
       {
         "url": "https://doi.org/10.1002/sce.21099",
         "doi": "10.1002/sce.21099",
@@ -896,85 +895,116 @@
         "indexedYear": 2014
       },
       {
-        "url": "https://doi.org/10.1002/sce.21592",
-        "doi": "10.1002/sce.21592",
+        "url": "https://doi.org/10.1002/tea.70072",
+        "doi": "10.1002/tea.70072",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21592",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.70072",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Acting with epistemic agency: Characterizing student critique during argumentation discussions",
-        "indexedYear": 2020
+        "indexedTitle": "Students' Construction, Evaluation, and Revision of Scientific Models Through Multimodal Representations",
+        "indexedYear": 2026
       },
       {
-        "url": "https://doi.org/10.1002/sce.21622",
-        "doi": "10.1002/sce.21622",
-        "pages": [
-          "research-scoping.html"
-        ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21622",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Scientific modeling and translanguaging: A multilingual and multimodal approach to support science learning and engagement",
-        "indexedYear": 2021
-      },
-      {
-        "url": "https://doi.org/10.1002/tea.21714",
-        "doi": "10.1002/tea.21714",
+        "url": "https://doi.org/10.1080/03626784.2021.1947732",
+        "doi": "10.1080/03626784.2021.1947732",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21714",
+        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/03626784.2021.1947732",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Science engagement as insight into the science identity work nurtured in community‐based science clubs",
+        "indexedTitle": "Getting dirty and coming clean: Sex education and the problem of expertise",
         "indexedYear": 2021
       },
       {
-        "url": "https://doi.org/10.1086/430744",
-        "doi": "10.1086/430744",
+        "url": "https://doi.org/10.1080/03626784.2023.2200810",
+        "doi": "10.1080/03626784.2023.2200810",
         "pages": [
-          "teaching-ap-evolution.html",
-          "writing-biological-classification.html"
+          "research.html"
         ],
-        "publisherLanding": "https://academic.oup.com/jid/article-lookup/doi/10.1086/430744",
+        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/03626784.2023.2200810",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Sickle Cell Trait and the Risk ofPlasmodium falciparumMalaria and Other Childhood Diseases",
-        "indexedYear": 2005
+        "indexedTitle": "You don’t know me: Welcoming gender diversity in schools via an ethic of hospitality",
+        "indexedYear": 2023
       },
       {
-        "url": "https://doi.org/10.1111/j.1365-2729.1991.tb00230.x",
-        "doi": "10.1111/j.1365-2729.1991.tb00230.x",
+        "url": "https://doi.org/10.1080/1046560X.2022.2155355",
+        "doi": "10.1080/1046560X.2022.2155355",
         "pages": [
-          "teaching-ap-chemistry.html"
+          "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1111/j.1365-2729.1991.tb00230.x",
+        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/1046560X.2022.2155355",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Why is science difficult to learn? Things are seldom what they seem",
-        "indexedYear": 1991
+        "indexedTitle": "Teacher Noticing for Supporting Students’ Epistemic Agency in Science Sensemaking Discussions",
+        "indexedYear": 2023
+      },
+      {
+        "url": "https://doi.org/10.1207/S1532690XCI2004_1",
+        "doi": "10.1207/S1532690XCI2004_1",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://www.tandfonline.com/doi/abs/10.1207/S1532690XCI2004_1",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Guiding Principles for Fostering Productive Disciplinary Engagement: Explaining an Emergent Argument in a Community of Learners Classroom",
+        "indexedYear": 2002
+      },
+      {
+        "url": "https://doi.org/10.2304/ciec.2011.12.4.362",
+        "doi": "10.2304/ciec.2011.12.4.362",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://journals.sagepub.com/doi/10.2304/ciec.2011.12.4.362",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "On the Human Challenges of Multiliteracies Pedagogy",
+        "indexedYear": 2011
+      },
+      {
+        "url": "https://doi.org/10.3102/0034654314558490",
+        "doi": "10.3102/0034654314558490",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://journals.sagepub.com/doi/10.3102/0034654314558490",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Representing Student Argumentation as Functionally Emergent From Scientific Activity",
+        "indexedYear": 2014
       },
       {
         "url": "https://doi.org/10.3138/cmlr-2021-0055",
@@ -996,7 +1026,7 @@
     "unresolved": [],
     "limitation": "Crossref/DataCite registration is distinct from publisher access, correct article metadata or article availability. OpenAlex is independent secondary corroboration, not registration proof."
   },
-  "workflow_run_id": "40888881274",
-  "head_sha": "7951e674c5e6aebca6f4b588740e9d3488627de5",
+  "workflow_run_id": "40890598505",
+  "head_sha": "55e375e450b87e88ea578ec46db06e040dd64a34",
   "audit_exit_code": "0"
 }
