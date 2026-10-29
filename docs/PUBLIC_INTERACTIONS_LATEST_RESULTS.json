@@ -1,6 +1,68 @@
 {
-  "error": "missing S7 result",
-  "workflow_run_id": "40874233833",
-  "head_sha": "7f4dd20f4224a41431466ac5bcbb5781fce7be1d",
+  "scope": "18 directly readable public HTML pages. Legacy About redirect already verified U1.",
+  "pages": 18,
+  "semanticScans": 18,
+  "appearancePreferenceTests": 18,
+  "disclosureGroups": 4,
+  "previewOpenCloseSequences": 2,
+  "printButtonActions": 2,
+  "failedCases": 2,
+  "failures": [
+    {
+      "page": "teaching-osmosis-practice.html",
+      "width": 375,
+      "errors": [
+        "print control failed to invoke print"
+      ],
+      "http": 200,
+      "imageCount": 0,
+      "linkCount": 2,
+      "dark": {
+        "pref": "dark",
+        "theme": "dark",
+        "value": "dark"
+      },
+      "persistedDark": "dark",
+      "system": {
+        "pref": "system",
+        "theme": "light"
+      },
+      "disclosures": [
+        {
+          "initial": false,
+          "opened": true,
+          "duringPrint": true,
+          "afterPrint": true,
+          "closed": false
+        }
+      ],
+      "printInvoked": 2
+    },
+    {
+      "page": "cv.html",
+      "width": 375,
+      "errors": [
+        "print control failed to invoke print"
+      ],
+      "http": 200,
+      "imageCount": 0,
+      "linkCount": 4,
+      "dark": {
+        "pref": "dark",
+        "theme": "dark",
+        "value": "dark"
+      },
+      "persistedDark": "dark",
+      "system": {
+        "pref": "system",
+        "theme": "light"
+      },
+      "printInvoked": 2
+    }
+  ],
+  "axeViolations": [],
+  "notes": "Live previews test the parent portfolio interaction and iframe semantics, not the separately deployed applications' internal UI. Headless Chromium/axe does not measure spoken screen-reader output or certify full WCAG conformance.",
+  "workflow_run_id": "40874399252",
+  "head_sha": "a4bacb8ef947544856cd48e34ac369a6994d3010",
   "exit_code": "1"
 }
