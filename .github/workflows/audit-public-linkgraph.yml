@@ -1,0 +1,66 @@
+name: Public site link graph and metadata audit
+on:
+  push:
+    branches: [main]
+    paths:
+      - "*.html"
+      - "scripts/audit-public-linkgraph.py"
+      - ".github/workflows/audit-public-linkgraph.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install HTML parser
+        run: python -m pip install beautifulsoup4==4.14.2
+      - name: Check all public page routes, assets and anchors
+        id: scan
+        run: |
+          set +e
+          python scripts/audit-public-linkgraph.py 2>&1 | tee public-linkgraph.log
+          code=${PIPESTATUS[0]}
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit "$code"
+      - name: Publish audit results to main branch
+        if: always() && github.ref == 'refs/heads/main'
+        env:
+          CODE: ${{ steps.scan.outputs.exit_code }}
+        run: |
+          mkdir -p docs
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          p=Path("public-linkgraph-output/report.json")
+          s=json.loads(p.read_text()) if p.exists() else {"problems":[{"kind":"script exception"}]}
+          d={"workflow_run_id":os.getenv("GITHUB_RUN_ID"),"head_sha":os.getenv("GITHUB_SHA"),
+             "exit_code":os.getenv("CODE"),"page_count":len(s.get("pages",[])),"link_count":s.get("linkCount"),
+             "asset_references":s.get("assetReferences"),"internal_links":s.get("internalLinks"),
+             "external_or_special":s.get("externalOrSpecialCount"),
+             "problems":s.get("problems"),"advisory":s.get("advisory"),
+             "pages":[{"name":x.get("name"),"h1":x.get("h1"),"link_count":x.get("links")} for x in s.get("pages",[])]}
+          Path("docs/PUBLIC_LINKGRAPH_LATEST_RESULTS.json").write_text(json.dumps(d,ensure_ascii=False,indent=2)+"\n")
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/PUBLIC_LINKGRAPH_LATEST_RESULTS.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Record exact-source public navigation graph audit [skip ci]"
+            git fetch origin main
+            git rebase origin/main
+            git push origin HEAD:main
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: public-linkgraph-evidence
+          path: |
+            public-linkgraph-output/
+            public-linkgraph.log
+          retention-days: 14
