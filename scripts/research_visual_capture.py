@@ -422,8 +422,8 @@ async def main():
                  "In an English-medium science classroom"),
                 ("Scientific representations and their limits",
                  "A simple exponential population-growth model"),
-                ("Sex determination and biological variation","Human sex development"),
-                ("Related writing","These questions also inform my independent essay"),
+                ("Sex determination and biological variation","A diagram linking chromosomes to reproductive anatomy"),
+                ("Related writing","In What can a biological classification explain?"),
                 ("References","Airton, L. (2023)")
             ]
             stranded = []
