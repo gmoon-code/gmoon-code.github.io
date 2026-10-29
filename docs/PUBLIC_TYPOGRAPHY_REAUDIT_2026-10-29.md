@@ -40,3 +40,14 @@ The corrected production CSS passed fresh **S4 Chromium automated axe and reflow
 The test did not operate physical browser menu text-only zoom or all browser-specific user stylesheet facilities; it models their effects through DOM styles. Screenshots examined top-of-viewport text flow, not every point in long pages. A passing automated audit does not certify WCAG in general, spoken screen-reader order, native Safari on Apple devices, every accessible widget state or arbitrary operating-system font preferences.
 
 **Stage S6 independent text-spacing and magnification tests are completed successfully. The next exact bounded continuation is S6b, investigate the remaining 12px combined-stress document overflow on `research-action.html` in Chromium at 320px with both increased spacing and doubled text, without repeating S1–S6 work or concealing evidence-table columns.** This is the only known outstanding issue from the S6 test matrix. After S6b, return to remaining manual/browser assistive checks.
+
+
+## Postscript | S6b resolution completed on 29 October 2026
+
+The **12px overflow flagged as unresolved above has now been identified and corrected**. The earlier S6 findings and exact-head record remain preserved as historical evidence, but the instruction to investigate that overflow is superseded.
+
+The actual cause was the fixed-width numerical column of the **Unit 2 / Unit 3 assessment count bars** on `research-action.html`, not the internally scrollable scientific evidence tables. Under maximum text spacing plus 200% enlargement, the **18 of 28** label occupied 111px inside a 72px grid track. The final production style places complete labels and counts above full-width proportion bars at CSS widths up to 900px, while naturally sizing the two label columns in the wider horizontal chart. The 900/901px breakpoint, Unit labels, count values, fill proportions and horizontal page scroll width were independently verified in both Chromium and Firefox. Source CSS and HTML cache keys were updated without altering research content.
+
+**Final S6b run [40872270816](https://github.com/gmoon-code/gmoon-code.github.io/actions/runs/40872270816)** passed **111/111 cases** on source SHA `523b66d55f525803d3b4ad96226458dcc9c6a9ca`, comprising 92/92 independent preference cases and 19/19 supplemental combined-stress cases, all with zero failures. S4, S5, Action Research visual/keyboard and A4 print audits also passed on the resulting visitor site. The compact result `docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json` now points to the successful S6b test run.
+
+**Full S6b report** `docs/PUBLIC_TYPOGRAPHY_S6B_REAUDIT_2026-10-29.md`. **S6/S6b has no remaining measured failures**. Native browser zoom and manual assistive-technology testing are still separately unverified and should be the next bounded work, rather than restarting the completed S1–S6b page checks.
