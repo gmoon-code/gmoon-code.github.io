@@ -171,6 +171,10 @@ async def main():
             if missing or clipped:err.append("printed article content or bibliography absent/clipped")
             if not 2<=len(pdf)<=7:err.append("unexpected A4 page count")
             if len(txt)>1 and len(txt[-1])<400:err.append("nearly empty final print page")
+            if len(pdf)>1 and len(pdf[0].get_images(full=True))!=1:
+                err.append("performance photo fragmented onto first print sheet")
+            if len(pdf)>1 and len(pdf[1].get_images(full=True))<4:
+                err.append("incomplete performance gallery on second print sheet")
             results.append({"test":"print A4","pages":len(pdf),"pageCharacters":[len(x) for x in txt],
                 "embeddedImages":[len(pg.get_images(full=True)) for pg in pdf],
                 "missing":missing,"clipped":clipped[:15],"errors":err})
