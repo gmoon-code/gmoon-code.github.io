@@ -2393,3 +2393,15 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
     text-decoration:none!important;
   }
 }
+
+
+/* Action research detail: stable distance between concluding section and footer. */
+#main.research-action-page{padding-bottom:64px}
+#main.research-action-page+.site-footer{margin-top:36px}
+@media print{
+  #main.research-action-page{padding-bottom:0!important}
+  #main.research-action-page>.section>.section-head{
+    break-after:avoid-page;
+    page-break-after:avoid;
+  }
+}
