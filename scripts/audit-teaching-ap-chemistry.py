@@ -89,6 +89,8 @@ async def main():
                     errors.append("internal links/IDs/unnamed links")
                 if data["references"]!=4 or not data["figureCaption"] or len(data["stages"])!=3:
                     errors.append("citation or diagram structure")
+                if not 95<=data["footerGap"]<=105:
+                    errors.append("content-to-footer gap differs from 100px")
                 if not data["figureBounds"] or data["figureBounds"]["left"] < -3 or data["figureBounds"]["right"] > width + 3:
                     errors.append("figure overflow")
                 if len(data["regions"])!=2 or any(not x["keyboard"] or not x["label"] for x in data["regions"]):
@@ -219,6 +221,18 @@ async def main():
             errors=[]
             if not 2<=len(doc)<=14:errors.append("unexpected A4 page count")
             if missing or stranded or clipping:errors.append("A4 missing/orphan/clip")
+            if not any("1. Initial equilibrium" in x and
+                       "3. During re-equilibration" in x and
+                       "Figure 1. Immediate and subsequent responses" in x
+                       for x in pages):
+                errors.append("compression diagram spans printed pages")
+            if not any("Compression shifts the reaction right" in x and
+                       "Comparing the numbers of gas molecules" in x
+                       for x in pages):
+                errors.append("diagnostic card fragmented across print pages")
+            if not any("Transfer task after expansion" in x and
+                       "Student-facing reasoning check" in x for x in pages):
+                errors.append("expansion heading separated from assignment")
             results.append({"test":"print A4","pageCount":len(doc),"missing":missing,
                             "stranded":stranded,"clipping":clipping[:15],
                             "characters":[len(x) for x in pages],"errors":errors})
