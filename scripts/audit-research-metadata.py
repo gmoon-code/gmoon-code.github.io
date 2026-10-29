@@ -76,31 +76,72 @@ def openalex_metadata(doi):
                     "venue":((d.get("primary_location") or {}).get("source") or {}).get("display_name"),
                     "id":d.get("id"),"http":200}
     return {"source":"OpenAlex","http":result.get("code"),"error":result.get("error")}
-def datacite_preprint():
+def preprint_metadata():
     encoded=quote(PREPRINT,safe="/")
-    r=request("https://api.datacite.org/dois/"+encoded,timeout=13)
-    record={"doi":PREPRINT,"http":r.get("code"),"error":r.get("error")}
+    # OSF preprint DOIs are commonly registered through Crossref, while projects
+    # and registrations may use DataCite. Try the intended agency first.
+    r=request("https://api.crossref.org/works/"+encoded,timeout=14)
+    record={"doi":PREPRINT,"httpCrossref":r.get("code")}
     if r.get("code")==200:
-        a=(r["data"].get("data") or {}).get("attributes") or {}
+        a=r["data"].get("message",{})
+        record.update({"registry":"Crossref","http":200,
+          "doi_reg":a.get("DOI"),"publicationYear":((a.get("posted") or a.get("published") or a.get("created") or {}).get("date-parts") or [[None]])[0][0],
+          "posted":a.get("posted"),"created":a.get("created"),"type":a.get("type"),
+          "publisher":a.get("publisher"),"titles":a.get("title"),
+          "creators":[{"name":f"{c.get('given','')} {c.get('family','')}".strip(),"givenName":c.get("given"),"familyName":c.get("family")} for c in a.get("author",[])],
+          "url":a.get("URL"),"description":(a.get("abstract") or "")[:250],
+          "subtype":a.get("subtype"),"relation":a.get("relation")})
+        return record
+    dc=request("https://api.datacite.org/dois/"+encoded,timeout=14)
+    record.update({"httpDataCite":dc.get("code"),"http":dc.get("code"),"error":dc.get("error")})
+    if dc.get("code")==200:
+        a=(dc["data"].get("data") or {}).get("attributes") or {}
         record.update({"registry":"DataCite","doi_reg":a.get("doi"),
             "state":a.get("state"),"created":a.get("created"),"registered":a.get("registered"),
             "publicationYear":a.get("publicationYear"),"publisher":a.get("publisher"),
             "titles":[t.get("title") for t in a.get("titles",[])],
             "creators":[{"name":c.get("name"),"givenName":c.get("givenName"),"familyName":c.get("familyName")} for c in a.get("creators",[])],
             "url":a.get("url"),"types":a.get("types"),"dates":a.get("dates"),
-            "relatedIdentifiers":a.get("relatedIdentifiers"),"version":a.get("version"),
-            "descriptions":[d.get("description")[:300] for d in a.get("descriptions",[]) if d.get("description")]})
+            "relatedIdentifiers":a.get("relatedIdentifiers"),"version":a.get("version")})
     return record
+
+def openalex_batch(dois):
+    # Official OR filtering supports up to 100 DOI values in one request.
+    # Batch requests avoid unhelpful individual-query 429 limits.
+    matched={}
+    debug=[]
+    for i in range(0,len(dois),25):
+        chunk=dois[i:i+25]
+        filterval="doi:"+"|".join("https://doi.org/"+d for d in chunk)
+        url="https://api.openalex.org/works?filter="+quote(filterval,safe=":/|.")+"&per_page=100"
+        r=request(url,timeout=17)
+        debug.append({"count":len(chunk),"http":r.get("code"),"error":r.get("error")})
+        if r.get("code")==200:
+            for d in r["data"].get("results",[]):
+                key=unquote(urlsplit(d.get("doi") or "").path.lstrip("/")).lower()
+                if key in {x.lower() for x in chunk}:
+                    matched[key]={"source":"OpenAlex","title":d.get("display_name"),
+                      "year":d.get("publication_year"),"type":d.get("type"),
+                      "authors":[a.get("author",{}).get("display_name") for a in d.get("authorships",[])],
+                      "venue":((d.get("primary_location") or {}).get("source") or {}).get("display_name"),
+                      "id":d.get("id"),"http":200}
+    return matched,debug
 def main():
     refs,statuses=inventory()
-    preprint=datacite_preprint()
+    preprint=preprint_metadata()
     doilist=[d for d in refs if d!=PREPRINT]
+    batch,batchlog=openalex_batch(doilist)
     results={}
-    with ThreadPoolExecutor(max_workers=5) as ex:
-        futures={ex.submit(openalex_metadata,doi):doi for doi in doilist}
+    missing=[]
+    for doi in doilist:
+        if doi.lower() in batch:results[doi]=batch[doi.lower()]
+        else:missing.append(doi)
+    # Retry only the small residue that was not returned by the efficient batch.
+    with ThreadPoolExecutor(max_workers=2) as ex:
+        futures={ex.submit(openalex_metadata,doi):doi for doi in missing}
         for f in as_completed(futures):
             doi=futures[f];results[doi]=f.result()
-            print("METADATA",doi,results[doi].get("http"),flush=True)
+            print("FALLBACK",doi,results[doi].get("http"),flush=True)
     checks=[];manual=[];passed=[]
     for doi,uses in refs.items():
         if doi==PREPRINT:continue
@@ -129,7 +170,7 @@ def main():
     ppflag=preprint.get("http")!=200 or not pretitle or any(x["titleMatch"] is not None and x["titleMatch"]<.7 for x in own_mentions)
     summary={
       "preprint":preprint,"preprintReferences":own_mentions,"preprintReview":ppflag,
-      "doiUnique":len(doilist),"citationOccurrences":len(checks),
+      "doiUnique":len(doilist),"citationOccurrences":len(checks),"batchLog":batchlog,
       "counts":dict(Counter(x["outcome"] for x in checks)),
       "manualReview":manual,
       "unverified":[x for x in checks if x["outcome"]=="unverified"],
