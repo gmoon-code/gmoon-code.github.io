@@ -367,3 +367,33 @@ html[data-moon-theme="dark"] .teaching-bio-case .teaching-step-code{
     overflow-wrap:anywhere;
   }
 }
+
+
+/* S6b: at very narrow text viewports, let assessment counts claim their
+   natural width and move the proportion track to a second row.
+   This preserves both labelled values and the full visual bar length. */
+@media (max-width:480px){
+  #main.research-action-page .research-count-row{
+    grid-template-columns:minmax(0,1fr) max-content;
+    column-gap:10px;
+    row-gap:7px;
+    min-width:0;
+  }
+  #main.research-action-page .research-count-row>.research-count-unit{
+    grid-column:1;
+    grid-row:1;
+  }
+  #main.research-action-page .research-count-row>strong{
+    grid-column:2;
+    grid-row:1;
+    min-width:0;
+    white-space:nowrap;
+    text-align:right;
+  }
+  #main.research-action-page .research-count-row>.research-count-track{
+    grid-column:1 / -1;
+    grid-row:2;
+    min-width:0;
+    width:100%;
+  }
+}
