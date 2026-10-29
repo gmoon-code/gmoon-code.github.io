@@ -74,6 +74,7 @@ async def main():
                     errors.append("anchors/names")
                 if data["escaped"]:errors.append("escaped text")
                 if data["footerEmailHeight"]<24:errors.append("footer target")
+                if not 95<=data["footerGap"]<=105:errors.append("footer spacing not near 100px")
                 if data["references"]!=3:errors.append("reference count")
                 data.update({"page":"teaching","errors":errors})
                 results.append(data)
