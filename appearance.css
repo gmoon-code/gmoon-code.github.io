@@ -332,3 +332,30 @@ html[data-moon-theme="dark"] .teaching-bio-case .teaching-step-code{
     overflow-wrap:anywhere;
   }
 }
+
+
+/* S6: user text magnification must not make whole pages scroll horizontally.
+   Preserve sideways scrolling inside the named scientific table/figure regions. */
+@media (max-width:700px){
+  #main {overflow-wrap:anywhere}
+  #main :is(.research-table-wrap,.teaching-sequence-table-wrap,
+            .research-figure-pan){
+    min-width:0;
+    width:100%;
+    max-width:calc(100vw - 28px);
+    box-sizing:border-box;
+    overflow-x:auto;
+  }
+  #main .resume-header>div {min-width:0;max-width:100%}
+  #main .resume-header :is(h1,.resume-meta,.resume-meta a){
+    min-width:0;
+    max-width:100%;
+    overflow-wrap:anywhere;
+  }
+  #main :is(.chem-equation-panel,.chem-computation-panel,
+            .bio-mechanism-start,.bio-mechanism-two>div){
+    min-width:0;
+    max-width:100%;
+    overflow-wrap:anywhere;
+  }
+}
