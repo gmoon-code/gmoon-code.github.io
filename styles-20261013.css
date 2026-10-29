@@ -2280,6 +2280,10 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
     break-inside:avoid;
     page-break-inside:avoid;
   }
+  .teaching-bio-case .teaching-source-list{
+    columns:2;
+    column-gap:24px;
+  }
   .teaching-bio-case .teaching-source-list li{
     padding:3px;
     line-height:1.5;
