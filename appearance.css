@@ -369,10 +369,10 @@ html[data-moon-theme="dark"] .teaching-bio-case .teaching-step-code{
 }
 
 
-/* S6b: at very narrow text viewports, let assessment counts claim their
+/* S6b: at narrow text viewports, let assessment counts claim their
    natural width and move the proportion track to a second row.
    This preserves both labelled values and the full visual bar length. */
-@media (max-width:480px){
+@media (max-width:760px){
   #main.research-action-page .research-count-row{
     grid-template-columns:minmax(0,1fr) max-content;
     column-gap:10px;
