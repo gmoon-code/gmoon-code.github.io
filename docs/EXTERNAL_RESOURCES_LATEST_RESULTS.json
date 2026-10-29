@@ -2,13 +2,13 @@
   "pages_scanned": 19,
   "distinct_destinations": 113,
   "counts": {
-    "reachable": 69,
-    "unverified": 44
+    "reachable": 70,
+    "unverified": 43
   },
   "by_category": {
     "external": {
-      "reachable": 46,
-      "unverified": 3
+      "reachable": 47,
+      "unverified": 2
     },
     "scholarly-identifier": {
       "unverified": 41,
@@ -19,23 +19,6 @@
     }
   },
   "issues": [
-    {
-      "url": "https://contents.history.go.kr/play/view.do?levelId=tz_b59",
-      "status": "unverified",
-      "category": "external",
-      "pages": [
-        "pungmul.html"
-      ],
-      "head": {
-        "code": null,
-        "error": "<urlopen error timed out>"
-      },
-      "get": {
-        "code": null,
-        "error": "<urlopen error timed out>"
-      },
-      "warnings": []
-    },
     {
       "url": "https://doi.org/10.1002/sce.20264",
       "status": "unverified",
@@ -818,19 +801,19 @@
       "warnings": []
     },
     {
-      "url": "https://folkency.nfm.go.kr/en/topic/detail/6501",
+      "url": "https://eric.ed.gov/?id=ED527596",
       "status": "unverified",
       "category": "external",
       "pages": [
-        "pungmul.html"
+        "research.html"
       ],
       "head": {
         "code": null,
-        "error": "<urlopen error timed out>"
+        "error": "The read operation timed out"
       },
       "get": {
         "code": null,
-        "error": "<urlopen error timed out>"
+        "error": "The read operation timed out"
       },
       "warnings": []
     },
@@ -875,58 +858,74 @@
   "doi_registry": {
     "checked": 41,
     "counts": {
-      "registered": 32,
-      "not-confirmed": 9
+      "registered": 28,
+      "not-confirmed": 13
     },
-    "secondary_index_matches": 9,
+    "secondary_index_matches": 13,
     "not_confirmed": [
       {
-        "url": "https://doi.org/10.1002/sce.21099",
-        "doi": "10.1002/sce.21099",
+        "url": "https://doi.org/10.1002/sce.20392",
+        "doi": "10.1002/sce.20392",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21099",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.20392",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "An Integrative Framework for the Analysis of Multiple and Multimodal Representations for Meaning‐Making in Science Education",
-        "indexedYear": 2014
+        "indexedTitle": "Cultural processes in science education: Supporting the navigation of multiple epistemologies",
+        "indexedYear": 2010
       },
       {
-        "url": "https://doi.org/10.1002/sce.21592",
-        "doi": "10.1002/sce.21592",
+        "url": "https://doi.org/10.1002/sce.21791",
+        "doi": "10.1002/sce.21791",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21592",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21791",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Acting with epistemic agency: Characterizing student critique during argumentation discussions",
-        "indexedYear": 2020
+        "indexedTitle": "Science education with multilingual learners: Equity as access and equity as transformation",
+        "indexedYear": 2023
       },
       {
-        "url": "https://doi.org/10.1002/tea.21459",
-        "doi": "10.1002/tea.21459",
+        "url": "https://doi.org/10.1002/tea.21257",
+        "doi": "10.1002/tea.21257",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21459",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21257",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Addressing the epistemic elephant in the room: Epistemic agency and the next generation science standards",
-        "indexedYear": 2018
+        "indexedTitle": "Epistemologies in practice: Making scientific practices meaningful for students",
+        "indexedYear": 2015
+      },
+      {
+        "url": "https://doi.org/10.1073/pnas.0706627104",
+        "doi": "10.1073/pnas.0706627104",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://pnas.org/doi/full/10.1073/pnas.0706627104",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Cultural mosaics and mental models of nature",
+        "indexedYear": 2007
       },
       {
         "url": "https://doi.org/10.1080/03626784.2023.2200810",
@@ -942,22 +941,6 @@
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
         "indexedTitle": "You don’t know me: Welcoming gender diversity in schools via an ethic of hospitality",
-        "indexedYear": 2023
-      },
-      {
-        "url": "https://doi.org/10.1080/07491409.2023.2193543",
-        "doi": "10.1080/07491409.2023.2193543",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/07491409.2023.2193543",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "TERF Logics Are Carceral Logics: Toward the Abolition of Gender-Critical Movements or Black Trans Life as Pedagogical Praxis",
         "indexedYear": 2023
       },
       {
@@ -977,58 +960,122 @@
         "indexedYear": 2010
       },
       {
-        "url": "https://doi.org/10.1080/15265161.2012.680533",
-        "doi": "10.1080/15265161.2012.680533",
+        "url": "https://doi.org/10.1080/14675986.2015.1109775",
+        "doi": "10.1080/14675986.2015.1109775",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://www.tandfonline.com/doi/abs/10.1080/15265161.2012.680533",
+        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/14675986.2015.1109775",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Out of Bounds? A Critique of the New Policies on Hyperandrogenism in Elite Female Athletes",
+        "indexedTitle": "Beyond the mirror towards a plurilingual prism: exploring the creation of plurilingual ‘identity texts’ in English and French classrooms in Toronto and Montpellier",
+        "indexedYear": 2015
+      },
+      {
+        "url": "https://doi.org/10.1080/14790718.2021.1898619",
+        "doi": "10.1080/14790718.2021.1898619",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/14790718.2021.1898619",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Translanguaging as an agentive pedagogy for multilingual learners: affordances and constraints",
+        "indexedYear": 2021
+      },
+      {
+        "url": "https://doi.org/10.1093/applin/amab044",
+        "doi": "10.1093/applin/amab044",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://academic.oup.com/applij/article/43/2/316/6375538",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Affordances of Plurilingual Instruction in Higher Education: A Mixed Methods Study with a Quasi-experiment in an English Language Program",
+        "indexedYear": 2021
+      },
+      {
+        "url": "https://doi.org/10.1159/000345322",
+        "doi": "10.1159/000345322",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://karger.com/article/doi/10.1159/000345322",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Desettling Expectations in Science Education",
         "indexedYear": 2012
       },
       {
-        "url": "https://doi.org/10.1177/01614681251401633",
-        "doi": "10.1177/01614681251401633",
+        "url": "https://doi.org/10.2304/ciec.2011.12.4.362",
+        "doi": "10.2304/ciec.2011.12.4.362",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://journals.sagepub.com/doi/10.1177/01614681251401633",
+        "publisherLanding": "https://journals.sagepub.com/doi/10.2304/ciec.2011.12.4.362",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Queer Joy as Pedagogy",
-        "indexedYear": 2025
+        "indexedTitle": "On the Human Challenges of Multiliteracies Pedagogy",
+        "indexedYear": 2011
       },
       {
-        "url": "https://doi.org/10.1187/cbe.23-08-0157",
-        "doi": "10.1187/cbe.23-08-0157",
+        "url": "https://doi.org/10.3102/0013189X231206172",
+        "doi": "10.3102/0013189X231206172",
         "pages": [
-          "teaching-ap-biology.html"
+          "research.html"
         ],
-        "publisherLanding": "https://www.lifescied.org/doi/10.1187/cbe.23-08-0157",
+        "publisherLanding": "https://journals.sagepub.com/doi/10.3102/0013189X231206172",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Examining and Supporting Mechanistic Explanations Across Chemistry and Biology Courses",
-        "indexedYear": 2024
+        "indexedTitle": "Language Views for Scientific Sensemaking Matter: A Synthesis of Research on Multilingual Students’ Experiences with Science Practices Through a Translanguaging Lens",
+        "indexedYear": 2023
+      },
+      {
+        "url": "https://doi.org/10.3138/cmlr-2021-0055",
+        "doi": "10.3138/cmlr-2021-0055",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://utppublishing.com/doi/10.3138/cmlr-2021-0055",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "The Impact of Academic Acculturation and Language Proficiency on International Students’ University Experience and Academic Success: A Longitudinal Study",
+        "indexedYear": 2023
       }
     ],
     "unresolved": [],
     "limitation": "Crossref/DataCite registration is distinct from publisher access, correct article metadata or article availability. OpenAlex is independent secondary corroboration, not registration proof."
   },
-  "workflow_run_id": "40893062919",
-  "head_sha": "cdbf470324abc01619d0a2817d30a19ed497e5b8",
+  "workflow_run_id": "40893645848",
+  "head_sha": "74abb5f03cf02d5022dc63cf772934aa46834779",
   "audit_exit_code": "0"
 }
