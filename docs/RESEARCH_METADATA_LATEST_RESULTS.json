@@ -1,6 +1,6 @@
 {
-  "workflow_run_id": "40856117045",
-  "head_sha": "34cad7f6630b92653168edeb3e7a25e8285bb733",
+  "workflow_run_id": "40856246959",
+  "head_sha": "e11cb6ef820b8c9eb4e797d146352a4c72c9c648",
   "exit_code": "0",
   "preprint": {
     "doi": "10.35542/osf.io/kznvj_v1",
@@ -63,49 +63,9 @@
   "citation_occurrences": 67,
   "counts": {
     "inline-or-narrative": 2,
-    "consistent": 63,
-    "review": 2
+    "consistent": 65
   },
-  "manual_review": [
-    {
-      "page": "research.html",
-      "element_id": "reading-gonsalves",
-      "year": 2014,
-      "reference": "Gonsalves, A. J. (2014). “Physics and the girly girl—there is a contradiction somewhere”: Doctoral students’ positioning around discourses of gender and competence in physics. Cultural Studies of Science Education, 9 , 503–521.",
-      "href": "https://doi.org/10.1007/s11422-012-9447-6",
-      "doi": "10.1007/s11422-012-9447-6",
-      "indexTitle": "“Physics and the girly girl—there is a contradiction somewhere”: doctoral students’ positioning around discourses of gender and competence in physics",
-      "indexYear": 2012,
-      "indexAuthors": [
-        "Allison Jardim Gonsalves"
-      ],
-      "indexVenue": "Cultural Studies of Science Education",
-      "firstAuthorMatch": true,
-      "titleWordMatch": 1.0,
-      "yearDifference": 2,
-      "metadataHttp": 200,
-      "outcome": "review"
-    },
-    {
-      "page": "research.html",
-      "element_id": "reading-rajendram",
-      "year": 2023,
-      "reference": "Rajendram, S. (2023). Translanguaging as an agentive pedagogy for multilingual learners: Affordances and constraints. International Journal of Multilingualism, 20 (2), 595–622.",
-      "href": "https://doi.org/10.1080/14790718.2021.1898619",
-      "doi": "10.1080/14790718.2021.1898619",
-      "indexTitle": "Translanguaging as an agentive pedagogy for multilingual learners: affordances and constraints",
-      "indexYear": 2021,
-      "indexAuthors": [
-        "Shakina Rajendram"
-      ],
-      "indexVenue": "International Journal of Multilingualism",
-      "firstAuthorMatch": true,
-      "titleWordMatch": 1.0,
-      "yearDifference": 2,
-      "metadataHttp": 200,
-      "outcome": "review"
-    }
-  ],
+  "manual_review": [],
   "unverified": [],
   "status_inventory": {
     "research.html": {
