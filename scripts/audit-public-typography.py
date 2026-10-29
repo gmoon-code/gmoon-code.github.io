@@ -124,48 +124,48 @@ async def test(browser,engine,page_name,width,mode):
         if mode in ("text200","combined"):
             row["scaledTextElements"]=await page.evaluate(TEXT_RESIZE)
         metrics=await page.evaluate(METRICS)
-        if engine=="chromium" and page_name=="research-action.html" and width==320 and mode=="combined":
-            row["s6bProbe"]=await page.evaluate(r"""async () => {
-              const w=innerWidth;
-              const d=e=>{const r=e.getBoundingClientRect(),s=getComputedStyle(e);
-                return {tag:e.tagName,cls:(typeof e.className==='string'?e.className:'').slice(0,100),id:e.id,
-                  text:e.textContent?.trim().slice(0,75),left:+r.left.toFixed(2),right:+r.right.toFixed(2),
-                  width:+r.width.toFixed(2),scrollWidth:e.scrollWidth,clientWidth:e.clientWidth,
-                  overflowX:s.overflowX,position:s.position,display:s.display,minWidth:s.minWidth,
-                  gridTemplate:s.gridTemplateColumns,contain:s.contain}};
-              const base=document.documentElement.scrollWidth;
-              const els=[...document.querySelectorAll('body *')];
-              const off=els.filter(e=>{
-                const r=e.getBoundingClientRect();
-                return r.width>0&&r.right>w+2&&r.right<w+90;
-              }).slice(0,55).map(d);
-              const parent=els.filter(e=>e.scrollWidth>e.clientWidth+3&&
-                e.getBoundingClientRect().width>0).slice(0,55).map(d);
-              const tableWrappers=[...document.querySelectorAll('.research-table-wrap')].map(d);
-              const root=[document.documentElement,document.body,document.querySelector('main'),
-                ...document.querySelectorAll('main>.section')].filter(Boolean).map(d);
-              const trials={};
-              const css=[
-                ['table-wrapper-containment','#main .research-table-wrap{contain:inline-size!important}'],
-                ['table-wrapper-paint','#main .research-table-wrap{contain:paint!important}'],
-                ['all-table-scroll','#main table{display:block;max-width:100%;overflow-x:auto!important}'],
-                ['root-grid-minwidth','#main .section{min-width:0!important;max-width:100%!important}'],
-                ['table-wrapper-overscroll','#main .research-table-wrap{overflow-x:auto!important;overscroll-behavior-x:contain!important}'],
-                ['no-absolute','#main *{position:static!important}'],
-                ['word-boundary','#main *{overflow-wrap:anywhere!important;word-break:break-word!important}'],
-                ['sibling-clip','#main .section{overflow-x:clip!important}'],
-                ['no-research-table','#main .research-table-wrap{display:none!important}'],
-                ['no-research-flow','#main .research-selection-flow{display:none!important}'],
-                ['no-figures','#main figure{display:none!important}']
-              ];
-              for(const [label,rule] of css) {
-                const st=document.createElement('style');st.textContent=rule;
-                document.head.append(st);
-                trials[label]=document.documentElement.scrollWidth;
-                st.remove();
-              }
-              return {viewport:w,base,root,tableWrappers,nearRight:off,overflowElements:parent,trials};
+        if page_name=="research-action.html" and mode=="combined":
+            row["countBarChecks"]=await page.evaluate(r"""() => {
+              const bars=[...document.querySelectorAll('.research-count-row')];
+              return bars.map((el,i)=>{
+                const label=el.querySelector('.research-count-unit');
+                const value=el.querySelector('strong');
+                const track=el.querySelector('.research-count-track');
+                const fill=track?.querySelector('span');
+                const r=value.getBoundingClientRect(),t=track.getBoundingClientRect(),
+                  fr=fill.getBoundingClientRect(),lr=label.getBoundingClientRect(),
+                  row=el.getBoundingClientRect();
+                return {index:i,label:label.textContent.trim(),value:value.textContent.trim(),
+                  valueRight:+r.right.toFixed(2),valueWidth:+r.width.toFixed(2),
+                  valueScrollWidth:value.scrollWidth,rowRight:+row.right.toFixed(2),
+                  labelRight:+lr.right.toFixed(2),trackWidth:+t.width.toFixed(2),
+                  trackLeft:+t.left.toFixed(2),trackRight:+t.right.toFixed(2),
+                  fillRatio:t.width?+(fr.width/t.width).toFixed(3):null,
+                  labelAndValueShareRow:Math.abs(lr.top-r.top)<5,
+                  trackBelowLabels:t.top>Math.max(lr.top,r.top)+5};
+              });
             }""")
+            expected=(("Unit 2","7 of 28",.25),("Unit 3","18 of 28",18/28))
+            if len(row["countBarChecks"])!=2:
+                row["errors"].append("expected both assessment count bars")
+            else:
+                for bar,(unit,count,ratio) in zip(row["countBarChecks"],expected):
+                    if bar["label"]!=unit or bar["value"]!=count:
+                        row["errors"].append("assessment label or count lost")
+                    if bar["valueRight"]>bar["rowRight"]+2 or bar["valueScrollWidth"]>bar["valueWidth"]+2:
+                        row["errors"].append("assessment count extends outside its row")
+                    if bar["trackWidth"]<90 or abs(bar["fillRatio"]-ratio)>.02:
+                        row["errors"].append("assessment bar proportion is not preserved")
+                    if not bar["labelAndValueShareRow"] or not bar["trackBelowLabels"]:
+                        row["errors"].append("assessment count visual reading order disrupted")
+            if engine=="chromium" and width in (320,375,760):
+                try:
+                    barshot=OUT/f"s6b-count-bars-{width}.png"
+                    await page.locator(".research-count-bars").screenshot(path=str(barshot),
+                                          animations="disabled",timeout=8000)
+                    row["countBarScreenshot"]=str(barshot)
+                except Exception as exc:
+                    row["countBarCaptureWarning"]=str(exc)[:140]
         row["baseline"]={"viewport":baseline["viewport"],"documentWidth":baseline["documentWidth"],
                           "paragraphStyle":baseline["paragraphStyle"]}
         row["metrics"]=metrics
@@ -229,6 +229,14 @@ async def main():
             for name in names[:3]:
                 row=await test(browser,engine,name,320,"combined");results.append(row)
                 print(engine,name,320,"combined",row["errors"],flush=True)
+            # Specific S6b breakpoint checks. The original 98-case S6 matrix
+            # is preserved; these cases test the fix at and above the new
+            # count-chart layout transition in both browser engines.
+            widths=(375,640,760,768) if engine=="chromium" else (320,375,640,760,768)
+            for width in widths:
+                row=await test(browser,engine,"research-action.html",width,"combined")
+                results.append(row)
+                print("S6B",engine,"research-action.html",width,"combined",row["errors"],flush=True)
             await browser.close()
     all_findings=[{"engine":r["engine"],"page":r["page"],"width":r["width"],
      "mode":r["mode"],"errors":r["errors"],"metrics":r.get("metrics")}
@@ -243,7 +251,7 @@ async def main():
      "mode":r["mode"],"parentClips":r.get("metrics",{}).get("parentClips")}
       for r in results if r.get("metrics",{}).get("parentClips")]
     summary={"modes":["injected WCAG 1.4.12 paragraph/line/letter/word spacing",
-     "user-style computed-font-size ×2 simulation","combined 320px stress samples"],
+     "user-style computed-font-size ×2 simulation","supplemental combined-stress across narrow and breakpoint widths"],
      "publicPages":len(PAGES),"cases":len(results),
      "individualRequirementCases":sum(x["mode"]!="combined" for x in results),
      "combinedStressCases":sum(x["mode"]=="combined" for x in results),
