@@ -2254,4 +2254,14 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
 /* Teaching overview: consistent content-to-footer spacing without altering other pages. */
 #main.teaching-page{padding-bottom:64px}
 #main.teaching-page+.site-footer{margin-top:36px}
-@media print{#main.teaching-page{padding-bottom:0}}
+@media print{
+  #main.teaching-page{padding-bottom:0}
+  #main.teaching-page .teaching-essay-section>.section-head{
+    break-after:avoid-page!important;
+    page-break-after:avoid!important;
+  }
+  #main.teaching-page #teaching-mentorship{
+    break-before:page;
+    page-break-before:always;
+  }
+}
