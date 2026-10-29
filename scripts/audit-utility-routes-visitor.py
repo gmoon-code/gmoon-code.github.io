@@ -37,9 +37,9 @@ class PagesFallbackHandler(SimpleHTTPRequestHandler):
 server=ThreadingHTTPServer(("127.0.0.1",PORT),PagesFallbackHandler)
 Thread(target=server.serve_forever,daemon=True).start()
 
-def check(title,errors,**details):
-    RESULT.append({"test":title,**details,"errors":errors})
-    print("UTILITY",title,"PASS" if not errors else "FAIL",errors,flush=True)
+def check(test_name,errors,**details):
+    RESULT.append({"test":test_name,**details,"errors":errors})
+    print("UTILITY",test_name,"PASS" if not errors else "FAIL",errors,flush=True)
 
 async def run():
     async with async_playwright() as p:
