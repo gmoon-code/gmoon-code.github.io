@@ -6,60 +6,8 @@
   ],
   "publicPages": 18,
   "cases": 98,
-  "failedCount": 32,
+  "failedCount": 22,
   "failures": [
-    {
-      "engine": "chromium",
-      "page": "index.html",
-      "width": 320,
-      "mode": "text200",
-      "errors": [
-        "page-wide horizontal overflow"
-      ],
-      "metrics": {
-        "viewport": 320,
-        "documentWidth": 353,
-        "mainCount": 1,
-        "h1Count": 1,
-        "textElements": 28,
-        "outside": [],
-        "clipped": [],
-        "parentClips": [],
-        "culprits": [
-          {
-            "tag": "A",
-            "css": "",
-            "sample": "Teaching",
-            "x": 237,
-            "right": 353,
-            "width": 116,
-            "scrollWidth": 116,
-            "clientWidth": 116,
-            "scrollHeight": 55,
-            "clientHeight": 55
-          },
-          {
-            "tag": "A",
-            "css": "skip-link",
-            "sample": "Skip to content",
-            "x": -9999,
-            "right": -9805,
-            "width": 194,
-            "scrollWidth": 194,
-            "clientWidth": 194,
-            "scrollHeight": 50,
-            "clientHeight": 50
-          }
-        ],
-        "paragraphStyle": {
-          "fontSize": "38px",
-          "lineHeight": "57px",
-          "letterSpacing": "normal",
-          "wordSpacing": "0px",
-          "marginBottom": "0px"
-        }
-      }
-    },
     {
       "engine": "chromium",
       "page": "research.html",
@@ -70,7 +18,7 @@
       ],
       "metrics": {
         "viewport": 320,
-        "documentWidth": 353,
+        "documentWidth": 339,
         "mainCount": 1,
         "h1Count": 1,
         "textElements": 290,
@@ -78,18 +26,6 @@
         "clipped": [],
         "parentClips": [],
         "culprits": [
-          {
-            "tag": "A",
-            "css": "",
-            "sample": "Teaching",
-            "x": 237,
-            "right": 353,
-            "width": 116,
-            "scrollWidth": 116,
-            "clientWidth": 116,
-            "scrollHeight": 55,
-            "clientHeight": 55
-          },
           {
             "tag": "A",
             "css": "skip-link",
@@ -154,18 +90,6 @@
         "clipped": [],
         "parentClips": [],
         "culprits": [
-          {
-            "tag": "A",
-            "css": "",
-            "sample": "Teaching",
-            "x": 237,
-            "right": 353,
-            "width": 116,
-            "scrollWidth": 116,
-            "clientWidth": 116,
-            "scrollHeight": 55,
-            "clientHeight": 55
-          },
           {
             "tag": "TH",
             "css": "",
@@ -369,6 +293,18 @@
             "clientWidth": 620,
             "scrollHeight": 30,
             "clientHeight": 30
+          },
+          {
+            "tag": "THEAD",
+            "css": "",
+            "sample": "Unit 2 reflectionStudentsComplete in Unit 3Below complete in Unit 3",
+            "x": 14,
+            "right": 634,
+            "width": 620,
+            "scrollWidth": 620,
+            "clientWidth": 620,
+            "scrollHeight": 148,
+            "clientHeight": 148
           }
         ],
         "paragraphStyle": {
@@ -668,18 +604,6 @@
           },
           {
             "tag": "A",
-            "css": "",
-            "sample": "Teaching",
-            "x": 237,
-            "right": 353,
-            "width": 116,
-            "scrollWidth": 116,
-            "clientWidth": 116,
-            "scrollHeight": 55,
-            "clientHeight": 55
-          },
-          {
-            "tag": "A",
             "css": "skip-link",
             "sample": "Skip to content",
             "x": -9999,
@@ -821,6 +745,18 @@
             "clientWidth": 620,
             "scrollHeight": 179,
             "clientHeight": 179
+          },
+          {
+            "tag": "TR",
+            "css": "",
+            "sample": "Focal language condition14 of 20Which language options or testing conditions shaped the task",
+            "x": 14,
+            "right": 634,
+            "width": 620,
+            "scrollWidth": 620,
+            "clientWidth": 620,
+            "scrollHeight": 140,
+            "clientHeight": 140
           }
         ],
         "paragraphStyle": {
@@ -852,18 +788,6 @@
         "culprits": [
           {
             "tag": "A",
-            "css": "",
-            "sample": "Teaching",
-            "x": 237,
-            "right": 353,
-            "width": 116,
-            "scrollWidth": 116,
-            "clientWidth": 116,
-            "scrollHeight": 55,
-            "clientHeight": 55
-          },
-          {
-            "tag": "A",
             "css": "skip-link",
             "sample": "Skip to content",
             "x": -9999,
@@ -886,110 +810,6 @@
     },
     {
       "engine": "chromium",
-      "page": "projects.html",
-      "width": 320,
-      "mode": "text200",
-      "errors": [
-        "page-wide horizontal overflow"
-      ],
-      "metrics": {
-        "viewport": 320,
-        "documentWidth": 353,
-        "mainCount": 1,
-        "h1Count": 1,
-        "textElements": 24,
-        "outside": [],
-        "clipped": [],
-        "parentClips": [],
-        "culprits": [
-          {
-            "tag": "A",
-            "css": "",
-            "sample": "Teaching",
-            "x": 237,
-            "right": 353,
-            "width": 116,
-            "scrollWidth": 116,
-            "clientWidth": 116,
-            "scrollHeight": 55,
-            "clientHeight": 55
-          },
-          {
-            "tag": "A",
-            "css": "skip-link",
-            "sample": "Skip to content",
-            "x": -9999,
-            "right": -9805,
-            "width": 194,
-            "scrollWidth": 194,
-            "clientWidth": 194,
-            "scrollHeight": 50,
-            "clientHeight": 50
-          }
-        ],
-        "paragraphStyle": {
-          "fontSize": "36px",
-          "lineHeight": "56.88px",
-          "letterSpacing": "normal",
-          "wordSpacing": "0px",
-          "marginBottom": "0px"
-        }
-      }
-    },
-    {
-      "engine": "chromium",
-      "page": "story-method.html",
-      "width": 320,
-      "mode": "text200",
-      "errors": [
-        "page-wide horizontal overflow"
-      ],
-      "metrics": {
-        "viewport": 320,
-        "documentWidth": 353,
-        "mainCount": 1,
-        "h1Count": 1,
-        "textElements": 74,
-        "outside": [],
-        "clipped": [],
-        "parentClips": [],
-        "culprits": [
-          {
-            "tag": "A",
-            "css": "",
-            "sample": "Teaching",
-            "x": 237,
-            "right": 353,
-            "width": 116,
-            "scrollWidth": 116,
-            "clientWidth": 116,
-            "scrollHeight": 55,
-            "clientHeight": 55
-          },
-          {
-            "tag": "A",
-            "css": "skip-link",
-            "sample": "Skip to content",
-            "x": -9999,
-            "right": -9805,
-            "width": 194,
-            "scrollWidth": 194,
-            "clientWidth": 194,
-            "scrollHeight": 50,
-            "clientHeight": 50
-          }
-        ],
-        "paragraphStyle": {
-          "fontSize": "36px",
-          "lineHeight": "56.88px",
-          "letterSpacing": "normal",
-          "wordSpacing": "0px",
-          "marginBottom": "0px"
-        }
-      }
-    },
-    {
-      "engine": "chromium",
       "page": "research-methods-studio.html",
       "width": 320,
       "mode": "text200",
@@ -1006,18 +826,6 @@
         "clipped": [],
         "parentClips": [],
         "culprits": [
-          {
-            "tag": "A",
-            "css": "",
-            "sample": "Teaching",
-            "x": 237,
-            "right": 353,
-            "width": 116,
-            "scrollWidth": 116,
-            "clientWidth": 116,
-            "scrollHeight": 55,
-            "clientHeight": 55
-          },
           {
             "tag": "A",
             "css": "skip-link",
@@ -1221,6 +1029,18 @@
             "clientWidth": 290,
             "scrollHeight": 242,
             "clientHeight": 242
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "What supports the interpretation, and how are participant privacy and agency protected?",
+            "x": 505,
+            "right": 795,
+            "width": 290,
+            "scrollWidth": 290,
+            "clientWidth": 290,
+            "scrollHeight": 242,
+            "clientHeight": 242
           }
         ],
         "paragraphStyle": {
@@ -1242,7 +1062,7 @@
       ],
       "metrics": {
         "viewport": 320,
-        "documentWidth": 353,
+        "documentWidth": 346,
         "mainCount": 1,
         "h1Count": 1,
         "textElements": 60,
@@ -1250,18 +1070,6 @@
         "clipped": [],
         "parentClips": [],
         "culprits": [
-          {
-            "tag": "A",
-            "css": "",
-            "sample": "Teaching",
-            "x": 237,
-            "right": 353,
-            "width": 116,
-            "scrollWidth": 116,
-            "clientWidth": 116,
-            "scrollHeight": 55,
-            "clientHeight": 55
-          },
           {
             "tag": "A",
             "css": "skip-link",
@@ -1559,18 +1367,6 @@
             "clientHeight": 0
           },
           {
-            "tag": "A",
-            "css": "",
-            "sample": "Teaching",
-            "x": 237,
-            "right": 353,
-            "width": 116,
-            "scrollWidth": 116,
-            "clientWidth": 116,
-            "scrollHeight": 55,
-            "clientHeight": 55
-          },
-          {
             "tag": "TH",
             "css": "",
             "sample": "What I would examine",
@@ -1761,6 +1557,18 @@
             "clientWidth": 223,
             "scrollHeight": 723,
             "clientHeight": 723
+          },
+          {
+            "tag": "TH",
+            "css": "",
+            "sample": "Follow-up when missing or contradictory",
+            "x": 517,
+            "right": 805,
+            "width": 288,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "scrollHeight": 155,
+            "clientHeight": 155
           }
         ],
         "paragraphStyle": {
@@ -1861,18 +1669,6 @@
             "clientWidth": 0,
             "scrollHeight": 0,
             "clientHeight": 0
-          },
-          {
-            "tag": "A",
-            "css": "",
-            "sample": "Teaching",
-            "x": 237,
-            "right": 353,
-            "width": 116,
-            "scrollWidth": 116,
-            "clientWidth": 116,
-            "scrollHeight": 55,
-            "clientHeight": 55
           },
           {
             "tag": "A",
@@ -2005,6 +1801,18 @@
             "clientWidth": 214,
             "scrollHeight": 766,
             "clientHeight": 766
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Write reaction quotient expressions from stoichiometric coefficients, calculate Qp from partial pressures, and comp",
+            "x": 201,
+            "right": 415,
+            "width": 214,
+            "scrollWidth": 214,
+            "clientWidth": 214,
+            "scrollHeight": 517,
+            "clientHeight": 517
           }
         ],
         "paragraphStyle": {
@@ -2045,18 +1853,6 @@
             "clientWidth": 0,
             "scrollHeight": 0,
             "clientHeight": 0
-          },
-          {
-            "tag": "A",
-            "css": "",
-            "sample": "Teaching",
-            "x": 237,
-            "right": 353,
-            "width": 116,
-            "scrollWidth": 116,
-            "clientWidth": 116,
-            "scrollHeight": 55,
-            "clientHeight": 55
           },
           {
             "tag": "TH",
@@ -2249,6 +2045,18 @@
             "clientWidth": 194,
             "scrollHeight": 50,
             "clientHeight": 50
+          },
+          {
+            "tag": "TH",
+            "css": "",
+            "sample": "Question and student work",
+            "x": 223,
+            "right": 439,
+            "width": 215,
+            "scrollWidth": 215,
+            "clientWidth": 215,
+            "scrollHeight": 155,
+            "clientHeight": 155
           }
         ],
         "paragraphStyle": {
@@ -2257,214 +2065,6 @@
           "letterSpacing": "normal",
           "wordSpacing": "0px",
           "marginBottom": "11px"
-        }
-      }
-    },
-    {
-      "engine": "chromium",
-      "page": "teaching-osmosis-practice.html",
-      "width": 320,
-      "mode": "text200",
-      "errors": [
-        "page-wide horizontal overflow"
-      ],
-      "metrics": {
-        "viewport": 320,
-        "documentWidth": 353,
-        "mainCount": 1,
-        "h1Count": 1,
-        "textElements": 36,
-        "outside": [],
-        "clipped": [],
-        "parentClips": [],
-        "culprits": [
-          {
-            "tag": "A",
-            "css": "",
-            "sample": "Teaching",
-            "x": 237,
-            "right": 353,
-            "width": 116,
-            "scrollWidth": 116,
-            "clientWidth": 116,
-            "scrollHeight": 55,
-            "clientHeight": 55
-          },
-          {
-            "tag": "A",
-            "css": "skip-link",
-            "sample": "Skip to content",
-            "x": -9999,
-            "right": -9805,
-            "width": 194,
-            "scrollWidth": 194,
-            "clientWidth": 194,
-            "scrollHeight": 50,
-            "clientHeight": 50
-          }
-        ],
-        "paragraphStyle": {
-          "fontSize": "26px",
-          "lineHeight": "41.08px",
-          "letterSpacing": "normal",
-          "wordSpacing": "0px",
-          "marginBottom": "7px"
-        }
-      }
-    },
-    {
-      "engine": "chromium",
-      "page": "interests.html",
-      "width": 320,
-      "mode": "text200",
-      "errors": [
-        "page-wide horizontal overflow"
-      ],
-      "metrics": {
-        "viewport": 320,
-        "documentWidth": 353,
-        "mainCount": 1,
-        "h1Count": 1,
-        "textElements": 50,
-        "outside": [],
-        "clipped": [],
-        "parentClips": [],
-        "culprits": [
-          {
-            "tag": "A",
-            "css": "",
-            "sample": "Teaching",
-            "x": 237,
-            "right": 353,
-            "width": 116,
-            "scrollWidth": 116,
-            "clientWidth": 116,
-            "scrollHeight": 55,
-            "clientHeight": 55
-          },
-          {
-            "tag": "A",
-            "css": "skip-link",
-            "sample": "Skip to content",
-            "x": -9999,
-            "right": -9805,
-            "width": 194,
-            "scrollWidth": 194,
-            "clientWidth": 194,
-            "scrollHeight": 50,
-            "clientHeight": 50
-          }
-        ],
-        "paragraphStyle": {
-          "fontSize": "32px",
-          "lineHeight": "49.6px",
-          "letterSpacing": "normal",
-          "wordSpacing": "0px",
-          "marginBottom": "16px"
-        }
-      }
-    },
-    {
-      "engine": "chromium",
-      "page": "pungmul.html",
-      "width": 320,
-      "mode": "text200",
-      "errors": [
-        "page-wide horizontal overflow"
-      ],
-      "metrics": {
-        "viewport": 320,
-        "documentWidth": 353,
-        "mainCount": 1,
-        "h1Count": 1,
-        "textElements": 51,
-        "outside": [],
-        "clipped": [],
-        "parentClips": [],
-        "culprits": [
-          {
-            "tag": "A",
-            "css": "",
-            "sample": "Teaching",
-            "x": 237,
-            "right": 353,
-            "width": 116,
-            "scrollWidth": 116,
-            "clientWidth": 116,
-            "scrollHeight": 55,
-            "clientHeight": 55
-          },
-          {
-            "tag": "A",
-            "css": "skip-link",
-            "sample": "Skip to content",
-            "x": -9999,
-            "right": -9805,
-            "width": 194,
-            "scrollWidth": 194,
-            "clientWidth": 194,
-            "scrollHeight": 50,
-            "clientHeight": 50
-          }
-        ],
-        "paragraphStyle": {
-          "fontSize": "26px",
-          "lineHeight": "40.3px",
-          "letterSpacing": "normal",
-          "wordSpacing": "0px",
-          "marginBottom": "20px"
-        }
-      }
-    },
-    {
-      "engine": "chromium",
-      "page": "contact.html",
-      "width": 320,
-      "mode": "text200",
-      "errors": [
-        "page-wide horizontal overflow"
-      ],
-      "metrics": {
-        "viewport": 320,
-        "documentWidth": 353,
-        "mainCount": 1,
-        "h1Count": 1,
-        "textElements": 11,
-        "outside": [],
-        "clipped": [],
-        "parentClips": [],
-        "culprits": [
-          {
-            "tag": "A",
-            "css": "",
-            "sample": "Teaching",
-            "x": 237,
-            "right": 353,
-            "width": 116,
-            "scrollWidth": 116,
-            "clientWidth": 116,
-            "scrollHeight": 55,
-            "clientHeight": 55
-          },
-          {
-            "tag": "A",
-            "css": "skip-link",
-            "sample": "Skip to content",
-            "x": -9999,
-            "right": -9805,
-            "width": 194,
-            "scrollWidth": 194,
-            "clientWidth": 194,
-            "scrollHeight": 50,
-            "clientHeight": 50
-          }
-        ],
-        "paragraphStyle": {
-          "fontSize": "36px",
-          "lineHeight": "60.12px",
-          "letterSpacing": "normal",
-          "wordSpacing": "0px",
-          "marginBottom": "0px"
         }
       }
     },
@@ -2479,7 +2079,7 @@
       ],
       "metrics": {
         "viewport": 320,
-        "documentWidth": 353,
+        "documentWidth": 335,
         "mainCount": 1,
         "h1Count": 1,
         "textElements": 81,
@@ -2524,18 +2124,6 @@
         "clipped": [],
         "parentClips": [],
         "culprits": [
-          {
-            "tag": "A",
-            "css": "",
-            "sample": "Teaching",
-            "x": 237,
-            "right": 353,
-            "width": 116,
-            "scrollWidth": 116,
-            "clientWidth": 116,
-            "scrollHeight": 55,
-            "clientHeight": 55
-          },
           {
             "tag": "A",
             "css": "skip-link",
@@ -2620,58 +2208,6 @@
     },
     {
       "engine": "chromium",
-      "page": "404.html",
-      "width": 320,
-      "mode": "text200",
-      "errors": [
-        "page-wide horizontal overflow"
-      ],
-      "metrics": {
-        "viewport": 320,
-        "documentWidth": 353,
-        "mainCount": 1,
-        "h1Count": 1,
-        "textElements": 3,
-        "outside": [],
-        "clipped": [],
-        "parentClips": [],
-        "culprits": [
-          {
-            "tag": "A",
-            "css": "",
-            "sample": "Teaching",
-            "x": 237,
-            "right": 353,
-            "width": 116,
-            "scrollWidth": 116,
-            "clientWidth": 116,
-            "scrollHeight": 55,
-            "clientHeight": 55
-          },
-          {
-            "tag": "A",
-            "css": "skip-link",
-            "sample": "Skip to content",
-            "x": -9999,
-            "right": -9805,
-            "width": 194,
-            "scrollWidth": 194,
-            "clientWidth": 194,
-            "scrollHeight": 50,
-            "clientHeight": 50
-          }
-        ],
-        "paragraphStyle": {
-          "fontSize": "36px",
-          "lineHeight": "56.88px",
-          "letterSpacing": "normal",
-          "wordSpacing": "0px",
-          "marginBottom": "0px"
-        }
-      }
-    },
-    {
-      "engine": "chromium",
       "page": "index.html",
       "width": 320,
       "mode": "combined",
@@ -2680,7 +2216,7 @@
       ],
       "metrics": {
         "viewport": 320,
-        "documentWidth": 380,
+        "documentWidth": 329,
         "mainCount": 1,
         "h1Count": 1,
         "textElements": 28,
@@ -2688,18 +2224,6 @@
         "clipped": [],
         "parentClips": [],
         "culprits": [
-          {
-            "tag": "A",
-            "css": "",
-            "sample": "Teaching",
-            "x": 237,
-            "right": 380,
-            "width": 143,
-            "scrollWidth": 143,
-            "clientWidth": 143,
-            "scrollHeight": 62,
-            "clientHeight": 62
-          },
           {
             "tag": "A",
             "css": "skip-link",
@@ -2740,18 +2264,6 @@
         "clipped": [],
         "parentClips": [],
         "culprits": [
-          {
-            "tag": "A",
-            "css": "",
-            "sample": "Teaching",
-            "x": 237,
-            "right": 380,
-            "width": 143,
-            "scrollWidth": 143,
-            "clientWidth": 143,
-            "scrollHeight": 62,
-            "clientHeight": 62
-          },
           {
             "tag": "A",
             "css": "skip-link",
@@ -2875,18 +2387,6 @@
             "clientWidth": 93,
             "scrollHeight": 176,
             "clientHeight": 176
-          },
-          {
-            "tag": "A",
-            "css": "",
-            "sample": "Teaching",
-            "x": 237,
-            "right": 380,
-            "width": 143,
-            "scrollWidth": 143,
-            "clientWidth": 143,
-            "scrollHeight": 62,
-            "clientHeight": 62
           },
           {
             "tag": "TH",
@@ -3031,6 +2531,18 @@
             "clientWidth": 310,
             "scrollHeight": 176,
             "clientHeight": 176
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "A previously expressed contradiction about the proton gradient did not appear in the reconstruction.",
+            "x": 324,
+            "right": 634,
+            "width": 310,
+            "scrollWidth": 310,
+            "clientWidth": 310,
+            "scrollHeight": 254,
+            "clientHeight": 254
           }
         ],
         "paragraphStyle": {
@@ -3044,58 +2556,6 @@
     },
     {
       "engine": "firefox",
-      "page": "index.html",
-      "width": 320,
-      "mode": "text200",
-      "errors": [
-        "page-wide horizontal overflow"
-      ],
-      "metrics": {
-        "viewport": 320,
-        "documentWidth": 353,
-        "mainCount": 1,
-        "h1Count": 1,
-        "textElements": 28,
-        "outside": [],
-        "clipped": [],
-        "parentClips": [],
-        "culprits": [
-          {
-            "tag": "A",
-            "css": "",
-            "sample": "Teaching",
-            "x": 237,
-            "right": 353,
-            "width": 116,
-            "scrollWidth": 116,
-            "clientWidth": 116,
-            "scrollHeight": 55,
-            "clientHeight": 55
-          },
-          {
-            "tag": "A",
-            "css": "skip-link",
-            "sample": "Skip to content",
-            "x": -9999,
-            "right": -9805,
-            "width": 194,
-            "scrollWidth": 194,
-            "clientWidth": 194,
-            "scrollHeight": 50,
-            "clientHeight": 50
-          }
-        ],
-        "paragraphStyle": {
-          "fontSize": "38px",
-          "lineHeight": "57px",
-          "letterSpacing": "normal",
-          "wordSpacing": "0px",
-          "marginBottom": "0px"
-        }
-      }
-    },
-    {
-      "engine": "firefox",
       "page": "research.html",
       "width": 320,
       "mode": "text200",
@@ -3104,7 +2564,7 @@
       ],
       "metrics": {
         "viewport": 320,
-        "documentWidth": 353,
+        "documentWidth": 339,
         "mainCount": 1,
         "h1Count": 1,
         "textElements": 290,
@@ -3112,18 +2572,6 @@
         "clipped": [],
         "parentClips": [],
         "culprits": [
-          {
-            "tag": "A",
-            "css": "",
-            "sample": "Teaching",
-            "x": 237,
-            "right": 353,
-            "width": 116,
-            "scrollWidth": 116,
-            "clientWidth": 116,
-            "scrollHeight": 55,
-            "clientHeight": 55
-          },
           {
             "tag": "A",
             "css": "skip-link",
@@ -3445,18 +2893,6 @@
             "clientHeight": 0
           },
           {
-            "tag": "A",
-            "css": "",
-            "sample": "Teaching",
-            "x": 237,
-            "right": 353,
-            "width": 116,
-            "scrollWidth": 116,
-            "clientWidth": 116,
-            "scrollHeight": 55,
-            "clientHeight": 55
-          },
-          {
             "tag": "TH",
             "css": "",
             "sample": "What I would examine",
@@ -3647,6 +3083,18 @@
             "clientWidth": 223,
             "scrollHeight": 723,
             "clientHeight": 723
+          },
+          {
+            "tag": "TH",
+            "css": "",
+            "sample": "Follow-up when missing or contradictory",
+            "x": 517,
+            "right": 805,
+            "width": 288,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "scrollHeight": 155,
+            "clientHeight": 155
           }
         ],
         "paragraphStyle": {
@@ -3655,58 +3103,6 @@
           "letterSpacing": "normal",
           "wordSpacing": "0px",
           "marginBottom": "11px"
-        }
-      }
-    },
-    {
-      "engine": "firefox",
-      "page": "interests.html",
-      "width": 320,
-      "mode": "text200",
-      "errors": [
-        "page-wide horizontal overflow"
-      ],
-      "metrics": {
-        "viewport": 320,
-        "documentWidth": 353,
-        "mainCount": 1,
-        "h1Count": 1,
-        "textElements": 50,
-        "outside": [],
-        "clipped": [],
-        "parentClips": [],
-        "culprits": [
-          {
-            "tag": "A",
-            "css": "",
-            "sample": "Teaching",
-            "x": 237,
-            "right": 353,
-            "width": 116,
-            "scrollWidth": 116,
-            "clientWidth": 116,
-            "scrollHeight": 55,
-            "clientHeight": 55
-          },
-          {
-            "tag": "A",
-            "css": "skip-link",
-            "sample": "Skip to content",
-            "x": -9999,
-            "right": -9805,
-            "width": 194,
-            "scrollWidth": 194,
-            "clientWidth": 194,
-            "scrollHeight": 50,
-            "clientHeight": 50
-          }
-        ],
-        "paragraphStyle": {
-          "fontSize": "32px",
-          "lineHeight": "49.6px",
-          "letterSpacing": "normal",
-          "wordSpacing": "0px",
-          "marginBottom": "16px"
         }
       }
     },
@@ -3721,7 +3117,7 @@
       ],
       "metrics": {
         "viewport": 320,
-        "documentWidth": 353,
+        "documentWidth": 335,
         "mainCount": 1,
         "h1Count": 1,
         "textElements": 81,
@@ -3766,18 +3162,6 @@
         "clipped": [],
         "parentClips": [],
         "culprits": [
-          {
-            "tag": "A",
-            "css": "",
-            "sample": "Teaching",
-            "x": 237,
-            "right": 353,
-            "width": 116,
-            "scrollWidth": 116,
-            "clientWidth": 116,
-            "scrollHeight": 55,
-            "clientHeight": 55
-          },
           {
             "tag": "A",
             "css": "skip-link",
@@ -3870,7 +3254,7 @@
       ],
       "metrics": {
         "viewport": 320,
-        "documentWidth": 380,
+        "documentWidth": 329,
         "mainCount": 1,
         "h1Count": 1,
         "textElements": 28,
@@ -3878,18 +3262,6 @@
         "clipped": [],
         "parentClips": [],
         "culprits": [
-          {
-            "tag": "A",
-            "css": "",
-            "sample": "Teaching",
-            "x": 237,
-            "right": 380,
-            "width": 143,
-            "scrollWidth": 143,
-            "clientWidth": 143,
-            "scrollHeight": 62,
-            "clientHeight": 62
-          },
           {
             "tag": "A",
             "css": "skip-link",
@@ -3930,18 +3302,6 @@
         "clipped": [],
         "parentClips": [],
         "culprits": [
-          {
-            "tag": "A",
-            "css": "",
-            "sample": "Teaching",
-            "x": 237,
-            "right": 380,
-            "width": 143,
-            "scrollWidth": 143,
-            "clientWidth": 143,
-            "scrollHeight": 62,
-            "clientHeight": 62
-          },
           {
             "tag": "A",
             "css": "skip-link",
@@ -4189,18 +3549,6 @@
             "clientHeight": 0
           },
           {
-            "tag": "A",
-            "css": "",
-            "sample": "Teaching",
-            "x": 237,
-            "right": 380,
-            "width": 143,
-            "scrollWidth": 143,
-            "clientWidth": 143,
-            "scrollHeight": 62,
-            "clientHeight": 62
-          },
-          {
             "tag": "TH",
             "css": "",
             "sample": "What I would examine",
@@ -4391,6 +3739,18 @@
             "clientWidth": 261,
             "scrollHeight": 48,
             "clientHeight": 48
+          },
+          {
+            "tag": "TH",
+            "css": "",
+            "sample": "Follow-up when missing or contradictory",
+            "x": 533,
+            "right": 805,
+            "width": 272,
+            "scrollWidth": 272,
+            "clientWidth": 272,
+            "scrollHeight": 150,
+            "clientHeight": 150
           }
         ],
         "paragraphStyle": {
@@ -4407,15 +3767,15 @@
   "byEngine": {
     "chromium": {
       "cases": 75,
-      "failures": 23
+      "failures": 15
     },
     "firefox": {
       "cases": 23,
-      "failures": 9
+      "failures": 7
     }
   },
   "caveats": "User-style injections approximate enhanced text spacing and 200% text-only enlargement. They do not operate the browser's native text-only zoom interface. Page-level overflow and selected clipped text are checked; screenshots and ancestor-clip advisories require human review. Automated results do not certify WCAG.",
-  "workflow_run_id": "40867700898",
-  "head_sha": "807f502bd731849d191d7b6b1df7c9daaeb40a85",
+  "workflow_run_id": "40867967565",
+  "head_sha": "07aef5100c8aea5cffcb516535f1002cdc97eb81",
   "exit_code": "1"
 }
