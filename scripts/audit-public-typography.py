@@ -156,8 +156,12 @@ async def test(browser,engine,page_name,width,mode):
                         row["errors"].append("assessment count extends outside its row")
                     if bar["trackWidth"]<90 or abs(bar["fillRatio"]-ratio)>.02:
                         row["errors"].append("assessment bar proportion is not preserved")
-                    if not bar["labelAndValueShareRow"] or not bar["trackBelowLabels"]:
-                        row["errors"].append("assessment count visual reading order disrupted")
+                    if not bar["labelAndValueShareRow"]:
+                        row["errors"].append("assessment label and value do not share a row")
+                    if width<=760 and not bar["trackBelowLabels"]:
+                        row["errors"].append("narrow assessment track not below label and value")
+                    if width>760 and bar["trackBelowLabels"]:
+                        row["errors"].append("wide assessment track moved unexpectedly")
             if engine=="chromium" and width in (320,375,760):
                 try:
                     barshot=OUT/f"s6b-count-bars-{width}.png"
