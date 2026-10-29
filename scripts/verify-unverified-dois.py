@@ -60,6 +60,17 @@ def registry_check(row):
                registeredTitle=titles[0].get("title") if titles else None,
                publisher=meta.get("publisher"),
                year=meta.get("publicationYear"))
+    if item["registry"]!="registered":
+        # OpenAlex is an independent scholarly index, not an authoritative DOI registry.
+        # A match can corroborate the link when Crossref rate-limits this runner.
+        code,data=retrieve_json("https://api.openalex.org/works/https://doi.org/"+encoded)
+        item["openalexStatus"]=code
+        if code==200 and isinstance(data,dict):
+            indexed=unquote(urlsplit(str(data.get("doi") or "")).path.lstrip("/"))
+            if indexed.casefold()==doi.casefold():
+                item.update(secondaryIndex="OpenAlex",
+                    indexedTitle=data.get("display_name"),
+                    indexedYear=data.get("publication_year"))
     return item
 
 def main():
@@ -83,8 +94,10 @@ def main():
     summarypath=OUT/"summary.json"
     summary=json.loads(summarypath.read_text(encoding="utf-8"))
     summary["doi_registry"]={"checked":len(results),"counts":counts,
+        "secondary_index_matches":sum(bool(x.get("secondaryIndex")) for x in results),
         "not_confirmed":[x for x in results if x["registry"]!="registered"],
-        "limitation":"Crossref/DataCite registration is distinct from publisher access, correct article metadata or article availability."}
+        "unresolved":[x for x in results if x["registry"]!="registered" and not x.get("secondaryIndex")],
+        "limitation":"Crossref/DataCite registration is distinct from publisher access, correct article metadata or article availability. OpenAlex is independent secondary corroboration, not registration proof."}
     summarypath.write_text(json.dumps(summary,ensure_ascii=False,indent=2)+"\n")
     print(json.dumps({"checked":len(results),"counts":counts,
       "not_confirmed":summary["doi_registry"]["not_confirmed"]},ensure_ascii=False,indent=2))
