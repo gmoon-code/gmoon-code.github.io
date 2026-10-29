@@ -265,7 +265,7 @@
     }
   },
   "caveats": "User-style injections approximate enhanced text spacing and 200% text-only enlargement. They do not operate the browser's native text-only zoom interface. Page-level overflow and selected clipped text are checked; screenshots and ancestor-clip advisories require human review. Automated results do not certify WCAG.",
-  "workflow_run_id": "40868698794",
-  "head_sha": "4a3073546959e0515eefbb22fe03c70633d3c62e",
+  "workflow_run_id": "40868918488",
+  "head_sha": "b95393635b4f4213f4fc503b45ba3c9989b6340a",
   "exit_code": "1"
 }
