@@ -167,6 +167,77 @@ async def main():
    results.append({"test":"A4 print","errors":[repr(exc)]})
    print("PRINT ERROR",repr(exc),flush=True)
   finally:await page.close()
+  # Verify actual visitor links and sample text contrast, not only href syntax.
+  for appearance in ("light","dark"):
+   page=await browser.new_page(viewport={"width":375 if appearance=="dark" else 1440,"height":850},
+                               reduced_motion="reduce")
+   try:
+    await page.goto(URL,wait_until="load")
+    await page.locator(".moon-appearance-select").select_option(appearance)
+    await page.wait_for_function("pref => document.documentElement.dataset.moonTheme===pref",appearance)
+    vals=await page.evaluate("""() => {
+      const get=e=>document.querySelector(e);
+      const parse=s=>{
+        const m=s.match(/rgba?\\(([^)]+)\\)/);if(!m)return null;
+        const c=m[1].split(',').map(Number);return [c[0],c[1],c[2],c.length>3?c[3]:1];
+      };
+      const bg=e=>{
+        for(let x=e;x;x=x.parentElement){
+          let c=parse(getComputedStyle(x).backgroundColor);
+          if(c && c[3]===1)return c;
+        }
+        return [255,255,255,1];
+      };
+      const lum=c=>{
+        let cs=c.slice(0,3).map(v=>{
+          v=v/255;return v<=0.04045?v/12.92:((v+0.055)/1.055)**2.4;
+        });return cs[0]*.2126+cs[1]*.7152+cs[2]*.0722;
+      };
+      const inspect=(sel,threshold)=>{
+        const el=get(sel);const c=parse(getComputedStyle(el).color),b=bg(el);
+        const x=lum(c),y=lum(b),ratio=(Math.max(x,y)+0.05)/(Math.min(x,y)+0.05);
+        return {selector:sel,foreground:c,background:b,ratio:+ratio.toFixed(2),
+          threshold,pass:ratio>=threshold};
+      };
+      return {theme:document.documentElement.dataset.moonTheme,
+        checks:[
+          inspect('.resume-header h1',3),
+          inspect('.resume-meta',4.5),
+          inspect('.resume-section h2',3),
+          inspect('.resume-entry-heading h3',3),
+          inspect('.resume-date',4.5),
+          inspect('.resume-bullets li',4.5),
+          inspect('.resume-print',4.5),
+          inspect('.resume-citation a',4.5)
+        ]};
+    }""")
+    err=[]
+    if vals["theme"]!=appearance:err.append("theme not set")
+    if any(not x["pass"] for x in vals["checks"]):err.append("sample text contrast below WCAG AA")
+    results.append({"test":"contrast "+appearance,**vals,"errors":err})
+    print("CONTRAST",appearance,"PASS" if not err else err,flush=True)
+   except Exception as exc:
+    results.append({"test":"contrast "+appearance,"errors":[repr(exc)]})
+    print("CONTRAST ERROR",appearance,repr(exc),flush=True)
+   finally:await page.close()
+  page=await browser.new_page(viewport={"width":375,"height":800})
+  try:
+   await page.goto(URL,wait_until="load")
+   expected="research-action.html"
+   link=page.locator('main a[href="research-action.html"]')
+   await link.click()
+   await page.wait_for_url(BASE+"/"+expected,timeout=15000)
+   title=await page.title()
+   maintext=await page.locator('main h1').first.inner_text()
+   local=page.url==BASE+"/"+expected
+   errs=[]
+   if not local or not maintext:errs.append("research overview link not navigable")
+   results.append({"test":"internal research link","destination":page.url,
+     "title":title,"heading":maintext,"errors":errs})
+   print("INTERNAL LINK","PASS" if not errs else errs,flush=True)
+  except Exception as exc:
+   results.append({"test":"internal research link","errors":[repr(exc)]})
+  finally:await page.close()
   await browser.close()
  (OUT/"report.json").write_text(json.dumps(results,indent=2),encoding="utf-8")
  failures=[r for r in results if r["errors"]]
