@@ -1,0 +1,43 @@
+name: Action research visitor audit
+on:
+  push:
+    branches: [main]
+    paths:
+      - "research-action.html"
+      - "styles-20261013.css"
+      - "site-theme.css"
+      - "appearance.css"
+      - "appearance.js"
+      - "scripts/audit-action-visitor.py"
+      - ".github/workflows/audit-action-visitor.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  visitor-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 13
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install browser and PDF inspector
+        run: |
+          python -m pip install playwright==1.57.0 PyMuPDF==1.26.7
+          python -m playwright install --with-deps chromium
+      - name: Check classroom action research page
+        run: |
+          python -m http.server 8779 --bind 127.0.0.1 >/tmp/action-http.log 2>&1 &
+          python scripts/audit-action-visitor.py
+      - name: Store exact source and visual evidence
+        if: always()
+        run: |
+          mkdir -p action-visitor-output/source
+          cp research-action.html styles-20261013.css site-theme.css appearance.css appearance.js action-visitor-output/source/
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: action-research-visitor-evidence
+          path: action-visitor-output/
+          retention-days: 14
