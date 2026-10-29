@@ -1,0 +1,2957 @@
+{
+  "modes": [
+    "injected WCAG 1.4.12 paragraph/line/letter/word spacing",
+    "user-style computed-font-size ×2 simulation",
+    "combined 320px stress samples"
+  ],
+  "publicPages": 18,
+  "cases": 98,
+  "failedCount": 52,
+  "failures": [
+    {
+      "engine": "chromium",
+      "page": "index.html",
+      "width": 320,
+      "mode": "text200",
+      "errors": [
+        "page-wide horizontal overflow"
+      ],
+      "metrics": {
+        "viewport": 320,
+        "documentWidth": 353,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 28,
+        "outside": [],
+        "clipped": [],
+        "parentClips": [],
+        "paragraphStyle": {
+          "fontSize": "38px",
+          "lineHeight": "57px",
+          "letterSpacing": "normal",
+          "wordSpacing": "0px",
+          "marginBottom": "0px"
+        }
+      }
+    },
+    {
+      "engine": "chromium",
+      "page": "research.html",
+      "width": 320,
+      "mode": "text200",
+      "errors": [
+        "page-wide horizontal overflow"
+      ],
+      "metrics": {
+        "viewport": 320,
+        "documentWidth": 353,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 290,
+        "outside": [],
+        "clipped": [],
+        "parentClips": [],
+        "paragraphStyle": {
+          "fontSize": "38px",
+          "lineHeight": "59.28px",
+          "letterSpacing": "normal",
+          "wordSpacing": "0px",
+          "marginBottom": "22px"
+        }
+      }
+    },
+    {
+      "engine": "chromium",
+      "page": "research-action.html",
+      "width": 320,
+      "mode": "text200",
+      "errors": [
+        "page-wide horizontal overflow"
+      ],
+      "metrics": {
+        "viewport": 320,
+        "documentWidth": 503,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 128,
+        "outside": [],
+        "clipped": [],
+        "parentClips": [],
+        "paragraphStyle": {
+          "fontSize": "26px",
+          "lineHeight": "41.08px",
+          "letterSpacing": "normal",
+          "wordSpacing": "0px",
+          "marginBottom": "12px"
+        }
+      }
+    },
+    {
+      "engine": "chromium",
+      "page": "research-scoping.html",
+      "width": 320,
+      "mode": "spacing",
+      "errors": [
+        "page-wide horizontal overflow",
+        "text element clipped"
+      ],
+      "metrics": {
+        "viewport": 320,
+        "documentWidth": 325,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 108,
+        "outside": [],
+        "clipped": [
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 218,
+            "right": 219,
+            "width": 1,
+            "scrollWidth": 162,
+            "clientWidth": 1,
+            "scrollHeight": 21,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 176,
+            "right": 177,
+            "width": 1,
+            "scrollWidth": 151,
+            "clientWidth": 1,
+            "scrollHeight": 20,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 71,
+            "right": 72,
+            "width": 1,
+            "scrollWidth": 156,
+            "clientWidth": 1,
+            "scrollHeight": 21,
+            "clientHeight": 1
+          }
+        ],
+        "parentClips": [],
+        "paragraphStyle": {
+          "fontSize": "13px",
+          "lineHeight": "19.5px",
+          "letterSpacing": "1.56px",
+          "wordSpacing": "2.08px",
+          "marginBottom": "26px"
+        }
+      }
+    },
+    {
+      "engine": "chromium",
+      "page": "research-scoping.html",
+      "width": 320,
+      "mode": "text200",
+      "errors": [
+        "page-wide horizontal overflow",
+        "text element clipped"
+      ],
+      "metrics": {
+        "viewport": 320,
+        "documentWidth": 512,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 108,
+        "outside": [],
+        "clipped": [
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 41,
+            "right": 42,
+            "width": 1,
+            "scrollWidth": 240,
+            "clientWidth": 1,
+            "scrollHeight": 45,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 241,
+            "right": 242,
+            "width": 1,
+            "scrollWidth": 222,
+            "clientWidth": 1,
+            "scrollHeight": 41,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 209,
+            "right": 210,
+            "width": 1,
+            "scrollWidth": 227,
+            "clientWidth": 1,
+            "scrollHeight": 46,
+            "clientHeight": 1
+          }
+        ],
+        "parentClips": [],
+        "paragraphStyle": {
+          "fontSize": "26px",
+          "lineHeight": "41.08px",
+          "letterSpacing": "normal",
+          "wordSpacing": "0px",
+          "marginBottom": "12px"
+        }
+      }
+    },
+    {
+      "engine": "chromium",
+      "page": "research-scoping.html",
+      "width": 1280,
+      "mode": "spacing",
+      "errors": [
+        "text element clipped"
+      ],
+      "metrics": {
+        "viewport": 1280,
+        "documentWidth": 1280,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 107,
+        "outside": [],
+        "clipped": [
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 284,
+            "right": 285,
+            "width": 1,
+            "scrollWidth": 162,
+            "clientWidth": 1,
+            "scrollHeight": 21,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 415,
+            "right": 416,
+            "width": 1,
+            "scrollWidth": 151,
+            "clientWidth": 1,
+            "scrollHeight": 20,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 494,
+            "right": 495,
+            "width": 1,
+            "scrollWidth": 156,
+            "clientWidth": 1,
+            "scrollHeight": 21,
+            "clientHeight": 1
+          }
+        ],
+        "parentClips": [],
+        "paragraphStyle": {
+          "fontSize": "13px",
+          "lineHeight": "19.5px",
+          "letterSpacing": "1.56px",
+          "wordSpacing": "2.08px",
+          "marginBottom": "26px"
+        }
+      }
+    },
+    {
+      "engine": "chromium",
+      "page": "research-scoping.html",
+      "width": 1280,
+      "mode": "text200",
+      "errors": [
+        "text element clipped"
+      ],
+      "metrics": {
+        "viewport": 1280,
+        "documentWidth": 1280,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 107,
+        "outside": [],
+        "clipped": [
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 391,
+            "right": 392,
+            "width": 1,
+            "scrollWidth": 240,
+            "clientWidth": 1,
+            "scrollHeight": 45,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 198,
+            "right": 199,
+            "width": 1,
+            "scrollWidth": 222,
+            "clientWidth": 1,
+            "scrollHeight": 41,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 680,
+            "right": 681,
+            "width": 1,
+            "scrollWidth": 227,
+            "clientWidth": 1,
+            "scrollHeight": 46,
+            "clientHeight": 1
+          }
+        ],
+        "parentClips": [],
+        "paragraphStyle": {
+          "fontSize": "26px",
+          "lineHeight": "41.08px",
+          "letterSpacing": "normal",
+          "wordSpacing": "0px",
+          "marginBottom": "12px"
+        }
+      }
+    },
+    {
+      "engine": "chromium",
+      "page": "writing-biological-classification.html",
+      "width": 320,
+      "mode": "text200",
+      "errors": [
+        "page-wide horizontal overflow"
+      ],
+      "metrics": {
+        "viewport": 320,
+        "documentWidth": 454,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 57,
+        "outside": [],
+        "clipped": [],
+        "parentClips": [],
+        "paragraphStyle": {
+          "fontSize": "26px",
+          "lineHeight": "41.08px",
+          "letterSpacing": "0.39px",
+          "wordSpacing": "0px",
+          "marginBottom": "13px"
+        }
+      }
+    },
+    {
+      "engine": "chromium",
+      "page": "projects.html",
+      "width": 320,
+      "mode": "text200",
+      "errors": [
+        "page-wide horizontal overflow"
+      ],
+      "metrics": {
+        "viewport": 320,
+        "documentWidth": 353,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 24,
+        "outside": [],
+        "clipped": [],
+        "parentClips": [],
+        "paragraphStyle": {
+          "fontSize": "36px",
+          "lineHeight": "56.88px",
+          "letterSpacing": "normal",
+          "wordSpacing": "0px",
+          "marginBottom": "0px"
+        }
+      }
+    },
+    {
+      "engine": "chromium",
+      "page": "story-method.html",
+      "width": 320,
+      "mode": "spacing",
+      "errors": [
+        "text element clipped"
+      ],
+      "metrics": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 77,
+        "outside": [],
+        "clipped": [
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 225,
+            "right": 226,
+            "width": 1,
+            "scrollWidth": 190,
+            "clientWidth": 1,
+            "scrollHeight": 26,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 77,
+            "right": 78,
+            "width": 1,
+            "scrollWidth": 190,
+            "clientWidth": 1,
+            "scrollHeight": 26,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 211,
+            "right": 212,
+            "width": 1,
+            "scrollWidth": 190,
+            "clientWidth": 1,
+            "scrollHeight": 26,
+            "clientHeight": 1
+          }
+        ],
+        "parentClips": [],
+        "paragraphStyle": {
+          "fontSize": "18px",
+          "lineHeight": "27px",
+          "letterSpacing": "2.16px",
+          "wordSpacing": "2.88px",
+          "marginBottom": "36px"
+        }
+      }
+    },
+    {
+      "engine": "chromium",
+      "page": "story-method.html",
+      "width": 320,
+      "mode": "text200",
+      "errors": [
+        "page-wide horizontal overflow",
+        "text element clipped"
+      ],
+      "metrics": {
+        "viewport": 320,
+        "documentWidth": 353,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 77,
+        "outside": [],
+        "clipped": [
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 100,
+            "right": 101,
+            "width": 1,
+            "scrollWidth": 276,
+            "clientWidth": 1,
+            "scrollHeight": 58,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 229,
+            "right": 230,
+            "width": 1,
+            "scrollWidth": 276,
+            "clientWidth": 1,
+            "scrollHeight": 58,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 215,
+            "right": 216,
+            "width": 1,
+            "scrollWidth": 276,
+            "clientWidth": 1,
+            "scrollHeight": 58,
+            "clientHeight": 1
+          }
+        ],
+        "parentClips": [],
+        "paragraphStyle": {
+          "fontSize": "36px",
+          "lineHeight": "56.88px",
+          "letterSpacing": "normal",
+          "wordSpacing": "0px",
+          "marginBottom": "0px"
+        }
+      }
+    },
+    {
+      "engine": "chromium",
+      "page": "story-method.html",
+      "width": 1280,
+      "mode": "spacing",
+      "errors": [
+        "text element clipped"
+      ],
+      "metrics": {
+        "viewport": 1280,
+        "documentWidth": 1280,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 77,
+        "outside": [],
+        "clipped": [
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 544,
+            "right": 545,
+            "width": 1,
+            "scrollWidth": 190,
+            "clientWidth": 1,
+            "scrollHeight": 26,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 222,
+            "right": 223,
+            "width": 1,
+            "scrollWidth": 190,
+            "clientWidth": 1,
+            "scrollHeight": 26,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 564,
+            "right": 565,
+            "width": 1,
+            "scrollWidth": 190,
+            "clientWidth": 1,
+            "scrollHeight": 26,
+            "clientHeight": 1
+          }
+        ],
+        "parentClips": [],
+        "paragraphStyle": {
+          "fontSize": "18px",
+          "lineHeight": "27px",
+          "letterSpacing": "2.16px",
+          "wordSpacing": "2.88px",
+          "marginBottom": "36px"
+        }
+      }
+    },
+    {
+      "engine": "chromium",
+      "page": "story-method.html",
+      "width": 1280,
+      "mode": "text200",
+      "errors": [
+        "text element clipped"
+      ],
+      "metrics": {
+        "viewport": 1280,
+        "documentWidth": 1280,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 77,
+        "outside": [],
+        "clipped": [
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 278,
+            "right": 279,
+            "width": 1,
+            "scrollWidth": 276,
+            "clientWidth": 1,
+            "scrollHeight": 58,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 728,
+            "right": 729,
+            "width": 1,
+            "scrollWidth": 276,
+            "clientWidth": 1,
+            "scrollHeight": 58,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 809,
+            "right": 810,
+            "width": 1,
+            "scrollWidth": 276,
+            "clientWidth": 1,
+            "scrollHeight": 58,
+            "clientHeight": 1
+          }
+        ],
+        "parentClips": [],
+        "paragraphStyle": {
+          "fontSize": "36px",
+          "lineHeight": "56.88px",
+          "letterSpacing": "normal",
+          "wordSpacing": "0px",
+          "marginBottom": "0px"
+        }
+      }
+    },
+    {
+      "engine": "chromium",
+      "page": "research-methods-studio.html",
+      "width": 320,
+      "mode": "spacing",
+      "errors": [
+        "text element clipped"
+      ],
+      "metrics": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 155,
+        "outside": [],
+        "clipped": [
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 168,
+            "right": 169,
+            "width": 1,
+            "scrollWidth": 190,
+            "clientWidth": 1,
+            "scrollHeight": 26,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 182,
+            "right": 183,
+            "width": 1,
+            "scrollWidth": 190,
+            "clientWidth": 1,
+            "scrollHeight": 26,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 149,
+            "right": 150,
+            "width": 1,
+            "scrollWidth": 190,
+            "clientWidth": 1,
+            "scrollHeight": 26,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 126,
+            "right": 127,
+            "width": 1,
+            "scrollWidth": 178,
+            "clientWidth": 1,
+            "scrollHeight": 24,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 141,
+            "right": 142,
+            "width": 1,
+            "scrollWidth": 190,
+            "clientWidth": 1,
+            "scrollHeight": 26,
+            "clientHeight": 1
+          }
+        ],
+        "parentClips": [],
+        "paragraphStyle": {
+          "fontSize": "18px",
+          "lineHeight": "27px",
+          "letterSpacing": "2.16px",
+          "wordSpacing": "2.88px",
+          "marginBottom": "36px"
+        }
+      }
+    },
+    {
+      "engine": "chromium",
+      "page": "research-methods-studio.html",
+      "width": 320,
+      "mode": "text200",
+      "errors": [
+        "page-wide horizontal overflow",
+        "text element clipped"
+      ],
+      "metrics": {
+        "viewport": 320,
+        "documentWidth": 409,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 155,
+        "outside": [],
+        "clipped": [
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 248,
+            "right": 249,
+            "width": 1,
+            "scrollWidth": 276,
+            "clientWidth": 1,
+            "scrollHeight": 58,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 262,
+            "right": 263,
+            "width": 1,
+            "scrollWidth": 276,
+            "clientWidth": 1,
+            "scrollHeight": 58,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 218,
+            "right": 219,
+            "width": 1,
+            "scrollWidth": 276,
+            "clientWidth": 1,
+            "scrollHeight": 58,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 238,
+            "right": 239,
+            "width": 1,
+            "scrollWidth": 259,
+            "clientWidth": 1,
+            "scrollHeight": 54,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 215,
+            "right": 216,
+            "width": 1,
+            "scrollWidth": 276,
+            "clientWidth": 1,
+            "scrollHeight": 58,
+            "clientHeight": 1
+          }
+        ],
+        "parentClips": [],
+        "paragraphStyle": {
+          "fontSize": "36px",
+          "lineHeight": "56.88px",
+          "letterSpacing": "normal",
+          "wordSpacing": "0px",
+          "marginBottom": "0px"
+        }
+      }
+    },
+    {
+      "engine": "chromium",
+      "page": "research-methods-studio.html",
+      "width": 1280,
+      "mode": "spacing",
+      "errors": [
+        "text element clipped"
+      ],
+      "metrics": {
+        "viewport": 1280,
+        "documentWidth": 1280,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 153,
+        "outside": [],
+        "clipped": [
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 729,
+            "right": 730,
+            "width": 1,
+            "scrollWidth": 190,
+            "clientWidth": 1,
+            "scrollHeight": 26,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 248,
+            "right": 249,
+            "width": 1,
+            "scrollWidth": 190,
+            "clientWidth": 1,
+            "scrollHeight": 26,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 588,
+            "right": 589,
+            "width": 1,
+            "scrollWidth": 190,
+            "clientWidth": 1,
+            "scrollHeight": 26,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 295,
+            "right": 296,
+            "width": 1,
+            "scrollWidth": 178,
+            "clientWidth": 1,
+            "scrollHeight": 24,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 207,
+            "right": 208,
+            "width": 1,
+            "scrollWidth": 190,
+            "clientWidth": 1,
+            "scrollHeight": 26,
+            "clientHeight": 1
+          }
+        ],
+        "parentClips": [],
+        "paragraphStyle": {
+          "fontSize": "18px",
+          "lineHeight": "27px",
+          "letterSpacing": "2.16px",
+          "wordSpacing": "2.88px",
+          "marginBottom": "36px"
+        }
+      }
+    },
+    {
+      "engine": "chromium",
+      "page": "research-methods-studio.html",
+      "width": 1280,
+      "mode": "text200",
+      "errors": [
+        "text element clipped"
+      ],
+      "metrics": {
+        "viewport": 1280,
+        "documentWidth": 1280,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 153,
+        "outside": [],
+        "clipped": [
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 1051,
+            "right": 1052,
+            "width": 1,
+            "scrollWidth": 276,
+            "clientWidth": 1,
+            "scrollHeight": 58,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 328,
+            "right": 329,
+            "width": 1,
+            "scrollWidth": 276,
+            "clientWidth": 1,
+            "scrollHeight": 58,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 835,
+            "right": 836,
+            "width": 1,
+            "scrollWidth": 276,
+            "clientWidth": 1,
+            "scrollHeight": 58,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 915,
+            "right": 916,
+            "width": 1,
+            "scrollWidth": 259,
+            "clientWidth": 1,
+            "scrollHeight": 54,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 772,
+            "right": 773,
+            "width": 1,
+            "scrollWidth": 276,
+            "clientWidth": 1,
+            "scrollHeight": 58,
+            "clientHeight": 1
+          }
+        ],
+        "parentClips": [],
+        "paragraphStyle": {
+          "fontSize": "36px",
+          "lineHeight": "56.88px",
+          "letterSpacing": "normal",
+          "wordSpacing": "0px",
+          "marginBottom": "0px"
+        }
+      }
+    },
+    {
+      "engine": "chromium",
+      "page": "teaching.html",
+      "width": 320,
+      "mode": "text200",
+      "errors": [
+        "page-wide horizontal overflow"
+      ],
+      "metrics": {
+        "viewport": 320,
+        "documentWidth": 353,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 60,
+        "outside": [],
+        "clipped": [],
+        "parentClips": [],
+        "paragraphStyle": {
+          "fontSize": "40px",
+          "lineHeight": "59.2px",
+          "letterSpacing": "normal",
+          "wordSpacing": "0px",
+          "marginBottom": "15px"
+        }
+      }
+    },
+    {
+      "engine": "chromium",
+      "page": "teaching-ap-biology.html",
+      "width": 320,
+      "mode": "spacing",
+      "errors": [
+        "page-wide horizontal overflow"
+      ],
+      "metrics": {
+        "viewport": 320,
+        "documentWidth": 345,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 163,
+        "outside": [],
+        "clipped": [],
+        "parentClips": [],
+        "paragraphStyle": {
+          "fontSize": "13px",
+          "lineHeight": "19.5px",
+          "letterSpacing": "1.56px",
+          "wordSpacing": "2.08px",
+          "marginBottom": "26px"
+        }
+      }
+    },
+    {
+      "engine": "chromium",
+      "page": "teaching-ap-biology.html",
+      "width": 320,
+      "mode": "text200",
+      "errors": [
+        "page-wide horizontal overflow"
+      ],
+      "metrics": {
+        "viewport": 320,
+        "documentWidth": 531,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 163,
+        "outside": [],
+        "clipped": [],
+        "parentClips": [],
+        "paragraphStyle": {
+          "fontSize": "26px",
+          "lineHeight": "41.08px",
+          "letterSpacing": "normal",
+          "wordSpacing": "0px",
+          "marginBottom": "11px"
+        }
+      }
+    },
+    {
+      "engine": "chromium",
+      "page": "teaching-ap-chemistry.html",
+      "width": 320,
+      "mode": "text200",
+      "errors": [
+        "page-wide horizontal overflow"
+      ],
+      "metrics": {
+        "viewport": 320,
+        "documentWidth": 455,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 143,
+        "outside": [],
+        "clipped": [],
+        "parentClips": [],
+        "paragraphStyle": {
+          "fontSize": "26px",
+          "lineHeight": "41.08px",
+          "letterSpacing": "normal",
+          "wordSpacing": "0px",
+          "marginBottom": "11px"
+        }
+      }
+    },
+    {
+      "engine": "chromium",
+      "page": "teaching-ap-evolution.html",
+      "width": 320,
+      "mode": "spacing",
+      "errors": [
+        "text element clipped"
+      ],
+      "metrics": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 155,
+        "outside": [],
+        "clipped": [
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 101,
+            "right": 102,
+            "width": 1,
+            "scrollWidth": 190,
+            "clientWidth": 1,
+            "scrollHeight": 26,
+            "clientHeight": 1
+          }
+        ],
+        "parentClips": [],
+        "paragraphStyle": {
+          "fontSize": "13px",
+          "lineHeight": "19.5px",
+          "letterSpacing": "1.56px",
+          "wordSpacing": "2.08px",
+          "marginBottom": "26px"
+        }
+      }
+    },
+    {
+      "engine": "chromium",
+      "page": "teaching-ap-evolution.html",
+      "width": 320,
+      "mode": "text200",
+      "errors": [
+        "page-wide horizontal overflow",
+        "text element clipped"
+      ],
+      "metrics": {
+        "viewport": 320,
+        "documentWidth": 482,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 155,
+        "outside": [],
+        "clipped": [
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 142,
+            "right": 143,
+            "width": 1,
+            "scrollWidth": 276,
+            "clientWidth": 1,
+            "scrollHeight": 60,
+            "clientHeight": 1
+          }
+        ],
+        "parentClips": [],
+        "paragraphStyle": {
+          "fontSize": "26px",
+          "lineHeight": "41.08px",
+          "letterSpacing": "normal",
+          "wordSpacing": "0px",
+          "marginBottom": "11px"
+        }
+      }
+    },
+    {
+      "engine": "chromium",
+      "page": "teaching-ap-evolution.html",
+      "width": 1280,
+      "mode": "spacing",
+      "errors": [
+        "text element clipped"
+      ],
+      "metrics": {
+        "viewport": 1280,
+        "documentWidth": 1280,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 153,
+        "outside": [],
+        "clipped": [
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 388,
+            "right": 389,
+            "width": 1,
+            "scrollWidth": 190,
+            "clientWidth": 1,
+            "scrollHeight": 26,
+            "clientHeight": 1
+          }
+        ],
+        "parentClips": [],
+        "paragraphStyle": {
+          "fontSize": "13px",
+          "lineHeight": "19.5px",
+          "letterSpacing": "1.56px",
+          "wordSpacing": "2.08px",
+          "marginBottom": "26px"
+        }
+      }
+    },
+    {
+      "engine": "chromium",
+      "page": "teaching-ap-evolution.html",
+      "width": 1280,
+      "mode": "text200",
+      "errors": [
+        "text element clipped"
+      ],
+      "metrics": {
+        "viewport": 1280,
+        "documentWidth": 1280,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 153,
+        "outside": [],
+        "clipped": [
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 550,
+            "right": 551,
+            "width": 1,
+            "scrollWidth": 276,
+            "clientWidth": 1,
+            "scrollHeight": 60,
+            "clientHeight": 1
+          }
+        ],
+        "parentClips": [],
+        "paragraphStyle": {
+          "fontSize": "26px",
+          "lineHeight": "41.08px",
+          "letterSpacing": "normal",
+          "wordSpacing": "0px",
+          "marginBottom": "11px"
+        }
+      }
+    },
+    {
+      "engine": "chromium",
+      "page": "teaching-osmosis-practice.html",
+      "width": 320,
+      "mode": "text200",
+      "errors": [
+        "page-wide horizontal overflow"
+      ],
+      "metrics": {
+        "viewport": 320,
+        "documentWidth": 353,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 36,
+        "outside": [],
+        "clipped": [],
+        "parentClips": [],
+        "paragraphStyle": {
+          "fontSize": "26px",
+          "lineHeight": "41.08px",
+          "letterSpacing": "normal",
+          "wordSpacing": "0px",
+          "marginBottom": "7px"
+        }
+      }
+    },
+    {
+      "engine": "chromium",
+      "page": "interests.html",
+      "width": 320,
+      "mode": "spacing",
+      "errors": [
+        "text element clipped"
+      ],
+      "metrics": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 55,
+        "outside": [],
+        "clipped": [
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 233,
+            "right": 234,
+            "width": 1,
+            "scrollWidth": 151,
+            "clientWidth": 1,
+            "scrollHeight": 20,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 253,
+            "right": 254,
+            "width": 1,
+            "scrollWidth": 151,
+            "clientWidth": 1,
+            "scrollHeight": 20,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 254,
+            "right": 255,
+            "width": 1,
+            "scrollWidth": 151,
+            "clientWidth": 1,
+            "scrollHeight": 20,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 272,
+            "right": 273,
+            "width": 1,
+            "scrollWidth": 151,
+            "clientWidth": 1,
+            "scrollHeight": 20,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 188,
+            "right": 189,
+            "width": 1,
+            "scrollWidth": 151,
+            "clientWidth": 1,
+            "scrollHeight": 20,
+            "clientHeight": 1
+          }
+        ],
+        "parentClips": [],
+        "paragraphStyle": {
+          "fontSize": "16px",
+          "lineHeight": "24px",
+          "letterSpacing": "1.92px",
+          "wordSpacing": "2.56px",
+          "marginBottom": "32px"
+        }
+      }
+    },
+    {
+      "engine": "chromium",
+      "page": "interests.html",
+      "width": 320,
+      "mode": "text200",
+      "errors": [
+        "page-wide horizontal overflow",
+        "text element clipped"
+      ],
+      "metrics": {
+        "viewport": 320,
+        "documentWidth": 353,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 55,
+        "outside": [],
+        "clipped": [
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 199,
+            "right": 200,
+            "width": 1,
+            "scrollWidth": 222,
+            "clientWidth": 1,
+            "scrollHeight": 39,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 186,
+            "right": 187,
+            "width": 1,
+            "scrollWidth": 222,
+            "clientWidth": 1,
+            "scrollHeight": 39,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 246,
+            "right": 247,
+            "width": 1,
+            "scrollWidth": 222,
+            "clientWidth": 1,
+            "scrollHeight": 39,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 139,
+            "right": 140,
+            "width": 1,
+            "scrollWidth": 222,
+            "clientWidth": 1,
+            "scrollHeight": 39,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 223,
+            "right": 224,
+            "width": 1,
+            "scrollWidth": 222,
+            "clientWidth": 1,
+            "scrollHeight": 39,
+            "clientHeight": 1
+          }
+        ],
+        "parentClips": [],
+        "paragraphStyle": {
+          "fontSize": "32px",
+          "lineHeight": "49.6px",
+          "letterSpacing": "normal",
+          "wordSpacing": "0px",
+          "marginBottom": "16px"
+        }
+      }
+    },
+    {
+      "engine": "chromium",
+      "page": "interests.html",
+      "width": 1280,
+      "mode": "spacing",
+      "errors": [
+        "text element clipped"
+      ],
+      "metrics": {
+        "viewport": 1280,
+        "documentWidth": 1280,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 55,
+        "outside": [],
+        "clipped": [
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 611,
+            "right": 612,
+            "width": 1,
+            "scrollWidth": 151,
+            "clientWidth": 1,
+            "scrollHeight": 20,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 1163,
+            "right": 1164,
+            "width": 1,
+            "scrollWidth": 151,
+            "clientWidth": 1,
+            "scrollHeight": 20,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 505,
+            "right": 506,
+            "width": 1,
+            "scrollWidth": 151,
+            "clientWidth": 1,
+            "scrollHeight": 20,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 524,
+            "right": 525,
+            "width": 1,
+            "scrollWidth": 151,
+            "clientWidth": 1,
+            "scrollHeight": 20,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 1127,
+            "right": 1128,
+            "width": 1,
+            "scrollWidth": 151,
+            "clientWidth": 1,
+            "scrollHeight": 20,
+            "clientHeight": 1
+          }
+        ],
+        "parentClips": [],
+        "paragraphStyle": {
+          "fontSize": "16px",
+          "lineHeight": "24px",
+          "letterSpacing": "1.92px",
+          "wordSpacing": "2.56px",
+          "marginBottom": "32px"
+        }
+      }
+    },
+    {
+      "engine": "chromium",
+      "page": "interests.html",
+      "width": 1280,
+      "mode": "text200",
+      "errors": [
+        "text element clipped"
+      ],
+      "metrics": {
+        "viewport": 1280,
+        "documentWidth": 1280,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 55,
+        "outside": [],
+        "clipped": [
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 423,
+            "right": 424,
+            "width": 1,
+            "scrollWidth": 222,
+            "clientWidth": 1,
+            "scrollHeight": 39,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 1182,
+            "right": 1183,
+            "width": 1,
+            "scrollWidth": 222,
+            "clientWidth": 1,
+            "scrollHeight": 39,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 340,
+            "right": 341,
+            "width": 1,
+            "scrollWidth": 222,
+            "clientWidth": 1,
+            "scrollHeight": 39,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 387,
+            "right": 388,
+            "width": 1,
+            "scrollWidth": 222,
+            "clientWidth": 1,
+            "scrollHeight": 39,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 1125,
+            "right": 1126,
+            "width": 1,
+            "scrollWidth": 222,
+            "clientWidth": 1,
+            "scrollHeight": 39,
+            "clientHeight": 1
+          }
+        ],
+        "parentClips": [],
+        "paragraphStyle": {
+          "fontSize": "32px",
+          "lineHeight": "49.6px",
+          "letterSpacing": "normal",
+          "wordSpacing": "0px",
+          "marginBottom": "16px"
+        }
+      }
+    },
+    {
+      "engine": "chromium",
+      "page": "pungmul.html",
+      "width": 320,
+      "mode": "spacing",
+      "errors": [
+        "text element clipped"
+      ],
+      "metrics": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 56,
+        "outside": [],
+        "clipped": [
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 160,
+            "right": 161,
+            "width": 1,
+            "scrollWidth": 156,
+            "clientWidth": 1,
+            "scrollHeight": 21,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 285,
+            "right": 286,
+            "width": 1,
+            "scrollWidth": 156,
+            "clientWidth": 1,
+            "scrollHeight": 21,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 221,
+            "right": 222,
+            "width": 1,
+            "scrollWidth": 156,
+            "clientWidth": 1,
+            "scrollHeight": 21,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 199,
+            "right": 200,
+            "width": 1,
+            "scrollWidth": 156,
+            "clientWidth": 1,
+            "scrollHeight": 21,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 130,
+            "right": 131,
+            "width": 1,
+            "scrollWidth": 156,
+            "clientWidth": 1,
+            "scrollHeight": 21,
+            "clientHeight": 1
+          }
+        ],
+        "parentClips": [],
+        "paragraphStyle": {
+          "fontSize": "13px",
+          "lineHeight": "19.5px",
+          "letterSpacing": "1.56px",
+          "wordSpacing": "2.08px",
+          "marginBottom": "26px"
+        }
+      }
+    },
+    {
+      "engine": "chromium",
+      "page": "pungmul.html",
+      "width": 320,
+      "mode": "text200",
+      "errors": [
+        "page-wide horizontal overflow",
+        "text element clipped"
+      ],
+      "metrics": {
+        "viewport": 320,
+        "documentWidth": 353,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 56,
+        "outside": [],
+        "clipped": [
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 172,
+            "right": 173,
+            "width": 1,
+            "scrollWidth": 227,
+            "clientWidth": 1,
+            "scrollHeight": 46,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 220,
+            "right": 221,
+            "width": 1,
+            "scrollWidth": 227,
+            "clientWidth": 1,
+            "scrollHeight": 46,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 258,
+            "right": 259,
+            "width": 1,
+            "scrollWidth": 227,
+            "clientWidth": 1,
+            "scrollHeight": 46,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 259,
+            "right": 260,
+            "width": 1,
+            "scrollWidth": 227,
+            "clientWidth": 1,
+            "scrollHeight": 46,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 102,
+            "right": 103,
+            "width": 1,
+            "scrollWidth": 227,
+            "clientWidth": 1,
+            "scrollHeight": 46,
+            "clientHeight": 1
+          }
+        ],
+        "parentClips": [],
+        "paragraphStyle": {
+          "fontSize": "26px",
+          "lineHeight": "40.3px",
+          "letterSpacing": "normal",
+          "wordSpacing": "0px",
+          "marginBottom": "20px"
+        }
+      }
+    },
+    {
+      "engine": "chromium",
+      "page": "pungmul.html",
+      "width": 1280,
+      "mode": "spacing",
+      "errors": [
+        "text element clipped"
+      ],
+      "metrics": {
+        "viewport": 1280,
+        "documentWidth": 1280,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 56,
+        "outside": [],
+        "clipped": [
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 459,
+            "right": 460,
+            "width": 1,
+            "scrollWidth": 156,
+            "clientWidth": 1,
+            "scrollHeight": 21,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 614,
+            "right": 615,
+            "width": 1,
+            "scrollWidth": 156,
+            "clientWidth": 1,
+            "scrollHeight": 21,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 1089,
+            "right": 1090,
+            "width": 1,
+            "scrollWidth": 156,
+            "clientWidth": 1,
+            "scrollHeight": 21,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 789,
+            "right": 790,
+            "width": 1,
+            "scrollWidth": 156,
+            "clientWidth": 1,
+            "scrollHeight": 21,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 993,
+            "right": 994,
+            "width": 1,
+            "scrollWidth": 156,
+            "clientWidth": 1,
+            "scrollHeight": 21,
+            "clientHeight": 1
+          }
+        ],
+        "parentClips": [],
+        "paragraphStyle": {
+          "fontSize": "13px",
+          "lineHeight": "19.5px",
+          "letterSpacing": "1.56px",
+          "wordSpacing": "2.08px",
+          "marginBottom": "26px"
+        }
+      }
+    },
+    {
+      "engine": "chromium",
+      "page": "pungmul.html",
+      "width": 1280,
+      "mode": "text200",
+      "errors": [
+        "text element clipped"
+      ],
+      "metrics": {
+        "viewport": 1280,
+        "documentWidth": 1280,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 56,
+        "outside": [],
+        "clipped": [
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 650,
+            "right": 651,
+            "width": 1,
+            "scrollWidth": 227,
+            "clientWidth": 1,
+            "scrollHeight": 46,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 870,
+            "right": 871,
+            "width": 1,
+            "scrollWidth": 227,
+            "clientWidth": 1,
+            "scrollHeight": 46,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 710,
+            "right": 711,
+            "width": 1,
+            "scrollWidth": 227,
+            "clientWidth": 1,
+            "scrollHeight": 46,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 1144,
+            "right": 1145,
+            "width": 1,
+            "scrollWidth": 227,
+            "clientWidth": 1,
+            "scrollHeight": 46,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 384,
+            "right": 385,
+            "width": 1,
+            "scrollWidth": 227,
+            "clientWidth": 1,
+            "scrollHeight": 46,
+            "clientHeight": 1
+          }
+        ],
+        "parentClips": [],
+        "paragraphStyle": {
+          "fontSize": "26px",
+          "lineHeight": "40.3px",
+          "letterSpacing": "normal",
+          "wordSpacing": "0px",
+          "marginBottom": "20px"
+        }
+      }
+    },
+    {
+      "engine": "chromium",
+      "page": "contact.html",
+      "width": 320,
+      "mode": "text200",
+      "errors": [
+        "page-wide horizontal overflow"
+      ],
+      "metrics": {
+        "viewport": 320,
+        "documentWidth": 353,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 11,
+        "outside": [],
+        "clipped": [],
+        "parentClips": [],
+        "paragraphStyle": {
+          "fontSize": "36px",
+          "lineHeight": "60.12px",
+          "letterSpacing": "normal",
+          "wordSpacing": "0px",
+          "marginBottom": "0px"
+        }
+      }
+    },
+    {
+      "engine": "chromium",
+      "page": "cv.html",
+      "width": 320,
+      "mode": "text200",
+      "errors": [
+        "page-wide horizontal overflow",
+        "text extends outside CSS viewport"
+      ],
+      "metrics": {
+        "viewport": 320,
+        "documentWidth": 353,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 81,
+        "outside": [
+          {
+            "tag": "H1",
+            "css": "",
+            "sample": "Ye Eun Moon",
+            "x": 24,
+            "right": 335,
+            "width": 311,
+            "scrollWidth": 311,
+            "clientWidth": 311,
+            "scrollHeight": 157,
+            "clientHeight": 157
+          },
+          {
+            "tag": "A",
+            "css": "",
+            "sample": "gracem.0691@gmail.com",
+            "x": 24,
+            "right": 335,
+            "width": 311,
+            "scrollWidth": 311,
+            "clientWidth": 311,
+            "scrollHeight": 47,
+            "clientHeight": 47
+          },
+          {
+            "tag": "A",
+            "css": "",
+            "sample": "ORCID 0009-0005-0584-5146",
+            "x": 24,
+            "right": 335,
+            "width": 311,
+            "scrollWidth": 311,
+            "clientWidth": 311,
+            "scrollHeight": 93,
+            "clientHeight": 93
+          }
+        ],
+        "clipped": [],
+        "parentClips": [],
+        "paragraphStyle": {
+          "fontSize": "32px",
+          "lineHeight": "49.6px",
+          "letterSpacing": "normal",
+          "wordSpacing": "0px",
+          "marginBottom": "0px"
+        }
+      }
+    },
+    {
+      "engine": "chromium",
+      "page": "404.html",
+      "width": 320,
+      "mode": "text200",
+      "errors": [
+        "page-wide horizontal overflow"
+      ],
+      "metrics": {
+        "viewport": 320,
+        "documentWidth": 353,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 3,
+        "outside": [],
+        "clipped": [],
+        "parentClips": [],
+        "paragraphStyle": {
+          "fontSize": "36px",
+          "lineHeight": "56.88px",
+          "letterSpacing": "normal",
+          "wordSpacing": "0px",
+          "marginBottom": "0px"
+        }
+      }
+    },
+    {
+      "engine": "chromium",
+      "page": "index.html",
+      "width": 320,
+      "mode": "combined",
+      "errors": [
+        "page-wide horizontal overflow"
+      ],
+      "metrics": {
+        "viewport": 320,
+        "documentWidth": 380,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 28,
+        "outside": [],
+        "clipped": [],
+        "parentClips": [],
+        "paragraphStyle": {
+          "fontSize": "38px",
+          "lineHeight": "57px",
+          "letterSpacing": "4.56px",
+          "wordSpacing": "6.08px",
+          "marginBottom": "0px"
+        }
+      }
+    },
+    {
+      "engine": "chromium",
+      "page": "research.html",
+      "width": 320,
+      "mode": "combined",
+      "errors": [
+        "page-wide horizontal overflow"
+      ],
+      "metrics": {
+        "viewport": 320,
+        "documentWidth": 426,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 290,
+        "outside": [],
+        "clipped": [],
+        "parentClips": [],
+        "paragraphStyle": {
+          "fontSize": "38px",
+          "lineHeight": "59.28px",
+          "letterSpacing": "4.56px",
+          "wordSpacing": "6.08px",
+          "marginBottom": "22px"
+        }
+      }
+    },
+    {
+      "engine": "chromium",
+      "page": "research-action.html",
+      "width": 320,
+      "mode": "combined",
+      "errors": [
+        "page-wide horizontal overflow"
+      ],
+      "metrics": {
+        "viewport": 320,
+        "documentWidth": 628,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 128,
+        "outside": [],
+        "clipped": [],
+        "parentClips": [],
+        "paragraphStyle": {
+          "fontSize": "26px",
+          "lineHeight": "39px",
+          "letterSpacing": "3.12px",
+          "wordSpacing": "4.16px",
+          "marginBottom": "52px"
+        }
+      }
+    },
+    {
+      "engine": "firefox",
+      "page": "index.html",
+      "width": 320,
+      "mode": "text200",
+      "errors": [
+        "page-wide horizontal overflow"
+      ],
+      "metrics": {
+        "viewport": 320,
+        "documentWidth": 353,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 28,
+        "outside": [],
+        "clipped": [],
+        "parentClips": [],
+        "paragraphStyle": {
+          "fontSize": "38px",
+          "lineHeight": "57px",
+          "letterSpacing": "normal",
+          "wordSpacing": "0px",
+          "marginBottom": "0px"
+        }
+      }
+    },
+    {
+      "engine": "firefox",
+      "page": "research.html",
+      "width": 320,
+      "mode": "text200",
+      "errors": [
+        "page-wide horizontal overflow"
+      ],
+      "metrics": {
+        "viewport": 320,
+        "documentWidth": 353,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 290,
+        "outside": [],
+        "clipped": [],
+        "parentClips": [],
+        "paragraphStyle": {
+          "fontSize": "38px",
+          "lineHeight": "59.2833px",
+          "letterSpacing": "normal",
+          "wordSpacing": "0px",
+          "marginBottom": "22px"
+        }
+      }
+    },
+    {
+      "engine": "firefox",
+      "page": "teaching-ap-biology.html",
+      "width": 320,
+      "mode": "spacing",
+      "errors": [
+        "page-wide horizontal overflow"
+      ],
+      "metrics": {
+        "viewport": 320,
+        "documentWidth": 345,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 163,
+        "outside": [],
+        "clipped": [],
+        "parentClips": [],
+        "paragraphStyle": {
+          "fontSize": "13px",
+          "lineHeight": "19.5px",
+          "letterSpacing": "1.56px",
+          "wordSpacing": "2.08px",
+          "marginBottom": "26px"
+        }
+      }
+    },
+    {
+      "engine": "firefox",
+      "page": "teaching-ap-biology.html",
+      "width": 320,
+      "mode": "text200",
+      "errors": [
+        "page-wide horizontal overflow"
+      ],
+      "metrics": {
+        "viewport": 320,
+        "documentWidth": 531,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 163,
+        "outside": [],
+        "clipped": [],
+        "parentClips": [],
+        "paragraphStyle": {
+          "fontSize": "26px",
+          "lineHeight": "41.0833px",
+          "letterSpacing": "normal",
+          "wordSpacing": "0px",
+          "marginBottom": "11px"
+        }
+      }
+    },
+    {
+      "engine": "firefox",
+      "page": "interests.html",
+      "width": 320,
+      "mode": "spacing",
+      "errors": [
+        "text element clipped"
+      ],
+      "metrics": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 55,
+        "outside": [],
+        "clipped": [
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 233,
+            "right": 234,
+            "width": 1,
+            "scrollWidth": 151,
+            "clientWidth": 1,
+            "scrollHeight": 19,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 253,
+            "right": 254,
+            "width": 1,
+            "scrollWidth": 151,
+            "clientWidth": 1,
+            "scrollHeight": 19,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 254,
+            "right": 255,
+            "width": 1,
+            "scrollWidth": 151,
+            "clientWidth": 1,
+            "scrollHeight": 20,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 272,
+            "right": 273,
+            "width": 1,
+            "scrollWidth": 151,
+            "clientWidth": 1,
+            "scrollHeight": 19,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 188,
+            "right": 189,
+            "width": 1,
+            "scrollWidth": 151,
+            "clientWidth": 1,
+            "scrollHeight": 20,
+            "clientHeight": 1
+          }
+        ],
+        "parentClips": [],
+        "paragraphStyle": {
+          "fontSize": "16px",
+          "lineHeight": "24px",
+          "letterSpacing": "1.92px",
+          "wordSpacing": "2.56px",
+          "marginBottom": "32px"
+        }
+      }
+    },
+    {
+      "engine": "firefox",
+      "page": "interests.html",
+      "width": 320,
+      "mode": "text200",
+      "errors": [
+        "page-wide horizontal overflow",
+        "text element clipped"
+      ],
+      "metrics": {
+        "viewport": 320,
+        "documentWidth": 353,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 55,
+        "outside": [],
+        "clipped": [
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 199,
+            "right": 200,
+            "width": 1,
+            "scrollWidth": 223,
+            "clientWidth": 1,
+            "scrollHeight": 39,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 186,
+            "right": 187,
+            "width": 1,
+            "scrollWidth": 223,
+            "clientWidth": 1,
+            "scrollHeight": 39,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 246,
+            "right": 247,
+            "width": 1,
+            "scrollWidth": 222,
+            "clientWidth": 1,
+            "scrollHeight": 39,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 139,
+            "right": 140,
+            "width": 1,
+            "scrollWidth": 222,
+            "clientWidth": 1,
+            "scrollHeight": 39,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 223,
+            "right": 224,
+            "width": 1,
+            "scrollWidth": 223,
+            "clientWidth": 1,
+            "scrollHeight": 39,
+            "clientHeight": 1
+          }
+        ],
+        "parentClips": [],
+        "paragraphStyle": {
+          "fontSize": "32px",
+          "lineHeight": "49.6px",
+          "letterSpacing": "normal",
+          "wordSpacing": "0px",
+          "marginBottom": "16px"
+        }
+      }
+    },
+    {
+      "engine": "firefox",
+      "page": "interests.html",
+      "width": 1280,
+      "mode": "spacing",
+      "errors": [
+        "text element clipped"
+      ],
+      "metrics": {
+        "viewport": 1280,
+        "documentWidth": 1280,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 55,
+        "outside": [],
+        "clipped": [
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 611,
+            "right": 612,
+            "width": 1,
+            "scrollWidth": 151,
+            "clientWidth": 1,
+            "scrollHeight": 19,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 1163,
+            "right": 1164,
+            "width": 1,
+            "scrollWidth": 151,
+            "clientWidth": 1,
+            "scrollHeight": 19,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 505,
+            "right": 506,
+            "width": 1,
+            "scrollWidth": 151,
+            "clientWidth": 1,
+            "scrollHeight": 19,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 525,
+            "right": 526,
+            "width": 1,
+            "scrollWidth": 151,
+            "clientWidth": 1,
+            "scrollHeight": 20,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 1127,
+            "right": 1128,
+            "width": 1,
+            "scrollWidth": 151,
+            "clientWidth": 1,
+            "scrollHeight": 20,
+            "clientHeight": 1
+          }
+        ],
+        "parentClips": [],
+        "paragraphStyle": {
+          "fontSize": "16px",
+          "lineHeight": "24px",
+          "letterSpacing": "1.92px",
+          "wordSpacing": "2.56px",
+          "marginBottom": "32px"
+        }
+      }
+    },
+    {
+      "engine": "firefox",
+      "page": "interests.html",
+      "width": 1280,
+      "mode": "text200",
+      "errors": [
+        "text element clipped"
+      ],
+      "metrics": {
+        "viewport": 1280,
+        "documentWidth": 1280,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 55,
+        "outside": [],
+        "clipped": [
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 424,
+            "right": 425,
+            "width": 1,
+            "scrollWidth": 222,
+            "clientWidth": 1,
+            "scrollHeight": 39,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 1182,
+            "right": 1183,
+            "width": 1,
+            "scrollWidth": 222,
+            "clientWidth": 1,
+            "scrollHeight": 39,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 340,
+            "right": 341,
+            "width": 1,
+            "scrollWidth": 222,
+            "clientWidth": 1,
+            "scrollHeight": 39,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 387,
+            "right": 388,
+            "width": 1,
+            "scrollWidth": 223,
+            "clientWidth": 1,
+            "scrollHeight": 39,
+            "clientHeight": 1
+          },
+          {
+            "tag": "SPAN",
+            "css": "new-tab-note",
+            "sample": "(opens in a new tab)",
+            "x": 1125,
+            "right": 1126,
+            "width": 1,
+            "scrollWidth": 223,
+            "clientWidth": 1,
+            "scrollHeight": 39,
+            "clientHeight": 1
+          }
+        ],
+        "parentClips": [],
+        "paragraphStyle": {
+          "fontSize": "32px",
+          "lineHeight": "49.6px",
+          "letterSpacing": "normal",
+          "wordSpacing": "0px",
+          "marginBottom": "16px"
+        }
+      }
+    },
+    {
+      "engine": "firefox",
+      "page": "cv.html",
+      "width": 320,
+      "mode": "text200",
+      "errors": [
+        "page-wide horizontal overflow",
+        "text extends outside CSS viewport"
+      ],
+      "metrics": {
+        "viewport": 320,
+        "documentWidth": 353,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 81,
+        "outside": [
+          {
+            "tag": "H1",
+            "css": "",
+            "sample": "Ye Eun Moon",
+            "x": 24,
+            "right": 335,
+            "width": 311,
+            "scrollWidth": 311,
+            "clientWidth": 311,
+            "scrollHeight": 157,
+            "clientHeight": 157
+          },
+          {
+            "tag": "A",
+            "css": "",
+            "sample": "gracem.0691@gmail.com",
+            "x": 24,
+            "right": 335,
+            "width": 311,
+            "scrollWidth": 311,
+            "clientWidth": 311,
+            "scrollHeight": 47,
+            "clientHeight": 47
+          },
+          {
+            "tag": "A",
+            "css": "",
+            "sample": "ORCID 0009-0005-0584-5146",
+            "x": 24,
+            "right": 335,
+            "width": 311,
+            "scrollWidth": 311,
+            "clientWidth": 311,
+            "scrollHeight": 93,
+            "clientHeight": 93
+          }
+        ],
+        "clipped": [],
+        "parentClips": [],
+        "paragraphStyle": {
+          "fontSize": "32px",
+          "lineHeight": "49.6px",
+          "letterSpacing": "normal",
+          "wordSpacing": "0px",
+          "marginBottom": "0px"
+        }
+      }
+    },
+    {
+      "engine": "firefox",
+      "page": "index.html",
+      "width": 320,
+      "mode": "combined",
+      "errors": [
+        "page-wide horizontal overflow"
+      ],
+      "metrics": {
+        "viewport": 320,
+        "documentWidth": 380,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 28,
+        "outside": [],
+        "clipped": [],
+        "parentClips": [],
+        "paragraphStyle": {
+          "fontSize": "38px",
+          "lineHeight": "57px",
+          "letterSpacing": "4.56px",
+          "wordSpacing": "6.08px",
+          "marginBottom": "0px"
+        }
+      }
+    },
+    {
+      "engine": "firefox",
+      "page": "research.html",
+      "width": 320,
+      "mode": "combined",
+      "errors": [
+        "page-wide horizontal overflow"
+      ],
+      "metrics": {
+        "viewport": 320,
+        "documentWidth": 426,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 290,
+        "outside": [],
+        "clipped": [],
+        "parentClips": [],
+        "paragraphStyle": {
+          "fontSize": "38px",
+          "lineHeight": "59.2833px",
+          "letterSpacing": "4.56px",
+          "wordSpacing": "6.08px",
+          "marginBottom": "22px"
+        }
+      }
+    },
+    {
+      "engine": "firefox",
+      "page": "teaching-ap-biology.html",
+      "width": 320,
+      "mode": "combined",
+      "errors": [
+        "page-wide horizontal overflow",
+        "text extends outside CSS viewport"
+      ],
+      "metrics": {
+        "viewport": 320,
+        "documentWidth": 665,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 163,
+        "outside": [
+          {
+            "tag": "SPAN",
+            "css": "teaching-step-code",
+            "sample": "01",
+            "x": 43,
+            "right": 327,
+            "width": 284,
+            "scrollWidth": 284,
+            "clientWidth": 284,
+            "scrollHeight": 36,
+            "clientHeight": 36
+          },
+          {
+            "tag": "H3",
+            "css": "",
+            "sample": "Original Unit 3 assessment",
+            "x": 43,
+            "right": 327,
+            "width": 284,
+            "scrollWidth": 284,
+            "clientWidth": 284,
+            "scrollHeight": 108,
+            "clientHeight": 108
+          },
+          {
+            "tag": "P",
+            "css": "",
+            "sample": "All 28 students responded to the two-point question about bentazon and photosynthetic electron transport. Their ori",
+            "x": 43,
+            "right": 327,
+            "width": 284,
+            "scrollWidth": 284,
+            "clientWidth": 284,
+            "scrollHeight": 585,
+            "clientHeight": 585
+          },
+          {
+            "tag": "SPAN",
+            "css": "teaching-step-code",
+            "sample": "02",
+            "x": 43,
+            "right": 327,
+            "width": 284,
+            "scrollWidth": 284,
+            "clientWidth": 284,
+            "scrollHeight": 36,
+            "clientHeight": 36
+          },
+          {
+            "tag": "H3",
+            "css": "",
+            "sample": "Feedback and correction",
+            "x": 43,
+            "right": 327,
+            "width": 284,
+            "scrollWidth": 284,
+            "clientWidth": 284,
+            "scrollHeight": 108,
+            "clientHeight": 108
+          },
+          {
+            "tag": "P",
+            "css": "",
+            "sample": "Students reviewed their Unit 3 responses and received feedback about missing or inaccurate biological relationships",
+            "x": 43,
+            "right": 327,
+            "width": 284,
+            "scrollWidth": 284,
+            "clientWidth": 284,
+            "scrollHeight": 765,
+            "clientHeight": 765
+          },
+          {
+            "tag": "SPAN",
+            "css": "teaching-step-code",
+            "sample": "03",
+            "x": 43,
+            "right": 327,
+            "width": 284,
+            "scrollWidth": 284,
+            "clientWidth": 284,
+            "scrollHeight": 36,
+            "clientHeight": 36
+          },
+          {
+            "tag": "H3",
+            "css": "",
+            "sample": "Independent reconstruction",
+            "x": 43,
+            "right": 327,
+            "width": 284,
+            "scrollWidth": 284,
+            "clientWidth": 284,
+            "scrollHeight": 108,
+            "clientHeight": 108
+          },
+          {
+            "tag": "P",
+            "css": "",
+            "sample": "Two school days after feedback-assisted correction, all 28 students completed an individual, ungraded 15-minute rec",
+            "x": 43,
+            "right": 327,
+            "width": 284,
+            "scrollWidth": 284,
+            "clientWidth": 284,
+            "scrollHeight": 1125,
+            "clientHeight": 1125
+          },
+          {
+            "tag": "SPAN",
+            "css": "teaching-step-code",
+            "sample": "04",
+            "x": 43,
+            "right": 327,
+            "width": 284,
+            "scrollWidth": 284,
+            "clientWidth": 284,
+            "scrollHeight": 36,
+            "clientHeight": 36
+          },
+          {
+            "tag": "H3",
+            "css": "",
+            "sample": "Retrospective comparison",
+            "x": 43,
+            "right": 327,
+            "width": 284,
+            "scrollWidth": 284,
+            "clientWidth": 284,
+            "scrollHeight": 108,
+            "clientHeight": 108
+          },
+          {
+            "tag": "P",
+            "css": "",
+            "sample": "After grades were finalized, I compared the ten original Unit 3 answers that had not met the completeness criteria ",
+            "x": 43,
+            "right": 327,
+            "width": 284,
+            "scrollWidth": 284,
+            "clientWidth": 284,
+            "scrollHeight": 990,
+            "clientHeight": 990
+          },
+          {
+            "tag": "H3",
+            "css": "",
+            "sample": "Complete mechanistic",
+            "x": 38,
+            "right": 362,
+            "width": 324,
+            "scrollWidth": 324,
+            "clientWidth": 324,
+            "scrollHeight": 114,
+            "clientHeight": 114
+          },
+          {
+            "tag": "P",
+            "css": "",
+            "sample": "A coherent, sufficiently developed causal pathway from inhibition through intermediate processes to impaired plant ",
+            "x": 38,
+            "right": 362,
+            "width": 324,
+            "scrollWidth": 324,
+            "clientWidth": 324,
+            "scrollHeight": 630,
+            "clientHeight": 630
+          }
+        ],
+        "clipped": [],
+        "parentClips": [],
+        "paragraphStyle": {
+          "fontSize": "26px",
+          "lineHeight": "39px",
+          "letterSpacing": "3.12px",
+          "wordSpacing": "4.16px",
+          "marginBottom": "52px"
+        }
+      }
+    }
+  ],
+  "advisories": [],
+  "byEngine": {
+    "chromium": {
+      "cases": 75,
+      "failures": 40
+    },
+    "firefox": {
+      "cases": 23,
+      "failures": 12
+    }
+  },
+  "caveats": "User-style injections approximate enhanced text spacing and 200% text-only enlargement. They do not operate the browser's native text-only zoom interface. Page-level overflow and selected clipped text are checked; screenshots and ancestor-clip advisories require human review. Automated results do not certify WCAG.",
+  "workflow_run_id": "40867407273",
+  "head_sha": "fc4e286500fd91bf6db219b49e78cca564d1b770",
+  "exit_code": "1"
+}
