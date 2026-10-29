@@ -30,7 +30,10 @@
         break-inside:avoid-page!important;
         page-break-inside:avoid!important;
       }
+      /* Block flow allows study cards to use otherwise empty page space. */
+      #main.research-scoping-page .research-route-grid{display:block!important}
       #main.research-scoping-page .research-route-card{
+        margin:0 0 10px!important;
         break-inside:avoid-page!important;
         page-break-inside:avoid!important;
       }
@@ -196,4 +199,23 @@
     </div>
   </footer>
 
+<script>
+    /* Chromium and other print engines exclude descendants of closed
+       <details> elements. Open the two citations only while printing. */
+    (function () {
+      const sources = document.querySelector('#main.research-scoping-page details.research-references');
+      if (!sources) return;
+      let priorOpen = null;
+      window.addEventListener('beforeprint', function () {
+        priorOpen = sources.open;
+        sources.open = true;
+      });
+      window.addEventListener('afterprint', function () {
+        if (priorOpen !== null) {
+          sources.open = priorOpen;
+          priorOpen = null;
+        }
+      });
+    })();
+  </script>
 </body></html>
