@@ -12,7 +12,7 @@ on:
       - ".github/workflows/audit-action-visitor.yml"
   workflow_dispatch:
 permissions:
-  contents: read
+  contents: write
 jobs:
   visitor-audit:
     runs-on: ubuntu-latest
@@ -28,13 +28,54 @@ jobs:
           python -m playwright install --with-deps chromium
       - name: Check classroom action research page
         run: |
+          set +e
           python -m http.server 8779 --bind 127.0.0.1 >/tmp/action-http.log 2>&1 &
-          python scripts/audit-action-visitor.py
+          python scripts/audit-action-visitor.py 2>&1 | tee action-visitor-audit.log
+          status=${PIPESTATUS[0]}
+          echo "exit_code=$status" >> "$GITHUB_OUTPUT"
+          exit "$status"
+        id: audit
       - name: Store exact source and visual evidence
         if: always()
         run: |
           mkdir -p action-visitor-output/source
           cp research-action.html styles-20261013.css site-theme.css appearance.css appearance.js action-visitor-output/source/
+          cp action-visitor-audit.log action-visitor-output/ 2>/dev/null || true
+      - name: Publish compact audit findings for verification
+        if: always() && github.ref == 'refs/heads/main'
+        run: |
+          mkdir -p docs
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          p=Path("action-visitor-output/report.json")
+          report=json.loads(p.read_text()) if p.exists() else {}
+          screens=report.get("screens",[])
+          pdf=report.get("print",{})
+          summary={
+            "workflow_run_id":os.getenv("GITHUB_RUN_ID"),
+            "head_sha":os.getenv("GITHUB_SHA"),
+            "audit_exit_code":os.getenv("AUDIT_EXIT_CODE","missing"),
+            "screen_widths_tested":[s.get("width") for s in screens],
+            "widths_with_errors":[{"width":s.get("width"),"errors":s.get("errors")} for s in screens if s.get("errors")],
+            "footer_gaps":[{"width":s.get("width"),"pixels":s.get("footerGap")} for s in screens],
+            "table_geometry":[{"width":s.get("width"),"tables":s.get("tables")} for s in screens if s.get("width") in (320,375,768,1024,1440)],
+            "print":pdf,
+            "log_tail":Path("action-visitor-audit.log").read_text()[-2500:] if Path("action-visitor-audit.log").exists() else "audit did not produce a log"
+          }
+          Path("docs/ACTION_VISITOR_LATEST_RESULTS.json").write_text(json.dumps(summary,indent=2,ensure_ascii=False)+"\n")
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/ACTION_VISITOR_LATEST_RESULTS.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Record latest action research visitor audit results [skip ci]"
+            git fetch origin main
+            git rebase origin/main
+            git push origin HEAD:main
+          fi
+        env:
+          AUDIT_EXIT_CODE: ${{ steps.audit.outputs.exit_code }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
