@@ -1,0 +1,75 @@
+name: S5 public cross-engine focus and forced-colours audit
+on:
+  push:
+    branches: [main]
+    paths:
+      - "*.html"
+      - "styles-20261013.css"
+      - "appearance.css"
+      - "site-theme.css"
+      - "appearance.js"
+      - "scripts/audit-public-browser-engines.py"
+      - ".github/workflows/audit-public-browser-engines.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: s5-public-cross-engine-main
+  cancel-in-progress: false
+jobs:
+  cross-engine:
+    runs-on: ubuntu-latest
+    timeout-minutes: 19
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install three Playwright browser engines
+        run: |
+          python -m pip install playwright==1.57.0
+          python -m playwright install --with-deps chromium firefox webkit
+      - name: Test public pages in Chromium Firefox WebKit
+        id: check
+        run: |
+          python -m http.server 8765 --bind 127.0.0.1 >/tmp/s5-http.log 2>&1 &
+          set +e
+          python scripts/audit-public-browser-engines.py 2>&1 | tee s5-browser-audit.log
+          code=${PIPESTATUS[0]}
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit "$code"
+      - name: Preserve concise exact-source report
+        if: always() && github.ref == 'refs/heads/main'
+        env:
+          CODE: ${{ steps.check.outputs.exit_code }}
+        run: |
+          mkdir -p docs
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          p=Path("s5-browser-output/summary.json")
+          s=json.loads(p.read_text()) if p.exists() else {"error":"No summary produced"}
+          s.update(workflow_run_id=os.getenv("GITHUB_RUN_ID"),head_sha=os.getenv("GITHUB_SHA"),exit_code=os.getenv("CODE"))
+          Path("/tmp/s5-result.json").write_text(json.dumps(s,ensure_ascii=False,indent=2)+"\n")
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for attempt in 1 2 3 4; do
+            git fetch origin main
+            git reset --hard origin/main
+            cp /tmp/s5-result.json docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json
+            git add docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json
+            if git diff --cached --quiet; then break; fi
+            git commit -m "Record S5 public browser diagnostics [skip ci]"
+            if git push origin HEAD:main; then break; fi
+            if [ "$attempt" -eq 4 ]; then exit 1; fi
+          done
+      - name: Upload full per-page diagnostics and forced-colour screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: s5-public-cross-engine-evidence
+          path: |
+            s5-browser-output/
+            s5-browser-audit.log
+          retention-days: 14
