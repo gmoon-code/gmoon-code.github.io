@@ -1,12 +1,12 @@
 {
-  "sourceHead": "3e4f789f0bf6a99390240f1124f5750429abd7d9",
+  "sourceHead": "217db8245ccc67bab995819ca95d8a0a15d23a95",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
-  "verifiedExactMatches": 24,
-  "httpErrors": 0,
+  "verifiedExactMatches": 23,
+  "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-3e4f789f0bf6",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-217db8245ccc",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -17,7 +17,9 @@
       "run": "40872270732",
       "head_sha": "523b66d55f525803d3b4ad96226458dcc9c6a9ca",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "index.html"
+      ],
       "failureCounts": {
         "problems": 0
       }
@@ -27,7 +29,9 @@
       "run": "40872270701",
       "head_sha": "523b66d55f525803d3b4ad96226458dcc9c6a9ca",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "index.html"
+      ],
       "failureCounts": {
         "issues": 42
       },
@@ -41,7 +45,9 @@
       "run": "40872270669",
       "head_sha": "523b66d55f525803d3b4ad96226458dcc9c6a9ca",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "index.html"
+      ],
       "failureCounts": {
         "unverified": 0
       },
@@ -56,7 +62,9 @@
       "run": "40872270878",
       "head_sha": "523b66d55f525803d3b4ad96226458dcc9c6a9ca",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "index.html"
+      ],
       "failureCounts": {
         "failures": 0
       }
@@ -66,7 +74,9 @@
       "run": "40872270839",
       "head_sha": "523b66d55f525803d3b4ad96226458dcc9c6a9ca",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "index.html"
+      ],
       "failureCounts": {
         "failures": 0
       }
@@ -76,7 +86,9 @@
       "run": "40872270816",
       "head_sha": "523b66d55f525803d3b4ad96226458dcc9c6a9ca",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "index.html"
+      ],
       "failureCounts": {
         "failures": 0,
         "combinedStressFailures": 0
@@ -87,7 +99,9 @@
       "run": "40875089499",
       "head_sha": "3928ee17f7656d8155aca81b54f0cdd25581e904",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "index.html"
+      ],
       "failureCounts": {
         "failures": 0,
         "axeViolations": 0
@@ -100,11 +114,125 @@
       "note": "U1 route audit documents successful run 40825886279; legacy utility machine report refers to an early missing-script failure. Do not treat it as latest successful evidence."
     }
   },
-  "sourceDriftSinceAudits": [],
-  "pass": true,
-  "errors": [],
+  "sourceDriftSinceAudits": [
+    {
+      "category": "links",
+      "sourceModifiedSinceAudit": [
+        "index.html"
+      ]
+    },
+    {
+      "category": "external",
+      "sourceModifiedSinceAudit": [
+        "index.html"
+      ]
+    },
+    {
+      "category": "metadata",
+      "sourceModifiedSinceAudit": [
+        "index.html"
+      ]
+    },
+    {
+      "category": "reflow",
+      "sourceModifiedSinceAudit": [
+        "index.html"
+      ]
+    },
+    {
+      "category": "engines",
+      "sourceModifiedSinceAudit": [
+        "index.html"
+      ]
+    },
+    {
+      "category": "typography",
+      "sourceModifiedSinceAudit": [
+        "index.html"
+      ]
+    },
+    {
+      "category": "interactions",
+      "sourceModifiedSinceAudit": [
+        "index.html"
+      ]
+    }
+  ],
+  "pass": false,
+  "errors": [
+    {
+      "path": "index.html",
+      "errors": [
+        "deployed bytes differ from checked-out production source"
+      ],
+      "firstDiff": [
+        "--- source\n",
+        "+++ deployed\n",
+        "@@ -92,3 +92,3 @@\n",
+        "       <h3>Teaching</h3>",
+        "-      <p>I teach AP Biology and AP Chemistry and supervise independent student research. I also develop curriculum proposals that begin with a scientific problem and consider how students’ questions might shape what the class investigates next.</p>",
+        "+      <p>I teach AP Biology and Chemistry and supervise independent student research. I also develop curriculum proposals that bring scientific explanations, evidence and students’ questions into the planning process.</p>",
+        "       <a class=\"inline-link\" href=\"teaching.html\">Explore my teaching →</a>",
+        "@@ -127,3 +127,3 @@\n",
+        "       <h3>Research Methods Studio</h3>",
+        "-      <p>This workspace lets students revisit research questions, methods, and evidence as their projects develop. The project page uses a worked example with synthetic data to examine choices about experimental design and analysis.</p>",
+        "+      <p>This workspace helps students revisit research questions, measurements, evidence, and analysis as their projects develop. The project page includes a worked synthetic experiment to examine design decisions.</p>",
+        "       <a class=\"inline-link\" href=\"research-methods-studio.html\">Examine the workspace and its design →</a>",
+        "@@ -143,3 +143,3 @@\n",
+        "       <div class=\"section-head\"><h2>Outside school</h2></div>",
+        "-      <p>I play pungmul with a queer ensemble and enjoy spending time with poetry, fantasy, science fiction, and stories told together. The Interests page includes photographs from our performances and reflections on a few favourite books and shows.</p>",
+        "+      <p>I play pungmul with a queer ensemble and enjoy spending time with poetry, fantasy, science fiction, and stories told together. I've shared some of those performances and favourite works on my Interests page.</p>"
+      ]
+    },
+    {
+      "sourceDrift": [
+        {
+          "category": "links",
+          "sourceModifiedSinceAudit": [
+            "index.html"
+          ]
+        },
+        {
+          "category": "external",
+          "sourceModifiedSinceAudit": [
+            "index.html"
+          ]
+        },
+        {
+          "category": "metadata",
+          "sourceModifiedSinceAudit": [
+            "index.html"
+          ]
+        },
+        {
+          "category": "reflow",
+          "sourceModifiedSinceAudit": [
+            "index.html"
+          ]
+        },
+        {
+          "category": "engines",
+          "sourceModifiedSinceAudit": [
+            "index.html"
+          ]
+        },
+        {
+          "category": "typography",
+          "sourceModifiedSinceAudit": [
+            "index.html"
+          ]
+        },
+        {
+          "category": "interactions",
+          "sourceModifiedSinceAudit": [
+            "index.html"
+          ]
+        }
+      ]
+    }
+  ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "40878439734",
-  "run_sha": "3e4f789f0bf6a99390240f1124f5750429abd7d9",
-  "exit_code": "0"
+  "workflow_run_id": "40880601564",
+  "run_sha": "217db8245ccc67bab995819ca95d8a0a15d23a95",
+  "exit_code": "1"
 }
