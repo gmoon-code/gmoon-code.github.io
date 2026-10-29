@@ -1,5 +1,4 @@
 name: External resource audit
-
 on:
   push:
     branches: [main]
@@ -8,26 +7,60 @@ on:
       - "scripts/external_resource_audit.py"
       - ".github/workflows/external-resource-audit.yml"
   workflow_dispatch:
-
 permissions:
-  contents: read
-
+  contents: write
 jobs:
   external-links:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 11
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Check off-site links and images
-        run: python scripts/external_resource_audit.py
-      - name: Save resource audit
+      - name: Check public off-site links, deployed apps and images
+        id: audit
+        run: |
+          set +e
+          python scripts/external_resource_audit.py 2>&1 | tee external-resource-audit.log
+          code=${PIPESTATUS[0]}
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit "$code"
+      - name: Record concise evidence at exact GitHub source head
+        if: always() && github.ref == 'refs/heads/main'
+        env:
+          AUDIT_EXIT_CODE: ${{ steps.audit.outputs.exit_code }}
+        run: |
+          mkdir -p docs
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          src=Path("external-link-audit-output/summary.json")
+          result=json.loads(src.read_text()) if src.exists() else {"issues":[{"status":"script-error","url":None}]}
+          result["workflow_run_id"]=os.getenv("GITHUB_RUN_ID")
+          result["head_sha"]=os.getenv("GITHUB_SHA")
+          result["audit_exit_code"]=os.getenv("AUDIT_EXIT_CODE")
+          if not src.exists():
+              p=Path("external-resource-audit.log")
+              result["log_tail"]=p.read_text()[-3000:] if p.exists() else "No log"
+          Path("docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json").write_text(json.dumps(result,ensure_ascii=False,indent=2)+"\n")
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Record S2 current external resource status [skip ci]"
+            git fetch origin main
+            git rebase origin/main
+            git push origin HEAD:main
+          fi
+      - name: Save full resource report and diagnostics
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: external-resource-results
-          path: external-link-audit-output/
+          path: |
+            external-link-audit-output/
+            external-resource-audit.log
           retention-days: 14
