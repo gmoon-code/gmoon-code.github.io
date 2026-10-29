@@ -15,7 +15,7 @@ The 19 public/legacy HTML files below were enumerated from the current repositor
 | Route or file | Renewed content-pass status | Continuation note |
 | --- | --- | --- |
 | `index.html` | **Editorially verified; factual source corroboration incomplete** | Stage C-H1 below; do not mark Fully verified |
-| `research.html` | Not reviewed in renewed pass | **Next**: headings, introduction, interests, all scholarly sections, claims and citations |
+| `research.html` | **In progress; opening and project bridge editorially source-verified** | Stage C-R1 below; next Research interests |
 | `research-action.html` | Not reviewed in renewed pass | Prior page consulted *only* to cross-check Home |
 | `research-scoping.html` | Not reviewed in renewed pass | Prior page consulted *only* to cross-check Home |
 | `projects.html` | Not reviewed in renewed pass | Project listings and labels |
@@ -78,6 +78,20 @@ The targeted Home workflow triggered by the content commit `217db8245ccc67bab995
 
 Updated only the two text expectations in `scripts/audit-home-route.py` to the new, exact paragraph openings, commit `b38e4d59f50351f2e870c93299cfa271a4e7357f`. The script was re-fetched and both changed expectations confirmed. Focused Home Chromium workflow [40881070247](https://github.com/gmoon-code/gmoon-code.github.io/actions/runs/40881070247) **completed successfully** on that commit and published `audit/home-route-visual = success`. This rerun covers the new homepage text and confirms its source-level and automated browser/print checks. It does not replace manual visual inspection or primary-data verification.
 
+## Stage C-R1 | Research overview opening and empirical-project bridge
+
+**Coverage.** Current `research.html` source blob `c81ca936c7422144680f0e8fd09fd345b9a90e23`, reviewed the page H1, the food-web illustration and complete opening statement, the “Research projects” heading, both project-card titles/descriptions, and both paragraphs connecting the scoping-review account of Luis with the action-research account of S20. The succeeding “Research interests” section was read for transition context only; its own full audit is still pending.
+
+**Factual checks.** The 20-study ERIC-bounded corpus agrees with `research-scoping.html`. The action-research statements of one class of 28, two feedback-cycle adjustments and ten selected reconstruction pairs agree with `research-action.html`. The primary 2021 Pierson, Clark and Brady article, *Science Education* 105(4), 776–813, DOI `10.1002/sce.21622`, independently confirms the example of Luis's bilingual explanation distinguishing fish feeding from breathing, followed by a shorter English translation that does not retain the distinction. The food-web opening is visibly hypothetical and makes no claim that this particular classroom episode occurred. Independent re-analysis of the author's original student response sheets and scoping extraction workbook was **not** part of this stage.
+
+**Sentence and cohesion findings.** The paragraph beginning “This example has drawn my attention” restated the teaching-decision question already established in the preceding paragraph and repeated the Home hero's “drawn me” rhetorical pattern. Beginning instead with teachers' curricular decisions carries the actual concept forward. “Different tasks and language conditions shaped these records” risked implying a demonstrated causal mechanism. Replaced it with a statement that the records arose under differing conditions. The final sentence “That uncertainty has drawn me to scholarship” repeated the same movement toward an interest, while the following Research interests section already develops the scholarship. Removing it lets the uncertainty remain explicit without formulaic closure.
+
+**Production change.** Three precise text replacements committed to `research.html` as `d51253ed384b840b0eaee663511d386b62e157f1`. They remove the unnecessary opening sentence, qualify the cross-case comparison and close the bridge paragraph on the actual gap in available evidence. No quantitative finding, bibliography, heading, illustration or link was changed.
+
+**Post-change source verification.** Re-fetch verified blob `103605ea16e74ee4a82390b429b0ec678737c4b2`, all new text, retention of the 20/28 counts and both project examples, and absence of the targeted old phrases. This is **editorial source verification**. No new Research-page browser/print run or full independent fact audit is claimed. The primary Pierson article was checked externally, but the classroom-record example remains source-correlated, not independently re-analysed.
+
+**Stage status.** Research opening and project bridge **Editorially verified**, with the noted primary-record qualification. Entire `research.html` remains **In progress**.
+
 ## Exact next continuation point
 
-**Stage C-R1, `research.html`, start at browser title/description, H1 and introductory paragraphs, then follow every section in source order.** Inventory every heading, body sentence, figure caption, citation, reference, expandable passage and link label. Check the source-to-claim relationship against linked publications and independent scholarly sources where possible; preserve its separate intellectual purpose relative to the study-detail pages. Compare recurring concepts and transitions against the Home copy just verified. Work in bounded subsections and record new source blob, exact edits, commit IDs and verified post-edit text here. Do not mark `research.html` verified based on old editorial/visitor reports.
+**Stage C-R2, `research.html`, begin at “Research interests”, especially the section overview and “Classroom authority and epistemic agency”.** Review each subsequent paragraph and in-text citation against its cited source, examine theoretical precision, repeat patterns and transition mechanisms, then proceed through the remaining subsections, bibliography and figure material. Preserve the now source-verified C-R1 introduction, factual qualifications and unchanged full Home review. Audit further pages in the inventory only after each preceding stage has an evidence-backed handoff.
