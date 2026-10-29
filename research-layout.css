@@ -523,8 +523,3 @@
 @media print{
   #main.research-essay{padding-bottom:0!important}
 }
-
-/* Keep the scientific-representations theme heading with its opening subsection after prose edits shift A4 pagination. */
-@media print{
-  .research-essay #scientific-representations{break-before:page!important;page-break-before:always!important}
-}
