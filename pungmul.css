@@ -27,3 +27,84 @@
 @media(max-width:950px){.pungmul-page-hero{grid-template-columns:1fr}.pungmul-hero-photo{max-width:660px}}
 @media(max-width:800px){.pungmul-performance-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:560px){.pungmul-performance-grid{grid-template-columns:1fr}.pungmul-performance-grid img{aspect-ratio:auto;max-height:360px;object-fit:contain}.pungmul-jump-nav{gap:9px 14px}.pungmul-page-hero h1 span{font-size:.56em}}
+
+
+/* Pungmul visitor-facing natural-flow photographs and reliable full-article print. */
+html:not(.moon-free-mode) #main.pungmul-deep-page{
+  padding-bottom:64px!important;
+}
+html:not(.moon-free-mode) #main.pungmul-deep-page+.site-footer{
+  margin-top:36px!important;
+}
+html:not(.moon-free-mode) #main.pungmul-deep-page>section{
+  width:100%!important;max-width:100%!important;
+  height:auto!important;min-height:0!important;
+  translate:none!important;scale:none!important;transform:none!important;
+}
+html:not(.moon-free-mode) #main.pungmul-deep-page :is(
+  .hero-copy p,.pungmul-prose p,.pungmul-photo-credit
+){
+  width:auto!important;height:auto!important;min-height:0!important;
+  translate:none!important;scale:none!important;transform:none!important;
+  max-width:79ch!important;
+}
+html:not(.moon-free-mode) #main.pungmul-deep-page .pungmul-page-hero{
+  display:grid!important;
+  grid-template-columns:minmax(0,1.05fr) minmax(280px,.95fr)!important;
+  gap:30px!important;align-items:center!important;
+}
+html:not(.moon-free-mode) #main.pungmul-deep-page .pungmul-performance-grid{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:18px!important;
+  width:100%!important;max-width:100%!important;
+}
+html:not(.moon-free-mode) #main.pungmul-deep-page img.personal-photo-in-flow{
+  display:block!important;position:static!important;
+  left:auto!important;right:auto!important;top:auto!important;bottom:auto!important;
+  width:100%!important;height:auto!important;max-width:100%!important;
+  max-height:none!important;min-width:0!important;
+  aspect-ratio:16/9!important;object-fit:cover!important;object-position:center!important;
+  background-image:none!important;
+  border:0!important;border-radius:7px!important;
+  margin:0!important;padding:0!important;
+  translate:none!important;scale:none!important;transform:none!important;
+  opacity:1!important;z-index:auto!important;
+}
+@media(min-width:1200px){
+  html:not(.moon-free-mode) #main.pungmul-deep-page .pungmul-performance-grid{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  }
+}
+@media(max-width:950px){
+  html:not(.moon-free-mode) #main.pungmul-deep-page .pungmul-page-hero{
+    grid-template-columns:minmax(0,1fr)!important;
+  }
+  html:not(.moon-free-mode) #main.pungmul-deep-page .pungmul-page-hero>img.personal-photo-in-flow{
+    max-width:660px!important;
+  }
+}
+@media(max-width:560px){
+  html:not(.moon-free-mode) #main.pungmul-deep-page .pungmul-performance-grid{
+    grid-template-columns:minmax(0,1fr)!important;
+  }
+}
+@media print{
+  html:not(.moon-free-mode) #main.pungmul-deep-page{padding-bottom:0!important}
+  html:not(.moon-free-mode) #main.pungmul-deep-page .pungmul-jump-nav{
+    display:none!important;
+  }
+  html:not(.moon-free-mode) #main.pungmul-deep-page .pungmul-performance-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:10px!important;
+  }
+  html:not(.moon-free-mode) #main.pungmul-deep-page .pungmul-performance-grid img{
+    break-inside:avoid;page-break-inside:avoid;
+  }
+  html:not(.moon-free-mode) #main.pungmul-deep-page .section-head{
+    break-after:avoid-page;page-break-after:avoid;
+  }
+  html:not(.moon-free-mode) #main.pungmul-deep-page .pungmul-reference-list li{
+    break-inside:avoid;page-break-inside:avoid;
+  }
+}
