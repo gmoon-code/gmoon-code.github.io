@@ -98,7 +98,9 @@ async def main():
                 await page.close()
         page=await browser.new_page(viewport={"width":375,"height":850},reduced_motion="reduce")
         try:
-            await page.goto(BASE,wait_until="domcontentloaded")
+            await page.goto(BASE,wait_until="load",timeout=45000)
+            await page.wait_for_function("""() => [...document.querySelectorAll('#main .media-shelf img')]
+                .every(i=>i.complete && i.naturalWidth>0)""",timeout=16000)
             await page.keyboard.press("Tab")
             skipHref=await page.evaluate("document.activeElement.getAttribute('href')")
             await page.keyboard.press("Enter")
