@@ -373,7 +373,7 @@ html[data-moon-theme="dark"] .teaching-bio-case .teaching-step-code{
    Through tablet widths, place the full bar beneath its label and count.
    This prevents enlarged numbers escaping their fixed-width grid track. */
 #main.research-action-page .research-count-row{
-  grid-template-columns:65px minmax(0,1fr) minmax(79px,max-content);
+  grid-template-columns:minmax(65px,max-content) minmax(0,1fr) minmax(79px,max-content);
 }
 @media (max-width:900px){
   #main.research-action-page .research-count-row{
