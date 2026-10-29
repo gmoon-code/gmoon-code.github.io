@@ -518,7 +518,7 @@
 
 /* Verified visitor spacing at the end of the long Research essay.
    Leave print pagination unchanged and retain the 15px last-section inset. */
-#main.research-essay{padding-bottom:49px}
+#main.research-essay{padding-bottom:64px}
 #main.research-essay+.site-footer{margin-top:36px}
 @media print{
   #main.research-essay{padding-bottom:0!important}
