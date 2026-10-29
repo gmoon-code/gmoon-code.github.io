@@ -421,7 +421,7 @@ async def main():
                 ("Multilingual participation and scientific reasoning",
                  "In an English-medium science classroom"),
                 ("Scientific representations and their limits",
-                 "A simple population-growth model"),
+                 "A simple exponential population-growth model"),
                 ("Sex determination and biological variation","Human sex development"),
                 ("Related writing","These questions also inform my independent essay"),
                 ("References","Airton, L. (2023)")
