@@ -143,6 +143,44 @@ async def main():
                 tableCellText:getComputedStyle(document.querySelector('.research-evidence-table tbody td')).color,
                 overflow:document.documentElement.scrollWidth>innerWidth
             })""")
+            contrastSamples=await page.evaluate("""() => {
+              const selectors=[
+                '.research-detail-hero .hero-copy>p:not(.meta)',
+                '.research-prose p',
+                '.research-route-card h3',
+                '.research-route-card>p:not(.research-route-count)',
+                '.research-example-steps p',
+                '.research-evidence-table tbody th',
+                '.research-evidence-table tbody td',
+                '.research-selection-detail',
+                '.research-references summary'
+              ];
+              const rgba=s=>{
+                const m=s.match(/rgba?\(([^)]+)\)/);
+                if(!m)return null;
+                const v=m[1].split(',').map(Number);
+                return [v[0],v[1],v[2],v.length>3?v[3]:1];
+              };
+              const lum=v=>{
+                const c=v.slice(0,3).map(x=>{
+                  x/=255;return x<=.04045?x/12.92:Math.pow((x+.055)/1.055,2.4);
+                });return .2126*c[0]+.7152*c[1]+.0722*c[2];
+              };
+              return selectors.map(sel=>{
+                const el=document.querySelector(sel),cs=getComputedStyle(el);
+                const ink=rgba(cs.color);
+                let color=null;
+                for(let e=el;e;e=e.parentElement){
+                  const bg=rgba(getComputedStyle(e).backgroundColor);
+                  if(bg&&bg[3]>=.99){color=bg;break;}
+                }
+                if(!color)color=[255,255,255,1];
+                const a=lum(ink),b=lum(color);
+                return {selector:sel,ratio:+((Math.max(a,b)+.05)/(Math.min(a,b)+.05)).toFixed(2),
+                  ink:cs.color,paper:color.slice(0,3)};
+              });
+            }""")
+            print("SCOPING DARK CONTRAST",contrastSamples,flush=True)
             await page.screenshot(path=str(OUT/"scoping-dark-375.png"),full_page=True,animations="disabled",timeout=15000)
             await page.locator('a[href="#page-top"]').click()
             back=await page.evaluate("({hash:location.hash,y:scrollY})")
@@ -152,10 +190,12 @@ async def main():
             if not scroll["focused"] or scroll["x"]<=0:errors.append("table keyboard scroll")
             if not opened["open"] or not opened["visible"]:errors.append("references disclosure keyboard")
             if dark["theme"]!="dark" or dark["overflow"]:errors.append("dark theme")
+            if any(v["ratio"]<4.5 for v in contrastSamples):
+                errors.append("dark text contrast below 4.5:1")
             if back["hash"]!="#page-top" or back["y"]>4:errors.append("back-to-top")
             results.append({"test":"keyboard/table/dark","first":first,"mainTarget":target,
                             "fragment":fragment,"scroll":scroll,"opened":opened,"dark":dark,
-                            "back":back,"errors":errors})
+                            "back":back,"contrastSamples":contrastSamples,"errors":errors})
             print("SCOPING KEYBOARD DARK","PASS" if not errors else errors,flush=True)
         except Exception as e:
             results.append({"test":"keyboard/table/dark","errors":[repr(e)]})
@@ -165,8 +205,10 @@ async def main():
         try:
             await page.goto(URL,wait_until="load")
             await page.evaluate("document.fonts.ready")
+            wasRestored=await page.evaluate("!document.querySelector('.research-references').open")
             raw=await page.pdf(format="A4",print_background=True,margin={
               "top":"12mm","bottom":"12mm","left":"12mm","right":"12mm"})
+            afterRestored=await page.evaluate("!document.querySelector('.research-references').open")
             (OUT/"scoping-A4.pdf").write_bytes(raw)
             pdf=fitz.open(stream=raw,filetype="pdf")
             texts=[re.sub(r"\s+"," ",pg.get_text()) for pg in pdf]
@@ -186,9 +228,10 @@ async def main():
             if len(pdf)>12:errors.append("print excessively long")
             if len(texts)>1 and len(texts[-1])<280:errors.append("near-empty last printed page")
             if len(references)!=2:errors.append("two collapsed references absent from print")
+            if not wasRestored or not afterRestored:errors.append("source disclosure not restored after print")
             results.append({"test":"A4 print","pages":len(pdf),"pageChars":[len(t) for t in texts],
                             "missing":missing,"references":references,"outOfBounds":out[:10],
-                            "lastPageEnd":texts[-1][-400:],"errors":errors})
+                            "lastPageEnd":texts[-1][-400:],"printStateRestored":afterRestored,"errors":errors})
             print("SCOPING A4",len(pdf),"PASS" if not errors else errors,flush=True)
         except Exception as e:
             results.append({"test":"A4 print","errors":[repr(e)]})
