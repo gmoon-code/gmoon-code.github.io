@@ -79,6 +79,14 @@ async def main():
                     errors.append("anchor/name/text overrun")
                 if len(result["mailLinks"])!=2 or len(result["aboutLinks"])!=2:errors.append("links")
                 if not result["photo"]["loaded"] or not result["photo"]["alt"]:errors.append("photo loading/alt")
+                if result["photo"]["parent"]!="contact-background":
+                    errors.append("photo remains outside visitor reading order")
+                if result["computed"]["h1Height"]+2 < result["computed"]["h1ScrollHeight"]:
+                    errors.append("fixed-height contact title clips text")
+                if result["computed"]["introHeight"]+2 < result["computed"]["introScrollHeight"]:
+                    errors.append("fixed-height introduction clips text")
+                if result["computed"]["aboutParagraphHeight"]+2 < result["computed"]["aboutParagraphScrollHeight"]:
+                    errors.append("fixed-height biography clips text")
                 if result["photo"]["box"]["left"] < -3 or result["photo"]["box"]["right"]>w+3:errors.append("photo outside viewport")
                 if any(x["overlap"]>30 for x in result["photoVsText"]) or any(x>30 for x in result["photoVsHeading"]):
                     errors.append("photo overlaps readable text")
@@ -153,7 +161,9 @@ async def main():
                 pg.get_pixmap(matrix=fitz.Matrix(1.25,1.25)).save(str(OUT/f"contact-A4-{i+1}.png"))
             errors=[]
             if missing or wordOut or imgOverlap:errors.append("printed content missing/clipped/photo-text intersection")
-            if not 1<=len(doc)<=4:errors.append("too many print pages")
+            if len(doc)!=1:errors.append("Contact portrait or biography stranded on separate A4 page")
+            if len(doc)>0 and len(doc[0].get_images(full=True))<1:
+                errors.append("portrait not included with printed text")
             results.append({"test":"print A4","pages":len(doc),"pageChars":[len(x) for x in pages],
                 "images":[len(pg.get_images(full=True)) for pg in doc],
                 "missing":missing,"wordOut":wordOut[:10],"imageOverlap":imgOverlap[:15],"errors":errors})
