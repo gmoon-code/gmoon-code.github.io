@@ -127,7 +127,7 @@ for page,soup in DATA.items():
                   "nav":navtargets,"ids":len(ids),"images":len(soup.find_all("img")),
                   "links":len(soup.find_all("a"))})
 report={"pages":pages,"linkCount":len(links),"assetReferences":len(resources),
- "externalOrSpecialCount":sum(x["kind"]=="external-or-special" for x in links),
+ "externalOrSpecialCount":sum(x.get("kind")=="external-or-special" for x in links),
  "internalLinks":sum(x.get("exists",False) for x in links),
  "problems":problems,"advisory":advisory}
 (OUT/"report.json").write_text(json.dumps(report,indent=2,ensure_ascii=False)+"\n")
