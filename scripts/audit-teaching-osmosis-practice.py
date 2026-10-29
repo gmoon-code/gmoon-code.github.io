@@ -111,9 +111,24 @@ async def main():
             await page.keyboard.press("Enter")
             skip=await page.evaluate("document.activeElement.id")
             # Verify actual button invokes native printing, without opening a print dialog in CI.
-            await page.evaluate("window.__calls=0; window.print=()=>{window.__calls++}")
+            await page.evaluate("""() => {
+                window.__calls=0;
+                window.__printStacks=[];
+                window.__clickCount=0;
+                window.print=()=>{
+                  window.__calls++;
+                  window.__printStacks.push(new Error("print invoked").stack);
+                };
+                document.querySelector('.worksheet-actions button')
+                    .addEventListener('click',()=>{window.__clickCount++});
+            }""")
             await page.locator('.worksheet-actions button').click()
-            calls=await page.evaluate("window.__calls")
+            diagnostic=await page.evaluate("""() => ({
+                calls:window.__calls,
+                clickCount:window.__clickCount,
+                printStacks:window.__printStacks
+            })""")
+            calls=diagnostic["calls"]
             teacher=page.locator("details.worksheet-teacher-notes")
             await teacher.locator("summary").click()
             expanded=await teacher.get_attribute("open")
@@ -121,10 +136,10 @@ async def main():
             top=await page.evaluate("({hash:location.hash,y:scrollY})")
             errors=[]
             if first!="#main" or skip!="main":errors.append("keyboard skip")
-            if calls!=1:errors.append("print button did not call window.print")
+            if calls!=1 or diagnostic["clickCount"]!=1:errors.append("print button invocation count unexpected")
             if expanded is None:errors.append("details summary does not expand")
             if top["hash"]!="#page-top" or top["y"]>4:errors.append("top navigation")
-            results.append({"test":"interactions","skip":skip,"printCalls":calls,
+            results.append({"test":"interactions","skip":skip,"printCalls":calls,"printDiagnostic":diagnostic,
                             "teacherOpen":expanded is not None,"top":top,"errors":errors})
             print("INTERACTIONS","PASS" if not errors else errors,flush=True)
         except Exception as e:
