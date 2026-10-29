@@ -75,10 +75,12 @@ async def main():
                 if data["photoCount"]!=2 or any(not x["loaded"] or not x["alt"] for x in data["photos"]):
                     errors.append("added photo unloaded or inaccessible")
                 if data["mediaEntries"]!=5:errors.append("media card count")
-                if width<=700 and any(x["parent"]!="pungmul-gallery" for x in data["photos"]):
-                    errors.append("phone photos not in gallery")
-                if width>700 and any(x["parent"]!="added-layer" for x in data["photos"]):
-                    errors.append("desktop photos misplaced")
+                if any(x["parent"]!="pungmul-gallery" for x in data["photos"]):
+                    errors.append("visitor photos not in accessible gallery")
+                if data["photoToPhotoOverlap"]>0 or any(any(v>0 for v in r) for r in data["photoParagraphOverlap"]):
+                    errors.append("photographs obscure each other or written paragraphs")
+                if not 95<=data["footerGap"]<=105:
+                    errors.append("footer separation differs from 100px")
                 if any(x["box"]["left"] < -3 or x["box"]["right"]>width+3 for x in data["photos"]):
                     errors.append("photo escapes visible page")
                 data["errors"]=errors
