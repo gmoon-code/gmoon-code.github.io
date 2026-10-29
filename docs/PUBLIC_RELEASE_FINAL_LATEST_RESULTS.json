@@ -1,12 +1,12 @@
 {
-  "sourceHead": "cdbf470324abc01619d0a2817d30a19ed497e5b8",
+  "sourceHead": "74abb5f03cf02d5022dc63cf772934aa46834779",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-cdbf470324ab",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-74abb5f03cf0",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -14,8 +14,8 @@
   "auditEvidence": {
     "links": {
       "report": "docs/PUBLIC_LINKGRAPH_LATEST_RESULTS.json",
-      "run": "40890598564",
-      "head_sha": "55e375e450b87e88ea578ec46db06e040dd64a34",
+      "run": "40893062885",
+      "head_sha": "cdbf470324abc01619d0a2817d30a19ed497e5b8",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research.html"
@@ -26,18 +26,18 @@
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "40891379798",
-      "head_sha": "3fc39c5294ac5a1f3b992cc9c194270f45a438e1",
+      "run": "40893062919",
+      "head_sha": "cdbf470324abc01619d0a2817d30a19ed497e5b8",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research.html"
       ],
       "failureCounts": {
-        "issues": 42
+        "issues": 44
       },
       "counts": {
-        "reachable": 71,
-        "unverified": 42
+        "reachable": 69,
+        "unverified": 44
       }
     },
     "metadata": {
@@ -59,8 +59,8 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "40891379808",
-      "head_sha": "3fc39c5294ac5a1f3b992cc9c194270f45a438e1",
+      "run": "40893062828",
+      "head_sha": "cdbf470324abc01619d0a2817d30a19ed497e5b8",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research.html"
@@ -71,8 +71,8 @@
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "40891379593",
-      "head_sha": "3fc39c5294ac5a1f3b992cc9c194270f45a438e1",
+      "run": "40893063147",
+      "head_sha": "cdbf470324abc01619d0a2817d30a19ed497e5b8",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research.html"
@@ -83,8 +83,8 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "40891380052",
-      "head_sha": "3fc39c5294ac5a1f3b992cc9c194270f45a438e1",
+      "run": "40893062808",
+      "head_sha": "cdbf470324abc01619d0a2817d30a19ed497e5b8",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research.html"
@@ -96,8 +96,8 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "40891379944",
-      "head_sha": "3fc39c5294ac5a1f3b992cc9c194270f45a438e1",
+      "run": "40893062955",
+      "head_sha": "cdbf470324abc01619d0a2817d30a19ed497e5b8",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research.html"
@@ -168,20 +168,11 @@
       "firstDiff": [
         "--- source\n",
         "+++ deployed\n",
-        "@@ -150,9 +150,9 @@\n",
+        "@@ -165,3 +165,3 @@\n",
         "   <div class=\"reading research-essay-prose\">",
-        "-    <p>A diagram linking chromosomes to reproductive anatomy can leave the developmental mechanisms between them unexplained. Gene-regulatory pathways contribute to gonadal determination, while hormone production, receptor function, and tissue responses influence the development of reproductive structures. Clinical reviews document variation in these processes, including genetic and endocrine differences that cannot be inferred from chromosomes alone (<a href=\"#reading-arboleda\">Arboleda et al., 2014</a>; <a href=\"#reading-witchel\">Witchel, 2018</a>). These reviews help me examine the biology represented in a classroom model, although their diagnostic categories address different questions.</p>",
-        "+    <p>Human sex development offers a more specific context for examining what a biological representation includes. A simplified classroom pathway may show how chromosome-associated gene expression contributes to gonadal determination. Subsequent hormone production, receptor activity, and tissue responses shape aspects of sexual differentiation that the same pathway may leave unexplained. Clinical reviews document variation in these processes, including genetic and endocrine differences that cannot be inferred from chromosomes alone (<a href=\"#reading-arboleda\">Arboleda et al., 2014</a>; <a href=\"#reading-witchel\">Witchel, 2018</a>). I draw on these sources for their descriptions of developmental mechanisms, while recognizing that clinical classifications and classroom models serve different purposes.</p>",
-        "     <p>The choice of what a model includes also affects how students encounter biological variation. Guidance for inclusive postsecondary biology teaching recommends introducing diversity early, examining the historical context of scientific knowledge, and creating a respectful classroom culture (<a href=\"#reading-zemenick\">Zemenick et al., 2022</a>). Although these principles were developed for postsecondary education and do not establish the effects of a particular secondary lesson, they help me consider how variation can be taught as an ordinary subject of biological inquiry. Students should be able to examine the scientific claims without being asked to disclose anything about their own bodies or identities.</p>",
-        "-    <p>Historical research demonstrates why the uses of a category deserve scrutiny alongside its biological basis. Earlier attempts to link an XYY chromosome pattern with aggression drew on cultural assumptions about masculinity, an episode examined in the history of sex-chromosome research (<a href=\"#reading-richardson\">Richardson, 2013</a>). A later systematic review found no statistical evidence that an extra Y chromosome, by itself, establishes a predisposition to aggression or criminal behaviour (<a href=\"#reading-xyy-review\">Re &amp; Birkhoff, 2015</a>). The earlier inference illustrates how a chromosome finding was extended into a claim about behaviour without adequate evidence.</p>",
-        "-    <p>The history of medical classifications of intersex variation raises questions about who defines a condition and how diagnostic categories influence decisions about care (<a href=\"#reading-fausto\">Fausto-Sterling, 2000</a>; <a href=\"#reading-davis\">Davis, 2015</a>). Related questions arise when a measured testosterone concentration is used to make claims about a person's capacities or behaviour without accounting for the processes that mediate its effects (<a href=\"#reading-testosterone\">Jordan-Young &amp; Karkazis, 2019</a>). In a critique of 2011 eligibility policies for elite women athletes, Karkazis and colleagues examined how assumptions about testosterone and athletic advantage entered institutional rules (<a href=\"#reading-karkazis\">Karkazis et al., 2012</a>). In sport, extending an interpretation of hormone measurements into eligibility rules can directly affect who is allowed to compete.</p>",
-        "-    <p>A classroom discussion of sex and gender also involves decisions about what teachers assume they know of their students. Airton's ethic of hospitality asks educators to prepare to welcome students whose gender identities they cannot know in advance, without organizing their efforts only around students already identified as transgender (<a href=\"#reading-airton\">Airton, 2023</a>). Gilbert's account of a sex-education curriculum dispute considers how adults' claims to expertise can overlook the ways youth engage with and reshape the curriculum (<a href=\"#reading-gilbert\">Gilbert, 2021</a>).</p>",
-        "-    <p>Questions about participation also extend beyond school curricula. Alexander examines trans-exclusionary politics through the relationship between carceral power and Black trans life (<a href=\"#reading-alexander\">Alexander, 2023</a>). In participatory arts-based projects, Burkholder and colleagues explore how queer and trans participants build collective forms of joy and belonging, largely in settings beyond formal classrooms (<a href=\"#reading-burkholder\">Burkholder et al., 2025</a>). Their work addresses different forms of power and participation and does not establish how students would respond in a particular secondary biology lesson.</p>",
-        "-    <p>Evaluating a scientific explanation and responding to a student's challenge involve different judgments. A developmental model can be examined against evidence about the processes it represents. In the classroom, another decision follows when students question the model and the teacher considers whether their contributions should change what the class investigates.</p>",
-        "+    <p>Historical research demonstrates why the uses of a category deserve scrutiny alongside its biological basis. Earlier attempts to link an XYY chromosome pattern with aggression drew on cultural assumptions about masculinity, an episode examined in the history of sex-chromosome research (<a href=\"#reading-richardson\">Richardson, 2013</a>). A later systematic review found no statistical evidence that an extra Y chromosome, by itself, establishes a predisposition to aggression or criminal behaviour (<a href=\"#reading-xyy-review\">Re &amp; Birkhoff, 2015</a>). One source traces the history of the inference, while the other reviews the studies used to support it.</p>",
-        "+    <p>The history of medical classifications of intersex variation raises questions about who defines a condition and how diagnostic categories influence decisions about care (<a href=\"#reading-fausto\">Fausto-Sterling, 2000</a>; <a href=\"#reading-davis\">Davis, 2015</a>). Related questions arise when a measured testosterone concentration is used to make claims about a person's capacities or behaviour without accounting for the processes that mediate its effects (<a href=\"#reading-testosterone\">Jordan-Young &amp; Karkazis, 2019</a>). In a critique of 2011 eligibility policies for elite women athletes, Karkazis and colleagues examined how assumptions about testosterone and athletic advantage entered institutional rules (<a href=\"#reading-karkazis\">Karkazis et al., 2012</a>). These settings differ, yet each makes it necessary to ask which conclusion a measurement supports and who bears the consequences when that conclusion is extended.</p>",
-        "+    <p>The conditions under which these questions can be raised also deserve attention. Airton's ethic of hospitality asks educators to prepare to welcome students whose gender identities they cannot know in advance, rather than directing inclusive efforts only toward students already identified as transgender (<a href=\"#reading-airton\">Airton, 2023</a>). Scholarship on the politics of sex education examines how adult claims to expertise can obscure students' own engagement with a curriculum (<a href=\"#reading-gilbert\">Gilbert, 2021</a>). Both prompt me to consider how students can question an explanation without being asked to account for their personal circumstances.</p>",
-        "+    <p>Beyond biology education, scholarship on gender and participation examines how institutional norms can be challenged. Alexander considers trans-exclusionary politics in relation to carceral power and Black trans life (<a href=\"#reading-alexander\">Alexander, 2023</a>). Burkholder and colleagues draw on participatory arts-based projects to explore queer joy as a collective educational practice, often developed beyond formal classrooms (<a href=\"#reading-burkholder\">Burkholder et al., 2025</a>). These accounts address different forms of power and participation. Neither evaluates a particular secondary biology lesson, although both encourage me to consider whose terms of participation are taken for granted and which possibilities students can help create.</p>"
+        "-    <p>In <a href=\"writing-biological-classification.html\">What can a biological classification explain?</a>, I examine two cases in which a scientific claim depends on what the available evidence can establish. Research on haemoglobin S and malaria shows why estimates of protection differ across the outcomes measured. The history of XYY chromosome research traces a different inference, from identifying a chromosomal pattern to treating it as evidence of behaviour. The essay considers what students might question when such interpretations become part of a biology lesson.</p>",
+        "+    <p>These questions also inform my independent essay, <a href=\"writing-biological-classification.html\">What can a biological classification explain?</a> I consider how conclusions drawn from haemoglobin S and malaria studies depend on the outcomes measured, and how historical claims about XYY chromosomes extended beyond the evidence for behaviour. Both cases raise questions about which scientific categories enter biology teaching and whether students can challenge the claims made through them.</p>",
+        "   </div>"
       ]
     },
     {
@@ -232,7 +223,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "40893062993",
-  "run_sha": "cdbf470324abc01619d0a2817d30a19ed497e5b8",
+  "workflow_run_id": "40893645487",
+  "run_sha": "74abb5f03cf02d5022dc63cf772934aa46834779",
   "exit_code": "1"
 }
