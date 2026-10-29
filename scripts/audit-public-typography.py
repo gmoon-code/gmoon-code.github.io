@@ -156,12 +156,18 @@ async def test(browser,engine,page_name,width,mode):
                         row["errors"].append("assessment count extends outside its row")
                     if bar["trackWidth"]<90 or abs(bar["fillRatio"]-ratio)>.02:
                         row["errors"].append("assessment bar proportion is not preserved")
-                    if not bar["labelAndValueShareRow"]:
-                        row["errors"].append("assessment label and value do not share a row")
-                    if width<=900 and not bar["trackBelowLabels"]:
-                        row["errors"].append("narrow assessment track not below label and value")
-                    if width>900 and bar["trackBelowLabels"]:
-                        row["errors"].append("wide assessment track moved unexpectedly")
+                    if width<=900:
+                        if not bar["labelAndValueShareRow"]:
+                            row["errors"].append("narrow assessment label and value not on the same row")
+                        if not bar["trackBelowLabels"]:
+                            row["errors"].append("narrow assessment track not below label and value")
+                    else:
+                        # In three-column rows, align-items:center can give
+                        # differently tall text boxes different top positions;
+                        # validate the actual horizontal order instead.
+                        value_left=bar["valueRight"]-bar["valueWidth"]
+                        if bar["labelRight"]>bar["trackLeft"]+2 or bar["trackRight"]>value_left+2:
+                            row["errors"].append("wide assessment label/track/value order incorrect")
             if engine=="chromium" and width in (320,375,768,900,901):
                 try:
                     barshot=OUT/f"s6b-count-bars-{width}.png"
