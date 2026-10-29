@@ -1,5 +1,5 @@
 {
-  "testedAt": "2026-10-29T14:22:53.546Z",
+  "testedAt": "2026-10-29T14:26:45.167Z",
   "results": [
     {
       "path": "index.html",
@@ -97,7 +97,7 @@
           "renderedHeight": 527,
           "left": 486,
           "right": 1222,
-          "alt": "Original published graph comparing focal science practices under linguistic and expansive conceptualizations of language. Modelling is reported for 2 linguistic-view and 8 expansive-view studies; explanation for 6 and 3; and argumentation for 9 and 2, respectively.",
+          "alt": "Figure comparing numbers of articles with linguistic and expansive views of language by focal science practice. Modelling: 2 and 8; constructing explanations: 6 and 3; argumentation: 9 and 2; communicating information: 1 and 0; all eight practices: 0 and 3. Asking questions, planning investigations, analysing data, and computational thinking each have zero in both groups.",
           "loading": "lazy",
           "source": "https://gmoon-code.github.io/assets/gonzalez-howard-2023-figure-1.webp"
         }
@@ -668,7 +668,7 @@
           "renderedHeight": 444,
           "left": 41,
           "right": 661,
-          "alt": "Original published graph comparing focal science practices under linguistic and expansive conceptualizations of language. Modelling is reported for 2 linguistic-view and 8 expansive-view studies; explanation for 6 and 3; and argumentation for 9 and 2, respectively.",
+          "alt": "Figure comparing numbers of articles with linguistic and expansive views of language by focal science practice. Modelling: 2 and 8; constructing explanations: 6 and 3; argumentation: 9 and 2; communicating information: 1 and 0; all eight practices: 0 and 3. Asking questions, planning investigations, analysing data, and computational thinking each have zero in both groups.",
           "loading": "lazy",
           "source": "https://gmoon-code.github.io/assets/gonzalez-howard-2023-figure-1.webp"
         }
