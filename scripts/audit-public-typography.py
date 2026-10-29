@@ -138,7 +138,10 @@ async def test(browser,engine,page_name,width,mode):
                 return {index:i,label:label.textContent.trim(),value:value.textContent.trim(),
                   valueRight:+r.right.toFixed(2),valueWidth:+r.width.toFixed(2),
                   valueScrollWidth:value.scrollWidth,rowRight:+row.right.toFixed(2),
-                  labelRight:+lr.right.toFixed(2),trackWidth:+t.width.toFixed(2),
+                  labelRight:+lr.right.toFixed(2),
+                  labelHeight:+lr.height.toFixed(2),
+                  labelLineHeight:parseFloat(getComputedStyle(label).lineHeight),
+                  trackWidth:+t.width.toFixed(2),
                   trackLeft:+t.left.toFixed(2),trackRight:+t.right.toFixed(2),
                   fillRatio:t.width?+(fr.width/t.width).toFixed(3):null,
                   labelAndValueShareRow:Math.abs(lr.top-r.top)<5,
@@ -168,6 +171,8 @@ async def test(browser,engine,page_name,width,mode):
                         value_left=bar["valueRight"]-bar["valueWidth"]
                         if bar["labelRight"]>bar["trackLeft"]+2 or bar["trackRight"]>value_left+2:
                             row["errors"].append("wide assessment label/track/value order incorrect")
+                        if bar["labelHeight"]>bar["labelLineHeight"]*1.25:
+                            row["errors"].append("enlarged wide assessment Unit label wraps unexpectedly")
             if engine=="chromium" and width in (320,375,768,900,901):
                 try:
                     barshot=OUT/f"s6b-count-bars-{width}.png"
