@@ -5,9 +5,9 @@
     "supplemental combined-stress across narrow and breakpoint widths"
   ],
   "publicPages": 18,
-  "cases": 107,
+  "cases": 111,
   "individualRequirementCases": 92,
-  "combinedStressCases": 15,
+  "combinedStressCases": 19,
   "failedCount": 0,
   "failures": [],
   "combinedStressFailedCount": 2,
@@ -15,15 +15,17 @@
     {
       "engine": "chromium",
       "page": "research-action.html",
-      "width": 768,
+      "width": 901,
       "mode": "combined",
       "errors": [
+        "assessment label and value do not share a row",
         "wide assessment track moved unexpectedly",
+        "assessment label and value do not share a row",
         "wide assessment track moved unexpectedly"
       ],
       "metrics": {
-        "viewport": 768,
-        "documentWidth": 768,
+        "viewport": 901,
+        "documentWidth": 901,
         "mainCount": 1,
         "h1Count": 1,
         "textElements": 126,
@@ -56,15 +58,17 @@
     {
       "engine": "firefox",
       "page": "research-action.html",
-      "width": 768,
+      "width": 901,
       "mode": "combined",
       "errors": [
+        "assessment label and value do not share a row",
         "wide assessment track moved unexpectedly",
+        "assessment label and value do not share a row",
         "wide assessment track moved unexpectedly"
       ],
       "metrics": {
-        "viewport": 768,
-        "documentWidth": 768,
+        "viewport": 901,
+        "documentWidth": 901,
         "mainCount": 1,
         "h1Count": 1,
         "textElements": 126,
@@ -98,18 +102,18 @@
   "advisories": [],
   "byEngine": {
     "chromium": {
-      "cases": 79,
+      "cases": 81,
       "individualFailures": 0,
       "combinedStressFailures": 1
     },
     "firefox": {
-      "cases": 28,
+      "cases": 30,
       "individualFailures": 0,
       "combinedStressFailures": 1
     }
   },
   "caveats": "The two reading preference tests apply independently. Combined maximum-spacing plus 200% text at 320 CSS pixels is explicitly a supplementary stress case, and any such overflow remains open even when the independent-test exit code is zero. Inline spacing overrides model the priority of a user-origin accessibility stylesheet over author-important declarations, but are not an actual browser user-stylesheet installation. Computed font-size doubling is not native browser text-only zoom. Automated results do not certify WCAG.",
-  "workflow_run_id": "40871600186",
-  "head_sha": "f3d195692bc3c3ef31c8050608c051150d9ce47f",
+  "workflow_run_id": "40871630940",
+  "head_sha": "32fa230101f0459a741b417dcd722c0f9a548842",
   "exit_code": "0"
 }
