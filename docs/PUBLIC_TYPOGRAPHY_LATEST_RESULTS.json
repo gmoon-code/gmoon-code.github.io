@@ -2,31 +2,124 @@
   "modes": [
     "injected WCAG 1.4.12 paragraph/line/letter/word spacing",
     "user-style computed-font-size ×2 simulation",
-    "combined 320px stress samples"
+    "supplemental combined-stress across narrow and breakpoint widths"
   ],
   "publicPages": 18,
-  "cases": 98,
+  "cases": 107,
   "individualRequirementCases": 92,
-  "combinedStressCases": 6,
+  "combinedStressCases": 15,
   "failedCount": 0,
   "failures": [],
-  "combinedStressFailedCount": 0,
-  "combinedStressFailures": [],
+  "combinedStressFailedCount": 2,
+  "combinedStressFailures": [
+    {
+      "engine": "chromium",
+      "page": "research-action.html",
+      "width": 768,
+      "mode": "combined",
+      "errors": [
+        "assessment count extends outside its row",
+        "assessment label and value do not share a row",
+        "wide assessment track moved unexpectedly",
+        "assessment count extends outside its row",
+        "assessment label and value do not share a row",
+        "wide assessment track moved unexpectedly",
+        "page-wide horizontal overflow"
+      ],
+      "metrics": {
+        "viewport": 768,
+        "documentWidth": 771,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 126,
+        "outside": [],
+        "clipped": [],
+        "parentClips": [],
+        "culprits": [
+          {
+            "tag": "A",
+            "css": "skip-link",
+            "sample": "Skip to content",
+            "x": -9999,
+            "right": -9737,
+            "width": 262,
+            "scrollWidth": 262,
+            "clientWidth": 262,
+            "scrollHeight": 48,
+            "clientHeight": 48
+          }
+        ],
+        "paragraphStyle": {
+          "fontSize": "26px",
+          "lineHeight": "39px",
+          "letterSpacing": "3.12px",
+          "wordSpacing": "4.16px",
+          "marginBottom": "52px"
+        }
+      }
+    },
+    {
+      "engine": "firefox",
+      "page": "research-action.html",
+      "width": 768,
+      "mode": "combined",
+      "errors": [
+        "assessment count extends outside its row",
+        "assessment label and value do not share a row",
+        "wide assessment track moved unexpectedly",
+        "assessment count extends outside its row",
+        "assessment label and value do not share a row",
+        "wide assessment track moved unexpectedly",
+        "page-wide horizontal overflow"
+      ],
+      "metrics": {
+        "viewport": 768,
+        "documentWidth": 771,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 126,
+        "outside": [],
+        "clipped": [],
+        "parentClips": [],
+        "culprits": [
+          {
+            "tag": "A",
+            "css": "skip-link",
+            "sample": "Skip to content",
+            "x": -9999,
+            "right": -9738,
+            "width": 261,
+            "scrollWidth": 261,
+            "clientWidth": 261,
+            "scrollHeight": 48,
+            "clientHeight": 48
+          }
+        ],
+        "paragraphStyle": {
+          "fontSize": "26px",
+          "lineHeight": "39px",
+          "letterSpacing": "3.12px",
+          "wordSpacing": "4.16px",
+          "marginBottom": "52px"
+        }
+      }
+    }
+  ],
   "advisories": [],
   "byEngine": {
     "chromium": {
-      "cases": 75,
+      "cases": 79,
       "individualFailures": 0,
-      "combinedStressFailures": 0
+      "combinedStressFailures": 1
     },
     "firefox": {
-      "cases": 23,
+      "cases": 28,
       "individualFailures": 0,
-      "combinedStressFailures": 0
+      "combinedStressFailures": 1
     }
   },
   "caveats": "The two reading preference tests apply independently. Combined maximum-spacing plus 200% text at 320 CSS pixels is explicitly a supplementary stress case, and any such overflow remains open even when the independent-test exit code is zero. Inline spacing overrides model the priority of a user-origin accessibility stylesheet over author-important declarations, but are not an actual browser user-stylesheet installation. Computed font-size doubling is not native browser text-only zoom. Automated results do not certify WCAG.",
-  "workflow_run_id": "40871110923",
-  "head_sha": "4e1bd2a357de1ee261df0e625247417ef99f9872",
+  "workflow_run_id": "40871261568",
+  "head_sha": "6e2466178d472d7a5ec5592e043f42b58b13fa39",
   "exit_code": "0"
 }
