@@ -120,6 +120,8 @@ async def main():
             scroll = []
             for i in range(2):
                 r=regions.nth(i)
+                # Keyboard modality first; :focus-visible is not guaranteed after a mouse click.
+                await page.keyboard.press("Tab")
                 await r.focus()
                 focus=await r.evaluate("""e=>({visible:e.matches(':focus-visible'),
                   outline:getComputedStyle(e).outlineStyle,
