@@ -928,7 +928,7 @@
     }
   },
   "caveats": "The two reading preference tests apply independently. Combined maximum-spacing plus 200% text at 320 CSS pixels is explicitly a supplementary stress case, and any such overflow remains open even when the independent-test exit code is zero. User-style injections are not native browser text-only zoom. Automated results do not certify WCAG.",
-  "workflow_run_id": "40869062525",
-  "head_sha": "e3faab950d85def12b41394b088273923ba6e391",
+  "workflow_run_id": "40869559948",
+  "head_sha": "4a62059556904d6b20c17c4c8fbdf387c01131dc",
   "exit_code": "1"
 }
