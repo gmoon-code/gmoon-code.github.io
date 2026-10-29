@@ -6,8 +6,12 @@
   ],
   "publicPages": 18,
   "cases": 98,
-  "failedCount": 1,
-  "failures": [
+  "individualRequirementCases": 92,
+  "combinedStressCases": 6,
+  "failedCount": 0,
+  "failures": [],
+  "combinedStressFailedCount": 1,
+  "combinedStressFailures": [
     {
       "engine": "chromium",
       "page": "research-action.html",
@@ -257,15 +261,17 @@
   "byEngine": {
     "chromium": {
       "cases": 75,
-      "failures": 1
+      "individualFailures": 0,
+      "combinedStressFailures": 1
     },
     "firefox": {
       "cases": 23,
-      "failures": 0
+      "individualFailures": 0,
+      "combinedStressFailures": 0
     }
   },
-  "caveats": "User-style injections approximate enhanced text spacing and 200% text-only enlargement. They do not operate the browser's native text-only zoom interface. Page-level overflow and selected clipped text are checked; screenshots and ancestor-clip advisories require human review. Automated results do not certify WCAG.",
-  "workflow_run_id": "40868918488",
-  "head_sha": "b95393635b4f4213f4fc503b45ba3c9989b6340a",
-  "exit_code": "1"
+  "caveats": "The two reading preference tests apply independently. Combined maximum-spacing plus 200% text at 320 CSS pixels is explicitly a supplementary stress case, and any such overflow remains open even when the independent-test exit code is zero. User-style injections are not native browser text-only zoom. Automated results do not certify WCAG.",
+  "workflow_run_id": "40868959780",
+  "head_sha": "2bb6eef3b701393b54b95594d2fe889d773bfa93",
+  "exit_code": "0"
 }
