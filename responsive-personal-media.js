@@ -23,7 +23,7 @@
       }
       if(record.placements.some(x=>!x)){record=null;return;}
     }
-    const useFlow=compact.matches && !document.documentElement.classList.contains("moon-free-mode");
+    const useFlow=(main.matches(".pungmul-deep-page") || compact.matches) && !document.documentElement.classList.contains("moon-free-mode");
     record.images.forEach((img,i)=>{
       const target=useFlow?record.placements[i]:record.layer;
       if(img.parentNode!==target)target.append(img);
