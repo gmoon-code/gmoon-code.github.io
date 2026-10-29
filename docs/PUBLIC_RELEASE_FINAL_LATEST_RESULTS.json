@@ -1,12 +1,12 @@
 {
-  "sourceHead": "74abb5f03cf02d5022dc63cf772934aa46834779",
+  "sourceHead": "1f08cc6efa72612ab56faeb51ee58cc1b0dfbe93",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-74abb5f03cf0",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-1f08cc6efa72",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -14,8 +14,8 @@
   "auditEvidence": {
     "links": {
       "report": "docs/PUBLIC_LINKGRAPH_LATEST_RESULTS.json",
-      "run": "40893062885",
-      "head_sha": "cdbf470324abc01619d0a2817d30a19ed497e5b8",
+      "run": "40893645974",
+      "head_sha": "74abb5f03cf02d5022dc63cf772934aa46834779",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research.html"
@@ -26,24 +26,24 @@
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "40893062919",
-      "head_sha": "cdbf470324abc01619d0a2817d30a19ed497e5b8",
+      "run": "40893645848",
+      "head_sha": "74abb5f03cf02d5022dc63cf772934aa46834779",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research.html"
       ],
       "failureCounts": {
-        "issues": 44
+        "issues": 43
       },
       "counts": {
-        "reachable": 69,
-        "unverified": 44
+        "reachable": 70,
+        "unverified": 43
       }
     },
     "metadata": {
       "report": "docs/RESEARCH_METADATA_LATEST_RESULTS.json",
-      "run": "40891379840",
-      "head_sha": "3fc39c5294ac5a1f3b992cc9c194270f45a438e1",
+      "run": "40893645728",
+      "head_sha": "74abb5f03cf02d5022dc63cf772934aa46834779",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research.html"
@@ -83,8 +83,8 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "40893062808",
-      "head_sha": "cdbf470324abc01619d0a2817d30a19ed497e5b8",
+      "run": "40893645870",
+      "head_sha": "74abb5f03cf02d5022dc63cf772934aa46834779",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research.html"
@@ -96,8 +96,8 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "40893062955",
-      "head_sha": "cdbf470324abc01619d0a2817d30a19ed497e5b8",
+      "run": "40893645539",
+      "head_sha": "74abb5f03cf02d5022dc63cf772934aa46834779",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research.html"
@@ -170,8 +170,8 @@
         "+++ deployed\n",
         "@@ -165,3 +165,3 @@\n",
         "   <div class=\"reading research-essay-prose\">",
-        "-    <p>In <a href=\"writing-biological-classification.html\">What can a biological classification explain?</a>, I examine two cases in which a scientific claim depends on what the available evidence can establish. Research on haemoglobin S and malaria shows why estimates of protection differ across the outcomes measured. The history of XYY chromosome research traces a different inference, from identifying a chromosomal pattern to treating it as evidence of behaviour. The essay considers what students might question when such interpretations become part of a biology lesson.</p>",
-        "+    <p>These questions also inform my independent essay, <a href=\"writing-biological-classification.html\">What can a biological classification explain?</a> I consider how conclusions drawn from haemoglobin S and malaria studies depend on the outcomes measured, and how historical claims about XYY chromosomes extended beyond the evidence for behaviour. Both cases raise questions about which scientific categories enter biology teaching and whether students can challenge the claims made through them.</p>",
+        "-    <p>In <a href=\"writing-biological-classification.html\">What can a biological classification explain?</a>, I examine two cases in which a scientific claim depends on what the available evidence can establish. A study of haemoglobin S and malaria reports different estimates of protection across clinical outcomes. The history of XYY chromosome research traces a different inference, from identifying a chromosomal pattern to treating it as evidence of behaviour. The essay considers what students might question when such interpretations become part of a biology lesson.</p>",
+        "+    <p>In <a href=\"writing-biological-classification.html\">What can a biological classification explain?</a>, I examine two cases in which a scientific claim depends on what the available evidence can establish. Research on haemoglobin S and malaria shows why estimates of protection differ across the outcomes measured. The history of XYY chromosome research traces a different inference, from identifying a chromosomal pattern to treating it as evidence of behaviour. The essay considers what students might question when such interpretations become part of a biology lesson.</p>",
         "   </div>"
       ]
     },
@@ -223,7 +223,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "40893645487",
-  "run_sha": "74abb5f03cf02d5022dc63cf772934aa46834779",
+  "workflow_run_id": "40893919914",
+  "run_sha": "1f08cc6efa72612ab56faeb51ee58cc1b0dfbe93",
   "exit_code": "1"
 }
