@@ -174,7 +174,7 @@ async def main():
    try:
     await page.goto(URL,wait_until="load")
     await page.locator(".moon-appearance-select").select_option(appearance)
-    await page.wait_for_function("pref => document.documentElement.dataset.moonTheme===pref",appearance)
+    await page.wait_for_function("pref => document.documentElement.dataset.moonTheme===pref",arg=appearance)
     vals=await page.evaluate("""() => {
       const get=e=>document.querySelector(e);
       const parse=s=>{
