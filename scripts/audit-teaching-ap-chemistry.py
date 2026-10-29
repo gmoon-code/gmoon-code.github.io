@@ -233,6 +233,9 @@ async def main():
             if not any("Transfer task after expansion" in x and
                        "Student-facing reasoning check" in x for x in pages):
                 errors.append("expansion heading separated from assignment")
+            if not any("Sources and related scholarship" in x and
+                       "Black, P." in x and "Talanquer, V." in x for x in pages):
+                errors.append("bibliography split across print sheets")
             results.append({"test":"print A4","pageCount":len(doc),"missing":missing,
                             "stranded":stranded,"clipping":clipping[:15],
                             "characters":[len(x) for x in pages],"errors":errors})
