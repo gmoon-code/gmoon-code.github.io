@@ -101,6 +101,7 @@ html:not(.moon-free-mode) #main.pungmul-deep-page img.personal-photo-in-flow{
   html:not(.moon-free-mode) #main.pungmul-deep-page .pungmul-performance-grid{
     grid-template-columns:repeat(2,minmax(0,1fr))!important;
     gap:10px!important;
+    margin-top:42px!important;
     break-inside:avoid!important;page-break-inside:avoid!important;
   }
   html:not(.moon-free-mode) #main.pungmul-deep-page .pungmul-performance-grid img{
