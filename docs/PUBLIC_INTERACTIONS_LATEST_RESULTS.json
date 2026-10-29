@@ -5,12 +5,14 @@
   "appearancePreferenceTests": 18,
   "disclosureGroups": 4,
   "previewOpenCloseSequences": 2,
+  "expandedDisclosureAxeScans": 4,
+  "activePreviewAxeScans": 2,
   "printButtonActions": 2,
   "failedCases": 0,
   "failures": [],
   "axeViolations": [],
   "notes": "Live previews test the parent portfolio interaction and iframe semantics, not the separately deployed applications' internal UI. Headless Chromium/axe does not measure spoken screen-reader output or certify full WCAG conformance.",
-  "workflow_run_id": "40874719067",
-  "head_sha": "810de2cbfef52b1d22303fb5750644da6594e096",
+  "workflow_run_id": "40875089499",
+  "head_sha": "3928ee17f7656d8155aca81b54f0cdd25581e904",
   "exit_code": "0"
 }
