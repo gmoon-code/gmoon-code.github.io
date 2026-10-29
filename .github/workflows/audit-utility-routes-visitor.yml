@@ -1,0 +1,56 @@
+name: Utility routes visitor audit
+on:
+  push:
+    branches: [main]
+    paths:
+      - "404.html"
+      - "about.html"
+      - "contact.html"
+      - "styles-20261013.css"
+      - "site-theme.css"
+      - "appearance.css"
+      - "appearance.js"
+      - "scripts/audit-utility-routes-visitor.py"
+      - ".github/workflows/audit-utility-routes-visitor.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+  statuses: write
+jobs:
+  visitor-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 13
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Chromium and PDF inspection tools
+        run: |
+          python -m pip install playwright==1.57.0 PyMuPDF==1.26.7
+          python -m playwright install --with-deps chromium
+      - name: Test nested not-found, About redirect, fallback and live CDN
+        run: python scripts/audit-utility-routes-visitor.py
+      - name: Preserve audited source files
+        if: always()
+        run: |
+          mkdir -p utility-routes-audit-output/source
+          cp 404.html about.html contact.html styles-20261013.css site-theme.css appearance.css appearance.js utility-routes-audit-output/source/
+      - name: Upload browser/PDF evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: utility-routes-visitor-evidence
+          path: utility-routes-audit-output/
+          retention-days: 7
+      - name: Set audit status
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RESULT: ${{ job.status }}
+        run: |
+          if [ "$RESULT" = "success" ]; then state=success; else state=failure; fi
+          gh api -X POST "repos/$GITHUB_REPOSITORY/statuses/$GITHUB_SHA" \
+            -f state="$state" -f context="audit/utility-routes" \
+            -f target_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" \
+            -f description="404 and About visitor browser audit: $RESULT"
