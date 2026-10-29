@@ -70,6 +70,7 @@ html:not(.moon-free-mode) #main.pungmul-deep-page img.personal-photo-in-flow{
   margin:0!important;padding:0!important;
   translate:none!important;scale:none!important;transform:none!important;
   opacity:1!important;z-index:auto!important;
+  clip-path:none!important;
 }
 @media(min-width:1200px){
   html:not(.moon-free-mode) #main.pungmul-deep-page .pungmul-performance-grid{
@@ -107,4 +108,14 @@ html:not(.moon-free-mode) #main.pungmul-deep-page img.personal-photo-in-flow{
   html:not(.moon-free-mode) #main.pungmul-deep-page .pungmul-reference-list li{
     break-inside:avoid;page-break-inside:avoid;
   }
+}
+
+
+/* Long Korean bibliography links should wrap at the 1025px desktop boundary. */
+html:not(.moon-free-mode) #main.pungmul-deep-page .pungmul-reference-list,
+html:not(.moon-free-mode) #main.pungmul-deep-page .pungmul-reference-list li,
+html:not(.moon-free-mode) #main.pungmul-deep-page .pungmul-reference-list a{
+  min-width:0!important;max-width:100%!important;
+  overflow-wrap:anywhere!important;
+  word-break:break-word!important;
 }
