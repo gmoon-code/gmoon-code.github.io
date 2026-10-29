@@ -68,6 +68,7 @@ async def main():
                        parent:e.parentElement?.className||e.parentElement?.tagName,box:box(e),
                        natural:[e.naturalWidth,e.naturalHeight],
                        objectFit:getComputedStyle(e).objectFit,
+                       clipPath:getComputedStyle(e).clipPath,
                        background:getComputedStyle(e).backgroundImage.slice(0,55)})),
                      imageImageOverlap:images.map((e,i)=>images.slice(i+1).map((f,j)=>({
                        with:i+j+2,area:Math.round(inter(r(e),r(f)))}))),
@@ -92,9 +93,11 @@ async def main():
                 if any(im["box"]["left"]<-3 or im["box"]["right"]>w+3 for im in data["images"]):
                     err.append("photo out of bounds")
                 if data["referenceCount"]!=4:err.append("missing references")
-                if any(im["parent"] not in ("pungmul-page-hero","pungmul-performance-grid")
-                       for im in data["images"]):
+                if not data["images"][0]["parent"].endswith("pungmul-page-hero") or any(
+                      im["parent"]!="pungmul-performance-grid" for im in data["images"][1:]):
                     err.append("public photos not part of document flow")
+                if any(im["clipPath"]!="none" for im in data["images"]):
+                    err.append("obsolete circular mask still clips photos")
                 if not 95<=data["footerGap"]<=105:
                     err.append("inconsistent content-to-footer separation")
                 if any(item["area"]>100 for group in data["imageImageOverlap"] for item in group):
