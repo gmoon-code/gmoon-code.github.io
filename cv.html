@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="styles-20261013.css">
   <script src="appearance.js?v=20261020-light-default-1"></script>
   <link rel="stylesheet" href="site-theme.css">
-  <link rel="stylesheet" href="appearance.css?v=20261020-dark-8">
+  <link rel="stylesheet" href="appearance.css?v=20261028-visible-focus">
   <style>
     /* The online version follows the section order and content of the
        updated October 2026 résumé, while retaining the academic site's style. */
@@ -99,6 +99,10 @@
       .resume-skills h3{font-size:10.5pt!important}
       a{text-decoration:none!important;color:#000!important}
     }
+    /* Match the audited section-to-footer rhythm without changing the A4 layout. */
+    #main.resume-page{padding-bottom:64px}
+    #main.resume-page+.site-footer{margin-top:36px}
+    @media print{#main.resume-page{padding-bottom:0!important}}
   </style>
 </head>
 <body class="theme-blue">
