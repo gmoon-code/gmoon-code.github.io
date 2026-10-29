@@ -124,6 +124,48 @@ async def test(browser,engine,page_name,width,mode):
         if mode in ("text200","combined"):
             row["scaledTextElements"]=await page.evaluate(TEXT_RESIZE)
         metrics=await page.evaluate(METRICS)
+        if engine=="chromium" and page_name=="research-action.html" and width==320 and mode=="combined":
+            row["s6bProbe"]=await page.evaluate(r"""async () => {
+              const w=innerWidth;
+              const d=e=>{const r=e.getBoundingClientRect(),s=getComputedStyle(e);
+                return {tag:e.tagName,cls:(typeof e.className==='string'?e.className:'').slice(0,100),id:e.id,
+                  text:e.textContent?.trim().slice(0,75),left:+r.left.toFixed(2),right:+r.right.toFixed(2),
+                  width:+r.width.toFixed(2),scrollWidth:e.scrollWidth,clientWidth:e.clientWidth,
+                  overflowX:s.overflowX,position:s.position,display:s.display,minWidth:s.minWidth,
+                  gridTemplate:s.gridTemplateColumns,contain:s.contain}};
+              const base=document.documentElement.scrollWidth;
+              const els=[...document.querySelectorAll('body *')];
+              const off=els.filter(e=>{
+                const r=e.getBoundingClientRect();
+                return r.width>0&&r.right>w+2&&r.right<w+90;
+              }).slice(0,55).map(d);
+              const parent=els.filter(e=>e.scrollWidth>e.clientWidth+3&&
+                e.getBoundingClientRect().width>0).slice(0,55).map(d);
+              const tableWrappers=[...document.querySelectorAll('.research-table-wrap')].map(d);
+              const root=[document.documentElement,document.body,document.querySelector('main'),
+                ...document.querySelectorAll('main>.section')].filter(Boolean).map(d);
+              const trials={};
+              const css=[
+                ['table-wrapper-containment','#main .research-table-wrap{contain:inline-size!important}'],
+                ['table-wrapper-paint','#main .research-table-wrap{contain:paint!important}'],
+                ['all-table-scroll','#main table{display:block;max-width:100%;overflow-x:auto!important}'],
+                ['root-grid-minwidth','#main .section{min-width:0!important;max-width:100%!important}'],
+                ['table-wrapper-overscroll','#main .research-table-wrap{overflow-x:auto!important;overscroll-behavior-x:contain!important}'],
+                ['no-absolute','#main *{position:static!important}'],
+                ['word-boundary','#main *{overflow-wrap:anywhere!important;word-break:break-word!important}'],
+                ['sibling-clip','#main .section{overflow-x:clip!important}'],
+                ['no-research-table','#main .research-table-wrap{display:none!important}'],
+                ['no-research-flow','#main .research-selection-flow{display:none!important}'],
+                ['no-figures','#main figure{display:none!important}']
+              ];
+              for(const [label,rule] of css) {
+                const st=document.createElement('style');st.textContent=rule;
+                document.head.append(st);
+                trials[label]=document.documentElement.scrollWidth;
+                st.remove();
+              }
+              return {viewport:w,base,root,tableWrappers,nearRight:off,overflowElements:parent,trials};
+            }""")
         row["baseline"]={"viewport":baseline["viewport"],"documentWidth":baseline["documentWidth"],
                           "paragraphStyle":baseline["paragraphStyle"]}
         row["metrics"]=metrics
