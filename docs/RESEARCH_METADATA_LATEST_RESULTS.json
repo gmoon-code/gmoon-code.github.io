@@ -1,6 +1,6 @@
 {
-  "workflow_run_id": "40855918707",
-  "head_sha": "5991feb97ca3611803ab74af22cae8bbd16c5812",
+  "workflow_run_id": "40856117045",
+  "head_sha": "34cad7f6630b92653168edeb3e7a25e8285bb733",
   "exit_code": "0",
   "preprint": {
     "doi": "10.35542/osf.io/kznvj_v1",
@@ -49,7 +49,7 @@
   "preprint_references": [
     {
       "page": "research-scoping.html",
-      "titleMatch": 0.0,
+      "titleMatch": null,
       "excerpt": "Read the 2026 preprint → (opens in a new tab)"
     },
     {
@@ -58,12 +58,12 @@
       "excerpt": "Preprint · Moon, Y. E. (2026). Evidence routes and validity risk in claims about multilingual learners’ science understanding in secondary science: A scoping review [Preprint]."
     }
   ],
-  "preprint_review": true,
+  "preprint_review": false,
   "unique_dois": 59,
   "citation_occurrences": 67,
   "counts": {
-    "unverified": 3,
-    "consistent": 62,
+    "inline-or-narrative": 2,
+    "consistent": 63,
     "review": 2
   },
   "manual_review": [
@@ -80,6 +80,7 @@
         "Allison Jardim Gonsalves"
       ],
       "indexVenue": "Cultural Studies of Science Education",
+      "firstAuthorMatch": true,
       "titleWordMatch": 1.0,
       "yearDifference": 2,
       "metadataHttp": 200,
@@ -98,79 +99,14 @@
         "Shakina Rajendram"
       ],
       "indexVenue": "International Journal of Multilingualism",
+      "firstAuthorMatch": true,
       "titleWordMatch": 1.0,
       "yearDifference": 2,
       "metadataHttp": 200,
       "outcome": "review"
     }
   ],
-  "unverified": [
-    {
-      "page": "research.html",
-      "element_id": null,
-      "year": 2023,
-      "reference": "González-Howard et al. (2023)",
-      "href": "https://doi.org/10.3102/0013189X231206172",
-      "doi": "10.3102/0013189X231206172",
-      "indexTitle": "Language Views for Scientific Sensemaking Matter: A Synthesis of Research on Multilingual Students’ Experiences with Science Practices Through a Translanguaging Lens",
-      "indexYear": 2023,
-      "indexAuthors": [
-        "María González‐Howard",
-        "Sage Andersen",
-        "Karina Méndez Pérez",
-        "Enrique Suárez"
-      ],
-      "indexVenue": "Educational Researcher",
-      "titleWordMatch": null,
-      "yearDifference": 0,
-      "metadataHttp": 200,
-      "outcome": "unverified"
-    },
-    {
-      "page": "research-scoping.html",
-      "element_id": null,
-      "year": null,
-      "reference": "The distinction between what Luis expressed in his bilingual description and what appeared in the English version becomes visible only when the records are read together. The group exchange adds another consideration about whose contributions could enter discussion. These are my interpretations of the published study (opens in a new tab) , paraphrased rather than presented as verbatim participant accounts.",
-      "href": "https://doi.org/10.1002/sce.21622",
-      "doi": "10.1002/sce.21622",
-      "indexTitle": "Scientific modeling and translanguaging: A multilingual and multimodal approach to support science learning and engagement",
-      "indexYear": 2021,
-      "indexAuthors": [
-        "Ashlyn E. Pierson",
-        "Douglas B. Clark",
-        "Corey E. Brady"
-      ],
-      "indexVenue": "Science Education",
-      "titleWordMatch": null,
-      "yearDifference": null,
-      "metadataHttp": 200,
-      "outcome": "unverified"
-    },
-    {
-      "page": "teaching-ap-evolution.html",
-      "element_id": null,
-      "year": 2005,
-      "reference": "Williams, T. N., Mwangi, T. W., Wambua, S., Alexander, N. D., Kortok, M., Snow, R. W., & Marsh, K. (2005). Sickle cell trait and the risk of Plasmodium falciparum malaria and other childhood diseases. The Journal of Infectious Diseases, 192 (1), 178–186.   .",
-      "href": "https://doi.org/10.1086/430744",
-      "doi": "10.1086/430744",
-      "indexTitle": "Sickle Cell Trait and the Risk ofPlasmodium falciparumMalaria and Other Childhood Diseases",
-      "indexYear": 2005,
-      "indexAuthors": [
-        "Thomas Neil Williams",
-        "Tabitha Mwangi",
-        "Sammy Wambua",
-        "Neal D. E. Alexander",
-        "Moses Kortok",
-        "Robert William Snow",
-        "Kevin Marsh"
-      ],
-      "indexVenue": "The Journal of Infectious Diseases",
-      "titleWordMatch": null,
-      "yearDifference": 0,
-      "metadataHttp": 200,
-      "outcome": "unverified"
-    }
-  ],
+  "unverified": [],
   "status_inventory": {
     "research.html": {
       "preprint_link": false,
