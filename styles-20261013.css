@@ -2355,6 +2355,7 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
   }
   .teaching-evolution-case #variation-sequence,
   .teaching-evolution-case #variation-assessment,
+  .teaching-evolution-case #variation-selection-model,
   .teaching-evolution-case #variation-ethics,
   .teaching-evolution-case #variation-sources{
     break-before:page;
