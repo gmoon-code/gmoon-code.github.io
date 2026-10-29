@@ -59,7 +59,7 @@ SEMAN=r"""() => {
    detailsCount:document.querySelectorAll('main details').length
  };
 }"""
-AXE=r"""async tags => {
+AXE_SCRIPT=r"""async tags => {
  const r=await axe.run(document,{runOnly:{type:'tag',values:tags},resultTypes:['violations','incomplete']});
  return {violations:r.violations.map(v=>({
    id:v.id,impact:v.impact,nodes:v.nodes.slice(0,12).map(n=>({
@@ -97,7 +97,7 @@ async def visit(browser,name,width=375):
         if any(x["tag"]=="SELECT" and not (x["label"] or x["aria"]) for x in m["forms"]):
             row["errors"].append("select with no accessible label")
         await page.add_script_tag(path=str(AXE))
-        row["axe"]=await page.evaluate(AXE,AXE_TAGS)
+        row["axe"]=await page.evaluate(AXE_SCRIPT,AXE_TAGS)
         if row["axe"]["violations"]:row["errors"].append("axe standard state violations")
         # Change preference by actual select, check DOM and selection state;
         # reload to confirm persisted preference, then use System mode.
@@ -142,7 +142,7 @@ async def visit(browser,name,width=375):
                 if initial or not opened or restored!=opened or closed:
                     row["errors"].append("details Enter toggle or print restoration failed")
                 await page.add_script_tag(path=str(AXE))
-                dynamic=await page.evaluate(AXE,AXE_TAGS)
+                dynamic=await page.evaluate(AXE_SCRIPT,AXE_TAGS)
                 if dynamic["violations"]:
                     row.setdefault("disclosureAxe",[]).extend(dynamic["violations"])
                     row["errors"].append("axe disclosure state violations")
