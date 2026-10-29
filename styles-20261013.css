@@ -2238,3 +2238,17 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
 #main.project-detail-page{padding-bottom:62px}
 #main.project-detail-page+.site-footer{margin-top:36px}
 @media print{#main.project-detail-page{padding-bottom:0!important}}
+
+/* In printed Research Methods Studio, introduce the four workspaces on
+   the same sheet as their heading and explanation. */
+@media print{
+  #methods-tools>.section-head,
+  #methods-tools>.reading.project-reading{
+    break-after:avoid-page!important;
+    page-break-after:avoid!important;
+  }
+  #methods-tools>.project-tool-list{
+    break-before:avoid-page!important;
+    page-break-before:avoid!important;
+  }
+}
