@@ -1,0 +1,41 @@
+# Contact visitor-facing re-audit | 29 October 2026
+
+Route `contact.html`, Stage C1 of the continuing page-by-page academic website audit. Completes the current reader-facing Contact scope following P2/P3, Teaching T1–T5, Interests I1 and Pungmul I2. **Scope is the publicly visible page, not the editor.**
+
+## C1.1 | Previously completed work retained
+
+- Re-read the previous `docs/EDITORIAL_PAGE_AUDIT.md` entries for Contact and the current full 223K-character HTML without truncating or replacing the embedded image bytes.
+- Previous work already fixed nonbreaking/hard-line-wrap defects in the biography and invitation, confirmed one H1 and one H2 with two sections, canonical URL and Contact navigation state, two usable email links, correct local Research/Teaching links, and a descriptive alternative text for the portrait. A later audit removed nine impossible CSS `:not(*)` selectors from editor-generated rules. All of these decisions were preserved.
+- The welcoming text, invitation to exchange ideas or say hello, contact address, biographical paragraph, and personal picture are user-authored and visitor-facing. They were not rewritten to suit generic marketing prose. The warm, informal tone is an established part of the page. No additional text correction was factually justified.
+- This pass confirmed exactly two `mailto:` links with the same destination; the local links `research.html` and `teaching.html` remain correctly labelled; no duplicate IDs or unresolved local page fragments; the portrait's embedded pixels load and have meaningful alternative text.
+
+## C1.2 | Baseline real-browser defects
+
+- Added `scripts/audit-contact-visitor.py` and `.github/workflows/audit-contact-visitor.yml`. The baseline exact-source Chromium run `40821352497` produced all fourteen requested viewport screenshots and a real one-page printed PDF. The script collects visible text, boundaries, document width, unique IDs, links, keyboard state, pixel geometry, portrait and content overlap, and print text/image rectangles.
+- Baseline widths `320,375,560,620,700,701,768,950,1024,1025,1100,1140,1200,1440`: contact information and image all loaded, with no image-to-text or email-to-greeting overlaps.
+- Confirmed a **92px horizontal overflow** at 1025px: `document.scrollWidth=1117px` against a 1025px viewport. Overflow was also present at 1100px because editor-desktop rules imposed fixed child widths; the header, greeting and email card were not naturally adapting at the 1025px transition.
+- The gap between the final visible biography section and footer varied from about `101px` on the smallest phones to `131px` at 620–768px and `147–161px` on several desktop widths. The old editor-generated desktop `main` minimum height created extra whitespace even after resizing main padding.
+- At widths at most 1024px the responsive-personal-media script moved the portrait naturally into its biography; above that threshold it returned to a separate absolute layer. That brittle breakpoint and the legacy fixed-height/translated paragraph styles were the source of the desktop layout risk.
+- Previous source-only concerns about the `moon-v2-live-layout` block were not treated as a reason to delete it. The active published desktop CSS was corrected through later **scoped visitor rules**, preserving the original geometry metadata for other modes.
+
+## C1.3 | Targeted corrections
+
+- `responsive-personal-media.js` now places Contact's single existing image in its actual `.contact-background` flow container at every screen size outside the site's `moon-free-mode`, matching the already-established visitor flow behaviour of the distinct Pungmul page. Original source node and metadata are not duplicated. Commit `887842bee96e34392c55e32c685c992ff3aae81c`.
+- Added late, narrowly scoped `#contact-visitor-layout` rules in `contact.html` (production commit `5c2aa17704f802e73773e9a7276411c4b6d20fb9`). These override only public-mode Contact geometry, not the global site/editor. The header invitation and email card retain a responsive two-column layout above 800px; at or below 800px they stack naturally. Biography and photograph display as one column at or below 800px, and as a readable text-plus-portrait arrangement above this width. Long paragraphs and heading heights reflow rather than inheriting fixed desktop dimensions. The portrait retains the real `825×1100` proportions; it is never used as an invisible off-screen background.
+- Set body-to-footer separation to a consistent **100px** with reader-specific main padding and footer margin. Neutralized an obsolete editor-generated `main` minimum height that caused a residual 6px gap at exactly 1200px.
+- Updated the page's appearance stylesheet link to `appearance.css?v=20261028-visible-focus` and the contact photo script cache parameter to the present source revision. The source image, contact address, labels, canonical metadata, personal writing and main navigation were preserved.
+- The first responsive revision introduced a genuine **print regression**: portrait alone on PDF page 2 after all the text fitted on page 1. The original automated print test was too permissive and only required 1–4 sheets. Adjusted print-only grid widths, heading/paragraph sizes and spacing to keep biography and portrait together; strengthened the test to demand **exactly one A4 sheet** and a rendered embedded photo on that same sheet. Final production print correction `0e32c6d5a00965ac3ff28f370cacac243eca9449`. Screen layouts were not compressed to fix print.
+
+## C1.4 | Final reproducible verification
+
+- Final GitHub Actions workflow run **`40821977426`**, exact source/test commit **`f38db500478c70d28b44be0da26e07697ed4daf1`**, evidence artifact **`12874429892`**. Conclusion **success** with **16 checks, 0 failures**.
+- All fourteen actual Chromium viewport widths pass without global or paragraph horizontal overflow, unnamed links, missing images, duplicate or broken IDs, photo/text or photo/email collisions, title/paragraph clipping, lost navigation, or incorrect photo parent. Every width has the requested **100px** reader-content-to-footer gap. The 1024/1025 and 1100/1140 transitions were independently checked.
+- Actual keyboard Tab focuses Skip to content, Enter targets `#main`; the back-to-top link returns to `#page-top` at Y=0. The 375px dark view passed, with legible card text, visible brand focus and no horizontal overflow. The dark screenshot was separately visually reviewed.
+- The final actual printed A4 PDF was downloaded, rendered and visually inspected. **One page**, `1022` normalized extracted characters, **one rendered portrait**, all required personal writing and contact address, no off-page words, no word/image intersections, no isolated second-sheet content. The print photo is displayed beside the biography at a reasonable width, unlike the failed intermediate print.
+- Browser and PDF test evidence can be retrieved via https://github.com/gmoon-code/gmoon-code.github.io/actions/runs/40821977426 while the artifact is retained. The script report and exact source files are packaged with the light/dark screenshots and print PDF.
+
+## Remaining limits and next route
+
+**Stage C1 complete** for the reviewed source and measured reader-facing responsive/dark/keyboard/A4 behaviours. The Contact editor-generated source still contains multiple repeated *potentially active* layout rules. They have no confirmed reader-facing defect after the scoped fixes but remain a **maintainability/editor round-trip concern**, not a reason to remove active declarations without testing. Manual real screen-reader narration, 200% native browser zoom, actual phone gestures, every external service's future availability, and editor save/publish round-trip were not tested.
+
+**Next continuation point**: reconcile whether the site's CV and primary Research routes have achieved final visual A4 and responsive sign-off. If a shorter uncompleted public route is needed first, run an actual visitor-facing Chromium check of `about.html` legacy redirect and `404.html` (including nested-route asset paths) without redoing the completed Home audit. Choose from the latest master register, not from filenames alone.
