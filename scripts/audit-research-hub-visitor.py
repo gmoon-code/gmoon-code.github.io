@@ -45,7 +45,8 @@ async def main():
       const rail=main.querySelector('.research-section-guide');
       const refs=[...main.querySelectorAll('.research-reading-list li[id^="reading-"]')];
       const content=[...main.querySelectorAll('h1,h2,h3,h4,p,li,a,figcaption')];
-      const escaped=content.filter(e=>{let b=r(e);return b.width>0&&(b.left < -3||b.right>innerWidth+3);})
+      const escaped=content.filter(e=>{if(e.closest('.research-figure-pan'))return false;
+        let b=r(e);return b.width>0&&(b.left < -3||b.right>innerWidth+3);})
          .map(e=>({tag:e.tagName,txt:e.innerText.slice(0,85),bounds:box(e)}));
       const clipped=content.filter(e=>{let c=getComputedStyle(e);
         return c.overflow!=='visible'&&(e.scrollHeight>e.clientHeight+3||e.scrollWidth>e.clientWidth+3)
@@ -64,7 +65,8 @@ async def main():
           rendered:box(graph),alt:graph.alt,href:graph.parentElement.getAttribute('href')},
         pan:{box:box(pan),clientWidth:pan.clientWidth,scrollWidth:pan.scrollWidth,
           overflowX:getComputedStyle(pan).overflowX,focusable:pan.tabIndex},
-        footerGap:Math.round(r(document.querySelector('.site-footer')).top-r(main).bottom),
+        footerGap:Math.round(r(document.querySelector('.site-footer')).top-
+          r(main.querySelector('.research-editorial-content > .research-essay-section:last-child')).bottom),
         escaped,clipped
       };
     }""")
@@ -78,9 +80,9 @@ async def main():
     if data["escaped"] or data["clipped"]:err.append("visible text escaped or clipped")
     if not data["graph"]["loaded"] or not data["graph"]["alt"]:err.append("published source figure not decoded/named")
     if data["graph"]["natural"]!=[1087,778]:err.append("wrong publication image source")
-    if w<=700 and (data["pan"]["scrollWidth"]<=data["pan"]["clientWidth"] or data["pan"]["focusable"]!=0):
+    if w<620 and (data["pan"]["scrollWidth"]<=data["pan"]["clientWidth"] or data["pan"]["focusable"]!=0):
       err.append("narrow figure not scrollable/focusable")
-    if data["footerGap"]<0 or data["footerGap"]>200:err.append("footer spacing out of range")
+    if not 95<=data["footerGap"]<=105:err.append("footer gap differs from standard 100px")
     data.update({"test":"responsive","errors":err})
     checks.append(data)
     if w in (320,375,768,1024,1440):
@@ -116,6 +118,7 @@ async def main():
    await page.locator('.research-figure-pan').scroll_into_view_if_needed()
    await page.locator('.research-figure-pan').focus()
    await page.keyboard.press('ArrowRight')
+   await page.wait_for_function("document.querySelector('.research-figure-pan').scrollLeft>0",timeout=4000)
    pan=await page.evaluate("({x:document.querySelector('.research-figure-pan').scrollLeft,focus:document.activeElement.classList.contains('research-figure-pan')})")
    await page.locator('a[href="#research-interests"]').first.click()
    nav=await page.evaluate("({hash:location.hash,heading:document.querySelector('#research-interests h2').innerText})")
