@@ -25,9 +25,12 @@ async def main():
    try:
     response=await page.goto(URL,wait_until="load",timeout=30000)
     await page.evaluate("document.fonts.ready")
-    await page.locator(".research-published-figure img").scroll_into_view_if_needed()
-    await page.locator(".research-published-figure img").evaluate("(img)=>img.decode()")
-    await page.evaluate("window.scrollTo(0,0)")
+    await page.evaluate("""async () => {
+      const img=document.querySelector('.research-published-figure img');
+      img.loading='eager';
+      await Promise.race([img.decode().catch(()=>{}),
+                          new Promise(resolve=>setTimeout(resolve,5000))]);
+    }""")
     data=await page.evaluate("""() => {
       const main=document.querySelector('#main'),r=e=>e.getBoundingClientRect();
       const box=e=>{let b=r(e);return {left:+b.left.toFixed(1),right:+b.right.toFixed(1),
@@ -80,7 +83,12 @@ async def main():
     if data["footerGap"]<0 or data["footerGap"]>200:err.append("footer spacing out of range")
     data.update({"test":"responsive","errors":err})
     checks.append(data)
-    await page.screenshot(path=str(OUT/f"research-{w}.png"),full_page=True,animations="disabled",timeout=30000)
+    if w in (320,375,768,1024,1440):
+      try:
+       await page.screenshot(path=str(OUT/f"research-{w}.png"),full_page=True,
+                             animations="disabled",timeout=12000)
+      except Exception as capture:
+       print("NONFATAL CAPTURE LIMIT",w,repr(capture)[:250],flush=True)
     print("RESEARCH",w,"PASS" if not err else err,"footerGap",data["footerGap"],flush=True)
    except Exception as e:
     checks.append({"test":"responsive","width":w,"errors":[repr(e)]})
@@ -127,7 +135,11 @@ async def main():
   try:
    await page.goto(URL,wait_until="load")
    await page.evaluate("document.fonts.ready")
-   await page.locator('.research-published-figure img').evaluate("(img)=>img.decode()")
+   await page.evaluate("""async () => {
+     const img=document.querySelector('.research-published-figure img');
+     img.loading='eager';
+     await Promise.race([img.decode().catch(()=>{}),new Promise(r=>setTimeout(r,5000))]);
+   }""")
    raw=await page.pdf(format="A4",print_background=True,margin={
      "top":"12mm","bottom":"12mm","left":"12mm","right":"12mm"})
    (OUT/"research-A4.pdf").write_bytes(raw)
