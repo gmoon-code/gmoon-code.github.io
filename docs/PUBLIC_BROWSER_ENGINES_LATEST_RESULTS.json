@@ -1,0 +1,418 @@
+{
+  "engines": {
+    "chromium": {
+      "available": true
+    },
+    "firefox": {
+      "available": true
+    },
+    "webkit": {
+      "available": true
+    }
+  },
+  "publicPages": 18,
+  "regularCount": 108,
+  "forcedCount": 18,
+  "unsupportedForced": 0,
+  "zoomProbeCount": 9,
+  "zoomObservedCount": 0,
+  "zoomResults": [
+    {
+      "engine": "chromium",
+      "page": "index.html",
+      "before": {
+        "innerWidth": 1280,
+        "devicePixelRatio": 1,
+        "visualScale": 1
+      },
+      "after": {
+        "innerWidth": 1280,
+        "devicePixelRatio": 1,
+        "visualScale": 1
+      },
+      "observableChange": false,
+      "conclusion": "No observable zoom change from headless keyboard shortcut; actual page zoom not verified"
+    },
+    {
+      "engine": "chromium",
+      "page": "research.html",
+      "before": {
+        "innerWidth": 1280,
+        "devicePixelRatio": 1,
+        "visualScale": 1
+      },
+      "after": {
+        "innerWidth": 1280,
+        "devicePixelRatio": 1,
+        "visualScale": 1
+      },
+      "observableChange": false,
+      "conclusion": "No observable zoom change from headless keyboard shortcut; actual page zoom not verified"
+    },
+    {
+      "engine": "chromium",
+      "page": "cv.html",
+      "before": {
+        "innerWidth": 1280,
+        "devicePixelRatio": 1,
+        "visualScale": 1
+      },
+      "after": {
+        "innerWidth": 1280,
+        "devicePixelRatio": 1,
+        "visualScale": 1
+      },
+      "observableChange": false,
+      "conclusion": "No observable zoom change from headless keyboard shortcut; actual page zoom not verified"
+    },
+    {
+      "engine": "firefox",
+      "page": "index.html",
+      "before": {
+        "innerWidth": 1280,
+        "devicePixelRatio": 1,
+        "visualScale": 1
+      },
+      "after": {
+        "innerWidth": 1280,
+        "devicePixelRatio": 1,
+        "visualScale": 1
+      },
+      "observableChange": false,
+      "conclusion": "No observable zoom change from headless keyboard shortcut; actual page zoom not verified"
+    },
+    {
+      "engine": "firefox",
+      "page": "research.html",
+      "before": {
+        "innerWidth": 1280,
+        "devicePixelRatio": 1,
+        "visualScale": 1
+      },
+      "after": {
+        "innerWidth": 1280,
+        "devicePixelRatio": 1,
+        "visualScale": 1
+      },
+      "observableChange": false,
+      "conclusion": "No observable zoom change from headless keyboard shortcut; actual page zoom not verified"
+    },
+    {
+      "engine": "firefox",
+      "page": "cv.html",
+      "before": {
+        "innerWidth": 1280,
+        "devicePixelRatio": 1,
+        "visualScale": 1
+      },
+      "after": {
+        "innerWidth": 1280,
+        "devicePixelRatio": 1,
+        "visualScale": 1
+      },
+      "observableChange": false,
+      "conclusion": "No observable zoom change from headless keyboard shortcut; actual page zoom not verified"
+    },
+    {
+      "engine": "webkit",
+      "page": "index.html",
+      "before": {
+        "innerWidth": 1280,
+        "devicePixelRatio": 1,
+        "visualScale": 1
+      },
+      "after": {
+        "innerWidth": 1280,
+        "devicePixelRatio": 1,
+        "visualScale": 1
+      },
+      "observableChange": false,
+      "conclusion": "No observable zoom change from headless keyboard shortcut; actual page zoom not verified"
+    },
+    {
+      "engine": "webkit",
+      "page": "research.html",
+      "before": {
+        "innerWidth": 1280,
+        "devicePixelRatio": 1,
+        "visualScale": 1
+      },
+      "after": {
+        "innerWidth": 1280,
+        "devicePixelRatio": 1,
+        "visualScale": 1
+      },
+      "observableChange": false,
+      "conclusion": "No observable zoom change from headless keyboard shortcut; actual page zoom not verified"
+    },
+    {
+      "engine": "webkit",
+      "page": "cv.html",
+      "before": {
+        "innerWidth": 1280,
+        "devicePixelRatio": 1,
+        "visualScale": 1
+      },
+      "after": {
+        "innerWidth": 1280,
+        "devicePixelRatio": 1,
+        "visualScale": 1
+      },
+      "observableChange": false,
+      "conclusion": "No observable zoom change from headless keyboard shortcut; actual page zoom not verified"
+    }
+  ],
+  "failedCount": 6,
+  "failures": [
+    {
+      "engine": "chromium",
+      "page": "404.html",
+      "width": 320,
+      "forcedRequested": false,
+      "errors": [
+        "keyboard Tab order differs"
+      ],
+      "http": 200,
+      "metrics": {
+        "innerWidth": 320,
+        "outerWidth": 320,
+        "devicePixelRatio": 1,
+        "visualScale": 1,
+        "scrollWidth": 320,
+        "mainCount": 1,
+        "h1Count": 1,
+        "navCount": 7,
+        "forced": false,
+        "outOfBounds": [],
+        "clipped": []
+      },
+      "tabs": [
+        {
+          "href": "#main",
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "2px"
+        },
+        {
+          "href": "/",
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "2px"
+        }
+      ],
+      "skip": {
+        "hash": "#main",
+        "onMain": true
+      }
+    },
+    {
+      "engine": "chromium",
+      "page": "404.html",
+      "width": 1280,
+      "forcedRequested": false,
+      "errors": [
+        "keyboard Tab order differs"
+      ],
+      "http": 200,
+      "metrics": {
+        "innerWidth": 1280,
+        "outerWidth": 1280,
+        "devicePixelRatio": 1,
+        "visualScale": 1,
+        "scrollWidth": 1280,
+        "mainCount": 1,
+        "h1Count": 1,
+        "navCount": 7,
+        "forced": false,
+        "outOfBounds": [],
+        "clipped": []
+      },
+      "tabs": [
+        {
+          "href": "#main",
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "2px"
+        },
+        {
+          "href": "/",
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "2px"
+        }
+      ],
+      "skip": {
+        "hash": "#main",
+        "onMain": true
+      }
+    },
+    {
+      "engine": "firefox",
+      "page": "404.html",
+      "width": 320,
+      "forcedRequested": false,
+      "errors": [
+        "keyboard Tab order differs"
+      ],
+      "http": 200,
+      "metrics": {
+        "innerWidth": 320,
+        "outerWidth": 320,
+        "devicePixelRatio": 1,
+        "visualScale": 1,
+        "scrollWidth": 320,
+        "mainCount": 1,
+        "h1Count": 1,
+        "navCount": 7,
+        "forced": false,
+        "outOfBounds": [],
+        "clipped": []
+      },
+      "tabs": [
+        {
+          "href": "#main",
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "2px"
+        },
+        {
+          "href": "/",
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "2px"
+        }
+      ],
+      "skip": {
+        "hash": "#main",
+        "onMain": true
+      }
+    },
+    {
+      "engine": "firefox",
+      "page": "404.html",
+      "width": 1280,
+      "forcedRequested": false,
+      "errors": [
+        "keyboard Tab order differs"
+      ],
+      "http": 200,
+      "metrics": {
+        "innerWidth": 1280,
+        "outerWidth": 1280,
+        "devicePixelRatio": 1,
+        "visualScale": 1,
+        "scrollWidth": 1280,
+        "mainCount": 1,
+        "h1Count": 1,
+        "navCount": 7,
+        "forced": false,
+        "outOfBounds": [],
+        "clipped": []
+      },
+      "tabs": [
+        {
+          "href": "#main",
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "2px"
+        },
+        {
+          "href": "/",
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "2px"
+        }
+      ],
+      "skip": {
+        "hash": "#main",
+        "onMain": true
+      }
+    },
+    {
+      "engine": "webkit",
+      "page": "404.html",
+      "width": 320,
+      "forcedRequested": false,
+      "errors": [
+        "keyboard Tab order differs"
+      ],
+      "http": 200,
+      "metrics": {
+        "innerWidth": 320,
+        "outerWidth": 320,
+        "devicePixelRatio": 1,
+        "visualScale": 1,
+        "scrollWidth": 320,
+        "mainCount": 1,
+        "h1Count": 1,
+        "navCount": 7,
+        "forced": false,
+        "outOfBounds": [],
+        "clipped": []
+      },
+      "tabs": [
+        {
+          "href": "#main",
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "2px"
+        },
+        {
+          "href": "/",
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "2px"
+        }
+      ],
+      "skip": {
+        "hash": "#main",
+        "onMain": true
+      }
+    },
+    {
+      "engine": "webkit",
+      "page": "404.html",
+      "width": 1280,
+      "forcedRequested": false,
+      "errors": [
+        "keyboard Tab order differs"
+      ],
+      "http": 200,
+      "metrics": {
+        "innerWidth": 1280,
+        "outerWidth": 1280,
+        "devicePixelRatio": 1,
+        "visualScale": 1,
+        "scrollWidth": 1280,
+        "mainCount": 1,
+        "h1Count": 1,
+        "navCount": 7,
+        "forced": false,
+        "outOfBounds": [],
+        "clipped": []
+      },
+      "tabs": [
+        {
+          "href": "#main",
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "2px"
+        },
+        {
+          "href": "/",
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "2px"
+        }
+      ],
+      "skip": {
+        "hash": "#main",
+        "onMain": true
+      }
+    }
+  ],
+  "limitations": "Playwright Linux Chromium Firefox WebKit are not physical Safari/Firefox devices. Keyboard zoom shortcuts without a measured viewport/scale change do not verify real browser Ctrl-plus. Forced-colour emulation and automatic focus checks do not constitute WCAG certification or screen-reader testing.",
+  "workflow_run_id": "40860787861",
+  "head_sha": "d729cfbab0f5887900340fed95a62e070425dbdb",
+  "exit_code": "1"
+}
