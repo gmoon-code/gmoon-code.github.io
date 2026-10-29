@@ -53,8 +53,13 @@ for page,soup in DATA.items():
     if len(ids)!=len(idset):issue(page,"duplicate IDs",[x for x in set(ids) if ids.count(x)>1])
     if not title:issue(page,"missing title",title)
     if page not in ("about.html","404.html"):
-        if len(canonical)!=1 or canonical[0].get("href")!=SITE+"/"+page:
-            issue(page,"canonical",[(x.get("href")) for x in canonical])
+        if page=="teaching-osmosis-practice.html":
+            if not soup.select_one('meta[name="robots"][content*="noindex"]'):
+                issue(page,"private worksheet index protection","expected noindex")
+        else:
+            expected=SITE+("/" if page=="index.html" else "/"+page)
+            if len(canonical)!=1 or canonical[0].get("href")!=expected:
+                issue(page,"canonical",[(x.get("href")) for x in canonical])
         if len(descriptions)!=1 or not descriptions[0].get("content","").strip():
             issue(page,"description",len(descriptions))
     if page=="about.html":
