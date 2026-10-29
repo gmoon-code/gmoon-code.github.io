@@ -148,26 +148,33 @@ def main():
         metadata=results[doi]
         for use in uses:
             title=metadata.get("title")
-            match=word_match(title,use["reference"]) if title and use.get("element_id") else None
             stated=use["year"]; actual=metadata.get("year")
+            reference=use["reference"]
+            is_full_entry=bool(use.get("element_id")) or (stated is not None and len(reference)>=100)
+            match=word_match(title,reference) if title and is_full_entry else None
             year_difference=abs(stated-actual) if stated and actual else None
-            outcome="unverified"
+            authors=metadata.get("authors") or []
+            first_author_family=normalize(authors[0]).split()[-1] if authors and authors[0] else None
+            author_match=(first_author_family in normalize(reference).split()) if first_author_family and is_full_entry else None
+            outcome="unverified" if is_full_entry else "inline-or-narrative"
             if title and match is not None:
-                if match<.68 or (year_difference is not None and year_difference>1):
+                if match<.68 or (year_difference is not None and year_difference>1) or author_match is False:
                     outcome="review"
                 else:outcome="consistent"
             item={**use,"doi":doi,"indexTitle":title,"indexYear":actual,
                   "indexAuthors":metadata.get("authors"),"indexVenue":metadata.get("venue"),
-                  "titleWordMatch":match,"yearDifference":year_difference,
+                  "firstAuthorMatch":author_match,"titleWordMatch":match,"yearDifference":year_difference,
                   "metadataHttp":metadata.get("http"),"outcome":outcome}
             checks.append(item)
             if outcome=="review":manual.append(item)
             if outcome=="consistent":passed.append(item)
     # Compare the preprint's publicly stated title against registry metadata.
     pretitle=(preprint.get("titles") or [""])[0] if preprint.get("titles") else ""
-    own_mentions=[{"page":u["page"],"titleMatch":word_match(pretitle,u["reference"]) if pretitle else None,
+    own_mentions=[{"page":u["page"],"titleMatch":word_match(pretitle,u["reference"]) if pretitle and len(u["reference"])>=110 else None,
                    "excerpt":u["reference"][:320]} for u in refs.get(PREPRINT,[])]
-    ppflag=preprint.get("http")!=200 or not pretitle or any(x["titleMatch"] is not None and x["titleMatch"]<.7 for x in own_mentions)
+    ppflag=(preprint.get("http")!=200 or not pretitle or
+        any(x["titleMatch"] is not None and x["titleMatch"]<.7
+            for x in own_mentions if len(x["excerpt"])>=110))
     summary={
       "preprint":preprint,"preprintReferences":own_mentions,"preprintReview":ppflag,
       "doiUnique":len(doilist),"citationOccurrences":len(checks),"batchLog":batchlog,
