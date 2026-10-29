@@ -1,0 +1,257 @@
+{
+  "workflow_run_id": "40841452897",
+  "head_sha": "c5d48c65b727fe2918eac190876ac9c22d561b56",
+  "audit_exit_code": "1",
+  "screen_widths_tested": [
+    320,
+    375,
+    480,
+    560,
+    620,
+    700,
+    701,
+    768,
+    900,
+    1024,
+    1140,
+    1440
+  ],
+  "widths_with_errors": [],
+  "footer_gaps": [
+    {
+      "width": 320,
+      "pixels": 100
+    },
+    {
+      "width": 375,
+      "pixels": 100
+    },
+    {
+      "width": 480,
+      "pixels": 100
+    },
+    {
+      "width": 560,
+      "pixels": 100
+    },
+    {
+      "width": 620,
+      "pixels": 100
+    },
+    {
+      "width": 700,
+      "pixels": 100
+    },
+    {
+      "width": 701,
+      "pixels": 124
+    },
+    {
+      "width": 768,
+      "pixels": 128
+    },
+    {
+      "width": 900,
+      "pixels": 136
+    },
+    {
+      "width": 1024,
+      "pixels": 143
+    },
+    {
+      "width": 1140,
+      "pixels": 150
+    },
+    {
+      "width": 1440,
+      "pixels": 158
+    }
+  ],
+  "table_geometry": [
+    {
+      "width": 320,
+      "tables": [
+        {
+          "tabIndex": 0,
+          "client": 292,
+          "scroll": 620,
+          "headers": [
+            "col",
+            "col",
+            "col",
+            "col"
+          ],
+          "rows": 2,
+          "caption": "Unit 3 classifications among 21 students with below-complete Unit 2 explanations",
+          "hintBefore": true
+        },
+        {
+          "tabIndex": 0,
+          "client": 292,
+          "scroll": 620,
+          "headers": [
+            "col",
+            "col",
+            "col"
+          ],
+          "rows": 4,
+          "caption": "Predominant differences between the ten original Unit 3 explanations and later reconstructions",
+          "hintBefore": true
+        }
+      ]
+    },
+    {
+      "width": 375,
+      "tables": [
+        {
+          "tabIndex": 0,
+          "client": 347,
+          "scroll": 620,
+          "headers": [
+            "col",
+            "col",
+            "col",
+            "col"
+          ],
+          "rows": 2,
+          "caption": "Unit 3 classifications among 21 students with below-complete Unit 2 explanations",
+          "hintBefore": true
+        },
+        {
+          "tabIndex": 0,
+          "client": 347,
+          "scroll": 620,
+          "headers": [
+            "col",
+            "col",
+            "col"
+          ],
+          "rows": 4,
+          "caption": "Predominant differences between the ten original Unit 3 explanations and later reconstructions",
+          "hintBefore": true
+        }
+      ]
+    },
+    {
+      "width": 768,
+      "tables": [
+        {
+          "tabIndex": 0,
+          "client": 712,
+          "scroll": 712,
+          "headers": [
+            "col",
+            "col",
+            "col",
+            "col"
+          ],
+          "rows": 2,
+          "caption": "Unit 3 classifications among 21 students with below-complete Unit 2 explanations",
+          "hintBefore": true
+        },
+        {
+          "tabIndex": 0,
+          "client": 712,
+          "scroll": 712,
+          "headers": [
+            "col",
+            "col",
+            "col"
+          ],
+          "rows": 4,
+          "caption": "Predominant differences between the ten original Unit 3 explanations and later reconstructions",
+          "hintBefore": true
+        }
+      ]
+    },
+    {
+      "width": 1024,
+      "tables": [
+        {
+          "tabIndex": 0,
+          "client": 968,
+          "scroll": 968,
+          "headers": [
+            "col",
+            "col",
+            "col",
+            "col"
+          ],
+          "rows": 2,
+          "caption": "Unit 3 classifications among 21 students with below-complete Unit 2 explanations",
+          "hintBefore": true
+        },
+        {
+          "tabIndex": 0,
+          "client": 968,
+          "scroll": 968,
+          "headers": [
+            "col",
+            "col",
+            "col"
+          ],
+          "rows": 4,
+          "caption": "Predominant differences between the ten original Unit 3 explanations and later reconstructions",
+          "hintBefore": true
+        }
+      ]
+    },
+    {
+      "width": 1440,
+      "tables": [
+        {
+          "tabIndex": 0,
+          "client": 1120,
+          "scroll": 1120,
+          "headers": [
+            "col",
+            "col",
+            "col",
+            "col"
+          ],
+          "rows": 2,
+          "caption": "Unit 3 classifications among 21 students with below-complete Unit 2 explanations",
+          "hintBefore": true
+        },
+        {
+          "tabIndex": 0,
+          "client": 1120,
+          "scroll": 1120,
+          "headers": [
+            "col",
+            "col",
+            "col"
+          ],
+          "rows": 4,
+          "caption": "Predominant differences between the ten original Unit 3 explanations and later reconstructions",
+          "hintBefore": true
+        }
+      ]
+    }
+  ],
+  "print": {
+    "pages": 7,
+    "words": [
+      305,
+      262,
+      300,
+      319,
+      307,
+      353,
+      14
+    ],
+    "missing": [
+      "Intermediate pathway still undeveloped"
+    ],
+    "offPageWords": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "log_tail": "{\n  \"screen_failures\": [],\n  \"footer_gaps\": [\n    [\n      320,\n      100\n    ],\n    [\n      375,\n      100\n    ],\n    [\n      480,\n      100\n    ],\n    [\n      560,\n      100\n    ],\n    [\n      620,\n      100\n    ],\n    [\n      700,\n      100\n    ],\n    [\n      701,\n      124\n    ],\n    [\n      768,\n      128\n    ],\n    [\n      900,\n      136\n    ],\n    [\n      1024,\n      143\n    ],\n    [\n      1140,\n      150\n    ],\n    [\n      1440,\n      158\n    ]\n  ],\n  \"print\": {\n    \"pages\": 7,\n    \"words\": [\n      305,\n      262,\n      300,\n      319,\n      307,\n      353,\n      14\n    ],\n    \"missing\": [\n      \"Intermediate pathway still undeveloped\"\n    ],\n    \"offPageWords\": [\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0\n    ]\n  }\n}\n"
+}
