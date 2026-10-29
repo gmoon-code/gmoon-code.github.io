@@ -1,12 +1,12 @@
 {
-  "sourceHead": "10d4da1f40b825f8f2cafe0fefc0af1e91e9ebb4",
+  "sourceHead": "39766ec6cd032846db03e5ab08dc8070e59f09b8",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-10d4da1f40b8",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-39766ec6cd03",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -14,8 +14,8 @@
   "auditEvidence": {
     "links": {
       "report": "docs/PUBLIC_LINKGRAPH_LATEST_RESULTS.json",
-      "run": "40880601651",
-      "head_sha": "217db8245ccc67bab995819ca95d8a0a15d23a95",
+      "run": "40886361063",
+      "head_sha": "10d4da1f40b825f8f2cafe0fefc0af1e91e9ebb4",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research.html"
@@ -26,18 +26,18 @@
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "40881518526",
-      "head_sha": "d51253ed384b840b0eaee663511d386b62e157f1",
+      "run": "40886361104",
+      "head_sha": "10d4da1f40b825f8f2cafe0fefc0af1e91e9ebb4",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research.html"
       ],
       "failureCounts": {
-        "issues": 44
+        "issues": 42
       },
       "counts": {
-        "reachable": 69,
-        "unverified": 44
+        "reachable": 71,
+        "unverified": 42
       }
     },
     "metadata": {
@@ -59,8 +59,8 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "40881518497",
-      "head_sha": "d51253ed384b840b0eaee663511d386b62e157f1",
+      "run": "40886360906",
+      "head_sha": "10d4da1f40b825f8f2cafe0fefc0af1e91e9ebb4",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research.html"
@@ -83,8 +83,8 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "40881518321",
-      "head_sha": "d51253ed384b840b0eaee663511d386b62e157f1",
+      "run": "40886361254",
+      "head_sha": "10d4da1f40b825f8f2cafe0fefc0af1e91e9ebb4",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research.html"
@@ -96,8 +96,8 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "40881518468",
-      "head_sha": "d51253ed384b840b0eaee663511d386b62e157f1",
+      "run": "40886361054",
+      "head_sha": "10d4da1f40b825f8f2cafe0fefc0af1e91e9ebb4",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research.html"
@@ -168,20 +168,20 @@
       "firstDiff": [
         "--- source\n",
         "+++ deployed\n",
-        "@@ -27,3 +27,3 @@\n",
-        "     <p class=\"research-essay-lead\">A food web traces energy from one organism to another, although its arrows say little about how much energy is transferred. If a student asks where the rest goes, the teacher might clarify the diagram’s purpose or investigate the energy transfers it leaves unexplained. How that question is taken up can influence the explanation the class develops.</p>",
-        "-    <p>Teachers make these decisions within curricular and disciplinary expectations, choosing which questions to pursue and whether students' explanations can shape the work that follows. These judgments take place within institutions and histories marked by racism, colonialism, and inequalities connected to gender, sexuality, social class, and language. My interest in justice-oriented science education includes how students can participate in evaluating scientific representations and the grounds on which their contributions are recognized. Scholarship on epistemic agency and rightful presence helps me examine these relationships alongside the scientific reasoning involved.</p>",
-        "+    <p>Teachers work within curricula and disciplinary expectations, yet they still decide which questions receive further consideration and how students' explanations can shape the work that follows. These judgments take place within institutions and histories marked by racism, colonialism, and inequalities connected to gender, sexuality, social class, and language. My interest in justice-oriented science education includes how students can participate in evaluating scientific representations and the grounds on which their contributions are recognized. Scholarship on epistemic agency and rightful presence helps me examine these relationships alongside the scientific reasoning involved.</p>",
-        "   </div>",
-        "@@ -73,3 +73,3 @@\n",
-        "   <div class=\"reading research-essay-prose research-interests-intro\">",
-        "-    <p>I read studies of teacher decision-making alongside research on language, cultural knowledge, and scientific modelling. They offer different ways to examine how students' contributions are recognized during particular tasks and interactions, and whether students can influence the criteria by which scientific explanations are judged.</p>",
-        "+    <p>I read studies of teacher decision-making alongside research on language, cultural knowledge, and scientific modelling. Together, they help me examine how classroom participation develops through particular tasks and interactions, and how the criteria used to judge scientific contributions become established. These questions connect my classroom experience with scholarship on authority and recognition in science education.</p>",
-        "   </div>",
-        "@@ -84,7 +84,7 @@\n",
-        "     <div class=\"reading research-essay-prose\">",
-        "-      <p>During a lesson on cell signalling, a student might ask what happens when a receptor remains active after the signal has disappeared. If the classroom diagram shows activation without explaining how signalling ends, the teacher could invite students to examine the processes it leaves out. They might then investigate receptor inactivation or changes further along the signalling pathway. Whether the class pursues that question depends partly on how the teacher interprets the student's observation.</p>",
-        "-      <p>Curricular planning can make room for students to influence the methods of investigation and the models through which a class develops an explanation (<a href=\"#reading-ko\">Ko &amp; Krist, 2019</a>). Whether students can exercise that influence also depends on how teachers respond to their contributions during instruction. Studies of teachers' noticing and classroom discourse show how a student's contribution can become a question for collective inquiry or be treated primarily as an answer to evaluate (<a href=\"#reading-krist\">Krist et al., 2023</a>; <a href=\"#reading-stroupe\">Stroupe, 2014</a>). The teacher can acknowledge a contribution while retaining control over which questions the class pursues.</p>"
+        "@@ -86,4 +86,4 @@\n",
+        "       <p>Curricular planning can make room for students to influence the methods of investigation and the models through which a class develops an explanation (<a href=\"#reading-ko\">Ko &amp; Krist, 2019</a>). Whether students can exercise that influence also depends on how teachers respond to their contributions during instruction. Studies of teachers' noticing and classroom discourse show how a student's contribution can become a question for collective inquiry or be treated primarily as an answer to evaluate (<a href=\"#reading-krist\">Krist et al., 2023</a>; <a href=\"#reading-stroupe\">Stroupe, 2014</a>). The teacher can acknowledge a contribution while retaining control over which questions the class pursues.</p>",
+        "-      <p>As students pursue questions beyond the planned lesson, teachers also need to consider what disciplinary guidance the investigation requires. Planning inquiry and project-based STEM activities includes considering what makes a problem worth investigating and the support students will need (<a href=\"#reading-decoito\">DeCoito, 2024</a>). In a Grade 6 classroom investigating flight, students' work with physical materials challenged a knowledge-building design centred on writing and discussion (<a href=\"#reading-reeve\">Reeve, 2023</a>). Web-based science inquiry environments raise a related question about how the resources prepared for a lesson shape the explanations students develop (<a href=\"#reading-slotta\">Slotta &amp; Linn, 2009</a>). The planning challenge is to prepare disciplinary resources while leaving room for students' questions to change the course of an investigation.</p>",
+        "-      <p>Relationships and learning settings shape the authority students can exercise. A longitudinal study followed an early-career teacher negotiating an activist commitment alongside the demands of school practice (<a href=\"#reading-barrett\">Barrett, 2013</a>). In a different setting, students and mentors participating in a robotics competition negotiated authority as they developed scientific and technical knowledge together (<a href=\"#reading-puvirajah\">Puvirajah et al., 2012</a>). Productive disciplinary engagement provides a further account of how student authority can develop alongside responsibility to peers and access to disciplinary resources (<a href=\"#reading-engle\">Engle &amp; Conant, 2002</a>). </p>",
+        "+      <p>Student-directed inquiry also depends on the disciplinary guidance students receive as a question develops. Planning inquiry and project-based STEM activities includes considering what makes a problem worth investigating and the support students will need (<a href=\"#reading-decoito\">DeCoito, 2024</a>). In a Grade 6 classroom investigating flight, students' work with physical materials challenged a knowledge-building design centred on writing and discussion (<a href=\"#reading-reeve\">Reeve, 2023</a>). Web-based science inquiry environments raise a related question about how the resources prepared for a lesson shape the explanations students develop (<a href=\"#reading-slotta\">Slotta &amp; Linn, 2009</a>). The planning challenge is to prepare disciplinary resources while leaving room for students' questions to change the course of an investigation.</p>",
+        "+      <p>Opportunities for student authority also depend on relationships and the settings in which inquiry takes place. A longitudinal study followed an early-career teacher negotiating an activist commitment alongside the demands of school practice (<a href=\"#reading-barrett\">Barrett, 2013</a>). In a different setting, students and mentors participating in a robotics competition negotiated authority as they developed scientific and technical knowledge together (<a href=\"#reading-puvirajah\">Puvirajah et al., 2012</a>). Productive disciplinary engagement provides a further account of how student authority can develop alongside responsibility to peers and access to disciplinary resources (<a href=\"#reading-engle\">Engle &amp; Conant, 2002</a>). </p>",
+        "       <p>Questions about authority also concern whose contributions are recognized as legitimate. Epistemic agency involves more than performing prescribed scientific practices (<a href=\"#reading-miller\">Miller et al., 2018</a>). Rightful presence draws attention to how minoritized youth can make classroom inequities visible and contest the norms that determine whose knowledge and participation are recognized (<a href=\"#reading-barton\">Calabrese Barton &amp; Tan, 2020</a>). A teacher may have strong scientific grounds for correcting an explanation. I want to examine whether students can question the grounds for a correction and how the teacher responds when they do.</p>",
+        "@@ -105,6 +105,6 @@\n",
+        "     <p>People can know similar things while drawing on different relationships to organize an explanation. In research with Menominee and European American fish experts, Menominee participants more often mentioned habitat when explaining how they grouped local fish. When the researchers explicitly asked both groups to sort by habitat, strong agreement emerged without a reliable difference between them (<a href=\"#reading-cultural-mosaics\">Bang et al., 2007</a>). The earlier difference therefore concerned which ecological relationships participants brought forward on their own. It cautions me against interpreting an unmentioned relationship as necessarily unknown. Later scholarship places such differences within cultural practices and examines the assumptions about nature that science education brings into classrooms (<a href=\"#reading-bang-medin\">Bang &amp; Medin, 2010</a>; <a href=\"#reading-bang\">Bang et al., 2012</a>).</p>",
+        "-    <p>The fish studies concern particular communities with their own histories. In other settings, researchers have examined how participants' commitments and feelings enter into their accounts of science. Interviews with Muslim secondary science teachers in Canada and Pakistan examined how religious commitments informed their views of evolution and its teaching, while also identifying gaps in some teachers' understanding of evolutionary mechanisms (<a href=\"#reading-asghar\">Asghar, 2013</a>). In a separate study, two groups of physics learners approached radioactivity in ways that the researchers examined in relation to their feelings about the subject (<a href=\"#reading-alsop\">Alsop &amp; Watts, 2000</a>). In my teaching, I would need to consider those experiences while examining the scientific adequacy of students' explanations.</p>",
+        "-    <p>Children attending community science clubs in Canada valued hands-on activities and the relationships they formed. Their accounts also showed how club science and school science could be treated as separate, making it difficult to connect the enjoyment of club activities with learning at school (<a href=\"#reading-burke\">Burke &amp; Navas Iannini, 2021</a>). I wonder how this distinction affects the scientific work students feel able to pursue when they move between settings.</p>",
+        "+    <p>The fish studies concern particular communities whose histories matter to the interpretation. Other research draws attention to different conditions that shape what people say about science. Interviews with Muslim secondary science teachers in Canada and Pakistan examined how religious commitments informed their views of evolution and its teaching, while also identifying gaps in some teachers' understanding of evolutionary mechanisms (<a href=\"#reading-asghar\">Asghar, 2013</a>). In a separate study, two groups of physics learners approached radioactivity in ways that the researchers examined in relation to their feelings about the subject (<a href=\"#reading-alsop\">Alsop &amp; Watts, 2000</a>). These studies address different questions from my classroom work. They encourage me to consider the commitments and experiences surrounding an explanation while still examining its scientific adequacy.</p>",
+        "+    <p>The setting also influences what participants recognize as science. Children attending community science clubs in Canada valued the hands-on activities and relationships they encountered. Yet children and staff sometimes reinforced a sharp division between club science and school science, making it difficult for children to connect the enjoyment of club activities with learning at school (<a href=\"#reading-burke\">Burke &amp; Navas Iannini, 2021</a>). I wonder how those expectations affect the kinds of scientific work students feel able to pursue across different settings.</p>",
+        "     <p>Recognition also concerns who is considered capable of scientific work. Doctoral physics students described how expectations about gender and competence affected the ways they could position themselves as physicists (<a href=\"#reading-gonsalves\">Gonsalves, 2014</a>). A longitudinal study followed fifteen women of colour from undergraduate science studies into later careers, finding that recognition by others mattered differently across their science-identity trajectories (<a href=\"#reading-carlone\">Carlone &amp; Johnson, 2007</a>). These accounts make me attend to the judgments through which someone becomes recognized as a participant in science, within a broader understanding of learning as culturally situated (<a href=\"#reading-cultural-process\">Nasir et al., 2014</a>).</p>"
       ]
     },
     {
@@ -232,7 +232,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "40886360987",
-  "run_sha": "10d4da1f40b825f8f2cafe0fefc0af1e91e9ebb4",
+  "workflow_run_id": "40886617365",
+  "run_sha": "39766ec6cd032846db03e5ab08dc8070e59f09b8",
   "exit_code": "1"
 }
