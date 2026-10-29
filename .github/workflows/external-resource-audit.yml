@@ -5,6 +5,7 @@ on:
     paths:
       - "*.html"
       - "scripts/external_resource_audit.py"
+      - "scripts/verify-unverified-dois.py"
       - ".github/workflows/external-resource-audit.yml"
   workflow_dispatch:
 permissions:
@@ -25,6 +26,10 @@ jobs:
           set +e
           python scripts/external_resource_audit.py 2>&1 | tee external-resource-audit.log
           code=${PIPESTATUS[0]}
+          if [ "$code" -eq 0 ]; then
+            python scripts/verify-unverified-dois.py 2>&1 | tee -a external-resource-audit.log
+            code=${PIPESTATUS[0]}
+          fi
           echo "exit_code=$code" >> "$GITHUB_OUTPUT"
           exit "$code"
       - name: Record concise evidence at exact GitHub source head
