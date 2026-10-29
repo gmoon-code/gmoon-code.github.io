@@ -1,12 +1,12 @@
 {
-  "sourceHead": "217db8245ccc67bab995819ca95d8a0a15d23a95",
+  "sourceHead": "d51253ed384b840b0eaee663511d386b62e157f1",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-217db8245ccc",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-d51253ed384b",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -14,11 +14,11 @@
   "auditEvidence": {
     "links": {
       "report": "docs/PUBLIC_LINKGRAPH_LATEST_RESULTS.json",
-      "run": "40872270732",
-      "head_sha": "523b66d55f525803d3b4ad96226458dcc9c6a9ca",
+      "run": "40880601651",
+      "head_sha": "217db8245ccc67bab995819ca95d8a0a15d23a95",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "index.html"
+        "research.html"
       ],
       "failureCounts": {
         "problems": 0
@@ -26,11 +26,11 @@
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "40872270701",
-      "head_sha": "523b66d55f525803d3b4ad96226458dcc9c6a9ca",
+      "run": "40880601531",
+      "head_sha": "217db8245ccc67bab995819ca95d8a0a15d23a95",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "index.html"
+        "research.html"
       ],
       "failureCounts": {
         "issues": 42
@@ -46,7 +46,8 @@
       "head_sha": "523b66d55f525803d3b4ad96226458dcc9c6a9ca",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "index.html"
+        "index.html",
+        "research.html"
       ],
       "failureCounts": {
         "unverified": 0
@@ -59,11 +60,11 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "40872270878",
-      "head_sha": "523b66d55f525803d3b4ad96226458dcc9c6a9ca",
+      "run": "40880601735",
+      "head_sha": "217db8245ccc67bab995819ca95d8a0a15d23a95",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "index.html"
+        "research.html"
       ],
       "failureCounts": {
         "failures": 0
@@ -71,11 +72,11 @@
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "40872270839",
-      "head_sha": "523b66d55f525803d3b4ad96226458dcc9c6a9ca",
+      "run": "40880601753",
+      "head_sha": "217db8245ccc67bab995819ca95d8a0a15d23a95",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "index.html"
+        "research.html"
       ],
       "failureCounts": {
         "failures": 0
@@ -83,11 +84,11 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "40872270816",
-      "head_sha": "523b66d55f525803d3b4ad96226458dcc9c6a9ca",
+      "run": "40880601722",
+      "head_sha": "217db8245ccc67bab995819ca95d8a0a15d23a95",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "index.html"
+        "research.html"
       ],
       "failureCounts": {
         "failures": 0,
@@ -96,11 +97,11 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "40875089499",
-      "head_sha": "3928ee17f7656d8155aca81b54f0cdd25581e904",
+      "run": "40880601772",
+      "head_sha": "217db8245ccc67bab995819ca95d8a0a15d23a95",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "index.html"
+        "research.html"
       ],
       "failureCounts": {
         "failures": 0,
@@ -118,70 +119,69 @@
     {
       "category": "links",
       "sourceModifiedSinceAudit": [
-        "index.html"
+        "research.html"
       ]
     },
     {
       "category": "external",
       "sourceModifiedSinceAudit": [
-        "index.html"
+        "research.html"
       ]
     },
     {
       "category": "metadata",
       "sourceModifiedSinceAudit": [
-        "index.html"
+        "index.html",
+        "research.html"
       ]
     },
     {
       "category": "reflow",
       "sourceModifiedSinceAudit": [
-        "index.html"
+        "research.html"
       ]
     },
     {
       "category": "engines",
       "sourceModifiedSinceAudit": [
-        "index.html"
+        "research.html"
       ]
     },
     {
       "category": "typography",
       "sourceModifiedSinceAudit": [
-        "index.html"
+        "research.html"
       ]
     },
     {
       "category": "interactions",
       "sourceModifiedSinceAudit": [
-        "index.html"
+        "research.html"
       ]
     }
   ],
   "pass": false,
   "errors": [
     {
-      "path": "index.html",
+      "path": "research.html",
       "errors": [
         "deployed bytes differ from checked-out production source"
       ],
       "firstDiff": [
         "--- source\n",
         "+++ deployed\n",
-        "@@ -92,3 +92,3 @@\n",
-        "       <h3>Teaching</h3>",
-        "-      <p>I teach AP Biology and AP Chemistry and supervise independent student research. I also develop curriculum proposals that begin with a scientific problem and consider how students’ questions might shape what the class investigates next.</p>",
-        "+      <p>I teach AP Biology and Chemistry and supervise independent student research. I also develop curriculum proposals that bring scientific explanations, evidence and students’ questions into the planning process.</p>",
-        "       <a class=\"inline-link\" href=\"teaching.html\">Explore my teaching →</a>",
-        "@@ -127,3 +127,3 @@\n",
-        "       <h3>Research Methods Studio</h3>",
-        "-      <p>This workspace lets students revisit research questions, methods, and evidence as their projects develop. The project page uses a worked example with synthetic data to examine choices about experimental design and analysis.</p>",
-        "+      <p>This workspace helps students revisit research questions, measurements, evidence, and analysis as their projects develop. The project page includes a worked synthetic experiment to examine design decisions.</p>",
-        "       <a class=\"inline-link\" href=\"research-methods-studio.html\">Examine the workspace and its design →</a>",
-        "@@ -143,3 +143,3 @@\n",
-        "       <div class=\"section-head\"><h2>Outside school</h2></div>",
-        "-      <p>I play pungmul with a queer ensemble and enjoy spending time with poetry, fantasy, science fiction, and stories told together. The Interests page includes photographs from our performances and reflections on a few favourite books and shows.</p>",
-        "+      <p>I play pungmul with a queer ensemble and enjoy spending time with poetry, fantasy, science fiction, and stories told together. I've shared some of those performances and favourite works on my Interests page.</p>"
+        "@@ -27,3 +27,3 @@\n",
+        "     <p class=\"research-essay-lead\">A food web traces energy from one organism to another, although its arrows say little about how much energy is transferred. If a student asks where the rest goes, the teacher might clarify the diagram’s purpose or investigate the energy transfers it leaves unexplained. How that question is taken up can influence the explanation the class develops.</p>",
+        "-    <p>Teachers work within curricula and disciplinary expectations, yet they still decide which questions receive further consideration and how students' explanations can shape the work that follows. These judgments take place within institutions and histories marked by racism, colonialism, and inequalities connected to gender, sexuality, social class, and language. My interest in justice-oriented science education includes how students can participate in evaluating scientific representations and the grounds on which their contributions are recognized. Scholarship on epistemic agency and rightful presence helps me examine these relationships alongside the scientific reasoning involved.</p>",
+        "+    <p>This example has drawn my attention to what happens after a student asks a question. Teachers work within curricula and disciplinary expectations, yet they still decide which questions receive further consideration and how students' explanations can shape the work that follows. These judgments take place within institutions and histories marked by racism, colonialism, and inequalities connected to gender, sexuality, social class, and language. My interest in justice-oriented science education includes how students can participate in evaluating scientific representations and the grounds on which their contributions are recognized. Scholarship on epistemic agency and rightful presence helps me examine these relationships alongside the scientific reasoning involved.</p>",
+        "   </div>",
+        "@@ -63,4 +63,4 @@\n",
+        "   <div class=\"reading research-essay-prose\">",
+        "-    <p>A later response can leave important parts of an earlier explanation unseen. In a <a href=\"research-scoping.html#case-study\">study included in the scoping review</a>, Luis’s shorter English translation made an ecological distinction less explicit than his bilingual account. In my <a href=\"research-action.html#paired-evidence\">classroom inquiry</a>, S20’s reconstruction omitted photosynthetic relationships they had previously explained. The records arose under different task and language conditions, so the cases cannot be treated as equivalent. Each nonetheless complicates an interpretation based on the most recent answer alone.</p>",
+        "-    <p>Reading these records together raised a question my projects had not yet investigated. I could identify ways to assess students' reasoning while having little evidence about whether students could influence the judgments or classroom activities that followed.</p>",
+        "+    <p>A later response can leave important parts of an earlier explanation unseen. In a <a href=\"research-scoping.html#case-study\">study included in the scoping review</a>, Luis’s shorter English translation made an ecological distinction less explicit than his bilingual account. In my <a href=\"research-action.html#paired-evidence\">classroom inquiry</a>, S20’s reconstruction omitted photosynthetic relationships they had previously explained. Different tasks and language conditions shaped these records, so the cases cannot be treated as equivalent. Each nonetheless complicates an interpretation based on the most recent answer alone.</p>",
+        "+    <p>Reading these records together raised a question my projects had not yet investigated. I could identify ways to assess students' reasoning, while having little evidence about how they might influence the judgments or activities that followed. That uncertainty has drawn me to scholarship on epistemic agency.</p>",
+        "   </div>"
       ]
     },
     {
@@ -189,50 +189,51 @@
         {
           "category": "links",
           "sourceModifiedSinceAudit": [
-            "index.html"
+            "research.html"
           ]
         },
         {
           "category": "external",
           "sourceModifiedSinceAudit": [
-            "index.html"
+            "research.html"
           ]
         },
         {
           "category": "metadata",
           "sourceModifiedSinceAudit": [
-            "index.html"
+            "index.html",
+            "research.html"
           ]
         },
         {
           "category": "reflow",
           "sourceModifiedSinceAudit": [
-            "index.html"
+            "research.html"
           ]
         },
         {
           "category": "engines",
           "sourceModifiedSinceAudit": [
-            "index.html"
+            "research.html"
           ]
         },
         {
           "category": "typography",
           "sourceModifiedSinceAudit": [
-            "index.html"
+            "research.html"
           ]
         },
         {
           "category": "interactions",
           "sourceModifiedSinceAudit": [
-            "index.html"
+            "research.html"
           ]
         }
       ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "40880601564",
-  "run_sha": "217db8245ccc67bab995819ca95d8a0a15d23a95",
+  "workflow_run_id": "40881518317",
+  "run_sha": "d51253ed384b840b0eaee663511d386b62e157f1",
   "exit_code": "1"
 }
