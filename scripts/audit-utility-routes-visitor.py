@@ -150,7 +150,7 @@ async def run():
             if not data["url"].endswith("/contact.html"):errs.append("redirect did not reach Contact")
             if not data["mailto"] or "I'd be glad to hear from you."!=data["h1"]:
                 errs.append("redirect destination is not actual Contact page")
-            check("About automatic redirect",errs,initialStatus:response.status if response else None,**data)
+            check("About automatic redirect",errs,initialStatus=response.status if response else None,**data)
             await page.screenshot(path=str(OUT/"about-redirect-destination.png"),full_page=True)
         except Exception as exc:check("About automatic redirect",[repr(exc)])
         finally:await page.close()
