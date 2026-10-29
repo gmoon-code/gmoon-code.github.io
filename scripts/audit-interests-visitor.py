@@ -101,6 +101,11 @@ async def main():
             await page.goto(BASE,wait_until="load",timeout=45000)
             await page.wait_for_function("""() => [...document.querySelectorAll('#main .media-shelf img')]
                 .every(i=>i.complete && i.naturalWidth>0)""",timeout=16000)
+            await page.evaluate("""async () => {
+                await Promise.all([...document.querySelectorAll('#main .media-shelf img')]
+                  .map(i=>i.decode().catch(()=>null)));
+            }""")
+            await page.wait_for_timeout(300)
             await page.keyboard.press("Tab")
             skipHref=await page.evaluate("document.activeElement.getAttribute('href')")
             await page.keyboard.press("Enter")
@@ -114,7 +119,15 @@ async def main():
               focusColor:getComputedStyle(document.activeElement).outlineColor,
               bg:getComputedStyle(document.querySelector('.media-entry')).backgroundColor,
               ink:getComputedStyle(document.querySelector('.media-entry h4')).color,
-              overflow:document.documentElement.scrollWidth>innerWidth
+              overflow:document.documentElement.scrollWidth>innerWidth,
+              inverseLogo: (() => {
+                const e=document.querySelector('.media-logo-inverse');
+                const cs=getComputedStyle(e);
+                return {loaded:e.complete&&e.naturalWidth>0,decoded:e.naturalWidth,
+                  opacity:cs.opacity,display:cs.display,visibility:cs.visibility,
+                  filter:cs.filter,mixBlendMode:cs.mixBlendMode,
+                  background:cs.backgroundColor,objectFit:cs.objectFit};
+              })()
             })""")
             await page.screenshot(path=str(OUT/"interests-dark-375.png"),full_page=True)
             errs=[]
