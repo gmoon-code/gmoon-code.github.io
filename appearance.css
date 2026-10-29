@@ -359,3 +359,13 @@ html[data-moon-theme="dark"] .teaching-bio-case .teaching-step-code{
     overflow-wrap:anywhere;
   }
 }
+
+
+/* S6 combined stress at 320px: reserve breathing room for the two
+   independently scrollable action-research evidence tables. */
+@media (max-width:700px){
+  #main.research-action-page .research-table-wrap{
+    max-width:calc(100vw - 40px);
+    min-width:0;
+  }
+}
