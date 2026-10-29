@@ -18,17 +18,12 @@
       "width": 768,
       "mode": "combined",
       "errors": [
-        "assessment count extends outside its row",
-        "assessment label and value do not share a row",
         "wide assessment track moved unexpectedly",
-        "assessment count extends outside its row",
-        "assessment label and value do not share a row",
-        "wide assessment track moved unexpectedly",
-        "page-wide horizontal overflow"
+        "wide assessment track moved unexpectedly"
       ],
       "metrics": {
         "viewport": 768,
-        "documentWidth": 771,
+        "documentWidth": 768,
         "mainCount": 1,
         "h1Count": 1,
         "textElements": 126,
@@ -64,17 +59,12 @@
       "width": 768,
       "mode": "combined",
       "errors": [
-        "assessment count extends outside its row",
-        "assessment label and value do not share a row",
         "wide assessment track moved unexpectedly",
-        "assessment count extends outside its row",
-        "assessment label and value do not share a row",
-        "wide assessment track moved unexpectedly",
-        "page-wide horizontal overflow"
+        "wide assessment track moved unexpectedly"
       ],
       "metrics": {
         "viewport": 768,
-        "documentWidth": 771,
+        "documentWidth": 768,
         "mainCount": 1,
         "h1Count": 1,
         "textElements": 126,
@@ -119,7 +109,7 @@
     }
   },
   "caveats": "The two reading preference tests apply independently. Combined maximum-spacing plus 200% text at 320 CSS pixels is explicitly a supplementary stress case, and any such overflow remains open even when the independent-test exit code is zero. Inline spacing overrides model the priority of a user-origin accessibility stylesheet over author-important declarations, but are not an actual browser user-stylesheet installation. Computed font-size doubling is not native browser text-only zoom. Automated results do not certify WCAG.",
-  "workflow_run_id": "40871261568",
-  "head_sha": "6e2466178d472d7a5ec5592e043f42b58b13fa39",
+  "workflow_run_id": "40871600186",
+  "head_sha": "f3d195692bc3c3ef31c8050608c051150d9ce47f",
   "exit_code": "0"
 }
