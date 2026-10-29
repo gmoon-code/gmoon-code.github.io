@@ -8,7 +8,33 @@
   <link rel="stylesheet" href="styles-20261013.css">
   <script src="appearance.js?v=20261020-light-default-1"></script>
   <link rel="stylesheet" href="site-theme.css">
-  <link rel="stylesheet" href="appearance.css?v=20261020-dark-8">
+  <link rel="stylesheet" href="appearance.css?v=20261028-visible-focus">
+  <!-- Scoped presentation checks for the classification essay. -->
+  <style id="classification-visitor-layout">
+    #main.classification-essay{padding-bottom:64px}
+    #main.classification-essay+.site-footer{margin-top:36px}
+    @media print{
+      #main.classification-essay{padding-bottom:0!important}
+      #main.classification-essay .research-essay-section{
+        padding:18px 0!important;
+      }
+      #main.classification-essay .research-essay-section>.section-head{
+        break-after:avoid-page!important;
+        page-break-after:avoid!important;
+      }
+      #main.classification-essay .research-essay-section>.section-head h2{
+        background:transparent!important;
+        color:#161616!important;
+        border-bottom:1px solid #666!important;
+        padding:0 0 5pt!important;
+      }
+      #main.classification-essay .research-essay-refs li{
+        padding-top:8px!important;
+        padding-bottom:8px!important;
+        break-inside:avoid-page!important;
+      }
+    }
+  </style>
 </head>
 <body class="theme-green">
   <a class="skip-link" href="#main">Skip to content</a>
@@ -18,7 +44,7 @@
       <nav class="site-nav" aria-label="Primary navigation"><a href="index.html" style="--nav-highlight: var(--section-yellow);">Home</a><a href="research.html" aria-current="page" style="--nav-highlight: var(--section-green);">Research</a><a href="projects.html" style="--nav-highlight: var(--section-blue);">Projects</a><a href="teaching.html" style="--nav-highlight: var(--section-magenta);">Teaching</a><a href="interests.html" style="--nav-highlight: var(--section-yellow);">Interests</a><a href="contact.html" style="--nav-highlight: var(--section-green);">Contact</a><a href="cv.html" class="cv-link" style="--nav-highlight: var(--section-blue);">CV</a></nav>
     </div>
   </header>
-  <main id="main" tabindex="-1" class="site-shell page research-overview research-hub research-essay">
+  <main id="main" tabindex="-1" class="site-shell page research-overview research-hub research-essay classification-essay">
     <nav class="breadcrumb" aria-label="Breadcrumb"><a href="research.html">Research</a> / Scholarly writing</nav>
     
 <section class="page-hero single research-essay-hero">
