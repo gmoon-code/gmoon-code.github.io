@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="styles-20261013.css">
   <script src="appearance.js?v=20261020-light-default-1"></script>
   <link rel="stylesheet" href="site-theme.css">
-  <link rel="stylesheet" href="appearance.css?v=20261020-dark-8">
+  <link rel="stylesheet" href="appearance.css?v=20261028-visible-focus">
 <style id="moon-v2-live-layout">@media (min-width:1025px){main > section:nth-of-type(2) > div:nth-of-type(2) > p:nth-of-type(2){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:1023px!important;height:103px!important;box-sizing:border-box!important;min-width:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}main > section:nth-of-type(2) > div:nth-of-type(2) > p:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:1011px!important;height:130px!important;box-sizing:border-box!important;min-width:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}}
 @media (min-width:1025px){main > section:nth-of-type(1){translate:1px 1px!important;scale:1 1!important;transform-origin:top left!important;width:1089px!important;height:auto!important;min-height:51px!important;box-sizing:border-box!important;min-width:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}}
 @media (min-width:1025px){main > section:nth-of-type(1){translate:1px 1px!important;scale:1 1!important;transform-origin:top left!important;width:1089px!important;height:auto!important;min-height:51px!important;box-sizing:border-box!important;min-width:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}}
@@ -32,7 +32,7 @@
     </div>
   </header>
 
-  <main id="main" tabindex="-1" class="site-shell page" data-moon-v2-added-host="">
+  <main id="main" tabindex="-1" class="site-shell page interests-page" data-moon-v2-added-host="">
     <section class="page-hero single">
       <div class="hero-copy">
         <h1>Interests</h1>
@@ -74,20 +74,53 @@
   </footer>
 
 
-<style id="interests-phone-photo-flow">
-@media(max-width:700px){
-  html:not(.moon-free-mode) #main .pungmul-gallery{
-    display:grid!important;grid-template-columns:minmax(0,1fr)!important;
-    gap:15px!important;margin:23px 0 15px!important;
+<style id="interests-visitor-photo-flow">
+/* Reader-facing layout only. Keep editable, free-positioned source objects intact. */
+html:not(.moon-free-mode) #main.interests-page{
+  padding-bottom:64px!important;
+}
+html:not(.moon-free-mode) #main.interests-page+.site-footer{margin-top:36px!important}
+@media(min-width:1025px){
+  html:not(.moon-free-mode) #main.interests-page>section:nth-of-type(1),
+  html:not(.moon-free-mode) #main.interests-page>section:nth-of-type(2),
+  html:not(.moon-free-mode) #main.interests-page>section:nth-of-type(3){
     width:100%!important;max-width:100%!important;
+    height:auto!important;min-height:0!important;
+    translate:none!important;scale:none!important;transform:none!important;
   }
-  html:not(.moon-free-mode) #main .pungmul-gallery>img[data-moon-v2-added-id]{
-    display:block!important;position:static!important;
-    left:auto!important;top:auto!important;right:auto!important;bottom:auto!important;
-    width:100%!important;height:195px!important;max-width:100%!important;max-height:195px!important;
-    min-width:0!important;margin:0!important;padding:0!important;
-    object-fit:cover!important;object-position:center!important;background-image:none!important;
-    border-radius:9px!important;opacity:1!important;transform:none!important;
+  html:not(.moon-free-mode) #main.interests-page>section:nth-of-type(2) .reading p{
+    width:auto!important;height:auto!important;min-height:0!important;
+    max-width:82ch!important;translate:none!important;scale:none!important;
+    transform:none!important;
+  }
+}
+html:not(.moon-free-mode) #main.interests-page .pungmul-gallery{
+  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:16px!important;margin:23px 0 15px!important;
+  width:100%!important;max-width:100%!important;
+}
+html:not(.moon-free-mode) #main.interests-page .pungmul-gallery>img[data-moon-v2-added-id]{
+  display:block!important;position:static!important;
+  left:auto!important;top:auto!important;right:auto!important;bottom:auto!important;
+  width:100%!important;height:235px!important;max-width:100%!important;
+  max-height:235px!important;min-width:0!important;
+  margin:0!important;padding:0!important;
+  object-fit:cover!important;object-position:center!important;background-image:none!important;
+  border-radius:7px!important;opacity:1!important;
+  transform:none!important;translate:none!important;scale:none!important;
+}
+@media(max-width:700px){
+  html:not(.moon-free-mode) #main.interests-page .pungmul-gallery{
+    grid-template-columns:minmax(0,1fr)!important;gap:15px!important;
+  }
+  html:not(.moon-free-mode) #main.interests-page .pungmul-gallery>img[data-moon-v2-added-id]{
+    height:195px!important;max-height:195px!important;
+  }
+}
+@media print{
+  html:not(.moon-free-mode) #main.interests-page{padding-bottom:0!important}
+  html:not(.moon-free-mode) #main.interests-page .pungmul-gallery>img[data-moon-v2-added-id]{
+    break-inside:avoid;page-break-inside:avoid;
   }
 }
 </style>
@@ -106,7 +139,7 @@
       if(images.length!==2)return;
       original={layer,images};
     }
-    const target=(media.matches&&!document.documentElement.classList.contains("moon-free-mode"))?gallery:original.layer;
+    const target=!document.documentElement.classList.contains("moon-free-mode")?gallery:original.layer;
     for(const photo of original.images)if(photo.parentNode!==target)target.append(photo);
   }
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",placePhotos,{once:true});
