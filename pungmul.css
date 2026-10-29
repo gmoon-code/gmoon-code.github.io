@@ -112,6 +112,9 @@ html:not(.moon-free-mode) #main.pungmul-deep-page img.personal-photo-in-flow{
   html:not(.moon-free-mode) #main.pungmul-deep-page .pungmul-reference-list li{
     break-inside:avoid;page-break-inside:avoid;
   }
+  html:not(.moon-free-mode) #main.pungmul-deep-page .pungmul-return{
+    display:none!important;
+  }
 }
 
 
