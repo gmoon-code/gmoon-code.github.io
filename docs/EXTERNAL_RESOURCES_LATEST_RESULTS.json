@@ -2,13 +2,13 @@
   "pages_scanned": 19,
   "distinct_destinations": 113,
   "counts": {
-    "reachable": 70,
-    "unverified": 43
+    "reachable": 71,
+    "unverified": 42
   },
   "by_category": {
     "external": {
-      "reachable": 47,
-      "unverified": 2
+      "reachable": 48,
+      "unverified": 1
     },
     "scholarly-identifier": {
       "unverified": 41,
@@ -801,23 +801,6 @@
       "warnings": []
     },
     {
-      "url": "https://eric.ed.gov/?id=ED527596",
-      "status": "unverified",
-      "category": "external",
-      "pages": [
-        "research.html"
-      ],
-      "head": {
-        "code": null,
-        "error": "The read operation timed out"
-      },
-      "get": {
-        "code": null,
-        "error": "The read operation timed out"
-      },
-      "warnings": []
-    },
-    {
       "url": "https://onlinelibrary.wiley.com/doi/full/10.1002/sce.21622",
       "status": "unverified",
       "category": "external",
@@ -858,10 +841,10 @@
   "doi_registry": {
     "checked": 41,
     "counts": {
-      "registered": 28,
-      "not-confirmed": 13
+      "registered": 27,
+      "not-confirmed": 14
     },
-    "secondary_index_matches": 13,
+    "secondary_index_matches": 14,
     "not_confirmed": [
       {
         "url": "https://doi.org/10.1002/sce.20392",
@@ -896,20 +879,20 @@
         "indexedYear": 2023
       },
       {
-        "url": "https://doi.org/10.1002/tea.21257",
-        "doi": "10.1002/tea.21257",
+        "url": "https://doi.org/10.1002/tea.21714",
+        "doi": "10.1002/tea.21714",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21257",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21714",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Epistemologies in practice: Making scientific practices meaningful for students",
-        "indexedYear": 2015
+        "indexedTitle": "Science engagement as insight into the science identity work nurtured in community‐based science clubs",
+        "indexedYear": 2021
       },
       {
         "url": "https://doi.org/10.1073/pnas.0706627104",
@@ -928,6 +911,22 @@
         "indexedYear": 2007
       },
       {
+        "url": "https://doi.org/10.1080/03626784.2021.1947732",
+        "doi": "10.1080/03626784.2021.1947732",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/03626784.2021.1947732",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Getting dirty and coming clean: Sex education and the problem of expertise",
+        "indexedYear": 2021
+      },
+      {
         "url": "https://doi.org/10.1080/03626784.2023.2200810",
         "doi": "10.1080/03626784.2023.2200810",
         "pages": [
@@ -942,38 +941,6 @@
         "secondaryIndex": "OpenAlex",
         "indexedTitle": "You don’t know me: Welcoming gender diversity in schools via an ethic of hospitality",
         "indexedYear": 2023
-      },
-      {
-        "url": "https://doi.org/10.1080/09500690903386435",
-        "doi": "10.1080/09500690903386435",
-        "pages": [
-          "teaching-ap-chemistry.html"
-        ],
-        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/09500690903386435",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Macro, Submicro, and Symbolic: The many faces of the chemistry “triplet”",
-        "indexedYear": 2010
-      },
-      {
-        "url": "https://doi.org/10.1080/14675986.2015.1109775",
-        "doi": "10.1080/14675986.2015.1109775",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/14675986.2015.1109775",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Beyond the mirror towards a plurilingual prism: exploring the creation of plurilingual ‘identity texts’ in English and French classrooms in Toronto and Montpellier",
-        "indexedYear": 2015
       },
       {
         "url": "https://doi.org/10.1080/14790718.2021.1898619",
@@ -992,52 +959,69 @@
         "indexedYear": 2021
       },
       {
-        "url": "https://doi.org/10.1093/applin/amab044",
-        "doi": "10.1093/applin/amab044",
+        "url": "https://doi.org/10.1111/j.1365-2729.1991.tb00230.x",
+        "doi": "10.1111/j.1365-2729.1991.tb00230.x",
         "pages": [
-          "research.html"
+          "teaching-ap-chemistry.html"
         ],
-        "publisherLanding": "https://academic.oup.com/applij/article/43/2/316/6375538",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1111/j.1365-2729.1991.tb00230.x",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Affordances of Plurilingual Instruction in Higher Education: A Mixed Methods Study with a Quasi-experiment in an English Language Program",
-        "indexedYear": 2021
+        "indexedTitle": "Why is science difficult to learn? Things are seldom what they seem",
+        "indexedYear": 1991
       },
       {
-        "url": "https://doi.org/10.1159/000345322",
-        "doi": "10.1159/000345322",
+        "url": "https://doi.org/10.1111/jedm.12000",
+        "doi": "10.1111/jedm.12000",
         "pages": [
-          "research.html"
+          "research-scoping.html"
         ],
-        "publisherLanding": "https://karger.com/article/doi/10.1159/000345322",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1111/jedm.12000",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Desettling Expectations in Science Education",
-        "indexedYear": 2012
+        "indexedTitle": "Validating the Interpretations and Uses of Test Scores",
+        "indexedYear": 2013
       },
       {
-        "url": "https://doi.org/10.2304/ciec.2011.12.4.362",
-        "doi": "10.2304/ciec.2011.12.4.362",
+        "url": "https://doi.org/10.1207/S1532690XCI2004_1",
+        "doi": "10.1207/S1532690XCI2004_1",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://journals.sagepub.com/doi/10.2304/ciec.2011.12.4.362",
+        "publisherLanding": "https://www.tandfonline.com/doi/abs/10.1207/S1532690XCI2004_1",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "On the Human Challenges of Multiliteracies Pedagogy",
-        "indexedYear": 2011
+        "indexedTitle": "Guiding Principles for Fostering Productive Disciplinary Engagement: Explaining an Emergent Argument in a Community of Learners Classroom",
+        "indexedYear": 2002
+      },
+      {
+        "url": "https://doi.org/10.3102/0013189X20927363",
+        "doi": "10.3102/0013189X20927363",
+        "pages": [
+          "research.html",
+          "writing-biological-classification.html"
+        ],
+        "publisherLanding": "https://journals.sagepub.com/doi/10.3102/0013189X20927363",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Beyond Equity as Inclusion: A Framework of “Rightful Presence” for Guiding Justice-Oriented Studies in Teaching and Learning",
+        "indexedYear": 2020
       },
       {
         "url": "https://doi.org/10.3102/0013189X231206172",
@@ -1070,12 +1054,28 @@
         "secondaryIndex": "OpenAlex",
         "indexedTitle": "The Impact of Academic Acculturation and Language Proficiency on International Students’ University Experience and Academic Success: A Longitudinal Study",
         "indexedYear": 2023
+      },
+      {
+        "url": "https://doi.org/10.3390/plants10081501",
+        "doi": "10.3390/plants10081501",
+        "pages": [
+          "teaching-ap-biology.html"
+        ],
+        "publisherLanding": "https://www.mdpi.com/2223-7747/10/8/1501",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Binding Properties of Photosynthetic Herbicides with the QB Site of the D1 Protein in Plant Photosystem II: A Combined Functional and Molecular Docking Study",
+        "indexedYear": 2021
       }
     ],
     "unresolved": [],
     "limitation": "Crossref/DataCite registration is distinct from publisher access, correct article metadata or article availability. OpenAlex is independent secondary corroboration, not registration proof."
   },
-  "workflow_run_id": "40893645848",
-  "head_sha": "74abb5f03cf02d5022dc63cf772934aa46834779",
+  "workflow_run_id": "40893920082",
+  "head_sha": "1f08cc6efa72612ab56faeb51ee58cc1b0dfbe93",
   "audit_exit_code": "0"
 }
