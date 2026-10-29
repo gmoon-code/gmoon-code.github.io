@@ -138,6 +138,9 @@ async def main():
             missing=[s for s in required if not any(s in t for t in texts)]
             violations=[]
             if missing:violations.append("Print content missing: "+", ".join(missing))
+            if not any("Workspaces for methodological decisions" in t and
+                       "Literature Workspace" in t for t in texts):
+                violations.append("Workspaces heading stranded from the first workspace")
             if not 1<=len(pdf)<=12:violations.append("Print page count unexpected")
             for i,sheet in enumerate(pdf):
                 sheet.get_pixmap(matrix=fitz.Matrix(1,1)).save(str(OUT/f"methods-A4-{i+1}.png"))
