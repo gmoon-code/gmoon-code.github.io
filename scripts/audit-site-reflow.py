@@ -79,7 +79,7 @@ async def run_case(browser, name, width):
                                 reduced_motion="reduce",color_scheme="light")
     record={"page":name,"width":width,"errors":[]}
     try:
-        res=await page.goto(f"{BASE}/{name}",wait_until="load",timeout=25000)
+        res=await page.goto(f"{BASE}/{name}",wait_until="domcontentloaded",timeout=18000)
         await page.evaluate("document.fonts.ready")
         record["http"]=res.status if res else None
         m=await page.evaluate(METRICS);record["metrics"]=m
