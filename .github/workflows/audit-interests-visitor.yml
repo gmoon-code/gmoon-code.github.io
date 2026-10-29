@@ -1,0 +1,56 @@
+name: Interests visitor-facing image and layout audit
+on:
+  push:
+    branches: [main]
+    paths:
+      - "interests.html"
+      - "styles-20261013.css"
+      - "site-theme.css"
+      - "appearance.css"
+      - "appearance.js"
+      - "scripts/audit-interests-visitor.py"
+      - ".github/workflows/audit-interests-visitor.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+  statuses: write
+jobs:
+  interests-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 13
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Chromium and PDF inspection tools
+        run: |
+          python -m pip install playwright==1.57.0 PyMuPDF==1.26.7
+          python -m playwright install --with-deps chromium
+      - name: Test actual Interests route at breakpoint widths
+        run: |
+          python -m http.server 8772 --bind 127.0.0.1 >/tmp/interests-http.log 2>&1 &
+          python scripts/audit-interests-visitor.py
+      - name: Preserve inspected source and evidence
+        if: always()
+        run: |
+          mkdir -p interests-audit-output/source
+          cp interests.html styles-20261013.css site-theme.css appearance.css appearance.js interests-audit-output/source/
+      - name: Upload reports and page/PDF screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: interests-visitor-evidence
+          path: interests-audit-output/
+          retention-days: 7
+      - name: Audit status
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RESULT: ${{ job.status }}
+        run: |
+          if [ "$RESULT" = "success" ]; then state=success; else state=failure; fi
+          gh api -X POST "repos/$GITHUB_REPOSITORY/statuses/$GITHUB_SHA" \
+            -f state="$state" -f context="audit/interests-visitor" \
+            -f target_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" \
+            -f description="Interests actual Chromium and A4 visitor audit: $RESULT"
