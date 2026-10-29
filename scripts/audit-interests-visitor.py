@@ -6,7 +6,7 @@ from playwright.async_api import async_playwright
 
 BASE="http://127.0.0.1:8772/interests.html"
 OUT=Path("interests-audit-output")
-WIDTHS=(320,375,700,701,768,850,1024,1025,1140,1440)
+WIDTHS=(320,375,599,600,700,701,768,850,1024,1025,1140,1440)
 
 async def main():
     OUT.mkdir(exist_ok=True)
@@ -127,8 +127,10 @@ async def main():
 
         page=await browser.new_page(viewport={"width":1440,"height":900},reduced_motion="reduce")
         try:
-            await page.goto(BASE,wait_until="domcontentloaded")
+            await page.goto(BASE,wait_until="load",timeout=45000)
             await page.evaluate("document.fonts.ready")
+            await page.wait_for_function("""() => [...document.querySelectorAll('#main .media-shelf img')]
+                .every(i=>i.complete && i.naturalWidth>0)""",timeout=16000)
             raw=await page.pdf(format="A4",print_background=True,display_header_footer=False,
                                margin={"top":"12mm","bottom":"12mm","left":"12mm","right":"12mm"})
             (OUT/"interests-A4.pdf").write_bytes(raw)
@@ -143,9 +145,16 @@ async def main():
                                      "The Hobbit","I'm Waiting for You","Rose",
                                      "Detective Conan","Dimension 20"]
                      if not any(name in x for x in texts)]
+            pdf_images=[len(pg.get_images(full=True)) for pg in pdf]
             errs=[]
             if missing or edge:errs.append("print clipped/missing text")
+            if not any("Books and media" in x and "The Hobbit" in x for x in texts):
+                errs.append("Books heading orphaned on print page")
+            if not any("Shows" in x and "Detective Conan" in x for x in texts):
+                errs.append("Shows heading orphaned on print page")
+            if sum(pdf_images[1:]) < 3:errs.append("book-cover images not embedded into printed PDF")
             results.append({"test":"print A4","pages":len(pdf),"pageChars":[len(x) for x in texts],
+                            "imagesByPage":pdf_images,
                             "missing":missing,"edge":edge[:20],"errors":errs})
             print("PRINT",len(pdf),"PASS" if not errs else errs,flush=True)
         except Exception as e:
