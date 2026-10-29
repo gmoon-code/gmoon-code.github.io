@@ -1,0 +1,84 @@
+name: S8 final public deployment and audit evidence reconciliation
+on:
+  push:
+    branches: [main]
+    paths:
+      - "*.html"
+      - "appearance.css"
+      - "appearance.js"
+      - "styles-20261013.css"
+      - "site-theme.css"
+      - "site-previews.js"
+      - "scripts/audit-final-public-release.py"
+      - ".github/workflows/audit-final-public-release.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: s8-final-release-main
+  cancel-in-progress: false
+jobs:
+  final-source-and-deployment:
+    runs-on: ubuntu-latest
+    timeout-minutes: 14
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Reconcile deployed bytes and existing audit proof
+        id: check
+        run: |
+          set +e
+          python scripts/audit-final-public-release.py 2>&1 | tee s8-final-audit.log
+          code=${PIPESTATUS[0]}
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit "$code"
+      - name: Store exact source result
+        if: always() && github.ref == 'refs/heads/main'
+        env:
+          CODE: ${{ steps.check.outputs.exit_code }}
+        run: |
+          mkdir -p docs
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          p=Path("s8-release-output/summary.json")
+          s=json.loads(p.read_text()) if p.exists() else {"error":"S8 report missing"}
+          s.update(workflow_run_id=os.getenv("GITHUB_RUN_ID"),run_sha=os.getenv("GITHUB_SHA"),exit_code=os.getenv("CODE"))
+          Path("/tmp/s8-last.json").write_text(json.dumps(s,indent=2,ensure_ascii=False)+"\n")
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for attempt in 1 2 3 4; do
+            git fetch origin main
+            git reset --hard origin/main
+            python - <<'PY'
+          import json
+          from pathlib import Path
+          incoming=json.loads(Path("/tmp/s8-last.json").read_text())
+          p=Path("docs/PUBLIC_RELEASE_FINAL_LATEST_RESULTS.json")
+          if p.exists():
+              prior=json.loads(p.read_text())
+              if int(prior.get("workflow_run_id") or 0)>int(incoming.get("workflow_run_id") or 0):
+                  Path("/tmp/s8-newer-exists").touch()
+          PY
+            if [ -f /tmp/s8-newer-exists ]; then break; fi
+            cp /tmp/s8-last.json docs/PUBLIC_RELEASE_FINAL_LATEST_RESULTS.json
+            git add docs/PUBLIC_RELEASE_FINAL_LATEST_RESULTS.json
+            if git diff --cached --quiet; then break; fi
+            git commit -m "Record S8 source and deployed-site reconciliation [skip ci]"
+            if git push origin HEAD:main; then break; fi
+            if [ "$attempt" -eq 4 ]; then exit 1; fi
+          done
+      - name: Preserve exact source and live page comparisons
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: s8-final-public-release-evidence
+          path: |
+            s8-release-output/
+            s8-final-audit.log
+          retention-days: 21
