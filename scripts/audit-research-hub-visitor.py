@@ -11,7 +11,7 @@ SECTION_IDS=["current-inquiries","research-interests","curriculum-decisions",
   "recognition-contexts","cultural-knowledge","multilingual-participation",
   "scientific-representations","model-adequacy","sex-classification",
   "scholarly-writing","research-reading"]
-NEEDLES=["A food web traces energy","Research projects","Classroom authority",
+NEEDLES=["Imagine a biology class examining","Research projects","Classroom authority",
   "Cultural knowledge and participation","Multilingual participation",
   "Scientific representations and their limits","Sex determination and biological variation",
   "Related writing","References","Zemenick, A. T."]
