@@ -205,6 +205,9 @@ async def main():
             if not any("References and related resources" in s and
                        "Beards, G." in s and "Williams, T. N." in s for s in pages):
                 err.append("bibliography split over A4 sheets")
+            sparse=[i+1 for i,s in enumerate(pages) if len(s.strip())<350]
+            if sparse:
+                err.append("nearly empty printed sheet(s): "+repr(sparse))
             if not any("Proposed four-meeting sequence" in s and
                        "1 · Molecular consequences" in s for s in pages):
                 err.append("proposed-sequence heading stranded")
