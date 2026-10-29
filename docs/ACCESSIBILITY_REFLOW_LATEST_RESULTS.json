@@ -1,0 +1,78 @@
+{
+  "scope": "18 public pages (About redirect separately completed under U1)",
+  "cases": 54,
+  "widths": [
+    320,
+    640,
+    1280
+  ],
+  "axeScanCount": 36,
+  "darkAxeCount": 5,
+  "failedCases": 1,
+  "failures": [
+    {
+      "page": "teaching-ap-biology.html",
+      "width": 320,
+      "errors": [
+        "dark automated axe findings"
+      ],
+      "metrics": {
+        "documentWidth": 320,
+        "outOfBounds": [],
+        "clipped": []
+      },
+      "axe": [],
+      "axeDark": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": [
+            {
+              "target": [
+                ".bio-mechanism-start > span"
+              ],
+              "html": "<span>The flow of electrons from photosystem II toward downstream carriers is restricted.</span>",
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 1.53 (foreground color: #423942, background color: #1c1c1c, font size: 11.3pt (15px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "target": [
+                "div:nth-child(1) > .teaching-step-code"
+              ],
+              "html": "<span class=\"teaching-step-code\">01</span>",
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.47 (foreground color: #805e7c, background color: #0f0f0f, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "target": [
+                "div:nth-child(2) > .teaching-step-code"
+              ],
+              "html": "<span class=\"teaching-step-code\">02</span>",
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.47 (foreground color: #805e7c, background color: #0f0f0f, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "target": [
+                "div:nth-child(3) > .teaching-step-code"
+              ],
+              "html": "<span class=\"teaching-step-code\">03</span>",
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.47 (foreground color: #805e7c, background color: #0f0f0f, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "target": [
+                "div:nth-child(4) > .teaching-step-code"
+              ],
+              "html": "<span class=\"teaching-step-code\">04</span>",
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.47 (foreground color: #805e7c, background color: #0f0f0f, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 4.5:1"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "rules": {
+    "color-contrast": 5
+  },
+  "caveats": "CSS viewport equivalence to 200/400% reflow, not physical browser zoom. Automated axe findings do not certify WCAG. Exemptions apply only to intentional horizontal scroll containers.",
+  "workflow_run_id": "40856945375",
+  "head_sha": "bf0fc93033ce46f6b67861f49a8bd9d4ab89adb4",
+  "exit_code": "1"
+}
