@@ -2265,3 +2265,28 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
     page-break-before:always;
   }
 }
+
+
+/* AP Biology teaching case: paginated reader-facing print QA, 29 October 2026. */
+@media print {
+  .teaching-bio-case .teaching-case-section{padding:18px 0}
+  .teaching-bio-case .teaching-bio-mechanism{
+    break-inside:avoid;
+    page-break-inside:avoid;
+  }
+  .teaching-bio-case .teaching-record-sequence>div,
+  .teaching-bio-case .teaching-paired-questions>div,
+  .teaching-bio-case .teaching-sequence-table tbody tr{
+    break-inside:avoid;
+    page-break-inside:avoid;
+  }
+  .teaching-bio-case .teaching-source-list li{
+    padding:5px 3px;
+    break-inside:avoid;
+    page-break-inside:avoid;
+  }
+  .teaching-bio-case .section-head{
+    break-after:avoid;
+    page-break-after:avoid;
+  }
+}
