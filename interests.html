@@ -117,7 +117,12 @@ html:not(.moon-free-mode) #main.interests-page .pungmul-gallery>img[data-moon-v2
     height:195px!important;max-height:195px!important;
   }
 }
-@media(min-width:600px) and (max-width:700px){
+@media(min-width:400px) and (max-width:539px){
+  html:not(.moon-free-mode) #main.interests-page .pungmul-gallery>img[data-moon-v2-added-id]{
+    height:clamp(210px,45vw,245px)!important;max-height:245px!important;
+  }
+}
+@media(min-width:540px) and (max-width:700px){
   html:not(.moon-free-mode) #main.interests-page .pungmul-gallery{
     grid-template-columns:repeat(2,minmax(0,1fr))!important;
   }
