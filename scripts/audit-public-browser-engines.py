@@ -54,7 +54,11 @@ async def visit(browser,engine,page,width,forced=False):
             await tab.keyboard.press("Tab")
             focus=await tab.evaluate(FOCUS_METRICS)
             actual.append(focus)
-            if focus["href"]!=href:
+            # The dedicated 404 route intentionally uses root-relative public
+            # navigation links, unlike standard pages' relative .html links.
+            expected=(href if page!="404.html" or href=="#main"
+                      else "/" if href=="index.html" else "/"+href)
+            if focus["href"]!=expected:
                 result["errors"].append("keyboard Tab order differs")
                 break
             if not focus["visible"]:result["errors"].append("focused item offscreen")
