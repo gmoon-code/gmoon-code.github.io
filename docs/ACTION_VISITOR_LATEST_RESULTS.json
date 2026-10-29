@@ -1,6 +1,6 @@
 {
-  "workflow_run_id": "40842451946",
-  "head_sha": "5766ab533886b99e9efc8c01e11a19e536eed885",
+  "workflow_run_id": "40842693557",
+  "head_sha": "ef267eb48558fbcb130634e9eb577355ec01e431",
   "audit_exit_code": "0",
   "screen_widths_tested": [
     320,
@@ -226,6 +226,140 @@
           "caption": "Predominant differences between the ten original Unit 3 explanations and later reconstructions",
           "hintBefore": true
         }
+      ]
+    }
+  ],
+  "keyboard_navigation": {
+    "first": {
+      "href": "#main",
+      "focusVisible": true
+    },
+    "target": "main",
+    "section": "#paired-evidence",
+    "back": {
+      "hash": "#page-top",
+      "y": 0
+    }
+  },
+  "dark_contrast": [
+    {
+      "selector": ".research-detail-hero h1",
+      "ratio": 16.23,
+      "ink": "rgb(236, 236, 236)",
+      "paper": [
+        15,
+        15,
+        15
+      ]
+    },
+    {
+      "selector": ".research-detail-hero .hero-copy>p:not(.meta):not(.research-study-title)",
+      "ratio": 16.23,
+      "ink": "rgb(236, 236, 236)",
+      "paper": [
+        15,
+        15,
+        15
+      ]
+    },
+    {
+      "selector": ".research-prose p",
+      "ratio": 16.23,
+      "ink": "rgb(236, 236, 236)",
+      "paper": [
+        15,
+        15,
+        15
+      ]
+    },
+    {
+      "selector": ".research-cycle-stage",
+      "ratio": 9.66,
+      "ink": "rgb(184, 184, 184)",
+      "paper": [
+        15,
+        15,
+        15
+      ]
+    },
+    {
+      "selector": ".research-case h3",
+      "ratio": 16.23,
+      "ink": "rgb(236, 236, 236)",
+      "paper": [
+        15,
+        15,
+        15
+      ]
+    },
+    {
+      "selector": ".research-case>p:not(.meta)",
+      "ratio": 16.23,
+      "ink": "rgb(236, 236, 236)",
+      "paper": [
+        15,
+        15,
+        15
+      ]
+    },
+    {
+      "selector": ".research-evidence-table thead th",
+      "ratio": 14.43,
+      "ink": "rgb(236, 236, 236)",
+      "paper": [
+        28,
+        28,
+        28
+      ]
+    },
+    {
+      "selector": ".research-evidence-table tbody th",
+      "ratio": 15.32,
+      "ink": "rgb(236, 236, 236)",
+      "paper": [
+        22,
+        22,
+        22
+      ]
+    },
+    {
+      "selector": ".research-evidence-table tbody td",
+      "ratio": 15.32,
+      "ink": "rgb(236, 236, 236)",
+      "paper": [
+        22,
+        22,
+        22
+      ]
+    },
+    {
+      "selector": ".research-followups article h3",
+      "ratio": 16.23,
+      "ink": "rgb(236, 236, 236)",
+      "paper": [
+        15,
+        15,
+        15
+      ]
+    },
+    {
+      "selector": ".research-table-note",
+      "ratio": 16.23,
+      "ink": "rgb(236, 236, 236)",
+      "paper": [
+        15,
+        15,
+        15
+      ]
+    },
+    {
+      "selector": ".research-count-row strong",
+      "ratio": 16.23,
+      "ink": "rgb(236, 236, 236)",
+      "paper": [
+        15,
+        15,
+        15
       ]
     }
   ],
