@@ -168,6 +168,17 @@ async def main():
                     if w[0]<-1 or w[1]<-1 or w[2]>pg.rect.width+1 or w[3]>pg.rect.height+1])
                 pg.get_pixmap(matrix=fitz.Matrix(1.05,1.05)).save(str(OUT/f"pungmul-A4-{i+1}.png"))
             err=[]
+            text_photo_overlap=[]
+            for pi,pg in enumerate(pdf):
+                word_rects=[(fitz.Rect(w[:4]),w[4]) for w in pg.get_text("words")]
+                for ref in pg.get_images(full=True):
+                    for image_rect in pg.get_image_rects(ref[0]):
+                        for wr,word in word_rects:
+                            intersect=wr & image_rect
+                            if not intersect.is_empty and intersect.get_area()>2:
+                                text_photo_overlap.append({"page":pi+1,"word":word,"image":ref[0]})
+            if text_photo_overlap:
+                err.append("printed photo intersects visible text")
             if missing or clipped:err.append("printed article content or bibliography absent/clipped")
             if not 2<=len(pdf)<=7:err.append("unexpected A4 page count")
             if len(txt)>1 and len(txt[-1])<400:err.append("nearly empty final print page")
@@ -177,7 +188,8 @@ async def main():
                 err.append("incomplete performance gallery on second print sheet")
             results.append({"test":"print A4","pages":len(pdf),"pageCharacters":[len(x) for x in txt],
                 "embeddedImages":[len(pg.get_images(full=True)) for pg in pdf],
-                "missing":missing,"clipped":clipped[:15],"errors":err})
+                "missing":missing,"clipped":clipped[:15],
+                "textPhotoOverlap":text_photo_overlap[:18],"errors":err})
             print("PRINT",len(pdf),"PASS" if not err else err,flush=True)
         except Exception as exc:
             results.append({"test":"print A4","errors":[repr(exc)]})
