@@ -368,8 +368,8 @@ async def main():
             document=fitz.open(stream=pdf_bytes,filetype="pdf")
             page_texts=[page.get_text("text") for page in document]
             pairs=[
-                ("Teaching","I teach AP Biology and Chemistry"),
-                ("Research Methods Studio","This workspace helps students revisit"),
+                ("Teaching","I teach AP Biology and AP Chemistry"),
+                ("Research Methods Studio","This workspace lets students revisit"),
                 ("The Story Method","Fictional journeys introduce biological problems"),
                 ("Outside school","I play pungmul with a queer ensemble")
             ]
