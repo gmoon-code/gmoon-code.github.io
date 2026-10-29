@@ -87,13 +87,9 @@ async def run():
                 if not data["uniqueIds"] or data["missingAnchors"]:errors.append("broken fragments or IDs")
                 if not data["styleLoaded"] or data["failedAssets"]:errors.append("root-path CSS unavailable")
                 if any(not x.startswith("/") for x in data["nav"]):errors.append("nav not root-relative")
-                if data["footerGap"]<50 or data["footerGap"]>160:errors.append("footer spacing excessive")
-                if data["assetUrls"][-4:]!=["/styles-20261013.css",
-                      "/appearance.js?v=20261020-light-default-1",
-                      "/site-theme.css",
-                      "/appearance.css?v=20261020-dark-8"]:
-                    # Real code has no fixed obligation on cache buster, so just store it.
-                    pass
+                if not 95<=data["footerGap"]<=105:errors.append("footer gap differs from 100px")
+                if not any(x.startswith("/appearance.css?v=20261028-visible-focus") for x in data["assetUrls"]):
+                    errors.append("current accessible focus stylesheet not linked")
                 check("nested 404 at "+str(w)+"px",errors,status=response.status,**data)
                 await page.screenshot(path=str(OUT/f"nested-404-{w}.png"),full_page=True)
             except Exception as exc:
