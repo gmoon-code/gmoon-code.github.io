@@ -92,6 +92,11 @@ async def main():
                 if any(im["box"]["left"]<-3 or im["box"]["right"]>w+3 for im in data["images"]):
                     err.append("photo out of bounds")
                 if data["referenceCount"]!=4:err.append("missing references")
+                if any(im["parent"] not in ("pungmul-page-hero","pungmul-performance-grid")
+                       for im in data["images"]):
+                    err.append("public photos not part of document flow")
+                if not 95<=data["footerGap"]<=105:
+                    err.append("inconsistent content-to-footer separation")
                 if any(item["area"]>100 for group in data["imageImageOverlap"] for item in group):
                     err.append("photos overlap")
                 if any(item["area"]>100 for group in data["imageTextOverlap"] for item in group):
@@ -117,6 +122,7 @@ async def main():
             history=await page.evaluate("({hash:location.hash,y:Math.round(document.querySelector('#history').getBoundingClientRect().top)})")
             await page.locator(".moon-appearance-select").select_option("dark")
             await page.wait_for_function("document.documentElement.dataset.moonTheme==='dark'")
+            await page.keyboard.press("Tab")
             await page.locator(".topbar .brand").focus()
             dark=await page.evaluate("""() => ({theme:document.documentElement.dataset.moonTheme,
                 focus:document.activeElement.matches(':focus-visible'),
@@ -142,8 +148,16 @@ async def main():
             (OUT/"pungmul-A4.pdf").write_bytes(data)
             pdf=fitz.open(stream=data,filetype="pdf")
             txt=[re.sub(r"\s+"," ",pg.get_text()) for pg in pdf]
-            needles=["Pungmul","Performances with our ensemble","The instruments and their rhythms",
-                "A tradition with many histories","Pungmul and social movements","References"]
+            needles=[
+                "I play pungmul with a queer ensemble",
+                "Our ensemble gave a formal concert in 2024",
+                "The instruments have different roles within the ensemble",
+                "Village performance traditions have developed",
+                "Park's analysis also raises questions",
+                "National Folk Museum of Korea",
+                "National Institute of Korean History",
+                "UNESCO. (2014)"
+            ]
             missing=[x for x in needles if not any(x in t for t in txt)]
             clipped=[]
             for i,pg in enumerate(pdf):
@@ -151,7 +165,9 @@ async def main():
                     if w[0]<-1 or w[1]<-1 or w[2]>pg.rect.width+1 or w[3]>pg.rect.height+1])
                 pg.get_pixmap(matrix=fitz.Matrix(1.05,1.05)).save(str(OUT/f"pungmul-A4-{i+1}.png"))
             err=[]
-            if missing or clipped:err.append("printed text absent or clipped")
+            if missing or clipped:err.append("printed article content or bibliography absent/clipped")
+            if not 2<=len(pdf)<=7:err.append("unexpected A4 page count")
+            if len(txt)>1 and len(txt[-1])<400:err.append("nearly empty final print page")
             results.append({"test":"print A4","pages":len(pdf),"pageCharacters":[len(x) for x in txt],
                 "embeddedImages":[len(pg.get_images(full=True)) for pg in pdf],
                 "missing":missing,"clipped":clipped[:15],"errors":err})
