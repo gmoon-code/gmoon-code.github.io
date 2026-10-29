@@ -18,3 +18,12 @@ This is the next unfinished visitor-facing route after completed Research stages
 ## Pending
 - Obtain the GitHub Actions output and screenshots; evaluate both table keyboard behaviour, layout widths, dark theme, 100px target footer spacing, printed word flow and actual page-break quality.
 - Independently compare original anonymised extracts and ethics/recoding details with original records if shared. This external evidence is not publicly verifiable from page HTML.
+
+
+## Stage R4.2 verified initial browser results and targeted fix
+- Recorded first actual Chromium and A4 result in committed `docs/ACTION_VISITOR_LATEST_RESULTS.json`, run **40841452897**, head `c5d48c6`. The run failed **only** its PDF text-search assertion, not its 12 viewport screen assertions. All twelve widths passed no document-wide overflow, text clipping, broken anchors or table semantics. Both 620px-minimum tables had keyboard ArrowRight scrolling checked at 320px.
+- The footer gap was measured as **100px for widths 320–700, 124px at 701, 128px at 768, 136px at 900, 143px at 1024, 150px at 1140 and 158px at 1440**. This is a genuine inconsistent desktop spacing defect. Scoped `#main.research-action-page` padding and immediately adjacent footer margin correction was committed in `174eb2a`, targeting 100px at all widths. Requires subsequent browser measurement.
+- First real A4 export had **7 pages**, with word counts **305, 262, 300, 319, 307, 353, and only 14 on the final page**. All PDF words remained within physical page boundaries. Last-page orphans remain an open print issue.
+- The first test searched for the exact single-line substring `Intermediate pathway still undeveloped`; rendered PDF extraction may introduce a newline. Test commit `2e368da` normalizes extracted whitespace and adds first/last page text previews so a true omission can be distinguished from extraction wrapping. Await its actual result.
+- The page now requests the current audited visible-focus stylesheet `appearance.css?v=20261028-visible-focus` rather than a stale version query (`d722367`); research text unchanged.
+- **R4 remains open** pending the post-change test, final printed-page layout corrections, dark-mode contrast and a successfully passing evidence run. This is a bounded visitor-facing review; it is not an independent validation of unavailable consent documents or student-source data.
