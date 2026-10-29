@@ -6,7 +6,7 @@
   ],
   "publicPages": 18,
   "cases": 98,
-  "failedCount": 52,
+  "failedCount": 32,
   "failures": [
     {
       "engine": "chromium",
@@ -25,6 +25,32 @@
         "outside": [],
         "clipped": [],
         "parentClips": [],
+        "culprits": [
+          {
+            "tag": "A",
+            "css": "",
+            "sample": "Teaching",
+            "x": 237,
+            "right": 353,
+            "width": 116,
+            "scrollWidth": 116,
+            "clientWidth": 116,
+            "scrollHeight": 55,
+            "clientHeight": 55
+          },
+          {
+            "tag": "A",
+            "css": "skip-link",
+            "sample": "Skip to content",
+            "x": -9999,
+            "right": -9805,
+            "width": 194,
+            "scrollWidth": 194,
+            "clientWidth": 194,
+            "scrollHeight": 50,
+            "clientHeight": 50
+          }
+        ],
         "paragraphStyle": {
           "fontSize": "38px",
           "lineHeight": "57px",
@@ -51,6 +77,56 @@
         "outside": [],
         "clipped": [],
         "parentClips": [],
+        "culprits": [
+          {
+            "tag": "A",
+            "css": "",
+            "sample": "Teaching",
+            "x": 237,
+            "right": 353,
+            "width": 116,
+            "scrollWidth": 116,
+            "clientWidth": 116,
+            "scrollHeight": 55,
+            "clientHeight": 55
+          },
+          {
+            "tag": "A",
+            "css": "skip-link",
+            "sample": "Skip to content",
+            "x": -9999,
+            "right": -9805,
+            "width": 194,
+            "scrollWidth": 194,
+            "clientWidth": 194,
+            "scrollHeight": 50,
+            "clientHeight": 50
+          },
+          {
+            "tag": "A",
+            "css": "research-published-image",
+            "sample": "",
+            "x": 41,
+            "right": 661,
+            "width": 620,
+            "scrollWidth": 620,
+            "clientWidth": 620,
+            "scrollHeight": 444,
+            "clientHeight": 444
+          },
+          {
+            "tag": "IMG",
+            "css": "",
+            "sample": "",
+            "x": 41,
+            "right": 661,
+            "width": 620,
+            "scrollWidth": 620,
+            "clientWidth": 620,
+            "scrollHeight": 444,
+            "clientHeight": 444
+          }
+        ],
         "paragraphStyle": {
           "fontSize": "38px",
           "lineHeight": "59.28px",
@@ -77,6 +153,224 @@
         "outside": [],
         "clipped": [],
         "parentClips": [],
+        "culprits": [
+          {
+            "tag": "A",
+            "css": "",
+            "sample": "Teaching",
+            "x": 237,
+            "right": 353,
+            "width": 116,
+            "scrollWidth": 116,
+            "clientWidth": 116,
+            "scrollHeight": 55,
+            "clientHeight": 55
+          },
+          {
+            "tag": "TH",
+            "css": "",
+            "sample": "Students",
+            "x": 231,
+            "right": 349,
+            "width": 118,
+            "scrollWidth": 118,
+            "clientWidth": 118,
+            "scrollHeight": 148,
+            "clientHeight": 148
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "12",
+            "x": 231,
+            "right": 349,
+            "width": 118,
+            "scrollWidth": 118,
+            "clientWidth": 118,
+            "scrollHeight": 139,
+            "clientHeight": 139
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "9",
+            "x": 231,
+            "right": 349,
+            "width": 118,
+            "scrollWidth": 118,
+            "clientWidth": 118,
+            "scrollHeight": 60,
+            "clientHeight": 60
+          },
+          {
+            "tag": "TH",
+            "css": "",
+            "sample": "Complete in Unit 3",
+            "x": 349,
+            "right": 491,
+            "width": 142,
+            "scrollWidth": 142,
+            "clientWidth": 142,
+            "scrollHeight": 148,
+            "clientHeight": 148
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "10",
+            "x": 349,
+            "right": 491,
+            "width": 142,
+            "scrollWidth": 142,
+            "clientWidth": 142,
+            "scrollHeight": 139,
+            "clientHeight": 139
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "3",
+            "x": 349,
+            "right": 491,
+            "width": 142,
+            "scrollWidth": 142,
+            "clientWidth": 142,
+            "scrollHeight": 60,
+            "clientHeight": 60
+          },
+          {
+            "tag": "TH",
+            "css": "",
+            "sample": "Below complete in Unit 3",
+            "x": 491,
+            "right": 634,
+            "width": 143,
+            "scrollWidth": 143,
+            "clientWidth": 143,
+            "scrollHeight": 148,
+            "clientHeight": 148
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "2",
+            "x": 491,
+            "right": 634,
+            "width": 143,
+            "scrollWidth": 143,
+            "clientWidth": 143,
+            "scrollHeight": 139,
+            "clientHeight": 139
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "6",
+            "x": 491,
+            "right": 634,
+            "width": 143,
+            "scrollWidth": 143,
+            "clientWidth": 143,
+            "scrollHeight": 60,
+            "clientHeight": 60
+          },
+          {
+            "tag": "A",
+            "css": "skip-link",
+            "sample": "Skip to content",
+            "x": -9999,
+            "right": -9805,
+            "width": 194,
+            "scrollWidth": 194,
+            "clientWidth": 194,
+            "scrollHeight": 50,
+            "clientHeight": 50
+          },
+          {
+            "tag": "TH",
+            "css": "",
+            "sample": "What the comparison made visible",
+            "x": 307,
+            "right": 634,
+            "width": 327,
+            "scrollWidth": 327,
+            "clientWidth": 327,
+            "scrollHeight": 105,
+            "clientHeight": 105
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Additional intermediate causal connections appeared following correction.",
+            "x": 307,
+            "right": 634,
+            "width": 327,
+            "scrollWidth": 327,
+            "clientWidth": 327,
+            "scrollHeight": 139,
+            "clientHeight": 139
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "A previously expressed contradiction about the proton gradient did not appear in the reconstruction.",
+            "x": 307,
+            "right": 634,
+            "width": 327,
+            "scrollWidth": 327,
+            "clientWidth": 327,
+            "scrollHeight": 178,
+            "clientHeight": 178
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "The reconstruction left out a relationship expressed in the original response.",
+            "x": 307,
+            "right": 634,
+            "width": 327,
+            "scrollWidth": 327,
+            "clientWidth": 327,
+            "scrollHeight": 139,
+            "clientHeight": 139
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Neither response established the required intermediate connections.",
+            "x": 307,
+            "right": 634,
+            "width": 327,
+            "scrollWidth": 327,
+            "clientWidth": 327,
+            "scrollHeight": 139,
+            "clientHeight": 139
+          },
+          {
+            "tag": "TABLE",
+            "css": "research-evidence-table",
+            "sample": "Unit 3 classifications among 21 students with below-complete Unit 2 explanations\n      Unit 2 reflectionStudentsCom",
+            "x": 14,
+            "right": 634,
+            "width": 620,
+            "scrollWidth": 620,
+            "clientWidth": 620,
+            "scrollHeight": 379,
+            "clientHeight": 379
+          },
+          {
+            "tag": "CAPTION",
+            "css": "",
+            "sample": "Unit 3 classifications among 21 students with below-complete Unit 2 explanations",
+            "x": 14,
+            "right": 634,
+            "width": 620,
+            "scrollWidth": 620,
+            "clientWidth": 620,
+            "scrollHeight": 30,
+            "clientHeight": 30
+          }
+        ],
         "paragraphStyle": {
           "fontSize": "26px",
           "lineHeight": "41.08px",
@@ -92,55 +386,199 @@
       "width": 320,
       "mode": "spacing",
       "errors": [
-        "page-wide horizontal overflow",
-        "text element clipped"
+        "page-wide horizontal overflow"
       ],
       "metrics": {
         "viewport": 320,
         "documentWidth": 325,
         "mainCount": 1,
         "h1Count": 1,
-        "textElements": 108,
+        "textElements": 105,
         "outside": [],
-        "clipped": [
+        "clipped": [],
+        "parentClips": [],
+        "culprits": [
           {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 218,
-            "right": 219,
-            "width": 1,
-            "scrollWidth": 162,
-            "clientWidth": 1,
-            "scrollHeight": 21,
-            "clientHeight": 1
+            "tag": "A",
+            "css": "skip-link",
+            "sample": "Skip to content",
+            "x": -9999,
+            "right": -9868,
+            "width": 131,
+            "scrollWidth": 131,
+            "clientWidth": 131,
+            "scrollHeight": 24,
+            "clientHeight": 24
           },
           {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 176,
-            "right": 177,
-            "width": 1,
-            "scrollWidth": 151,
-            "clientWidth": 1,
-            "scrollHeight": 20,
-            "clientHeight": 1
+            "tag": "TH",
+            "css": "",
+            "sample": "What it helps a reader understand",
+            "x": 305,
+            "right": 634,
+            "width": 329,
+            "scrollWidth": 329,
+            "clientWidth": 329,
+            "scrollHeight": 41,
+            "clientHeight": 41
           },
           {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 71,
-            "right": 72,
-            "width": 1,
-            "scrollWidth": 156,
-            "clientWidth": 1,
-            "scrollHeight": 21,
-            "clientHeight": 1
+            "tag": "TD",
+            "css": "",
+            "sample": "How the learner group was identified",
+            "x": 305,
+            "right": 634,
+            "width": 329,
+            "scrollWidth": 329,
+            "clientWidth": 329,
+            "scrollHeight": 59,
+            "clientHeight": 59
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Which language options or testing conditions shaped the task",
+            "x": 305,
+            "right": 634,
+            "width": 329,
+            "scrollWidth": 329,
+            "clientWidth": 329,
+            "scrollHeight": 59,
+            "clientHeight": 59
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "The educational setting in which the work took place",
+            "x": 305,
+            "right": 634,
+            "width": 329,
+            "scrollWidth": 329,
+            "clientWidth": 329,
+            "scrollHeight": 59,
+            "clientHeight": 59
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "A relevant part of a learner's schooling context",
+            "x": 305,
+            "right": 634,
+            "width": 329,
+            "scrollWidth": 329,
+            "clientWidth": 329,
+            "scrollHeight": 59,
+            "clientHeight": 59
+          },
+          {
+            "tag": "TABLE",
+            "css": "research-evidence-table",
+            "sample": "Availability of learner information across the 20 included studies\n    Information reportedStudiesWhat it helps a r",
+            "x": 14,
+            "right": 634,
+            "width": 620,
+            "scrollWidth": 620,
+            "clientWidth": 620,
+            "scrollHeight": 312,
+            "clientHeight": 312
+          },
+          {
+            "tag": "CAPTION",
+            "css": "",
+            "sample": "Availability of learner information across the 20 included studies",
+            "x": 14,
+            "right": 634,
+            "width": 620,
+            "scrollWidth": 620,
+            "clientWidth": 620,
+            "scrollHeight": 30,
+            "clientHeight": 30
+          },
+          {
+            "tag": "THEAD",
+            "css": "",
+            "sample": "Information reportedStudiesWhat it helps a reader understand",
+            "x": 14,
+            "right": 634,
+            "width": 620,
+            "scrollWidth": 620,
+            "clientWidth": 620,
+            "scrollHeight": 42,
+            "clientHeight": 42
+          },
+          {
+            "tag": "TR",
+            "css": "",
+            "sample": "Information reportedStudiesWhat it helps a reader understand",
+            "x": 14,
+            "right": 634,
+            "width": 620,
+            "scrollWidth": 620,
+            "clientWidth": 620,
+            "scrollHeight": 42,
+            "clientHeight": 42
+          },
+          {
+            "tag": "TBODY",
+            "css": "",
+            "sample": "Broad multilingual label or language arrangement20 of 20How the learner group was identified\n      Focal language c",
+            "x": 14,
+            "right": 634,
+            "width": 620,
+            "scrollWidth": 620,
+            "clientWidth": 620,
+            "scrollHeight": 240,
+            "clientHeight": 240
+          },
+          {
+            "tag": "TR",
+            "css": "",
+            "sample": "Broad multilingual label or language arrangement20 of 20How the learner group was identified",
+            "x": 14,
+            "right": 634,
+            "width": 620,
+            "scrollWidth": 620,
+            "clientWidth": 620,
+            "scrollHeight": 60,
+            "clientHeight": 60
+          },
+          {
+            "tag": "TR",
+            "css": "",
+            "sample": "Focal language condition14 of 20Which language options or testing conditions shaped the task",
+            "x": 14,
+            "right": 634,
+            "width": 620,
+            "scrollWidth": 620,
+            "clientWidth": 620,
+            "scrollHeight": 60,
+            "clientHeight": 60
+          },
+          {
+            "tag": "TR",
+            "css": "",
+            "sample": "Program or instructional placement5 of 20The educational setting in which the work took place",
+            "x": 14,
+            "right": 634,
+            "width": 620,
+            "scrollWidth": 620,
+            "clientWidth": 620,
+            "scrollHeight": 60,
+            "clientHeight": 60
+          },
+          {
+            "tag": "TR",
+            "css": "",
+            "sample": "Newcomer status1 of 20A relevant part of a learner's schooling context",
+            "x": 14,
+            "right": 634,
+            "width": 620,
+            "scrollWidth": 620,
+            "clientWidth": 620,
+            "scrollHeight": 60,
+            "clientHeight": 60
           }
         ],
-        "parentClips": [],
         "paragraphStyle": {
           "fontSize": "13px",
           "lineHeight": "19.5px",
@@ -156,181 +594,235 @@
       "width": 320,
       "mode": "text200",
       "errors": [
-        "page-wide horizontal overflow",
-        "text element clipped"
+        "page-wide horizontal overflow"
       ],
       "metrics": {
         "viewport": 320,
         "documentWidth": 512,
         "mainCount": 1,
         "h1Count": 1,
-        "textElements": 108,
+        "textElements": 105,
         "outside": [],
-        "clipped": [
+        "clipped": [],
+        "parentClips": [],
+        "culprits": [
           {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 41,
-            "right": 42,
-            "width": 1,
-            "scrollWidth": 240,
-            "clientWidth": 1,
-            "scrollHeight": 45,
-            "clientHeight": 1
+            "tag": "TH",
+            "css": "",
+            "sample": "Studies",
+            "x": 231,
+            "right": 332,
+            "width": 101,
+            "scrollWidth": 101,
+            "clientWidth": 101,
+            "scrollHeight": 105,
+            "clientHeight": 105
           },
           {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 241,
-            "right": 242,
-            "width": 1,
-            "scrollWidth": 222,
-            "clientWidth": 1,
-            "scrollHeight": 41,
-            "clientHeight": 1
+            "tag": "TD",
+            "css": "",
+            "sample": "20 of 20",
+            "x": 231,
+            "right": 332,
+            "width": 101,
+            "scrollWidth": 101,
+            "clientWidth": 101,
+            "scrollHeight": 178,
+            "clientHeight": 178
           },
           {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 209,
-            "right": 210,
-            "width": 1,
-            "scrollWidth": 227,
-            "clientWidth": 1,
-            "scrollHeight": 46,
-            "clientHeight": 1
+            "tag": "TD",
+            "css": "",
+            "sample": "14 of 20",
+            "x": 231,
+            "right": 332,
+            "width": 101,
+            "scrollWidth": 101,
+            "clientWidth": 101,
+            "scrollHeight": 139,
+            "clientHeight": 139
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "5 of 20",
+            "x": 231,
+            "right": 332,
+            "width": 101,
+            "scrollWidth": 101,
+            "clientWidth": 101,
+            "scrollHeight": 139,
+            "clientHeight": 139
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "1 of 20",
+            "x": 231,
+            "right": 332,
+            "width": 101,
+            "scrollWidth": 101,
+            "clientWidth": 101,
+            "scrollHeight": 99,
+            "clientHeight": 99
+          },
+          {
+            "tag": "A",
+            "css": "",
+            "sample": "Teaching",
+            "x": 237,
+            "right": 353,
+            "width": 116,
+            "scrollWidth": 116,
+            "clientWidth": 116,
+            "scrollHeight": 55,
+            "clientHeight": 55
+          },
+          {
+            "tag": "A",
+            "css": "skip-link",
+            "sample": "Skip to content",
+            "x": -9999,
+            "right": -9805,
+            "width": 194,
+            "scrollWidth": 194,
+            "clientWidth": 194,
+            "scrollHeight": 50,
+            "clientHeight": 50
+          },
+          {
+            "tag": "TH",
+            "css": "",
+            "sample": "What it helps a reader understand",
+            "x": 332,
+            "right": 634,
+            "width": 302,
+            "scrollWidth": 302,
+            "clientWidth": 302,
+            "scrollHeight": 105,
+            "clientHeight": 105
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "How the learner group was identified",
+            "x": 332,
+            "right": 634,
+            "width": 302,
+            "scrollWidth": 302,
+            "clientWidth": 302,
+            "scrollHeight": 178,
+            "clientHeight": 178
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Which language options or testing conditions shaped the task",
+            "x": 332,
+            "right": 634,
+            "width": 302,
+            "scrollWidth": 302,
+            "clientWidth": 302,
+            "scrollHeight": 139,
+            "clientHeight": 139
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "The educational setting in which the work took place",
+            "x": 332,
+            "right": 634,
+            "width": 302,
+            "scrollWidth": 302,
+            "clientWidth": 302,
+            "scrollHeight": 139,
+            "clientHeight": 139
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "A relevant part of a learner's schooling context",
+            "x": 332,
+            "right": 634,
+            "width": 302,
+            "scrollWidth": 302,
+            "clientWidth": 302,
+            "scrollHeight": 99,
+            "clientHeight": 99
+          },
+          {
+            "tag": "TABLE",
+            "css": "research-evidence-table",
+            "sample": "Availability of learner information across the 20 included studies\n    Information reportedStudiesWhat it helps a r",
+            "x": 14,
+            "right": 634,
+            "width": 620,
+            "scrollWidth": 620,
+            "clientWidth": 620,
+            "scrollHeight": 694,
+            "clientHeight": 694
+          },
+          {
+            "tag": "CAPTION",
+            "css": "",
+            "sample": "Availability of learner information across the 20 included studies",
+            "x": 14,
+            "right": 634,
+            "width": 620,
+            "scrollWidth": 620,
+            "clientWidth": 620,
+            "scrollHeight": 30,
+            "clientHeight": 30
+          },
+          {
+            "tag": "THEAD",
+            "css": "",
+            "sample": "Information reportedStudiesWhat it helps a reader understand",
+            "x": 14,
+            "right": 634,
+            "width": 620,
+            "scrollWidth": 620,
+            "clientWidth": 620,
+            "scrollHeight": 106,
+            "clientHeight": 106
+          },
+          {
+            "tag": "TR",
+            "css": "",
+            "sample": "Information reportedStudiesWhat it helps a reader understand",
+            "x": 14,
+            "right": 634,
+            "width": 620,
+            "scrollWidth": 620,
+            "clientWidth": 620,
+            "scrollHeight": 106,
+            "clientHeight": 106
+          },
+          {
+            "tag": "TBODY",
+            "css": "",
+            "sample": "Broad multilingual label or language arrangement20 of 20How the learner group was identified\n      Focal language c",
+            "x": 14,
+            "right": 634,
+            "width": 620,
+            "scrollWidth": 620,
+            "clientWidth": 620,
+            "scrollHeight": 558,
+            "clientHeight": 558
+          },
+          {
+            "tag": "TR",
+            "css": "",
+            "sample": "Broad multilingual label or language arrangement20 of 20How the learner group was identified",
+            "x": 14,
+            "right": 634,
+            "width": 620,
+            "scrollWidth": 620,
+            "clientWidth": 620,
+            "scrollHeight": 179,
+            "clientHeight": 179
           }
         ],
-        "parentClips": [],
-        "paragraphStyle": {
-          "fontSize": "26px",
-          "lineHeight": "41.08px",
-          "letterSpacing": "normal",
-          "wordSpacing": "0px",
-          "marginBottom": "12px"
-        }
-      }
-    },
-    {
-      "engine": "chromium",
-      "page": "research-scoping.html",
-      "width": 1280,
-      "mode": "spacing",
-      "errors": [
-        "text element clipped"
-      ],
-      "metrics": {
-        "viewport": 1280,
-        "documentWidth": 1280,
-        "mainCount": 1,
-        "h1Count": 1,
-        "textElements": 107,
-        "outside": [],
-        "clipped": [
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 284,
-            "right": 285,
-            "width": 1,
-            "scrollWidth": 162,
-            "clientWidth": 1,
-            "scrollHeight": 21,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 415,
-            "right": 416,
-            "width": 1,
-            "scrollWidth": 151,
-            "clientWidth": 1,
-            "scrollHeight": 20,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 494,
-            "right": 495,
-            "width": 1,
-            "scrollWidth": 156,
-            "clientWidth": 1,
-            "scrollHeight": 21,
-            "clientHeight": 1
-          }
-        ],
-        "parentClips": [],
-        "paragraphStyle": {
-          "fontSize": "13px",
-          "lineHeight": "19.5px",
-          "letterSpacing": "1.56px",
-          "wordSpacing": "2.08px",
-          "marginBottom": "26px"
-        }
-      }
-    },
-    {
-      "engine": "chromium",
-      "page": "research-scoping.html",
-      "width": 1280,
-      "mode": "text200",
-      "errors": [
-        "text element clipped"
-      ],
-      "metrics": {
-        "viewport": 1280,
-        "documentWidth": 1280,
-        "mainCount": 1,
-        "h1Count": 1,
-        "textElements": 107,
-        "outside": [],
-        "clipped": [
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 391,
-            "right": 392,
-            "width": 1,
-            "scrollWidth": 240,
-            "clientWidth": 1,
-            "scrollHeight": 45,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 198,
-            "right": 199,
-            "width": 1,
-            "scrollWidth": 222,
-            "clientWidth": 1,
-            "scrollHeight": 41,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 680,
-            "right": 681,
-            "width": 1,
-            "scrollWidth": 227,
-            "clientWidth": 1,
-            "scrollHeight": 46,
-            "clientHeight": 1
-          }
-        ],
-        "parentClips": [],
         "paragraphStyle": {
           "fontSize": "26px",
           "lineHeight": "41.08px",
@@ -357,6 +849,32 @@
         "outside": [],
         "clipped": [],
         "parentClips": [],
+        "culprits": [
+          {
+            "tag": "A",
+            "css": "",
+            "sample": "Teaching",
+            "x": 237,
+            "right": 353,
+            "width": 116,
+            "scrollWidth": 116,
+            "clientWidth": 116,
+            "scrollHeight": 55,
+            "clientHeight": 55
+          },
+          {
+            "tag": "A",
+            "css": "skip-link",
+            "sample": "Skip to content",
+            "x": -9999,
+            "right": -9805,
+            "width": 194,
+            "scrollWidth": 194,
+            "clientWidth": 194,
+            "scrollHeight": 50,
+            "clientHeight": 50
+          }
+        ],
         "paragraphStyle": {
           "fontSize": "26px",
           "lineHeight": "41.08px",
@@ -383,6 +901,32 @@
         "outside": [],
         "clipped": [],
         "parentClips": [],
+        "culprits": [
+          {
+            "tag": "A",
+            "css": "",
+            "sample": "Teaching",
+            "x": 237,
+            "right": 353,
+            "width": 116,
+            "scrollWidth": 116,
+            "clientWidth": 116,
+            "scrollHeight": 55,
+            "clientHeight": 55
+          },
+          {
+            "tag": "A",
+            "css": "skip-link",
+            "sample": "Skip to content",
+            "x": -9999,
+            "right": -9805,
+            "width": 194,
+            "scrollWidth": 194,
+            "clientWidth": 194,
+            "scrollHeight": 50,
+            "clientHeight": 50
+          }
+        ],
         "paragraphStyle": {
           "fontSize": "36px",
           "lineHeight": "56.88px",
@@ -396,246 +940,45 @@
       "engine": "chromium",
       "page": "story-method.html",
       "width": 320,
-      "mode": "spacing",
-      "errors": [
-        "text element clipped"
-      ],
-      "metrics": {
-        "viewport": 320,
-        "documentWidth": 320,
-        "mainCount": 1,
-        "h1Count": 1,
-        "textElements": 77,
-        "outside": [],
-        "clipped": [
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 225,
-            "right": 226,
-            "width": 1,
-            "scrollWidth": 190,
-            "clientWidth": 1,
-            "scrollHeight": 26,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 77,
-            "right": 78,
-            "width": 1,
-            "scrollWidth": 190,
-            "clientWidth": 1,
-            "scrollHeight": 26,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 211,
-            "right": 212,
-            "width": 1,
-            "scrollWidth": 190,
-            "clientWidth": 1,
-            "scrollHeight": 26,
-            "clientHeight": 1
-          }
-        ],
-        "parentClips": [],
-        "paragraphStyle": {
-          "fontSize": "18px",
-          "lineHeight": "27px",
-          "letterSpacing": "2.16px",
-          "wordSpacing": "2.88px",
-          "marginBottom": "36px"
-        }
-      }
-    },
-    {
-      "engine": "chromium",
-      "page": "story-method.html",
-      "width": 320,
       "mode": "text200",
       "errors": [
-        "page-wide horizontal overflow",
-        "text element clipped"
+        "page-wide horizontal overflow"
       ],
       "metrics": {
         "viewport": 320,
         "documentWidth": 353,
         "mainCount": 1,
         "h1Count": 1,
-        "textElements": 77,
+        "textElements": 74,
         "outside": [],
-        "clipped": [
+        "clipped": [],
+        "parentClips": [],
+        "culprits": [
           {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 100,
-            "right": 101,
-            "width": 1,
-            "scrollWidth": 276,
-            "clientWidth": 1,
-            "scrollHeight": 58,
-            "clientHeight": 1
+            "tag": "A",
+            "css": "",
+            "sample": "Teaching",
+            "x": 237,
+            "right": 353,
+            "width": 116,
+            "scrollWidth": 116,
+            "clientWidth": 116,
+            "scrollHeight": 55,
+            "clientHeight": 55
           },
           {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 229,
-            "right": 230,
-            "width": 1,
-            "scrollWidth": 276,
-            "clientWidth": 1,
-            "scrollHeight": 58,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 215,
-            "right": 216,
-            "width": 1,
-            "scrollWidth": 276,
-            "clientWidth": 1,
-            "scrollHeight": 58,
-            "clientHeight": 1
+            "tag": "A",
+            "css": "skip-link",
+            "sample": "Skip to content",
+            "x": -9999,
+            "right": -9805,
+            "width": 194,
+            "scrollWidth": 194,
+            "clientWidth": 194,
+            "scrollHeight": 50,
+            "clientHeight": 50
           }
         ],
-        "parentClips": [],
-        "paragraphStyle": {
-          "fontSize": "36px",
-          "lineHeight": "56.88px",
-          "letterSpacing": "normal",
-          "wordSpacing": "0px",
-          "marginBottom": "0px"
-        }
-      }
-    },
-    {
-      "engine": "chromium",
-      "page": "story-method.html",
-      "width": 1280,
-      "mode": "spacing",
-      "errors": [
-        "text element clipped"
-      ],
-      "metrics": {
-        "viewport": 1280,
-        "documentWidth": 1280,
-        "mainCount": 1,
-        "h1Count": 1,
-        "textElements": 77,
-        "outside": [],
-        "clipped": [
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 544,
-            "right": 545,
-            "width": 1,
-            "scrollWidth": 190,
-            "clientWidth": 1,
-            "scrollHeight": 26,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 222,
-            "right": 223,
-            "width": 1,
-            "scrollWidth": 190,
-            "clientWidth": 1,
-            "scrollHeight": 26,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 564,
-            "right": 565,
-            "width": 1,
-            "scrollWidth": 190,
-            "clientWidth": 1,
-            "scrollHeight": 26,
-            "clientHeight": 1
-          }
-        ],
-        "parentClips": [],
-        "paragraphStyle": {
-          "fontSize": "18px",
-          "lineHeight": "27px",
-          "letterSpacing": "2.16px",
-          "wordSpacing": "2.88px",
-          "marginBottom": "36px"
-        }
-      }
-    },
-    {
-      "engine": "chromium",
-      "page": "story-method.html",
-      "width": 1280,
-      "mode": "text200",
-      "errors": [
-        "text element clipped"
-      ],
-      "metrics": {
-        "viewport": 1280,
-        "documentWidth": 1280,
-        "mainCount": 1,
-        "h1Count": 1,
-        "textElements": 77,
-        "outside": [],
-        "clipped": [
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 278,
-            "right": 279,
-            "width": 1,
-            "scrollWidth": 276,
-            "clientWidth": 1,
-            "scrollHeight": 58,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 728,
-            "right": 729,
-            "width": 1,
-            "scrollWidth": 276,
-            "clientWidth": 1,
-            "scrollHeight": 58,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 809,
-            "right": 810,
-            "width": 1,
-            "scrollWidth": 276,
-            "clientWidth": 1,
-            "scrollHeight": 58,
-            "clientHeight": 1
-          }
-        ],
-        "parentClips": [],
         "paragraphStyle": {
           "fontSize": "36px",
           "lineHeight": "56.88px",
@@ -649,342 +992,237 @@
       "engine": "chromium",
       "page": "research-methods-studio.html",
       "width": 320,
-      "mode": "spacing",
-      "errors": [
-        "text element clipped"
-      ],
-      "metrics": {
-        "viewport": 320,
-        "documentWidth": 320,
-        "mainCount": 1,
-        "h1Count": 1,
-        "textElements": 155,
-        "outside": [],
-        "clipped": [
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 168,
-            "right": 169,
-            "width": 1,
-            "scrollWidth": 190,
-            "clientWidth": 1,
-            "scrollHeight": 26,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 182,
-            "right": 183,
-            "width": 1,
-            "scrollWidth": 190,
-            "clientWidth": 1,
-            "scrollHeight": 26,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 149,
-            "right": 150,
-            "width": 1,
-            "scrollWidth": 190,
-            "clientWidth": 1,
-            "scrollHeight": 26,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 126,
-            "right": 127,
-            "width": 1,
-            "scrollWidth": 178,
-            "clientWidth": 1,
-            "scrollHeight": 24,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 141,
-            "right": 142,
-            "width": 1,
-            "scrollWidth": 190,
-            "clientWidth": 1,
-            "scrollHeight": 26,
-            "clientHeight": 1
-          }
-        ],
-        "parentClips": [],
-        "paragraphStyle": {
-          "fontSize": "18px",
-          "lineHeight": "27px",
-          "letterSpacing": "2.16px",
-          "wordSpacing": "2.88px",
-          "marginBottom": "36px"
-        }
-      }
-    },
-    {
-      "engine": "chromium",
-      "page": "research-methods-studio.html",
-      "width": 320,
       "mode": "text200",
       "errors": [
-        "page-wide horizontal overflow",
-        "text element clipped"
+        "page-wide horizontal overflow"
       ],
       "metrics": {
         "viewport": 320,
         "documentWidth": 409,
         "mainCount": 1,
         "h1Count": 1,
-        "textElements": 155,
+        "textElements": 150,
         "outside": [],
-        "clipped": [
+        "clipped": [],
+        "parentClips": [],
+        "culprits": [
           {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 248,
-            "right": 249,
-            "width": 1,
-            "scrollWidth": 276,
-            "clientWidth": 1,
-            "scrollHeight": 58,
-            "clientHeight": 1
+            "tag": "A",
+            "css": "",
+            "sample": "Teaching",
+            "x": 237,
+            "right": 353,
+            "width": 116,
+            "scrollWidth": 116,
+            "clientWidth": 116,
+            "scrollHeight": 55,
+            "clientHeight": 55
           },
           {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 262,
-            "right": 263,
-            "width": 1,
-            "scrollWidth": 276,
-            "clientWidth": 1,
-            "scrollHeight": 58,
-            "clientHeight": 1
+            "tag": "A",
+            "css": "skip-link",
+            "sample": "Skip to content",
+            "x": -9999,
+            "right": -9805,
+            "width": 194,
+            "scrollWidth": 194,
+            "clientWidth": 194,
+            "scrollHeight": 50,
+            "clientHeight": 50
           },
           {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 218,
-            "right": 219,
-            "width": 1,
-            "scrollWidth": 276,
-            "clientWidth": 1,
-            "scrollHeight": 58,
-            "clientHeight": 1
+            "tag": "TH",
+            "css": "",
+            "sample": "Mean of dish-level radicle lengths",
+            "x": 306,
+            "right": 540,
+            "width": 235,
+            "scrollWidth": 235,
+            "clientWidth": 235,
+            "scrollHeight": 155,
+            "clientHeight": 155
           },
           {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 238,
-            "right": 239,
-            "width": 1,
-            "scrollWidth": 259,
-            "clientWidth": 1,
-            "scrollHeight": 54,
-            "clientHeight": 1
+            "tag": "TD",
+            "css": "",
+            "sample": "34.7 mm",
+            "x": 306,
+            "right": 540,
+            "width": 235,
+            "scrollWidth": 235,
+            "clientWidth": 235,
+            "scrollHeight": 71,
+            "clientHeight": 71
           },
           {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 215,
-            "right": 216,
-            "width": 1,
-            "scrollWidth": 276,
-            "clientWidth": 1,
-            "scrollHeight": 58,
-            "clientHeight": 1
+            "tag": "TD",
+            "css": "",
+            "sample": "26.8 mm",
+            "x": 306,
+            "right": 540,
+            "width": 235,
+            "scrollWidth": 235,
+            "clientWidth": 235,
+            "scrollHeight": 71,
+            "clientHeight": 71
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "16.6 mm",
+            "x": 306,
+            "right": 540,
+            "width": 235,
+            "scrollWidth": 235,
+            "clientWidth": 235,
+            "scrollHeight": 71,
+            "clientHeight": 71
+          },
+          {
+            "tag": "TH",
+            "css": "",
+            "sample": "Mean germination proportion",
+            "x": 540,
+            "right": 795,
+            "width": 255,
+            "scrollWidth": 255,
+            "clientWidth": 255,
+            "scrollHeight": 155,
+            "clientHeight": 155
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "1.00",
+            "x": 540,
+            "right": 795,
+            "width": 255,
+            "scrollWidth": 255,
+            "clientWidth": 255,
+            "scrollHeight": 71,
+            "clientHeight": 71
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "0.93",
+            "x": 540,
+            "right": 795,
+            "width": 255,
+            "scrollWidth": 255,
+            "clientWidth": 255,
+            "scrollHeight": 71,
+            "clientHeight": 71
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "0.73",
+            "x": 540,
+            "right": 795,
+            "width": 255,
+            "scrollWidth": 255,
+            "clientWidth": 255,
+            "scrollHeight": 71,
+            "clientHeight": 71
+          },
+          {
+            "tag": "TH",
+            "css": "",
+            "sample": "Decision that changes the evidence",
+            "x": 221,
+            "right": 505,
+            "width": 284,
+            "scrollWidth": 284,
+            "clientWidth": 284,
+            "scrollHeight": 111,
+            "clientHeight": 111
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Assignment of treatments to independent units, including shared trays or classrooms",
+            "x": 221,
+            "right": 505,
+            "width": 284,
+            "scrollWidth": 284,
+            "clientWidth": 284,
+            "scrollHeight": 242,
+            "clientHeight": 242
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Sampling, measurement, and plausible confounding variables",
+            "x": 221,
+            "right": 505,
+            "width": 284,
+            "scrollWidth": 284,
+            "clientWidth": 284,
+            "scrollHeight": 242,
+            "clientHeight": 242
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Who participates, how questions are asked, and how interpretations are documented",
+            "x": 221,
+            "right": 505,
+            "width": 284,
+            "scrollWidth": 284,
+            "clientWidth": 284,
+            "scrollHeight": 242,
+            "clientHeight": 242
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Search sources, eligibility criteria, screening decisions, and record management",
+            "x": 221,
+            "right": 505,
+            "width": 284,
+            "scrollWidth": 284,
+            "clientWidth": 284,
+            "scrollHeight": 242,
+            "clientHeight": 242
+          },
+          {
+            "tag": "TH",
+            "css": "",
+            "sample": "Question to ask before analysis",
+            "x": 505,
+            "right": 795,
+            "width": 290,
+            "scrollWidth": 290,
+            "clientWidth": 290,
+            "scrollHeight": 111,
+            "clientHeight": 111
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Does the analysis respect the level of assignment and replication?",
+            "x": 505,
+            "right": 795,
+            "width": 290,
+            "scrollWidth": 290,
+            "clientWidth": 290,
+            "scrollHeight": 242,
+            "clientHeight": 242
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Could an observed association arise from differences that were not measured or controlled?",
+            "x": 505,
+            "right": 795,
+            "width": 290,
+            "scrollWidth": 290,
+            "clientWidth": 290,
+            "scrollHeight": 242,
+            "clientHeight": 242
           }
         ],
-        "parentClips": [],
-        "paragraphStyle": {
-          "fontSize": "36px",
-          "lineHeight": "56.88px",
-          "letterSpacing": "normal",
-          "wordSpacing": "0px",
-          "marginBottom": "0px"
-        }
-      }
-    },
-    {
-      "engine": "chromium",
-      "page": "research-methods-studio.html",
-      "width": 1280,
-      "mode": "spacing",
-      "errors": [
-        "text element clipped"
-      ],
-      "metrics": {
-        "viewport": 1280,
-        "documentWidth": 1280,
-        "mainCount": 1,
-        "h1Count": 1,
-        "textElements": 153,
-        "outside": [],
-        "clipped": [
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 729,
-            "right": 730,
-            "width": 1,
-            "scrollWidth": 190,
-            "clientWidth": 1,
-            "scrollHeight": 26,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 248,
-            "right": 249,
-            "width": 1,
-            "scrollWidth": 190,
-            "clientWidth": 1,
-            "scrollHeight": 26,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 588,
-            "right": 589,
-            "width": 1,
-            "scrollWidth": 190,
-            "clientWidth": 1,
-            "scrollHeight": 26,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 295,
-            "right": 296,
-            "width": 1,
-            "scrollWidth": 178,
-            "clientWidth": 1,
-            "scrollHeight": 24,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 207,
-            "right": 208,
-            "width": 1,
-            "scrollWidth": 190,
-            "clientWidth": 1,
-            "scrollHeight": 26,
-            "clientHeight": 1
-          }
-        ],
-        "parentClips": [],
-        "paragraphStyle": {
-          "fontSize": "18px",
-          "lineHeight": "27px",
-          "letterSpacing": "2.16px",
-          "wordSpacing": "2.88px",
-          "marginBottom": "36px"
-        }
-      }
-    },
-    {
-      "engine": "chromium",
-      "page": "research-methods-studio.html",
-      "width": 1280,
-      "mode": "text200",
-      "errors": [
-        "text element clipped"
-      ],
-      "metrics": {
-        "viewport": 1280,
-        "documentWidth": 1280,
-        "mainCount": 1,
-        "h1Count": 1,
-        "textElements": 153,
-        "outside": [],
-        "clipped": [
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 1051,
-            "right": 1052,
-            "width": 1,
-            "scrollWidth": 276,
-            "clientWidth": 1,
-            "scrollHeight": 58,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 328,
-            "right": 329,
-            "width": 1,
-            "scrollWidth": 276,
-            "clientWidth": 1,
-            "scrollHeight": 58,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 835,
-            "right": 836,
-            "width": 1,
-            "scrollWidth": 276,
-            "clientWidth": 1,
-            "scrollHeight": 58,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 915,
-            "right": 916,
-            "width": 1,
-            "scrollWidth": 259,
-            "clientWidth": 1,
-            "scrollHeight": 54,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 772,
-            "right": 773,
-            "width": 1,
-            "scrollWidth": 276,
-            "clientWidth": 1,
-            "scrollHeight": 58,
-            "clientHeight": 1
-          }
-        ],
-        "parentClips": [],
         "paragraphStyle": {
           "fontSize": "36px",
           "lineHeight": "56.88px",
@@ -1011,6 +1249,32 @@
         "outside": [],
         "clipped": [],
         "parentClips": [],
+        "culprits": [
+          {
+            "tag": "A",
+            "css": "",
+            "sample": "Teaching",
+            "x": 237,
+            "right": 353,
+            "width": 116,
+            "scrollWidth": 116,
+            "clientWidth": 116,
+            "scrollHeight": 55,
+            "clientHeight": 55
+          },
+          {
+            "tag": "A",
+            "css": "skip-link",
+            "sample": "Skip to content",
+            "x": -9999,
+            "right": -9805,
+            "width": 194,
+            "scrollWidth": 194,
+            "clientWidth": 194,
+            "scrollHeight": 50,
+            "clientHeight": 50
+          }
+        ],
         "paragraphStyle": {
           "fontSize": "40px",
           "lineHeight": "59.2px",
@@ -1037,6 +1301,224 @@
         "outside": [],
         "clipped": [],
         "parentClips": [],
+        "culprits": [
+          {
+            "tag": "SUP",
+            "css": "",
+            "sample": "+",
+            "x": 365,
+            "right": 373,
+            "width": 8,
+            "scrollWidth": 0,
+            "clientWidth": 0,
+            "scrollHeight": 0,
+            "clientHeight": 0
+          },
+          {
+            "tag": "A",
+            "css": "skip-link",
+            "sample": "Skip to content",
+            "x": -9999,
+            "right": -9868,
+            "width": 131,
+            "scrollWidth": 131,
+            "clientWidth": 131,
+            "scrollHeight": 24,
+            "clientHeight": 24
+          },
+          {
+            "tag": "TH",
+            "css": "",
+            "sample": "What I would examine",
+            "x": 395,
+            "right": 594,
+            "width": 200,
+            "scrollWidth": 200,
+            "clientWidth": 200,
+            "scrollHeight": 66,
+            "clientHeight": 66
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Do arrows indicate electron movement, proton movement, or both? Can students distinguish a membrane location from a",
+            "x": 395,
+            "right": 594,
+            "width": 200,
+            "scrollWidth": 200,
+            "clientWidth": 200,
+            "scrollHeight": 171,
+            "clientHeight": 171
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Do students connect the gradient with ATP production and the availability of electrons with NADPH reduction?",
+            "x": 395,
+            "right": 594,
+            "width": 200,
+            "scrollWidth": 200,
+            "clientWidth": 200,
+            "scrollHeight": 150,
+            "clientHeight": 150
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Are the intermediate relationships stated, implied, contradicted, or missing?",
+            "x": 395,
+            "right": 594,
+            "width": 200,
+            "scrollWidth": 200,
+            "clientWidth": 200,
+            "scrollHeight": 150,
+            "clientHeight": 150
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Can they separate what the experiment measured from what the mechanism predicts? Which connections do they carry in",
+            "x": 395,
+            "right": 594,
+            "width": 200,
+            "scrollWidth": 200,
+            "clientWidth": 200,
+            "scrollHeight": 192,
+            "clientHeight": 192
+          },
+          {
+            "tag": "TH",
+            "css": "",
+            "sample": "Next teaching decision",
+            "x": 594,
+            "right": 805,
+            "width": 211,
+            "scrollWidth": 211,
+            "clientWidth": 211,
+            "scrollHeight": 66,
+            "clientHeight": 66
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Revisit the processes whose direction or role is unclear before introducing the inhibitor.",
+            "x": 594,
+            "right": 805,
+            "width": 211,
+            "scrollWidth": 211,
+            "clientWidth": 211,
+            "scrollHeight": 171,
+            "clientHeight": 171
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Choose a bridging question for the branch that remains underdeveloped.",
+            "x": 594,
+            "right": 805,
+            "width": 211,
+            "scrollWidth": 211,
+            "clientWidth": 211,
+            "scrollHeight": 150,
+            "clientHeight": 150
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Give feedback identifying the particular location of the reasoning difficulty.",
+            "x": 594,
+            "right": 805,
+            "width": 211,
+            "scrollWidth": 211,
+            "clientWidth": 211,
+            "scrollHeight": 150,
+            "clientHeight": 150
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Compare their responses with their earlier explanations, then choose a specific question or additional measurement ",
+            "x": 594,
+            "right": 805,
+            "width": 211,
+            "scrollWidth": 211,
+            "clientWidth": 211,
+            "scrollHeight": 192,
+            "clientHeight": 192
+          },
+          {
+            "tag": "TH",
+            "css": "",
+            "sample": "Science and task",
+            "x": 165,
+            "right": 395,
+            "width": 229,
+            "scrollWidth": 229,
+            "clientWidth": 229,
+            "scrollHeight": 66,
+            "clientHeight": 66
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Students annotate a thylakoid membrane model and trace the pathway from photosystem II through downstream electron ",
+            "x": 165,
+            "right": 395,
+            "width": 229,
+            "scrollWidth": 229,
+            "clientWidth": 229,
+            "scrollHeight": 171,
+            "clientHeight": 171
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Students build separate explanations for changes in ATP and NADPH, then connect their consequences to carbon fixati",
+            "x": 165,
+            "right": 395,
+            "width": 229,
+            "scrollWidth": 229,
+            "clientWidth": 229,
+            "scrollHeight": 150,
+            "clientHeight": 150
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Students respond to the bentazon question without a supplied full pathway, followed by a discussion of where the ex",
+            "x": 165,
+            "right": 395,
+            "width": 229,
+            "scrollWidth": 229,
+            "clientWidth": 229,
+            "scrollHeight": 150,
+            "clientHeight": 150
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Students independently analyse the constructed chloroplast oxygen-evolution results introduced below and predict ch",
+            "x": 165,
+            "right": 395,
+            "width": 229,
+            "scrollWidth": 229,
+            "clientWidth": 229,
+            "scrollHeight": 192,
+            "clientHeight": 192
+          },
+          {
+            "tag": "TH",
+            "css": "",
+            "sample": "Follow-up when missing or contradictory",
+            "x": 502,
+            "right": 805,
+            "width": 303,
+            "scrollWidth": 303,
+            "clientWidth": 303,
+            "scrollHeight": 66,
+            "clientHeight": 66
+          }
+        ],
         "paragraphStyle": {
           "fontSize": "13px",
           "lineHeight": "19.5px",
@@ -1063,6 +1545,224 @@
         "outside": [],
         "clipped": [],
         "parentClips": [],
+        "culprits": [
+          {
+            "tag": "SUP",
+            "css": "",
+            "sample": "+",
+            "x": 405,
+            "right": 419,
+            "width": 13,
+            "scrollWidth": 0,
+            "clientWidth": 0,
+            "scrollHeight": 0,
+            "clientHeight": 0
+          },
+          {
+            "tag": "A",
+            "css": "",
+            "sample": "Teaching",
+            "x": 237,
+            "right": 353,
+            "width": 116,
+            "scrollWidth": 116,
+            "clientWidth": 116,
+            "scrollHeight": 55,
+            "clientHeight": 55
+          },
+          {
+            "tag": "TH",
+            "css": "",
+            "sample": "What I would examine",
+            "x": 397,
+            "right": 582,
+            "width": 185,
+            "scrollWidth": 185,
+            "clientWidth": 185,
+            "scrollHeight": 155,
+            "clientHeight": 155
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Do arrows indicate electron movement, proton movement, or both? Can students distinguish a membrane location from a",
+            "x": 397,
+            "right": 582,
+            "width": 185,
+            "scrollWidth": 185,
+            "clientWidth": 185,
+            "scrollHeight": 635,
+            "clientHeight": 635
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Do students connect the gradient with ATP production and the availability of electrons with NADPH reduction?",
+            "x": 397,
+            "right": 582,
+            "width": 185,
+            "scrollWidth": 185,
+            "clientWidth": 185,
+            "scrollHeight": 461,
+            "clientHeight": 461
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Are the intermediate relationships stated, implied, contradicted, or missing?",
+            "x": 397,
+            "right": 582,
+            "width": 185,
+            "scrollWidth": 185,
+            "clientWidth": 185,
+            "scrollHeight": 592,
+            "clientHeight": 592
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Can they separate what the experiment measured from what the mechanism predicts? Which connections do they carry in",
+            "x": 397,
+            "right": 582,
+            "width": 185,
+            "scrollWidth": 185,
+            "clientWidth": 185,
+            "scrollHeight": 723,
+            "clientHeight": 723
+          },
+          {
+            "tag": "A",
+            "css": "skip-link",
+            "sample": "Skip to content",
+            "x": -9999,
+            "right": -9805,
+            "width": 194,
+            "scrollWidth": 194,
+            "clientWidth": 194,
+            "scrollHeight": 50,
+            "clientHeight": 50
+          },
+          {
+            "tag": "TH",
+            "css": "",
+            "sample": "Science and task",
+            "x": 194,
+            "right": 397,
+            "width": 203,
+            "scrollWidth": 203,
+            "clientWidth": 203,
+            "scrollHeight": 155,
+            "clientHeight": 155
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Students annotate a thylakoid membrane model and trace the pathway from photosystem II through downstream electron ",
+            "x": 194,
+            "right": 397,
+            "width": 203,
+            "scrollWidth": 203,
+            "clientWidth": 203,
+            "scrollHeight": 635,
+            "clientHeight": 635
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Students build separate explanations for changes in ATP and NADPH, then connect their consequences to carbon fixati",
+            "x": 194,
+            "right": 397,
+            "width": 203,
+            "scrollWidth": 203,
+            "clientWidth": 203,
+            "scrollHeight": 461,
+            "clientHeight": 461
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Students respond to the bentazon question without a supplied full pathway, followed by a discussion of where the ex",
+            "x": 194,
+            "right": 397,
+            "width": 203,
+            "scrollWidth": 203,
+            "clientWidth": 203,
+            "scrollHeight": 592,
+            "clientHeight": 592
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Students independently analyse the constructed chloroplast oxygen-evolution results introduced below and predict ch",
+            "x": 194,
+            "right": 397,
+            "width": 203,
+            "scrollWidth": 203,
+            "clientWidth": 203,
+            "scrollHeight": 723,
+            "clientHeight": 723
+          },
+          {
+            "tag": "TH",
+            "css": "",
+            "sample": "Next teaching decision",
+            "x": 582,
+            "right": 805,
+            "width": 223,
+            "scrollWidth": 223,
+            "clientWidth": 223,
+            "scrollHeight": 155,
+            "clientHeight": 155
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Revisit the processes whose direction or role is unclear before introducing the inhibitor.",
+            "x": 582,
+            "right": 805,
+            "width": 223,
+            "scrollWidth": 223,
+            "clientWidth": 223,
+            "scrollHeight": 635,
+            "clientHeight": 635
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Choose a bridging question for the branch that remains underdeveloped.",
+            "x": 582,
+            "right": 805,
+            "width": 223,
+            "scrollWidth": 223,
+            "clientWidth": 223,
+            "scrollHeight": 461,
+            "clientHeight": 461
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Give feedback identifying the particular location of the reasoning difficulty.",
+            "x": 582,
+            "right": 805,
+            "width": 223,
+            "scrollWidth": 223,
+            "clientWidth": 223,
+            "scrollHeight": 592,
+            "clientHeight": 592
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Compare their responses with their earlier explanations, then choose a specific question or additional measurement ",
+            "x": 582,
+            "right": 805,
+            "width": 223,
+            "scrollWidth": 223,
+            "clientWidth": 223,
+            "scrollHeight": 723,
+            "clientHeight": 723
+          }
+        ],
         "paragraphStyle": {
           "fontSize": "26px",
           "lineHeight": "41.08px",
@@ -1089,6 +1789,224 @@
         "outside": [],
         "clipped": [],
         "parentClips": [],
+        "culprits": [
+          {
+            "tag": "SUB",
+            "css": "",
+            "sample": "p",
+            "x": 339,
+            "right": 351,
+            "width": 12,
+            "scrollWidth": 0,
+            "clientWidth": 0,
+            "scrollHeight": 0,
+            "clientHeight": 0
+          },
+          {
+            "tag": "SUB",
+            "css": "",
+            "sample": "p",
+            "x": 336,
+            "right": 348,
+            "width": 12,
+            "scrollWidth": 0,
+            "clientWidth": 0,
+            "scrollHeight": 0,
+            "clientHeight": 0
+          },
+          {
+            "tag": "SUB",
+            "css": "",
+            "sample": "p",
+            "x": 447,
+            "right": 459,
+            "width": 12,
+            "scrollWidth": 0,
+            "clientWidth": 0,
+            "scrollHeight": 0,
+            "clientHeight": 0
+          },
+          {
+            "tag": "SUB",
+            "css": "",
+            "sample": "p",
+            "x": 502,
+            "right": 514,
+            "width": 12,
+            "scrollWidth": 0,
+            "clientWidth": 0,
+            "scrollHeight": 0,
+            "clientHeight": 0
+          },
+          {
+            "tag": "SUB",
+            "css": "",
+            "sample": "p",
+            "x": 342,
+            "right": 354,
+            "width": 12,
+            "scrollWidth": 0,
+            "clientWidth": 0,
+            "scrollHeight": 0,
+            "clientHeight": 0
+          },
+          {
+            "tag": "SUB",
+            "css": "",
+            "sample": "p",
+            "x": 356,
+            "right": 368,
+            "width": 12,
+            "scrollWidth": 0,
+            "clientWidth": 0,
+            "scrollHeight": 0,
+            "clientHeight": 0
+          },
+          {
+            "tag": "A",
+            "css": "",
+            "sample": "Teaching",
+            "x": 237,
+            "right": 353,
+            "width": 116,
+            "scrollWidth": 116,
+            "clientWidth": 116,
+            "scrollHeight": 55,
+            "clientHeight": 55
+          },
+          {
+            "tag": "A",
+            "css": "skip-link",
+            "sample": "Skip to content",
+            "x": -9999,
+            "right": -9805,
+            "width": 194,
+            "scrollWidth": 194,
+            "clientWidth": 194,
+            "scrollHeight": 50,
+            "clientHeight": 50
+          },
+          {
+            "tag": "TH",
+            "css": "",
+            "sample": "Evidence to collect",
+            "x": 415,
+            "right": 609,
+            "width": 194,
+            "scrollWidth": 194,
+            "clientWidth": 194,
+            "scrollHeight": 155,
+            "clientHeight": 155
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "A written response and annotated model distinguishing equal rates from equal amounts.",
+            "x": 415,
+            "right": 609,
+            "width": 194,
+            "scrollWidth": 194,
+            "clientWidth": 194,
+            "scrollHeight": 766,
+            "clientHeight": 766
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "A calculation and a sentence predicting the net direction with explicit justification.",
+            "x": 415,
+            "right": 609,
+            "width": 194,
+            "scrollWidth": 194,
+            "clientWidth": 194,
+            "scrollHeight": 517,
+            "clientHeight": 517
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Revised partial pressures, recomputed Qp, and an explanation of why Kp is unchanged.",
+            "x": 415,
+            "right": 609,
+            "width": 194,
+            "scrollWidth": 194,
+            "clientWidth": 194,
+            "scrollHeight": 504,
+            "clientHeight": 504
+          },
+          {
+            "tag": "TH",
+            "css": "",
+            "sample": "Decision before continuing",
+            "x": 609,
+            "right": 805,
+            "width": 196,
+            "scrollWidth": 196,
+            "clientWidth": 196,
+            "scrollHeight": 155,
+            "clientHeight": 155
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Return to molecular movement and reaction rates if “nothing happens at equilibrium” persists.",
+            "x": 609,
+            "right": 805,
+            "width": 196,
+            "scrollWidth": 196,
+            "clientWidth": 196,
+            "scrollHeight": 766,
+            "clientHeight": 766
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Check whether a correct numerical result is accompanied by a valid interpretation of Q and K.",
+            "x": 609,
+            "right": 805,
+            "width": 196,
+            "scrollWidth": 196,
+            "clientWidth": 196,
+            "scrollHeight": 517,
+            "clientHeight": 517
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Revisit concentration, pressure, and temperature as distinct changes if students conflate them.",
+            "x": 609,
+            "right": 805,
+            "width": 196,
+            "scrollWidth": 196,
+            "clientWidth": 196,
+            "scrollHeight": 504,
+            "clientHeight": 504
+          },
+          {
+            "tag": "TH",
+            "css": "",
+            "sample": "Science and activity",
+            "x": 201,
+            "right": 415,
+            "width": 214,
+            "scrollWidth": 214,
+            "clientWidth": 214,
+            "scrollHeight": 155,
+            "clientHeight": 155
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Discuss reversible reactions and dynamic equilibrium. Students use a particulate representation to explain how forw",
+            "x": 201,
+            "right": 415,
+            "width": 214,
+            "scrollWidth": 214,
+            "clientWidth": 214,
+            "scrollHeight": 766,
+            "clientHeight": 766
+          }
+        ],
         "paragraphStyle": {
           "fontSize": "26px",
           "lineHeight": "41.08px",
@@ -1102,150 +2020,237 @@
       "engine": "chromium",
       "page": "teaching-ap-evolution.html",
       "width": 320,
-      "mode": "spacing",
-      "errors": [
-        "text element clipped"
-      ],
-      "metrics": {
-        "viewport": 320,
-        "documentWidth": 320,
-        "mainCount": 1,
-        "h1Count": 1,
-        "textElements": 155,
-        "outside": [],
-        "clipped": [
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 101,
-            "right": 102,
-            "width": 1,
-            "scrollWidth": 190,
-            "clientWidth": 1,
-            "scrollHeight": 26,
-            "clientHeight": 1
-          }
-        ],
-        "parentClips": [],
-        "paragraphStyle": {
-          "fontSize": "13px",
-          "lineHeight": "19.5px",
-          "letterSpacing": "1.56px",
-          "wordSpacing": "2.08px",
-          "marginBottom": "26px"
-        }
-      }
-    },
-    {
-      "engine": "chromium",
-      "page": "teaching-ap-evolution.html",
-      "width": 320,
       "mode": "text200",
       "errors": [
-        "page-wide horizontal overflow",
-        "text element clipped"
+        "page-wide horizontal overflow"
       ],
       "metrics": {
         "viewport": 320,
         "documentWidth": 482,
         "mainCount": 1,
         "h1Count": 1,
-        "textElements": 155,
+        "textElements": 154,
         "outside": [],
-        "clipped": [
+        "clipped": [],
+        "parentClips": [],
+        "culprits": [
           {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 142,
-            "right": 143,
-            "width": 1,
-            "scrollWidth": 276,
-            "clientWidth": 1,
-            "scrollHeight": 60,
-            "clientHeight": 1
+            "tag": "I",
+            "css": "",
+            "sample": "HBB",
+            "x": 305,
+            "right": 360,
+            "width": 54,
+            "scrollWidth": 0,
+            "clientWidth": 0,
+            "scrollHeight": 0,
+            "clientHeight": 0
+          },
+          {
+            "tag": "A",
+            "css": "",
+            "sample": "Teaching",
+            "x": 237,
+            "right": 353,
+            "width": 116,
+            "scrollWidth": 116,
+            "clientWidth": 116,
+            "scrollHeight": 55,
+            "clientHeight": 55
+          },
+          {
+            "tag": "TH",
+            "css": "",
+            "sample": "Responsive teaching choice",
+            "x": 627,
+            "right": 805,
+            "width": 178,
+            "scrollWidth": 178,
+            "clientWidth": 178,
+            "scrollHeight": 155,
+            "clientHeight": 155
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Revisit the link students omit, without treating the diagram as a complete clinical explanation.",
+            "x": 627,
+            "right": 805,
+            "width": 178,
+            "scrollWidth": 178,
+            "clientWidth": 178,
+            "scrollHeight": 461,
+            "clientHeight": 461
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Return to genotype-specific outcomes and the meaning of heterozygote advantage.",
+            "x": 627,
+            "right": 805,
+            "width": 178,
+            "scrollWidth": 178,
+            "clientWidth": 178,
+            "scrollHeight": 504,
+            "clientHeight": 504
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Contrast individual outcomes with population-level change and discuss omitted processes.",
+            "x": 627,
+            "right": 805,
+            "width": 178,
+            "scrollWidth": 178,
+            "clientWidth": 178,
+            "scrollHeight": 461,
+            "clientHeight": 461
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Ask which evidence establishes a clinical association, which assumptions the population model supplies, and what ad",
+            "x": 627,
+            "right": 805,
+            "width": 178,
+            "scrollWidth": 178,
+            "clientWidth": 178,
+            "scrollHeight": 897,
+            "clientHeight": 897
+          },
+          {
+            "tag": "TH",
+            "css": "",
+            "sample": "Evidence I would collect",
+            "x": 439,
+            "right": 627,
+            "width": 188,
+            "scrollWidth": 188,
+            "clientWidth": 188,
+            "scrollHeight": 155,
+            "clientHeight": 155
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Can the model distinguish sequence, molecular interaction, and cellular consequence?",
+            "x": 439,
+            "right": 627,
+            "width": 188,
+            "scrollWidth": 188,
+            "clientWidth": 188,
+            "scrollHeight": 461,
+            "clientHeight": 461
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Do students conflate the health consequences of HbSS with the malaria-related advantage of HbAS?",
+            "x": 439,
+            "right": 627,
+            "width": 188,
+            "scrollWidth": 188,
+            "clientWidth": 188,
+            "scrollHeight": 504,
+            "clientHeight": 504
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Can students reason about allele frequencies without assuming that alleles change in response to need?",
+            "x": 439,
+            "right": 627,
+            "width": 188,
+            "scrollWidth": 188,
+            "clientWidth": 188,
+            "scrollHeight": 461,
+            "clientHeight": 461
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Can students distinguish reduced risk of clinical malaria from infection prevention, and explain why the cohort est",
+            "x": 439,
+            "right": 627,
+            "width": 188,
+            "scrollWidth": 188,
+            "clientWidth": 188,
+            "scrollHeight": 897,
+            "clientHeight": 897
+          },
+          {
+            "tag": "TH",
+            "css": "",
+            "sample": "Starting frequency",
+            "x": 165,
+            "right": 356,
+            "width": 191,
+            "scrollWidth": 191,
+            "clientWidth": 191,
+            "scrollHeight": 111,
+            "clientHeight": 111
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "0.64",
+            "x": 165,
+            "right": 356,
+            "width": 191,
+            "scrollWidth": 191,
+            "clientWidth": 191,
+            "scrollHeight": 71,
+            "clientHeight": 71
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "0.32",
+            "x": 165,
+            "right": 356,
+            "width": 191,
+            "scrollWidth": 191,
+            "clientWidth": 191,
+            "scrollHeight": 71,
+            "clientHeight": 71
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "0.04",
+            "x": 165,
+            "right": 356,
+            "width": 191,
+            "scrollWidth": 191,
+            "clientWidth": 191,
+            "scrollHeight": 71,
+            "clientHeight": 71
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "1.00",
+            "x": 165,
+            "right": 356,
+            "width": 191,
+            "scrollWidth": 191,
+            "clientWidth": 191,
+            "scrollHeight": 71,
+            "clientHeight": 71
+          },
+          {
+            "tag": "A",
+            "css": "skip-link",
+            "sample": "Skip to content",
+            "x": -9999,
+            "right": -9805,
+            "width": 194,
+            "scrollWidth": 194,
+            "clientWidth": 194,
+            "scrollHeight": 50,
+            "clientHeight": 50
           }
         ],
-        "parentClips": [],
-        "paragraphStyle": {
-          "fontSize": "26px",
-          "lineHeight": "41.08px",
-          "letterSpacing": "normal",
-          "wordSpacing": "0px",
-          "marginBottom": "11px"
-        }
-      }
-    },
-    {
-      "engine": "chromium",
-      "page": "teaching-ap-evolution.html",
-      "width": 1280,
-      "mode": "spacing",
-      "errors": [
-        "text element clipped"
-      ],
-      "metrics": {
-        "viewport": 1280,
-        "documentWidth": 1280,
-        "mainCount": 1,
-        "h1Count": 1,
-        "textElements": 153,
-        "outside": [],
-        "clipped": [
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 388,
-            "right": 389,
-            "width": 1,
-            "scrollWidth": 190,
-            "clientWidth": 1,
-            "scrollHeight": 26,
-            "clientHeight": 1
-          }
-        ],
-        "parentClips": [],
-        "paragraphStyle": {
-          "fontSize": "13px",
-          "lineHeight": "19.5px",
-          "letterSpacing": "1.56px",
-          "wordSpacing": "2.08px",
-          "marginBottom": "26px"
-        }
-      }
-    },
-    {
-      "engine": "chromium",
-      "page": "teaching-ap-evolution.html",
-      "width": 1280,
-      "mode": "text200",
-      "errors": [
-        "text element clipped"
-      ],
-      "metrics": {
-        "viewport": 1280,
-        "documentWidth": 1280,
-        "mainCount": 1,
-        "h1Count": 1,
-        "textElements": 153,
-        "outside": [],
-        "clipped": [
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 550,
-            "right": 551,
-            "width": 1,
-            "scrollWidth": 276,
-            "clientWidth": 1,
-            "scrollHeight": 60,
-            "clientHeight": 1
-          }
-        ],
-        "parentClips": [],
         "paragraphStyle": {
           "fontSize": "26px",
           "lineHeight": "41.08px",
@@ -1272,6 +2277,32 @@
         "outside": [],
         "clipped": [],
         "parentClips": [],
+        "culprits": [
+          {
+            "tag": "A",
+            "css": "",
+            "sample": "Teaching",
+            "x": 237,
+            "right": 353,
+            "width": 116,
+            "scrollWidth": 116,
+            "clientWidth": 116,
+            "scrollHeight": 55,
+            "clientHeight": 55
+          },
+          {
+            "tag": "A",
+            "css": "skip-link",
+            "sample": "Skip to content",
+            "x": -9999,
+            "right": -9805,
+            "width": 194,
+            "scrollWidth": 194,
+            "clientWidth": 194,
+            "scrollHeight": 50,
+            "clientHeight": 50
+          }
+        ],
         "paragraphStyle": {
           "fontSize": "26px",
           "lineHeight": "41.08px",
@@ -1285,342 +2316,45 @@
       "engine": "chromium",
       "page": "interests.html",
       "width": 320,
-      "mode": "spacing",
-      "errors": [
-        "text element clipped"
-      ],
-      "metrics": {
-        "viewport": 320,
-        "documentWidth": 320,
-        "mainCount": 1,
-        "h1Count": 1,
-        "textElements": 55,
-        "outside": [],
-        "clipped": [
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 233,
-            "right": 234,
-            "width": 1,
-            "scrollWidth": 151,
-            "clientWidth": 1,
-            "scrollHeight": 20,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 253,
-            "right": 254,
-            "width": 1,
-            "scrollWidth": 151,
-            "clientWidth": 1,
-            "scrollHeight": 20,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 254,
-            "right": 255,
-            "width": 1,
-            "scrollWidth": 151,
-            "clientWidth": 1,
-            "scrollHeight": 20,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 272,
-            "right": 273,
-            "width": 1,
-            "scrollWidth": 151,
-            "clientWidth": 1,
-            "scrollHeight": 20,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 188,
-            "right": 189,
-            "width": 1,
-            "scrollWidth": 151,
-            "clientWidth": 1,
-            "scrollHeight": 20,
-            "clientHeight": 1
-          }
-        ],
-        "parentClips": [],
-        "paragraphStyle": {
-          "fontSize": "16px",
-          "lineHeight": "24px",
-          "letterSpacing": "1.92px",
-          "wordSpacing": "2.56px",
-          "marginBottom": "32px"
-        }
-      }
-    },
-    {
-      "engine": "chromium",
-      "page": "interests.html",
-      "width": 320,
       "mode": "text200",
       "errors": [
-        "page-wide horizontal overflow",
-        "text element clipped"
+        "page-wide horizontal overflow"
       ],
       "metrics": {
         "viewport": 320,
         "documentWidth": 353,
         "mainCount": 1,
         "h1Count": 1,
-        "textElements": 55,
+        "textElements": 50,
         "outside": [],
-        "clipped": [
+        "clipped": [],
+        "parentClips": [],
+        "culprits": [
           {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 199,
-            "right": 200,
-            "width": 1,
-            "scrollWidth": 222,
-            "clientWidth": 1,
-            "scrollHeight": 39,
-            "clientHeight": 1
+            "tag": "A",
+            "css": "",
+            "sample": "Teaching",
+            "x": 237,
+            "right": 353,
+            "width": 116,
+            "scrollWidth": 116,
+            "clientWidth": 116,
+            "scrollHeight": 55,
+            "clientHeight": 55
           },
           {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 186,
-            "right": 187,
-            "width": 1,
-            "scrollWidth": 222,
-            "clientWidth": 1,
-            "scrollHeight": 39,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 246,
-            "right": 247,
-            "width": 1,
-            "scrollWidth": 222,
-            "clientWidth": 1,
-            "scrollHeight": 39,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 139,
-            "right": 140,
-            "width": 1,
-            "scrollWidth": 222,
-            "clientWidth": 1,
-            "scrollHeight": 39,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 223,
-            "right": 224,
-            "width": 1,
-            "scrollWidth": 222,
-            "clientWidth": 1,
-            "scrollHeight": 39,
-            "clientHeight": 1
+            "tag": "A",
+            "css": "skip-link",
+            "sample": "Skip to content",
+            "x": -9999,
+            "right": -9805,
+            "width": 194,
+            "scrollWidth": 194,
+            "clientWidth": 194,
+            "scrollHeight": 50,
+            "clientHeight": 50
           }
         ],
-        "parentClips": [],
-        "paragraphStyle": {
-          "fontSize": "32px",
-          "lineHeight": "49.6px",
-          "letterSpacing": "normal",
-          "wordSpacing": "0px",
-          "marginBottom": "16px"
-        }
-      }
-    },
-    {
-      "engine": "chromium",
-      "page": "interests.html",
-      "width": 1280,
-      "mode": "spacing",
-      "errors": [
-        "text element clipped"
-      ],
-      "metrics": {
-        "viewport": 1280,
-        "documentWidth": 1280,
-        "mainCount": 1,
-        "h1Count": 1,
-        "textElements": 55,
-        "outside": [],
-        "clipped": [
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 611,
-            "right": 612,
-            "width": 1,
-            "scrollWidth": 151,
-            "clientWidth": 1,
-            "scrollHeight": 20,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 1163,
-            "right": 1164,
-            "width": 1,
-            "scrollWidth": 151,
-            "clientWidth": 1,
-            "scrollHeight": 20,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 505,
-            "right": 506,
-            "width": 1,
-            "scrollWidth": 151,
-            "clientWidth": 1,
-            "scrollHeight": 20,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 524,
-            "right": 525,
-            "width": 1,
-            "scrollWidth": 151,
-            "clientWidth": 1,
-            "scrollHeight": 20,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 1127,
-            "right": 1128,
-            "width": 1,
-            "scrollWidth": 151,
-            "clientWidth": 1,
-            "scrollHeight": 20,
-            "clientHeight": 1
-          }
-        ],
-        "parentClips": [],
-        "paragraphStyle": {
-          "fontSize": "16px",
-          "lineHeight": "24px",
-          "letterSpacing": "1.92px",
-          "wordSpacing": "2.56px",
-          "marginBottom": "32px"
-        }
-      }
-    },
-    {
-      "engine": "chromium",
-      "page": "interests.html",
-      "width": 1280,
-      "mode": "text200",
-      "errors": [
-        "text element clipped"
-      ],
-      "metrics": {
-        "viewport": 1280,
-        "documentWidth": 1280,
-        "mainCount": 1,
-        "h1Count": 1,
-        "textElements": 55,
-        "outside": [],
-        "clipped": [
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 423,
-            "right": 424,
-            "width": 1,
-            "scrollWidth": 222,
-            "clientWidth": 1,
-            "scrollHeight": 39,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 1182,
-            "right": 1183,
-            "width": 1,
-            "scrollWidth": 222,
-            "clientWidth": 1,
-            "scrollHeight": 39,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 340,
-            "right": 341,
-            "width": 1,
-            "scrollWidth": 222,
-            "clientWidth": 1,
-            "scrollHeight": 39,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 387,
-            "right": 388,
-            "width": 1,
-            "scrollWidth": 222,
-            "clientWidth": 1,
-            "scrollHeight": 39,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 1125,
-            "right": 1126,
-            "width": 1,
-            "scrollWidth": 222,
-            "clientWidth": 1,
-            "scrollHeight": 39,
-            "clientHeight": 1
-          }
-        ],
-        "parentClips": [],
         "paragraphStyle": {
           "fontSize": "32px",
           "lineHeight": "49.6px",
@@ -1634,342 +2368,45 @@
       "engine": "chromium",
       "page": "pungmul.html",
       "width": 320,
-      "mode": "spacing",
-      "errors": [
-        "text element clipped"
-      ],
-      "metrics": {
-        "viewport": 320,
-        "documentWidth": 320,
-        "mainCount": 1,
-        "h1Count": 1,
-        "textElements": 56,
-        "outside": [],
-        "clipped": [
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 160,
-            "right": 161,
-            "width": 1,
-            "scrollWidth": 156,
-            "clientWidth": 1,
-            "scrollHeight": 21,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 285,
-            "right": 286,
-            "width": 1,
-            "scrollWidth": 156,
-            "clientWidth": 1,
-            "scrollHeight": 21,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 221,
-            "right": 222,
-            "width": 1,
-            "scrollWidth": 156,
-            "clientWidth": 1,
-            "scrollHeight": 21,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 199,
-            "right": 200,
-            "width": 1,
-            "scrollWidth": 156,
-            "clientWidth": 1,
-            "scrollHeight": 21,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 130,
-            "right": 131,
-            "width": 1,
-            "scrollWidth": 156,
-            "clientWidth": 1,
-            "scrollHeight": 21,
-            "clientHeight": 1
-          }
-        ],
-        "parentClips": [],
-        "paragraphStyle": {
-          "fontSize": "13px",
-          "lineHeight": "19.5px",
-          "letterSpacing": "1.56px",
-          "wordSpacing": "2.08px",
-          "marginBottom": "26px"
-        }
-      }
-    },
-    {
-      "engine": "chromium",
-      "page": "pungmul.html",
-      "width": 320,
       "mode": "text200",
       "errors": [
-        "page-wide horizontal overflow",
-        "text element clipped"
+        "page-wide horizontal overflow"
       ],
       "metrics": {
         "viewport": 320,
         "documentWidth": 353,
         "mainCount": 1,
         "h1Count": 1,
-        "textElements": 56,
+        "textElements": 51,
         "outside": [],
-        "clipped": [
+        "clipped": [],
+        "parentClips": [],
+        "culprits": [
           {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 172,
-            "right": 173,
-            "width": 1,
-            "scrollWidth": 227,
-            "clientWidth": 1,
-            "scrollHeight": 46,
-            "clientHeight": 1
+            "tag": "A",
+            "css": "",
+            "sample": "Teaching",
+            "x": 237,
+            "right": 353,
+            "width": 116,
+            "scrollWidth": 116,
+            "clientWidth": 116,
+            "scrollHeight": 55,
+            "clientHeight": 55
           },
           {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 220,
-            "right": 221,
-            "width": 1,
-            "scrollWidth": 227,
-            "clientWidth": 1,
-            "scrollHeight": 46,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 258,
-            "right": 259,
-            "width": 1,
-            "scrollWidth": 227,
-            "clientWidth": 1,
-            "scrollHeight": 46,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 259,
-            "right": 260,
-            "width": 1,
-            "scrollWidth": 227,
-            "clientWidth": 1,
-            "scrollHeight": 46,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 102,
-            "right": 103,
-            "width": 1,
-            "scrollWidth": 227,
-            "clientWidth": 1,
-            "scrollHeight": 46,
-            "clientHeight": 1
+            "tag": "A",
+            "css": "skip-link",
+            "sample": "Skip to content",
+            "x": -9999,
+            "right": -9805,
+            "width": 194,
+            "scrollWidth": 194,
+            "clientWidth": 194,
+            "scrollHeight": 50,
+            "clientHeight": 50
           }
         ],
-        "parentClips": [],
-        "paragraphStyle": {
-          "fontSize": "26px",
-          "lineHeight": "40.3px",
-          "letterSpacing": "normal",
-          "wordSpacing": "0px",
-          "marginBottom": "20px"
-        }
-      }
-    },
-    {
-      "engine": "chromium",
-      "page": "pungmul.html",
-      "width": 1280,
-      "mode": "spacing",
-      "errors": [
-        "text element clipped"
-      ],
-      "metrics": {
-        "viewport": 1280,
-        "documentWidth": 1280,
-        "mainCount": 1,
-        "h1Count": 1,
-        "textElements": 56,
-        "outside": [],
-        "clipped": [
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 459,
-            "right": 460,
-            "width": 1,
-            "scrollWidth": 156,
-            "clientWidth": 1,
-            "scrollHeight": 21,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 614,
-            "right": 615,
-            "width": 1,
-            "scrollWidth": 156,
-            "clientWidth": 1,
-            "scrollHeight": 21,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 1089,
-            "right": 1090,
-            "width": 1,
-            "scrollWidth": 156,
-            "clientWidth": 1,
-            "scrollHeight": 21,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 789,
-            "right": 790,
-            "width": 1,
-            "scrollWidth": 156,
-            "clientWidth": 1,
-            "scrollHeight": 21,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 993,
-            "right": 994,
-            "width": 1,
-            "scrollWidth": 156,
-            "clientWidth": 1,
-            "scrollHeight": 21,
-            "clientHeight": 1
-          }
-        ],
-        "parentClips": [],
-        "paragraphStyle": {
-          "fontSize": "13px",
-          "lineHeight": "19.5px",
-          "letterSpacing": "1.56px",
-          "wordSpacing": "2.08px",
-          "marginBottom": "26px"
-        }
-      }
-    },
-    {
-      "engine": "chromium",
-      "page": "pungmul.html",
-      "width": 1280,
-      "mode": "text200",
-      "errors": [
-        "text element clipped"
-      ],
-      "metrics": {
-        "viewport": 1280,
-        "documentWidth": 1280,
-        "mainCount": 1,
-        "h1Count": 1,
-        "textElements": 56,
-        "outside": [],
-        "clipped": [
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 650,
-            "right": 651,
-            "width": 1,
-            "scrollWidth": 227,
-            "clientWidth": 1,
-            "scrollHeight": 46,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 870,
-            "right": 871,
-            "width": 1,
-            "scrollWidth": 227,
-            "clientWidth": 1,
-            "scrollHeight": 46,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 710,
-            "right": 711,
-            "width": 1,
-            "scrollWidth": 227,
-            "clientWidth": 1,
-            "scrollHeight": 46,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 1144,
-            "right": 1145,
-            "width": 1,
-            "scrollWidth": 227,
-            "clientWidth": 1,
-            "scrollHeight": 46,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 384,
-            "right": 385,
-            "width": 1,
-            "scrollWidth": 227,
-            "clientWidth": 1,
-            "scrollHeight": 46,
-            "clientHeight": 1
-          }
-        ],
-        "parentClips": [],
         "paragraphStyle": {
           "fontSize": "26px",
           "lineHeight": "40.3px",
@@ -1996,6 +2433,32 @@
         "outside": [],
         "clipped": [],
         "parentClips": [],
+        "culprits": [
+          {
+            "tag": "A",
+            "css": "",
+            "sample": "Teaching",
+            "x": 237,
+            "right": 353,
+            "width": 116,
+            "scrollWidth": 116,
+            "clientWidth": 116,
+            "scrollHeight": 55,
+            "clientHeight": 55
+          },
+          {
+            "tag": "A",
+            "css": "skip-link",
+            "sample": "Skip to content",
+            "x": -9999,
+            "right": -9805,
+            "width": 194,
+            "scrollWidth": 194,
+            "clientWidth": 194,
+            "scrollHeight": 50,
+            "clientHeight": 50
+          }
+        ],
         "paragraphStyle": {
           "fontSize": "36px",
           "lineHeight": "60.12px",
@@ -2060,6 +2523,92 @@
         ],
         "clipped": [],
         "parentClips": [],
+        "culprits": [
+          {
+            "tag": "A",
+            "css": "",
+            "sample": "Teaching",
+            "x": 237,
+            "right": 353,
+            "width": 116,
+            "scrollWidth": 116,
+            "clientWidth": 116,
+            "scrollHeight": 55,
+            "clientHeight": 55
+          },
+          {
+            "tag": "A",
+            "css": "skip-link",
+            "sample": "Skip to content",
+            "x": -9999,
+            "right": -9805,
+            "width": 194,
+            "scrollWidth": 194,
+            "clientWidth": 194,
+            "scrollHeight": 50,
+            "clientHeight": 50
+          },
+          {
+            "tag": "DIV",
+            "css": "",
+            "sample": "Ye Eun Moon\n        \n          Incheon, South Korea\n          gracem.0691@gmail.com\n          ORCID 0009-0005-0584-",
+            "x": 24,
+            "right": 335,
+            "width": 311,
+            "scrollWidth": 311,
+            "clientWidth": 311,
+            "scrollHeight": 370,
+            "clientHeight": 370
+          },
+          {
+            "tag": "H1",
+            "css": "",
+            "sample": "Ye Eun Moon",
+            "x": 24,
+            "right": 335,
+            "width": 311,
+            "scrollWidth": 311,
+            "clientWidth": 311,
+            "scrollHeight": 157,
+            "clientHeight": 157
+          },
+          {
+            "tag": "DIV",
+            "css": "resume-meta",
+            "sample": "Incheon, South Korea\n          gracem.0691@gmail.com\n          ORCID 0009-0005-0584-5146",
+            "x": 24,
+            "right": 335,
+            "width": 311,
+            "scrollWidth": 311,
+            "clientWidth": 311,
+            "scrollHeight": 200,
+            "clientHeight": 200
+          },
+          {
+            "tag": "A",
+            "css": "",
+            "sample": "gracem.0691@gmail.com",
+            "x": 24,
+            "right": 335,
+            "width": 311,
+            "scrollWidth": 311,
+            "clientWidth": 311,
+            "scrollHeight": 47,
+            "clientHeight": 47
+          },
+          {
+            "tag": "A",
+            "css": "",
+            "sample": "ORCID 0009-0005-0584-5146",
+            "x": 24,
+            "right": 335,
+            "width": 311,
+            "scrollWidth": 311,
+            "clientWidth": 311,
+            "scrollHeight": 93,
+            "clientHeight": 93
+          }
+        ],
         "paragraphStyle": {
           "fontSize": "32px",
           "lineHeight": "49.6px",
@@ -2086,6 +2635,32 @@
         "outside": [],
         "clipped": [],
         "parentClips": [],
+        "culprits": [
+          {
+            "tag": "A",
+            "css": "",
+            "sample": "Teaching",
+            "x": 237,
+            "right": 353,
+            "width": 116,
+            "scrollWidth": 116,
+            "clientWidth": 116,
+            "scrollHeight": 55,
+            "clientHeight": 55
+          },
+          {
+            "tag": "A",
+            "css": "skip-link",
+            "sample": "Skip to content",
+            "x": -9999,
+            "right": -9805,
+            "width": 194,
+            "scrollWidth": 194,
+            "clientWidth": 194,
+            "scrollHeight": 50,
+            "clientHeight": 50
+          }
+        ],
         "paragraphStyle": {
           "fontSize": "36px",
           "lineHeight": "56.88px",
@@ -2112,6 +2687,32 @@
         "outside": [],
         "clipped": [],
         "parentClips": [],
+        "culprits": [
+          {
+            "tag": "A",
+            "css": "",
+            "sample": "Teaching",
+            "x": 237,
+            "right": 380,
+            "width": 143,
+            "scrollWidth": 143,
+            "clientWidth": 143,
+            "scrollHeight": 62,
+            "clientHeight": 62
+          },
+          {
+            "tag": "A",
+            "css": "skip-link",
+            "sample": "Skip to content",
+            "x": -9999,
+            "right": -9737,
+            "width": 262,
+            "scrollWidth": 262,
+            "clientWidth": 262,
+            "scrollHeight": 48,
+            "clientHeight": 48
+          }
+        ],
         "paragraphStyle": {
           "fontSize": "38px",
           "lineHeight": "57px",
@@ -2138,6 +2739,56 @@
         "outside": [],
         "clipped": [],
         "parentClips": [],
+        "culprits": [
+          {
+            "tag": "A",
+            "css": "",
+            "sample": "Teaching",
+            "x": 237,
+            "right": 380,
+            "width": 143,
+            "scrollWidth": 143,
+            "clientWidth": 143,
+            "scrollHeight": 62,
+            "clientHeight": 62
+          },
+          {
+            "tag": "A",
+            "css": "skip-link",
+            "sample": "Skip to content",
+            "x": -9999,
+            "right": -9737,
+            "width": 262,
+            "scrollWidth": 262,
+            "clientWidth": 262,
+            "scrollHeight": 48,
+            "clientHeight": 48
+          },
+          {
+            "tag": "A",
+            "css": "research-published-image",
+            "sample": "",
+            "x": 41,
+            "right": 661,
+            "width": 620,
+            "scrollWidth": 620,
+            "clientWidth": 620,
+            "scrollHeight": 444,
+            "clientHeight": 444
+          },
+          {
+            "tag": "IMG",
+            "css": "",
+            "sample": "",
+            "x": 41,
+            "right": 661,
+            "width": 620,
+            "scrollWidth": 620,
+            "clientWidth": 620,
+            "scrollHeight": 444,
+            "clientHeight": 444
+          }
+        ],
         "paragraphStyle": {
           "fontSize": "38px",
           "lineHeight": "59.28px",
@@ -2164,6 +2815,224 @@
         "outside": [],
         "clipped": [],
         "parentClips": [],
+        "culprits": [
+          {
+            "tag": "TH",
+            "css": "",
+            "sample": "Pairs",
+            "x": 231,
+            "right": 324,
+            "width": 93,
+            "scrollWidth": 93,
+            "clientWidth": 93,
+            "scrollHeight": 146,
+            "clientHeight": 146
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "5",
+            "x": 231,
+            "right": 324,
+            "width": 93,
+            "scrollWidth": 93,
+            "clientWidth": 93,
+            "scrollHeight": 176,
+            "clientHeight": 176
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "2",
+            "x": 231,
+            "right": 324,
+            "width": 93,
+            "scrollWidth": 93,
+            "clientWidth": 93,
+            "scrollHeight": 254,
+            "clientHeight": 254
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "2",
+            "x": 231,
+            "right": 324,
+            "width": 93,
+            "scrollWidth": 93,
+            "clientWidth": 93,
+            "scrollHeight": 215,
+            "clientHeight": 215
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "1",
+            "x": 231,
+            "right": 324,
+            "width": 93,
+            "scrollWidth": 93,
+            "clientWidth": 93,
+            "scrollHeight": 176,
+            "clientHeight": 176
+          },
+          {
+            "tag": "A",
+            "css": "",
+            "sample": "Teaching",
+            "x": 237,
+            "right": 380,
+            "width": 143,
+            "scrollWidth": 143,
+            "clientWidth": 143,
+            "scrollHeight": 62,
+            "clientHeight": 62
+          },
+          {
+            "tag": "TH",
+            "css": "",
+            "sample": "Students",
+            "x": 185,
+            "right": 330,
+            "width": 145,
+            "scrollWidth": 145,
+            "clientWidth": 145,
+            "scrollHeight": 188,
+            "clientHeight": 188
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "12",
+            "x": 185,
+            "right": 330,
+            "width": 145,
+            "scrollWidth": 145,
+            "clientWidth": 145,
+            "scrollHeight": 176,
+            "clientHeight": 176
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "9",
+            "x": 185,
+            "right": 330,
+            "width": 145,
+            "scrollWidth": 145,
+            "clientWidth": 145,
+            "scrollHeight": 98,
+            "clientHeight": 98
+          },
+          {
+            "tag": "TH",
+            "css": "",
+            "sample": "Below complete in Unit 3",
+            "x": 486,
+            "right": 634,
+            "width": 148,
+            "scrollWidth": 148,
+            "clientWidth": 148,
+            "scrollHeight": 188,
+            "clientHeight": 188
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "2",
+            "x": 486,
+            "right": 634,
+            "width": 148,
+            "scrollWidth": 148,
+            "clientWidth": 148,
+            "scrollHeight": 176,
+            "clientHeight": 176
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "6",
+            "x": 486,
+            "right": 634,
+            "width": 148,
+            "scrollWidth": 148,
+            "clientWidth": 148,
+            "scrollHeight": 98,
+            "clientHeight": 98
+          },
+          {
+            "tag": "TH",
+            "css": "",
+            "sample": "Complete in Unit 3",
+            "x": 330,
+            "right": 486,
+            "width": 156,
+            "scrollWidth": 156,
+            "clientWidth": 156,
+            "scrollHeight": 188,
+            "clientHeight": 188
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "10",
+            "x": 330,
+            "right": 486,
+            "width": 156,
+            "scrollWidth": 156,
+            "clientWidth": 156,
+            "scrollHeight": 176,
+            "clientHeight": 176
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "3",
+            "x": 330,
+            "right": 486,
+            "width": 156,
+            "scrollWidth": 156,
+            "clientWidth": 156,
+            "scrollHeight": 98,
+            "clientHeight": 98
+          },
+          {
+            "tag": "A",
+            "css": "skip-link",
+            "sample": "Skip to content",
+            "x": -9999,
+            "right": -9737,
+            "width": 262,
+            "scrollWidth": 262,
+            "clientWidth": 262,
+            "scrollHeight": 48,
+            "clientHeight": 48
+          },
+          {
+            "tag": "TH",
+            "css": "",
+            "sample": "What the comparison made visible",
+            "x": 324,
+            "right": 634,
+            "width": 310,
+            "scrollWidth": 310,
+            "clientWidth": 310,
+            "scrollHeight": 146,
+            "clientHeight": 146
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Additional intermediate causal connections appeared following correction.",
+            "x": 324,
+            "right": 634,
+            "width": 310,
+            "scrollWidth": 310,
+            "clientWidth": 310,
+            "scrollHeight": 176,
+            "clientHeight": 176
+          }
+        ],
         "paragraphStyle": {
           "fontSize": "26px",
           "lineHeight": "39px",
@@ -2190,6 +3059,32 @@
         "outside": [],
         "clipped": [],
         "parentClips": [],
+        "culprits": [
+          {
+            "tag": "A",
+            "css": "",
+            "sample": "Teaching",
+            "x": 237,
+            "right": 353,
+            "width": 116,
+            "scrollWidth": 116,
+            "clientWidth": 116,
+            "scrollHeight": 55,
+            "clientHeight": 55
+          },
+          {
+            "tag": "A",
+            "css": "skip-link",
+            "sample": "Skip to content",
+            "x": -9999,
+            "right": -9805,
+            "width": 194,
+            "scrollWidth": 194,
+            "clientWidth": 194,
+            "scrollHeight": 50,
+            "clientHeight": 50
+          }
+        ],
         "paragraphStyle": {
           "fontSize": "38px",
           "lineHeight": "57px",
@@ -2216,6 +3111,56 @@
         "outside": [],
         "clipped": [],
         "parentClips": [],
+        "culprits": [
+          {
+            "tag": "A",
+            "css": "",
+            "sample": "Teaching",
+            "x": 237,
+            "right": 353,
+            "width": 116,
+            "scrollWidth": 116,
+            "clientWidth": 116,
+            "scrollHeight": 55,
+            "clientHeight": 55
+          },
+          {
+            "tag": "A",
+            "css": "skip-link",
+            "sample": "Skip to content",
+            "x": -9999,
+            "right": -9805,
+            "width": 194,
+            "scrollWidth": 194,
+            "clientWidth": 194,
+            "scrollHeight": 50,
+            "clientHeight": 50
+          },
+          {
+            "tag": "A",
+            "css": "research-published-image",
+            "sample": "",
+            "x": 41,
+            "right": 661,
+            "width": 620,
+            "scrollWidth": 620,
+            "clientWidth": 620,
+            "scrollHeight": 444,
+            "clientHeight": 444
+          },
+          {
+            "tag": "IMG",
+            "css": "",
+            "sample": "",
+            "x": 41,
+            "right": 661,
+            "width": 620,
+            "scrollWidth": 620,
+            "clientWidth": 620,
+            "scrollHeight": 444,
+            "clientHeight": 444
+          }
+        ],
         "paragraphStyle": {
           "fontSize": "38px",
           "lineHeight": "59.2833px",
@@ -2242,6 +3187,224 @@
         "outside": [],
         "clipped": [],
         "parentClips": [],
+        "culprits": [
+          {
+            "tag": "SUP",
+            "css": "",
+            "sample": "+",
+            "x": 365,
+            "right": 373,
+            "width": 8,
+            "scrollWidth": 8,
+            "clientWidth": 0,
+            "scrollHeight": 14,
+            "clientHeight": 0
+          },
+          {
+            "tag": "A",
+            "css": "skip-link",
+            "sample": "Skip to content",
+            "x": -9999,
+            "right": -9868,
+            "width": 131,
+            "scrollWidth": 131,
+            "clientWidth": 131,
+            "scrollHeight": 24,
+            "clientHeight": 24
+          },
+          {
+            "tag": "TH",
+            "css": "",
+            "sample": "What I would examine",
+            "x": 395,
+            "right": 594,
+            "width": 200,
+            "scrollWidth": 200,
+            "clientWidth": 200,
+            "scrollHeight": 66,
+            "clientHeight": 66
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Do arrows indicate electron movement, proton movement, or both? Can students distinguish a membrane location from a",
+            "x": 395,
+            "right": 594,
+            "width": 200,
+            "scrollWidth": 200,
+            "clientWidth": 200,
+            "scrollHeight": 171,
+            "clientHeight": 171
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Do students connect the gradient with ATP production and the availability of electrons with NADPH reduction?",
+            "x": 395,
+            "right": 594,
+            "width": 200,
+            "scrollWidth": 200,
+            "clientWidth": 200,
+            "scrollHeight": 150,
+            "clientHeight": 150
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Are the intermediate relationships stated, implied, contradicted, or missing?",
+            "x": 395,
+            "right": 594,
+            "width": 200,
+            "scrollWidth": 200,
+            "clientWidth": 200,
+            "scrollHeight": 150,
+            "clientHeight": 150
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Can they separate what the experiment measured from what the mechanism predicts? Which connections do they carry in",
+            "x": 395,
+            "right": 594,
+            "width": 200,
+            "scrollWidth": 200,
+            "clientWidth": 200,
+            "scrollHeight": 192,
+            "clientHeight": 192
+          },
+          {
+            "tag": "TH",
+            "css": "",
+            "sample": "Next teaching decision",
+            "x": 594,
+            "right": 805,
+            "width": 211,
+            "scrollWidth": 211,
+            "clientWidth": 211,
+            "scrollHeight": 66,
+            "clientHeight": 66
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Revisit the processes whose direction or role is unclear before introducing the inhibitor.",
+            "x": 594,
+            "right": 805,
+            "width": 211,
+            "scrollWidth": 211,
+            "clientWidth": 211,
+            "scrollHeight": 171,
+            "clientHeight": 171
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Choose a bridging question for the branch that remains underdeveloped.",
+            "x": 594,
+            "right": 805,
+            "width": 211,
+            "scrollWidth": 211,
+            "clientWidth": 211,
+            "scrollHeight": 150,
+            "clientHeight": 150
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Give feedback identifying the particular location of the reasoning difficulty.",
+            "x": 594,
+            "right": 805,
+            "width": 211,
+            "scrollWidth": 211,
+            "clientWidth": 211,
+            "scrollHeight": 150,
+            "clientHeight": 150
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Compare their responses with their earlier explanations, then choose a specific question or additional measurement ",
+            "x": 594,
+            "right": 805,
+            "width": 211,
+            "scrollWidth": 211,
+            "clientWidth": 211,
+            "scrollHeight": 192,
+            "clientHeight": 192
+          },
+          {
+            "tag": "TH",
+            "css": "",
+            "sample": "Science and task",
+            "x": 165,
+            "right": 395,
+            "width": 229,
+            "scrollWidth": 229,
+            "clientWidth": 229,
+            "scrollHeight": 66,
+            "clientHeight": 66
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Students annotate a thylakoid membrane model and trace the pathway from photosystem II through downstream electron ",
+            "x": 165,
+            "right": 395,
+            "width": 229,
+            "scrollWidth": 229,
+            "clientWidth": 229,
+            "scrollHeight": 171,
+            "clientHeight": 171
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Students build separate explanations for changes in ATP and NADPH, then connect their consequences to carbon fixati",
+            "x": 165,
+            "right": 395,
+            "width": 229,
+            "scrollWidth": 229,
+            "clientWidth": 229,
+            "scrollHeight": 150,
+            "clientHeight": 150
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Students respond to the bentazon question without a supplied full pathway, followed by a discussion of where the ex",
+            "x": 165,
+            "right": 395,
+            "width": 229,
+            "scrollWidth": 229,
+            "clientWidth": 229,
+            "scrollHeight": 150,
+            "clientHeight": 150
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Students independently analyse the constructed chloroplast oxygen-evolution results introduced below and predict ch",
+            "x": 165,
+            "right": 395,
+            "width": 229,
+            "scrollWidth": 229,
+            "clientWidth": 229,
+            "scrollHeight": 192,
+            "clientHeight": 192
+          },
+          {
+            "tag": "TH",
+            "css": "",
+            "sample": "Follow-up when missing or contradictory",
+            "x": 502,
+            "right": 805,
+            "width": 303,
+            "scrollWidth": 303,
+            "clientWidth": 303,
+            "scrollHeight": 66,
+            "clientHeight": 66
+          }
+        ],
         "paragraphStyle": {
           "fontSize": "13px",
           "lineHeight": "19.5px",
@@ -2268,6 +3431,224 @@
         "outside": [],
         "clipped": [],
         "parentClips": [],
+        "culprits": [
+          {
+            "tag": "SUP",
+            "css": "",
+            "sample": "+",
+            "x": 405,
+            "right": 419,
+            "width": 13,
+            "scrollWidth": 13,
+            "clientWidth": 0,
+            "scrollHeight": 27,
+            "clientHeight": 0
+          },
+          {
+            "tag": "A",
+            "css": "",
+            "sample": "Teaching",
+            "x": 237,
+            "right": 353,
+            "width": 116,
+            "scrollWidth": 116,
+            "clientWidth": 116,
+            "scrollHeight": 55,
+            "clientHeight": 55
+          },
+          {
+            "tag": "TH",
+            "css": "",
+            "sample": "What I would examine",
+            "x": 397,
+            "right": 582,
+            "width": 185,
+            "scrollWidth": 185,
+            "clientWidth": 185,
+            "scrollHeight": 155,
+            "clientHeight": 155
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Do arrows indicate electron movement, proton movement, or both? Can students distinguish a membrane location from a",
+            "x": 397,
+            "right": 582,
+            "width": 185,
+            "scrollWidth": 185,
+            "clientWidth": 185,
+            "scrollHeight": 636,
+            "clientHeight": 636
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Do students connect the gradient with ATP production and the availability of electrons with NADPH reduction?",
+            "x": 397,
+            "right": 582,
+            "width": 185,
+            "scrollWidth": 185,
+            "clientWidth": 185,
+            "scrollHeight": 461,
+            "clientHeight": 461
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Are the intermediate relationships stated, implied, contradicted, or missing?",
+            "x": 397,
+            "right": 582,
+            "width": 185,
+            "scrollWidth": 185,
+            "clientWidth": 185,
+            "scrollHeight": 592,
+            "clientHeight": 592
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Can they separate what the experiment measured from what the mechanism predicts? Which connections do they carry in",
+            "x": 397,
+            "right": 582,
+            "width": 185,
+            "scrollWidth": 185,
+            "clientWidth": 185,
+            "scrollHeight": 723,
+            "clientHeight": 723
+          },
+          {
+            "tag": "A",
+            "css": "skip-link",
+            "sample": "Skip to content",
+            "x": -9999,
+            "right": -9805,
+            "width": 194,
+            "scrollWidth": 194,
+            "clientWidth": 194,
+            "scrollHeight": 50,
+            "clientHeight": 50
+          },
+          {
+            "tag": "TH",
+            "css": "",
+            "sample": "Science and task",
+            "x": 194,
+            "right": 397,
+            "width": 203,
+            "scrollWidth": 203,
+            "clientWidth": 203,
+            "scrollHeight": 155,
+            "clientHeight": 155
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Students annotate a thylakoid membrane model and trace the pathway from photosystem II through downstream electron ",
+            "x": 194,
+            "right": 397,
+            "width": 203,
+            "scrollWidth": 203,
+            "clientWidth": 203,
+            "scrollHeight": 636,
+            "clientHeight": 636
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Students build separate explanations for changes in ATP and NADPH, then connect their consequences to carbon fixati",
+            "x": 194,
+            "right": 397,
+            "width": 203,
+            "scrollWidth": 203,
+            "clientWidth": 203,
+            "scrollHeight": 461,
+            "clientHeight": 461
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Students respond to the bentazon question without a supplied full pathway, followed by a discussion of where the ex",
+            "x": 194,
+            "right": 397,
+            "width": 203,
+            "scrollWidth": 203,
+            "clientWidth": 203,
+            "scrollHeight": 592,
+            "clientHeight": 592
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Students independently analyse the constructed chloroplast oxygen-evolution results introduced below and predict ch",
+            "x": 194,
+            "right": 397,
+            "width": 203,
+            "scrollWidth": 203,
+            "clientWidth": 203,
+            "scrollHeight": 723,
+            "clientHeight": 723
+          },
+          {
+            "tag": "TH",
+            "css": "",
+            "sample": "Next teaching decision",
+            "x": 582,
+            "right": 805,
+            "width": 223,
+            "scrollWidth": 223,
+            "clientWidth": 223,
+            "scrollHeight": 155,
+            "clientHeight": 155
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Revisit the processes whose direction or role is unclear before introducing the inhibitor.",
+            "x": 582,
+            "right": 805,
+            "width": 223,
+            "scrollWidth": 223,
+            "clientWidth": 223,
+            "scrollHeight": 636,
+            "clientHeight": 636
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Choose a bridging question for the branch that remains underdeveloped.",
+            "x": 582,
+            "right": 805,
+            "width": 223,
+            "scrollWidth": 223,
+            "clientWidth": 223,
+            "scrollHeight": 461,
+            "clientHeight": 461
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Give feedback identifying the particular location of the reasoning difficulty.",
+            "x": 582,
+            "right": 805,
+            "width": 223,
+            "scrollWidth": 223,
+            "clientWidth": 223,
+            "scrollHeight": 592,
+            "clientHeight": 592
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Compare their responses with their earlier explanations, then choose a specific question or additional measurement ",
+            "x": 582,
+            "right": 805,
+            "width": 223,
+            "scrollWidth": 223,
+            "clientWidth": 223,
+            "scrollHeight": 723,
+            "clientHeight": 723
+          }
+        ],
         "paragraphStyle": {
           "fontSize": "26px",
           "lineHeight": "41.0833px",
@@ -2281,342 +3662,45 @@
       "engine": "firefox",
       "page": "interests.html",
       "width": 320,
-      "mode": "spacing",
-      "errors": [
-        "text element clipped"
-      ],
-      "metrics": {
-        "viewport": 320,
-        "documentWidth": 320,
-        "mainCount": 1,
-        "h1Count": 1,
-        "textElements": 55,
-        "outside": [],
-        "clipped": [
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 233,
-            "right": 234,
-            "width": 1,
-            "scrollWidth": 151,
-            "clientWidth": 1,
-            "scrollHeight": 19,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 253,
-            "right": 254,
-            "width": 1,
-            "scrollWidth": 151,
-            "clientWidth": 1,
-            "scrollHeight": 19,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 254,
-            "right": 255,
-            "width": 1,
-            "scrollWidth": 151,
-            "clientWidth": 1,
-            "scrollHeight": 20,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 272,
-            "right": 273,
-            "width": 1,
-            "scrollWidth": 151,
-            "clientWidth": 1,
-            "scrollHeight": 19,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 188,
-            "right": 189,
-            "width": 1,
-            "scrollWidth": 151,
-            "clientWidth": 1,
-            "scrollHeight": 20,
-            "clientHeight": 1
-          }
-        ],
-        "parentClips": [],
-        "paragraphStyle": {
-          "fontSize": "16px",
-          "lineHeight": "24px",
-          "letterSpacing": "1.92px",
-          "wordSpacing": "2.56px",
-          "marginBottom": "32px"
-        }
-      }
-    },
-    {
-      "engine": "firefox",
-      "page": "interests.html",
-      "width": 320,
       "mode": "text200",
       "errors": [
-        "page-wide horizontal overflow",
-        "text element clipped"
+        "page-wide horizontal overflow"
       ],
       "metrics": {
         "viewport": 320,
         "documentWidth": 353,
         "mainCount": 1,
         "h1Count": 1,
-        "textElements": 55,
+        "textElements": 50,
         "outside": [],
-        "clipped": [
+        "clipped": [],
+        "parentClips": [],
+        "culprits": [
           {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 199,
-            "right": 200,
-            "width": 1,
-            "scrollWidth": 223,
-            "clientWidth": 1,
-            "scrollHeight": 39,
-            "clientHeight": 1
+            "tag": "A",
+            "css": "",
+            "sample": "Teaching",
+            "x": 237,
+            "right": 353,
+            "width": 116,
+            "scrollWidth": 116,
+            "clientWidth": 116,
+            "scrollHeight": 55,
+            "clientHeight": 55
           },
           {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 186,
-            "right": 187,
-            "width": 1,
-            "scrollWidth": 223,
-            "clientWidth": 1,
-            "scrollHeight": 39,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 246,
-            "right": 247,
-            "width": 1,
-            "scrollWidth": 222,
-            "clientWidth": 1,
-            "scrollHeight": 39,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 139,
-            "right": 140,
-            "width": 1,
-            "scrollWidth": 222,
-            "clientWidth": 1,
-            "scrollHeight": 39,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 223,
-            "right": 224,
-            "width": 1,
-            "scrollWidth": 223,
-            "clientWidth": 1,
-            "scrollHeight": 39,
-            "clientHeight": 1
+            "tag": "A",
+            "css": "skip-link",
+            "sample": "Skip to content",
+            "x": -9999,
+            "right": -9805,
+            "width": 194,
+            "scrollWidth": 194,
+            "clientWidth": 194,
+            "scrollHeight": 50,
+            "clientHeight": 50
           }
         ],
-        "parentClips": [],
-        "paragraphStyle": {
-          "fontSize": "32px",
-          "lineHeight": "49.6px",
-          "letterSpacing": "normal",
-          "wordSpacing": "0px",
-          "marginBottom": "16px"
-        }
-      }
-    },
-    {
-      "engine": "firefox",
-      "page": "interests.html",
-      "width": 1280,
-      "mode": "spacing",
-      "errors": [
-        "text element clipped"
-      ],
-      "metrics": {
-        "viewport": 1280,
-        "documentWidth": 1280,
-        "mainCount": 1,
-        "h1Count": 1,
-        "textElements": 55,
-        "outside": [],
-        "clipped": [
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 611,
-            "right": 612,
-            "width": 1,
-            "scrollWidth": 151,
-            "clientWidth": 1,
-            "scrollHeight": 19,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 1163,
-            "right": 1164,
-            "width": 1,
-            "scrollWidth": 151,
-            "clientWidth": 1,
-            "scrollHeight": 19,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 505,
-            "right": 506,
-            "width": 1,
-            "scrollWidth": 151,
-            "clientWidth": 1,
-            "scrollHeight": 19,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 525,
-            "right": 526,
-            "width": 1,
-            "scrollWidth": 151,
-            "clientWidth": 1,
-            "scrollHeight": 20,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 1127,
-            "right": 1128,
-            "width": 1,
-            "scrollWidth": 151,
-            "clientWidth": 1,
-            "scrollHeight": 20,
-            "clientHeight": 1
-          }
-        ],
-        "parentClips": [],
-        "paragraphStyle": {
-          "fontSize": "16px",
-          "lineHeight": "24px",
-          "letterSpacing": "1.92px",
-          "wordSpacing": "2.56px",
-          "marginBottom": "32px"
-        }
-      }
-    },
-    {
-      "engine": "firefox",
-      "page": "interests.html",
-      "width": 1280,
-      "mode": "text200",
-      "errors": [
-        "text element clipped"
-      ],
-      "metrics": {
-        "viewport": 1280,
-        "documentWidth": 1280,
-        "mainCount": 1,
-        "h1Count": 1,
-        "textElements": 55,
-        "outside": [],
-        "clipped": [
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 424,
-            "right": 425,
-            "width": 1,
-            "scrollWidth": 222,
-            "clientWidth": 1,
-            "scrollHeight": 39,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 1182,
-            "right": 1183,
-            "width": 1,
-            "scrollWidth": 222,
-            "clientWidth": 1,
-            "scrollHeight": 39,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 340,
-            "right": 341,
-            "width": 1,
-            "scrollWidth": 222,
-            "clientWidth": 1,
-            "scrollHeight": 39,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 387,
-            "right": 388,
-            "width": 1,
-            "scrollWidth": 223,
-            "clientWidth": 1,
-            "scrollHeight": 39,
-            "clientHeight": 1
-          },
-          {
-            "tag": "SPAN",
-            "css": "new-tab-note",
-            "sample": "(opens in a new tab)",
-            "x": 1125,
-            "right": 1126,
-            "width": 1,
-            "scrollWidth": 223,
-            "clientWidth": 1,
-            "scrollHeight": 39,
-            "clientHeight": 1
-          }
-        ],
-        "parentClips": [],
         "paragraphStyle": {
           "fontSize": "32px",
           "lineHeight": "49.6px",
@@ -2681,6 +3765,92 @@
         ],
         "clipped": [],
         "parentClips": [],
+        "culprits": [
+          {
+            "tag": "A",
+            "css": "",
+            "sample": "Teaching",
+            "x": 237,
+            "right": 353,
+            "width": 116,
+            "scrollWidth": 116,
+            "clientWidth": 116,
+            "scrollHeight": 55,
+            "clientHeight": 55
+          },
+          {
+            "tag": "A",
+            "css": "skip-link",
+            "sample": "Skip to content",
+            "x": -9999,
+            "right": -9805,
+            "width": 194,
+            "scrollWidth": 194,
+            "clientWidth": 194,
+            "scrollHeight": 50,
+            "clientHeight": 50
+          },
+          {
+            "tag": "DIV",
+            "css": "",
+            "sample": "Ye Eun Moon\n        \n          Incheon, South Korea\n          gracem.0691@gmail.com\n          ORCID 0009-0005-0584-",
+            "x": 24,
+            "right": 335,
+            "width": 311,
+            "scrollWidth": 311,
+            "clientWidth": 311,
+            "scrollHeight": 370,
+            "clientHeight": 370
+          },
+          {
+            "tag": "H1",
+            "css": "",
+            "sample": "Ye Eun Moon",
+            "x": 24,
+            "right": 335,
+            "width": 311,
+            "scrollWidth": 311,
+            "clientWidth": 311,
+            "scrollHeight": 157,
+            "clientHeight": 157
+          },
+          {
+            "tag": "DIV",
+            "css": "resume-meta",
+            "sample": "Incheon, South Korea\n          gracem.0691@gmail.com\n          ORCID 0009-0005-0584-5146",
+            "x": 24,
+            "right": 335,
+            "width": 311,
+            "scrollWidth": 311,
+            "clientWidth": 311,
+            "scrollHeight": 200,
+            "clientHeight": 200
+          },
+          {
+            "tag": "A",
+            "css": "",
+            "sample": "gracem.0691@gmail.com",
+            "x": 24,
+            "right": 335,
+            "width": 311,
+            "scrollWidth": 311,
+            "clientWidth": 311,
+            "scrollHeight": 47,
+            "clientHeight": 47
+          },
+          {
+            "tag": "A",
+            "css": "",
+            "sample": "ORCID 0009-0005-0584-5146",
+            "x": 24,
+            "right": 335,
+            "width": 311,
+            "scrollWidth": 311,
+            "clientWidth": 311,
+            "scrollHeight": 93,
+            "clientHeight": 93
+          }
+        ],
         "paragraphStyle": {
           "fontSize": "32px",
           "lineHeight": "49.6px",
@@ -2707,6 +3877,32 @@
         "outside": [],
         "clipped": [],
         "parentClips": [],
+        "culprits": [
+          {
+            "tag": "A",
+            "css": "",
+            "sample": "Teaching",
+            "x": 237,
+            "right": 380,
+            "width": 143,
+            "scrollWidth": 143,
+            "clientWidth": 143,
+            "scrollHeight": 62,
+            "clientHeight": 62
+          },
+          {
+            "tag": "A",
+            "css": "skip-link",
+            "sample": "Skip to content",
+            "x": -9999,
+            "right": -9738,
+            "width": 261,
+            "scrollWidth": 261,
+            "clientWidth": 261,
+            "scrollHeight": 48,
+            "clientHeight": 48
+          }
+        ],
         "paragraphStyle": {
           "fontSize": "38px",
           "lineHeight": "57px",
@@ -2733,6 +3929,56 @@
         "outside": [],
         "clipped": [],
         "parentClips": [],
+        "culprits": [
+          {
+            "tag": "A",
+            "css": "",
+            "sample": "Teaching",
+            "x": 237,
+            "right": 380,
+            "width": 143,
+            "scrollWidth": 143,
+            "clientWidth": 143,
+            "scrollHeight": 62,
+            "clientHeight": 62
+          },
+          {
+            "tag": "A",
+            "css": "skip-link",
+            "sample": "Skip to content",
+            "x": -9999,
+            "right": -9738,
+            "width": 261,
+            "scrollWidth": 261,
+            "clientWidth": 261,
+            "scrollHeight": 48,
+            "clientHeight": 48
+          },
+          {
+            "tag": "A",
+            "css": "research-published-image",
+            "sample": "",
+            "x": 41,
+            "right": 661,
+            "width": 620,
+            "scrollWidth": 620,
+            "clientWidth": 620,
+            "scrollHeight": 444,
+            "clientHeight": 444
+          },
+          {
+            "tag": "IMG",
+            "css": "",
+            "sample": "",
+            "x": 41,
+            "right": 661,
+            "width": 620,
+            "scrollWidth": 620,
+            "clientWidth": 620,
+            "scrollHeight": 444,
+            "clientHeight": 444
+          }
+        ],
         "paragraphStyle": {
           "fontSize": "38px",
           "lineHeight": "59.2833px",
@@ -2929,6 +4175,224 @@
         ],
         "clipped": [],
         "parentClips": [],
+        "culprits": [
+          {
+            "tag": "SUP",
+            "css": "",
+            "sample": "+",
+            "x": 395,
+            "right": 412,
+            "width": 17,
+            "scrollWidth": 17,
+            "clientWidth": 0,
+            "scrollHeight": 27,
+            "clientHeight": 0
+          },
+          {
+            "tag": "A",
+            "css": "",
+            "sample": "Teaching",
+            "x": 237,
+            "right": 380,
+            "width": 143,
+            "scrollWidth": 143,
+            "clientWidth": 143,
+            "scrollHeight": 62,
+            "clientHeight": 62
+          },
+          {
+            "tag": "TH",
+            "css": "",
+            "sample": "What I would examine",
+            "x": 453,
+            "right": 666,
+            "width": 213,
+            "scrollWidth": 213,
+            "clientWidth": 213,
+            "scrollHeight": 150,
+            "clientHeight": 150
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Do arrows indicate electron movement, proton movement, or both? Can students distinguish a membrane location from a",
+            "x": 453,
+            "right": 666,
+            "width": 213,
+            "scrollWidth": 213,
+            "clientWidth": 213,
+            "scrollHeight": 696,
+            "clientHeight": 696
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Do students connect the gradient with ATP production and the availability of electrons with NADPH reduction?",
+            "x": 453,
+            "right": 666,
+            "width": 213,
+            "scrollWidth": 213,
+            "clientWidth": 213,
+            "scrollHeight": 486,
+            "clientHeight": 486
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Are the intermediate relationships stated, implied, contradicted, or missing?",
+            "x": 453,
+            "right": 666,
+            "width": 213,
+            "scrollWidth": 213,
+            "clientWidth": 213,
+            "scrollHeight": 570,
+            "clientHeight": 570
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Can they separate what the experiment measured from what the mechanism predicts? Which connections do they carry in",
+            "x": 453,
+            "right": 666,
+            "width": 213,
+            "scrollWidth": 213,
+            "clientWidth": 213,
+            "scrollHeight": 780,
+            "clientHeight": 780
+          },
+          {
+            "tag": "TH",
+            "css": "",
+            "sample": "Science and task",
+            "x": 226,
+            "right": 453,
+            "width": 226,
+            "scrollWidth": 226,
+            "clientWidth": 226,
+            "scrollHeight": 150,
+            "clientHeight": 150
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Students annotate a thylakoid membrane model and trace the pathway from photosystem II through downstream electron ",
+            "x": 226,
+            "right": 453,
+            "width": 226,
+            "scrollWidth": 226,
+            "clientWidth": 226,
+            "scrollHeight": 696,
+            "clientHeight": 696
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Students build separate explanations for changes in ATP and NADPH, then connect their consequences to carbon fixati",
+            "x": 226,
+            "right": 453,
+            "width": 226,
+            "scrollWidth": 226,
+            "clientWidth": 226,
+            "scrollHeight": 486,
+            "clientHeight": 486
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Students respond to the bentazon question without a supplied full pathway, followed by a discussion of where the ex",
+            "x": 226,
+            "right": 453,
+            "width": 226,
+            "scrollWidth": 226,
+            "clientWidth": 226,
+            "scrollHeight": 570,
+            "clientHeight": 570
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Students independently analyse the constructed chloroplast oxygen-evolution results introduced below and predict ch",
+            "x": 226,
+            "right": 453,
+            "width": 226,
+            "scrollWidth": 226,
+            "clientWidth": 226,
+            "scrollHeight": 780,
+            "clientHeight": 780
+          },
+          {
+            "tag": "TH",
+            "css": "",
+            "sample": "Next teaching decision",
+            "x": 666,
+            "right": 926,
+            "width": 260,
+            "scrollWidth": 260,
+            "clientWidth": 260,
+            "scrollHeight": 150,
+            "clientHeight": 150
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Revisit the processes whose direction or role is unclear before introducing the inhibitor.",
+            "x": 666,
+            "right": 926,
+            "width": 260,
+            "scrollWidth": 260,
+            "clientWidth": 260,
+            "scrollHeight": 696,
+            "clientHeight": 696
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Choose a bridging question for the branch that remains underdeveloped.",
+            "x": 666,
+            "right": 926,
+            "width": 260,
+            "scrollWidth": 260,
+            "clientWidth": 260,
+            "scrollHeight": 486,
+            "clientHeight": 486
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Give feedback identifying the particular location of the reasoning difficulty.",
+            "x": 666,
+            "right": 926,
+            "width": 260,
+            "scrollWidth": 260,
+            "clientWidth": 260,
+            "scrollHeight": 570,
+            "clientHeight": 570
+          },
+          {
+            "tag": "TD",
+            "css": "",
+            "sample": "Compare their responses with their earlier explanations, then choose a specific question or additional measurement ",
+            "x": 666,
+            "right": 926,
+            "width": 260,
+            "scrollWidth": 260,
+            "clientWidth": 260,
+            "scrollHeight": 780,
+            "clientHeight": 780
+          },
+          {
+            "tag": "A",
+            "css": "skip-link",
+            "sample": "Skip to content",
+            "x": -9999,
+            "right": -9738,
+            "width": 261,
+            "scrollWidth": 261,
+            "clientWidth": 261,
+            "scrollHeight": 48,
+            "clientHeight": 48
+          }
+        ],
         "paragraphStyle": {
           "fontSize": "26px",
           "lineHeight": "39px",
@@ -2943,15 +4407,15 @@
   "byEngine": {
     "chromium": {
       "cases": 75,
-      "failures": 40
+      "failures": 23
     },
     "firefox": {
       "cases": 23,
-      "failures": 12
+      "failures": 9
     }
   },
   "caveats": "User-style injections approximate enhanced text spacing and 200% text-only enlargement. They do not operate the browser's native text-only zoom interface. Page-level overflow and selected clipped text are checked; screenshots and ancestor-clip advisories require human review. Automated results do not certify WCAG.",
-  "workflow_run_id": "40867407273",
-  "head_sha": "fc4e286500fd91bf6db219b49e78cca564d1b770",
+  "workflow_run_id": "40867700898",
+  "head_sha": "807f502bd731849d191d7b6b1df7c9daaeb40a85",
   "exit_code": "1"
 }
