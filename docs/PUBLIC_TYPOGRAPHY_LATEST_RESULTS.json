@@ -10,110 +10,23 @@
   "combinedStressCases": 19,
   "failedCount": 0,
   "failures": [],
-  "combinedStressFailedCount": 2,
-  "combinedStressFailures": [
-    {
-      "engine": "chromium",
-      "page": "research-action.html",
-      "width": 901,
-      "mode": "combined",
-      "errors": [
-        "assessment label and value do not share a row",
-        "wide assessment track moved unexpectedly",
-        "assessment label and value do not share a row",
-        "wide assessment track moved unexpectedly"
-      ],
-      "metrics": {
-        "viewport": 901,
-        "documentWidth": 901,
-        "mainCount": 1,
-        "h1Count": 1,
-        "textElements": 126,
-        "outside": [],
-        "clipped": [],
-        "parentClips": [],
-        "culprits": [
-          {
-            "tag": "A",
-            "css": "skip-link",
-            "sample": "Skip to content",
-            "x": -9999,
-            "right": -9737,
-            "width": 262,
-            "scrollWidth": 262,
-            "clientWidth": 262,
-            "scrollHeight": 48,
-            "clientHeight": 48
-          }
-        ],
-        "paragraphStyle": {
-          "fontSize": "26px",
-          "lineHeight": "39px",
-          "letterSpacing": "3.12px",
-          "wordSpacing": "4.16px",
-          "marginBottom": "52px"
-        }
-      }
-    },
-    {
-      "engine": "firefox",
-      "page": "research-action.html",
-      "width": 901,
-      "mode": "combined",
-      "errors": [
-        "assessment label and value do not share a row",
-        "wide assessment track moved unexpectedly",
-        "assessment label and value do not share a row",
-        "wide assessment track moved unexpectedly"
-      ],
-      "metrics": {
-        "viewport": 901,
-        "documentWidth": 901,
-        "mainCount": 1,
-        "h1Count": 1,
-        "textElements": 126,
-        "outside": [],
-        "clipped": [],
-        "parentClips": [],
-        "culprits": [
-          {
-            "tag": "A",
-            "css": "skip-link",
-            "sample": "Skip to content",
-            "x": -9999,
-            "right": -9738,
-            "width": 261,
-            "scrollWidth": 261,
-            "clientWidth": 261,
-            "scrollHeight": 48,
-            "clientHeight": 48
-          }
-        ],
-        "paragraphStyle": {
-          "fontSize": "26px",
-          "lineHeight": "39px",
-          "letterSpacing": "3.12px",
-          "wordSpacing": "4.16px",
-          "marginBottom": "52px"
-        }
-      }
-    }
-  ],
+  "combinedStressFailedCount": 0,
+  "combinedStressFailures": [],
   "advisories": [],
   "byEngine": {
     "chromium": {
       "cases": 81,
       "individualFailures": 0,
-      "combinedStressFailures": 1
+      "combinedStressFailures": 0
     },
     "firefox": {
       "cases": 30,
       "individualFailures": 0,
-      "combinedStressFailures": 1
+      "combinedStressFailures": 0
     }
   },
   "caveats": "The two reading preference tests apply independently. Combined maximum-spacing plus 200% text at 320 CSS pixels is explicitly a supplementary stress case, and any such overflow remains open even when the independent-test exit code is zero. Inline spacing overrides model the priority of a user-origin accessibility stylesheet over author-important declarations, but are not an actual browser user-stylesheet installation. Computed font-size doubling is not native browser text-only zoom. Automated results do not certify WCAG.",
-  "workflow_run_id": "40871630940",
-  "head_sha": "32fa230101f0459a741b417dcd722c0f9a548842",
+  "workflow_run_id": "40872033191",
+  "head_sha": "c3ff0fe78b9ede246f2a3be4a262f5a47bcc26ea",
   "exit_code": "0"
 }
