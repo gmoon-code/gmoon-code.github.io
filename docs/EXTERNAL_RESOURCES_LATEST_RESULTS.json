@@ -2,13 +2,13 @@
   "pages_scanned": 19,
   "distinct_destinations": 113,
   "counts": {
-    "reachable": 71,
-    "unverified": 42
+    "reachable": 69,
+    "unverified": 44
   },
   "by_category": {
     "external": {
-      "reachable": 48,
-      "unverified": 1
+      "reachable": 46,
+      "unverified": 3
     },
     "scholarly-identifier": {
       "unverified": 41,
@@ -19,6 +19,23 @@
     }
   },
   "issues": [
+    {
+      "url": "https://contents.history.go.kr/play/view.do?levelId=tz_b59",
+      "status": "unverified",
+      "category": "external",
+      "pages": [
+        "pungmul.html"
+      ],
+      "head": {
+        "code": null,
+        "error": "<urlopen error timed out>"
+      },
+      "get": {
+        "code": null,
+        "error": "<urlopen error timed out>"
+      },
+      "warnings": []
+    },
     {
       "url": "https://doi.org/10.1002/sce.20264",
       "status": "unverified",
@@ -801,6 +818,23 @@
       "warnings": []
     },
     {
+      "url": "https://folkency.nfm.go.kr/en/topic/detail/6501",
+      "status": "unverified",
+      "category": "external",
+      "pages": [
+        "pungmul.html"
+      ],
+      "head": {
+        "code": null,
+        "error": "<urlopen error timed out>"
+      },
+      "get": {
+        "code": null,
+        "error": "<urlopen error timed out>"
+      },
+      "warnings": []
+    },
+    {
       "url": "https://onlinelibrary.wiley.com/doi/full/10.1002/sce.21622",
       "status": "unverified",
       "category": "external",
@@ -863,68 +897,36 @@
         "indexedYear": 2014
       },
       {
-        "url": "https://doi.org/10.1002/sce.21112",
-        "doi": "10.1002/sce.21112",
+        "url": "https://doi.org/10.1002/sce.21592",
+        "doi": "10.1002/sce.21592",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21112",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21592",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Examining Classroom Science Practice Communities: How Teachers and Students Negotiate Epistemic Agency and Learn Science‐as‐Practice",
-        "indexedYear": 2014
+        "indexedTitle": "Acting with epistemic agency: Characterizing student critique during argumentation discussions",
+        "indexedYear": 2020
       },
       {
-        "url": "https://doi.org/10.1002/tea.21714",
-        "doi": "10.1002/tea.21714",
+        "url": "https://doi.org/10.1002/tea.21459",
+        "doi": "10.1002/tea.21459",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21714",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21459",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Science engagement as insight into the science identity work nurtured in community‐based science clubs",
-        "indexedYear": 2021
-      },
-      {
-        "url": "https://doi.org/10.1002/tea.70072",
-        "doi": "10.1002/tea.70072",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.70072",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Students' Construction, Evaluation, and Revision of Scientific Models Through Multimodal Representations",
-        "indexedYear": 2026
-      },
-      {
-        "url": "https://doi.org/10.1080/03626784.2021.1947732",
-        "doi": "10.1080/03626784.2021.1947732",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/03626784.2021.1947732",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Getting dirty and coming clean: Sex education and the problem of expertise",
-        "indexedYear": 2021
+        "indexedTitle": "Addressing the epistemic elephant in the room: Epistemic agency and the next generation science standards",
+        "indexedYear": 2018
       },
       {
         "url": "https://doi.org/10.1080/03626784.2023.2200810",
@@ -943,20 +945,68 @@
         "indexedYear": 2023
       },
       {
-        "url": "https://doi.org/10.1159/000345322",
-        "doi": "10.1159/000345322",
+        "url": "https://doi.org/10.1080/07491409.2023.2193543",
+        "doi": "10.1080/07491409.2023.2193543",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://karger.com/article/doi/10.1159/000345322",
+        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/07491409.2023.2193543",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Desettling Expectations in Science Education",
+        "indexedTitle": "TERF Logics Are Carceral Logics: Toward the Abolition of Gender-Critical Movements or Black Trans Life as Pedagogical Praxis",
+        "indexedYear": 2023
+      },
+      {
+        "url": "https://doi.org/10.1080/09500690903386435",
+        "doi": "10.1080/09500690903386435",
+        "pages": [
+          "teaching-ap-chemistry.html"
+        ],
+        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/09500690903386435",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Macro, Submicro, and Symbolic: The many faces of the chemistry “triplet”",
+        "indexedYear": 2010
+      },
+      {
+        "url": "https://doi.org/10.1080/15265161.2012.680533",
+        "doi": "10.1080/15265161.2012.680533",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://www.tandfonline.com/doi/abs/10.1080/15265161.2012.680533",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Out of Bounds? A Critique of the New Policies on Hyperandrogenism in Elite Female Athletes",
         "indexedYear": 2012
+      },
+      {
+        "url": "https://doi.org/10.1177/01614681251401633",
+        "doi": "10.1177/01614681251401633",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://journals.sagepub.com/doi/10.1177/01614681251401633",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Queer Joy as Pedagogy",
+        "indexedYear": 2025
       },
       {
         "url": "https://doi.org/10.1187/cbe.23-08-0157",
@@ -973,28 +1023,12 @@
         "secondaryIndex": "OpenAlex",
         "indexedTitle": "Examining and Supporting Mechanistic Explanations Across Chemistry and Biology Courses",
         "indexedYear": 2024
-      },
-      {
-        "url": "https://doi.org/10.3102/0034654314558490",
-        "doi": "10.3102/0034654314558490",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://journals.sagepub.com/doi/10.3102/0034654314558490",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Representing Student Argumentation as Functionally Emergent From Scientific Activity",
-        "indexedYear": 2014
       }
     ],
     "unresolved": [],
     "limitation": "Crossref/DataCite registration is distinct from publisher access, correct article metadata or article availability. OpenAlex is independent secondary corroboration, not registration proof."
   },
-  "workflow_run_id": "40891379798",
-  "head_sha": "3fc39c5294ac5a1f3b992cc9c194270f45a438e1",
+  "workflow_run_id": "40893062919",
+  "head_sha": "cdbf470324abc01619d0a2817d30a19ed497e5b8",
   "audit_exit_code": "0"
 }
