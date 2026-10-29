@@ -324,8 +324,16 @@ html[data-moon-theme="dark"] .teaching-bio-case .teaching-step-code{
 /* S6: let enlarged navigation labels wrap inside the existing narrow grid.
    Normal-size labels retain their original single-line appearance. */
 @media (max-width:700px){
-  .site-nav{min-width:0}
+  .site-nav{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:flex-start;
+    min-width:0;
+    gap:8px 13px;
+  }
   .site-nav a{
+    flex:0 1 auto;
     min-width:0;
     max-width:100%;
     white-space:normal;
