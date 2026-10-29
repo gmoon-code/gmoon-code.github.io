@@ -72,6 +72,12 @@ Additional independent content inventories pending: the `studio/` and `connectio
 
 **Stage status.** Home **Editorially verified at repository-source level**, with factual-primary-record and current-deployment checks pending. Prior site-wide visual/accessibility verification preserved as historical evidence, not falsely re-run.
 
+## Stage C-H1 automated regression follow-up
+
+The targeted Home workflow triggered by the content commit `217db8245ccc67bab995819ca95d8a0a15d23a95` initially failed in run [40880601733](https://github.com/gmoon-code/gmoon-code.github.io/actions/runs/40880601733). Its log showed **15/15 responsive widths, keyboard checks, all six print/forced-colour media cases and nested 404 passed**. The A4 checker labelled the Teaching and Research Methods Studio cards as split because it searched for the two **old paragraph openings**, which had just been editorially revised. No measured layout issue was reported by that run. This was an obsolete test assertion, not established page content damage.
+
+Updated only the two text expectations in `scripts/audit-home-route.py` to the new, exact paragraph openings, commit `b38e4d59f50351f2e870c93299cfa271a4e7357f`. The script was re-fetched and both changed expectations confirmed. Focused Home Chromium workflow [40881070247](https://github.com/gmoon-code/gmoon-code.github.io/actions/runs/40881070247) **completed successfully** on that commit and published `audit/home-route-visual = success`. This rerun covers the new homepage text and confirms its source-level and automated browser/print checks. It does not replace manual visual inspection or primary-data verification.
+
 ## Exact next continuation point
 
 **Stage C-R1, `research.html`, start at browser title/description, H1 and introductory paragraphs, then follow every section in source order.** Inventory every heading, body sentence, figure caption, citation, reference, expandable passage and link label. Check the source-to-claim relationship against linked publications and independent scholarly sources where possible; preserve its separate intellectual purpose relative to the study-detail pages. Compare recurring concepts and transitions against the Home copy just verified. Work in bounded subsections and record new source blob, exact edits, commit IDs and verified post-edit text here. Do not mark `research.html` verified based on old editorial/visitor reports.
