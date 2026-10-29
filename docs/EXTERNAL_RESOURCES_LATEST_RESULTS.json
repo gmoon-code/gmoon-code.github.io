@@ -1,0 +1,844 @@
+{
+  "pages_scanned": 19,
+  "distinct_destinations": 113,
+  "counts": {
+    "reachable": 71,
+    "unverified": 42
+  },
+  "by_category": {
+    "external": {
+      "reachable": 48,
+      "unverified": 1
+    },
+    "scholarly-identifier": {
+      "unverified": 41,
+      "reachable": 20
+    },
+    "separate-site-application": {
+      "reachable": 3
+    }
+  },
+  "issues": [
+    {
+      "url": "https://doi.org/10.1002/sce.20264",
+      "status": "unverified",
+      "category": "scholarly-identifier",
+      "pages": [
+        "teaching-ap-biology.html"
+      ],
+      "head": {
+        "code": 403,
+        "finalUrl": "https://onlinelibrary.wiley.com/doi/10.1002/sce.20264",
+        "error": "Forbidden"
+      },
+      "get": {
+        "code": 403,
+        "finalUrl": "https://onlinelibrary.wiley.com/doi/10.1002/sce.20264",
+        "error": "Forbidden"
+      },
+      "warnings": []
+    },
+    {
+      "url": "https://doi.org/10.1002/sce.20392",
+      "status": "unverified",
+      "category": "scholarly-identifier",
+      "pages": [
+        "research.html"
+      ],
+      "head": {
+        "code": 403,
+        "finalUrl": "https://onlinelibrary.wiley.com/doi/10.1002/sce.20392",
+        "error": "Forbidden"
+      },
+      "get": {
+        "code": 403,
+        "finalUrl": "https://onlinelibrary.wiley.com/doi/10.1002/sce.20392",
+        "error": "Forbidden"
+      },
+      "warnings": []
+    },
+    {
+      "url": "https://doi.org/10.1002/sce.21099",
+      "status": "unverified",
+      "category": "scholarly-identifier",
+      "pages": [
+        "research.html"
+      ],
+      "head": {
+        "code": 403,
+        "finalUrl": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21099",
+        "error": "Forbidden"
+      },
+      "get": {
+        "code": 403,
+        "finalUrl": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21099",
+        "error": "Forbidden"
+      },
+      "warnings": []
+    },
+    {
+      "url": "https://doi.org/10.1002/sce.21112",
+      "status": "unverified",
+      "category": "scholarly-identifier",
+      "pages": [
+        "research.html"
+      ],
+      "head": {
+        "code": 403,
+        "finalUrl": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21112",
+        "error": "Forbidden"
+      },
+      "get": {
+        "code": 403,
+        "finalUrl": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21112",
+        "error": "Forbidden"
+      },
+      "warnings": []
+    },
+    {
+      "url": "https://doi.org/10.1002/sce.21511",
+      "status": "unverified",
+      "category": "scholarly-identifier",
+      "pages": [
+        "research.html"
+      ],
+      "head": {
+        "code": 403,
+        "finalUrl": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21511",
+        "error": "Forbidden"
+      },
+      "get": {
+        "code": 403,
+        "finalUrl": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21511",
+        "error": "Forbidden"
+      },
+      "warnings": []
+    },
+    {
+      "url": "https://doi.org/10.1002/sce.21588",
+      "status": "unverified",
+      "category": "scholarly-identifier",
+      "pages": [
+        "research.html"
+      ],
+      "head": {
+        "code": 403,
+        "finalUrl": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21588",
+        "error": "Forbidden"
+      },
+      "get": {
+        "code": 403,
+        "finalUrl": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21588",
+        "error": "Forbidden"
+      },
+      "warnings": []
+    },
+    {
+      "url": "https://doi.org/10.1002/sce.21592",
+      "status": "unverified",
+      "category": "scholarly-identifier",
+      "pages": [
+        "research.html"
+      ],
+      "head": {
+        "code": 403,
+        "finalUrl": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21592",
+        "error": "Forbidden"
+      },
+      "get": {
+        "code": 403,
+        "finalUrl": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21592",
+        "error": "Forbidden"
+      },
+      "warnings": []
+    },
+    {
+      "url": "https://doi.org/10.1002/sce.21622",
+      "status": "unverified",
+      "category": "scholarly-identifier",
+      "pages": [
+        "research-scoping.html"
+      ],
+      "head": {
+        "code": 403,
+        "finalUrl": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21622",
+        "error": "Forbidden"
+      },
+      "get": {
+        "code": 403,
+        "finalUrl": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21622",
+        "error": "Forbidden"
+      },
+      "warnings": []
+    },
+    {
+      "url": "https://doi.org/10.1002/sce.21791",
+      "status": "unverified",
+      "category": "scholarly-identifier",
+      "pages": [
+        "research.html"
+      ],
+      "head": {
+        "code": 403,
+        "finalUrl": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21791",
+        "error": "Forbidden"
+      },
+      "get": {
+        "code": 403,
+        "finalUrl": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21791",
+        "error": "Forbidden"
+      },
+      "warnings": []
+    },
+    {
+      "url": "https://doi.org/10.1002/sce.21938",
+      "status": "unverified",
+      "category": "scholarly-identifier",
+      "pages": [
+        "research.html"
+      ],
+      "head": {
+        "code": 403,
+        "finalUrl": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21938",
+        "error": "Forbidden"
+      },
+      "get": {
+        "code": 403,
+        "finalUrl": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21938",
+        "error": "Forbidden"
+      },
+      "warnings": []
+    },
+    {
+      "url": "https://doi.org/10.1002/tea.20237",
+      "status": "unverified",
+      "category": "scholarly-identifier",
+      "pages": [
+        "research.html"
+      ],
+      "head": {
+        "code": 403,
+        "finalUrl": "https://onlinelibrary.wiley.com/doi/10.1002/tea.20237",
+        "error": "Forbidden"
+      },
+      "get": {
+        "code": 403,
+        "finalUrl": "https://onlinelibrary.wiley.com/doi/10.1002/tea.20237",
+        "error": "Forbidden"
+      },
+      "warnings": []
+    },
+    {
+      "url": "https://doi.org/10.1002/tea.20311",
+      "status": "unverified",
+      "category": "scholarly-identifier",
+      "pages": [
+        "research.html"
+      ],
+      "head": {
+        "code": 403,
+        "finalUrl": "https://onlinelibrary.wiley.com/doi/10.1002/tea.20311",
+        "error": "Forbidden"
+      },
+      "get": {
+        "code": 403,
+        "finalUrl": "https://onlinelibrary.wiley.com/doi/10.1002/tea.20311",
+        "error": "Forbidden"
+      },
+      "warnings": []
+    },
+    {
+      "url": "https://doi.org/10.1002/tea.21257",
+      "status": "unverified",
+      "category": "scholarly-identifier",
+      "pages": [
+        "research.html"
+      ],
+      "head": {
+        "code": 403,
+        "finalUrl": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21257",
+        "error": "Forbidden"
+      },
+      "get": {
+        "code": 403,
+        "finalUrl": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21257",
+        "error": "Forbidden"
+      },
+      "warnings": []
+    },
+    {
+      "url": "https://doi.org/10.1002/tea.21459",
+      "status": "unverified",
+      "category": "scholarly-identifier",
+      "pages": [
+        "research.html"
+      ],
+      "head": {
+        "code": 403,
+        "finalUrl": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21459",
+        "error": "Forbidden"
+      },
+      "get": {
+        "code": 403,
+        "finalUrl": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21459",
+        "error": "Forbidden"
+      },
+      "warnings": []
+    },
+    {
+      "url": "https://doi.org/10.1002/tea.21714",
+      "status": "unverified",
+      "category": "scholarly-identifier",
+      "pages": [
+        "research.html"
+      ],
+      "head": {
+        "code": 403,
+        "finalUrl": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21714",
+        "error": "Forbidden"
+      },
+      "get": {
+        "code": 403,
+        "finalUrl": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21714",
+        "error": "Forbidden"
+      },
+      "warnings": []
+    },
+    {
+      "url": "https://doi.org/10.1002/tea.70072",
+      "status": "unverified",
+      "category": "scholarly-identifier",
+      "pages": [
+        "research.html"
+      ],
+      "head": {
+        "code": 403,
+        "finalUrl": "https://onlinelibrary.wiley.com/doi/10.1002/tea.70072",
+        "error": "Forbidden"
+      },
+      "get": {
+        "code": 403,
+        "finalUrl": "https://onlinelibrary.wiley.com/doi/10.1002/tea.70072",
+        "error": "Forbidden"
+      },
+      "warnings": []
+    },
+    {
+      "url": "https://doi.org/10.1073/pnas.0706627104",
+      "status": "unverified",
+      "category": "scholarly-identifier",
+      "pages": [
+        "research.html"
+      ],
+      "head": {
+        "code": 403,
+        "finalUrl": "https://pnas.org/doi/full/10.1073/pnas.0706627104",
+        "error": "Forbidden"
+      },
+      "get": {
+        "code": 403,
+        "finalUrl": "https://pnas.org/doi/full/10.1073/pnas.0706627104",
+        "error": "Forbidden"
+      },
+      "warnings": []
+    },
+    {
+      "url": "https://doi.org/10.1080/03626784.2021.1947732",
+      "status": "unverified",
+      "category": "scholarly-identifier",
+      "pages": [
+        "research.html"
+      ],
+      "head": {
+        "code": 403,
+        "finalUrl": "https://www.tandfonline.com/doi/full/10.1080/03626784.2021.1947732",
+        "error": "Forbidden"
+      },
+      "get": {
+        "code": 403,
+        "finalUrl": "https://www.tandfonline.com/doi/full/10.1080/03626784.2021.1947732",
+        "error": "Forbidden"
+      },
+      "warnings": []
+    },
+    {
+      "url": "https://doi.org/10.1080/03626784.2023.2200810",
+      "status": "unverified",
+      "category": "scholarly-identifier",
+      "pages": [
+        "research.html"
+      ],
+      "head": {
+        "code": 403,
+        "finalUrl": "https://www.tandfonline.com/doi/full/10.1080/03626784.2023.2200810",
+        "error": "Forbidden"
+      },
+      "get": {
+        "code": 403,
+        "finalUrl": "https://www.tandfonline.com/doi/full/10.1080/03626784.2023.2200810",
+        "error": "Forbidden"
+      },
+      "warnings": []
+    },
+    {
+      "url": "https://doi.org/10.1080/07491409.2023.2193543",
+      "status": "unverified",
+      "category": "scholarly-identifier",
+      "pages": [
+        "research.html"
+      ],
+      "head": {
+        "code": 403,
+        "finalUrl": "https://www.tandfonline.com/doi/full/10.1080/07491409.2023.2193543",
+        "error": "Forbidden"
+      },
+      "get": {
+        "code": 403,
+        "finalUrl": "https://www.tandfonline.com/doi/full/10.1080/07491409.2023.2193543",
+        "error": "Forbidden"
+      },
+      "warnings": []
+    },
+    {
+      "url": "https://doi.org/10.1080/09500690903386435",
+      "status": "unverified",
+      "category": "scholarly-identifier",
+      "pages": [
+        "teaching-ap-chemistry.html"
+      ],
+      "head": {
+        "code": 403,
+        "finalUrl": "https://www.tandfonline.com/doi/full/10.1080/09500690903386435",
+        "error": "Forbidden"
+      },
+      "get": {
+        "code": 403,
+        "finalUrl": "https://www.tandfonline.com/doi/full/10.1080/09500690903386435",
+        "error": "Forbidden"
+      },
+      "warnings": []
+    },
+    {
+      "url": "https://doi.org/10.1080/1046560X.2022.2155355",
+      "status": "unverified",
+      "category": "scholarly-identifier",
+      "pages": [
+        "research.html"
+      ],
+      "head": {
+        "code": 403,
+        "finalUrl": "https://www.tandfonline.com/doi/full/10.1080/1046560X.2022.2155355",
+        "error": "Forbidden"
+      },
+      "get": {
+        "code": 403,
+        "finalUrl": "https://www.tandfonline.com/doi/full/10.1080/1046560X.2022.2155355",
+        "error": "Forbidden"
+      },
+      "warnings": []
+    },
+    {
+      "url": "https://doi.org/10.1080/10508400903452884",
+      "status": "unverified",
+      "category": "scholarly-identifier",
+      "pages": [
+        "research.html"
+      ],
+      "head": {
+        "code": 403,
+        "finalUrl": "https://www.tandfonline.com/doi/full/10.1080/10508400903452884",
+        "error": "Forbidden"
+      },
+      "get": {
+        "code": 403,
+        "finalUrl": "https://www.tandfonline.com/doi/full/10.1080/10508400903452884",
+        "error": "Forbidden"
+      },
+      "warnings": []
+    },
+    {
+      "url": "https://doi.org/10.1080/14675986.2015.1109775",
+      "status": "unverified",
+      "category": "scholarly-identifier",
+      "pages": [
+        "research.html"
+      ],
+      "head": {
+        "code": 403,
+        "finalUrl": "https://www.tandfonline.com/doi/full/10.1080/14675986.2015.1109775",
+        "error": "Forbidden"
+      },
+      "get": {
+        "code": 403,
+        "finalUrl": "https://www.tandfonline.com/doi/full/10.1080/14675986.2015.1109775",
+        "error": "Forbidden"
+      },
+      "warnings": []
+    },
+    {
+      "url": "https://doi.org/10.1080/14790718.2021.1898619",
+      "status": "unverified",
+      "category": "scholarly-identifier",
+      "pages": [
+        "research.html"
+      ],
+      "head": {
+        "code": 403,
+        "finalUrl": "https://www.tandfonline.com/doi/full/10.1080/14790718.2021.1898619",
+        "error": "Forbidden"
+      },
+      "get": {
+        "code": 403,
+        "finalUrl": "https://www.tandfonline.com/doi/full/10.1080/14790718.2021.1898619",
+        "error": "Forbidden"
+      },
+      "warnings": []
+    },
+    {
+      "url": "https://doi.org/10.1080/15265161.2012.680533",
+      "status": "unverified",
+      "category": "scholarly-identifier",
+      "pages": [
+        "research.html"
+      ],
+      "head": {
+        "code": 403,
+        "finalUrl": "https://www.tandfonline.com/doi/abs/10.1080/15265161.2012.680533",
+        "error": "Forbidden"
+      },
+      "get": {
+        "code": 403,
+        "finalUrl": "https://www.tandfonline.com/doi/abs/10.1080/15265161.2012.680533",
+        "error": "Forbidden"
+      },
+      "warnings": []
+    },
+    {
+      "url": "https://doi.org/10.1086/430744",
+      "status": "unverified",
+      "category": "scholarly-identifier",
+      "pages": [
+        "teaching-ap-evolution.html",
+        "writing-biological-classification.html"
+      ],
+      "head": {
+        "code": 403,
+        "finalUrl": "https://academic.oup.com/jid/article-lookup/doi/10.1086/430744",
+        "error": "Forbidden"
+      },
+      "get": {
+        "code": 403,
+        "finalUrl": "https://academic.oup.com/jid/article-lookup/doi/10.1086/430744",
+        "error": "Forbidden"
+      },
+      "warnings": []
+    },
+    {
+      "url": "https://doi.org/10.1093/applin/amab044",
+      "status": "unverified",
+      "category": "scholarly-identifier",
+      "pages": [
+        "research.html"
+      ],
+      "head": {
+        "code": 403,
+        "finalUrl": "https://academic.oup.com/applij/article/43/2/316/6375538",
+        "error": "Forbidden"
+      },
+      "get": {
+        "code": 403,
+        "finalUrl": "https://academic.oup.com/applij/article/43/2/316/6375538",
+        "error": "Forbidden"
+      },
+      "warnings": []
+    },
+    {
+      "url": "https://doi.org/10.1093/biosci/biac013",
+      "status": "unverified",
+      "category": "scholarly-identifier",
+      "pages": [
+        "research.html"
+      ],
+      "head": {
+        "code": 403,
+        "finalUrl": "https://academic.oup.com/bioscience/article/72/5/481/6547662",
+        "error": "Forbidden"
+      },
+      "get": {
+        "code": 403,
+        "finalUrl": "https://academic.oup.com/bioscience/article/72/5/481/6547662",
+        "error": "Forbidden"
+      },
+      "warnings": []
+    },
+    {
+      "url": "https://doi.org/10.1111/j.1365-2729.1991.tb00230.x",
+      "status": "unverified",
+      "category": "scholarly-identifier",
+      "pages": [
+        "teaching-ap-chemistry.html"
+      ],
+      "head": {
+        "code": 403,
+        "finalUrl": "https://onlinelibrary.wiley.com/doi/10.1111/j.1365-2729.1991.tb00230.x",
+        "error": "Forbidden"
+      },
+      "get": {
+        "code": 403,
+        "finalUrl": "https://onlinelibrary.wiley.com/doi/10.1111/j.1365-2729.1991.tb00230.x",
+        "error": "Forbidden"
+      },
+      "warnings": []
+    },
+    {
+      "url": "https://doi.org/10.1111/jedm.12000",
+      "status": "unverified",
+      "category": "scholarly-identifier",
+      "pages": [
+        "research-scoping.html"
+      ],
+      "head": {
+        "code": 403,
+        "finalUrl": "https://onlinelibrary.wiley.com/doi/10.1111/jedm.12000",
+        "error": "Forbidden"
+      },
+      "get": {
+        "code": 403,
+        "finalUrl": "https://onlinelibrary.wiley.com/doi/10.1111/jedm.12000",
+        "error": "Forbidden"
+      },
+      "warnings": []
+    },
+    {
+      "url": "https://doi.org/10.1159/000345322",
+      "status": "unverified",
+      "category": "scholarly-identifier",
+      "pages": [
+        "research.html"
+      ],
+      "head": {
+        "code": 403,
+        "finalUrl": "https://karger.com/article/doi/10.1159/000345322",
+        "error": "Forbidden"
+      },
+      "get": {
+        "code": 403,
+        "finalUrl": "https://karger.com/article/doi/10.1159/000345322",
+        "error": "Forbidden"
+      },
+      "warnings": []
+    },
+    {
+      "url": "https://doi.org/10.1177/01614681251401633",
+      "status": "unverified",
+      "category": "scholarly-identifier",
+      "pages": [
+        "research.html"
+      ],
+      "head": {
+        "code": 403,
+        "finalUrl": "https://journals.sagepub.com/doi/10.1177/01614681251401633",
+        "error": "Forbidden"
+      },
+      "get": {
+        "code": 403,
+        "finalUrl": "https://journals.sagepub.com/doi/10.1177/01614681251401633",
+        "error": "Forbidden"
+      },
+      "warnings": []
+    },
+    {
+      "url": "https://doi.org/10.1187/cbe.23-08-0157",
+      "status": "unverified",
+      "category": "scholarly-identifier",
+      "pages": [
+        "teaching-ap-biology.html"
+      ],
+      "head": {
+        "code": 403,
+        "finalUrl": "https://www.lifescied.org/doi/10.1187/cbe.23-08-0157",
+        "error": "Forbidden"
+      },
+      "get": {
+        "code": 403,
+        "finalUrl": "https://www.lifescied.org/doi/10.1187/cbe.23-08-0157",
+        "error": "Forbidden"
+      },
+      "warnings": []
+    },
+    {
+      "url": "https://doi.org/10.1207/S1532690XCI2004_1",
+      "status": "unverified",
+      "category": "scholarly-identifier",
+      "pages": [
+        "research.html"
+      ],
+      "head": {
+        "code": 403,
+        "finalUrl": "https://www.tandfonline.com/doi/abs/10.1207/S1532690XCI2004_1",
+        "error": "Forbidden"
+      },
+      "get": {
+        "code": 403,
+        "finalUrl": "https://www.tandfonline.com/doi/abs/10.1207/S1532690XCI2004_1",
+        "error": "Forbidden"
+      },
+      "warnings": []
+    },
+    {
+      "url": "https://doi.org/10.2304/ciec.2011.12.4.362",
+      "status": "unverified",
+      "category": "scholarly-identifier",
+      "pages": [
+        "research.html"
+      ],
+      "head": {
+        "code": 403,
+        "finalUrl": "https://journals.sagepub.com/doi/10.2304/ciec.2011.12.4.362",
+        "error": "Forbidden"
+      },
+      "get": {
+        "code": 403,
+        "finalUrl": "https://journals.sagepub.com/doi/10.2304/ciec.2011.12.4.362",
+        "error": "Forbidden"
+      },
+      "warnings": []
+    },
+    {
+      "url": "https://doi.org/10.3102/0013189X20927363",
+      "status": "unverified",
+      "category": "scholarly-identifier",
+      "pages": [
+        "research.html",
+        "writing-biological-classification.html"
+      ],
+      "head": {
+        "code": 403,
+        "finalUrl": "https://journals.sagepub.com/doi/10.3102/0013189X20927363",
+        "error": "Forbidden"
+      },
+      "get": {
+        "code": 403,
+        "finalUrl": "https://journals.sagepub.com/doi/10.3102/0013189X20927363",
+        "error": "Forbidden"
+      },
+      "warnings": []
+    },
+    {
+      "url": "https://doi.org/10.3102/0013189X231206172",
+      "status": "unverified",
+      "category": "scholarly-identifier",
+      "pages": [
+        "research.html"
+      ],
+      "head": {
+        "code": 403,
+        "finalUrl": "https://journals.sagepub.com/doi/10.3102/0013189X231206172",
+        "error": "Forbidden"
+      },
+      "get": {
+        "code": 403,
+        "finalUrl": "https://journals.sagepub.com/doi/10.3102/0013189X231206172",
+        "error": "Forbidden"
+      },
+      "warnings": []
+    },
+    {
+      "url": "https://doi.org/10.3102/0034654314558490",
+      "status": "unverified",
+      "category": "scholarly-identifier",
+      "pages": [
+        "research.html"
+      ],
+      "head": {
+        "code": 403,
+        "finalUrl": "https://journals.sagepub.com/doi/10.3102/0034654314558490",
+        "error": "Forbidden"
+      },
+      "get": {
+        "code": 403,
+        "finalUrl": "https://journals.sagepub.com/doi/10.3102/0034654314558490",
+        "error": "Forbidden"
+      },
+      "warnings": []
+    },
+    {
+      "url": "https://doi.org/10.3138/cmlr-2021-0055",
+      "status": "unverified",
+      "category": "scholarly-identifier",
+      "pages": [
+        "research.html"
+      ],
+      "head": {
+        "code": 403,
+        "finalUrl": "https://utppublishing.com/doi/10.3138/cmlr-2021-0055",
+        "error": "Forbidden"
+      },
+      "get": {
+        "code": 403,
+        "finalUrl": "https://utppublishing.com/doi/10.3138/cmlr-2021-0055",
+        "error": "Forbidden"
+      },
+      "warnings": []
+    },
+    {
+      "url": "https://doi.org/10.3390/plants10081501",
+      "status": "unverified",
+      "category": "scholarly-identifier",
+      "pages": [
+        "teaching-ap-biology.html"
+      ],
+      "head": {
+        "code": 403,
+        "finalUrl": "https://www.mdpi.com/2223-7747/10/8/1501",
+        "error": "Forbidden"
+      },
+      "get": {
+        "code": 403,
+        "finalUrl": "https://www.mdpi.com/2223-7747/10/8/1501",
+        "error": "Forbidden"
+      },
+      "warnings": []
+    },
+    {
+      "url": "https://onlinelibrary.wiley.com/doi/full/10.1002/sce.21622",
+      "status": "unverified",
+      "category": "external",
+      "pages": [
+        "research-scoping.html"
+      ],
+      "head": {
+        "code": 403,
+        "finalUrl": "https://onlinelibrary.wiley.com/doi/full/10.1002/sce.21622",
+        "error": "Forbidden"
+      },
+      "get": {
+        "code": 403,
+        "finalUrl": "https://onlinelibrary.wiley.com/doi/full/10.1002/sce.21622",
+        "error": "Forbidden"
+      },
+      "warnings": []
+    }
+  ],
+  "important_apps": [
+    {
+      "url": "https://gmoon-code.github.io/memory-palace-u1-8/",
+      "status": "reachable",
+      "finalUrl": "https://gmoon-code.github.io/memory-palace-u1-8/"
+    },
+    {
+      "url": "https://gmoon-code.github.io/memory-palace-u1-8/?unit=unit-1",
+      "status": "reachable",
+      "finalUrl": "https://gmoon-code.github.io/memory-palace-u1-8/?unit=unit-1"
+    },
+    {
+      "url": "https://gmoon-code.github.io/research-methods/",
+      "status": "reachable",
+      "finalUrl": "https://gmoon-code.github.io/research-methods/"
+    }
+  ],
+  "limits": "HTTP availability is not content authenticity or DOI landing-page accuracy. 403, 429, DNS, SSL, and timeout results remain unverified.",
+  "workflow_run_id": "40849877727",
+  "head_sha": "9bc69649cf30f34fa2d42e01c3b1781f0f9b2469",
+  "audit_exit_code": "0"
+}
