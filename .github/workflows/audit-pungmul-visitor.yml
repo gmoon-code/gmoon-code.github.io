@@ -1,0 +1,58 @@
+name: Pungmul visitor audit
+on:
+  push:
+    branches: [main]
+    paths:
+      - "pungmul.html"
+      - "pungmul.css"
+      - "styles-20261013.css"
+      - "site-theme.css"
+      - "appearance.css"
+      - "appearance.js"
+      - "responsive-personal-media.js"
+      - "scripts/audit-pungmul-visitor.py"
+      - ".github/workflows/audit-pungmul-visitor.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+  statuses: write
+jobs:
+  visitor-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Chromium and PDF/image tools
+        run: |
+          python -m pip install playwright==1.57.0 PyMuPDF==1.26.7 pillow
+          python -m playwright install --with-deps chromium
+      - name: Audit public Pungmul visitor page and source photographs
+        run: |
+          python -m http.server 8773 --bind 127.0.0.1 >/tmp/pungmul-http.log 2>&1 &
+          python scripts/audit-pungmul-visitor.py
+      - name: Archive exact source snapshot
+        if: always()
+        run: |
+          mkdir -p pungmul-audit-output/source
+          cp pungmul.html pungmul.css styles-20261013.css site-theme.css appearance.css appearance.js responsive-personal-media.js pungmul-audit-output/source/
+      - name: Preserve browser/PDF/sources evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pungmul-visitor-evidence
+          path: pungmul-audit-output/
+          retention-days: 7
+      - name: Set audit commit status
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RESULT: ${{ job.status }}
+        run: |
+          if [ "$RESULT" = "success" ]; then state=success; else state=failure; fi
+          gh api -X POST "repos/$GITHUB_REPOSITORY/statuses/$GITHUB_SHA" \
+            -f state="$state" -f context="audit/pungmul-visitor" \
+            -f target_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" \
+            -f description="Pungmul visitor browser and A4 audit: $RESULT"
