@@ -2331,3 +2331,33 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
     page-break-after:avoid;
   }
 }
+
+
+/* Evolution teaching case: visitor-facing spacing and A4 grouping. */
+#main.teaching-evolution-case{padding-bottom:64px}
+#main.teaching-evolution-case+.site-footer{margin-top:36px}
+@media print{
+  #main.teaching-evolution-case{padding-bottom:0}
+  .teaching-evolution-case .teaching-case-section{padding:18px 0}
+  .teaching-evolution-case .editorial-figure,
+  .teaching-evolution-case .teaching-original-prompt,
+  .teaching-evolution-case .teaching-sequence-table tbody tr{
+    break-inside:avoid;
+    page-break-inside:avoid;
+  }
+  .teaching-evolution-case .hbs-figure{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+  }
+  .teaching-evolution-case .hbs-figure-stage{min-height:0}
+  .teaching-evolution-case .section-head{
+    break-after:avoid;
+    page-break-after:avoid;
+  }
+  .teaching-evolution-case #variation-sequence,
+  .teaching-evolution-case #variation-assessment,
+  .teaching-evolution-case #variation-ethics,
+  .teaching-evolution-case #variation-sources{
+    break-before:page;
+    page-break-before:always;
+  }
+}
