@@ -170,7 +170,7 @@ async def main():
                                        "left":"12mm","right":"12mm"})
             (OUT/"teaching-A4.pdf").write_bytes(raw)
             doc=fitz.open(stream=raw,filetype="pdf")
-            pages=[re.sub(r"\\s+"," ",p.get_text("text")) for p in doc]
+            pages=[re.sub(r"\s+"," ",p.get_text("text")) for p in doc]
             pairs=[
                 ("Classroom action research and assessment","My AP Biology action research"),
                 ("Curriculum proposals","The following sequences are newly"),
