@@ -13,6 +13,9 @@ on:
   workflow_dispatch:
 permissions:
   contents: write
+concurrency:
+  group: action-research-visitor-main
+  cancel-in-progress: false
 jobs:
   visitor-audit:
     runs-on: ubuntu-latest
@@ -69,13 +72,39 @@ jobs:
           PY
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/ACTION_VISITOR_LATEST_RESULTS.json
-          if ! git diff --cached --quiet; then
-            git commit -m "Record latest action research visitor audit results [skip ci]"
+          cp docs/ACTION_VISITOR_LATEST_RESULTS.json /tmp/action-visitor-result.json
+          for attempt in 1 2 3 4; do
             git fetch origin main
-            git rebase origin/main
-            git push origin HEAD:main
-          fi
+            git reset --hard origin/main
+            python - <<'PY'
+          import json
+          from pathlib import Path
+          incoming=json.loads(Path("/tmp/action-visitor-result.json").read_text())
+          p=Path("docs/ACTION_VISITOR_LATEST_RESULTS.json")
+          if p.exists():
+              existing=json.loads(p.read_text())
+              if int(existing.get("workflow_run_id") or 0)>int(incoming.get("workflow_run_id") or 0):
+                  Path("/tmp/action-visitor-newer-exists").touch()
+          PY
+            if [ -f /tmp/action-visitor-newer-exists ]; then
+              echo "A more recent visitor audit already published; preserving it."
+              break
+            fi
+            cp /tmp/action-visitor-result.json docs/ACTION_VISITOR_LATEST_RESULTS.json
+            git add docs/ACTION_VISITOR_LATEST_RESULTS.json
+            if git diff --cached --quiet; then
+              echo "Visitor audit result already current."
+              break
+            fi
+            git commit -m "Record latest action research visitor audit results [skip ci]"
+            if git push origin HEAD:main; then
+              break
+            fi
+            if [ "$attempt" -eq 4 ]; then
+              echo "Could not publish after four conflict-safe attempts."
+              exit 1
+            fi
+          done
         env:
           AUDIT_EXIT_CODE: ${{ steps.audit.outputs.exit_code }}
       - uses: actions/upload-artifact@v4
