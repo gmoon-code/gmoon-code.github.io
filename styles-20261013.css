@@ -2250,3 +2250,8 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
     break-inside:avoid-page!important;
   }
 }
+
+/* Teaching overview: consistent content-to-footer spacing without altering other pages. */
+#main.teaching-page{padding-bottom:30px}
+#main.teaching-page+.site-footer{margin-top:36px}
+@media print{#main.teaching-page{padding-bottom:0}}
