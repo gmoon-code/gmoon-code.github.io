@@ -126,6 +126,8 @@ async def main():
                                     reduced_motion="reduce")
         try:
             await page.goto(BASE+"/teaching.html",wait_until="load",timeout=25000)
+            # Avoid sampling mid-animation after fragment navigation.
+            await page.evaluate("document.documentElement.style.scrollBehavior='auto'")
             await page.keyboard.press("Tab")
             first=await page.evaluate(
                 "document.activeElement.getAttribute('href')")
