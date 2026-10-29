@@ -157,6 +157,50 @@ async def main():
             results.append({"page":"teaching-keyboard","error":str(err)})
         finally:
             await page.close()
+        # Real A4 pagination reveals heading orphans hidden in full-height captures.
+        import fitz
+        import re
+        page=await browser.new_page(viewport={"width":1440,"height":900},
+                                    reduced_motion="reduce")
+        try:
+            await page.goto(BASE+"/teaching.html",wait_until="load",timeout=25000)
+            raw=await page.pdf(format="A4",print_background=True,
+                               display_header_footer=False,
+                               margin={"top":"12mm","bottom":"12mm",
+                                       "left":"12mm","right":"12mm"})
+            (OUT/"teaching-A4.pdf").write_bytes(raw)
+            doc=fitz.open(stream=raw,filetype="pdf")
+            pages=[re.sub(r"\\s+"," ",p.get_text("text")) for p in doc]
+            pairs=[
+                ("Classroom action research and assessment","My AP Biology action research"),
+                ("Curriculum proposals","The following sequences are newly"),
+                ("Curriculum and assessment planning","When planning an assessment"),
+                ("Mentoring independent student research","Alongside my AP courses"),
+                ("References and course frameworks","Black, P.")]
+            stranded=[heading for heading,first in pairs if not any(
+                heading in p and first in p for p in pages)]
+            needed=["Teaching science","Classroom action research and assessment",
+                    "Curriculum proposals","Mentoring independent student research",
+                    "References and course frameworks"]
+            missing=[name for name in needed if not any(name in p for p in pages)]
+            errs=[]
+            if not 1<=len(doc)<=9:errs.append("Unexpected A4 page count")
+            if missing:errs.append("Printed headings missing: "+", ".join(missing))
+            if stranded:errs.append("Printed heading orphaned: "+", ".join(stranded))
+            for i,p in enumerate(doc):
+                p.get_pixmap(matrix=fitz.Matrix(1.05,1.05)).save(
+                    str(OUT/f"teaching-A4-{i+1}.png"))
+            results.append({"page":"teaching-print-A4","pageCount":len(doc),
+                            "stranded":stranded,"missing":missing,
+                            "pageChars":[len(p) for p in pages],"errors":errs})
+            print("TEACHING A4","PASS" if not errs else errs,
+                  "sheets",len(doc),flush=True)
+            doc.close()
+        except Exception as err:
+            results.append({"page":"teaching-print-A4","error":str(err)})
+            print("TEACHING A4 ERROR",str(err),flush=True)
+        finally:
+            await page.close()
         await browser.close()
     (OUT/"report.json").write_text(
         json.dumps(results,indent=2,ensure_ascii=False),encoding="utf8")
