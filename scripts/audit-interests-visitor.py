@@ -6,7 +6,7 @@ from playwright.async_api import async_playwright
 
 BASE="http://127.0.0.1:8772/interests.html"
 OUT=Path("interests-audit-output")
-WIDTHS=(320,375,599,600,700,701,768,850,1024,1025,1140,1440)
+WIDTHS=(320,375,400,539,540,599,600,700,701,768,850,1024,1025,1140,1440)
 
 async def main():
     OUT.mkdir(exist_ok=True)
@@ -75,6 +75,8 @@ async def main():
                 if data["photoCount"]!=2 or any(not x["loaded"] or not x["alt"] for x in data["photos"]):
                     errors.append("added photo unloaded or inaccessible")
                 if data["mediaEntries"]!=5:errors.append("media card count")
+                if len(data["bookImages"])!=5 or any(not x["loaded"] or not x["alt"] for x in data["bookImages"]):
+                    errors.append("remote book cover or media wordmark unavailable")
                 if any(x["parent"]!="pungmul-gallery" for x in data["photos"]):
                     errors.append("visitor photos not in accessible gallery")
                 if data["photoToPhotoOverlap"]>0 or any(any(v>0 for v in r) for r in data["photoParagraphOverlap"]):
