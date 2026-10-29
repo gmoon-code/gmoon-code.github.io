@@ -2321,9 +2321,12 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
     break-after:avoid;
     page-break-after:avoid;
   }
-  .teaching-chem-case #chem-assessment,
-  .teaching-chem-case #chem-disturbance-check{
+  .teaching-chem-case #chem-assessment{
     break-before:page;
     page-break-before:always;
+  }
+  .teaching-chem-case #chem-disturbance-check>.section-head{
+    break-after:avoid-page;
+    page-break-after:avoid;
   }
 }
