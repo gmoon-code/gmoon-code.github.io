@@ -20,6 +20,15 @@ PAGES=["research.html","research-scoping.html","writing-biological-classificatio
        "teaching-ap-biology.html","teaching-ap-chemistry.html","teaching-ap-evolution.html",
        "teaching.html","research-action.html","cv.html"]
 PREPRINT="10.35542/osf.io/kznvj_v1"
+# Independently verified journal-issue years. OpenAlex currently reports
+# the earlier online publication for these two otherwise matching articles.
+# Gonsalves: Cultural Studies of Science Education 9(2), 503–521 (2014).
+# Rajendram: International Journal of Multilingualism 20(2), 595–622 (2023).
+# Publisher issue pages:
+# https://link.springer.com/article/10.1007/s11422-012-9447-6
+# https://www.tandfonline.com/doi/full/10.1080/14790718.2021.1898619
+ISSUE_YEAR={"10.1007/s11422-012-9447-6":2014,
+            "10.1080/14790718.2021.1898619":2023}
 UA="AcademicWebsiteScholarlyMetadataReview/1.0 (https://gmoon-code.github.io/)"
 def request(url,timeout=8):
     req=Request(url,headers={"User-Agent":UA,"Accept":"application/json"})
@@ -156,15 +165,19 @@ def main():
             authors=metadata.get("authors") or []
             first_author_family=normalize(authors[0]).split()[-1] if authors and authors[0] else None
             author_match=(first_author_family in normalize(reference).split()) if first_author_family and is_full_entry else None
+            issue_year=ISSUE_YEAR.get(doi.lower())
+            issue_year_correct=(issue_year is not None and stated==issue_year)
+            issue_year_wrong=(issue_year is not None and stated is not None and stated!=issue_year)
             outcome="unverified" if is_full_entry else "inline-or-narrative"
             if title and match is not None:
-                if match<.68 or (year_difference is not None and year_difference>1) or author_match is False:
+                if (match<.68 or author_match is False or issue_year_wrong or
+                    ((year_difference is not None and year_difference>1) and not issue_year_correct)):
                     outcome="review"
                 else:outcome="consistent"
             item={**use,"doi":doi,"indexTitle":title,"indexYear":actual,
                   "indexAuthors":metadata.get("authors"),"indexVenue":metadata.get("venue"),
                   "firstAuthorMatch":author_match,"titleWordMatch":match,"yearDifference":year_difference,
-                  "metadataHttp":metadata.get("http"),"outcome":outcome}
+                  "issueYearVerified":issue_year,"metadataHttp":metadata.get("http"),"outcome":outcome}
             checks.append(item)
             if outcome=="review":manual.append(item)
             if outcome=="consistent":passed.append(item)
