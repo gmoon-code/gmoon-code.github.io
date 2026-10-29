@@ -1,0 +1,110 @@
+{
+  "sourceHead": "3e4f789f0bf6a99390240f1124f5750429abd7d9",
+  "htmlRoutes": 19,
+  "sharedAssets": 5,
+  "deployedChecks": 24,
+  "verifiedExactMatches": 24,
+  "httpErrors": 0,
+  "customNested404": {
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-3e4f789f0bf6",
+    "status": 404,
+    "custom404": true,
+    "errors": []
+  },
+  "auditEvidence": {
+    "links": {
+      "report": "docs/PUBLIC_LINKGRAPH_LATEST_RESULTS.json",
+      "run": "40872270732",
+      "head_sha": "523b66d55f525803d3b4ad96226458dcc9c6a9ca",
+      "exit": "0",
+      "sourceModifiedSinceAudit": [],
+      "failureCounts": {
+        "problems": 0
+      }
+    },
+    "external": {
+      "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
+      "run": "40872270701",
+      "head_sha": "523b66d55f525803d3b4ad96226458dcc9c6a9ca",
+      "exit": "0",
+      "sourceModifiedSinceAudit": [],
+      "failureCounts": {
+        "issues": 42
+      },
+      "counts": {
+        "reachable": 71,
+        "unverified": 42
+      }
+    },
+    "metadata": {
+      "report": "docs/RESEARCH_METADATA_LATEST_RESULTS.json",
+      "run": "40872270669",
+      "head_sha": "523b66d55f525803d3b4ad96226458dcc9c6a9ca",
+      "exit": "0",
+      "sourceModifiedSinceAudit": [],
+      "failureCounts": {
+        "unverified": 0
+      },
+      "counts": {
+        "inline-or-narrative": 2,
+        "consistent": 65
+      },
+      "uniqueDoi": 59
+    },
+    "reflow": {
+      "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
+      "run": "40872270878",
+      "head_sha": "523b66d55f525803d3b4ad96226458dcc9c6a9ca",
+      "exit": "0",
+      "sourceModifiedSinceAudit": [],
+      "failureCounts": {
+        "failures": 0
+      }
+    },
+    "engines": {
+      "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
+      "run": "40872270839",
+      "head_sha": "523b66d55f525803d3b4ad96226458dcc9c6a9ca",
+      "exit": "0",
+      "sourceModifiedSinceAudit": [],
+      "failureCounts": {
+        "failures": 0
+      }
+    },
+    "typography": {
+      "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
+      "run": "40872270816",
+      "head_sha": "523b66d55f525803d3b4ad96226458dcc9c6a9ca",
+      "exit": "0",
+      "sourceModifiedSinceAudit": [],
+      "failureCounts": {
+        "failures": 0,
+        "combinedStressFailures": 0
+      }
+    },
+    "interactions": {
+      "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
+      "run": "40875089499",
+      "head_sha": "3928ee17f7656d8155aca81b54f0cdd25581e904",
+      "exit": "0",
+      "sourceModifiedSinceAudit": [],
+      "failureCounts": {
+        "failures": 0,
+        "axeViolations": 0
+      }
+    },
+    "utility": {
+      "legacyMachineRun": "40844468852",
+      "legacyExit": "2",
+      "supersededSuccessfulRun": 40825886279,
+      "note": "U1 route audit documents successful run 40825886279; legacy utility machine report refers to an early missing-script failure. Do not treat it as latest successful evidence."
+    }
+  },
+  "sourceDriftSinceAudits": [],
+  "pass": true,
+  "errors": [],
+  "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
+  "workflow_run_id": "40878439734",
+  "run_sha": "3e4f789f0bf6a99390240f1124f5750429abd7d9",
+  "exit_code": "0"
+}
