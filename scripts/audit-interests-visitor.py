@@ -35,8 +35,8 @@ async def main():
                         Math.max(0,Math.min(A.bottom,B.bottom)-Math.max(A.top,B.top));
                     const rect=e=>{let x=r(e);return {left:x.left,right:x.right,top:x.top,bottom:x.bottom};};
                     const imgState=e=>({alt:e.alt,loaded:e.complete&&e.naturalWidth>0,
-                        srcType:e.currentSrc.startsWith('data:')?'embedded':new URL(e.currentSrc).host,
-                        box:b(e),parent:e.parentElement?.className||e.parentElement?.tagName,
+                        srcType:e.currentSrc.startsWith('data:')?'embedded':(e.currentSrc?new URL(e.currentSrc).host:'unresolved'),
+                        box:b(e),parent:e.parentElement?.hasAttribute('data-moon-v2-added-layer')?'added-layer':(e.parentElement?.className||e.parentElement?.tagName),
                         opacity:getComputedStyle(e).opacity,display:getComputedStyle(e).display,
                         z:getComputedStyle(e).zIndex});
                     return {
@@ -77,7 +77,7 @@ async def main():
                 if data["mediaEntries"]!=5:errors.append("media card count")
                 if width<=700 and any(x["parent"]!="pungmul-gallery" for x in data["photos"]):
                     errors.append("phone photos not in gallery")
-                if width>700 and any("data-moon-v2-added-layer" not in x["parent"] for x in data["photos"]):
+                if width>700 and any(x["parent"]!="added-layer" for x in data["photos"]):
                     errors.append("desktop photos misplaced")
                 if any(x["box"]["left"] < -3 or x["box"]["right"]>width+3 for x in data["photos"]):
                     errors.append("photo escapes visible page")
