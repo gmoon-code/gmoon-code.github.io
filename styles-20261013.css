@@ -2400,8 +2400,27 @@ img.studio-frame-wide{aspect-ratio:21/9;object-fit:cover;height:auto}
 #main.research-action-page+.site-footer{margin-top:36px}
 @media print{
   #main.research-action-page{padding-bottom:0!important}
+  #main.research-action-page>.section{padding-block:14px!important}
   #main.research-action-page>.section>.section-head{
-    break-after:avoid-page;
-    page-break-after:avoid;
+    break-after:avoid-page!important;
+    page-break-after:avoid!important;
   }
+  #main.research-action-page .section-head h2{
+    background:transparent!important;
+    color:#111!important;
+    text-decoration:none!important;
+    border-bottom:1px solid #777;
+    padding:0 0 5px!important;
+  }
+  #main.research-action-page .research-cycle li{
+    break-inside:avoid-page;
+    page-break-inside:avoid;
+  }
+  #main.research-action-page .research-table-wrap{
+    overflow:visible!important;
+    break-inside:avoid-page;
+    page-break-inside:avoid;
+  }
+  /* On paper, navigation links are not part of the research argument. */
+  #main.research-action-page .research-return{display:none!important}
 }
