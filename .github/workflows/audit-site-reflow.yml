@@ -1,0 +1,70 @@
+name: S4 public accessibility and reflow regression
+on:
+  push:
+    branches: [main]
+    paths:
+      - "*.html"
+      - "styles-20261013.css"
+      - "appearance.css"
+      - "site-theme.css"
+      - "appearance.js"
+      - "scripts/audit-site-reflow.py"
+      - ".github/workflows/audit-site-reflow.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  public-reflow:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install browser and pinned axe scanner
+        run: |
+          npm install --no-save --ignore-scripts --no-audit --no-fund axe-core@4.14.0
+          python -m pip install playwright==1.57.0
+          python -m playwright install --with-deps chromium
+      - name: Run bounded public accessibility and CSS reflow tests
+        id: check
+        run: |
+          python -m http.server 8765 --bind 127.0.0.1 > /tmp/s4-site-http.log 2>&1 &
+          set +e
+          python scripts/audit-site-reflow.py 2>&1 | tee s4-accessibility.log
+          code=${PIPESTATUS[0]}
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit "$code"
+      - name: Publish compact result
+        if: always() && github.ref == 'refs/heads/main'
+        env:
+          CODE: ${{ steps.check.outputs.exit_code }}
+        run: |
+          mkdir -p docs
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          p=Path("accessibility-reflow-output/summary.json")
+          s=json.loads(p.read_text()) if p.exists() else {"failures":[{"error":"script failed to produce summary"}]}
+          s.update(workflow_run_id=os.getenv("GITHUB_RUN_ID"),head_sha=os.getenv("GITHUB_SHA"),exit_code=os.getenv("CODE"))
+          Path("docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json").write_text(json.dumps(s,indent=2,ensure_ascii=False)+"\n")
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Record S4 public axe and reflow results [skip ci]"
+            git fetch origin main
+            git rebase origin/main
+            git push origin HEAD:main
+          fi
+      - name: Preserve screenshot and full-case diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: s4-public-reflow-evidence
+          path: |
+            accessibility-reflow-output/
+            s4-accessibility.log
+          retention-days: 14
