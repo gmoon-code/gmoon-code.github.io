@@ -308,3 +308,14 @@ html[data-moon-theme="dark"] :is(.mechanism-start,.mechanism-outcome){
 html[data-moon-theme="dark"] .skip-link:focus{
  border:2px solid var(--moon-link-accent);outline:2px solid var(--moon-link-accent);
 }
+
+
+/* AP Biology evidence diagram: legacy light-only ink was invisible on the
+   dark mechanism surface. Keep the correction within this teaching case. */
+html[data-moon-theme="dark"] .teaching-bio-case
+:is(.bio-mechanism-start span,.bio-mechanism-result p){
+ color:var(--moon-ink);
+}
+html[data-moon-theme="dark"] .teaching-bio-case .teaching-step-code{
+ color:var(--moon-muted);
+}
