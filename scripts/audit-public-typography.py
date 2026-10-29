@@ -29,6 +29,22 @@ summary,blockquote,td,th,dt,dd,strong,em,div,section,article,nav,main,footer,hea
 }
 html body p {margin-bottom:2em !important}
 """
+# Force user preference values directly on authored nodes. An injected author
+# stylesheet is lower priority than a more specific author !important rule,
+# whereas a real user-origin !important stylesheet wins the CSS cascade.
+# Inline overrides are a deliberate approximation of that user-origin priority.
+SPACING_USER_OVERRIDE=r"""() => {
+ const selector='h1,h2,h3,h4,h5,h6,p,li,a,span,small,label,button,figcaption,summary,blockquote,td,th,dt,dd,strong,em,div,section,article,nav,main,footer,header';
+ let count=0;
+ document.querySelectorAll('body '+selector).forEach(el=>{
+  el.style.setProperty('line-height','1.5','important');
+  el.style.setProperty('letter-spacing','0.12em','important');
+  el.style.setProperty('word-spacing','0.16em','important');
+  if(el.tagName==='P') el.style.setProperty('margin-bottom','2em','important');
+  count++;
+ });
+ return count;
+}"""
 TEXT_RESIZE=r"""() => {
  const tags=new Set(['H1','H2','H3','H4','H5','H6','P','LI','A','SPAN','SMALL','LABEL',
  'BUTTON','FIGCAPTION','SUMMARY','BLOCKQUOTE','TD','TH','DT','DD','STRONG','EM',
@@ -104,6 +120,7 @@ async def test(browser,engine,page_name,width,mode):
         baseline=await page.evaluate(METRICS)
         if mode in ("spacing","combined"):
             await page.add_style_tag(content=SPACING_STYLE)
+            row["userOverrideElements"]=await page.evaluate(SPACING_USER_OVERRIDE)
         if mode in ("text200","combined"):
             row["scaledTextElements"]=await page.evaluate(TEXT_RESIZE)
         metrics=await page.evaluate(METRICS)
@@ -194,7 +211,7 @@ async def main():
      "byEngine":{e:{"cases":sum(x["engine"]==e for x in results),
        "individualFailures":sum(x["engine"]==e and x["mode"]!="combined" and bool(x["errors"]) for x in results),
        "combinedStressFailures":sum(x["engine"]==e and x["mode"]=="combined" and bool(x["errors"]) for x in results)} for e in ("chromium","firefox")},
-     "caveats":"The two reading preference tests apply independently. Combined maximum-spacing plus 200% text at 320 CSS pixels is explicitly a supplementary stress case, and any such overflow remains open even when the independent-test exit code is zero. User-style injections are not native browser text-only zoom. Automated results do not certify WCAG."}
+     "caveats":"The two reading preference tests apply independently. Combined maximum-spacing plus 200% text at 320 CSS pixels is explicitly a supplementary stress case, and any such overflow remains open even when the independent-test exit code is zero. Inline spacing overrides model the priority of a user-origin accessibility stylesheet over author-important declarations, but are not an actual browser user-stylesheet installation. Computed font-size doubling is not native browser text-only zoom. Automated results do not certify WCAG."}
     (OUT/"report.json").write_text(json.dumps(results,ensure_ascii=False,indent=2)+"\n")
     (OUT/"summary.json").write_text(json.dumps(summary,ensure_ascii=False,indent=2)+"\n")
     print(json.dumps(summary,ensure_ascii=False,indent=2),flush=True)
