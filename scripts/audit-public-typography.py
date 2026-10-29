@@ -61,7 +61,7 @@ METRICS=r"""() => {
    scrollWidth:e.scrollWidth,clientWidth:e.clientWidth,
    scrollHeight:e.scrollHeight,clientHeight:e.clientHeight
  }};
- const rendered=texts.filter(visible);
+ const rendered=texts.filter(visible).filter(e=>!e.closest('.new-tab-note'));
  const outside=rendered.filter(e=>!scrollContainer(e)).filter(e=>{
    const r=e.getBoundingClientRect();
    return r.left< -3||r.right>w+3;
@@ -82,11 +82,15 @@ METRICS=r"""() => {
    }
    return false;
  }).slice(0,12).map(desc);
+ const culprits=[...document.querySelectorAll('body *')].filter(visible).filter(e=>{
+  const r=e.getBoundingClientRect();return r.right>w+2||r.left< -3
+ }).sort((a,b)=>a.getBoundingClientRect().width-b.getBoundingClientRect().width)
+ .slice(0,18).map(desc);
  const sampleP=[...document.querySelectorAll('main p')].find(visible);
  const pStyle=sampleP?getComputedStyle(sampleP):null;
  return {viewport:w,documentWidth:root.scrollWidth,mainCount:document.querySelectorAll('main').length,
   h1Count:document.querySelectorAll('main h1').length,
-  textElements:rendered.length,outside,clipped,parentClips,
+  textElements:rendered.length,outside,clipped,parentClips,culprits,
   paragraphStyle:pStyle?{fontSize:pStyle.fontSize,lineHeight:pStyle.lineHeight,letterSpacing:pStyle.letterSpacing,
    wordSpacing:pStyle.wordSpacing,marginBottom:pStyle.marginBottom}:null};
 }"""
