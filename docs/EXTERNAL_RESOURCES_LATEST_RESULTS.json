@@ -841,10 +841,10 @@
   "doi_registry": {
     "checked": 41,
     "counts": {
-      "registered": 29,
-      "not-confirmed": 12
+      "registered": 23,
+      "not-confirmed": 18
     },
-    "secondary_index_matches": 12,
+    "secondary_index_matches": 18,
     "not_confirmed": [
       {
         "url": "https://doi.org/10.1002/sce.21099",
@@ -863,20 +863,36 @@
         "indexedYear": 2014
       },
       {
-        "url": "https://doi.org/10.1002/sce.21112",
-        "doi": "10.1002/sce.21112",
+        "url": "https://doi.org/10.1002/sce.21588",
+        "doi": "10.1002/sce.21588",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21112",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21588",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Examining Classroom Science Practice Communities: How Teachers and Students Negotiate Epistemic Agency and Learn Science‐as‐Practice",
-        "indexedYear": 2014
+        "indexedTitle": "“Estoy Explorando Science”: Emergent bilingual students problematizing electrical phenomena through translanguaging",
+        "indexedYear": 2020
+      },
+      {
+        "url": "https://doi.org/10.1002/sce.21592",
+        "doi": "10.1002/sce.21592",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21592",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Acting with epistemic agency: Characterizing student critique during argumentation discussions",
+        "indexedYear": 2020
       },
       {
         "url": "https://doi.org/10.1002/sce.21938",
@@ -895,6 +911,22 @@
         "indexedYear": 2025
       },
       {
+        "url": "https://doi.org/10.1002/tea.20237",
+        "doi": "10.1002/tea.20237",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.20237",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Understanding the science experiences of successful women of color: Science identity as an analytic lens",
+        "indexedYear": 2007
+      },
+      {
         "url": "https://doi.org/10.1002/tea.20311",
         "doi": "10.1002/tea.20311",
         "pages": [
@@ -911,69 +943,116 @@
         "indexedYear": 2009
       },
       {
-        "url": "https://doi.org/10.1073/pnas.0706627104",
-        "doi": "10.1073/pnas.0706627104",
+        "url": "https://doi.org/10.1002/tea.21257",
+        "doi": "10.1002/tea.21257",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://pnas.org/doi/full/10.1073/pnas.0706627104",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21257",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Cultural mosaics and mental models of nature",
-        "indexedYear": 2007
+        "indexedTitle": "Epistemologies in practice: Making scientific practices meaningful for students",
+        "indexedYear": 2015
       },
       {
-        "url": "https://doi.org/10.1080/03626784.2021.1947732",
-        "doi": "10.1080/03626784.2021.1947732",
+        "url": "https://doi.org/10.1002/tea.21714",
+        "doi": "10.1002/tea.21714",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/03626784.2021.1947732",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21714",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Getting dirty and coming clean: Sex education and the problem of expertise",
+        "indexedTitle": "Science engagement as insight into the science identity work nurtured in community‐based science clubs",
         "indexedYear": 2021
       },
       {
-        "url": "https://doi.org/10.1080/15265161.2012.680533",
-        "doi": "10.1080/15265161.2012.680533",
+        "url": "https://doi.org/10.1002/tea.70072",
+        "doi": "10.1002/tea.70072",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://www.tandfonline.com/doi/abs/10.1080/15265161.2012.680533",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.70072",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Out of Bounds? A Critique of the New Policies on Hyperandrogenism in Elite Female Athletes",
-        "indexedYear": 2012
+        "indexedTitle": "Students' Construction, Evaluation, and Revision of Scientific Models Through Multimodal Representations",
+        "indexedYear": 2026
       },
       {
-        "url": "https://doi.org/10.1086/430744",
-        "doi": "10.1086/430744",
+        "url": "https://doi.org/10.1080/03626784.2023.2200810",
+        "doi": "10.1080/03626784.2023.2200810",
         "pages": [
-          "teaching-ap-evolution.html",
-          "writing-biological-classification.html"
+          "research.html"
         ],
-        "publisherLanding": "https://academic.oup.com/jid/article-lookup/doi/10.1086/430744",
+        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/03626784.2023.2200810",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Sickle Cell Trait and the Risk ofPlasmodium falciparumMalaria and Other Childhood Diseases",
-        "indexedYear": 2005
+        "indexedTitle": "You don’t know me: Welcoming gender diversity in schools via an ethic of hospitality",
+        "indexedYear": 2023
+      },
+      {
+        "url": "https://doi.org/10.1080/07491409.2023.2193543",
+        "doi": "10.1080/07491409.2023.2193543",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/07491409.2023.2193543",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "TERF Logics Are Carceral Logics: Toward the Abolition of Gender-Critical Movements or Black Trans Life as Pedagogical Praxis",
+        "indexedYear": 2023
+      },
+      {
+        "url": "https://doi.org/10.1080/14675986.2015.1109775",
+        "doi": "10.1080/14675986.2015.1109775",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/14675986.2015.1109775",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Beyond the mirror towards a plurilingual prism: exploring the creation of plurilingual ‘identity texts’ in English and French classrooms in Toronto and Montpellier",
+        "indexedYear": 2015
+      },
+      {
+        "url": "https://doi.org/10.1093/applin/amab044",
+        "doi": "10.1093/applin/amab044",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://academic.oup.com/applij/article/43/2/316/6375538",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Affordances of Plurilingual Instruction in Higher Education: A Mixed Methods Study with a Quasi-experiment in an English Language Program",
+        "indexedYear": 2021
       },
       {
         "url": "https://doi.org/10.1111/j.1365-2729.1991.tb00230.x",
@@ -992,37 +1071,52 @@
         "indexedYear": 1991
       },
       {
-        "url": "https://doi.org/10.1111/jedm.12000",
-        "doi": "10.1111/jedm.12000",
+        "url": "https://doi.org/10.1177/01614681251401633",
+        "doi": "10.1177/01614681251401633",
         "pages": [
-          "research-scoping.html"
+          "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1111/jedm.12000",
+        "publisherLanding": "https://journals.sagepub.com/doi/10.1177/01614681251401633",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Validating the Interpretations and Uses of Test Scores",
-        "indexedYear": 2013
+        "indexedTitle": "Queer Joy as Pedagogy",
+        "indexedYear": 2025
       },
       {
-        "url": "https://doi.org/10.3102/0013189X20927363",
-        "doi": "10.3102/0013189X20927363",
+        "url": "https://doi.org/10.2304/ciec.2011.12.4.362",
+        "doi": "10.2304/ciec.2011.12.4.362",
         "pages": [
-          "research.html",
-          "writing-biological-classification.html"
+          "research.html"
         ],
-        "publisherLanding": "https://journals.sagepub.com/doi/10.3102/0013189X20927363",
+        "publisherLanding": "https://journals.sagepub.com/doi/10.2304/ciec.2011.12.4.362",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Beyond Equity as Inclusion: A Framework of “Rightful Presence” for Guiding Justice-Oriented Studies in Teaching and Learning",
-        "indexedYear": 2020
+        "indexedTitle": "On the Human Challenges of Multiliteracies Pedagogy",
+        "indexedYear": 2011
+      },
+      {
+        "url": "https://doi.org/10.3138/cmlr-2021-0055",
+        "doi": "10.3138/cmlr-2021-0055",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://utppublishing.com/doi/10.3138/cmlr-2021-0055",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "The Impact of Academic Acculturation and Language Proficiency on International Students’ University Experience and Academic Success: A Longitudinal Study",
+        "indexedYear": 2023
       },
       {
         "url": "https://doi.org/10.3390/plants10081501",
@@ -1044,7 +1138,7 @@
     "unresolved": [],
     "limitation": "Crossref/DataCite registration is distinct from publisher access, correct article metadata or article availability. OpenAlex is independent secondary corroboration, not registration proof."
   },
-  "workflow_run_id": "40886361104",
-  "head_sha": "10d4da1f40b825f8f2cafe0fefc0af1e91e9ebb4",
+  "workflow_run_id": "40886617269",
+  "head_sha": "39766ec6cd032846db03e5ab08dc8070e59f09b8",
   "audit_exit_code": "0"
 }
