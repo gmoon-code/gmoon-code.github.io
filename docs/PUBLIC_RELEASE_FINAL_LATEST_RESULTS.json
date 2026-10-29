@@ -1,12 +1,12 @@
 {
-  "sourceHead": "7951e674c5e6aebca6f4b588740e9d3488627de5",
+  "sourceHead": "55e375e450b87e88ea578ec46db06e040dd64a34",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-7951e674c5e6",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-55e375e450b8",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -14,8 +14,8 @@
   "auditEvidence": {
     "links": {
       "report": "docs/PUBLIC_LINKGRAPH_LATEST_RESULTS.json",
-      "run": "40886942227",
-      "head_sha": "c7a7e065ac61cdc24c4730c8e19bbfd82f61eed9",
+      "run": "40888881170",
+      "head_sha": "7951e674c5e6aebca6f4b588740e9d3488627de5",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research.html"
@@ -26,24 +26,24 @@
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "40886942295",
-      "head_sha": "c7a7e065ac61cdc24c4730c8e19bbfd82f61eed9",
+      "run": "40888881274",
+      "head_sha": "7951e674c5e6aebca6f4b588740e9d3488627de5",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research.html"
       ],
       "failureCounts": {
-        "issues": 42
+        "issues": 43
       },
       "counts": {
-        "reachable": 71,
-        "unverified": 42
+        "reachable": 70,
+        "unverified": 43
       }
     },
     "metadata": {
       "report": "docs/RESEARCH_METADATA_LATEST_RESULTS.json",
-      "run": "40881518447",
-      "head_sha": "d51253ed384b840b0eaee663511d386b62e157f1",
+      "run": "40888881186",
+      "head_sha": "7951e674c5e6aebca6f4b588740e9d3488627de5",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research.html"
@@ -59,8 +59,8 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "40886942576",
-      "head_sha": "c7a7e065ac61cdc24c4730c8e19bbfd82f61eed9",
+      "run": "40888881233",
+      "head_sha": "7951e674c5e6aebca6f4b588740e9d3488627de5",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research.html"
@@ -71,8 +71,8 @@
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "40886942501",
-      "head_sha": "c7a7e065ac61cdc24c4730c8e19bbfd82f61eed9",
+      "run": "40888881202",
+      "head_sha": "7951e674c5e6aebca6f4b588740e9d3488627de5",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research.html"
@@ -83,8 +83,8 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "40886942342",
-      "head_sha": "c7a7e065ac61cdc24c4730c8e19bbfd82f61eed9",
+      "run": "40888881027",
+      "head_sha": "7951e674c5e6aebca6f4b588740e9d3488627de5",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research.html"
@@ -96,8 +96,8 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "40886942444",
-      "head_sha": "c7a7e065ac61cdc24c4730c8e19bbfd82f61eed9",
+      "run": "40888881052",
+      "head_sha": "7951e674c5e6aebca6f4b588740e9d3488627de5",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research.html"
@@ -168,11 +168,20 @@
       "firstDiff": [
         "--- source\n",
         "+++ deployed\n",
-        "@@ -26,3 +26,3 @@\n",
-        "     <h1>Research</h1>",
-        "-    <p class=\"research-essay-lead\">Imagine a biology class examining a simplified diagram that traces human sex development from chromosomes to reproductive anatomy. A student asks where differences in hormone responses fit into that pathway. The teacher could explain the missing processes and continue with the lesson, or invite students to examine what the diagram leaves out and decide which relationships a more adequate model should represent.</p>",
-        "+    <p class=\"research-essay-lead\">A food web traces energy from one organism to another, although its arrows say little about how much energy is transferred. If a student asks where the rest goes, the teacher might clarify the diagram’s purpose or investigate the energy transfers it leaves unexplained. How that question is taken up can influence the explanation the class develops.</p>",
-        "     <p>Teachers make these decisions within curricular and disciplinary expectations, choosing which questions to pursue and whether students' explanations can shape the work that follows. These judgments take place within institutions and histories marked by racism, colonialism, and inequalities connected to gender, sexuality, social class, and language. My interest in justice-oriented science education includes how students can participate in evaluating scientific representations and the grounds on which their contributions are recognized. Scholarship on epistemic agency and rightful presence helps me examine these relationships alongside the scientific reasoning involved.</p>"
+        "@@ -114,8 +114,8 @@\n",
+        "   <div class=\"reading research-essay-prose\">",
+        "-    <p>In an English-medium science classroom, a student's explanation may develop through discussion before it appears in writing. A student might explain in Korean why water moves across a cell membrane while working with a classmate, then submit a shorter account in English. If I saw only the written response, I could not establish which scientific relationships had been discussed or understood. I would also need to ask whether the student had an opportunity to draw on that conversation when the work was evaluated.</p>",
+        "-    <p>What researchers recognize as evidence depends partly on how they understand language and scientific sensemaking (<a href=\"#reading-gonzalez\">González-Howard et al., 2023</a>). Access to established school science practices can be pursued alongside efforts to transform which linguistic resources and scientific practices schools value (<a href=\"#reading-grapin\">Grapin et al., 2023</a>). Students' responses to one another also affect how explanations are considered during discussion. Analyses of critique during discussions in three middle-school classrooms describe how students could exercise epistemic agency by responding to peers' reasoning (<a href=\"#reading-gonzalez-critique\">González-Howard &amp; McNeill, 2020</a>).</p>",
+        "-    <p>Language policies can shape which parts of a learner's repertoire become available during a task. In a Malaysian Grade 5 English-language classroom with an English-only policy, students used translanguaging during peer collaboration while encountering constraints from classroom expectations and the attitudes of others (<a href=\"#reading-rajendram\">Rajendram, 2023</a>). A Canadian university study compared plurilingual and English-only instruction in an academic English programme and found greater development of plurilingual and pluricultural competence in the plurilingual group (<a href=\"#reading-galante\">Galante, 2022</a>). Neither study measured secondary science understanding. Their relevance to my work lies in the language opportunities and constraints they document, rather than in evidence of science learning.</p>",
+        "-    <p>Gesture and shared modelling can make scientific relationships visible during an investigation, including relationships that a final written answer may not fully express. In a Swedish elementary science classroom, the language resources bilingual students used differed between teacher-led exchanges and small-group activities (<a href=\"#reading-unsal\">Ünsal et al., 2018</a>). An analytic framework distinguishes changes across representations from the ways learners combine words, gestures, and visual elements within a representation (<a href=\"#reading-tang\">Tang et al., 2014</a>). In an out-of-school inquiry into electric flow and resistance, emergent bilingual students drew on linguistic and nonlinguistic resources as they developed models with peers and their instructor (<a href=\"#reading-suarez\">Suárez, 2020</a>). The study also describes how the instructor's pedagogical moves signalled when and how students could draw on those resources.</p>",
+        "-    <p>Interpreting students' ideas across talk, writing, and images raises a methodological question about which records to preserve. Research on plurilingual identity texts has examined conversations alongside students' written and visual work (<a href=\"#reading-prasad\">Prasad, 2015</a>). A relational account of multiliteracies considers how meaning develops within social and cultural relationships (<a href=\"#reading-simon\">Simon, 2011</a>). Neither study examines secondary science understanding. Their attention to texts, conversations, and classroom relationships offers a way to consider how a student's work comes to be interpreted.</p>",
+        "-    <p>Language proficiency scores offer one account of university students' experiences. A longitudinal study examined academic acculturation alongside English proficiency and achievement, attending to factors a language test score might leave unexplained (<a href=\"#reading-neumann\">Neumann et al., 2023</a>). Classroom exchanges present a different interpretive challenge. During spoken-word-poetry activities in an academic English programme, multilingual students discussed racism amid emotional tensions that shaped their interactions (<a href=\"#reading-burton\">Burton, 2024</a>). Both studies concern university language learning. In secondary science, they lead me to consider how the setting and relationships surrounding a contribution affect what an observer can reasonably conclude from it.</p>",
+        "+    <p>In an English-medium science classroom, a student's explanation may develop through discussion before it appears in writing. A student might describe water movement in Korean while working with a classmate, then submit a shorter account in English. If I saw only the written response, I could not establish which scientific relationships had been discussed or understood. I would also need to ask whether the student had an opportunity to draw on that conversation when the work was evaluated.</p>",
+        "+    <p>What researchers recognize as evidence depends partly on how they understand language and scientific sensemaking (<a href=\"#reading-gonzalez\">González-Howard et al., 2023</a>). Access to established school science practices can be pursued alongside efforts to transform which linguistic resources and scientific practices schools value (<a href=\"#reading-grapin\">Grapin et al., 2023</a>). Recognition also develops through what classmates do with one another's explanations. Analyses of critique during discussions in three middle-school classrooms describe how students could exercise epistemic agency by responding to peers' reasoning (<a href=\"#reading-gonzalez-critique\">González-Howard &amp; McNeill, 2020</a>). I want to understand how those responses influence which ideas receive further examination.</p>",
+        "+    <p>Language policies can shape which parts of a learner's repertoire become available during a task. In a Malaysian Grade 5 English-language classroom with an English-only policy, students used translanguaging during peer collaboration while encountering constraints from classroom expectations and the attitudes of others (<a href=\"#reading-rajendram\">Rajendram, 2023</a>). A Canadian university study compared plurilingual and English-only instruction in an academic English programme and found greater development of plurilingual and pluricultural competence in the plurilingual group (<a href=\"#reading-galante\">Galante, 2022</a>). Neither study measured secondary science understanding. Both nevertheless make the conditions under which students could use their languages important to document when interpreting their work.</p>",
+        "+    <p>Gesture and shared modelling can make scientific relationships visible during an investigation, including relationships that a final written answer may not fully express. In a Swedish elementary science classroom, the language resources bilingual students used differed between teacher-led exchanges and small-group activities (<a href=\"#reading-unsal\">Ünsal et al., 2018</a>). An analytic framework distinguishes changes across representations from the ways learners combine words, gestures, and visual elements within a representation (<a href=\"#reading-tang\">Tang et al., 2014</a>). In an out-of-school inquiry into electric flow and resistance, emergent bilingual students drew on linguistic and nonlinguistic resources as they developed models with peers and their instructor (<a href=\"#reading-suarez\">Suárez, 2020</a>). The instructor's responses to those resources also influenced when students could use them to develop their models.</p>",
+        "+    <p>Following a student's ideas across forms of expression also raises a methodological question about which records an interpretation should preserve. Research on plurilingual identity texts has examined conversations alongside students' written and visual work (<a href=\"#reading-prasad\">Prasad, 2015</a>). A relational account of multiliteracies considers how meaning develops within social and cultural relationships (<a href=\"#reading-simon\">Simon, 2011</a>). These are studies of literacy rather than secondary science, yet they offer ways to attend to how a student's work comes to be understood by others.</p>",
+        "+    <p>The conditions surrounding a language assessment can also affect what its results allow us to infer. A longitudinal study of international university students examined academic acculturation alongside English proficiency and academic achievement, considering factors a language test score might leave unexplained (<a href=\"#reading-neumann\">Neumann et al., 2023</a>). In a different academic English setting, spoken-word-poetry activities made emotional tensions visible as multilingual students discussed racism (<a href=\"#reading-burton\">Burton, 2024</a>). Neither setting is a secondary biology classroom. They nevertheless lead me to ask how institutional expectations and the relationships among participants shape what students can express when scientific or social questions become difficult.</p>"
       ]
     },
     {
@@ -223,7 +232,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "40888881401",
-  "run_sha": "7951e674c5e6aebca6f4b588740e9d3488627de5",
+  "workflow_run_id": "40890598604",
+  "run_sha": "55e375e450b87e88ea578ec46db06e040dd64a34",
   "exit_code": "1"
 }
