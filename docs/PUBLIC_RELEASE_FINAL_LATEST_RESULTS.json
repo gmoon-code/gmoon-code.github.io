@@ -1,12 +1,12 @@
 {
-  "sourceHead": "cb3195b5c113f54ce246f5b843bae449c537ee72",
+  "sourceHead": "03c50785596100eeb8e47d133a40a5a0128fb951",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-cb3195b5c113",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-03c507855961",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -14,8 +14,8 @@
   "auditEvidence": {
     "links": {
       "report": "docs/PUBLIC_LINKGRAPH_LATEST_RESULTS.json",
-      "run": "40987021063",
-      "head_sha": "7adfcd83c1befff1cf9e932727402570ba341d22",
+      "run": "40987204285",
+      "head_sha": "cb3195b5c113f54ce246f5b843bae449c537ee72",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research-action.html"
@@ -26,24 +26,24 @@
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "40987021062",
-      "head_sha": "7adfcd83c1befff1cf9e932727402570ba341d22",
+      "run": "40987204528",
+      "head_sha": "cb3195b5c113f54ce246f5b843bae449c537ee72",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research-action.html"
       ],
       "failureCounts": {
-        "issues": 42
+        "issues": 43
       },
       "counts": {
-        "reachable": 71,
-        "unverified": 42
+        "reachable": 70,
+        "unverified": 43
       }
     },
     "metadata": {
       "report": "docs/RESEARCH_METADATA_LATEST_RESULTS.json",
-      "run": "40987021076",
-      "head_sha": "7adfcd83c1befff1cf9e932727402570ba341d22",
+      "run": "40987204224",
+      "head_sha": "cb3195b5c113f54ce246f5b843bae449c537ee72",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research-action.html"
@@ -59,8 +59,8 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "40987021209",
-      "head_sha": "7adfcd83c1befff1cf9e932727402570ba341d22",
+      "run": "40987204294",
+      "head_sha": "cb3195b5c113f54ce246f5b843bae449c537ee72",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research-action.html"
@@ -83,8 +83,8 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "40987021081",
-      "head_sha": "7adfcd83c1befff1cf9e932727402570ba341d22",
+      "run": "40987204327",
+      "head_sha": "cb3195b5c113f54ce246f5b843bae449c537ee72",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research-action.html"
@@ -96,8 +96,8 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "40987021049",
-      "head_sha": "7adfcd83c1befff1cf9e932727402570ba341d22",
+      "run": "40987204615",
+      "head_sha": "cb3195b5c113f54ce246f5b843bae449c537ee72",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research-action.html"
@@ -168,10 +168,10 @@
       "firstDiff": [
         "--- source\n",
         "+++ deployed\n",
-        "@@ -117,3 +117,3 @@\n",
-        "     <h3>A further comparison in Unit 4</h3>",
-        "-    <p>On the Unit 4 assessment, 25 of the 28 students produced explanations that met its criteria for phosphatase regulation and cancer-related cell growth. The question assessed a different mechanism, so the count cannot measure progress on a common scale. S06's two Unit 3 answers left the photosynthetic pathway undeveloped. Their Unit 4 explanation met that task's completeness criteria. S22 reconstructed the photosynthetic pathway completely in Unit 3, while their Unit 4 response left the connection between sustained signalling and growth restraint incomplete.</p>",
-        "+    <p>In Unit 4, 25 of the 28 students gave explanations that met the criteria for that question, which concerned phosphatase regulation and cancer-related cell growth. As the task addressed a new mechanism, the count did not establish progress on a common measure. The individual records also resisted a simple progression narrative. S06 had left the photosynthetic pathway undeveloped in both Unit 3 answers, yet produced a complete Unit 4 explanation. S22 showed the reverse pattern, reconstructing the photosynthetic pathway completely while leaving the connection between sustained signalling and growth restraint incomplete in Unit 4. Completeness on one mechanism could not stand in for an assessment of the student's reasoning across contexts.</p>",
+        "@@ -169,3 +169,3 @@\n",
+        "     <p>I examined four practitioner reflection records alongside the student work. Notes A and B were written during the classroom inquiry. The first distinguished students’ reports of preparation from the explanations they could produce without feedback. The second documented my decision to retain original Unit 3 responses for later comparison, together with a concern that the more explicit reconstruction prompt might change what students wrote.</p>",
+        "-    <p>Notes C and D were written during retrospective analysis after grades were finalized. Comparing the response pairs showed that later completeness classifications concealed different earlier relationships and contradictions. I could identify more specific questions for subsequent assessment, although I could not determine how much of the difference came from correction, the changed prompt, or other learning between attempts.</p>",
+        "+    <p>Notes C and D were written during retrospective analysis after grades were finalized. Comparing the response pairs showed that later completeness classifications concealed different earlier relationships and contradictions. I could identify more specific questions for subsequent assessment, although I could not determine how much of the difference came from correction, the changed prompt, or other learning between attempts. The inquiry thus informed what I needed to investigate next without establishing the adjustment’s effect on understanding.</p>",
         "   </div>"
       ]
     },
@@ -223,7 +223,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "40987204278",
-  "run_sha": "cb3195b5c113f54ce246f5b843bae449c537ee72",
+  "workflow_run_id": "40987353959",
+  "run_sha": "03c50785596100eeb8e47d133a40a5a0128fb951",
   "exit_code": "1"
 }
