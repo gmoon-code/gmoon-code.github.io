@@ -1,12 +1,12 @@
 {
-  "sourceHead": "8fa8dea98179ada0f60396680be2fb639e66521d",
+  "sourceHead": "ecbd52ca2aed63a6db71354630b8f25e16566374",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-8fa8dea98179",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-ecbd52ca2aed",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -14,8 +14,8 @@
   "auditEvidence": {
     "links": {
       "report": "docs/PUBLIC_LINKGRAPH_LATEST_RESULTS.json",
-      "run": "41000079392",
-      "head_sha": "af1d4aca13f93a13cafb76458c96b64b4df6b10c",
+      "run": "41000422085",
+      "head_sha": "8fa8dea98179ada0f60396680be2fb639e66521d",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "teaching-ap-chemistry.html"
@@ -26,24 +26,24 @@
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "41000079236",
-      "head_sha": "af1d4aca13f93a13cafb76458c96b64b4df6b10c",
+      "run": "41000422256",
+      "head_sha": "8fa8dea98179ada0f60396680be2fb639e66521d",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "teaching-ap-chemistry.html"
       ],
       "failureCounts": {
-        "issues": 44
+        "issues": 42
       },
       "counts": {
-        "reachable": 69,
-        "unverified": 44
+        "reachable": 71,
+        "unverified": 42
       }
     },
     "metadata": {
       "report": "docs/RESEARCH_METADATA_LATEST_RESULTS.json",
-      "run": "41000079491",
-      "head_sha": "af1d4aca13f93a13cafb76458c96b64b4df6b10c",
+      "run": "41000422330",
+      "head_sha": "8fa8dea98179ada0f60396680be2fb639e66521d",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "teaching-ap-chemistry.html"
@@ -170,8 +170,8 @@
         "+++ deployed\n",
         "@@ -153,4 +153,4 @@\n",
         "   <div class=\"reading teaching-case-prose\">",
-        "-    <p>After calculating Q<sub>p</sub> for the initial mixture, students could annotate a particulate representation to show how they understand continued forward and reverse reactions. Read alongside the written interpretation, the diagram could help me examine whether a correct calculation was accompanied by an account of continuing reactions. Each account would be examined for what it actually expresses; a diagram would not be treated as a direct measurement of individual reaction events.</p>",
-        "-    <p>Students could use the same three-state representation for compression and expansion, marking the starting equilibrium, the immediate pressure change, and the later change in composition. The compression and expansion cases ask students to distinguish the immediate pressure change from the subsequent chemical response as the reaction quotient moves back toward the equilibrium constant. If a response treats the immediately changed pressures as final equilibrium values, I would ask what continues to happen after that instant and which measurements would be needed to describe the final state.</p>",
+        "-    <p>After calculating Q<sub>p</sub> for the initial mixture, students could annotate a particulate representation to show how they understand continued forward and reverse reactions. Read alongside the written interpretation, the diagram could help me assess whether a correct calculation was accompanied by an account of continuing reactions. Each account would be examined for what it actually expresses; a diagram would not be treated as a direct measurement of individual reaction events.</p>",
+        "-    <p>Students could use the same three-state representation for compression and expansion, marking the starting equilibrium, the immediate pressure change, and the later change in composition. Those two cases ask students to explain how changing volume first alters the reaction quotient, prompting a subsequent adjustment toward equilibrium. If a response treats the immediately changed pressures as final equilibrium values, I would ask what continues to happen after that instant and which measurements would be needed to describe the final state.</p>",
         "+    <p>After calculating Q<sub>p</sub> for the initial mixture, students could annotate a particulate representation to show how they understand continued forward and reverse reactions. Comparing that representation with their written interpretation would distinguish a correct equilibrium calculation from an explanation that assumes all reactions have stopped. Each account would be examined for what it actually expresses; a diagram would not be treated as a direct measurement of individual reaction events.</p>",
         "+    <p>Students could use the same three-state representation for compression and expansion, marking the starting equilibrium, the immediate pressure change, and the later change in composition. Comparing the two would show whether they can distinguish what follows directly from the volume change from what follows because the reaction quotient no longer equals the equilibrium constant. If a response treats the immediately changed pressures as final equilibrium values, I would ask what continues to happen after that instant and which measurements would be needed to describe the final state.</p>",
         "   </div>"
@@ -225,7 +225,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41000422332",
-  "run_sha": "8fa8dea98179ada0f60396680be2fb639e66521d",
+  "workflow_run_id": "41000487590",
+  "run_sha": "ecbd52ca2aed63a6db71354630b8f25e16566374",
   "exit_code": "1"
 }
