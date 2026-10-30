@@ -1,6 +1,6 @@
 {
-  "workflow_run_id": "41004283222",
-  "head_sha": "e3a30f43de12424525d2d64284dd4031dd021340",
+  "workflow_run_id": "41005414161",
+  "head_sha": "2868046f884222258c92df569ce98a09ea8b8c16",
   "exit_code": "0",
   "preprint": {
     "doi": "10.35542/osf.io/kznvj_v1",
@@ -118,8 +118,8 @@
     },
     "cv.html": {
       "preprint_link": true,
-      "unpublished_manuscript": true,
-      "expected_degree": true,
+      "unpublished_manuscript": false,
+      "expected_degree": false,
       "research_section_count": 8
     }
   },
