@@ -1,12 +1,12 @@
 {
-  "sourceHead": "eae598b1f5340fc2fe191cf53b56468a51b9adc5",
+  "sourceHead": "30cff3500e0968496e56284aba74966689373d50",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-eae598b1f534",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-30cff3500e09",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -18,6 +18,7 @@
       "head_sha": "7290540718b9ef923f88344e508892474e39a198",
       "exit": "0",
       "sourceModifiedSinceAudit": [
+        "cv.html",
         "writing-biological-classification.html"
       ],
       "failureCounts": {
@@ -26,11 +27,11 @@
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "41004473511",
-      "head_sha": "7290540718b9ef923f88344e508892474e39a198",
+      "run": "41004531552",
+      "head_sha": "eae598b1f5340fc2fe191cf53b56468a51b9adc5",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "writing-biological-classification.html"
+        "cv.html"
       ],
       "failureCounts": {
         "issues": 42
@@ -46,6 +47,7 @@
       "head_sha": "e3a30f43de12424525d2d64284dd4031dd021340",
       "exit": "0",
       "sourceModifiedSinceAudit": [
+        "cv.html",
         "writing-biological-classification.html"
       ],
       "failureCounts": {
@@ -59,11 +61,11 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "41004283309",
-      "head_sha": "e3a30f43de12424525d2d64284dd4031dd021340",
+      "run": "41004531338",
+      "head_sha": "eae598b1f5340fc2fe191cf53b56468a51b9adc5",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "writing-biological-classification.html"
+        "cv.html"
       ],
       "failureCounts": {
         "failures": 0
@@ -71,12 +73,11 @@
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "41004236212",
-      "head_sha": "3b8c57b741b6befed7bd1718e8b61062b9d3a851",
+      "run": "41004531404",
+      "head_sha": "eae598b1f5340fc2fe191cf53b56468a51b9adc5",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "teaching-osmosis-practice.html",
-        "writing-biological-classification.html"
+        "cv.html"
       ],
       "failureCounts": {
         "failures": 0
@@ -84,11 +85,11 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "41004283229",
-      "head_sha": "e3a30f43de12424525d2d64284dd4031dd021340",
+      "run": "41004531376",
+      "head_sha": "eae598b1f5340fc2fe191cf53b56468a51b9adc5",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "writing-biological-classification.html"
+        "cv.html"
       ],
       "failureCounts": {
         "failures": 0,
@@ -97,11 +98,11 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "41004283243",
-      "head_sha": "e3a30f43de12424525d2d64284dd4031dd021340",
+      "run": "41004531399",
+      "head_sha": "eae598b1f5340fc2fe191cf53b56468a51b9adc5",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "writing-biological-classification.html"
+        "cv.html"
       ],
       "failureCounts": {
         "failures": 0,
@@ -119,71 +120,72 @@
     {
       "category": "links",
       "sourceModifiedSinceAudit": [
+        "cv.html",
         "writing-biological-classification.html"
       ]
     },
     {
       "category": "external",
       "sourceModifiedSinceAudit": [
-        "writing-biological-classification.html"
+        "cv.html"
       ]
     },
     {
       "category": "metadata",
       "sourceModifiedSinceAudit": [
+        "cv.html",
         "writing-biological-classification.html"
       ]
     },
     {
       "category": "reflow",
       "sourceModifiedSinceAudit": [
-        "writing-biological-classification.html"
+        "cv.html"
       ]
     },
     {
       "category": "engines",
       "sourceModifiedSinceAudit": [
-        "teaching-osmosis-practice.html",
-        "writing-biological-classification.html"
+        "cv.html"
       ]
     },
     {
       "category": "typography",
       "sourceModifiedSinceAudit": [
-        "writing-biological-classification.html"
+        "cv.html"
       ]
     },
     {
       "category": "interactions",
       "sourceModifiedSinceAudit": [
-        "writing-biological-classification.html"
+        "cv.html"
       ]
     }
   ],
   "pass": false,
   "errors": [
     {
-      "path": "writing-biological-classification.html",
+      "path": "cv.html",
       "errors": [
         "deployed bytes differ from checked-out production source"
       ],
       "firstDiff": [
         "--- source\n",
         "+++ deployed\n",
-        "@@ -71,3 +71,3 @@\n",
-        "     <p>Haemoglobin S (HbS) is a useful example of how an explanation changes when its level of analysis changes. The variant can be described through a specific alteration in the β-globin protein, and its consequences for red blood cells can be examined at the molecular and cellular levels. A population-level account introduces another set of relationships. Where falciparum malaria has affected survival and reproduction, the malaria-related advantage associated with carrying one HbS allele can contribute to the persistence of that allele, even though having two copies can cause serious disease.</p>",
-        "-    <p>The claims within that account still depend on what a study measured. In two cohorts of children on the Kenyan coast, <a href=\"#essay-williams\">Williams and colleagues (2005)</a> reported different estimates of protection associated with sickle cell trait (HbAS). They estimated approximately 50% protection against mild clinical malaria, 75% against hospital admission for malaria, and almost 90% against severe or complicated malaria. For symptomless parasitaemia, their analysis did not establish a protective effect. These findings provide a more specific account than the statement that HbAS protects against malaria. They distinguish infection without symptoms from several clinical outcomes and retain the population in which the comparisons were conducted.</p>",
-        "+    <p>The claims within that account still depend on what a study measured. In two cohorts of children on the Kenyan coast, <a href=\"#essay-williams\">Williams and colleagues (2005)</a> reported different estimates of protection associated with sickle cell trait (HbAS). They observed approximately 50% protection against mild clinical malaria, 75% against hospital admission for malaria, and almost 90% against severe or complicated malaria, with no reduction in symptomless parasitaemia. These findings provide a more specific account than the statement that HbAS protects against malaria. They distinguish infection without symptoms from several clinical outcomes and retain the population in which the comparisons were conducted.</p>",
-        "     <p>The differences among these malaria outcomes become consequential when the class moves from clinical protection to the persistence of HbS across generations. Modelling that change requires estimates of how each genotype contributes to subsequent generations through survival and reproduction, with malaria exposure and population history also affecting those relationships. The cohort's estimates of protection against particular illnesses do not supply those reproductive fitness values. Asking what the researchers followed over time would therefore help students establish which parts of an evolutionary explanation the study supports and where additional evidence is needed.</p>",
-        "@@ -81,3 +81,3 @@\n",
-        "     <p>Sex-chromosome research presents a different history of classification. Genetic features are measurable, but what researchers infer from them depends on the biological relationship under investigation. Chromosomes, developmental pathways, endocrine processes, and reproductive functions describe related aspects of biology whose relationships require explanation. Treating a chromosomal designation as sufficient evidence for a behavioural characteristic involves an additional inference that must be justified.</p>",
-        "-    <p><a href=\"#essay-richardson\">Richardson's (2013)</a> history of sex-chromosome science traces how cultural understandings of gender influenced scientific questions and interpretations. Her discussion of the XYY chromosome pattern is particularly revealing. During the 1960s and 1970s, claims about aggression and criminality became associated with the presence of an additional Y chromosome. A later systematic review found insufficient evidence to treat the XYY pattern itself as a cause of aggressive or criminal behaviour (<a href=\"#essay-xyy\">Re &amp; Birkhoff, 2015</a>). Identifying a chromosomal pattern and explaining a person's behaviour require different kinds of evidence.</p>",
-        "+    <p><a href=\"#essay-richardson\">Richardson's (2013)</a> history of sex-chromosome science traces how cultural understandings of gender influenced scientific questions and interpretations. Her discussion of the XYY chromosome pattern is particularly revealing. During the 1960s and 1970s, claims about aggression and criminality became associated with the presence of an additional Y chromosome. Later reviews did not find sufficient evidence to treat the XYY pattern itself as a cause of aggressive or criminal behaviour (<a href=\"#essay-xyy\">Re &amp; Birkhoff, 2015</a>). Identifying a chromosomal pattern and explaining a person's behaviour require different kinds of evidence.</p>",
-        "     <p>The history of the XYY claims gives students an opportunity to investigate how the association was constructed and why later evidence challenged it. They could begin by examining how the original researchers defined aggression and selected participants, then consider which comparisons would be needed to evaluate the proposed association. Reading the descriptions of the chromosomal pattern alongside those methodological choices would also invite questions about how assumptions concerning masculinity influenced the interpretations. In this way, the historical episode becomes a study of how researchers define outcomes, select evidence, and justify claims about biological variation.</p>",
-        "@@ -91,3 +91,3 @@\n",
-        "   <div class=\"reading research-essay-prose\">",
-        "-    <p>A teacher can plan a lesson to distinguish genotype from population history or measured physiology from claims about behaviour. The scientific direction of the lesson may change when students identify a limitation that was absent from the planned explanation. Suppose a class is asked to interpret the HbAS cohort findings and a student proposes comparing how different studies defined malaria outcomes. Pursuing that proposal would require the class to reconsider which sources it needs and how it will judge whether findings are comparable.</p>",
-        "+    <p>A teacher can plan a lesson to distinguish genotype from population history or measured physiology from claims about behaviour. Yet the scientific direction of the lesson may change when students identify a limitation that was absent from the planned explanation. Suppose a class is asked to interpret the HbAS cohort findings and a student proposes comparing how different studies defined malaria outcomes. Pursuing that proposal would require the class to reconsider which sources it needs and how it will judge whether findings are comparable.</p>"
+        "@@ -131,5 +131,5 @@\n",
+        "       <div class=\"resume-entry\">",
+        "-        <div class=\"resume-entry-heading\"><h3>Master of Education in Science Education</h3><span class=\"resume-date\">Aug 2026</span></div>",
+        "+        <div class=\"resume-entry-heading\"><h3>Master of Education in Science Education</h3><span class=\"resume-date\">Expected Nov 2026</span></div>",
+        "         <p class=\"resume-institution\">American College of Education</p>",
+        "-        ",
+        "+        <p class=\"resume-subline\">Coursework completed August 2026</p>",
+        "       </div>",
+        "@@ -142,3 +142,3 @@\n",
+        "       <h2 id=\"resume-research-interests\">Research Interests</h2>",
+        "-      <p>Justice-oriented science education; epistemic justice and classroom authority; student participation in scientific inquiry; scientific representations and curriculum; queer approaches to science education; multilingual science learning.</p>",
+        "+      <p>Justice-oriented science education; students’ epistemic agency and teacher judgment; evaluation and revision of scientific representations; rightful presence and classroom authority; sex determination and variation in biology curricula; multilingual scientific reasoning.</p>",
+        "     </section>",
+        "@@ -157,3 +157,3 @@\n"
       ]
     },
     {
@@ -191,51 +193,52 @@
         {
           "category": "links",
           "sourceModifiedSinceAudit": [
+            "cv.html",
             "writing-biological-classification.html"
           ]
         },
         {
           "category": "external",
           "sourceModifiedSinceAudit": [
-            "writing-biological-classification.html"
+            "cv.html"
           ]
         },
         {
           "category": "metadata",
           "sourceModifiedSinceAudit": [
+            "cv.html",
             "writing-biological-classification.html"
           ]
         },
         {
           "category": "reflow",
           "sourceModifiedSinceAudit": [
-            "writing-biological-classification.html"
+            "cv.html"
           ]
         },
         {
           "category": "engines",
           "sourceModifiedSinceAudit": [
-            "teaching-osmosis-practice.html",
-            "writing-biological-classification.html"
+            "cv.html"
           ]
         },
         {
           "category": "typography",
           "sourceModifiedSinceAudit": [
-            "writing-biological-classification.html"
+            "cv.html"
           ]
         },
         {
           "category": "interactions",
           "sourceModifiedSinceAudit": [
-            "writing-biological-classification.html"
+            "cv.html"
           ]
         }
       ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41004531353",
-  "run_sha": "eae598b1f5340fc2fe191cf53b56468a51b9adc5",
+  "workflow_run_id": "41005394210",
+  "run_sha": "30cff3500e0968496e56284aba74966689373d50",
   "exit_code": "1"
 }
