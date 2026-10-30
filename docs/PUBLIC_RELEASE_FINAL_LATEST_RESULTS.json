@@ -1,12 +1,12 @@
 {
-  "sourceHead": "7290540718b9ef923f88344e508892474e39a198",
+  "sourceHead": "eae598b1f5340fc2fe191cf53b56468a51b9adc5",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-7290540718b9",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-eae598b1f534",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -14,8 +14,8 @@
   "auditEvidence": {
     "links": {
       "report": "docs/PUBLIC_LINKGRAPH_LATEST_RESULTS.json",
-      "run": "41004283271",
-      "head_sha": "e3a30f43de12424525d2d64284dd4031dd021340",
+      "run": "41004473394",
+      "head_sha": "7290540718b9ef923f88344e508892474e39a198",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "writing-biological-classification.html"
@@ -26,8 +26,8 @@
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "41004283329",
-      "head_sha": "e3a30f43de12424525d2d64284dd4031dd021340",
+      "run": "41004473511",
+      "head_sha": "7290540718b9ef923f88344e508892474e39a198",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "writing-biological-classification.html"
@@ -175,15 +175,15 @@
         "-    <p>The claims within that account still depend on what a study measured. In two cohorts of children on the Kenyan coast, <a href=\"#essay-williams\">Williams and colleagues (2005)</a> reported different estimates of protection associated with sickle cell trait (HbAS). They estimated approximately 50% protection against mild clinical malaria, 75% against hospital admission for malaria, and almost 90% against severe or complicated malaria. For symptomless parasitaemia, their analysis did not establish a protective effect. These findings provide a more specific account than the statement that HbAS protects against malaria. They distinguish infection without symptoms from several clinical outcomes and retain the population in which the comparisons were conducted.</p>",
         "+    <p>The claims within that account still depend on what a study measured. In two cohorts of children on the Kenyan coast, <a href=\"#essay-williams\">Williams and colleagues (2005)</a> reported different estimates of protection associated with sickle cell trait (HbAS). They observed approximately 50% protection against mild clinical malaria, 75% against hospital admission for malaria, and almost 90% against severe or complicated malaria, with no reduction in symptomless parasitaemia. These findings provide a more specific account than the statement that HbAS protects against malaria. They distinguish infection without symptoms from several clinical outcomes and retain the population in which the comparisons were conducted.</p>",
         "     <p>The differences among these malaria outcomes become consequential when the class moves from clinical protection to the persistence of HbS across generations. Modelling that change requires estimates of how each genotype contributes to subsequent generations through survival and reproduction, with malaria exposure and population history also affecting those relationships. The cohort's estimates of protection against particular illnesses do not supply those reproductive fitness values. Asking what the researchers followed over time would therefore help students establish which parts of an evolutionary explanation the study supports and where additional evidence is needed.</p>",
+        "@@ -81,3 +81,3 @@\n",
+        "     <p>Sex-chromosome research presents a different history of classification. Genetic features are measurable, but what researchers infer from them depends on the biological relationship under investigation. Chromosomes, developmental pathways, endocrine processes, and reproductive functions describe related aspects of biology whose relationships require explanation. Treating a chromosomal designation as sufficient evidence for a behavioural characteristic involves an additional inference that must be justified.</p>",
+        "-    <p><a href=\"#essay-richardson\">Richardson's (2013)</a> history of sex-chromosome science traces how cultural understandings of gender influenced scientific questions and interpretations. Her discussion of the XYY chromosome pattern is particularly revealing. During the 1960s and 1970s, claims about aggression and criminality became associated with the presence of an additional Y chromosome. A later systematic review found insufficient evidence to treat the XYY pattern itself as a cause of aggressive or criminal behaviour (<a href=\"#essay-xyy\">Re &amp; Birkhoff, 2015</a>). Identifying a chromosomal pattern and explaining a person's behaviour require different kinds of evidence.</p>",
+        "+    <p><a href=\"#essay-richardson\">Richardson's (2013)</a> history of sex-chromosome science traces how cultural understandings of gender influenced scientific questions and interpretations. Her discussion of the XYY chromosome pattern is particularly revealing. During the 1960s and 1970s, claims about aggression and criminality became associated with the presence of an additional Y chromosome. Later reviews did not find sufficient evidence to treat the XYY pattern itself as a cause of aggressive or criminal behaviour (<a href=\"#essay-xyy\">Re &amp; Birkhoff, 2015</a>). Identifying a chromosomal pattern and explaining a person's behaviour require different kinds of evidence.</p>",
+        "     <p>The history of the XYY claims gives students an opportunity to investigate how the association was constructed and why later evidence challenged it. They could begin by examining how the original researchers defined aggression and selected participants, then consider which comparisons would be needed to evaluate the proposed association. Reading the descriptions of the chromosomal pattern alongside those methodological choices would also invite questions about how assumptions concerning masculinity influenced the interpretations. In this way, the historical episode becomes a study of how researchers define outcomes, select evidence, and justify claims about biological variation.</p>",
         "@@ -91,3 +91,3 @@\n",
         "   <div class=\"reading research-essay-prose\">",
         "-    <p>A teacher can plan a lesson to distinguish genotype from population history or measured physiology from claims about behaviour. The scientific direction of the lesson may change when students identify a limitation that was absent from the planned explanation. Suppose a class is asked to interpret the HbAS cohort findings and a student proposes comparing how different studies defined malaria outcomes. Pursuing that proposal would require the class to reconsider which sources it needs and how it will judge whether findings are comparable.</p>",
-        "+    <p>A teacher can plan a lesson to distinguish genotype from population history or measured physiology from claims about behaviour. Yet the scientific direction of the lesson may change when students identify a limitation that was absent from the planned explanation. Suppose a class is asked to interpret the HbAS cohort findings and a student proposes comparing how different studies defined malaria outcomes. Pursuing that proposal would require the class to reconsider which sources it needs and how it will judge whether findings are comparable.</p>",
-        "     <p>Another student might question why a textbook map groups populations under a racial label when the scientific claim concerns allele frequencies. Investigating that question could involve examining the sampling methods behind the map, separating geographic patterns from individual genotypes, and tracing how the labels were selected. The teacher would still be responsible for the scientific demands of the inquiry, including what the evidence can support. Students' contributions could affect which sources are examined and what needs to be justified within the explanation.</p>",
-        "@@ -101,3 +101,3 @@\n",
-        "   <div class=\"reading research-essay-prose\">",
-        "-    <p>My classroom action research left me with questions about what a student had understood when an earlier explanation contained connections absent from a later one. The scoping review raised related questions about which students' scientific contributions became recognizable as evidence. Both projects leave open a question about who decides what the class examines after a student raises a question or offers an unexpected explanation. The historical cases in this essay suggest ways to investigate that decision in science teaching.</p>",
-        "+    <p>My classroom action research left me with questions about what a student had understood when an earlier explanation contained connections absent from a later one. The scoping review raised related questions about which students' scientific contributions became recognizable as evidence. Reading these projects together has drawn my attention to who gets to decide what the class examines after a question or unexpected explanation arises. The historical cases in this essay suggest ways to study that decision as part of science teaching.</p>"
+        "+    <p>A teacher can plan a lesson to distinguish genotype from population history or measured physiology from claims about behaviour. Yet the scientific direction of the lesson may change when students identify a limitation that was absent from the planned explanation. Suppose a class is asked to interpret the HbAS cohort findings and a student proposes comparing how different studies defined malaria outcomes. Pursuing that proposal would require the class to reconsider which sources it needs and how it will judge whether findings are comparable.</p>"
       ]
     },
     {
@@ -235,7 +235,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41004473468",
-  "run_sha": "7290540718b9ef923f88344e508892474e39a198",
+  "workflow_run_id": "41004531353",
+  "run_sha": "eae598b1f5340fc2fe191cf53b56468a51b9adc5",
   "exit_code": "1"
 }
