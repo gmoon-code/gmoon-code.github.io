@@ -1,12 +1,12 @@
 {
-  "sourceHead": "03c50785596100eeb8e47d133a40a5a0128fb951",
+  "sourceHead": "c6499a8866ad435cb8f2064e378ed21357203289",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-03c507855961",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-c6499a8866ad",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -14,8 +14,8 @@
   "auditEvidence": {
     "links": {
       "report": "docs/PUBLIC_LINKGRAPH_LATEST_RESULTS.json",
-      "run": "40987204285",
-      "head_sha": "cb3195b5c113f54ce246f5b843bae449c537ee72",
+      "run": "40987353986",
+      "head_sha": "03c50785596100eeb8e47d133a40a5a0128fb951",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research-action.html"
@@ -26,8 +26,8 @@
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "40987204528",
-      "head_sha": "cb3195b5c113f54ce246f5b843bae449c537ee72",
+      "run": "40987353907",
+      "head_sha": "03c50785596100eeb8e47d133a40a5a0128fb951",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research-action.html"
@@ -42,8 +42,8 @@
     },
     "metadata": {
       "report": "docs/RESEARCH_METADATA_LATEST_RESULTS.json",
-      "run": "40987204224",
-      "head_sha": "cb3195b5c113f54ce246f5b843bae449c537ee72",
+      "run": "40987353948",
+      "head_sha": "03c50785596100eeb8e47d133a40a5a0128fb951",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research-action.html"
@@ -71,8 +71,8 @@
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "40987021040",
-      "head_sha": "7adfcd83c1befff1cf9e932727402570ba341d22",
+      "run": "40987204362",
+      "head_sha": "cb3195b5c113f54ce246f5b843bae449c537ee72",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research-action.html"
@@ -83,8 +83,8 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "40987204327",
-      "head_sha": "cb3195b5c113f54ce246f5b843bae449c537ee72",
+      "run": "40987353968",
+      "head_sha": "03c50785596100eeb8e47d133a40a5a0128fb951",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research-action.html"
@@ -96,8 +96,8 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "40987204615",
-      "head_sha": "cb3195b5c113f54ce246f5b843bae449c537ee72",
+      "run": "40987354190",
+      "head_sha": "03c50785596100eeb8e47d133a40a5a0128fb951",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research-action.html"
@@ -168,10 +168,15 @@
       "firstDiff": [
         "--- source\n",
         "+++ deployed\n",
-        "@@ -169,3 +169,3 @@\n",
-        "     <p>I examined four practitioner reflection records alongside the student work. Notes A and B were written during the classroom inquiry. The first distinguished students’ reports of preparation from the explanations they could produce without feedback. The second documented my decision to retain original Unit 3 responses for later comparison, together with a concern that the more explicit reconstruction prompt might change what students wrote.</p>",
-        "-    <p>Notes C and D were written during retrospective analysis after grades were finalized. Comparing the response pairs showed that later completeness classifications concealed different earlier relationships and contradictions. I could identify more specific questions for subsequent assessment, although I could not determine how much of the difference came from correction, the changed prompt, or other learning between attempts.</p>",
-        "+    <p>Notes C and D were written during retrospective analysis after grades were finalized. Comparing the response pairs showed that later completeness classifications concealed different earlier relationships and contradictions. I could identify more specific questions for subsequent assessment, although I could not determine how much of the difference came from correction, the changed prompt, or other learning between attempts. The inquiry thus informed what I needed to investigate next without establishing the adjustment’s effect on understanding.</p>",
+        "@@ -4,3 +4,3 @@\n",
+        "   <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">",
+        "-  <meta name=\"description\" content=\"An AP Biology classroom inquiry compares assessment explanations with later independent reconstructions and examines what the records can establish about students’ scientific reasoning.\">",
+        "+  <meta name=\"description\" content=\"Classroom action research following correction, reflection, and mechanistic explanations across three AP Biology assessments, with linked case examples.\">",
+        "   <title>Classroom Action Research | Ye Eun Moon</title>",
+        "@@ -185,3 +185,3 @@\n",
+        "     <p>The first adjustment made students’ reflections and reported preparation available for comparison with later explanations. The second provided another account of the same bentazon mechanism. Returning to the original responses revealed differences obscured by the later completeness classifications. Some reconstructions omitted connections students had previously expressed, while others no longer repeated earlier contradictions.</p>",
+        "-    <p>Evaluating the adjustment therefore involved two judgments. The paired records helped me decide which causal relationships and competing accounts required further assessment. They did not establish why students’ responses differed, or whether the adjustment improved their understanding.</p>",
+        "+    <p>Evaluating the adjustment therefore involved two judgments. The paired records helped me decide which causal relationships and competing accounts required further assessment. They did not establish why students’ responses differed, or whether the adjustment improved their understanding. This distinction became the central lesson of the action research, changing how I interpreted the evidence generated by my own intervention and what a subsequent inquiry would need to examine.</p>",
         "   </div>"
       ]
     },
@@ -223,7 +228,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "40987353959",
-  "run_sha": "03c50785596100eeb8e47d133a40a5a0128fb951",
+  "workflow_run_id": "40987526309",
+  "run_sha": "c6499a8866ad435cb8f2064e378ed21357203289",
   "exit_code": "1"
 }
