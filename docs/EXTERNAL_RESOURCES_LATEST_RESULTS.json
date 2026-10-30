@@ -2,13 +2,13 @@
   "pages_scanned": 19,
   "distinct_destinations": 113,
   "counts": {
-    "reachable": 71,
-    "unverified": 42
+    "reachable": 70,
+    "unverified": 43
   },
   "by_category": {
     "external": {
-      "reachable": 48,
-      "unverified": 1
+      "reachable": 47,
+      "unverified": 2
     },
     "scholarly-identifier": {
       "unverified": 41,
@@ -818,6 +818,24 @@
         "error": "Forbidden"
       },
       "warnings": []
+    },
+    {
+      "url": "https://www.kci.go.kr/kciportal/ci/sereArticleSearch/ciSereArtiView.kci?sereArticleSearchBean.artiId=ART001857639",
+      "status": "unverified",
+      "category": "external",
+      "pages": [
+        "pungmul.html"
+      ],
+      "head": {
+        "code": 405,
+        "finalUrl": "https://www.kci.go.kr/kciportal/ci/sereArticleSearch/ciSereArtiView.kci?sereArticleSearchBean.artiId=ART001857639",
+        "error": "Method Not Allowed"
+      },
+      "get": {
+        "code": null,
+        "error": "The read operation timed out"
+      },
+      "warnings": []
     }
   ],
   "important_apps": [
@@ -841,10 +859,10 @@
   "doi_registry": {
     "checked": 41,
     "counts": {
-      "not-confirmed": 7,
-      "registered": 34
+      "not-confirmed": 12,
+      "registered": 29
     },
-    "secondary_index_matches": 7,
+    "secondary_index_matches": 12,
     "not_confirmed": [
       {
         "url": "https://doi.org/10.1002/sce.20264",
@@ -863,52 +881,20 @@
         "indexedYear": 2008
       },
       {
-        "url": "https://doi.org/10.1002/sce.21099",
-        "doi": "10.1002/sce.21099",
+        "url": "https://doi.org/10.1002/sce.21622",
+        "doi": "10.1002/sce.21622",
         "pages": [
-          "research.html"
+          "research-scoping.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21099",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21622",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "An Integrative Framework for the Analysis of Multiple and Multimodal Representations for Meaning‐Making in Science Education",
-        "indexedYear": 2014
-      },
-      {
-        "url": "https://doi.org/10.1002/sce.21588",
-        "doi": "10.1002/sce.21588",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21588",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "“Estoy Explorando Science”: Emergent bilingual students problematizing electrical phenomena through translanguaging",
-        "indexedYear": 2020
-      },
-      {
-        "url": "https://doi.org/10.1002/tea.20237",
-        "doi": "10.1002/tea.20237",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.20237",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 503,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Understanding the science experiences of successful women of color: Science identity as an analytic lens",
-        "indexedYear": 2007
+        "indexedTitle": "Scientific modeling and translanguaging: A multilingual and multimodal approach to support science learning and engagement",
+        "indexedYear": 2021
       },
       {
         "url": "https://doi.org/10.1002/tea.20311",
@@ -920,49 +906,161 @@
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
-        "dataciteStatus": 503,
+        "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
         "indexedTitle": "Developing a learning progression for scientific modeling: Making scientific modeling accessible and meaningful for learners",
         "indexedYear": 2009
       },
       {
-        "url": "https://doi.org/10.1080/14790718.2021.1898619",
-        "doi": "10.1080/14790718.2021.1898619",
+        "url": "https://doi.org/10.1002/tea.21459",
+        "doi": "10.1002/tea.21459",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/14790718.2021.1898619",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21459",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Translanguaging as an agentive pedagogy for multilingual learners: affordances and constraints",
-        "indexedYear": 2021
+        "indexedTitle": "Addressing the epistemic elephant in the room: Epistemic agency and the next generation science standards",
+        "indexedYear": 2018
       },
       {
-        "url": "https://doi.org/10.1111/jedm.12000",
-        "doi": "10.1111/jedm.12000",
+        "url": "https://doi.org/10.1002/tea.70072",
+        "doi": "10.1002/tea.70072",
         "pages": [
-          "research-scoping.html"
+          "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1111/jedm.12000",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.70072",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Validating the Interpretations and Uses of Test Scores",
-        "indexedYear": 2013
+        "indexedTitle": "Students' Construction, Evaluation, and Revision of Scientific Models Through Multimodal Representations",
+        "indexedYear": 2026
+      },
+      {
+        "url": "https://doi.org/10.1080/07491409.2023.2193543",
+        "doi": "10.1080/07491409.2023.2193543",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/07491409.2023.2193543",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "TERF Logics Are Carceral Logics: Toward the Abolition of Gender-Critical Movements or Black Trans Life as Pedagogical Praxis",
+        "indexedYear": 2023
+      },
+      {
+        "url": "https://doi.org/10.1080/1046560X.2022.2155355",
+        "doi": "10.1080/1046560X.2022.2155355",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/1046560X.2022.2155355",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Teacher Noticing for Supporting Students’ Epistemic Agency in Science Sensemaking Discussions",
+        "indexedYear": 2023
+      },
+      {
+        "url": "https://doi.org/10.1080/14675986.2015.1109775",
+        "doi": "10.1080/14675986.2015.1109775",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/14675986.2015.1109775",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Beyond the mirror towards a plurilingual prism: exploring the creation of plurilingual ‘identity texts’ in English and French classrooms in Toronto and Montpellier",
+        "indexedYear": 2015
+      },
+      {
+        "url": "https://doi.org/10.1187/cbe.23-08-0157",
+        "doi": "10.1187/cbe.23-08-0157",
+        "pages": [
+          "teaching-ap-biology.html"
+        ],
+        "publisherLanding": "https://www.lifescied.org/doi/10.1187/cbe.23-08-0157",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Examining and Supporting Mechanistic Explanations Across Chemistry and Biology Courses",
+        "indexedYear": 2024
+      },
+      {
+        "url": "https://doi.org/10.3102/0013189X231206172",
+        "doi": "10.3102/0013189X231206172",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://journals.sagepub.com/doi/10.3102/0013189X231206172",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Language Views for Scientific Sensemaking Matter: A Synthesis of Research on Multilingual Students’ Experiences with Science Practices Through a Translanguaging Lens",
+        "indexedYear": 2023
+      },
+      {
+        "url": "https://doi.org/10.3102/0034654314558490",
+        "doi": "10.3102/0034654314558490",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://journals.sagepub.com/doi/10.3102/0034654314558490",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Representing Student Argumentation as Functionally Emergent From Scientific Activity",
+        "indexedYear": 2014
+      },
+      {
+        "url": "https://doi.org/10.3138/cmlr-2021-0055",
+        "doi": "10.3138/cmlr-2021-0055",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://utppublishing.com/doi/10.3138/cmlr-2021-0055",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "The Impact of Academic Acculturation and Language Proficiency on International Students’ University Experience and Academic Success: A Longitudinal Study",
+        "indexedYear": 2023
       }
     ],
     "unresolved": [],
     "limitation": "Crossref/DataCite registration is distinct from publisher access, correct article metadata or article availability. OpenAlex is independent secondary corroboration, not registration proof."
   },
-  "workflow_run_id": "40896729366",
-  "head_sha": "8e296ddfc09527d13b4d649c60b99ba851ee5ea7",
+  "workflow_run_id": "40986379648",
+  "head_sha": "3af5b3ad1a460ee67cba6a89f8d1e13f867b98a1",
   "audit_exit_code": "0"
 }
