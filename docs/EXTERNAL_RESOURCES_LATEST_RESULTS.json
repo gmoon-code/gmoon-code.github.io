@@ -2,13 +2,13 @@
   "pages_scanned": 19,
   "distinct_destinations": 113,
   "counts": {
-    "reachable": 69,
-    "unverified": 44
+    "reachable": 71,
+    "unverified": 42
   },
   "by_category": {
     "external": {
-      "reachable": 46,
-      "unverified": 3
+      "reachable": 48,
+      "unverified": 1
     },
     "scholarly-identifier": {
       "unverified": 41,
@@ -801,25 +801,6 @@
       "warnings": []
     },
     {
-      "url": "https://extension.umn.edu/agriculture/crop-production/weed-management/herbicide-mode-of-action-and-sugarbeet-injury-symptoms/photosynthesis-inhibitor-herbicides",
-      "status": "unverified",
-      "category": "external",
-      "pages": [
-        "teaching-ap-biology.html"
-      ],
-      "head": {
-        "code": 403,
-        "finalUrl": "https://extension.umn.edu/agriculture/crop-production/weed-management/herbicide-mode-of-action-and-sugarbeet-injury-symptoms/photosynthesis-inhibitor-herbicides",
-        "error": "Forbidden"
-      },
-      "get": {
-        "code": 403,
-        "finalUrl": "https://extension.umn.edu/agriculture/crop-production/weed-management/herbicide-mode-of-action-and-sugarbeet-injury-symptoms/photosynthesis-inhibitor-herbicides",
-        "error": "Forbidden"
-      },
-      "warnings": []
-    },
-    {
       "url": "https://onlinelibrary.wiley.com/doi/full/10.1002/sce.21622",
       "status": "unverified",
       "category": "external",
@@ -835,23 +816,6 @@
         "code": 403,
         "finalUrl": "https://onlinelibrary.wiley.com/doi/full/10.1002/sce.21622",
         "error": "Forbidden"
-      },
-      "warnings": []
-    },
-    {
-      "url": "https://par.nsf.gov/servlets/purl/10480924",
-      "status": "unverified",
-      "category": "external",
-      "pages": [
-        "research.html"
-      ],
-      "head": {
-        "code": null,
-        "error": "<urlopen error timed out>"
-      },
-      "get": {
-        "code": null,
-        "error": "<urlopen error timed out>"
       },
       "warnings": []
     }
@@ -877,26 +841,42 @@
   "doi_registry": {
     "checked": 41,
     "counts": {
-      "not-confirmed": 8,
-      "registered": 33
+      "registered": 29,
+      "not-confirmed": 12
     },
-    "secondary_index_matches": 8,
+    "secondary_index_matches": 12,
     "not_confirmed": [
       {
-        "url": "https://doi.org/10.1002/sce.20264",
-        "doi": "10.1002/sce.20264",
+        "url": "https://doi.org/10.1002/sce.21112",
+        "doi": "10.1002/sce.21112",
         "pages": [
-          "teaching-ap-biology.html"
+          "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.20264",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21112",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Recognizing mechanistic reasoning in student scientific inquiry: A framework for discourse analysis developed from philosophy of science",
-        "indexedYear": 2008
+        "indexedTitle": "Examining Classroom Science Practice Communities: How Teachers and Students Negotiate Epistemic Agency and Learn Science‐as‐Practice",
+        "indexedYear": 2014
+      },
+      {
+        "url": "https://doi.org/10.1002/sce.21511",
+        "doi": "10.1002/sce.21511",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21511",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Opening up curricula to redistribute epistemic agency: A framework for supporting science teaching",
+        "indexedYear": 2019
       },
       {
         "url": "https://doi.org/10.1002/tea.20311",
@@ -915,6 +895,22 @@
         "indexedYear": 2009
       },
       {
+        "url": "https://doi.org/10.1002/tea.21257",
+        "doi": "10.1002/tea.21257",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21257",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Epistemologies in practice: Making scientific practices meaningful for students",
+        "indexedYear": 2015
+      },
+      {
         "url": "https://doi.org/10.1002/tea.21714",
         "doi": "10.1002/tea.21714",
         "pages": [
@@ -931,52 +927,68 @@
         "indexedYear": 2021
       },
       {
-        "url": "https://doi.org/10.1002/tea.70072",
-        "doi": "10.1002/tea.70072",
+        "url": "https://doi.org/10.1080/1046560X.2022.2155355",
+        "doi": "10.1080/1046560X.2022.2155355",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.70072",
+        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/1046560X.2022.2155355",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Students' Construction, Evaluation, and Revision of Scientific Models Through Multimodal Representations",
-        "indexedYear": 2026
+        "indexedTitle": "Teacher Noticing for Supporting Students’ Epistemic Agency in Science Sensemaking Discussions",
+        "indexedYear": 2023
       },
       {
-        "url": "https://doi.org/10.1159/000345322",
-        "doi": "10.1159/000345322",
+        "url": "https://doi.org/10.1080/14790718.2021.1898619",
+        "doi": "10.1080/14790718.2021.1898619",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://karger.com/article/doi/10.1159/000345322",
+        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/14790718.2021.1898619",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Desettling Expectations in Science Education",
+        "indexedTitle": "Translanguaging as an agentive pedagogy for multilingual learners: affordances and constraints",
+        "indexedYear": 2021
+      },
+      {
+        "url": "https://doi.org/10.1080/15265161.2012.680533",
+        "doi": "10.1080/15265161.2012.680533",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://www.tandfonline.com/doi/abs/10.1080/15265161.2012.680533",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Out of Bounds? A Critique of the New Policies on Hyperandrogenism in Elite Female Athletes",
         "indexedYear": 2012
       },
       {
-        "url": "https://doi.org/10.1177/01614681251401633",
-        "doi": "10.1177/01614681251401633",
+        "url": "https://doi.org/10.1187/cbe.23-08-0157",
+        "doi": "10.1187/cbe.23-08-0157",
         "pages": [
-          "research.html"
+          "teaching-ap-biology.html"
         ],
-        "publisherLanding": "https://journals.sagepub.com/doi/10.1177/01614681251401633",
+        "publisherLanding": "https://www.lifescied.org/doi/10.1187/cbe.23-08-0157",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Queer Joy as Pedagogy",
-        "indexedYear": 2025
+        "indexedTitle": "Examining and Supporting Mechanistic Explanations Across Chemistry and Biology Courses",
+        "indexedYear": 2024
       },
       {
         "url": "https://doi.org/10.2304/ciec.2011.12.4.362",
@@ -995,26 +1007,42 @@
         "indexedYear": 2011
       },
       {
-        "url": "https://doi.org/10.3102/0013189X231206172",
-        "doi": "10.3102/0013189X231206172",
+        "url": "https://doi.org/10.3138/cmlr-2021-0055",
+        "doi": "10.3138/cmlr-2021-0055",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://journals.sagepub.com/doi/10.3102/0013189X231206172",
+        "publisherLanding": "https://utppublishing.com/doi/10.3138/cmlr-2021-0055",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Language Views for Scientific Sensemaking Matter: A Synthesis of Research on Multilingual Students’ Experiences with Science Practices Through a Translanguaging Lens",
+        "indexedTitle": "The Impact of Academic Acculturation and Language Proficiency on International Students’ University Experience and Academic Success: A Longitudinal Study",
         "indexedYear": 2023
+      },
+      {
+        "url": "https://doi.org/10.3390/plants10081501",
+        "doi": "10.3390/plants10081501",
+        "pages": [
+          "teaching-ap-biology.html"
+        ],
+        "publisherLanding": "https://www.mdpi.com/2223-7747/10/8/1501",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Binding Properties of Photosynthetic Herbicides with the QB Site of the D1 Protein in Plant Photosystem II: A Combined Functional and Molecular Docking Study",
+        "indexedYear": 2021
       }
     ],
     "unresolved": [],
     "limitation": "Crossref/DataCite registration is distinct from publisher access, correct article metadata or article availability. OpenAlex is independent secondary corroboration, not registration proof."
   },
-  "workflow_run_id": "40988435564",
-  "head_sha": "1b9a6e97e54725a3791de1468700e073b2ac51a7",
+  "workflow_run_id": "40988529360",
+  "head_sha": "5ff8536e016e14def04ccf504176f1890656410b",
   "audit_exit_code": "0"
 }
