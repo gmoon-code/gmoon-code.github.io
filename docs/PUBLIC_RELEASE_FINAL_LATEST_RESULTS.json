@@ -1,12 +1,12 @@
 {
-  "sourceHead": "1b9a6e97e54725a3791de1468700e073b2ac51a7",
+  "sourceHead": "5ff8536e016e14def04ccf504176f1890656410b",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-1b9a6e97e547",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-5ff8536e016e",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -26,24 +26,24 @@
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "40988286396",
-      "head_sha": "c11a8a6f0211d3ed782cd6b52093a87f25d93be2",
+      "run": "40988435564",
+      "head_sha": "1b9a6e97e54725a3791de1468700e073b2ac51a7",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research-scoping.html"
       ],
       "failureCounts": {
-        "issues": 42
+        "issues": 44
       },
       "counts": {
-        "reachable": 71,
-        "unverified": 42
+        "reachable": 69,
+        "unverified": 44
       }
     },
     "metadata": {
       "report": "docs/RESEARCH_METADATA_LATEST_RESULTS.json",
-      "run": "40988286341",
-      "head_sha": "c11a8a6f0211d3ed782cd6b52093a87f25d93be2",
+      "run": "40988435628",
+      "head_sha": "1b9a6e97e54725a3791de1468700e073b2ac51a7",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research-scoping.html"
@@ -71,8 +71,8 @@
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "40987526292",
-      "head_sha": "c6499a8866ad435cb8f2064e378ed21357203289",
+      "run": "40988286411",
+      "head_sha": "c11a8a6f0211d3ed782cd6b52093a87f25d93be2",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research-scoping.html"
@@ -96,8 +96,8 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "40988286381",
-      "head_sha": "c11a8a6f0211d3ed782cd6b52093a87f25d93be2",
+      "run": "40988435589",
+      "head_sha": "1b9a6e97e54725a3791de1468700e073b2ac51a7",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research-scoping.html"
@@ -172,7 +172,12 @@
         "       <tr><th scope=\"row\">Focal language condition</th><td>14 of 20</td><td>Which language options or testing conditions shaped the task</td></tr>",
         "-      <tr><th scope=\"row\">Programme or instructional placement</th><td>5 of 20</td><td>The educational setting in which the work took place</td></tr>",
         "+      <tr><th scope=\"row\">Program or instructional placement</th><td>5 of 20</td><td>The educational setting in which the work took place</td></tr>",
-        "       <tr><th scope=\"row\">Newcomer status</th><td>1 of 20</td><td>A relevant part of a learner's schooling context</td></tr>"
+        "       <tr><th scope=\"row\">Newcomer status</th><td>1 of 20</td><td>A relevant part of a learner's schooling context</td></tr>",
+        "@@ -155,3 +155,3 @@\n",
+        "   </div>",
+        "-  <p class=\"research-table-note\">No report described prior schooling, biliteracy development, or earlier exposure to disciplinary language in a sufficiently comparable way across the corpus. The reporting categories can overlap within a study. These counts describe what the articles reported, not the actual language histories or characteristics of all participating students.</p>",
+        "+  <p class=\"research-table-note\">No report described prior schooling, biliteracy development, or earlier exposure to disciplinary language in a sufficiently comparable way across the corpus. These counts describe what the articles reported, not the actual language histories or characteristics of all participating students.</p>",
+        " </section>"
       ]
     },
     {
@@ -223,7 +228,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "40988435583",
-  "run_sha": "1b9a6e97e54725a3791de1468700e073b2ac51a7",
+  "workflow_run_id": "40988529317",
+  "run_sha": "5ff8536e016e14def04ccf504176f1890656410b",
   "exit_code": "1"
 }
