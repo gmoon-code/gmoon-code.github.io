@@ -1,12 +1,12 @@
 {
-  "sourceHead": "af1d4aca13f93a13cafb76458c96b64b4df6b10c",
+  "sourceHead": "8fa8dea98179ada0f60396680be2fb639e66521d",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-af1d4aca13f9",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-8fa8dea98179",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -14,11 +14,11 @@
   "auditEvidence": {
     "links": {
       "report": "docs/PUBLIC_LINKGRAPH_LATEST_RESULTS.json",
-      "run": "40999620342",
-      "head_sha": "4ab14929d2bfd9694f3b608ad809651469822a1e",
+      "run": "41000079392",
+      "head_sha": "af1d4aca13f93a13cafb76458c96b64b4df6b10c",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-biology.html"
+        "teaching-ap-chemistry.html"
       ],
       "failureCounts": {
         "problems": 0
@@ -26,27 +26,27 @@
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "40999620417",
-      "head_sha": "4ab14929d2bfd9694f3b608ad809651469822a1e",
+      "run": "41000079236",
+      "head_sha": "af1d4aca13f93a13cafb76458c96b64b4df6b10c",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-biology.html"
+        "teaching-ap-chemistry.html"
       ],
       "failureCounts": {
-        "issues": 43
+        "issues": 44
       },
       "counts": {
-        "reachable": 70,
-        "unverified": 43
+        "reachable": 69,
+        "unverified": 44
       }
     },
     "metadata": {
       "report": "docs/RESEARCH_METADATA_LATEST_RESULTS.json",
-      "run": "40999620363",
-      "head_sha": "4ab14929d2bfd9694f3b608ad809651469822a1e",
+      "run": "41000079491",
+      "head_sha": "af1d4aca13f93a13cafb76458c96b64b4df6b10c",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-biology.html"
+        "teaching-ap-chemistry.html"
       ],
       "failureCounts": {
         "unverified": 0
@@ -59,11 +59,11 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "40999620388",
-      "head_sha": "4ab14929d2bfd9694f3b608ad809651469822a1e",
+      "run": "41000079294",
+      "head_sha": "af1d4aca13f93a13cafb76458c96b64b4df6b10c",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-biology.html"
+        "teaching-ap-chemistry.html"
       ],
       "failureCounts": {
         "failures": 0
@@ -71,11 +71,11 @@
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "40999620403",
-      "head_sha": "4ab14929d2bfd9694f3b608ad809651469822a1e",
+      "run": "41000079453",
+      "head_sha": "af1d4aca13f93a13cafb76458c96b64b4df6b10c",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-biology.html"
+        "teaching-ap-chemistry.html"
       ],
       "failureCounts": {
         "failures": 0
@@ -83,11 +83,11 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "40999620380",
-      "head_sha": "4ab14929d2bfd9694f3b608ad809651469822a1e",
+      "run": "41000079306",
+      "head_sha": "af1d4aca13f93a13cafb76458c96b64b4df6b10c",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-biology.html"
+        "teaching-ap-chemistry.html"
       ],
       "failureCounts": {
         "failures": 0,
@@ -96,11 +96,11 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "40999620361",
-      "head_sha": "4ab14929d2bfd9694f3b608ad809651469822a1e",
+      "run": "41000079233",
+      "head_sha": "af1d4aca13f93a13cafb76458c96b64b4df6b10c",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-biology.html"
+        "teaching-ap-chemistry.html"
       ],
       "failureCounts": {
         "failures": 0,
@@ -118,60 +118,62 @@
     {
       "category": "links",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-biology.html"
+        "teaching-ap-chemistry.html"
       ]
     },
     {
       "category": "external",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-biology.html"
+        "teaching-ap-chemistry.html"
       ]
     },
     {
       "category": "metadata",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-biology.html"
+        "teaching-ap-chemistry.html"
       ]
     },
     {
       "category": "reflow",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-biology.html"
+        "teaching-ap-chemistry.html"
       ]
     },
     {
       "category": "engines",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-biology.html"
+        "teaching-ap-chemistry.html"
       ]
     },
     {
       "category": "typography",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-biology.html"
+        "teaching-ap-chemistry.html"
       ]
     },
     {
       "category": "interactions",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-biology.html"
+        "teaching-ap-chemistry.html"
       ]
     }
   ],
   "pass": false,
   "errors": [
     {
-      "path": "teaching-ap-biology.html",
+      "path": "teaching-ap-chemistry.html",
       "errors": [
         "deployed bytes differ from checked-out production source"
       ],
       "firstDiff": [
         "--- source\n",
         "+++ deployed\n",
-        "@@ -130,3 +130,3 @@\n",
-        "     <p>The proposed sequence would begin by examining the relationships students already understand and the representations they use to explain photosynthesis. An idealized thylakoid diagram could help organize the causal pathway, but its simplified spatial arrangement would also give students something to examine as they developed their explanations.</p>",
-        "-    <p>For the final meeting, I would use the constructed oxygen-evolution comparison below. The two means give students a numerical comparison to interpret while requiring them to infer the unmeasured consequences for ATP and NADPH. Comparing that response with their earlier explanations could help me identify which relationships merit further attention. Since the tasks differ, the comparison would still need to be interpreted cautiously.</p>",
-        "+    <p>For the final meeting, I would use the constructed oxygen-evolution comparison below. It gives students a measured outcome to interpret while requiring them to infer the unmeasured consequences for ATP and NADPH. Comparing that response with their earlier explanations could help me identify which relationships merit further attention. Since the tasks differ, the comparison would still need to be interpreted cautiously.</p>",
+        "@@ -153,4 +153,4 @@\n",
+        "   <div class=\"reading teaching-case-prose\">",
+        "-    <p>After calculating Q<sub>p</sub> for the initial mixture, students could annotate a particulate representation to show how they understand continued forward and reverse reactions. Read alongside the written interpretation, the diagram could help me examine whether a correct calculation was accompanied by an account of continuing reactions. Each account would be examined for what it actually expresses; a diagram would not be treated as a direct measurement of individual reaction events.</p>",
+        "-    <p>Students could use the same three-state representation for compression and expansion, marking the starting equilibrium, the immediate pressure change, and the later change in composition. The compression and expansion cases ask students to distinguish the immediate pressure change from the subsequent chemical response as the reaction quotient moves back toward the equilibrium constant. If a response treats the immediately changed pressures as final equilibrium values, I would ask what continues to happen after that instant and which measurements would be needed to describe the final state.</p>",
+        "+    <p>After calculating Q<sub>p</sub> for the initial mixture, students could annotate a particulate representation to show how they understand continued forward and reverse reactions. Comparing that representation with their written interpretation would distinguish a correct equilibrium calculation from an explanation that assumes all reactions have stopped. Each account would be examined for what it actually expresses; a diagram would not be treated as a direct measurement of individual reaction events.</p>",
+        "+    <p>Students could use the same three-state representation for compression and expansion, marking the starting equilibrium, the immediate pressure change, and the later change in composition. Comparing the two would show whether they can distinguish what follows directly from the volume change from what follows because the reaction quotient no longer equals the equilibrium constant. If a response treats the immediately changed pressures as final equilibrium values, I would ask what continues to happen after that instant and which measurements would be needed to describe the final state.</p>",
         "   </div>"
       ]
     },
@@ -180,50 +182,50 @@
         {
           "category": "links",
           "sourceModifiedSinceAudit": [
-            "teaching-ap-biology.html"
+            "teaching-ap-chemistry.html"
           ]
         },
         {
           "category": "external",
           "sourceModifiedSinceAudit": [
-            "teaching-ap-biology.html"
+            "teaching-ap-chemistry.html"
           ]
         },
         {
           "category": "metadata",
           "sourceModifiedSinceAudit": [
-            "teaching-ap-biology.html"
+            "teaching-ap-chemistry.html"
           ]
         },
         {
           "category": "reflow",
           "sourceModifiedSinceAudit": [
-            "teaching-ap-biology.html"
+            "teaching-ap-chemistry.html"
           ]
         },
         {
           "category": "engines",
           "sourceModifiedSinceAudit": [
-            "teaching-ap-biology.html"
+            "teaching-ap-chemistry.html"
           ]
         },
         {
           "category": "typography",
           "sourceModifiedSinceAudit": [
-            "teaching-ap-biology.html"
+            "teaching-ap-chemistry.html"
           ]
         },
         {
           "category": "interactions",
           "sourceModifiedSinceAudit": [
-            "teaching-ap-biology.html"
+            "teaching-ap-chemistry.html"
           ]
         }
       ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41000079254",
-  "run_sha": "af1d4aca13f93a13cafb76458c96b64b4df6b10c",
+  "workflow_run_id": "41000422332",
+  "run_sha": "8fa8dea98179ada0f60396680be2fb639e66521d",
   "exit_code": "1"
 }
