@@ -1,12 +1,12 @@
 {
-  "sourceHead": "a4e0e4112e2c5a4696bbf5e7f910fb69922fd8de",
+  "sourceHead": "18e80e1de67e39e07db135fc5d9d0a1bbd3921ed",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 22,
   "httpErrors": 2,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-a4e0e4112e2c",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-18e80e1de67e",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -14,8 +14,8 @@
   "auditEvidence": {
     "links": {
       "report": "docs/PUBLIC_LINKGRAPH_LATEST_RESULTS.json",
-      "run": "40993481095",
-      "head_sha": "c249ea81be92a73ebc6cecf6d78ba83989d0712d",
+      "run": "40993886613",
+      "head_sha": "a4e0e4112e2c5a4696bbf5e7f910fb69922fd8de",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "interests.html",
@@ -27,19 +27,19 @@
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "40993481080",
-      "head_sha": "c249ea81be92a73ebc6cecf6d78ba83989d0712d",
+      "run": "40993886581",
+      "head_sha": "a4e0e4112e2c5a4696bbf5e7f910fb69922fd8de",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "interests.html",
         "pungmul.html"
       ],
       "failureCounts": {
-        "issues": 42
+        "issues": 44
       },
       "counts": {
-        "reachable": 71,
-        "unverified": 42
+        "reachable": 69,
+        "unverified": 44
       }
     },
     "metadata": {
@@ -62,8 +62,8 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "40993481160",
-      "head_sha": "c249ea81be92a73ebc6cecf6d78ba83989d0712d",
+      "run": "40993886677",
+      "head_sha": "a4e0e4112e2c5a4696bbf5e7f910fb69922fd8de",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "interests.html",
@@ -75,8 +75,8 @@
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "40993481116",
-      "head_sha": "c249ea81be92a73ebc6cecf6d78ba83989d0712d",
+      "run": "40993886568",
+      "head_sha": "a4e0e4112e2c5a4696bbf5e7f910fb69922fd8de",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "interests.html",
@@ -88,8 +88,8 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "40993481141",
-      "head_sha": "c249ea81be92a73ebc6cecf6d78ba83989d0712d",
+      "run": "40993886552",
+      "head_sha": "a4e0e4112e2c5a4696bbf5e7f910fb69922fd8de",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "interests.html",
@@ -102,8 +102,8 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "40993481093",
-      "head_sha": "c249ea81be92a73ebc6cecf6d78ba83989d0712d",
+      "run": "40993886560",
+      "head_sha": "a4e0e4112e2c5a4696bbf5e7f910fb69922fd8de",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "interests.html",
@@ -182,16 +182,18 @@
       "firstDiff": [
         "--- source\n",
         "+++ deployed\n",
-        "@@ -41,6 +41,6 @@\n",
+        "@@ -11,3 +11,2 @@\n",
+        "   <link rel=\"stylesheet\" href=\"appearance.css?v=20261030-restored-photos\">",
+        "-  <link rel=\"stylesheet\" href=\"personal-photo-20261030.css?v=distinct-selection-1\">",
+        " <style id=\"interests-media-heading-levels\">",
+        "@@ -42,4 +41,6 @@\n",
         "       <div class=\"pungmul-gallery\" aria-label=\"Pungmul performances and community\">",
-        "-        <figure><a href=\"assets/pungmul-stage.webp\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"View the full-size pungmul stage performance photograph in a new tab\"><img src=\"assets/pungmul-stage.webp\" alt=\"Pungmul ensemble performing on stage\" loading=\"eager\" decoding=\"async\" width=\"860\" height=\"645\"></a><figcaption>Performing together</figcaption></figure>",
-        "-        <figure><a href=\"assets/pungmul-group.webp\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"View the full-size outdoor pungmul ensemble photograph in a new tab\"><img src=\"assets/pungmul-group.webp\" alt=\"Pungmul ensemble performing outdoors near a city square\" loading=\"eager\" decoding=\"async\" width=\"860\" height=\"484\"></a><figcaption>Our ensemble</figcaption></figure>",
-        "-        <figure><a href=\"assets/pungmul-solo.webp\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"View the full-size janggu performance photograph in a new tab\"><img src=\"assets/pungmul-solo.webp\" alt=\"A seated performer playing janggu under blue stage lighting\" loading=\"eager\" decoding=\"async\" width=\"650\" height=\"433\"></a><figcaption>A moment on stage</figcaption></figure>",
-        "-        <figure><a href=\"assets/pungmul-rehearsal.webp\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"View the full-size indoor pungmul performance photograph in a new tab\"><img src=\"assets/pungmul-rehearsal.webp\" alt=\"Pungmul drummers in colourful costumes performing together indoors\" loading=\"eager\" decoding=\"async\" width=\"650\" height=\"366\"></a><figcaption>Playing together</figcaption></figure>",
-        "+        <figure><a href=\"assets/pungmul-stage.webp\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"View the full-size pungmul stage performance photograph in a new tab\"><img src=\"assets/pungmul-stage.webp\" alt=\"Pungmul ensemble performing on stage\" loading=\"lazy\" decoding=\"async\" width=\"860\" height=\"645\"></a><figcaption>Performing together</figcaption></figure>",
-        "+        <figure><a href=\"assets/pungmul-group.webp\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"View the full-size outdoor pungmul ensemble photograph in a new tab\"><img src=\"assets/pungmul-group.webp\" alt=\"Pungmul ensemble performing outdoors near a city square\" loading=\"lazy\" decoding=\"async\" width=\"860\" height=\"484\"></a><figcaption>Our ensemble</figcaption></figure>",
-        "+        <figure><a href=\"assets/pungmul-solo.webp\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"View the full-size janggu performance photograph in a new tab\"><img src=\"assets/pungmul-solo.webp\" alt=\"A seated performer playing janggu under blue stage lighting\" loading=\"lazy\" decoding=\"async\" width=\"650\" height=\"433\"></a><figcaption>A moment on stage</figcaption></figure>",
-        "+        <figure><a href=\"assets/pungmul-rehearsal.webp\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"View the full-size indoor pungmul performance photograph in a new tab\"><img src=\"assets/pungmul-rehearsal.webp\" alt=\"Pungmul drummers in colourful costumes performing together indoors\" loading=\"lazy\" decoding=\"async\" width=\"650\" height=\"366\"></a><figcaption>Playing together</figcaption></figure>",
+        "-        <figure><a href=\"assets/interests-pungmul-street.webp\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"View the full-size street performance photograph in a new tab\"><img src=\"assets/interests-pungmul-street.webp\" alt=\"Pungmul performers in colourful ribbons and traditional hats playing in a city street while spectators watch\" loading=\"eager\" decoding=\"async\" width=\"1400\" height=\"788\"></a><figcaption>Playing in the street</figcaption></figure>",
+        "-        <figure><a href=\"assets/interests-pungmul-dancers.webp\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"View the full-size stage performance photograph in a new tab\"><img src=\"assets/interests-pungmul-dancers.webp\" alt=\"Two pungmul performers in white costumes with colourful hats and ribbons dancing while playing drums on stage\" loading=\"eager\" decoding=\"async\" width=\"1400\" height=\"1050\"></a><figcaption>On stage together</figcaption></figure>",
+        "+        <figure><a href=\"assets/pungmul-stage.webp\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"View the full-size pungmul stage performance photograph in a new tab\"><img src=\"assets/pungmul-stage.webp\" alt=\"Pungmul ensemble performing on stage\" loading=\"eager\" decoding=\"async\" width=\"860\" height=\"645\"></a><figcaption>Performing together</figcaption></figure>",
+        "+        <figure><a href=\"assets/pungmul-group.webp\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"View the full-size outdoor pungmul ensemble photograph in a new tab\"><img src=\"assets/pungmul-group.webp\" alt=\"Pungmul ensemble performing outdoors near a city square\" loading=\"eager\" decoding=\"async\" width=\"860\" height=\"484\"></a><figcaption>Our ensemble</figcaption></figure>",
+        "+        <figure><a href=\"assets/pungmul-solo.webp\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"View the full-size janggu performance photograph in a new tab\"><img src=\"assets/pungmul-solo.webp\" alt=\"A seated performer playing janggu under blue stage lighting\" loading=\"eager\" decoding=\"async\" width=\"650\" height=\"433\"></a><figcaption>A moment on stage</figcaption></figure>",
+        "+        <figure><a href=\"assets/pungmul-rehearsal.webp\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"View the full-size indoor pungmul performance photograph in a new tab\"><img src=\"assets/pungmul-rehearsal.webp\" alt=\"Pungmul drummers in colourful costumes performing together indoors\" loading=\"eager\" decoding=\"async\" width=\"650\" height=\"366\"></a><figcaption>Playing together</figcaption></figure>",
         "       </div>"
       ]
     },
@@ -203,20 +205,20 @@
       "firstDiff": [
         "--- source\n",
         "+++ deployed\n",
-        "@@ -51,3 +51,3 @@\n",
+        "@@ -12,3 +12,2 @@\n",
+        "   <link rel=\"stylesheet\" href=\"pungmul.css?v=20261030-restored-photos\">",
+        "-  <link rel=\"stylesheet\" href=\"personal-photo-20261030.css?v=distinct-selection-1\">",
+        " </head>",
+        "@@ -31,4 +30,4 @@\n",
+        "       <figure class=\"pungmul-hero-photo\">",
+        "-        <img src=\"assets/pungmul-rehearsal-studio.webp\" alt=\"Five pungmul performers playing drums in white costumes and colourful hats during a rehearsal in a bright studio\" width=\"1280\" height=\"720\" loading=\"eager\" decoding=\"async\">",
+        "-        <figcaption>Rehearsing with the ensemble. Photograph from my personal collection.</figcaption>",
+        "+        <img src=\"assets/pungmul-stage.webp\" alt=\"Pungmul ensemble performing together on stage\" width=\"860\" height=\"645\" loading=\"eager\" decoding=\"async\">",
+        "+        <figcaption>On stage with the ensemble. Photograph from my personal collection.</figcaption>",
+        "       </figure>",
+        "@@ -52,16 +51,12 @@\n",
         "         <figure>",
-        "-          <a href=\"assets/pungmul-group.webp\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"Open the full-size outdoor ensemble photograph in a new tab\"><img src=\"assets/pungmul-group.webp\" width=\"860\" height=\"484\" alt=\"Pungmul ensemble performing outdoors near a city square\" loading=\"eager\" decoding=\"async\"></a>",
-        "+          <a href=\"assets/pungmul-group.webp\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"Open the full-size outdoor ensemble photograph in a new tab\"><img src=\"assets/pungmul-group.webp\" width=\"860\" height=\"484\" alt=\"Pungmul ensemble performing outdoors near a city square\" loading=\"lazy\" decoding=\"async\"></a>",
-        "           <figcaption>Playing outdoors</figcaption>",
-        "@@ -55,3 +55,3 @@\n",
-        "         <figure>",
-        "-          <a href=\"assets/pungmul-solo.webp\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"Open the full-size janggu performance photograph in a new tab\"><img src=\"assets/pungmul-solo.webp\" width=\"650\" height=\"433\" alt=\"A performer playing janggu under blue stage lighting\" loading=\"eager\" decoding=\"async\"></a>",
-        "+          <a href=\"assets/pungmul-solo.webp\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"Open the full-size janggu performance photograph in a new tab\"><img src=\"assets/pungmul-solo.webp\" width=\"650\" height=\"433\" alt=\"A performer playing janggu under blue stage lighting\" loading=\"lazy\" decoding=\"async\"></a>",
-        "           <figcaption>A moment on stage</figcaption>",
-        "@@ -59,3 +59,3 @@\n",
-        "         <figure>",
-        "-          <a href=\"assets/pungmul-rehearsal.webp\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"Open the full-size indoor ensemble photograph in a new tab\"><img src=\"assets/pungmul-rehearsal.webp\" width=\"650\" height=\"366\" alt=\"Pungmul drummers in colourful costumes playing together indoors\" loading=\"eager\" decoding=\"async\"></a>",
-        "+          <a href=\"assets/pungmul-rehearsal.webp\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"Open the full-size indoor ensemble photograph in a new tab\"><img src=\"assets/pungmul-rehearsal.webp\" width=\"650\" height=\"366\" alt=\"Pungmul drummers in colourful costumes playing together indoors\" loading=\"lazy\" decoding=\"async\"></a>"
+        "-          <a href=\"assets/pungmul-ensemble-stage-photo.webp\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"Open the full-size stage performance photograph in a new tab\"><img src=\"assets/pungmul-ensemble-stage-photo.webp\" width=\"1400\" height=\"1050\" alt=\"Traditional Korean drummers at the front of a stage with a larger ensemble of musicians behind them\" loading=\"eager\" decoding=\"async\"></a>"
       ]
     },
     {
@@ -274,7 +276,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "40993886572",
-  "run_sha": "a4e0e4112e2c5a4696bbf5e7f910fb69922fd8de",
+  "workflow_run_id": "40996364929",
+  "run_sha": "18e80e1de67e39e07db135fc5d9d0a1bbd3921ed",
   "exit_code": "1"
 }
