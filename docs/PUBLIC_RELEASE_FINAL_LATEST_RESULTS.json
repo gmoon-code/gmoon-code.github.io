@@ -1,12 +1,12 @@
 {
-  "sourceHead": "c6499a8866ad435cb8f2064e378ed21357203289",
+  "sourceHead": "c11a8a6f0211d3ed782cd6b52093a87f25d93be2",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-c6499a8866ad",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-c11a8a6f0211",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -14,11 +14,11 @@
   "auditEvidence": {
     "links": {
       "report": "docs/PUBLIC_LINKGRAPH_LATEST_RESULTS.json",
-      "run": "40987353986",
-      "head_sha": "03c50785596100eeb8e47d133a40a5a0128fb951",
+      "run": "40987526347",
+      "head_sha": "c6499a8866ad435cb8f2064e378ed21357203289",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "research-action.html"
+        "research-scoping.html"
       ],
       "failureCounts": {
         "problems": 0
@@ -26,11 +26,11 @@
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "40987353907",
-      "head_sha": "03c50785596100eeb8e47d133a40a5a0128fb951",
+      "run": "40987526406",
+      "head_sha": "c6499a8866ad435cb8f2064e378ed21357203289",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "research-action.html"
+        "research-scoping.html"
       ],
       "failureCounts": {
         "issues": 43
@@ -46,7 +46,8 @@
       "head_sha": "03c50785596100eeb8e47d133a40a5a0128fb951",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "research-action.html"
+        "research-action.html",
+        "research-scoping.html"
       ],
       "failureCounts": {
         "unverified": 0
@@ -59,11 +60,11 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "40987204294",
-      "head_sha": "cb3195b5c113f54ce246f5b843bae449c537ee72",
+      "run": "40987526259",
+      "head_sha": "c6499a8866ad435cb8f2064e378ed21357203289",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "research-action.html"
+        "research-scoping.html"
       ],
       "failureCounts": {
         "failures": 0
@@ -71,11 +72,11 @@
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "40987204362",
-      "head_sha": "cb3195b5c113f54ce246f5b843bae449c537ee72",
+      "run": "40987526292",
+      "head_sha": "c6499a8866ad435cb8f2064e378ed21357203289",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "research-action.html"
+        "research-scoping.html"
       ],
       "failureCounts": {
         "failures": 0
@@ -83,11 +84,11 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "40987353968",
-      "head_sha": "03c50785596100eeb8e47d133a40a5a0128fb951",
+      "run": "40987526209",
+      "head_sha": "c6499a8866ad435cb8f2064e378ed21357203289",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "research-action.html"
+        "research-scoping.html"
       ],
       "failureCounts": {
         "failures": 0,
@@ -96,11 +97,11 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "40987354190",
-      "head_sha": "03c50785596100eeb8e47d133a40a5a0128fb951",
+      "run": "40987526273",
+      "head_sha": "c6499a8866ad435cb8f2064e378ed21357203289",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "research-action.html"
+        "research-scoping.html"
       ],
       "failureCounts": {
         "failures": 0,
@@ -118,65 +119,66 @@
     {
       "category": "links",
       "sourceModifiedSinceAudit": [
-        "research-action.html"
+        "research-scoping.html"
       ]
     },
     {
       "category": "external",
       "sourceModifiedSinceAudit": [
-        "research-action.html"
+        "research-scoping.html"
       ]
     },
     {
       "category": "metadata",
       "sourceModifiedSinceAudit": [
-        "research-action.html"
+        "research-action.html",
+        "research-scoping.html"
       ]
     },
     {
       "category": "reflow",
       "sourceModifiedSinceAudit": [
-        "research-action.html"
+        "research-scoping.html"
       ]
     },
     {
       "category": "engines",
       "sourceModifiedSinceAudit": [
-        "research-action.html"
+        "research-scoping.html"
       ]
     },
     {
       "category": "typography",
       "sourceModifiedSinceAudit": [
-        "research-action.html"
+        "research-scoping.html"
       ]
     },
     {
       "category": "interactions",
       "sourceModifiedSinceAudit": [
-        "research-action.html"
+        "research-scoping.html"
       ]
     }
   ],
   "pass": false,
   "errors": [
     {
-      "path": "research-action.html",
+      "path": "research-scoping.html",
       "errors": [
         "deployed bytes differ from checked-out production source"
       ],
       "firstDiff": [
         "--- source\n",
         "+++ deployed\n",
-        "@@ -4,3 +4,3 @@\n",
-        "   <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">",
-        "-  <meta name=\"description\" content=\"An AP Biology classroom inquiry compares assessment explanations with later independent reconstructions and examines what the records can establish about students’ scientific reasoning.\">",
-        "+  <meta name=\"description\" content=\"Classroom action research following correction, reflection, and mechanistic explanations across three AP Biology assessments, with linked case examples.\">",
-        "   <title>Classroom Action Research | Ye Eun Moon</title>",
-        "@@ -185,3 +185,3 @@\n",
-        "     <p>The first adjustment made students’ reflections and reported preparation available for comparison with later explanations. The second provided another account of the same bentazon mechanism. Returning to the original responses revealed differences obscured by the later completeness classifications. Some reconstructions omitted connections students had previously expressed, while others no longer repeated earlier contradictions.</p>",
-        "-    <p>Evaluating the adjustment therefore involved two judgments. The paired records helped me decide which causal relationships and competing accounts required further assessment. They did not establish why students’ responses differed, or whether the adjustment improved their understanding.</p>",
-        "+    <p>Evaluating the adjustment therefore involved two judgments. The paired records helped me decide which causal relationships and competing accounts required further assessment. They did not establish why students’ responses differed, or whether the adjustment improved their understanding. This distinction became the central lesson of the action research, changing how I interpreted the evidence generated by my own intervention and what a subsequent inquiry would need to examine.</p>",
+        "@@ -129,3 +129,3 @@\n",
+        "     <div class=\"research-example-steps\">",
+        "-      <div><span>Earlier accounts and models</span><p>The records show how these forms of expression contributed different information. Luis's mixed Spanish-English description distinguished plants and algae as food for the fish from oxygen used in breathing, while Carlos organized the biosphere through drawings, string, stickers, and a numbering system. The group’s <a href=\"https://onlinelibrary.wiley.com/doi/full/10.1002/sce.21622\" target=\"_blank\" rel=\"noopener noreferrer\">original biosphere plan (Figure 3 in the published article)<span class=\"new-tab-note\"> (opens in a new tab)</span></a> shows how these resources were arranged together.</p><p class=\"research-example-interpret\"><strong>Interpretive significance</strong> · The earlier description made two ecological relationships explicit, and the model offered another form in which students could organize their ideas.</p></div>",
+        "+      <div><span>Earlier accounts and models</span><p>The records show how these forms of expression contributed different information. Luis's mixed Spanish-English description distinguished plants and algae as food for the fish from oxygen used in breathing, while Carlos organized the biosphere through drawings, stickers, and labels. The group’s <a href=\"https://onlinelibrary.wiley.com/doi/full/10.1002/sce.21622\" target=\"_blank\" rel=\"noopener noreferrer\">original biosphere plan (Figure 3 in the published article)<span class=\"new-tab-note\"> (opens in a new tab)</span></a> shows how these resources were arranged together.</p><p class=\"research-example-interpret\"><strong>Interpretive significance</strong> · The earlier description made two ecological relationships explicit, and the model offered another form in which students could organize their ideas.</p></div>",
+        "       <div><span>An English rendering</span><p>Luis subsequently translated his description into a shorter English sentence that joined algae, energy, and oxygen without clearly distinguishing food from breathing.</p><p class=\"research-example-interpret\"><strong>Interpretive significance</strong> · This version expressed less of the ecological relationship. Reading it without the earlier bilingual account could make an omission appear to be a limit of the student's understanding.</p></div>",
+        "@@ -133,3 +133,3 @@\n",
+        "     </div>",
+        "-    <p class=\"research-example-note\">The distinction between what Luis expressed in his bilingual description and what appeared in the English version becomes visible only when the records are read together. Sean's difficulty reading Spanish raises a related question about how students could keep their shared model accessible while using different linguistic resources. These are my interpretations of the <a href=\"https://doi.org/10.1002/sce.21622\" target=\"_blank\" rel=\"noopener noreferrer\">published study<span class=\"new-tab-note\"> (opens in a new tab)</span></a>, paraphrased rather than presented as verbatim participant accounts.</p>",
+        "+    <p class=\"research-example-note\">The distinction between what Luis expressed in his bilingual description and what appeared in the English version becomes visible only when the records are read together. The group exchange adds another consideration about whose contributions could enter discussion. These are my interpretations of the <a href=\"https://doi.org/10.1002/sce.21622\" target=\"_blank\" rel=\"noopener noreferrer\">published study<span class=\"new-tab-note\"> (opens in a new tab)</span></a>, paraphrased rather than presented as verbatim participant accounts.</p>",
         "   </div>"
       ]
     },
@@ -185,50 +187,51 @@
         {
           "category": "links",
           "sourceModifiedSinceAudit": [
-            "research-action.html"
+            "research-scoping.html"
           ]
         },
         {
           "category": "external",
           "sourceModifiedSinceAudit": [
-            "research-action.html"
+            "research-scoping.html"
           ]
         },
         {
           "category": "metadata",
           "sourceModifiedSinceAudit": [
-            "research-action.html"
+            "research-action.html",
+            "research-scoping.html"
           ]
         },
         {
           "category": "reflow",
           "sourceModifiedSinceAudit": [
-            "research-action.html"
+            "research-scoping.html"
           ]
         },
         {
           "category": "engines",
           "sourceModifiedSinceAudit": [
-            "research-action.html"
+            "research-scoping.html"
           ]
         },
         {
           "category": "typography",
           "sourceModifiedSinceAudit": [
-            "research-action.html"
+            "research-scoping.html"
           ]
         },
         {
           "category": "interactions",
           "sourceModifiedSinceAudit": [
-            "research-action.html"
+            "research-scoping.html"
           ]
         }
       ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "40987526309",
-  "run_sha": "c6499a8866ad435cb8f2064e378ed21357203289",
+  "workflow_run_id": "40988286419",
+  "run_sha": "c11a8a6f0211d3ed782cd6b52093a87f25d93be2",
   "exit_code": "1"
 }
