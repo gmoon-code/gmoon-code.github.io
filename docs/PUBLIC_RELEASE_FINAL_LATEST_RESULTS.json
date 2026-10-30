@@ -1,12 +1,12 @@
 {
-  "sourceHead": "55021a8757cffa67939cf5722f60e4b3db39d3ce",
+  "sourceHead": "a4e0e4112e2c5a4696bbf5e7f910fb69922fd8de",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
-  "verifiedExactMatches": 23,
-  "httpErrors": 1,
+  "verifiedExactMatches": 22,
+  "httpErrors": 2,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-55021a8757cf",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-a4e0e4112e2c",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -18,7 +18,8 @@
       "head_sha": "c249ea81be92a73ebc6cecf6d78ba83989d0712d",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "interests.html"
+        "interests.html",
+        "pungmul.html"
       ],
       "failureCounts": {
         "problems": 0
@@ -30,7 +31,8 @@
       "head_sha": "c249ea81be92a73ebc6cecf6d78ba83989d0712d",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "interests.html"
+        "interests.html",
+        "pungmul.html"
       ],
       "failureCounts": {
         "issues": 42
@@ -64,7 +66,8 @@
       "head_sha": "c249ea81be92a73ebc6cecf6d78ba83989d0712d",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "interests.html"
+        "interests.html",
+        "pungmul.html"
       ],
       "failureCounts": {
         "failures": 0
@@ -76,7 +79,8 @@
       "head_sha": "c249ea81be92a73ebc6cecf6d78ba83989d0712d",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "interests.html"
+        "interests.html",
+        "pungmul.html"
       ],
       "failureCounts": {
         "failures": 0
@@ -88,7 +92,8 @@
       "head_sha": "c249ea81be92a73ebc6cecf6d78ba83989d0712d",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "interests.html"
+        "interests.html",
+        "pungmul.html"
       ],
       "failureCounts": {
         "failures": 0,
@@ -101,7 +106,8 @@
       "head_sha": "c249ea81be92a73ebc6cecf6d78ba83989d0712d",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "interests.html"
+        "interests.html",
+        "pungmul.html"
       ],
       "failureCounts": {
         "failures": 0,
@@ -119,13 +125,15 @@
     {
       "category": "links",
       "sourceModifiedSinceAudit": [
-        "interests.html"
+        "interests.html",
+        "pungmul.html"
       ]
     },
     {
       "category": "external",
       "sourceModifiedSinceAudit": [
-        "interests.html"
+        "interests.html",
+        "pungmul.html"
       ]
     },
     {
@@ -138,25 +146,29 @@
     {
       "category": "reflow",
       "sourceModifiedSinceAudit": [
-        "interests.html"
+        "interests.html",
+        "pungmul.html"
       ]
     },
     {
       "category": "engines",
       "sourceModifiedSinceAudit": [
-        "interests.html"
+        "interests.html",
+        "pungmul.html"
       ]
     },
     {
       "category": "typography",
       "sourceModifiedSinceAudit": [
-        "interests.html"
+        "interests.html",
+        "pungmul.html"
       ]
     },
     {
       "category": "interactions",
       "sourceModifiedSinceAudit": [
-        "interests.html"
+        "interests.html",
+        "pungmul.html"
       ]
     }
   ],
@@ -184,17 +196,43 @@
       ]
     },
     {
+      "path": "pungmul.html",
+      "errors": [
+        "deployed bytes differ from checked-out production source"
+      ],
+      "firstDiff": [
+        "--- source\n",
+        "+++ deployed\n",
+        "@@ -51,3 +51,3 @@\n",
+        "         <figure>",
+        "-          <a href=\"assets/pungmul-group.webp\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"Open the full-size outdoor ensemble photograph in a new tab\"><img src=\"assets/pungmul-group.webp\" width=\"860\" height=\"484\" alt=\"Pungmul ensemble performing outdoors near a city square\" loading=\"eager\" decoding=\"async\"></a>",
+        "+          <a href=\"assets/pungmul-group.webp\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"Open the full-size outdoor ensemble photograph in a new tab\"><img src=\"assets/pungmul-group.webp\" width=\"860\" height=\"484\" alt=\"Pungmul ensemble performing outdoors near a city square\" loading=\"lazy\" decoding=\"async\"></a>",
+        "           <figcaption>Playing outdoors</figcaption>",
+        "@@ -55,3 +55,3 @@\n",
+        "         <figure>",
+        "-          <a href=\"assets/pungmul-solo.webp\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"Open the full-size janggu performance photograph in a new tab\"><img src=\"assets/pungmul-solo.webp\" width=\"650\" height=\"433\" alt=\"A performer playing janggu under blue stage lighting\" loading=\"eager\" decoding=\"async\"></a>",
+        "+          <a href=\"assets/pungmul-solo.webp\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"Open the full-size janggu performance photograph in a new tab\"><img src=\"assets/pungmul-solo.webp\" width=\"650\" height=\"433\" alt=\"A performer playing janggu under blue stage lighting\" loading=\"lazy\" decoding=\"async\"></a>",
+        "           <figcaption>A moment on stage</figcaption>",
+        "@@ -59,3 +59,3 @@\n",
+        "         <figure>",
+        "-          <a href=\"assets/pungmul-rehearsal.webp\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"Open the full-size indoor ensemble photograph in a new tab\"><img src=\"assets/pungmul-rehearsal.webp\" width=\"650\" height=\"366\" alt=\"Pungmul drummers in colourful costumes playing together indoors\" loading=\"eager\" decoding=\"async\"></a>",
+        "+          <a href=\"assets/pungmul-rehearsal.webp\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"Open the full-size indoor ensemble photograph in a new tab\"><img src=\"assets/pungmul-rehearsal.webp\" width=\"650\" height=\"366\" alt=\"Pungmul drummers in colourful costumes playing together indoors\" loading=\"lazy\" decoding=\"async\"></a>"
+      ]
+    },
+    {
       "sourceDrift": [
         {
           "category": "links",
           "sourceModifiedSinceAudit": [
-            "interests.html"
+            "interests.html",
+            "pungmul.html"
           ]
         },
         {
           "category": "external",
           "sourceModifiedSinceAudit": [
-            "interests.html"
+            "interests.html",
+            "pungmul.html"
           ]
         },
         {
@@ -207,32 +245,36 @@
         {
           "category": "reflow",
           "sourceModifiedSinceAudit": [
-            "interests.html"
+            "interests.html",
+            "pungmul.html"
           ]
         },
         {
           "category": "engines",
           "sourceModifiedSinceAudit": [
-            "interests.html"
+            "interests.html",
+            "pungmul.html"
           ]
         },
         {
           "category": "typography",
           "sourceModifiedSinceAudit": [
-            "interests.html"
+            "interests.html",
+            "pungmul.html"
           ]
         },
         {
           "category": "interactions",
           "sourceModifiedSinceAudit": [
-            "interests.html"
+            "interests.html",
+            "pungmul.html"
           ]
         }
       ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "40993876861",
-  "run_sha": "55021a8757cffa67939cf5722f60e4b3db39d3ce",
+  "workflow_run_id": "40993886572",
+  "run_sha": "a4e0e4112e2c5a4696bbf5e7f910fb69922fd8de",
   "exit_code": "1"
 }
