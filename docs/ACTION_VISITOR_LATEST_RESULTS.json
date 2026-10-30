@@ -1,7 +1,7 @@
 {
-  "workflow_run_id": "40872519583",
-  "head_sha": "d4e64e4419ab232e04bc6a56818f95ee4963a9aa",
-  "audit_exit_code": "0",
+  "workflow_run_id": "40987021036",
+  "head_sha": "7adfcd83c1befff1cf9e932727402570ba341d22",
+  "audit_exit_code": "1",
   "screen_widths_tested": [
     320,
     375,
@@ -364,14 +364,15 @@
     }
   ],
   "print": {
-    "pages": 6,
+    "pages": 7,
     "words": [
       298,
       258,
-      311,
-      319,
-      307,
-      353
+      248,
+      298,
+      308,
+      368,
+      81
     ],
     "missing": [],
     "page_previews": [
@@ -387,22 +388,27 @@
       },
       {
         "number": 3,
-        "first": "Unit 3 classifications among 21 students with below-complete Unit 2 explanations Unit 2 reflection Students Complete in Unit 3 Below complete in Unit 3 Specified a reasoning difficulty 12 10 2 Other reflections 9 3 6 Ten of the twelve students who specified a reasoning difficulty produced complete Unit 3 explanations, compared with three of the other nine. This association warranted closer attenti",
-        "last": "nit 3 explanations and later reconstructions Pattern Pairs What the comparison made visible Earlier pathway extended 5 Additional intermediate causal connections appeared following correction. Earlier contradiction not repeated 2 A previously expressed contradiction about the proton gradient did not appear in the reconstruction. Earlier relationship omitted 2 The reconstruction left out a relationship expressed in the original response. Intermediate pathway still undeveloped 1 Neither response established the required intermediate connections. "
+        "first": "Unit 3 classifications among 21 students with below-complete Unit 2 explanations Unit 2 reflection Students Complete in Unit 3 Below complete in Unit 3 Specified a reasoning difficulty 12 10 2 Other reflections 9 3 6 Ten of the twelve students who specified a reasoning difficulty produced complete Unit 3 explanations, compared with three of the other nine. The groups reflected what students had wr",
+        "last": "nging what the question invited students to express. I compared the original and subsequent answers of ten students whose original Unit 3 explanations did not meet the completeness criteria. The analysis followed the relationships they expressed among electron transport, the proton gradient, ATP and NADPH, and the consequences for carbon fixation and plant function. The AP Biology teaching case presents the detailed biological pathway; here, the comparison centres on what was present, absent, or contradictory in each pair of written responses. "
       },
       {
         "number": 4,
-        "first": "Seven of the ten later reconstructions met the item's completeness criteria. The four rows describe how they differed from their originals, a distinction that would be lost if only the later classifications were considered. Feedback and the more explicit prompt prevent these differences from establishing why students' explanations changed. A further comparison in Unit 4 In Unit 4, 25 of the 28 stu",
-        "last": " and reduced NADPH production, but the later reconstruction omitted them. The two answers made that omission visible while leaving uncertain whether those connections were unavailable to the student or simply unstated. Question for later assessment · Can the student explain again the particular relationships expressed in the original answer? These descriptions paraphrase de-identified student responses and are not verbatim excerpts. They illustrate two of the recorded comparison patterns; the counts for all ten pairs appear in the table above. "
+        "first": "Predominant differences between the ten original Unit 3 explanations and later reconstructions Pattern Pairs What the comparison made visible Earlier pathway extended 5 Additional intermediate causal connections appeared following correction. Earlier contradiction not repeated 2 A previously expressed contradiction about the proton gradient did not appear in the reconstruction. Earlier relationshi",
+        "last": "owth restraint incomplete in Unit 4. Completeness on one mechanism could not stand in for an assessment of the student's reasoning across contexts. Examples from paired student records De-identified record · S01 A fuller pathway after correction S01's original answer concentrated on ATP. The later reconstruction also connected NADPH, carbon fixation, and sugar production, making the pathway more complete under that task's conditions. Question for later assessment · Which newly expressed connections could the student explain in another setting? "
       },
       {
         "number": 5,
-        "first": "Questions developed during retrospective analysis The paired records suggested different starting points for subsequent assessment. S20 had previously expressed connections that were absent in the reconstruction, while S17's later answer no longer included an earlier contradiction. For S06, neither response developed the necessary intermediate pathway. I drafted the following questions after exami",
-        "last": "eported inquiry, and their use or effects have not been evaluated. How my practitioner judgment developed I examined four practitioner reflection records alongside the student work. Notes A and B were written during the classroom inquiry. The first distinguished students’ reports of preparation from the explanations they could produce without feedback. The second documented my decision to retain original Unit 3 responses for later comparison, together with a concern that the more explicit reconstruction prompt might change what students wrote. "
+        "first": "De-identified record · S20 Previously expressed relationships omitted S20's original answer included relationships involving the proton gradient, ATP, and reduced NADPH production, but the later reconstruction omitted them. The two answers made that omission visible while leaving uncertain whether those connections were unavailable to the student or simply unstated. Question for later assessment ·",
+        "last": "not repeated Revisiting a previously contradictory claim Look at the conflicting claims about the proton gradient in your earlier answer. Which one is scientifically defensible, and why? The later reconstruction did not repeat the contradiction, so I could not tell how the student had evaluated those claims. S06 · The pathway remained undeveloped Identifying the next causal connection What process is affected immediately after photosynthetic electron transport is inhibited, and why? Neither response developed the required intermediate pathway. "
       },
       {
         "number": 6,
-        "first": "Notes C and D were written during retrospective analysis after grades were finalized. Comparing the response pairs showed that later completeness classifications concealed different earlier relationships and contradictions. I could identify more specific questions for subsequent assessment, although I could not determine how much of the difference came from correction, the changed prompt, or other",
+        "first": "These questions arose after grading, during retrospective analysis. They were not administered as part of the reported inquiry, and their use or effects have not been evaluated. How my practitioner judgment developed I examined four practitioner reflection records alongside the student work. Notes A and B were written during the classroom inquiry. The first distinguished students’ reports of prepa",
+        "last": "evised reconstruction prompt all complicate causal interpretations. The written records reveal what students expressed under each set of conditions, without independently establishing changes in their understanding. What the inquiry contributes The first adjustment made students’ reflections and reported preparation available for comparison with later explanations. The second provided another account of the same bentazon mechanism. Returning to the original responses revealed differences obscured by the later completeness classifications. Some "
+      },
+      {
+        "number": 7,
+        "first": "reconstructions omitted connections students had previously expressed, while others no longer repeated earlier contradictions. Evaluating the adjustment therefore involved two judgments. The paired records helped me decide which causal relationships and competing accounts required further assessment. They did not establish why students’ responses differed, or whether the adjustment improved their ",
         "last": "y expressed, while others no longer repeated earlier contradictions. Evaluating the adjustment therefore involved two judgments. The paired records helped me decide which causal relationships and competing accounts required further assessment. They did not establish why students’ responses differed, or whether the adjustment improved their understanding. This distinction became the central lesson of the action research, changing how I interpreted the evidence generated by my own intervention and what a subsequent inquiry would need to examine. "
       }
     ],
@@ -412,8 +418,9 @@
       0,
       0,
       0,
+      0,
       0
     ]
   },
-  "log_tail": "on for later assessment \\u00b7 Can the student explain again the particular relationships expressed in the original answer? These descriptions paraphrase de-identified student responses and are not verbatim excerpts. They illustrate two of the recorded comparison patterns; the counts for all ten pairs appear in the table above. \"\n      },\n      {\n        \"number\": 5,\n        \"first\": \"Questions developed during retrospective analysis The paired records suggested different starting points for subsequent assessment. S20 had previously expressed connections that were absent in the reconstruction, while S17's later answer no longer included an earlier contradiction. For S06, neither response developed the necessary intermediate pathway. I drafted the following questions after exami\",\n        \"last\": \"eported inquiry, and their use or effects have not been evaluated. How my practitioner judgment developed I examined four practitioner reflection records alongside the student work. Notes A and B were written during the classroom inquiry. The first distinguished students\\u2019 reports of preparation from the explanations they could produce without feedback. The second documented my decision to retain original Unit 3 responses for later comparison, together with a concern that the more explicit reconstruction prompt might change what students wrote. \"\n      },\n      {\n        \"number\": 6,\n        \"first\": \"Notes C and D were written during retrospective analysis after grades were finalized. Comparing the response pairs showed that later completeness classifications concealed different earlier relationships and contradictions. I could identify more specific questions for subsequent assessment, although I could not determine how much of the difference came from correction, the changed prompt, or other\",\n        \"last\": \"y expressed, while others no longer repeated earlier contradictions. Evaluating the adjustment therefore involved two judgments. The paired records helped me decide which causal relationships and competing accounts required further assessment. They did not establish why students\\u2019 responses differed, or whether the adjustment improved their understanding. This distinction became the central lesson of the action research, changing how I interpreted the evidence generated by my own intervention and what a subsequent inquiry would need to examine. \"\n      }\n    ],\n    \"offPageWords\": [\n      0,\n      0,\n      0,\n      0,\n      0,\n      0\n    ]\n  }\n}\n"
+  "log_tail": ", so I could not tell how the student had evaluated those claims. S06 \\u00b7 The pathway remained undeveloped Identifying the next causal connection What process is affected immediately after photosynthetic electron transport is inhibited, and why? Neither response developed the required intermediate pathway. \"\n      },\n      {\n        \"number\": 6,\n        \"first\": \"These questions arose after grading, during retrospective analysis. They were not administered as part of the reported inquiry, and their use or effects have not been evaluated. How my practitioner judgment developed I examined four practitioner reflection records alongside the student work. Notes A and B were written during the classroom inquiry. The first distinguished students\\u2019 reports of prepa\",\n        \"last\": \"evised reconstruction prompt all complicate causal interpretations. The written records reveal what students expressed under each set of conditions, without independently establishing changes in their understanding. What the inquiry contributes The first adjustment made students\\u2019 reflections and reported preparation available for comparison with later explanations. The second provided another account of the same bentazon mechanism. Returning to the original responses revealed differences obscured by the later completeness classifications. Some \"\n      },\n      {\n        \"number\": 7,\n        \"first\": \"reconstructions omitted connections students had previously expressed, while others no longer repeated earlier contradictions. Evaluating the adjustment therefore involved two judgments. The paired records helped me decide which causal relationships and competing accounts required further assessment. They did not establish why students\\u2019 responses differed, or whether the adjustment improved their \",\n        \"last\": \"y expressed, while others no longer repeated earlier contradictions. Evaluating the adjustment therefore involved two judgments. The paired records helped me decide which causal relationships and competing accounts required further assessment. They did not establish why students\\u2019 responses differed, or whether the adjustment improved their understanding. This distinction became the central lesson of the action research, changing how I interpreted the evidence generated by my own intervention and what a subsequent inquiry would need to examine. \"\n      }\n    ],\n    \"offPageWords\": [\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0\n    ]\n  }\n}\n"
 }
