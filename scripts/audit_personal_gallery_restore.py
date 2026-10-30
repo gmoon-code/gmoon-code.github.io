@@ -49,6 +49,15 @@ async def test(browser,kind,w):
   await page.locator(conf["imageSelector"]).first.scroll_into_view_if_needed()
   await page.wait_for_function("""sel=>[...document.querySelectorAll(sel)].every(x=>x.complete)""",
      arg=conf["imageSelector"],timeout=18000)
+  await page.locator(conf["imageSelector"]).evaluate_all(
+     """els=>Promise.all(els.map(img=>img.decode().catch(()=>null)))""")
+  # Headless full-page screenshots sometimes omit decoded offscreen photos
+  # unless the image has also visited the active viewport.
+  for photo in await page.locator(conf["imageSelector"]).all():
+   await photo.scroll_into_view_if_needed()
+   await page.wait_for_timeout(45)
+  await page.evaluate("window.scrollTo(0,0)")
+  await page.wait_for_timeout(170)
   row["http"]=reply.status if reply else None
   state=await page.evaluate(MEASURE,conf)
   row["layout"]=state
