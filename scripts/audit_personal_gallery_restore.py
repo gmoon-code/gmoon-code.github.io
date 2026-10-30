@@ -6,13 +6,13 @@ from playwright.async_api import async_playwright
 
 CONFIG={
  "interests":{"url":"http://127.0.0.1:8772/interests.html","out":"interests-audit-output",
-   "imageSelector":"#main .pungmul-gallery img","figureSelector":"#main .pungmul-gallery figure","count":4,
-   "photos":["pungmul-stage.webp","pungmul-group.webp","pungmul-solo.webp","pungmul-rehearsal.webp"]},
+   "imageSelector":"#main .pungmul-gallery img","figureSelector":"#main .pungmul-gallery figure","count":2,
+   "photos":["interests-pungmul-street.webp","interests-pungmul-dancers.webp"]},
  "pungmul":{"url":"http://127.0.0.1:8773/pungmul.html","out":"pungmul-audit-output",
    "imageSelector":"#main :is(.pungmul-hero-photo,.pungmul-performance-grid) img",
    "figureSelector":"#main :is(.pungmul-hero-photo,.pungmul-performance-grid) figure, #main figure.pungmul-hero-photo",
-   "count":4,
-   "photos":["pungmul-stage.webp","pungmul-group.webp","pungmul-solo.webp","pungmul-rehearsal.webp"]},
+   "count":5,
+   "photos":["pungmul-rehearsal-studio.webp","pungmul-ensemble-stage-photo.webp","pungmul-outdoor-autumn.webp","pungmul-portrait-janggu.webp","pungmul-gong-jump.webp"]},
 }
 WIDTHS=(320,375,480,560,620,700,768,900,1024,1140,1440)
 MEASURE=r"""(args) => {
@@ -25,7 +25,7 @@ const info=imgs.map(img=>{
  return {src:img.getAttribute('src'),alt:img.alt,complete:img.complete,naturalWidth:img.naturalWidth,
  naturalHeight:img.naturalHeight,image:rect(img),frame:f?rect(f):null,
  borderRadius:fs?.borderRadius,border:fs?.borderStyle,imageBorderRadius:s.borderRadius,imageBorder:s.borderStyle,objectFit:s.objectFit,
- linksToFull:!!img.closest('a[href^="assets/pungmul-"]')};
+ linksToFull:!!img.closest('a[href^="assets/"][href$=".webp"]')};
 });
 const others=[...main.querySelectorAll('h1,h2,h3,p')].filter(e=>{
  const r=e.getBoundingClientRect(),s=getComputedStyle(e);
@@ -81,7 +81,7 @@ async def test(browser,kind,w):
    if max(frameRadius,imgRadius)<8:row["errors"].append("rounded photo frame missing")
   if kind=="interests" and not all(p["linksToFull"] for p in state["photos"]):
    row["errors"].append("restored full-size photo links missing")
-  if kind=="pungmul" and sum(p["linksToFull"] for p in state["photos"])!=3:
+  if kind=="pungmul" and sum(p["linksToFull"] for p in state["photos"])!=4:
    row["errors"].append("Pungmul full-size performance photo links missing")
   if w in (320,375,768,1140,1440):
    await page.screenshot(path=str(Path(conf["out"])/f"{kind}-{w}-full.png"),full_page=True,animations="disabled",timeout=15000)
@@ -120,7 +120,7 @@ async def main(kind):
      "missingHeads":[],
      "textLength":[len(pg.get_text().strip()) for pg in doc]}
    # Embedded raster photos must appear somewhere in print.
-   if sum(printable["imageCounts"])<4:
+   if sum(printable["imageCounts"])<conf["count"]:
     printable["missingHeads"].append("Restored photo gallery missing in printed A4")
    doc.close()
   except Exception as exc:
