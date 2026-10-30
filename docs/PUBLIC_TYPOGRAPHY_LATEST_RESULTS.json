@@ -26,7 +26,7 @@
     }
   },
   "caveats": "The two reading preference tests apply independently. Combined maximum-spacing plus 200% text at 320 CSS pixels is explicitly a supplementary stress case, and any such overflow remains open even when the independent-test exit code is zero. Inline spacing overrides model the priority of a user-origin accessibility stylesheet over author-important declarations, but are not an actual browser user-stylesheet installation. Computed font-size doubling is not native browser text-only zoom. Automated results do not certify WCAG.",
-  "workflow_run_id": "40997418630",
-  "head_sha": "3fc7e2478ca63b301fefeff9bf026028afebeb14",
+  "workflow_run_id": "40997577731",
+  "head_sha": "894e29211559f2da25f5edba5a343d75d634877c",
   "exit_code": "0"
 }
