@@ -1,5 +1,5 @@
 {
-  "testedAt": "2026-10-30T03:16:14.823Z",
+  "testedAt": "2026-10-30T04:44:14.234Z",
   "results": [
     {
       "path": "index.html",
@@ -192,7 +192,7 @@
             "width": 270,
             "left": 160,
             "right": 430,
-            "contentChars": 19
+            "contentChars": 21
           },
           {
             "className": "",
@@ -201,80 +201,36 @@
             "width": 270,
             "left": 444,
             "right": 713,
-            "contentChars": 12
-          },
-          {
-            "className": "",
-            "hasCaption": true,
-            "hasAccessibleName": true,
-            "width": 270,
-            "left": 727,
-            "right": 997,
             "contentChars": 17
-          },
-          {
-            "className": "",
-            "hasCaption": true,
-            "hasAccessibleName": true,
-            "width": 270,
-            "left": 1011,
-            "right": 1280,
-            "contentChars": 16
           }
         ]
       },
       "images": [
         {
-          "src": "assets/pungmul-stage.webp",
-          "naturalWidth": 860,
-          "naturalHeight": 645,
+          "src": "assets/interests-pungmul-street.webp",
+          "naturalWidth": 1400,
+          "naturalHeight": 788,
           "complete": true,
           "renderedWidth": 268,
-          "renderedHeight": 201,
+          "renderedHeight": 151,
           "left": 161,
           "right": 429,
-          "alt": "Pungmul ensemble performing on stage",
+          "alt": "Pungmul performers in colourful ribbons and traditional hats playing in a city street while spectators watch",
           "loading": "eager",
-          "source": "https://gmoon-code.github.io/assets/pungmul-stage.webp"
+          "source": "https://gmoon-code.github.io/assets/interests-pungmul-street.webp"
         },
         {
-          "src": "assets/pungmul-group.webp",
-          "naturalWidth": 860,
-          "naturalHeight": 484,
+          "src": "assets/interests-pungmul-dancers.webp",
+          "naturalWidth": 1400,
+          "naturalHeight": 1050,
           "complete": true,
           "renderedWidth": 268,
           "renderedHeight": 201,
           "left": 445,
           "right": 712,
-          "alt": "Pungmul ensemble performing outdoors near a city square",
+          "alt": "Two pungmul performers in white costumes with colourful hats and ribbons dancing while playing drums on stage",
           "loading": "eager",
-          "source": "https://gmoon-code.github.io/assets/pungmul-group.webp"
-        },
-        {
-          "src": "assets/pungmul-solo.webp",
-          "naturalWidth": 650,
-          "naturalHeight": 433,
-          "complete": true,
-          "renderedWidth": 268,
-          "renderedHeight": 201,
-          "left": 728,
-          "right": 996,
-          "alt": "A seated performer playing janggu under blue stage lighting",
-          "loading": "eager",
-          "source": "https://gmoon-code.github.io/assets/pungmul-solo.webp"
-        },
-        {
-          "src": "assets/pungmul-rehearsal.webp",
-          "naturalWidth": 650,
-          "naturalHeight": 366,
-          "complete": true,
-          "renderedWidth": 268,
-          "renderedHeight": 201,
-          "left": 1012,
-          "right": 1279,
-          "alt": "Pungmul drummers in colourful costumes performing together indoors",
-          "loading": "eager",
-          "source": "https://gmoon-code.github.io/assets/pungmul-rehearsal.webp"
+          "source": "https://gmoon-code.github.io/assets/interests-pungmul-dancers.webp"
         },
         {
           "src": "https://covers.openlibrary.org/b/isbn/9780547928227-L.jpg",
@@ -830,16 +786,7 @@
             "width": 362,
             "left": 14,
             "right": 376,
-            "contentChars": 19
-          },
-          {
-            "className": "",
-            "hasCaption": true,
-            "hasAccessibleName": true,
-            "width": 362,
-            "left": 14,
-            "right": 376,
-            "contentChars": 12
+            "contentChars": 21
           },
           {
             "className": "",
@@ -849,70 +796,35 @@
             "left": 14,
             "right": 376,
             "contentChars": 17
-          },
-          {
-            "className": "",
-            "hasCaption": true,
-            "hasAccessibleName": true,
-            "width": 362,
-            "left": 14,
-            "right": 376,
-            "contentChars": 16
           }
         ]
       },
       "images": [
         {
-          "src": "assets/pungmul-stage.webp",
-          "naturalWidth": 860,
-          "naturalHeight": 645,
+          "src": "assets/interests-pungmul-street.webp",
+          "naturalWidth": 1400,
+          "naturalHeight": 788,
+          "complete": true,
+          "renderedWidth": 360,
+          "renderedHeight": 203,
+          "left": 15,
+          "right": 375,
+          "alt": "Pungmul performers in colourful ribbons and traditional hats playing in a city street while spectators watch",
+          "loading": "eager",
+          "source": "https://gmoon-code.github.io/assets/interests-pungmul-street.webp"
+        },
+        {
+          "src": "assets/interests-pungmul-dancers.webp",
+          "naturalWidth": 1400,
+          "naturalHeight": 1050,
           "complete": true,
           "renderedWidth": 360,
           "renderedHeight": 270,
           "left": 15,
           "right": 375,
-          "alt": "Pungmul ensemble performing on stage",
+          "alt": "Two pungmul performers in white costumes with colourful hats and ribbons dancing while playing drums on stage",
           "loading": "eager",
-          "source": "https://gmoon-code.github.io/assets/pungmul-stage.webp"
-        },
-        {
-          "src": "assets/pungmul-group.webp",
-          "naturalWidth": 860,
-          "naturalHeight": 484,
-          "complete": true,
-          "renderedWidth": 360,
-          "renderedHeight": 203,
-          "left": 15,
-          "right": 375,
-          "alt": "Pungmul ensemble performing outdoors near a city square",
-          "loading": "eager",
-          "source": "https://gmoon-code.github.io/assets/pungmul-group.webp"
-        },
-        {
-          "src": "assets/pungmul-solo.webp",
-          "naturalWidth": 650,
-          "naturalHeight": 433,
-          "complete": true,
-          "renderedWidth": 360,
-          "renderedHeight": 240,
-          "left": 15,
-          "right": 375,
-          "alt": "A seated performer playing janggu under blue stage lighting",
-          "loading": "eager",
-          "source": "https://gmoon-code.github.io/assets/pungmul-solo.webp"
-        },
-        {
-          "src": "assets/pungmul-rehearsal.webp",
-          "naturalWidth": 650,
-          "naturalHeight": 366,
-          "complete": true,
-          "renderedWidth": 360,
-          "renderedHeight": 203,
-          "left": 15,
-          "right": 375,
-          "alt": "Pungmul drummers in colourful costumes performing together indoors",
-          "loading": "eager",
-          "source": "https://gmoon-code.github.io/assets/pungmul-rehearsal.webp"
+          "source": "https://gmoon-code.github.io/assets/interests-pungmul-dancers.webp"
         },
         {
           "src": "https://covers.openlibrary.org/b/isbn/9780547928227-L.jpg",
