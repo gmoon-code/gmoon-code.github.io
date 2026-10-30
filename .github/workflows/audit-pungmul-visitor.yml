@@ -11,6 +11,7 @@ on:
       - "appearance.js"
       - "responsive-personal-media.js"
       - "scripts/audit-pungmul-visitor.py"
+      - "scripts/audit_personal_gallery_restore.py"
       - ".github/workflows/audit-pungmul-visitor.yml"
   workflow_dispatch:
 permissions:
