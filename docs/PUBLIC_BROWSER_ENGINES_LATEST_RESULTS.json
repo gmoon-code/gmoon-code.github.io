@@ -162,7 +162,7 @@
       "conclusion": "No observable zoom change from headless keyboard shortcut; actual page zoom not verified"
     }
   ],
-  "failedCount": 8,
+  "failedCount": 7,
   "failures": [
     {
       "engine": "chromium",
@@ -316,114 +316,6 @@
             "text": "",
             "x": 932,
             "right": 1199
-          }
-        ]
-      },
-      "tabs": [
-        {
-          "href": "#main",
-          "visible": true,
-          "outlineStyle": "solid",
-          "outlineWidth": "2px"
-        },
-        {
-          "href": "index.html",
-          "visible": true,
-          "outlineStyle": "solid",
-          "outlineWidth": "2px"
-        },
-        {
-          "href": "index.html",
-          "visible": true,
-          "outlineStyle": "solid",
-          "outlineWidth": "2px"
-        },
-        {
-          "href": "research.html",
-          "visible": true,
-          "outlineStyle": "solid",
-          "outlineWidth": "2px"
-        },
-        {
-          "href": "projects.html",
-          "visible": true,
-          "outlineStyle": "solid",
-          "outlineWidth": "2px"
-        },
-        {
-          "href": "teaching.html",
-          "visible": true,
-          "outlineStyle": "solid",
-          "outlineWidth": "2px"
-        },
-        {
-          "href": "interests.html",
-          "visible": true,
-          "outlineStyle": "solid",
-          "outlineWidth": "2px"
-        },
-        {
-          "href": "contact.html",
-          "visible": true,
-          "outlineStyle": "solid",
-          "outlineWidth": "2px"
-        },
-        {
-          "href": "cv.html",
-          "visible": true,
-          "outlineStyle": "solid",
-          "outlineWidth": "2px"
-        }
-      ],
-      "skip": {
-        "hash": "#main",
-        "onMain": true
-      }
-    },
-    {
-      "engine": "firefox",
-      "page": "interests.html",
-      "width": 320,
-      "forcedRequested": false,
-      "errors": [
-        "reader text clipped"
-      ],
-      "http": 200,
-      "metrics": {
-        "innerWidth": 320,
-        "outerWidth": 320,
-        "devicePixelRatio": 1,
-        "visualScale": 1,
-        "scrollWidth": 320,
-        "mainCount": 1,
-        "h1Count": 1,
-        "navCount": 7,
-        "forced": false,
-        "outOfBounds": [],
-        "clipped": [
-          {
-            "tag": "A",
-            "text": "",
-            "x": 15,
-            "right": 305
-          },
-          {
-            "tag": "A",
-            "text": "",
-            "x": 15,
-            "right": 305
-          },
-          {
-            "tag": "A",
-            "text": "",
-            "x": 15,
-            "right": 305
-          },
-          {
-            "tag": "A",
-            "text": "",
-            "x": 15,
-            "right": 305
           }
         ]
       },
@@ -934,7 +826,7 @@
     }
   ],
   "limitations": "Playwright Linux Chromium Firefox WebKit are not physical Safari/Firefox devices. Keyboard zoom shortcuts without a measured viewport/scale change do not verify real browser Ctrl-plus. Forced-colour emulation and automatic focus checks do not constitute WCAG certification or screen-reader testing.",
-  "workflow_run_id": "40993136490",
-  "head_sha": "d6c0bf37c144f1cad2a75870338bab194ed67f8f",
+  "workflow_run_id": "40993142493",
+  "head_sha": "d3615a6ff8d1a946605d473eb0ff16d430b201ae",
   "exit_code": "1"
 }
