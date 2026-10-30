@@ -30,9 +30,9 @@ The 19 public/legacy HTML files below were enumerated from the current repositor
 | `interests.html` | **Editorially verified; external bibliographic/series references corroborated; personal claims unverified** | C-I1a–C-I1d, no unjustified rewrite |
 | `pungmul.html` | **Editorially verified; historical sources corroborated; personal/photo provenance unverified** | C-PU1a–C-PU1d, no content changes |
 | `cv.html` | **Editorially verified against 29 October résumé; credential primary records and preferred public email unresolved** | C-CV1a–C-CV1d; eight bounded corrections |
-| `contact.html` | Not reviewed in renewed pass | All substantive contact language |
-| `about.html` | Not reviewed in renewed pass | Redirect and fallback copy |
-| `404.html` | Not reviewed in renewed pass | Error-page copy |
+| `contact.html` | **Editorially verified; preferred contact address unresolved** | C-CN1a–C-CN1c; no prose revision, author-reported bio |
+| `about.html` | **Editorially verified at source level** | C-AB1a; redirect and fallback copy checked |
+| `404.html` | **Editorially verified at source level** | C-NF1a; recovery message and navigation checked |
 
 Additional independent content inventories pending: the `studio/` and `connection-studio/` web applications, related `editor*` and `publisher/` routes if user-facing, downloadable/supporting documents, interactive expanded content and additional discoverable paths. Their prior visitor-oriented QA is documented elsewhere and is not claimed here as renewed editorial verification.
 
@@ -847,6 +847,30 @@ The replacement is more precise about self-selected reflection categories and st
 
 **Page status.** `cv.html` **Editorially verified against newest supplied résumé, with primary credential verification and cross-source public-email discrepancy open; not fully verified.** Completed C-CV1a–C-CV1d. No external institutional credential verification claimed.
 
+## Stage C-CN1a | Contact introduction, invitation and email address
+
+**Source reviewed.** `contact.html` current blob `ac42543da2d79999e1eb93bff6759e6095022b56`, 228,019-byte source of which most is embedded personal image and inherited visual-layout metadata; content audited without rewriting these assets. Read browser title, description, all navigation labels, invitation H1, introductory paragraph and final smiley, email-card heading, accessible mailto button/visible address, and footer. The friendly, restrained invitation gives teaching/research exchanges and simple greetings equal legitimacy. The smiley ` :)` is an intentionally friendly character sequence, not a prohibited colon used to connect academic prose. No stylistic, grammatical or unsupported factual reason to remove it. Both mailto links and the displayed email use `gracem.0691@gmail.com`, consistent with the broader website; newest 29 October 2026 résumé `Resume_Ye Eun Moon(4).docx` instead lists `graceyeunm@gmail.com`. This does not establish which email should be public. Keep current web address pending explicit author preference, log cross-source discrepancy as unresolved.
+
+## Stage C-CN1b | Biographical information and connection to Research and Teaching
+
+**Coverage.** Read heading “A little about me”, both complete paragraphs and their two links. Personal description says the author grew up in Canada in an immigrant family and teaches secondary science in a South Korean international school. These agree with the author's previously supplied background and website employment; personal history and details about student diversity are not independently established through institutional sources. The account thoughtfully describes classroom questions about belonging and participation, with no claim that a study empirically established a causal relationship. Research and Teaching page links point to relevant local routes. This is a friendly contact-page bio rather than an academic essay; preserve the direct voice and restrained, sincere wording. No edits justified.
+
+## Stage C-CN1c | Contact full-source reconciliation
+
+**Scope.** Read all substantive headings, invitation/body prose, email labels, bio, linked page titles, alt description of the existing personal photo, and footer, alongside metadata and navigation. Source contains **one H1, one H2**, two visible identical mailto destinations, no em dashes, no broken hash links and no duplicate **actual HTML element** IDs. A naive source regex had flagged repeated instances of a `data-moon-v2-added-id` selector inside generated CSS as duplicates; these are **CSS occurrences**, not duplicated DOM `id` attributes. No visual asset, photo, CSS/geometry, or editor data changed. The page's friendly tone remains consistent with established author instructions. No new browser, print or deployed parity test at this SHA. **Status: Editorially verified at repository-source level; preferred public email and autobiographical provenance remain open.**
+
+## Stage C-AB1a | About redirect and fallback copy
+
+**Coverage.** Read full `about.html` blob `a39c0469eeadc8c104c884d812b1b4be4db68db1`, including zero-second HTTP-equivalent meta refresh to `contact.html`, canonical Contact destination, noindex robots directive, title, one H1 and one friendly fallback paragraph linking the same Contact route. The link text clearly informs visitors that the About page has moved and provides a non-script fallback path. Source contains one body and main, no duplicate IDs, no ordinary prose punctuation/style violations. Redirect behaviour in an actual deployed browser was not re-tested. **No change; Editorially verified at source level.**
+
+## Stage C-NF1a | Custom 404 page, content and recovery route
+
+**Coverage.** Read full `404.html` blob `361512d3e77f05f36d2701d1201561b039469df8`, including error-specific metadata, noindex robots directive, primary navigation, one “Page not found” H1, explanatory sentence and “Return home” link, footer invitation, ORCID and back-to-top. The language makes no unsupported technical diagnosis. The recovery route uses root-relative `/`; all root-relative navigation links are appropriate for this GitHub Pages site. One H1, no duplicated HTML IDs, no unresolved in-page hashes and no prose em dashes. Server-generated missing-route response code and release parity were not independently verified in this content pass. **No change; Editorially verified at source level.**
+
+## Root top-level renewed-pass checkpoint
+
+All **19 inventoried public/legacy root HTML routes** now have source-level renewed content review recorded, with explicit scope limits on independent evidence, availability, deployment or provenance for each route. This **does not close the site-wide audit**. Supplementary application routes, nested visitor-facing tools and generated/downloadable source artifacts need their own independent inventory and textual review. Existing failures/uncertainties include published-site parity, original classroom and research source records, and previously recorded Action-research A4 print split. The site-wide contact email discrepancy also remains open.
+
 ## Exact next continuation point
 
-**Stage C-CN1a, `contact.html`, next unreviewed route.** Audit contact invitation, biographical background and academic claims sentence by sentence. Cross-check the **two different contact addresses** found in latest résumé versus current website without guessing which should be public. Preserve intended friendly voice, smiley, site design and personal images; do not edit those visuals. Review links and footer, and record any site-wide email reconciliation only with a grounded user preference. Next complete `about.html` (redirect/fallback), `404.html`, then independently inventory the app routes, data and downloadable materials not covered by the 19 root files. Keep site-release parity and primary classroom records as separate outstanding limitations.
+**Stage C-X1a, discovery and classification of nested application routes and user-facing supporting documents/assets.** Inspect the current repository tree and compare with the source-level audit's root list, prioritizing `studio/`, `connection-studio/`, `editor*`, `publisher/`, any other interactive or downloadable visitor-facing route, and client-visible messages. Distinguish public site copy from developer/editor-only interfaces and programmatic strings. Inventory exact paths and human-readable sections **before** assigning verification or a next-page status. Continue in bounded stages, preserving historical audits and unresolved evidence limits. Do not infer that 19 root HTML files constitute the whole website.
