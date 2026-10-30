@@ -2,13 +2,13 @@
   "pages_scanned": 19,
   "distinct_destinations": 113,
   "counts": {
-    "reachable": 70,
-    "unverified": 43
+    "reachable": 71,
+    "unverified": 42
   },
   "by_category": {
     "external": {
-      "reachable": 47,
-      "unverified": 2
+      "reachable": 48,
+      "unverified": 1
     },
     "scholarly-identifier": {
       "unverified": 41,
@@ -801,23 +801,6 @@
       "warnings": []
     },
     {
-      "url": "https://eric.ed.gov/?id=ED527596",
-      "status": "unverified",
-      "category": "external",
-      "pages": [
-        "research.html"
-      ],
-      "head": {
-        "code": null,
-        "error": "The read operation timed out"
-      },
-      "get": {
-        "code": null,
-        "error": "The read operation timed out"
-      },
-      "warnings": []
-    },
-    {
       "url": "https://onlinelibrary.wiley.com/doi/full/10.1002/sce.21622",
       "status": "unverified",
       "category": "external",
@@ -858,42 +841,106 @@
   "doi_registry": {
     "checked": 41,
     "counts": {
-      "registered": 34,
-      "not-confirmed": 7
+      "registered": 29,
+      "not-confirmed": 12
     },
-    "secondary_index_matches": 7,
+    "secondary_index_matches": 12,
     "not_confirmed": [
       {
-        "url": "https://doi.org/10.1002/sce.20392",
-        "doi": "10.1002/sce.20392",
+        "url": "https://doi.org/10.1002/sce.21511",
+        "doi": "10.1002/sce.21511",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.20392",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21511",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Cultural processes in science education: Supporting the navigation of multiple epistemologies",
-        "indexedYear": 2010
+        "indexedTitle": "Opening up curricula to redistribute epistemic agency: A framework for supporting science teaching",
+        "indexedYear": 2019
       },
       {
-        "url": "https://doi.org/10.1002/sce.21099",
-        "doi": "10.1002/sce.21099",
+        "url": "https://doi.org/10.1002/sce.21938",
+        "doi": "10.1002/sce.21938",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21099",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21938",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "An Integrative Framework for the Analysis of Multiple and Multimodal Representations for Meaning‐Making in Science Education",
-        "indexedYear": 2014
+        "indexedTitle": "“That's Just Gonna Make Them Upset”: Youth Authoring Emerging Epistemic Ideals Through Rightful Presence",
+        "indexedYear": 2025
+      },
+      {
+        "url": "https://doi.org/10.1002/tea.20311",
+        "doi": "10.1002/tea.20311",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.20311",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Developing a learning progression for scientific modeling: Making scientific modeling accessible and meaningful for learners",
+        "indexedYear": 2009
+      },
+      {
+        "url": "https://doi.org/10.1002/tea.21257",
+        "doi": "10.1002/tea.21257",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21257",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Epistemologies in practice: Making scientific practices meaningful for students",
+        "indexedYear": 2015
+      },
+      {
+        "url": "https://doi.org/10.1002/tea.21714",
+        "doi": "10.1002/tea.21714",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21714",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Science engagement as insight into the science identity work nurtured in community‐based science clubs",
+        "indexedYear": 2021
+      },
+      {
+        "url": "https://doi.org/10.1080/03626784.2021.1947732",
+        "doi": "10.1080/03626784.2021.1947732",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/03626784.2021.1947732",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Getting dirty and coming clean: Sex education and the problem of expertise",
+        "indexedYear": 2021
       },
       {
         "url": "https://doi.org/10.1080/07491409.2023.2193543",
@@ -912,20 +959,20 @@
         "indexedYear": 2023
       },
       {
-        "url": "https://doi.org/10.1080/09500690903386435",
-        "doi": "10.1080/09500690903386435",
+        "url": "https://doi.org/10.1111/jedm.12000",
+        "doi": "10.1111/jedm.12000",
         "pages": [
-          "teaching-ap-chemistry.html"
+          "research-scoping.html"
         ],
-        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/09500690903386435",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1111/jedm.12000",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Macro, Submicro, and Symbolic: The many faces of the chemistry “triplet”",
-        "indexedYear": 2010
+        "indexedTitle": "Validating the Interpretations and Uses of Test Scores",
+        "indexedYear": 2013
       },
       {
         "url": "https://doi.org/10.1159/000345322",
@@ -944,6 +991,22 @@
         "indexedYear": 2012
       },
       {
+        "url": "https://doi.org/10.1187/cbe.23-08-0157",
+        "doi": "10.1187/cbe.23-08-0157",
+        "pages": [
+          "teaching-ap-biology.html"
+        ],
+        "publisherLanding": "https://www.lifescied.org/doi/10.1187/cbe.23-08-0157",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Examining and Supporting Mechanistic Explanations Across Chemistry and Biology Courses",
+        "indexedYear": 2024
+      },
+      {
         "url": "https://doi.org/10.1207/S1532690XCI2004_1",
         "doi": "10.1207/S1532690XCI2004_1",
         "pages": [
@@ -960,26 +1023,26 @@
         "indexedYear": 2002
       },
       {
-        "url": "https://doi.org/10.2304/ciec.2011.12.4.362",
-        "doi": "10.2304/ciec.2011.12.4.362",
+        "url": "https://doi.org/10.3390/plants10081501",
+        "doi": "10.3390/plants10081501",
         "pages": [
-          "research.html"
+          "teaching-ap-biology.html"
         ],
-        "publisherLanding": "https://journals.sagepub.com/doi/10.2304/ciec.2011.12.4.362",
+        "publisherLanding": "https://www.mdpi.com/2223-7747/10/8/1501",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "On the Human Challenges of Multiliteracies Pedagogy",
-        "indexedYear": 2011
+        "indexedTitle": "Binding Properties of Photosynthetic Herbicides with the QB Site of the D1 Protein in Plant Photosystem II: A Combined Functional and Molecular Docking Study",
+        "indexedYear": 2021
       }
     ],
     "unresolved": [],
     "limitation": "Crossref/DataCite registration is distinct from publisher access, correct article metadata or article availability. OpenAlex is independent secondary corroboration, not registration proof."
   },
-  "workflow_run_id": "40987526406",
-  "head_sha": "c6499a8866ad435cb8f2064e378ed21357203289",
+  "workflow_run_id": "40988286396",
+  "head_sha": "c11a8a6f0211d3ed782cd6b52093a87f25d93be2",
   "audit_exit_code": "0"
 }
