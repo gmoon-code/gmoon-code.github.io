@@ -1,12 +1,12 @@
 {
-  "sourceHead": "ee265bd9812f61c4dce632502a3aaba65497a0d7",
+  "sourceHead": "3fc7e2478ca63b301fefeff9bf026028afebeb14",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-ee265bd9812f",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-3fc7e2478ca6",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -14,8 +14,8 @@
   "auditEvidence": {
     "links": {
       "report": "docs/PUBLIC_LINKGRAPH_LATEST_RESULTS.json",
-      "run": "40996364963",
-      "head_sha": "18e80e1de67e39e07db135fc5d9d0a1bbd3921ed",
+      "run": "40997268815",
+      "head_sha": "ee265bd9812f61c4dce632502a3aaba65497a0d7",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research-methods-studio.html"
@@ -26,8 +26,8 @@
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "40996365067",
-      "head_sha": "18e80e1de67e39e07db135fc5d9d0a1bbd3921ed",
+      "run": "40997268787",
+      "head_sha": "ee265bd9812f61c4dce632502a3aaba65497a0d7",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research-methods-studio.html"
@@ -61,8 +61,8 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "40996364888",
-      "head_sha": "18e80e1de67e39e07db135fc5d9d0a1bbd3921ed",
+      "run": "40997268695",
+      "head_sha": "ee265bd9812f61c4dce632502a3aaba65497a0d7",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research-methods-studio.html"
@@ -85,8 +85,8 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "40996364865",
-      "head_sha": "18e80e1de67e39e07db135fc5d9d0a1bbd3921ed",
+      "run": "40997268751",
+      "head_sha": "ee265bd9812f61c4dce632502a3aaba65497a0d7",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research-methods-studio.html"
@@ -98,8 +98,8 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "40996364991",
-      "head_sha": "18e80e1de67e39e07db135fc5d9d0a1bbd3921ed",
+      "run": "40997268758",
+      "head_sha": "ee265bd9812f61c4dce632502a3aaba65497a0d7",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research-methods-studio.html"
@@ -176,7 +176,12 @@
         "     <h1>Research Methods Studio</h1>",
         "-    <p>A research question often becomes more demanding when students must decide what evidence they can collect and which conclusions it could support. I developed Research Methods Studio to help them revisit those choices across eighteen connected stages. In the synthetic radish-salinity study below, the critical decision is the level at which treatments were assigned. Five seeds share the conditions in each Petri dish, so ninety seed records cannot be treated as ninety independent treatment replicates.</p>",
         "+    <p>A research question often becomes more demanding when students must decide what evidence they can collect and which conclusions it could support. I developed Research Methods Studio to help them revisit those choices across eighteen connected stages. In the synthetic radish-salinity study below, the critical decision is the level at which treatments were assigned. Five seeds share the conditions in each Petri dish, so ninety seed measurements cannot be treated as ninety independent treatment replicates.</p>",
-        "     <div class=\"controls\"><a class=\"control primary\" href=\"https://gmoon-code.github.io/research-methods/\">Open Research Methods Studio</a></div>"
+        "     <div class=\"controls\"><a class=\"control primary\" href=\"https://gmoon-code.github.io/research-methods/\">Open Research Methods Studio</a></div>",
+        "@@ -115,3 +115,3 @@\n",
+        "     <article><span class=\"meta\">Stages 9–12</span><h3>Study design</h3><p>Examine design choices, sampling, measurements, procedures, and ethics.</p></article>",
+        "-    <article><span class=\"meta\">Stages 13–15</span><h3>Data collection and analysis</h3><p>Collect and check the data, choose analyses that fit the design, and report the results.</p></article>",
+        "+    <article><span class=\"meta\">Stages 13–15</span><h3>Data analysis</h3><p>Consider data quality and choose analyses that fit the design and question.</p></article>",
+        "     <article><span class=\"meta\">Stages 16–18</span><h3>Research writing and review</h3><p>Report the study, trace claims to evidence, and examine what needs revision.</p></article>"
       ]
     },
     {
@@ -229,7 +234,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "40997268763",
-  "run_sha": "ee265bd9812f61c4dce632502a3aaba65497a0d7",
+  "workflow_run_id": "40997418490",
+  "run_sha": "3fc7e2478ca63b301fefeff9bf026028afebeb14",
   "exit_code": "1"
 }
