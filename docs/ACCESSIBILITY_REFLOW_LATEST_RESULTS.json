@@ -8,105 +8,11 @@
   ],
   "axeScanCount": 36,
   "darkAxeCount": 5,
-  "failedCases": 3,
-  "failures": [
-    {
-      "page": "interests.html",
-      "width": 320,
-      "errors": [
-        "clipped reader text"
-      ],
-      "metrics": {
-        "documentWidth": 320,
-        "outOfBounds": [],
-        "clipped": [
-          {
-            "tag": "A",
-            "text": ""
-          },
-          {
-            "tag": "A",
-            "text": ""
-          },
-          {
-            "tag": "A",
-            "text": ""
-          },
-          {
-            "tag": "A",
-            "text": ""
-          }
-        ]
-      },
-      "axe": [],
-      "axeDark": null
-    },
-    {
-      "page": "interests.html",
-      "width": 640,
-      "errors": [
-        "clipped reader text"
-      ],
-      "metrics": {
-        "documentWidth": 640,
-        "outOfBounds": [],
-        "clipped": [
-          {
-            "tag": "A",
-            "text": ""
-          },
-          {
-            "tag": "A",
-            "text": ""
-          },
-          {
-            "tag": "A",
-            "text": ""
-          },
-          {
-            "tag": "A",
-            "text": ""
-          }
-        ]
-      },
-      "axe": null,
-      "axeDark": null
-    },
-    {
-      "page": "interests.html",
-      "width": 1280,
-      "errors": [
-        "clipped reader text"
-      ],
-      "metrics": {
-        "documentWidth": 1280,
-        "outOfBounds": [],
-        "clipped": [
-          {
-            "tag": "A",
-            "text": ""
-          },
-          {
-            "tag": "A",
-            "text": ""
-          },
-          {
-            "tag": "A",
-            "text": ""
-          },
-          {
-            "tag": "A",
-            "text": ""
-          }
-        ]
-      },
-      "axe": [],
-      "axeDark": null
-    }
-  ],
+  "failedCases": 0,
+  "failures": [],
   "rules": {},
   "caveats": "CSS viewport equivalence to 200/400% reflow, not physical browser zoom. Automated axe findings do not certify WCAG. Exemptions apply only to intentional horizontal scroll containers.",
-  "workflow_run_id": "40993142629",
-  "head_sha": "d3615a6ff8d1a946605d473eb0ff16d430b201ae",
-  "exit_code": "1"
+  "workflow_run_id": "40993481160",
+  "head_sha": "c249ea81be92a73ebc6cecf6d78ba83989d0712d",
+  "exit_code": "0"
 }
