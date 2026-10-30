@@ -24,7 +24,7 @@ const info=imgs.map(img=>{
  const s=getComputedStyle(img),f=img.closest('figure'),fs=f&&getComputedStyle(f);
  return {src:img.getAttribute('src'),alt:img.alt,complete:img.complete,naturalWidth:img.naturalWidth,
  naturalHeight:img.naturalHeight,image:rect(img),frame:f?rect(f):null,
- borderRadius:fs?.borderRadius,border:fs?.borderStyle,objectFit:s.objectFit,
+ borderRadius:fs?.borderRadius,border:fs?.borderStyle,imageBorderRadius:s.borderRadius,imageBorder:s.borderStyle,objectFit:s.objectFit,
  linksToFull:!!img.closest('a[href^="assets/pungmul-"]')};
 });
 const others=[...main.querySelectorAll('h1,h2,h3,p')].filter(e=>{
@@ -64,9 +64,12 @@ async def test(browser,kind,w):
    if not p["complete"] or p["naturalWidth"]<2:row["errors"].append("photo did not load")
    if not p["alt"]:row["errors"].append("image lacks alt")
    if not p["image"]["width"] or p["image"]["width"]>w+2:row["errors"].append("image not resized within viewport")
-   if not p["frame"] or "solid" not in (p["border"] or ""):row["errors"].append("figure border missing")
-   if not p["frame"] or float((p["borderRadius"] or "0").split("px")[0])<8:
-    row["errors"].append("rounded photo frame missing")
+   frameSolid=bool(p["frame"] and "solid" in (p["border"] or ""))
+   imageSolid="solid" in (p["imageBorder"] or "")
+   if not frameSolid and not imageSolid:row["errors"].append("photo border missing")
+   frameRadius=float((p["borderRadius"] or "0").split("px")[0])
+   imgRadius=float((p["imageBorderRadius"] or "0").split("px")[0])
+   if max(frameRadius,imgRadius)<8:row["errors"].append("rounded photo frame missing")
   if kind=="interests" and not all(p["linksToFull"] for p in state["photos"]):
    row["errors"].append("restored full-size photo links missing")
   if kind=="pungmul" and sum(p["linksToFull"] for p in state["photos"])!=3:
