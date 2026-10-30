@@ -1,5 +1,5 @@
 {
-  "testedAt": "2026-10-30T02:49:51.818Z",
+  "testedAt": "2026-10-30T03:16:14.823Z",
   "results": [
     {
       "path": "index.html",
@@ -234,7 +234,7 @@
           "left": 161,
           "right": 429,
           "alt": "Pungmul ensemble performing on stage",
-          "loading": "lazy",
+          "loading": "eager",
           "source": "https://gmoon-code.github.io/assets/pungmul-stage.webp"
         },
         {
@@ -247,7 +247,7 @@
           "left": 445,
           "right": 712,
           "alt": "Pungmul ensemble performing outdoors near a city square",
-          "loading": "lazy",
+          "loading": "eager",
           "source": "https://gmoon-code.github.io/assets/pungmul-group.webp"
         },
         {
@@ -260,7 +260,7 @@
           "left": 728,
           "right": 996,
           "alt": "A seated performer playing janggu under blue stage lighting",
-          "loading": "lazy",
+          "loading": "eager",
           "source": "https://gmoon-code.github.io/assets/pungmul-solo.webp"
         },
         {
@@ -273,7 +273,7 @@
           "left": 1012,
           "right": 1279,
           "alt": "Pungmul drummers in colourful costumes performing together indoors",
-          "loading": "lazy",
+          "loading": "eager",
           "source": "https://gmoon-code.github.io/assets/pungmul-rehearsal.webp"
         },
         {
@@ -872,7 +872,7 @@
           "left": 15,
           "right": 375,
           "alt": "Pungmul ensemble performing on stage",
-          "loading": "lazy",
+          "loading": "eager",
           "source": "https://gmoon-code.github.io/assets/pungmul-stage.webp"
         },
         {
@@ -885,7 +885,7 @@
           "left": 15,
           "right": 375,
           "alt": "Pungmul ensemble performing outdoors near a city square",
-          "loading": "lazy",
+          "loading": "eager",
           "source": "https://gmoon-code.github.io/assets/pungmul-group.webp"
         },
         {
@@ -898,7 +898,7 @@
           "left": 15,
           "right": 375,
           "alt": "A seated performer playing janggu under blue stage lighting",
-          "loading": "lazy",
+          "loading": "eager",
           "source": "https://gmoon-code.github.io/assets/pungmul-solo.webp"
         },
         {
@@ -911,7 +911,7 @@
           "left": 15,
           "right": 375,
           "alt": "Pungmul drummers in colourful costumes performing together indoors",
-          "loading": "lazy",
+          "loading": "eager",
           "source": "https://gmoon-code.github.io/assets/pungmul-rehearsal.webp"
         },
         {
