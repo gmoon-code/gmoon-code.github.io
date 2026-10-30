@@ -9,6 +9,7 @@ on:
       - "appearance.css"
       - "appearance.js"
       - "scripts/audit-interests-visitor.py"
+      - "scripts/audit_personal_gallery_restore.py"
       - ".github/workflows/audit-interests-visitor.yml"
   workflow_dispatch:
 permissions:
