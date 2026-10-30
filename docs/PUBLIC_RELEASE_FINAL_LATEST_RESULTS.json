@@ -1,12 +1,12 @@
 {
-  "sourceHead": "30cff3500e0968496e56284aba74966689373d50",
+  "sourceHead": "2868046f884222258c92df569ce98a09ea8b8c16",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-30cff3500e09",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-2868046f8842",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -14,12 +14,11 @@
   "auditEvidence": {
     "links": {
       "report": "docs/PUBLIC_LINKGRAPH_LATEST_RESULTS.json",
-      "run": "41004473394",
-      "head_sha": "7290540718b9ef923f88344e508892474e39a198",
+      "run": "41005394175",
+      "head_sha": "30cff3500e0968496e56284aba74966689373d50",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "cv.html",
-        "writing-biological-classification.html"
+        "cv.html"
       ],
       "failureCounts": {
         "problems": 0
@@ -120,8 +119,7 @@
     {
       "category": "links",
       "sourceModifiedSinceAudit": [
-        "cv.html",
-        "writing-biological-classification.html"
+        "cv.html"
       ]
     },
     {
@@ -193,8 +191,7 @@
         {
           "category": "links",
           "sourceModifiedSinceAudit": [
-            "cv.html",
-            "writing-biological-classification.html"
+            "cv.html"
           ]
         },
         {
@@ -238,7 +235,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41005394210",
-  "run_sha": "30cff3500e0968496e56284aba74966689373d50",
+  "workflow_run_id": "41005414239",
+  "run_sha": "2868046f884222258c92df569ce98a09ea8b8c16",
   "exit_code": "1"
 }
