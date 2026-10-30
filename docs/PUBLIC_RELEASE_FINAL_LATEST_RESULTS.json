@@ -1,12 +1,12 @@
 {
-  "sourceHead": "c249ea81be92a73ebc6cecf6d78ba83989d0712d",
+  "sourceHead": "55021a8757cffa67939cf5722f60e4b3db39d3ce",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-c249ea81be92",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-55021a8757cf",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -14,12 +14,11 @@
   "auditEvidence": {
     "links": {
       "report": "docs/PUBLIC_LINKGRAPH_LATEST_RESULTS.json",
-      "run": "40993136537",
-      "head_sha": "d6c0bf37c144f1cad2a75870338bab194ed67f8f",
+      "run": "40993481095",
+      "head_sha": "c249ea81be92a73ebc6cecf6d78ba83989d0712d",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "interests.html",
-        "pungmul.html"
+        "interests.html"
       ],
       "failureCounts": {
         "problems": 0
@@ -27,12 +26,11 @@
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "40993136502",
-      "head_sha": "d6c0bf37c144f1cad2a75870338bab194ed67f8f",
+      "run": "40993481080",
+      "head_sha": "c249ea81be92a73ebc6cecf6d78ba83989d0712d",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "interests.html",
-        "pungmul.html"
+        "interests.html"
       ],
       "failureCounts": {
         "issues": 42
@@ -62,46 +60,45 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "40993142629",
-      "head_sha": "d3615a6ff8d1a946605d473eb0ff16d430b201ae",
-      "exit": "1",
+      "run": "40993481160",
+      "head_sha": "c249ea81be92a73ebc6cecf6d78ba83989d0712d",
+      "exit": "0",
       "sourceModifiedSinceAudit": [
         "interests.html"
       ],
       "failureCounts": {
-        "failures": 3
+        "failures": 0
       }
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "40993136490",
-      "head_sha": "d6c0bf37c144f1cad2a75870338bab194ed67f8f",
-      "exit": "1",
-      "sourceModifiedSinceAudit": [
-        "interests.html",
-        "pungmul.html"
-      ],
-      "failureCounts": {
-        "failures": 8
-      }
-    },
-    "typography": {
-      "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "40993142558",
-      "head_sha": "d3615a6ff8d1a946605d473eb0ff16d430b201ae",
-      "exit": "1",
+      "run": "40993481116",
+      "head_sha": "c249ea81be92a73ebc6cecf6d78ba83989d0712d",
+      "exit": "0",
       "sourceModifiedSinceAudit": [
         "interests.html"
       ],
       "failureCounts": {
-        "failures": 8,
+        "failures": 0
+      }
+    },
+    "typography": {
+      "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
+      "run": "40993481141",
+      "head_sha": "c249ea81be92a73ebc6cecf6d78ba83989d0712d",
+      "exit": "0",
+      "sourceModifiedSinceAudit": [
+        "interests.html"
+      ],
+      "failureCounts": {
+        "failures": 0,
         "combinedStressFailures": 0
       }
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "40993142498",
-      "head_sha": "d3615a6ff8d1a946605d473eb0ff16d430b201ae",
+      "run": "40993481093",
+      "head_sha": "c249ea81be92a73ebc6cecf6d78ba83989d0712d",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "interests.html"
@@ -122,15 +119,13 @@
     {
       "category": "links",
       "sourceModifiedSinceAudit": [
-        "interests.html",
-        "pungmul.html"
+        "interests.html"
       ]
     },
     {
       "category": "external",
       "sourceModifiedSinceAudit": [
-        "interests.html",
-        "pungmul.html"
+        "interests.html"
       ]
     },
     {
@@ -149,8 +144,7 @@
     {
       "category": "engines",
       "sourceModifiedSinceAudit": [
-        "interests.html",
-        "pungmul.html"
+        "interests.html"
       ]
     },
     {
@@ -176,11 +170,17 @@
       "firstDiff": [
         "--- source\n",
         "+++ deployed\n",
-        "@@ -89,3 +89,3 @@\n",
-        " }",
-        "-#main.interests-page .pungmul-gallery a{display:block;overflow:visible}",
-        "+#main.interests-page .pungmul-gallery a{display:block;overflow:hidden}",
-        " #main.interests-page .pungmul-gallery img{"
+        "@@ -41,6 +41,6 @@\n",
+        "       <div class=\"pungmul-gallery\" aria-label=\"Pungmul performances and community\">",
+        "-        <figure><a href=\"assets/pungmul-stage.webp\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"View the full-size pungmul stage performance photograph in a new tab\"><img src=\"assets/pungmul-stage.webp\" alt=\"Pungmul ensemble performing on stage\" loading=\"eager\" decoding=\"async\" width=\"860\" height=\"645\"></a><figcaption>Performing together</figcaption></figure>",
+        "-        <figure><a href=\"assets/pungmul-group.webp\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"View the full-size outdoor pungmul ensemble photograph in a new tab\"><img src=\"assets/pungmul-group.webp\" alt=\"Pungmul ensemble performing outdoors near a city square\" loading=\"eager\" decoding=\"async\" width=\"860\" height=\"484\"></a><figcaption>Our ensemble</figcaption></figure>",
+        "-        <figure><a href=\"assets/pungmul-solo.webp\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"View the full-size janggu performance photograph in a new tab\"><img src=\"assets/pungmul-solo.webp\" alt=\"A seated performer playing janggu under blue stage lighting\" loading=\"eager\" decoding=\"async\" width=\"650\" height=\"433\"></a><figcaption>A moment on stage</figcaption></figure>",
+        "-        <figure><a href=\"assets/pungmul-rehearsal.webp\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"View the full-size indoor pungmul performance photograph in a new tab\"><img src=\"assets/pungmul-rehearsal.webp\" alt=\"Pungmul drummers in colourful costumes performing together indoors\" loading=\"eager\" decoding=\"async\" width=\"650\" height=\"366\"></a><figcaption>Playing together</figcaption></figure>",
+        "+        <figure><a href=\"assets/pungmul-stage.webp\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"View the full-size pungmul stage performance photograph in a new tab\"><img src=\"assets/pungmul-stage.webp\" alt=\"Pungmul ensemble performing on stage\" loading=\"lazy\" decoding=\"async\" width=\"860\" height=\"645\"></a><figcaption>Performing together</figcaption></figure>",
+        "+        <figure><a href=\"assets/pungmul-group.webp\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"View the full-size outdoor pungmul ensemble photograph in a new tab\"><img src=\"assets/pungmul-group.webp\" alt=\"Pungmul ensemble performing outdoors near a city square\" loading=\"lazy\" decoding=\"async\" width=\"860\" height=\"484\"></a><figcaption>Our ensemble</figcaption></figure>",
+        "+        <figure><a href=\"assets/pungmul-solo.webp\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"View the full-size janggu performance photograph in a new tab\"><img src=\"assets/pungmul-solo.webp\" alt=\"A seated performer playing janggu under blue stage lighting\" loading=\"lazy\" decoding=\"async\" width=\"650\" height=\"433\"></a><figcaption>A moment on stage</figcaption></figure>",
+        "+        <figure><a href=\"assets/pungmul-rehearsal.webp\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"View the full-size indoor pungmul performance photograph in a new tab\"><img src=\"assets/pungmul-rehearsal.webp\" alt=\"Pungmul drummers in colourful costumes performing together indoors\" loading=\"lazy\" decoding=\"async\" width=\"650\" height=\"366\"></a><figcaption>Playing together</figcaption></figure>",
+        "       </div>"
       ]
     },
     {
@@ -188,15 +188,13 @@
         {
           "category": "links",
           "sourceModifiedSinceAudit": [
-            "interests.html",
-            "pungmul.html"
+            "interests.html"
           ]
         },
         {
           "category": "external",
           "sourceModifiedSinceAudit": [
-            "interests.html",
-            "pungmul.html"
+            "interests.html"
           ]
         },
         {
@@ -215,8 +213,7 @@
         {
           "category": "engines",
           "sourceModifiedSinceAudit": [
-            "interests.html",
-            "pungmul.html"
+            "interests.html"
           ]
         },
         {
@@ -232,17 +229,10 @@
           ]
         }
       ]
-    },
-    {
-      "unresolvedAudits": [
-        "reflow",
-        "engines",
-        "typography"
-      ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "40993481104",
-  "run_sha": "c249ea81be92a73ebc6cecf6d78ba83989d0712d",
+  "workflow_run_id": "40993876861",
+  "run_sha": "55021a8757cffa67939cf5722f60e4b3db39d3ce",
   "exit_code": "1"
 }
