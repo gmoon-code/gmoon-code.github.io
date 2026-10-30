@@ -1,12 +1,12 @@
 {
-  "sourceHead": "3af5b3ad1a460ee67cba6a89f8d1e13f867b98a1",
+  "sourceHead": "7adfcd83c1befff1cf9e932727402570ba341d22",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-3af5b3ad1a46",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-7adfcd83c1be",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -18,6 +18,7 @@
       "head_sha": "8e296ddfc09527d13b4d649c60b99ba851ee5ea7",
       "exit": "0",
       "sourceModifiedSinceAudit": [
+        "research-action.html",
         "research.html"
       ],
       "failureCounts": {
@@ -26,27 +27,27 @@
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "40896729366",
-      "head_sha": "8e296ddfc09527d13b4d649c60b99ba851ee5ea7",
+      "run": "40986379648",
+      "head_sha": "3af5b3ad1a460ee67cba6a89f8d1e13f867b98a1",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "research.html"
+        "research-action.html"
       ],
       "failureCounts": {
-        "issues": 42
+        "issues": 43
       },
       "counts": {
-        "reachable": 71,
-        "unverified": 42
+        "reachable": 70,
+        "unverified": 43
       }
     },
     "metadata": {
       "report": "docs/RESEARCH_METADATA_LATEST_RESULTS.json",
-      "run": "40896729321",
-      "head_sha": "8e296ddfc09527d13b4d649c60b99ba851ee5ea7",
+      "run": "40986379646",
+      "head_sha": "3af5b3ad1a460ee67cba6a89f8d1e13f867b98a1",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "research.html"
+        "research-action.html"
       ],
       "failureCounts": {
         "unverified": 0
@@ -59,11 +60,11 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "40896729399",
-      "head_sha": "8e296ddfc09527d13b4d649c60b99ba851ee5ea7",
+      "run": "40986379588",
+      "head_sha": "3af5b3ad1a460ee67cba6a89f8d1e13f867b98a1",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "research.html"
+        "research-action.html"
       ],
       "failureCounts": {
         "failures": 0
@@ -71,11 +72,11 @@
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "40896729460",
-      "head_sha": "8e296ddfc09527d13b4d649c60b99ba851ee5ea7",
+      "run": "40986379581",
+      "head_sha": "3af5b3ad1a460ee67cba6a89f8d1e13f867b98a1",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "research.html"
+        "research-action.html"
       ],
       "failureCounts": {
         "failures": 0
@@ -83,11 +84,11 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "40896729365",
-      "head_sha": "8e296ddfc09527d13b4d649c60b99ba851ee5ea7",
+      "run": "40986379636",
+      "head_sha": "3af5b3ad1a460ee67cba6a89f8d1e13f867b98a1",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "research.html"
+        "research-action.html"
       ],
       "failureCounts": {
         "failures": 0,
@@ -96,11 +97,11 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "40896729472",
-      "head_sha": "8e296ddfc09527d13b4d649c60b99ba851ee5ea7",
+      "run": "40986379615",
+      "head_sha": "3af5b3ad1a460ee67cba6a89f8d1e13f867b98a1",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "research.html"
+        "research-action.html"
       ],
       "failureCounts": {
         "failures": 0,
@@ -118,61 +119,62 @@
     {
       "category": "links",
       "sourceModifiedSinceAudit": [
+        "research-action.html",
         "research.html"
       ]
     },
     {
       "category": "external",
       "sourceModifiedSinceAudit": [
-        "research.html"
+        "research-action.html"
       ]
     },
     {
       "category": "metadata",
       "sourceModifiedSinceAudit": [
-        "research.html"
+        "research-action.html"
       ]
     },
     {
       "category": "reflow",
       "sourceModifiedSinceAudit": [
-        "research.html"
+        "research-action.html"
       ]
     },
     {
       "category": "engines",
       "sourceModifiedSinceAudit": [
-        "research.html"
+        "research-action.html"
       ]
     },
     {
       "category": "typography",
       "sourceModifiedSinceAudit": [
-        "research.html"
+        "research-action.html"
       ]
     },
     {
       "category": "interactions",
       "sourceModifiedSinceAudit": [
-        "research.html"
+        "research-action.html"
       ]
     }
   ],
   "pass": false,
   "errors": [
     {
-      "path": "research.html",
+      "path": "research-action.html",
       "errors": [
         "deployed bytes differ from checked-out production source"
       ],
       "firstDiff": [
         "--- source\n",
         "+++ deployed\n",
-        "@@ -4,3 +4,3 @@\n",
-        "   <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">",
-        "-  <meta name=\"description\" content=\"Ye Eun Moon examines how assessment responses and multilingual students’ classroom work are interpreted as evidence of scientific reasoning, and who can shape classroom inquiry.\">",
-        "+  <meta name=\"description\" content=\"Ye Eun Moon has studied classroom assessment evidence and multilingual science learning. Her research interests include epistemic agency and justice-oriented science education.\">",
-        "   <title>Research | Ye Eun Moon</title>"
+        "@@ -90,3 +90,3 @@\n",
+        "   <div class=\"reading research-prose\">",
+        "-    <p>Ten of the twelve students who specified a reasoning difficulty produced complete Unit 3 explanations, compared with three of the other nine. The groups reflected what students had written, and Unit 3 addressed a different biological mechanism. The association could not establish an effect of identifying a difficulty during reflection. A later reconstruction offered an opportunity to examine the same Unit 3 mechanism under different conditions.</p>",
+        "+    <p>Ten of the twelve students who specified a reasoning difficulty produced complete Unit 3 explanations, compared with three of the other nine. This association warranted closer attention, although the groups were not randomly assigned and the two unit assessments asked different questions. Neither measure showed which causal relationships students could reconstruct without feedback.</p>",
+        "   </div>"
       ]
     },
     {
@@ -180,50 +182,51 @@
         {
           "category": "links",
           "sourceModifiedSinceAudit": [
+            "research-action.html",
             "research.html"
           ]
         },
         {
           "category": "external",
           "sourceModifiedSinceAudit": [
-            "research.html"
+            "research-action.html"
           ]
         },
         {
           "category": "metadata",
           "sourceModifiedSinceAudit": [
-            "research.html"
+            "research-action.html"
           ]
         },
         {
           "category": "reflow",
           "sourceModifiedSinceAudit": [
-            "research.html"
+            "research-action.html"
           ]
         },
         {
           "category": "engines",
           "sourceModifiedSinceAudit": [
-            "research.html"
+            "research-action.html"
           ]
         },
         {
           "category": "typography",
           "sourceModifiedSinceAudit": [
-            "research.html"
+            "research-action.html"
           ]
         },
         {
           "category": "interactions",
           "sourceModifiedSinceAudit": [
-            "research.html"
+            "research-action.html"
           ]
         }
       ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "40986379618",
-  "run_sha": "3af5b3ad1a460ee67cba6a89f8d1e13f867b98a1",
+  "workflow_run_id": "40987021046",
+  "run_sha": "7adfcd83c1befff1cf9e932727402570ba341d22",
   "exit_code": "1"
 }
