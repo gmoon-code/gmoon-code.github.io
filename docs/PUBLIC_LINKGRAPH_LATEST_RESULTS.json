@@ -1,11 +1,11 @@
 {
-  "workflow_run_id": "40993886613",
-  "head_sha": "a4e0e4112e2c5a4696bbf5e7f910fb69922fd8de",
+  "workflow_run_id": "40996364963",
+  "head_sha": "18e80e1de67e39e07db135fc5d9d0a1bbd3921ed",
   "exit_code": "0",
   "page_count": 19,
-  "link_count": 555,
-  "asset_references": 92,
-  "internal_links": 392,
+  "link_count": 554,
+  "asset_references": 93,
+  "internal_links": 391,
   "external_or_special": 163,
   "problems": [],
   "advisory": [],
@@ -38,7 +38,7 @@
     {
       "name": "interests.html",
       "h1": "Interests",
-      "link_count": 25
+      "link_count": 23
     },
     {
       "name": "projects.html",
@@ -48,7 +48,7 @@
     {
       "name": "pungmul.html",
       "h1": "Pungmul (풍물)",
-      "link_count": 32
+      "link_count": 33
     },
     {
       "name": "research-action.html",
