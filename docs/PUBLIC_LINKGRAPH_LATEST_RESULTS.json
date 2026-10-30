@@ -1,11 +1,11 @@
 {
-  "workflow_run_id": "40988529282",
-  "head_sha": "5ff8536e016e14def04ccf504176f1890656410b",
+  "workflow_run_id": "40993136537",
+  "head_sha": "d6c0bf37c144f1cad2a75870338bab194ed67f8f",
   "exit_code": "0",
   "page_count": 19,
-  "link_count": 548,
-  "asset_references": 86,
-  "internal_links": 385,
+  "link_count": 552,
+  "asset_references": 90,
+  "internal_links": 389,
   "external_or_special": 163,
   "problems": [],
   "advisory": [],
@@ -38,7 +38,7 @@
     {
       "name": "interests.html",
       "h1": "Interests",
-      "link_count": 21
+      "link_count": 25
     },
     {
       "name": "projects.html",
