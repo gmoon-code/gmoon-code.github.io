@@ -1,12 +1,12 @@
 {
-  "sourceHead": "ecbd52ca2aed63a6db71354630b8f25e16566374",
+  "sourceHead": "97548fc2746b97faa8c61c2877ecdd1b2a1f9688",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-ecbd52ca2aed",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-97548fc2746b",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -14,11 +14,11 @@
   "auditEvidence": {
     "links": {
       "report": "docs/PUBLIC_LINKGRAPH_LATEST_RESULTS.json",
-      "run": "41000422085",
-      "head_sha": "8fa8dea98179ada0f60396680be2fb639e66521d",
+      "run": "41000487504",
+      "head_sha": "ecbd52ca2aed63a6db71354630b8f25e16566374",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-chemistry.html"
+        "teaching-ap-evolution.html"
       ],
       "failureCounts": {
         "problems": 0
@@ -26,11 +26,11 @@
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "41000422256",
-      "head_sha": "8fa8dea98179ada0f60396680be2fb639e66521d",
+      "run": "41000487525",
+      "head_sha": "ecbd52ca2aed63a6db71354630b8f25e16566374",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-chemistry.html"
+        "teaching-ap-evolution.html"
       ],
       "failureCounts": {
         "issues": 42
@@ -42,11 +42,11 @@
     },
     "metadata": {
       "report": "docs/RESEARCH_METADATA_LATEST_RESULTS.json",
-      "run": "41000422330",
-      "head_sha": "8fa8dea98179ada0f60396680be2fb639e66521d",
+      "run": "41000487824",
+      "head_sha": "ecbd52ca2aed63a6db71354630b8f25e16566374",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-chemistry.html"
+        "teaching-ap-evolution.html"
       ],
       "failureCounts": {
         "unverified": 0
@@ -59,11 +59,11 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "41000079294",
-      "head_sha": "af1d4aca13f93a13cafb76458c96b64b4df6b10c",
+      "run": "41000487507",
+      "head_sha": "ecbd52ca2aed63a6db71354630b8f25e16566374",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-chemistry.html"
+        "teaching-ap-evolution.html"
       ],
       "failureCounts": {
         "failures": 0
@@ -71,11 +71,11 @@
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "41000079453",
-      "head_sha": "af1d4aca13f93a13cafb76458c96b64b4df6b10c",
+      "run": "41000487586",
+      "head_sha": "ecbd52ca2aed63a6db71354630b8f25e16566374",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-chemistry.html"
+        "teaching-ap-evolution.html"
       ],
       "failureCounts": {
         "failures": 0
@@ -83,11 +83,11 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "41000079306",
-      "head_sha": "af1d4aca13f93a13cafb76458c96b64b4df6b10c",
+      "run": "41000487564",
+      "head_sha": "ecbd52ca2aed63a6db71354630b8f25e16566374",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-chemistry.html"
+        "teaching-ap-evolution.html"
       ],
       "failureCounts": {
         "failures": 0,
@@ -96,11 +96,11 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "41000079233",
-      "head_sha": "af1d4aca13f93a13cafb76458c96b64b4df6b10c",
+      "run": "41000487571",
+      "head_sha": "ecbd52ca2aed63a6db71354630b8f25e16566374",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-chemistry.html"
+        "teaching-ap-evolution.html"
       ],
       "failureCounts": {
         "failures": 0,
@@ -118,63 +118,70 @@
     {
       "category": "links",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-chemistry.html"
+        "teaching-ap-evolution.html"
       ]
     },
     {
       "category": "external",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-chemistry.html"
+        "teaching-ap-evolution.html"
       ]
     },
     {
       "category": "metadata",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-chemistry.html"
+        "teaching-ap-evolution.html"
       ]
     },
     {
       "category": "reflow",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-chemistry.html"
+        "teaching-ap-evolution.html"
       ]
     },
     {
       "category": "engines",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-chemistry.html"
+        "teaching-ap-evolution.html"
       ]
     },
     {
       "category": "typography",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-chemistry.html"
+        "teaching-ap-evolution.html"
       ]
     },
     {
       "category": "interactions",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-chemistry.html"
+        "teaching-ap-evolution.html"
       ]
     }
   ],
   "pass": false,
   "errors": [
     {
-      "path": "teaching-ap-chemistry.html",
+      "path": "teaching-ap-evolution.html",
       "errors": [
         "deployed bytes differ from checked-out production source"
       ],
       "firstDiff": [
         "--- source\n",
         "+++ deployed\n",
-        "@@ -153,4 +153,4 @@\n",
-        "   <div class=\"reading teaching-case-prose\">",
-        "-    <p>After calculating Q<sub>p</sub> for the initial mixture, students could annotate a particulate representation to show how they understand continued forward and reverse reactions. Read alongside the written interpretation, the diagram could help me assess whether a correct calculation was accompanied by an account of continuing reactions. Each account would be examined for what it actually expresses; a diagram would not be treated as a direct measurement of individual reaction events.</p>",
-        "-    <p>Students could use the same three-state representation for compression and expansion, marking the starting equilibrium, the immediate pressure change, and the later change in composition. Those two cases ask students to explain how changing volume first alters the reaction quotient, prompting a subsequent adjustment toward equilibrium. If a response treats the immediately changed pressures as final equilibrium values, I would ask what continues to happen after that instant and which measurements would be needed to describe the final state.</p>",
-        "+    <p>After calculating Q<sub>p</sub> for the initial mixture, students could annotate a particulate representation to show how they understand continued forward and reverse reactions. Comparing that representation with their written interpretation would distinguish a correct equilibrium calculation from an explanation that assumes all reactions have stopped. Each account would be examined for what it actually expresses; a diagram would not be treated as a direct measurement of individual reaction events.</p>",
-        "+    <p>Students could use the same three-state representation for compression and expansion, marking the starting equilibrium, the immediate pressure change, and the later change in composition. Comparing the two would show whether they can distinguish what follows directly from the volume change from what follows because the reaction quotient no longer equals the equilibrium constant. If a response treats the immediately changed pressures as final equilibrium values, I would ask what continues to happen after that instant and which measurements would be needed to describe the final state.</p>",
-        "   </div>"
+        "@@ -62,3 +62,3 @@\n",
+        " <div class=\"reading teaching-case-prose\">",
+        "-<p>Protection associated with HbAS differs according to the malaria outcome being measured. In two cohorts of children on the Kenyan coast, the estimated protection was approximately 50% against mild clinical malaria, 75% against hospital admission for malaria, and almost 90% against severe or complicated malaria (<a href=\"https://pubmed.ncbi.nlm.nih.gov/15942909/\">Williams et al., 2005</a>). The investigators did not find evidence that HbAS reduced symptomless parasitaemia. These distinctions are essential when interpreting the study, since protection against clinical illness does not establish that infection is prevented or that people with HbAS are immune. As observational comparisons, the estimates also cannot serve directly as selection coefficients.</p>",
+        "+<p>Protection associated with HbAS differs according to the malaria outcome being measured. In two cohorts of children on the Kenyan coast, the estimated protection was approximately 50% against mild clinical malaria, 75% against hospital admission for malaria, and almost 90% against severe or complicated malaria (<a href=\"https://pubmed.ncbi.nlm.nih.gov/15942909/\">Williams et al., 2005</a>). The investigators reported no reduction in symptomless parasitaemia. These distinctions are essential when interpreting the study, since protection against clinical illness does not establish that infection is prevented or that people with HbAS are immune. As observational comparisons, the estimates also cannot serve directly as selection coefficients.</p>",
+        " <p>The cohort results give students several outcomes to compare, each with a different clinical meaning. They do not report a complete set of genotype-specific survival and reproductive contributions for the population in the later teaching model. To predict an allele-frequency change, students would therefore need further evidence or explicitly stipulated fitness values. Keeping those requirements visible helps separate an observed protective association from the assumptions of an evolutionary calculation.</p>",
+        "@@ -119,3 +119,3 @@\n",
+        " <div class=\"reading teaching-case-prose\">",
+        "-<p>Historical surveys and modelling have documented HbS in parts of Africa, the Mediterranean, the Middle East, and South Asia (<a href=\"#variation-ref-piel\">Piel et al., 2010</a>). The study found the strongest geographical support for the malaria hypothesis in Africa and could not resolve the relationship in Asia or the Americas. Its estimates draw on historical data and do not necessarily describe present-day frequencies. Students would therefore need to examine whom a study sampled, when the evidence was collected, and which biological features were measured, particularly when a source also uses racial categories.</p>",
+        "+<p>Historical surveys and modelling have documented HbS in parts of Africa, the Mediterranean, the Middle East, and South Asia (<a href=\"#variation-ref-piel\">Piel et al., 2010</a>). The geographic patterns reflect population histories and past malaria exposure, while the available estimates do not necessarily describe present-day frequencies. Students would therefore need to examine whom a study sampled, when the evidence was collected, and which biological features were measured, particularly when a source also uses racial categories.</p>",
+        " <p>Treating racial categories as substitutes for measured genetic variation can reinforce assumptions of biological uniformity within those groups (<a href=\"#variation-ref-donovan\">Donovan, 2022</a>). When evaluating a published comparison, I would ask what each category describes, which genetic variants were actually measured, and whether the sampling supports the conclusion. Students could challenge these classifications through the available evidence without being asked to disclose their own ancestry, health, genotype, or family histories.</p>",
+        "@@ -128,3 +128,3 @@\n",
+        "     <h3>Choosing a question for further inquiry</h3>",
+        "-    <p>The proposed tasks would allow students to examine scientific claims without sharing personal genetic or family information. I also want to consider whether their questions could influence what the class investigates next. After the four proposed meetings, students could compare the published malaria outcomes with the hypothetical selection model, identify a biological relationship that remains uncertain, and propose what evidence might help resolve it. Questions about HbS distribution would call for genetic measurements and information about population histories, while questions about protection would require clearly defined clinical outcomes.</p>",
+        "+    <p>These arrangements would allow students to examine the scientific claims while retaining control over what they share. I also want to consider whether their questions could influence what the class investigates next. After the four proposed meetings, students could compare the published malaria outcomes with the hypothetical selection model, identify a biological relationship that remains uncertain, and propose what evidence might help resolve it. Questions about HbS distribution would call for genetic measurements and information about population histories, while questions about protection would require clearly defined clinical outcomes.</p>"
       ]
     },
     {
@@ -182,50 +189,50 @@
         {
           "category": "links",
           "sourceModifiedSinceAudit": [
-            "teaching-ap-chemistry.html"
+            "teaching-ap-evolution.html"
           ]
         },
         {
           "category": "external",
           "sourceModifiedSinceAudit": [
-            "teaching-ap-chemistry.html"
+            "teaching-ap-evolution.html"
           ]
         },
         {
           "category": "metadata",
           "sourceModifiedSinceAudit": [
-            "teaching-ap-chemistry.html"
+            "teaching-ap-evolution.html"
           ]
         },
         {
           "category": "reflow",
           "sourceModifiedSinceAudit": [
-            "teaching-ap-chemistry.html"
+            "teaching-ap-evolution.html"
           ]
         },
         {
           "category": "engines",
           "sourceModifiedSinceAudit": [
-            "teaching-ap-chemistry.html"
+            "teaching-ap-evolution.html"
           ]
         },
         {
           "category": "typography",
           "sourceModifiedSinceAudit": [
-            "teaching-ap-chemistry.html"
+            "teaching-ap-evolution.html"
           ]
         },
         {
           "category": "interactions",
           "sourceModifiedSinceAudit": [
-            "teaching-ap-chemistry.html"
+            "teaching-ap-evolution.html"
           ]
         }
       ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41000487590",
-  "run_sha": "ecbd52ca2aed63a6db71354630b8f25e16566374",
+  "workflow_run_id": "41002456628",
+  "run_sha": "97548fc2746b97faa8c61c2877ecdd1b2a1f9688",
   "exit_code": "1"
 }
