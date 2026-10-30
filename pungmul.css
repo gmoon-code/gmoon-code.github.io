@@ -127,3 +127,67 @@ html:not(.moon-free-mode) #main.pungmul-deep-page .pungmul-reference-list a{
   overflow-wrap:anywhere!important;
   word-break:break-word!important;
 }
+
+
+/* Restore historical, in-flow performance photographs with modest
+   rounded image frames. Keep original source proportions and captions. */
+#main.pungmul-deep-page .pungmul-hero-photo{
+  margin:0;
+  min-width:0;
+  width:100%;
+  max-width:660px;
+}
+#main.pungmul-deep-page .pungmul-hero-photo img{
+  display:block;
+  box-sizing:border-box;
+  width:100%;
+  max-width:100%;
+  height:auto;
+  aspect-ratio:4/3;
+  object-fit:cover;
+  object-position:center;
+  border:1px solid var(--moon-rule);
+  border-radius:12px;
+}
+html:not(.moon-free-mode) #main.pungmul-deep-page .pungmul-performance-grid{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:16px!important;
+}
+#main.pungmul-deep-page .pungmul-performance-grid figure{
+  min-width:0;
+  overflow:hidden;
+  border:1px solid var(--moon-rule);
+  border-radius:12px;
+  background:var(--moon-paper,#fff);
+}
+#main.pungmul-deep-page .pungmul-performance-grid a{display:block;overflow:hidden}
+#main.pungmul-deep-page .pungmul-performance-grid img{
+  display:block;
+  width:100%;
+  max-width:100%;
+  height:auto;
+  aspect-ratio:4/3;
+  object-fit:cover;
+  object-position:center;
+}
+@media(max-width:800px){
+  html:not(.moon-free-mode) #main.pungmul-deep-page .pungmul-performance-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+}
+@media(max-width:560px){
+  html:not(.moon-free-mode) #main.pungmul-deep-page .pungmul-performance-grid{
+    grid-template-columns:minmax(0,1fr)!important;
+  }
+  #main.pungmul-deep-page .pungmul-performance-grid img{
+    aspect-ratio:auto;
+    max-height:360px;
+    object-fit:contain;
+  }
+}
+@media print{
+  html:not(.moon-free-mode) #main.pungmul-deep-page .pungmul-performance-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+}
