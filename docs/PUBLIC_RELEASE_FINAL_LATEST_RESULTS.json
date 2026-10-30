@@ -1,12 +1,12 @@
 {
-  "sourceHead": "e3a30f43de12424525d2d64284dd4031dd021340",
+  "sourceHead": "7290540718b9ef923f88344e508892474e39a198",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-e3a30f43de12",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-7290540718b9",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -14,11 +14,11 @@
   "auditEvidence": {
     "links": {
       "report": "docs/PUBLIC_LINKGRAPH_LATEST_RESULTS.json",
-      "run": "41004236187",
-      "head_sha": "3b8c57b741b6befed7bd1718e8b61062b9d3a851",
+      "run": "41004283271",
+      "head_sha": "e3a30f43de12424525d2d64284dd4031dd021340",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "teaching-osmosis-practice.html"
+        "writing-biological-classification.html"
       ],
       "failureCounts": {
         "problems": 0
@@ -26,11 +26,11 @@
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "41004236183",
-      "head_sha": "3b8c57b741b6befed7bd1718e8b61062b9d3a851",
+      "run": "41004283329",
+      "head_sha": "e3a30f43de12424525d2d64284dd4031dd021340",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "teaching-osmosis-practice.html"
+        "writing-biological-classification.html"
       ],
       "failureCounts": {
         "issues": 42
@@ -42,11 +42,11 @@
     },
     "metadata": {
       "report": "docs/RESEARCH_METADATA_LATEST_RESULTS.json",
-      "run": "41002456642",
-      "head_sha": "97548fc2746b97faa8c61c2877ecdd1b2a1f9688",
+      "run": "41004283222",
+      "head_sha": "e3a30f43de12424525d2d64284dd4031dd021340",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "teaching-osmosis-practice.html"
+        "writing-biological-classification.html"
       ],
       "failureCounts": {
         "unverified": 0
@@ -59,11 +59,11 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "41002456630",
-      "head_sha": "97548fc2746b97faa8c61c2877ecdd1b2a1f9688",
+      "run": "41004283309",
+      "head_sha": "e3a30f43de12424525d2d64284dd4031dd021340",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "teaching-osmosis-practice.html"
+        "writing-biological-classification.html"
       ],
       "failureCounts": {
         "failures": 0
@@ -71,11 +71,12 @@
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "41002456617",
-      "head_sha": "97548fc2746b97faa8c61c2877ecdd1b2a1f9688",
+      "run": "41004236212",
+      "head_sha": "3b8c57b741b6befed7bd1718e8b61062b9d3a851",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "teaching-osmosis-practice.html"
+        "teaching-osmosis-practice.html",
+        "writing-biological-classification.html"
       ],
       "failureCounts": {
         "failures": 0
@@ -83,11 +84,11 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "41002456645",
-      "head_sha": "97548fc2746b97faa8c61c2877ecdd1b2a1f9688",
+      "run": "41004283229",
+      "head_sha": "e3a30f43de12424525d2d64284dd4031dd021340",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "teaching-osmosis-practice.html"
+        "writing-biological-classification.html"
       ],
       "failureCounts": {
         "failures": 0,
@@ -96,11 +97,11 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "41002456592",
-      "head_sha": "97548fc2746b97faa8c61c2877ecdd1b2a1f9688",
+      "run": "41004283243",
+      "head_sha": "e3a30f43de12424525d2d64284dd4031dd021340",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "teaching-osmosis-practice.html"
+        "writing-biological-classification.html"
       ],
       "failureCounts": {
         "failures": 0,
@@ -118,65 +119,71 @@
     {
       "category": "links",
       "sourceModifiedSinceAudit": [
-        "teaching-osmosis-practice.html"
+        "writing-biological-classification.html"
       ]
     },
     {
       "category": "external",
       "sourceModifiedSinceAudit": [
-        "teaching-osmosis-practice.html"
+        "writing-biological-classification.html"
       ]
     },
     {
       "category": "metadata",
       "sourceModifiedSinceAudit": [
-        "teaching-osmosis-practice.html"
+        "writing-biological-classification.html"
       ]
     },
     {
       "category": "reflow",
       "sourceModifiedSinceAudit": [
-        "teaching-osmosis-practice.html"
+        "writing-biological-classification.html"
       ]
     },
     {
       "category": "engines",
       "sourceModifiedSinceAudit": [
-        "teaching-osmosis-practice.html"
+        "teaching-osmosis-practice.html",
+        "writing-biological-classification.html"
       ]
     },
     {
       "category": "typography",
       "sourceModifiedSinceAudit": [
-        "teaching-osmosis-practice.html"
+        "writing-biological-classification.html"
       ]
     },
     {
       "category": "interactions",
       "sourceModifiedSinceAudit": [
-        "teaching-osmosis-practice.html"
+        "writing-biological-classification.html"
       ]
     }
   ],
   "pass": false,
   "errors": [
     {
-      "path": "teaching-osmosis-practice.html",
+      "path": "writing-biological-classification.html",
       "errors": [
         "deployed bytes differ from checked-out production source"
       ],
       "firstDiff": [
         "--- source\n",
         "+++ deployed\n",
-        "@@ -67,5 +67,5 @@\n",
-        "     <div class=\"reading\">",
-        "-      <p>For the 0, 10, and 20 g per 100 mL sucrose solutions, the mass changes are +0.8 g, −0.4 g, and −1.3 g, corresponding to +8%, −4%, and −13% of the starting mass. Students can use the direction and size of these changes to consider which biological processes could explain the pattern.</p>",
-        "-      <p>Osmosis offers a plausible explanation for these results. Net movement of water across partially permeable cell membranes is from higher to lower water potential and could change the mass of the tissue. Weighing a cylinder does not show that movement directly, and differences in blotting or sample preparation could also affect a measurement. I would ask students which part of their account rests on the table and which part requires biological reasoning.</p>",
-        "-      <p>The change from mass gain at 0 g per 100 mL to mass loss at 10 g per 100 mL suggests that an intermediate concentration might produce little net mass change after 30 minutes. With only one sample at each of three concentrations, the data cannot locate that point precisely. Even a near-zero mass change would not directly establish that the solution was isotonic with the cells. Students could plot concentration against percentage mass change, then propose additional intermediate concentrations and repeated trials. They would also need to consider whether cylinder dimensions, potato source, and blotting procedures were consistent.</p>",
-        "+      <p>The calculated mass changes are +8%, −4%, and −13% for the 0, 10, and 20 g per 100 mL sucrose solutions, respectively. These calculations establish the direction and size of each change. Students can then consider which biological processes could account for the pattern.</p>",
-        "+      <p>Osmosis offers a plausible explanation for these results. A difference in water potential can lead to net movement of water across partially permeable cell membranes, changing the mass of the tissue. Weighing a cylinder, however, does not observe that movement directly, and differences in blotting or sample preparation could also affect a measurement. I would ask students which part of their account rests on the table and which part requires biological reasoning.</p>",
-        "+      <p>The change from mass gain at 0 g per 100 mL to mass loss at 10 g per 100 mL suggests that an intermediate concentration might produce little net mass change under comparable conditions. It does not identify an exact isotonic point, particularly after only 30 minutes and without replicate samples. Students could plot concentration against percentage mass change, then propose additional intermediate concentrations and repeated trials. They would also need to consider whether cylinder dimensions, potato source, and blotting procedures were consistent.</p>",
-        "       <p>The activity moves from calculation to a proposed mechanism and then to questions about measurement and inference. A follow-up investigation could be developed according to students' responses and the time available.</p>"
+        "@@ -71,3 +71,3 @@\n",
+        "     <p>Haemoglobin S (HbS) is a useful example of how an explanation changes when its level of analysis changes. The variant can be described through a specific alteration in the β-globin protein, and its consequences for red blood cells can be examined at the molecular and cellular levels. A population-level account introduces another set of relationships. Where falciparum malaria has affected survival and reproduction, the malaria-related advantage associated with carrying one HbS allele can contribute to the persistence of that allele, even though having two copies can cause serious disease.</p>",
+        "-    <p>The claims within that account still depend on what a study measured. In two cohorts of children on the Kenyan coast, <a href=\"#essay-williams\">Williams and colleagues (2005)</a> reported different estimates of protection associated with sickle cell trait (HbAS). They estimated approximately 50% protection against mild clinical malaria, 75% against hospital admission for malaria, and almost 90% against severe or complicated malaria. For symptomless parasitaemia, their analysis did not establish a protective effect. These findings provide a more specific account than the statement that HbAS protects against malaria. They distinguish infection without symptoms from several clinical outcomes and retain the population in which the comparisons were conducted.</p>",
+        "+    <p>The claims within that account still depend on what a study measured. In two cohorts of children on the Kenyan coast, <a href=\"#essay-williams\">Williams and colleagues (2005)</a> reported different estimates of protection associated with sickle cell trait (HbAS). They observed approximately 50% protection against mild clinical malaria, 75% against hospital admission for malaria, and almost 90% against severe or complicated malaria, with no reduction in symptomless parasitaemia. These findings provide a more specific account than the statement that HbAS protects against malaria. They distinguish infection without symptoms from several clinical outcomes and retain the population in which the comparisons were conducted.</p>",
+        "     <p>The differences among these malaria outcomes become consequential when the class moves from clinical protection to the persistence of HbS across generations. Modelling that change requires estimates of how each genotype contributes to subsequent generations through survival and reproduction, with malaria exposure and population history also affecting those relationships. The cohort's estimates of protection against particular illnesses do not supply those reproductive fitness values. Asking what the researchers followed over time would therefore help students establish which parts of an evolutionary explanation the study supports and where additional evidence is needed.</p>",
+        "@@ -91,3 +91,3 @@\n",
+        "   <div class=\"reading research-essay-prose\">",
+        "-    <p>A teacher can plan a lesson to distinguish genotype from population history or measured physiology from claims about behaviour. The scientific direction of the lesson may change when students identify a limitation that was absent from the planned explanation. Suppose a class is asked to interpret the HbAS cohort findings and a student proposes comparing how different studies defined malaria outcomes. Pursuing that proposal would require the class to reconsider which sources it needs and how it will judge whether findings are comparable.</p>",
+        "+    <p>A teacher can plan a lesson to distinguish genotype from population history or measured physiology from claims about behaviour. Yet the scientific direction of the lesson may change when students identify a limitation that was absent from the planned explanation. Suppose a class is asked to interpret the HbAS cohort findings and a student proposes comparing how different studies defined malaria outcomes. Pursuing that proposal would require the class to reconsider which sources it needs and how it will judge whether findings are comparable.</p>",
+        "     <p>Another student might question why a textbook map groups populations under a racial label when the scientific claim concerns allele frequencies. Investigating that question could involve examining the sampling methods behind the map, separating geographic patterns from individual genotypes, and tracing how the labels were selected. The teacher would still be responsible for the scientific demands of the inquiry, including what the evidence can support. Students' contributions could affect which sources are examined and what needs to be justified within the explanation.</p>",
+        "@@ -101,3 +101,3 @@\n",
+        "   <div class=\"reading research-essay-prose\">",
+        "-    <p>My classroom action research left me with questions about what a student had understood when an earlier explanation contained connections absent from a later one. The scoping review raised related questions about which students' scientific contributions became recognizable as evidence. Both projects leave open a question about who decides what the class examines after a student raises a question or offers an unexpected explanation. The historical cases in this essay suggest ways to investigate that decision in science teaching.</p>",
+        "+    <p>My classroom action research left me with questions about what a student had understood when an earlier explanation contained connections absent from a later one. The scoping review raised related questions about which students' scientific contributions became recognizable as evidence. Reading these projects together has drawn my attention to who gets to decide what the class examines after a question or unexpected explanation arises. The historical cases in this essay suggest ways to study that decision as part of science teaching.</p>"
       ]
     },
     {
@@ -184,50 +191,51 @@
         {
           "category": "links",
           "sourceModifiedSinceAudit": [
-            "teaching-osmosis-practice.html"
+            "writing-biological-classification.html"
           ]
         },
         {
           "category": "external",
           "sourceModifiedSinceAudit": [
-            "teaching-osmosis-practice.html"
+            "writing-biological-classification.html"
           ]
         },
         {
           "category": "metadata",
           "sourceModifiedSinceAudit": [
-            "teaching-osmosis-practice.html"
+            "writing-biological-classification.html"
           ]
         },
         {
           "category": "reflow",
           "sourceModifiedSinceAudit": [
-            "teaching-osmosis-practice.html"
+            "writing-biological-classification.html"
           ]
         },
         {
           "category": "engines",
           "sourceModifiedSinceAudit": [
-            "teaching-osmosis-practice.html"
+            "teaching-osmosis-practice.html",
+            "writing-biological-classification.html"
           ]
         },
         {
           "category": "typography",
           "sourceModifiedSinceAudit": [
-            "teaching-osmosis-practice.html"
+            "writing-biological-classification.html"
           ]
         },
         {
           "category": "interactions",
           "sourceModifiedSinceAudit": [
-            "teaching-osmosis-practice.html"
+            "writing-biological-classification.html"
           ]
         }
       ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41004283234",
-  "run_sha": "e3a30f43de12424525d2d64284dd4031dd021340",
+  "workflow_run_id": "41004473468",
+  "run_sha": "7290540718b9ef923f88344e508892474e39a198",
   "exit_code": "1"
 }
