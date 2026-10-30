@@ -1,12 +1,12 @@
 {
-  "sourceHead": "8e296ddfc09527d13b4d649c60b99ba851ee5ea7",
+  "sourceHead": "3af5b3ad1a460ee67cba6a89f8d1e13f867b98a1",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-8e296ddfc095",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-3af5b3ad1a46",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -14,8 +14,8 @@
   "auditEvidence": {
     "links": {
       "report": "docs/PUBLIC_LINKGRAPH_LATEST_RESULTS.json",
-      "run": "40893920195",
-      "head_sha": "1f08cc6efa72612ab56faeb51ee58cc1b0dfbe93",
+      "run": "40896729331",
+      "head_sha": "8e296ddfc09527d13b4d649c60b99ba851ee5ea7",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research.html"
@@ -26,8 +26,8 @@
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "40893920082",
-      "head_sha": "1f08cc6efa72612ab56faeb51ee58cc1b0dfbe93",
+      "run": "40896729366",
+      "head_sha": "8e296ddfc09527d13b4d649c60b99ba851ee5ea7",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research.html"
@@ -42,8 +42,8 @@
     },
     "metadata": {
       "report": "docs/RESEARCH_METADATA_LATEST_RESULTS.json",
-      "run": "40893920124",
-      "head_sha": "1f08cc6efa72612ab56faeb51ee58cc1b0dfbe93",
+      "run": "40896729321",
+      "head_sha": "8e296ddfc09527d13b4d649c60b99ba851ee5ea7",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research.html"
@@ -59,8 +59,8 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "40893920008",
-      "head_sha": "1f08cc6efa72612ab56faeb51ee58cc1b0dfbe93",
+      "run": "40896729399",
+      "head_sha": "8e296ddfc09527d13b4d649c60b99ba851ee5ea7",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research.html"
@@ -71,8 +71,8 @@
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "40893919990",
-      "head_sha": "1f08cc6efa72612ab56faeb51ee58cc1b0dfbe93",
+      "run": "40896729460",
+      "head_sha": "8e296ddfc09527d13b4d649c60b99ba851ee5ea7",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research.html"
@@ -83,8 +83,8 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "40893920375",
-      "head_sha": "1f08cc6efa72612ab56faeb51ee58cc1b0dfbe93",
+      "run": "40896729365",
+      "head_sha": "8e296ddfc09527d13b4d649c60b99ba851ee5ea7",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research.html"
@@ -96,8 +96,8 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "40893920116",
-      "head_sha": "1f08cc6efa72612ab56faeb51ee58cc1b0dfbe93",
+      "run": "40896729472",
+      "head_sha": "8e296ddfc09527d13b4d649c60b99ba851ee5ea7",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research.html"
@@ -168,11 +168,11 @@
       "firstDiff": [
         "--- source\n",
         "+++ deployed\n",
-        "@@ -197,3 +197,3 @@\n",
-        "     <li id=\"reading-gilbert\">Gilbert, J. (2021). Getting dirty and coming clean: Sex education and the problem of expertise. <em>Curriculum Inquiry, 51</em>(4), 455–472. <a href=\"https://doi.org/10.1080/03626784.2021.1947732\">https://doi.org/10.1080/03626784.2021.1947732</a></li>",
-        "-    <li id=\"reading-gonsalves\">Gonsalves, A. J. (2014). “Physics and the girly girl—there is a contradiction somewhere”: Doctoral students’ positioning around discourses of gender and competence in physics. <em>Cultural Studies of Science Education, 9</em>(2), 503–521. <a href=\"https://doi.org/10.1007/s11422-012-9447-6\">https://doi.org/10.1007/s11422-012-9447-6</a></li>",
-        "+    <li id=\"reading-gonsalves\">Gonsalves, A. J. (2014). “Physics and the girly girl—there is a contradiction somewhere”: Doctoral students’ positioning around discourses of gender and competence in physics. <em>Cultural Studies of Science Education, 9</em>, 503–521. <a href=\"https://doi.org/10.1007/s11422-012-9447-6\">https://doi.org/10.1007/s11422-012-9447-6</a></li>",
-        "     <li id=\"reading-gonzalez\">González-Howard, M., Andersen, S., Méndez Pérez, K., &amp; Suárez, E. (2023). Language views for scientific sensemaking matter: A synthesis of research on multilingual students’ experiences with science practices through a translanguaging lens. <em>Educational Researcher, 52</em>(9), 570–579. <a href=\"https://doi.org/10.3102/0013189X231206172\">https://doi.org/10.3102/0013189X231206172</a></li>"
+        "@@ -4,3 +4,3 @@\n",
+        "   <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">",
+        "-  <meta name=\"description\" content=\"Ye Eun Moon examines how assessment responses and multilingual students’ classroom work are interpreted as evidence of scientific reasoning, and who can shape classroom inquiry.\">",
+        "+  <meta name=\"description\" content=\"Ye Eun Moon has studied classroom assessment evidence and multilingual science learning. Her research interests include epistemic agency and justice-oriented science education.\">",
+        "   <title>Research | Ye Eun Moon</title>"
       ]
     },
     {
@@ -223,7 +223,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "40896729380",
-  "run_sha": "8e296ddfc09527d13b4d649c60b99ba851ee5ea7",
+  "workflow_run_id": "40986379618",
+  "run_sha": "3af5b3ad1a460ee67cba6a89f8d1e13f867b98a1",
   "exit_code": "1"
 }
