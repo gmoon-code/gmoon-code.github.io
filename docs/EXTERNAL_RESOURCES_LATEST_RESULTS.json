@@ -841,58 +841,42 @@
   "doi_registry": {
     "checked": 41,
     "counts": {
-      "registered": 29,
-      "not-confirmed": 12
+      "not-confirmed": 12,
+      "registered": 29
     },
     "secondary_index_matches": 12,
     "not_confirmed": [
       {
-        "url": "https://doi.org/10.1002/sce.21112",
-        "doi": "10.1002/sce.21112",
+        "url": "https://doi.org/10.1002/sce.20264",
+        "doi": "10.1002/sce.20264",
         "pages": [
-          "research.html"
+          "teaching-ap-biology.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21112",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.20264",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Examining Classroom Science Practice Communities: How Teachers and Students Negotiate Epistemic Agency and Learn Science‐as‐Practice",
-        "indexedYear": 2014
+        "indexedTitle": "Recognizing mechanistic reasoning in student scientific inquiry: A framework for discourse analysis developed from philosophy of science",
+        "indexedYear": 2008
       },
       {
-        "url": "https://doi.org/10.1002/tea.20311",
-        "doi": "10.1002/tea.20311",
+        "url": "https://doi.org/10.1002/tea.21459",
+        "doi": "10.1002/tea.21459",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.20311",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21459",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Developing a learning progression for scientific modeling: Making scientific modeling accessible and meaningful for learners",
-        "indexedYear": 2009
-      },
-      {
-        "url": "https://doi.org/10.1002/tea.21257",
-        "doi": "10.1002/tea.21257",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21257",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Epistemologies in practice: Making scientific practices meaningful for students",
-        "indexedYear": 2015
+        "indexedTitle": "Addressing the epistemic elephant in the room: Epistemic agency and the next generation science standards",
+        "indexedYear": 2018
       },
       {
         "url": "https://doi.org/10.1002/tea.21714",
@@ -911,20 +895,20 @@
         "indexedYear": 2021
       },
       {
-        "url": "https://doi.org/10.1002/tea.70072",
-        "doi": "10.1002/tea.70072",
+        "url": "https://doi.org/10.1073/pnas.0706627104",
+        "doi": "10.1073/pnas.0706627104",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.70072",
+        "publisherLanding": "https://pnas.org/doi/full/10.1073/pnas.0706627104",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Students' Construction, Evaluation, and Revision of Scientific Models Through Multimodal Representations",
-        "indexedYear": 2026
+        "indexedTitle": "Cultural mosaics and mental models of nature",
+        "indexedYear": 2007
       },
       {
         "url": "https://doi.org/10.1080/07491409.2023.2193543",
@@ -959,22 +943,6 @@
         "indexedYear": 2010
       },
       {
-        "url": "https://doi.org/10.1080/1046560X.2022.2155355",
-        "doi": "10.1080/1046560X.2022.2155355",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/1046560X.2022.2155355",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Teacher Noticing for Supporting Students’ Epistemic Agency in Science Sensemaking Discussions",
-        "indexedYear": 2023
-      },
-      {
         "url": "https://doi.org/10.1080/10508400903452884",
         "doi": "10.1080/10508400903452884",
         "pages": [
@@ -991,21 +959,69 @@
         "indexedYear": 2010
       },
       {
-        "url": "https://doi.org/10.1086/430744",
-        "doi": "10.1086/430744",
+        "url": "https://doi.org/10.1080/14675986.2015.1109775",
+        "doi": "10.1080/14675986.2015.1109775",
         "pages": [
-          "teaching-ap-evolution.html",
-          "writing-biological-classification.html"
+          "research.html"
         ],
-        "publisherLanding": "https://academic.oup.com/jid/article-lookup/doi/10.1086/430744",
+        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/14675986.2015.1109775",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Sickle Cell Trait and the Risk ofPlasmodium falciparumMalaria and Other Childhood Diseases",
-        "indexedYear": 2005
+        "indexedTitle": "Beyond the mirror towards a plurilingual prism: exploring the creation of plurilingual ‘identity texts’ in English and French classrooms in Toronto and Montpellier",
+        "indexedYear": 2015
+      },
+      {
+        "url": "https://doi.org/10.1159/000345322",
+        "doi": "10.1159/000345322",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://karger.com/article/doi/10.1159/000345322",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Desettling Expectations in Science Education",
+        "indexedYear": 2012
+      },
+      {
+        "url": "https://doi.org/10.2304/ciec.2011.12.4.362",
+        "doi": "10.2304/ciec.2011.12.4.362",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://journals.sagepub.com/doi/10.2304/ciec.2011.12.4.362",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "On the Human Challenges of Multiliteracies Pedagogy",
+        "indexedYear": 2011
+      },
+      {
+        "url": "https://doi.org/10.3102/0013189X20927363",
+        "doi": "10.3102/0013189X20927363",
+        "pages": [
+          "research.html",
+          "writing-biological-classification.html"
+        ],
+        "publisherLanding": "https://journals.sagepub.com/doi/10.3102/0013189X20927363",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Beyond Equity as Inclusion: A Framework of “Rightful Presence” for Guiding Justice-Oriented Studies in Teaching and Learning",
+        "indexedYear": 2020
       },
       {
         "url": "https://doi.org/10.3102/0034654314558490",
@@ -1022,28 +1038,12 @@
         "secondaryIndex": "OpenAlex",
         "indexedTitle": "Representing Student Argumentation as Functionally Emergent From Scientific Activity",
         "indexedYear": 2014
-      },
-      {
-        "url": "https://doi.org/10.3390/plants10081501",
-        "doi": "10.3390/plants10081501",
-        "pages": [
-          "teaching-ap-biology.html"
-        ],
-        "publisherLanding": "https://www.mdpi.com/2223-7747/10/8/1501",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Binding Properties of Photosynthetic Herbicides with the QB Site of the D1 Protein in Plant Photosystem II: A Combined Functional and Molecular Docking Study",
-        "indexedYear": 2021
       }
     ],
     "unresolved": [],
     "limitation": "Crossref/DataCite registration is distinct from publisher access, correct article metadata or article availability. OpenAlex is independent secondary corroboration, not registration proof."
   },
-  "workflow_run_id": "40997418542",
-  "head_sha": "3fc7e2478ca63b301fefeff9bf026028afebeb14",
+  "workflow_run_id": "40997577736",
+  "head_sha": "894e29211559f2da25f5edba5a343d75d634877c",
   "audit_exit_code": "0"
 }
