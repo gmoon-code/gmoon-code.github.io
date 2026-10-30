@@ -1,0 +1,35 @@
+name: Verify deployed restored Interests and Pungmul photo galleries
+on:
+  push:
+    branches: [main]
+    paths:
+      - "interests.html"
+      - "pungmul.html"
+      - "pungmul.css"
+      - "assets/pungmul-*.webp"
+      - "scripts/audit_live_photo_restoration.py"
+      - ".github/workflows/verify-restored-photo-gallery.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: verify-restored-galleries
+  cancel-in-progress: false
+jobs:
+  compare-live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify published HTML CSS and original photos match source
+        run: python scripts/audit_live_photo_restoration.py
+      - name: Preserve exact live-source verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: restored-galleries-deployed-evidence
+          path: photo-restore-live-check/
+          retention-days: 14
