@@ -1102,6 +1102,14 @@ All **19 inventoried public/legacy root HTML routes** now have source-level rene
 
 **Status.** Stage C-X1h4 **Editorially verified for glossary entries 76–90 and Stage 7–8 guides at source level**. All 90 glossary definitions and the first eight stage guides now have a bounded audit record; other student-guidance source sections are still **In progress**.
 
+## Stage C-X1h5 | Stage 9–10 student guides, no justified changes
+
+**Coverage.** Read the full `gmoon-code/research-methods/assets/student-guidance.js` Stage 9 design-selection and Stage 10 constructs/variables/experimental-units guides, including every introduction, step, two example scenarios each, strong-answer description, stuck support, glossary references and entire walkthrough. Compared these to the previously corrected Stage 9 and Stage 10 main curriculum. The guides distinguish genuine assigned experiments from observational correlations, do not overstate causal findings, recognise qualitative and review designs, and avoid requiring a formal hypothesis for every research question. They correctly differentiate an assigned dish from seeds nested inside it; Stage 10 operational definitions and observed-stress example support more precise student answers. A controlled redesign would need a verified source reason, not a stylistic rewrite for its own sake.
+
+**Editorial verification.** No warranted source change. Confirmed all Stage 9–10 glossary references exist, guide content remains readable and logically sequenced, and important distinctions are consistent with the already reviewed curriculum. Source unchanged, `assets/student-guidance.js` blob **`a80be1124b443e1dba942bf19de0a66ba4266603`**. No browser, external publication, or empirical-study verification claimed.
+
+**Status.** Stage C-X1h5 **Editorially verified at source level**, unchanged.
+
 ## Exact next continuation point
 
-**Stage C-X1h5 | Stage 9–10 student-guide narratives in `assets/student-guidance.js`.** Examine the complete design-selection and hypotheses/variables/experimental-unit guidance, examples, source claims, and walkthroughs, with special attention to causal identification, independent units, feasibility and overly universal research-design rules. Check these against the previously audited `assets/curriculum.js` Stage 9–10 content, implement only supported revisions, verify with source reread, and record current SHA. Then continue through guides 11–18 and begin the 113 field, 21 choice, laboratory and response-example descriptions. Track remote Workers publication and Story Method source-lock issues separately.
+**Stage C-X1h6 | Stage 11–12 student guides** covering sampling, consent, ethics, validity, measurement and planned methodology. Read every student-facing field, source example, sequence and complete walkthrough; compare with corrected `assets/curriculum.js` Stages 11–12, and inspect all causal/statistical/ethics assertions. Implement only justified changes in directly rendered sources, verify parsing and source hashes, update the ledger. Continue to guides 13–18, lab, choice and field guidance, and source integrity later.
