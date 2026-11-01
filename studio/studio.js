@@ -7,6 +7,8 @@
   const SESSION_KEY = "ye-eun-moon-studio-token";
   const ROOT = new URL("../", window.location.href).href;
   const BASE_PAGES = ["index.html","research.html","projects.html","teaching.html","interests.html","contact.html","cv.html"];
+  // Existing root pages absent from the editable manifest must not be overwritten by a new draft.
+  const RESERVED_PAGES = ["404.html","about.html","editor-v2.html","editor.html","editors.html","fluid-layout-lab.html","pungmul.html","writing-biological-classification.html"];
   const COLOR_NAMES = ["yellow","green","blue","magenta"];
   const $ = id => document.getElementById(id);
   const state = {
@@ -1052,7 +1054,7 @@
     const parent=$("pageParent").value;
     if(!title||!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)){toast("Please enter a page name and a simple page address.",true);return}
     const path=slug+".html";
-    if(state.manifest.pages.some(p=>p.path===path)||BASE_PAGES.includes(path)){
+    if(state.manifest.pages.some(p=>p.path===path)||BASE_PAGES.includes(path)||RESERVED_PAGES.includes(path)){
       toast("A page with this address already exists.",true);return;
     }
     try{
