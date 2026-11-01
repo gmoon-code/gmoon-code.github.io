@@ -24,7 +24,7 @@ The Research Methods Studio Node regression CI and Connection Studio Node conten
 
 ## Exact next continuation
 
-**Stage C-RV16 | Public metadata and supplementary content publication boundaries.** C-RV13 reconciled all 26 HTML routes; C-RV14 aligned Website Studio with public Contact and replaced the redirecting new-page template; C-RV15 clarified copied source and metadata and passed a native Node suite. Next verify current browser titles, descriptions, canonical and robots directives across the real route inventory, distinguish intentionally excluded editor/preview paths from user-facing pages, and fix only source-grounded metadata claims. Separate underlying 20-study/28-student empirical evidence, private credential documentation and live browser Editor V2 failures remain open.
+**Stage C-RV17 | Sitemap, navigation and public-link coverage.** C-RV16 checked current titles, descriptions, canonical URLs and noindex declarations for all 26 HTML routes, distinguishing the sixteen self-canonical public academic pages, three noindexed legacy/print routes, six authoring/archival routes and one indexable Connection Studio tool. Compare the sitemap and public nav with actual intentionally public routes; determine whether the stand-alone writing trainer is deliberately omitted before altering discovery. Leave empirical/private sources and the separately failing Editor V2 browser tests open until separately verified.
 
 The overall academic website audit is **In progress**. No whole-site Fully verified claim has been made.
 
@@ -88,3 +88,8 @@ The repository's metadata-check script successfully ran at the corrected CV revi
 ## C-RV15 inherited-duplicate source guidance | 2 November 2026
 
 [C-RV15](WEBSITE_STUDIO_DUPLICATION_CONTENT_AUDIT_C-RV15_2026-11-02.md) identified the remaining need to warn authors when explicitly duplicating pages with references, images and search-indexing settings. The Studio help now explains inherited content and asks for citation/image-credit/link review before publication. An extended [native Studio Node content workflow 41360606660](https://github.com/gmoon-code/gmoon-code.github.io/actions/runs/41360606660) **passed**, including the new regression assertion and previous Contact/new-page checks. Actual browser-authenticated publication and whether search engines honour directives remain unverified.
+
+
+## C-RV16 route metadata completion | 2 November 2026
+
+The [C-RV16 metadata ledger](PUBLIC_SOURCE_METADATA_AUDIT_C-RV16_2026-11-02.md) enumerates all **26 current HTML paths** and their roles, titles, canonical and robots metadata. It confirms **16 self-canonical ordinary academic pages**, two non-self canonical redirect/archived pages, **nine** intentionally noindexed routes and **one** separately indexable Connection Studio tool without a canonical. The Fluid Layout Lab embeds its title and robots tag without a conventional explicit `<head>` element; the earlier head-only scanner was corrected by directly inspecting source. No metadata rewrite was justified from those facts alone. Actual search engine indexing and live byte delivery remain unverified.
