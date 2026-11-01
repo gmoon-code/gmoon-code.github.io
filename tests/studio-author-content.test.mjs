@@ -10,6 +10,7 @@ const read=path=>readFileSync(join(root,path),'utf8');
 const nav=JSON.parse(read('studio/navigation.json')).items;
 const pages=JSON.parse(read('studio/pages.json')).pages;
 const studio=read('studio/studio.js');
+const studioHTML=read('studio/index.html');
 const contact=read('contact.html');
 const about=read('about.html');
 const projects=read('projects.html');
@@ -37,4 +38,9 @@ test('Default page creation cannot inherit the old About redirect or wrong canon
   assert.match(about,/contact\.html/);
   assert.match(about,/http-equiv=["']refresh/i);
   new vm.Script(studio);
+});
+
+test('Duplicating a page is explicitly framed as inheriting text and search metadata',()=>{
+  assert.match(studioHTML,/A duplicated page keeps its source content and may retain its search-indexing settings/);
+  assert.match(studioHTML,/check citations, image credits and links before publishing/);
 });
