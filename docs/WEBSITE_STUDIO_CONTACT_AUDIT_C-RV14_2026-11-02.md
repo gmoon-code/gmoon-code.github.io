@@ -19,7 +19,7 @@ This is an **author-facing content integrity and publishing provenance defect**,
 
 Re-fetched both JSON manifests, the production Studio script, public Home, Contact, historical About redirect and Projects template after source changes. **15/15 targeted source/JavaScript parse and configuration checks passed**: current public Contact, no visible About, locked Contact entry, unique paths, manifest/navigation agreement, protected Contact, correct default Projects template, no redirect in Projects, canonical rewriting, unchanged old public redirect and parsing of production JavaScript.
 
-The native Node workflow was triggered on commit `598837b` ([run 41360372353](https://github.com/gmoon-code/gmoon-code.github.io/actions/runs/41360372353)). **Its final conclusion must be checked rather than assumed from the triggered state.** The accompanying Pages deployment is a separate process. The static test does not by itself exercise actual authenticated GitHub access, DOM page creation, image editing or live public loading. Those must remain separate in the outstanding QA ledger.
+The native Node workflow was triggered on commit `598837b` ([run 41360372353](https://github.com/gmoon-code/gmoon-code.github.io/actions/runs/41360372353)). **It completed successfully.** The GitHub Actions run confirms both native Node test cases passed in a checked-out repository on Node 22. The accompanying Pages deployment is a separate process. The static test does not by itself exercise actual authenticated GitHub access, DOM page creation, image editing or live public loading. Those must remain separate in the outstanding QA ledger.
 
 ## Boundaries
 
@@ -31,4 +31,4 @@ No private credential was used and no publication action was attempted. C-RV14 c
 
 **Stage C-RV15 | New-page authoring metadata and supplementary source guidance.** Verify native Node workflow and latest Pages outcomes, then inspect Website Studio's new-page and duplicate-page logic for any remaining inherited `robots`, old navigation links, page metadata, image/photo provenance or title/description problems that could misrepresent user-authored academic content. Avoid feature/UX redesign, use limited tests and source-backed editorial correction only. Continue the overall factual/empirical audit separately, with original study/consent records and externally inaccessible papers labelled pending.
 
-**Status:** Stale About/Contact and redirect-source defects corrected, 15/15 source tests passed, native CI queued/in progress as of initial check. Website fully verified status not warranted.
+**Status:** Stale About/Contact and redirect-source defects corrected, 15/15 source tests passed, native CI passed. Website fully verified status not warranted.
