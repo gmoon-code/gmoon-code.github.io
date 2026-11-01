@@ -8,7 +8,7 @@ const ui={tab:'home',index:{diagnose:0,choose:0,rewrite:0,paragraph:0},answers:{
 const sequences={diagnose:DIAGNOSE.map((_,i)=>i),choose:CHOOSE.map((_,i)=>i)};
 const E=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const nowDate=()=>{const d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')};
-const getName=id=>RELATIONS.find(r=>r.id===id)?.name||id;
+const getName=id=>RELATIONS.find(r=>r.id===id)?.name||TECHNIQUES.find(t=>t.id===id)?.name||id;
 const getCompleted=()=>Object.keys(progress.completedWrites).length;
 const totalDone=()=>progress.attempts.length+getCompleted();
 function save(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(progress));return true}catch{showToast('Local storage is unavailable. Export your work to keep a copy.');return false}}
