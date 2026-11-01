@@ -24,7 +24,7 @@ The Research Methods Studio Node regression CI and Connection Studio Node conten
 
 ## Exact next continuation
 
-**Stage C-RV1 | Prioritised primary-record and citation reconciliation.** Supplemental content stages C-ED5, C-ED6 and C-ED7 now record real-browser Editor V2 failures, a non-indexable historical preview fixture, the Fluid Layout Lab's unpublished status and inventories of external research documents. Resume source-to-claim verification on the scoping review page, followed by action research methods and numerical/ethics records, then original cited works in the classification essay. The 19 root public pages retain their earlier editorial reviews, but none of the still-open primary-source verifications is automatically complete.
+**Stage C-RV5 | Reconcile current research status and outstanding primary records.** Scoping review C-RV1, action research C-RV2, classification essay C-RV3 and Research overview C-RV4a–g now document source-to-claim checks, warranted changes and evidence access levels. First seek current corroboration for scoping review corpus/OSF metadata and action research primary/ethics documents, and mark those claims author-reported if the underlying records remain unavailable. Next reconcile scholarly cross-page status wording and research bibliography availability. Do not repeat completed editorial/source checks without a new issue. Editor V2 functional browser failures remain separately open.
 
 The overall academic website audit is **In progress**. No whole-site Fully verified claim has been made.
 
@@ -34,3 +34,15 @@ The overall academic website audit is **In progress**. No whole-site Fully verif
 - [C-ED5](EDITOR_CONTENT_AUDIT_C-ED5_2026-11-01.md) logged six distinct failed Editor V2 browser test cases across three failed workflows; UI implementation still requires functional remediation and retest. These are real test failures and cannot be described as passing browser QA.
 - [C-ED6](SUPPLEMENTARY_CONTENT_AUDIT_C-ED6_2026-11-01.md) verified that the Fluid Layout Lab is unpublished and marked noindex, and added noindex metadata to an archived, older Home-page preview without rewriting the historical fixture.
 - [C-ED7](SUPPLEMENTARY_CONTENT_AUDIT_C-ED7_2026-11-01.md) inventoried local and externally linked scholarly documents. The main repository has no local PDF/Office/spreadsheet files; two external-repository synthetic CSV paths exist. Original DOI-linked publications, College Board PDFs and primary study records remain to be checked on their own evidence.
+
+
+## Research source-verification continuation, 1 November 2026
+
+| Stage | Actual result | Further verification needed |
+| --- | --- | --- |
+| [C-RV1](SCOPING_PRIMARY_SOURCE_AUDIT_C-RV1_2026-11-01.md) | Pierson design-based source distinction corrected and committed; ERIC 216-to-20 arithmetic verified | Original ERIC export, 20-study coding, second-reader evidence, OSF preprint current status |
+| [C-RV2](ACTION_RESEARCH_PRIMARY_RECORD_AUDIT_C-RV2_2026-11-01.md) | 15/15 internal arithmetic and cross-page assertions passed; no unjustified edit | Original 28 response sets, rater records, permissions, consent/assent documents |
+| [C-RV3](CLASSIFICATION_ESSAY_PRIMARY_SOURCE_AUDIT_C-RV3_2026-11-01.md) | Five cited works reconciled, 15/15 structural/source assertions passed | Complete source texts of some books/reviews and live visitor parity |
+| [C-RV4a](RESEARCH_OVERVIEW_SOURCE_AUDIT_C-RV4a_2026-11-01.md)–[C-RV4g](RESEARCH_OVERVIEW_SOURCE_AUDIT_C-RV4g_2026-11-01.md) | Research overview's 53/53 reference IDs link to body citations; one warranted Suárez elementary-age qualification committed; direct sources/reports checked in bounded batches | 53-reference [tiered evidence matrix](RESEARCH_OVERVIEW_SOURCE_AUDIT_C-RV4g_2026-11-01.md) distinguishes 12 article texts consulted, 34 abstract/record checks and 7 book/chapter catalogue checks; this is **not** independent full-text verification of all 53 publications |
+
+The current Research HTML source after C-RV4c remains at blob `9437512368d44a590b3d986f82bb8e6d6eea61ad`; later checks made no unnecessary prose changes. Native Node checks passed for their specified separate app scopes. `Fully verified` is not justified for the academic website.
