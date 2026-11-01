@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync} from 'node:fs';
+import {readFileSync, readdirSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import {dirname, join} from 'node:path';
 import vm from 'node:vm';
@@ -43,4 +43,17 @@ test('Default page creation cannot inherit the old About redirect or wrong canon
 test('Duplicating a page is explicitly framed as inheriting text and search metadata',()=>{
   assert.match(studioHTML,/A duplicated page keeps its source content and may retain its search-indexing settings/);
   assert.match(studioHTML,/check citations, image credits and links before publishing/);
+});
+
+test('Every existing root HTML address is either editable or reserved from new page creation',()=>{
+  const rootHtml=readdirSync(root).filter(file=>file.endsWith('.html'));
+  const reservedMatch=studio.match(/const RESERVED_PAGES = (\[[^\n]+\]);/);
+  assert.ok(reservedMatch,'Studio must declare reserved legacy and non-editable HTML routes');
+  const reserved=JSON.parse(reservedMatch[1]);
+  const declared=new Set([...pages.map(page=>page.path),...reserved]);
+  assert.deepEqual(rootHtml.filter(file=>!declared.has(file)),[]);
+  for(const name of ['404.html','about.html','pungmul.html','writing-biological-classification.html']){
+    assert.ok(reserved.includes(name),name+' must be reserved');
+  }
+  assert.match(studio,/RESERVED_PAGES\.includes\(path\)/);
 });
