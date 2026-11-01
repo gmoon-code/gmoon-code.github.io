@@ -98,3 +98,12 @@ The [C-RV16 metadata ledger](PUBLIC_SOURCE_METADATA_AUDIT_C-RV16_2026-11-02.md) 
 ## C-RV17 sitemap and canonical verification | 2 November 2026
 
 The [C-RV17 source ledger](SITEMAP_AND_LINK_AUDIT_C-RV17_2026-11-02.md) records an exact current `sitemap.xml` inventory of **16 academic routes**. Each was fetched and checked against its canonical, robots and published Contact navigation, with **16/16 matching**, no retired About links or accidental noindex. `robots.txt` points to the same sitemap. Connection Studio remains a separate indexable tool absent from Home, Projects and sitemap; its discoverability is an author-dependent decision. No unwarranted sitemap change was made.
+
+
+## C-RV18 project pages and original application-source reconciliation | 2 November 2026
+
+[C-RV18](PROJECT_APPLICATION_SOURCE_AUDIT_C-RV18_2026-11-02.md) compared `projects.html`, `research-methods-studio.html`, `story-method.html`, related authoring manifests and the separate Connection Studio source against both original application repositories. Independently reconciled all **90 seed rows with 18 synthetic radish dish rows**, confirming every dish-level mean and germination proportion, and independently reproduced the three published treatment averages. The **18-stage** phase allocation, Story Method **58 journeys/448 scenes**, nine-location first journey, first-scene quotation and original numerical practice prompt also match author-maintained records. Privacy, local storage, optional server use, published instructional content and offline-cache descriptions agree with the inspected source boundaries. No ungrounded public prose edits were made.
+
+The public Story Method and Research Methods Studio live deployments could not be accessed through the available web retrieval tool, so delivered-byte parity and browser interactions remain **Blocked**, not failed or passed. Connection Studio indexing intent, author-preferred contact email, original confidential study and consent/rater records, and six known Editor V2 browser failures remain open.
+
+**Exact next stage C-RV19:** evidence-source and externally dependent claim closure for primary scoping/action records and public scholarly full texts, with explicit blocked tiers rather than assumed verification. Preserve the completed C-RV18 source findings.
