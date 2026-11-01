@@ -1,12 +1,12 @@
 {
-  "sourceHead": "7169d6b3d44d85fa8914dd9834bd18de70dcfb7c",
+  "sourceHead": "8605f53ce129be927c4d482cd063eef2402e5af0",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-7169d6b3d44d",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-8605f53ce129",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -18,7 +18,8 @@
       "head_sha": "95b9207054443506538eea2fdb920bd697e8f3fd",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "research-scoping.html"
+        "research-scoping.html",
+        "research.html"
       ],
       "failureCounts": {
         "problems": 0
@@ -26,27 +27,27 @@
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "41317174136",
-      "head_sha": "13e8334205684d15f508408019ca87c0d722601b",
+      "run": "41318346108",
+      "head_sha": "7169d6b3d44d85fa8914dd9834bd18de70dcfb7c",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "research-scoping.html"
+        "research.html"
       ],
       "failureCounts": {
-        "issues": 44
+        "issues": 42
       },
       "counts": {
-        "reachable": 69,
-        "unverified": 44
+        "reachable": 71,
+        "unverified": 42
       }
     },
     "metadata": {
       "report": "docs/RESEARCH_METADATA_LATEST_RESULTS.json",
-      "run": "41005414161",
-      "head_sha": "2868046f884222258c92df569ce98a09ea8b8c16",
+      "run": "41318346085",
+      "head_sha": "7169d6b3d44d85fa8914dd9834bd18de70dcfb7c",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "research-scoping.html"
+        "research.html"
       ],
       "failureCounts": {
         "unverified": 0
@@ -59,11 +60,11 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "41317174160",
-      "head_sha": "13e8334205684d15f508408019ca87c0d722601b",
+      "run": "41318346064",
+      "head_sha": "7169d6b3d44d85fa8914dd9834bd18de70dcfb7c",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "research-scoping.html"
+        "research.html"
       ],
       "failureCounts": {
         "failures": 0
@@ -71,11 +72,11 @@
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "41317174159",
-      "head_sha": "13e8334205684d15f508408019ca87c0d722601b",
+      "run": "41318346124",
+      "head_sha": "7169d6b3d44d85fa8914dd9834bd18de70dcfb7c",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "research-scoping.html"
+        "research.html"
       ],
       "failureCounts": {
         "failures": 0
@@ -83,11 +84,11 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "41317174175",
-      "head_sha": "13e8334205684d15f508408019ca87c0d722601b",
+      "run": "41318346089",
+      "head_sha": "7169d6b3d44d85fa8914dd9834bd18de70dcfb7c",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "research-scoping.html"
+        "research.html"
       ],
       "failureCounts": {
         "failures": 0,
@@ -96,11 +97,11 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "41317174150",
-      "head_sha": "13e8334205684d15f508408019ca87c0d722601b",
+      "run": "41318346084",
+      "head_sha": "7169d6b3d44d85fa8914dd9834bd18de70dcfb7c",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "research-scoping.html"
+        "research.html"
       ],
       "failureCounts": {
         "failures": 0,
@@ -118,61 +119,62 @@
     {
       "category": "links",
       "sourceModifiedSinceAudit": [
-        "research-scoping.html"
+        "research-scoping.html",
+        "research.html"
       ]
     },
     {
       "category": "external",
       "sourceModifiedSinceAudit": [
-        "research-scoping.html"
+        "research.html"
       ]
     },
     {
       "category": "metadata",
       "sourceModifiedSinceAudit": [
-        "research-scoping.html"
+        "research.html"
       ]
     },
     {
       "category": "reflow",
       "sourceModifiedSinceAudit": [
-        "research-scoping.html"
+        "research.html"
       ]
     },
     {
       "category": "engines",
       "sourceModifiedSinceAudit": [
-        "research-scoping.html"
+        "research.html"
       ]
     },
     {
       "category": "typography",
       "sourceModifiedSinceAudit": [
-        "research-scoping.html"
+        "research.html"
       ]
     },
     {
       "category": "interactions",
       "sourceModifiedSinceAudit": [
-        "research-scoping.html"
+        "research.html"
       ]
     }
   ],
   "pass": false,
   "errors": [
     {
-      "path": "research-scoping.html",
+      "path": "research.html",
       "errors": [
         "deployed bytes differ from checked-out production source"
       ],
       "firstDiff": [
         "--- source\n",
         "+++ deployed\n",
-        "@@ -127,3 +127,3 @@\n",
-        "     <h3>Ecological modelling and language use</h3>",
-        "-    <p>In the fourth cycle of a design-based study, Pierson and colleagues examined a nine-week ecology unit in an English-dominant sixth-grade STEM classroom. In one group, Luis, Carlos, and Sean used written descriptions, drawings, physical materials, and conversation to develop a biosphere model. Following these contributions across activities allowed the researchers to examine how scientific relationships became visible through different linguistic and representational resources (<a href=\"#scoping-ref-pierson\">Pierson et al., 2021</a>).</p>",
-        "+    <p>Pierson and colleagues studied a nine-week ecology unit in an English-dominant sixth-grade STEM classroom. In one group, Luis, Carlos, and Sean used written descriptions, drawings, physical materials, and conversation to develop a biosphere model. Following these contributions across activities allowed the researchers to examine how scientific relationships became visible through different linguistic and representational resources (<a href=\"#scoping-ref-pierson\">Pierson et al., 2021</a>).</p>",
-        "     <div class=\"research-example-steps\">"
+        "@@ -117,3 +117,3 @@\n",
+        "     <p>Language policies can shape which parts of a learner's repertoire become available during a task. In a Malaysian Grade 5 English-language classroom with an English-only policy, students used translanguaging during peer collaboration while encountering constraints from classroom expectations and the attitudes of others (<a href=\"#reading-rajendram\">Rajendram, 2023</a>). A Canadian university study compared plurilingual and English-only instruction in an academic English programme and found greater development of plurilingual and pluricultural competence in the plurilingual group (<a href=\"#reading-galante\">Galante, 2022</a>). Neither study measured secondary science understanding. Their relevance to my work lies in the language opportunities and constraints they document, rather than in evidence of science learning.</p>",
+        "-    <p>Gesture and shared modelling can make scientific relationships visible during an investigation, including relationships that a final written answer may not fully express. In a Swedish elementary science classroom, the language resources bilingual students used differed between teacher-led exchanges and small-group activities (<a href=\"#reading-unsal\">Ünsal et al., 2018</a>). An analytic framework distinguishes changes across representations from the ways learners combine words, gestures, and visual elements within a representation (<a href=\"#reading-tang\">Tang et al., 2014</a>). In an out-of-school inquiry into electric flow and resistance, elementary-aged emergent bilingual students drew on linguistic and nonlinguistic resources as they developed models with peers and their instructor (<a href=\"#reading-suarez\">Suárez, 2020</a>). The study also describes how the instructor's pedagogical moves signalled when and how students could draw on those resources.</p>",
+        "+    <p>Gesture and shared modelling can make scientific relationships visible during an investigation, including relationships that a final written answer may not fully express. In a Swedish elementary science classroom, the language resources bilingual students used differed between teacher-led exchanges and small-group activities (<a href=\"#reading-unsal\">Ünsal et al., 2018</a>). An analytic framework distinguishes changes across representations from the ways learners combine words, gestures, and visual elements within a representation (<a href=\"#reading-tang\">Tang et al., 2014</a>). In an out-of-school inquiry into electric flow and resistance, emergent bilingual students drew on linguistic and nonlinguistic resources as they developed models with peers and their instructor (<a href=\"#reading-suarez\">Suárez, 2020</a>). The study also describes how the instructor's pedagogical moves signalled when and how students could draw on those resources.</p>",
+        "     <p>Interpreting students' ideas across talk, writing, and images raises a methodological question about which records to preserve. Research on plurilingual identity texts has examined conversations alongside students' written and visual work (<a href=\"#reading-prasad\">Prasad, 2015</a>). A relational account of multiliteracies considers how meaning develops within social and cultural relationships (<a href=\"#reading-simon\">Simon, 2011</a>). The literacy settings differ from those of secondary science. The same attention to conversations and classroom relationships may help me interpret written and visual work in science.</p>"
       ]
     },
     {
@@ -180,50 +182,51 @@
         {
           "category": "links",
           "sourceModifiedSinceAudit": [
-            "research-scoping.html"
+            "research-scoping.html",
+            "research.html"
           ]
         },
         {
           "category": "external",
           "sourceModifiedSinceAudit": [
-            "research-scoping.html"
+            "research.html"
           ]
         },
         {
           "category": "metadata",
           "sourceModifiedSinceAudit": [
-            "research-scoping.html"
+            "research.html"
           ]
         },
         {
           "category": "reflow",
           "sourceModifiedSinceAudit": [
-            "research-scoping.html"
+            "research.html"
           ]
         },
         {
           "category": "engines",
           "sourceModifiedSinceAudit": [
-            "research-scoping.html"
+            "research.html"
           ]
         },
         {
           "category": "typography",
           "sourceModifiedSinceAudit": [
-            "research-scoping.html"
+            "research.html"
           ]
         },
         {
           "category": "interactions",
           "sourceModifiedSinceAudit": [
-            "research-scoping.html"
+            "research.html"
           ]
         }
       ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41318346066",
-  "run_sha": "7169d6b3d44d85fa8914dd9834bd18de70dcfb7c",
+  "workflow_run_id": "41319251298",
+  "run_sha": "8605f53ce129be927c4d482cd063eef2402e5af0",
   "exit_code": "1"
 }
