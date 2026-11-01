@@ -48,6 +48,7 @@ test('writing challenges contain model text and methodological rationales',()=>{
 
 test('visitor wording identifies examples as constructed practice and uses readable lexical label',()=>{
   assert.match(appText,/Classroom and research scenarios are illustrative writing exercises/);
+  assert.match(appText,/include specific classroom actions or reported findings only when the original evidence supports them/);
   assert.match(appText,/TECHNIQUES\.find\(t=>t\.id===id\)\?\.name/);
   assert.match(indexText,/lang="en-CA"/);
   new vm.Script(appText);
