@@ -1,12 +1,12 @@
 {
-  "sourceHead": "13e8334205684d15f508408019ca87c0d722601b",
+  "sourceHead": "7169d6b3d44d85fa8914dd9834bd18de70dcfb7c",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
-  "verifiedExactMatches": 24,
-  "httpErrors": 0,
+  "verifiedExactMatches": 23,
+  "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-13e833420568",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-7169d6b3d44d",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -17,23 +17,27 @@
       "run": "41317071821",
       "head_sha": "95b9207054443506538eea2fdb920bd697e8f3fd",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research-scoping.html"
+      ],
       "failureCounts": {
         "problems": 0
       }
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "41317071811",
-      "head_sha": "95b9207054443506538eea2fdb920bd697e8f3fd",
+      "run": "41317174136",
+      "head_sha": "13e8334205684d15f508408019ca87c0d722601b",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research-scoping.html"
+      ],
       "failureCounts": {
-        "issues": 42
+        "issues": 44
       },
       "counts": {
-        "reachable": 71,
-        "unverified": 42
+        "reachable": 69,
+        "unverified": 44
       }
     },
     "metadata": {
@@ -41,7 +45,9 @@
       "run": "41005414161",
       "head_sha": "2868046f884222258c92df569ce98a09ea8b8c16",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research-scoping.html"
+      ],
       "failureCounts": {
         "unverified": 0
       },
@@ -53,30 +59,36 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "41316966378",
-      "head_sha": "e5ba22de9145926aa73062682f831b7e273ec21d",
+      "run": "41317174160",
+      "head_sha": "13e8334205684d15f508408019ca87c0d722601b",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research-scoping.html"
+      ],
       "failureCounts": {
         "failures": 0
       }
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "41316911989",
-      "head_sha": "6d4c58563a6c2ba6111daa92349ab8b6527ca235",
+      "run": "41317174159",
+      "head_sha": "13e8334205684d15f508408019ca87c0d722601b",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research-scoping.html"
+      ],
       "failureCounts": {
         "failures": 0
       }
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "41316966398",
-      "head_sha": "e5ba22de9145926aa73062682f831b7e273ec21d",
+      "run": "41317174175",
+      "head_sha": "13e8334205684d15f508408019ca87c0d722601b",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research-scoping.html"
+      ],
       "failureCounts": {
         "failures": 0,
         "combinedStressFailures": 0
@@ -84,10 +96,12 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "41317071851",
-      "head_sha": "95b9207054443506538eea2fdb920bd697e8f3fd",
+      "run": "41317174150",
+      "head_sha": "13e8334205684d15f508408019ca87c0d722601b",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research-scoping.html"
+      ],
       "failureCounts": {
         "failures": 0,
         "axeViolations": 0
@@ -100,11 +114,116 @@
       "note": "U1 route audit documents successful run 40825886279; legacy utility machine report refers to an early missing-script failure. Do not treat it as latest successful evidence."
     }
   },
-  "sourceDriftSinceAudits": [],
-  "pass": true,
-  "errors": [],
+  "sourceDriftSinceAudits": [
+    {
+      "category": "links",
+      "sourceModifiedSinceAudit": [
+        "research-scoping.html"
+      ]
+    },
+    {
+      "category": "external",
+      "sourceModifiedSinceAudit": [
+        "research-scoping.html"
+      ]
+    },
+    {
+      "category": "metadata",
+      "sourceModifiedSinceAudit": [
+        "research-scoping.html"
+      ]
+    },
+    {
+      "category": "reflow",
+      "sourceModifiedSinceAudit": [
+        "research-scoping.html"
+      ]
+    },
+    {
+      "category": "engines",
+      "sourceModifiedSinceAudit": [
+        "research-scoping.html"
+      ]
+    },
+    {
+      "category": "typography",
+      "sourceModifiedSinceAudit": [
+        "research-scoping.html"
+      ]
+    },
+    {
+      "category": "interactions",
+      "sourceModifiedSinceAudit": [
+        "research-scoping.html"
+      ]
+    }
+  ],
+  "pass": false,
+  "errors": [
+    {
+      "path": "research-scoping.html",
+      "errors": [
+        "deployed bytes differ from checked-out production source"
+      ],
+      "firstDiff": [
+        "--- source\n",
+        "+++ deployed\n",
+        "@@ -127,3 +127,3 @@\n",
+        "     <h3>Ecological modelling and language use</h3>",
+        "-    <p>In the fourth cycle of a design-based study, Pierson and colleagues examined a nine-week ecology unit in an English-dominant sixth-grade STEM classroom. In one group, Luis, Carlos, and Sean used written descriptions, drawings, physical materials, and conversation to develop a biosphere model. Following these contributions across activities allowed the researchers to examine how scientific relationships became visible through different linguistic and representational resources (<a href=\"#scoping-ref-pierson\">Pierson et al., 2021</a>).</p>",
+        "+    <p>Pierson and colleagues studied a nine-week ecology unit in an English-dominant sixth-grade STEM classroom. In one group, Luis, Carlos, and Sean used written descriptions, drawings, physical materials, and conversation to develop a biosphere model. Following these contributions across activities allowed the researchers to examine how scientific relationships became visible through different linguistic and representational resources (<a href=\"#scoping-ref-pierson\">Pierson et al., 2021</a>).</p>",
+        "     <div class=\"research-example-steps\">"
+      ]
+    },
+    {
+      "sourceDrift": [
+        {
+          "category": "links",
+          "sourceModifiedSinceAudit": [
+            "research-scoping.html"
+          ]
+        },
+        {
+          "category": "external",
+          "sourceModifiedSinceAudit": [
+            "research-scoping.html"
+          ]
+        },
+        {
+          "category": "metadata",
+          "sourceModifiedSinceAudit": [
+            "research-scoping.html"
+          ]
+        },
+        {
+          "category": "reflow",
+          "sourceModifiedSinceAudit": [
+            "research-scoping.html"
+          ]
+        },
+        {
+          "category": "engines",
+          "sourceModifiedSinceAudit": [
+            "research-scoping.html"
+          ]
+        },
+        {
+          "category": "typography",
+          "sourceModifiedSinceAudit": [
+            "research-scoping.html"
+          ]
+        },
+        {
+          "category": "interactions",
+          "sourceModifiedSinceAudit": [
+            "research-scoping.html"
+          ]
+        }
+      ]
+    }
+  ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41317174144",
-  "run_sha": "13e8334205684d15f508408019ca87c0d722601b",
-  "exit_code": "0"
+  "workflow_run_id": "41318346066",
+  "run_sha": "7169d6b3d44d85fa8914dd9834bd18de70dcfb7c",
+  "exit_code": "1"
 }
