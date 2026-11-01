@@ -63,9 +63,21 @@ jobs:
           git add docs/RESEARCH_METADATA_LATEST_RESULTS.json
           if ! git diff --cached --quiet; then
             git commit -m "Record current preprint and cited research metadata [skip ci]"
-            git fetch origin main
-            git rebase origin/main
-            git push origin HEAD:main
+            # Concurrent page/audit commits can advance main between fetch and push.
+            # Retry ordinary fast-forward pushes; never force-push audit evidence.
+            for attempt in 1 2 3 4 5; do
+              git fetch origin main
+              git rebase origin/main
+              if git push origin HEAD:main; then
+                echo "Saved scholarly metadata on attempt $attempt"
+                break
+              fi
+              if [ "$attempt" -eq 5 ]; then
+                echo "::error::Could not save metadata summary after five safe attempts; see the uploaded evidence artifact."
+                exit 1
+              fi
+              sleep 3
+            done
           fi
       - uses: actions/upload-artifact@v4
         if: always()
