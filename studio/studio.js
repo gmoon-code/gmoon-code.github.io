@@ -6,7 +6,7 @@
   const API = "https://api.github.com";
   const SESSION_KEY = "ye-eun-moon-studio-token";
   const ROOT = new URL("../", window.location.href).href;
-  const BASE_PAGES = ["index.html","research.html","projects.html","teaching.html","interests.html","about.html","cv.html"];
+  const BASE_PAGES = ["index.html","research.html","projects.html","teaching.html","interests.html","contact.html","cv.html"];
   const COLOR_NAMES = ["yellow","green","blue","magenta"];
   const $ = id => document.getElementById(id);
   const state = {
@@ -222,7 +222,7 @@
     const p=state.manifest.pages.find(q=>q.path===path);
     if(p&&p.accent)return p.accent;
     if(path==="index.html"||path==="interests.html")return "yellow";
-    if(path==="research.html"||path.startsWith("research-")||path==="about.html")return "green";
+    if(path==="research.html"||path.startsWith("research-")||path==="contact.html")return "green";
     if(path==="projects.html"||path==="cv.html"||path.includes("studio.html")||path==="story-method.html")return "blue";
     return "magenta";
   }
@@ -1057,10 +1057,11 @@
     }
     try{
       const duplicate=state.duplicateFrom;
-      const base=await ensureDraft(duplicate||"about.html");
+      const base=await ensureDraft(duplicate||"projects.html");
       const doc=new DOMParser().parseFromString(base.html,"text/html");
       doc.title=title+" | Ye Eun Moon";
       doc.querySelector('meta[name="description"]')?.setAttribute("content",title+" | Ye Eun Moon");
+      doc.querySelector('link[rel="canonical"]')?.setAttribute("href",ROOT+path);
       doc.querySelectorAll('nav a[aria-current="page"]').forEach(a=>a.removeAttribute("aria-current"));
       doc.body.className="theme-"+accent;
       if(duplicate){
