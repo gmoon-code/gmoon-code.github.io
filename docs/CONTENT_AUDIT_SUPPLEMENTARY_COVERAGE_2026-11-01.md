@@ -24,7 +24,7 @@ The Research Methods Studio Node regression CI and Connection Studio Node conten
 
 ## Exact next continuation
 
-**Stage C-RV15 | Website Studio new-page metadata and remainder of scholarly coverage.** C-RV13 reconciled 26 HTML routes, comprising 19 original editorially audited pages and seven separately reviewed tool/editor/preview routes. C-RV14 corrected Website Studio's outdated About/Contact data and stopped default new pages inheriting the retired About redirect, with native Node regression passed. Verify remaining source/canonical/robots and duplicate-page metadata claims; then return to site-wide primary empirical/credential source limits and public-site/browser parity without restarting earlier prose reviews.
+**Stage C-RV16 | Public metadata and supplementary content publication boundaries.** C-RV13 reconciled all 26 HTML routes; C-RV14 aligned Website Studio with public Contact and replaced the redirecting new-page template; C-RV15 clarified copied source and metadata and passed a native Node suite. Next verify current browser titles, descriptions, canonical and robots directives across the real route inventory, distinguish intentionally excluded editor/preview paths from user-facing pages, and fix only source-grounded metadata claims. Separate underlying 20-study/28-student empirical evidence, private credential documentation and live browser Editor V2 failures remain open.
 
 The overall academic website audit is **In progress**. No whole-site Fully verified claim has been made.
 
@@ -83,3 +83,8 @@ The repository's metadata-check script successfully ran at the corrected CV revi
 
 - [C-RV13](WHOLE_SITE_COVERAGE_RECONCILIATION_C-RV13_2026-11-02.md) reconciled the **26** current HTML files, comprising **19** root public/legacy pages with renewed editorial coverage and **seven** supporting authoring, experimental and preview routes reviewed in scoped C-CS/C-ED stages. The standalone `teaching-osmosis-practice.html` is already in the original 19, and should not be counted again.
 - [C-RV14](WEBSITE_STUDIO_CONTACT_AUDIT_C-RV14_2026-11-02.md) corrected the stale authoring manifest and navigation label `About` to public **Contact**, replaced the redirecting About file as the default new-page template with non-redirecting Projects and assigned new pages their own canonical URL. The old public About redirect was retained. **15/15** source checks and [the native Node regression run 41360372353](https://github.com/gmoon-code/gmoon-code.github.io/actions/runs/41360372353) passed. Authenticated publishing and live browser parity remain separate unknowns.
+
+
+## C-RV15 inherited-duplicate source guidance | 2 November 2026
+
+[C-RV15](WEBSITE_STUDIO_DUPLICATION_CONTENT_AUDIT_C-RV15_2026-11-02.md) identified the remaining need to warn authors when explicitly duplicating pages with references, images and search-indexing settings. The Studio help now explains inherited content and asks for citation/image-credit/link review before publication. An extended [native Studio Node content workflow 41360606660](https://github.com/gmoon-code/gmoon-code.github.io/actions/runs/41360606660) **passed**, including the new regression assertion and previous Contact/new-page checks. Actual browser-authenticated publication and whether search engines honour directives remain unverified.
