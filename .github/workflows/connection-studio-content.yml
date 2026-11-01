@@ -1,0 +1,20 @@
+name: Connection Studio content integrity
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'connection-studio/**'
+      - 'tests/connection-studio-content.test.mjs'
+      - '.github/workflows/connection-studio-content.yml'
+permissions:
+  contents: read
+jobs:
+  teaching-content:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test tests/connection-studio-content.test.mjs
