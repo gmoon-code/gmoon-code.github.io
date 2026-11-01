@@ -24,7 +24,7 @@ The Research Methods Studio Node regression CI and Connection Studio Node conten
 
 ## Exact next continuation
 
-**Stage C-RV17 | Sitemap, navigation and public-link coverage.** C-RV16 checked current titles, descriptions, canonical URLs and noindex declarations for all 26 HTML routes, distinguishing the sixteen self-canonical public academic pages, three noindexed legacy/print routes, six authoring/archival routes and one indexable Connection Studio tool. Compare the sitemap and public nav with actual intentionally public routes; determine whether the stand-alone writing trainer is deliberately omitted before altering discovery. Leave empirical/private sources and the separately failing Editor V2 browser tests open until separately verified.
+**Stage C-RV18 | Specific remaining original-source, app-content and published-site verification.** C-RV17 confirmed each of the 16 sitemap-listed academic URLs matches its source canonical, permits normal indexing and links to Contact. The separate Connection Studio tool is not listed in the sitemap or linked from Home/Projects; whether to promote its public indexing requires author intent. Next resolve genuinely outstanding original empirical and ethics records, externally inaccessible full scholarship, or precisely unaudited written components. The independent Editor V2 browser failures and live served-byte parity remain separate tracks. Preserve completed source-verified prose and do not infer missing private documents are absent.
 
 The overall academic website audit is **In progress**. No whole-site Fully verified claim has been made.
 
@@ -93,3 +93,8 @@ The repository's metadata-check script successfully ran at the corrected CV revi
 ## C-RV16 route metadata completion | 2 November 2026
 
 The [C-RV16 metadata ledger](PUBLIC_SOURCE_METADATA_AUDIT_C-RV16_2026-11-02.md) enumerates all **26 current HTML paths** and their roles, titles, canonical and robots metadata. It confirms **16 self-canonical ordinary academic pages**, two non-self canonical redirect/archived pages, **nine** intentionally noindexed routes and **one** separately indexable Connection Studio tool without a canonical. The Fluid Layout Lab embeds its title and robots tag without a conventional explicit `<head>` element; the earlier head-only scanner was corrected by directly inspecting source. No metadata rewrite was justified from those facts alone. Actual search engine indexing and live byte delivery remain unverified.
+
+
+## C-RV17 sitemap and canonical verification | 2 November 2026
+
+The [C-RV17 source ledger](SITEMAP_AND_LINK_AUDIT_C-RV17_2026-11-02.md) records an exact current `sitemap.xml` inventory of **16 academic routes**. Each was fetched and checked against its canonical, robots and published Contact navigation, with **16/16 matching**, no retired About links or accidental noindex. `robots.txt` points to the same sitemap. Connection Studio remains a separate indexable tool absent from Home, Projects and sitemap; its discoverability is an author-dependent decision. No unwarranted sitemap change was made.
