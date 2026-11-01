@@ -24,6 +24,13 @@ The Research Methods Studio Node regression CI and Connection Studio Node conten
 
 ## Exact next continuation
 
-**Stage C-ED5 | Unreviewed editor instructions and supporting material inventory.** Review remaining `editor-v2.html` controls and publishing warnings with source-implementation checks, inspect `studio/index.html` detailed author help and other editor routes for misleading claims, and record any justified revisions. Then audit additional standalone public/subroute text and linked documents in manageable batches, linking each to this index. Resume primary-record and scholarly citation verification across the previously editorially reviewed research pages without redoing justified wording work.
+**Stage C-RV1 | Prioritised primary-record and citation reconciliation.** Supplemental content stages C-ED5, C-ED6 and C-ED7 now record real-browser Editor V2 failures, a non-indexable historical preview fixture, the Fluid Layout Lab's unpublished status and inventories of external research documents. Resume source-to-claim verification on the scoping review page, followed by action research methods and numerical/ethics records, then original cited works in the classification essay. The 19 root public pages retain their earlier editorial reviews, but none of the still-open primary-source verifications is automatically complete.
 
 The overall academic website audit is **In progress**. No whole-site Fully verified claim has been made.
+
+
+## Subsequent source progress, 1 November 2026
+
+- [C-ED5](EDITOR_CONTENT_AUDIT_C-ED5_2026-11-01.md) logged six distinct failed Editor V2 browser test cases across three failed workflows; UI implementation still requires functional remediation and retest. These are real test failures and cannot be described as passing browser QA.
+- [C-ED6](SUPPLEMENTARY_CONTENT_AUDIT_C-ED6_2026-11-01.md) verified that the Fluid Layout Lab is unpublished and marked noindex, and added noindex metadata to an archived, older Home-page preview without rewriting the historical fixture.
+- [C-ED7](SUPPLEMENTARY_CONTENT_AUDIT_C-ED7_2026-11-01.md) inventoried local and externally linked scholarly documents. The main repository has no local PDF/Office/spreadsheet files; two external-repository synthetic CSV paths exist. Original DOI-linked publications, College Board PDFs and primary study records remain to be checked on their own evidence.
