@@ -1038,7 +1038,7 @@
     openPageDialog();
     state.duplicateFrom=path;
     $("pageDialogTitle").textContent="Duplicate this page";
-    $("pageDialogHelp").textContent="Start from the current page's layout, words, and photos. You can change anything in your copy before publishing.";
+    $("pageDialogHelp").textContent="Start from the current page's layout, words, and photos. Check inherited citations, image credits, links, and search-indexing settings before publishing.";
     const title=nameFor(path)+" copy";
     $("pageName").value=title;
     $("pageSlug").value=slugify(title);
@@ -1063,7 +1063,13 @@
       const doc=new DOMParser().parseFromString(base.html,"text/html");
       doc.title=title+" | Ye Eun Moon";
       doc.querySelector('meta[name="description"]')?.setAttribute("content",title+" | Ye Eun Moon");
-      doc.querySelector('link[rel="canonical"]')?.setAttribute("href",ROOT+path);
+      let canonical=doc.querySelector('link[rel="canonical"]');
+      if(!canonical){
+        canonical=doc.createElement("link");
+        canonical.setAttribute("rel","canonical");
+        doc.head.appendChild(canonical);
+      }
+      canonical.setAttribute("href",ROOT+path);
       doc.querySelectorAll('nav a[aria-current="page"]').forEach(a=>a.removeAttribute("aria-current"));
       doc.body.className="theme-"+accent;
       if(duplicate){
