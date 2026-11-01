@@ -1,0 +1,28 @@
+name: Website Studio content and source-map regression
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'studio/navigation.json'
+      - 'studio/pages.json'
+      - 'studio/studio.js'
+      - 'contact.html'
+      - 'about.html'
+      - 'projects.html'
+      - 'tests/studio-author-content.test.mjs'
+      - '.github/workflows/studio-author-content.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  studio-source-content:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test tests/studio-author-content.test.mjs
