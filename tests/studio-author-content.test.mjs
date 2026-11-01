@@ -30,7 +30,10 @@ test('Default page creation cannot inherit the old About redirect or wrong canon
   assert.doesNotMatch(studio,/const BASE_PAGES = \[[^\]]*"about\.html"/);
   assert.match(studio,/ensureDraft\(duplicate\|\|"projects\.html"\)/);
   assert.doesNotMatch(studio,/ensureDraft\(duplicate\|\|"about\.html"\)/);
-  assert.match(studio,/doc\.querySelector\('link\[rel="canonical"\]'\)\?\.setAttribute\("href",ROOT\+path\)/);
+  assert.match(studio,/let canonical=doc\.querySelector\('link\[rel="canonical"\]'\)/);
+  assert.match(studio,/canonical=doc\.createElement\("link"\)/);
+  assert.match(studio,/doc\.head\.appendChild\(canonical\)/);
+  assert.match(studio,/canonical\.setAttribute\("href",ROOT\+path\)/);
   assert.match(projects,/<main\b/);
   assert.match(projects,/<link rel="canonical"/);
   assert.doesNotMatch(projects,/http-equiv=["']refresh/i);
@@ -56,4 +59,13 @@ test('Every existing root HTML address is either editable or reserved from new p
     assert.ok(reserved.includes(name),name+' must be reserved');
   }
   assert.match(studio,/RESERVED_PAGES\.includes\(path\)/);
+});
+
+test('Duplicated pages with no source canonical receive their own, with inherited indexing disclosed',()=>{
+  const osmosis=read('teaching-osmosis-practice.html');
+  assert.doesNotMatch(osmosis,/<link[^>]+rel="canonical"/);
+  assert.match(osmosis,/name="robots" content="noindex, follow"/);
+  assert.match(studio,/doc\.head\.appendChild\(canonical\)/);
+  assert.match(studio,/canonical\.setAttribute\("href",ROOT\+path\)/);
+  assert.match(studio,/Check inherited citations, image credits, links, and search-indexing settings before publishing/);
 });
