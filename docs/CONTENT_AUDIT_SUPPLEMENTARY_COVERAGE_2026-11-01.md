@@ -24,7 +24,7 @@ The Research Methods Studio Node regression CI and Connection Studio Node conten
 
 ## Exact next continuation
 
-**Stage C-RV7 | Cross-page professional and credential status, then outstanding evidence.** In C-RV6, Massachusetts DESE's official grade-range chart established the named DLCS middle/high-school licence as Grades 5–12 rather than the CV's former Grades 9–12, and the public CV was corrected. Cross-check remaining teacher-role and education descriptions against original source documentation where available, without treating programme existence as proof of the author's individual award. The difference between public website contact email and the newest author-supplied résumé remains unresolved by preference; do not change it unilaterally. Continue separate verification of the original scoping/action research records and the recorded Editor V2 browser failures.
+**Stage C-RV9 | Remaining factual evidence, citation metadata and publication-status checks.** C-RV7 independently corroborated programme/institution labels for UBC, ACE and Ivy Collegiate School, while C-RV8 verified the named Harvard Bok, UZH, Rice and TEFL UK course titles. Neither programme catalogues nor external event listings authenticate this individual's graduation, employment or certificate completion. Revisit unresolved primary empirical and ethics records only if accessible. Recheck Crossref/OSF status and citation metadata via the existing scholarly CI, then reconcile current public page source and final audit status. Do not alter the author's contact choice without explicit preference; keep Editor V2 functional failures as separate outstanding verification.
 
 The overall academic website audit is **In progress**. No whole-site Fully verified claim has been made.
 
@@ -58,3 +58,10 @@ The CV calls the classroom action research manuscript `under review`, while the 
 ## C-RV6 professional and credential addendum | 2 November 2026
 
 Original [C-RV6 audit ledger](CV_IDENTITY_CREDENTIAL_AUDIT_C-RV6_2026-11-02.md) verifies from [Massachusetts DESE](https://www.doe.mass.edu/stem/dlcs/licensure.html) that a Digital Literacy/Computer Science middle/high school teacher licence is officially **Grades 5–12**, not 9–12. The former grade band in `cv.html` was corrected in [commit bd6c5de](https://github.com/gmoon-code/gmoon-code.github.io/commit/bd6c5dee81f4ab033b779f1f08ea2c9a80f7c913), leaving the author's claimed Jan 2024 date intact and unverified. Twelve source consistency assertions passed. Official programme structure and personal credential issuance are separate evidence claims. The website's public email remains internally consistent, but differs from the newest supplied résumé; the author-preference question remains open.
+
+
+## C-RV7–8 institution and certificate provenance | 2 November 2026
+
+- [C-RV7](PROFESSIONAL_PROVENANCE_AUDIT_C-RV7_2026-11-02.md) corroborated the existence and official programme nomenclature of the UBC Biology major, Biochemistry minor, ACE Science Education masters and **Ivy Collegiate School / Helix** publication, with **15/15** cross-page checks passed. Individual awards, employment and mentoring records remain author-reported.
+- [C-RV8](PROFESSIONAL_DEVELOPMENT_AUDIT_C-RV8_2026-11-02.md) confirmed Harvard Bok Center Higher Education Teaching Certificate, UZH Teaching Science at University, Rice Fundamentals of Computing specialization and TEFL UK 120-hour Professional TEFL programme against original provider pages. **12/12** source checks passed. The author’s certificate completions were not independently established.
+- The official Massachusetts DLCS Grades **5–12** CV correction and Crossref-registered scoping preprint DOI remain preserved. The earlier contact-email discrepancy, private classroom/ethics files and live-site browser verification are still open.
