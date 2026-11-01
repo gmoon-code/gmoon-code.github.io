@@ -42,9 +42,10 @@ Re-fetched `student-guidance.js` and compared its source recursively with immedi
 |---|---:|---|
 | Novice onboarding text | 1 | C-X3c7a |
 | Choice explanations | 21 / 21 | C-X3c7a–c |
-| Choice groups with any corrected content | 7 | `questionType`, `gapType`, `designType`, `msMethod`, `meHuman`, `meIdent`, `meIntervention`, plus `screeningStatus` and `themeStance` were also corrected; see per-batch tables for authoritative detail |
+| Choice groups with any corrected content | 9 | `questionType`, `gapType`, `designType`, `msMethod`, `meHuman`, `meIdent`, `meIntervention`, `screeningStatus`, `themeStance` |
+| Choice groups reviewed and retained | 12 | No revision justified |
 
-The last table's count label needs interpreting from the explicit names rather than using a derived count. The full reviewed list and direct diff remain the authoritative audit record.
+Individual decisions and exact changed property paths are recorded in the three batch ledgers.
 
 ## Exact next continuation point
 
