@@ -1,12 +1,12 @@
 {
-  "sourceHead": "2868046f884222258c92df569ce98a09ea8b8c16",
+  "sourceHead": "6d4c58563a6c2ba6111daa92349ab8b6527ca235",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
-  "verifiedExactMatches": 23,
-  "httpErrors": 1,
+  "verifiedExactMatches": 24,
+  "httpErrors": 0,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-2868046f8842",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-6d4c58563a6c",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -14,41 +14,36 @@
   "auditEvidence": {
     "links": {
       "report": "docs/PUBLIC_LINKGRAPH_LATEST_RESULTS.json",
-      "run": "41005394175",
-      "head_sha": "30cff3500e0968496e56284aba74966689373d50",
+      "run": "41005414155",
+      "head_sha": "2868046f884222258c92df569ce98a09ea8b8c16",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "cv.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "problems": 0
       }
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "41004531552",
-      "head_sha": "eae598b1f5340fc2fe191cf53b56468a51b9adc5",
+      "run": "41005394239",
+      "head_sha": "30cff3500e0968496e56284aba74966689373d50",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "cv.html"
       ],
       "failureCounts": {
-        "issues": 42
+        "issues": 44
       },
       "counts": {
-        "reachable": 71,
-        "unverified": 42
+        "reachable": 69,
+        "unverified": 44
       }
     },
     "metadata": {
       "report": "docs/RESEARCH_METADATA_LATEST_RESULTS.json",
-      "run": "41004283222",
-      "head_sha": "e3a30f43de12424525d2d64284dd4031dd021340",
+      "run": "41005414161",
+      "head_sha": "2868046f884222258c92df569ce98a09ea8b8c16",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "cv.html",
-        "writing-biological-classification.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "unverified": 0
       },
@@ -60,36 +55,30 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "41004531338",
-      "head_sha": "eae598b1f5340fc2fe191cf53b56468a51b9adc5",
+      "run": "41005414133",
+      "head_sha": "2868046f884222258c92df569ce98a09ea8b8c16",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "cv.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0
       }
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "41004531404",
-      "head_sha": "eae598b1f5340fc2fe191cf53b56468a51b9adc5",
+      "run": "41005414234",
+      "head_sha": "2868046f884222258c92df569ce98a09ea8b8c16",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "cv.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0
       }
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "41004531376",
-      "head_sha": "eae598b1f5340fc2fe191cf53b56468a51b9adc5",
+      "run": "41005414257",
+      "head_sha": "2868046f884222258c92df569ce98a09ea8b8c16",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "cv.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0,
         "combinedStressFailures": 0
@@ -97,12 +86,10 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "41004531399",
-      "head_sha": "eae598b1f5340fc2fe191cf53b56468a51b9adc5",
+      "run": "41005414066",
+      "head_sha": "2868046f884222258c92df569ce98a09ea8b8c16",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "cv.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0,
         "axeViolations": 0
@@ -117,44 +104,7 @@
   },
   "sourceDriftSinceAudits": [
     {
-      "category": "links",
-      "sourceModifiedSinceAudit": [
-        "cv.html"
-      ]
-    },
-    {
       "category": "external",
-      "sourceModifiedSinceAudit": [
-        "cv.html"
-      ]
-    },
-    {
-      "category": "metadata",
-      "sourceModifiedSinceAudit": [
-        "cv.html",
-        "writing-biological-classification.html"
-      ]
-    },
-    {
-      "category": "reflow",
-      "sourceModifiedSinceAudit": [
-        "cv.html"
-      ]
-    },
-    {
-      "category": "engines",
-      "sourceModifiedSinceAudit": [
-        "cv.html"
-      ]
-    },
-    {
-      "category": "typography",
-      "sourceModifiedSinceAudit": [
-        "cv.html"
-      ]
-    },
-    {
-      "category": "interactions",
       "sourceModifiedSinceAudit": [
         "cv.html"
       ]
@@ -163,70 +113,9 @@
   "pass": false,
   "errors": [
     {
-      "path": "cv.html",
-      "errors": [
-        "deployed bytes differ from checked-out production source"
-      ],
-      "firstDiff": [
-        "--- source\n",
-        "+++ deployed\n",
-        "@@ -131,5 +131,5 @@\n",
-        "       <div class=\"resume-entry\">",
-        "-        <div class=\"resume-entry-heading\"><h3>Master of Education in Science Education</h3><span class=\"resume-date\">Aug 2026</span></div>",
-        "+        <div class=\"resume-entry-heading\"><h3>Master of Education in Science Education</h3><span class=\"resume-date\">Expected Nov 2026</span></div>",
-        "         <p class=\"resume-institution\">American College of Education</p>",
-        "-        ",
-        "+        <p class=\"resume-subline\">Coursework completed August 2026</p>",
-        "       </div>",
-        "@@ -142,3 +142,3 @@\n",
-        "       <h2 id=\"resume-research-interests\">Research Interests</h2>",
-        "-      <p>Justice-oriented science education; epistemic justice and classroom authority; student participation in scientific inquiry; scientific representations and curriculum; queer approaches to science education; multilingual science learning.</p>",
-        "+      <p>Justice-oriented science education; students’ epistemic agency and teacher judgment; evaluation and revision of scientific representations; rightful presence and classroom authority; sex determination and variation in biology curricula; multilingual scientific reasoning.</p>",
-        "     </section>",
-        "@@ -157,3 +157,3 @@\n"
-      ]
-    },
-    {
       "sourceDrift": [
         {
-          "category": "links",
-          "sourceModifiedSinceAudit": [
-            "cv.html"
-          ]
-        },
-        {
           "category": "external",
-          "sourceModifiedSinceAudit": [
-            "cv.html"
-          ]
-        },
-        {
-          "category": "metadata",
-          "sourceModifiedSinceAudit": [
-            "cv.html",
-            "writing-biological-classification.html"
-          ]
-        },
-        {
-          "category": "reflow",
-          "sourceModifiedSinceAudit": [
-            "cv.html"
-          ]
-        },
-        {
-          "category": "engines",
-          "sourceModifiedSinceAudit": [
-            "cv.html"
-          ]
-        },
-        {
-          "category": "typography",
-          "sourceModifiedSinceAudit": [
-            "cv.html"
-          ]
-        },
-        {
-          "category": "interactions",
           "sourceModifiedSinceAudit": [
             "cv.html"
           ]
@@ -235,7 +124,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41005414239",
-  "run_sha": "2868046f884222258c92df569ce98a09ea8b8c16",
+  "workflow_run_id": "41316911921",
+  "run_sha": "6d4c58563a6c2ba6111daa92349ab8b6527ca235",
   "exit_code": "1"
 }
