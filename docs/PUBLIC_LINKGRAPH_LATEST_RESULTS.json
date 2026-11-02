@@ -1,12 +1,12 @@
 {
-  "workflow_run_id": "41358594528",
-  "head_sha": "bd6c5dee81f4ab033b779f1f08ea2c9a80f7c913",
+  "workflow_run_id": "41366000998",
+  "head_sha": "d36e4b518d14eeb66900bb036b1f9a5dd23b2c02",
   "exit_code": "0",
   "page_count": 19,
-  "link_count": 554,
+  "link_count": 556,
   "asset_references": 93,
   "internal_links": 391,
-  "external_or_special": 163,
+  "external_or_special": 165,
   "problems": [],
   "advisory": [],
   "pages": [
@@ -53,7 +53,7 @@
     {
       "name": "research-action.html",
       "h1": "Reconsidering assessment evidence",
-      "link_count": 20
+      "link_count": 22
     },
     {
       "name": "research-methods-studio.html",
