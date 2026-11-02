@@ -668,7 +668,7 @@
     if(!state.connected||!recoveryAvailable)return;
     try{
       const snap=snapshot();
-      if(snap){await writeRecord(snap);$("draftRecoveryStatus").textContent=" • Saved privately in this browser"}
+      if(snap){await writeRecord(snap);$("draftRecoveryStatus").textContent=" • Recovery copy saved in this browser"}
       else{await deleteRecord();$("draftRecoveryStatus").textContent=""}
     }catch(error){
       recoveryAvailable=false;
@@ -825,7 +825,7 @@
       }
     },true);
     $("helpDialog").querySelector(".help-list")?.insertAdjacentHTML("beforeend",
-      "<li><strong>Browse layouts</strong> for ready-made sections. <strong>My photos</strong> reuses existing images, and <strong>Site style</strong> changes the look across pages. Draft recovery stays on this device.</li>");
+      "<li><strong>Browse layouts</strong> for ready-made sections. <strong>My photos</strong> reuses existing images, and <strong>Site style</strong> changes the look across pages. Draft recovery uses this browser when storage is available.</li>");
   }
   window.WebsiteStudioPlus={onChanged,onSelection,onPreviewReady,onPublished,onSignOut,restore,beforePublish,addTemplate,openLibrary,openMedia};
   install();
