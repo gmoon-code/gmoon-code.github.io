@@ -2463,7 +2463,7 @@ function resolveLivePatchTarget(doc,patch){
   const tag=patch.kind==="image"?"img":
     patch.selector.match(/ > ([a-z][a-z0-9-]*):nth-of-type\(\d{1,4}\)$/)?.[1];
   if(!tag||!patch.expected||patch.expected.trim().length<5)
-    throw Error("Could not match saved edit \""+livePatchExcerpt(patch)+"\" to the original webpage. The draft is preserved.");
+    throw Error("Could not match saved edit \""+livePatchExcerpt(patch)+"\" to the original webpage. The edits remain open in this editor session.");
   // Do not exclude elements already associated with another saved edit.
   // Reparented images can carry an image replacement and positioning edit
   // with different historical selectors. Those edits refer to ONE image.
@@ -2477,7 +2477,7 @@ function resolveLivePatchTarget(doc,patch){
     throw Error(reason+" for saved edit \""+livePatchExcerpt(patch)+
       "\" on "+currentPage+". "+(patch.kind==="image"?
         "Images in this page: "+(images||"none")+". ":"")+
-      "The draft is preserved. Review the original-image mapping before publishing.");
+      "The edits remain open in this editor session. Review the original-image mapping before publishing.");
   }
   return matches[0];
 }
@@ -2870,7 +2870,7 @@ async function verifiedSourcePreviewPair(){
   if(page!==currentPage||JSON.stringify(liveSnapshot())!==revision)
     throw Error("The page or edits changed while preparing preview. Try again.");
   if(liveDisplayedSourceHtml!==null&&liveDisplayedSourceHtml!==source.html&&livePatches.size)
-    throw Error("The GitHub source has changed since the editor loaded this page. Your draft is preserved. Select Reload live page to review the updated source before previewing or publishing.");
+    throw Error("The GitHub source has changed since the editor loaded this page. Your edits remain open in this editor session. Select Reload live page to review the updated source before previewing or publishing.");
   const published=applyLiveEditsToGithubHtml(source.html);
   return {original:source.html,edited:published.html,sha:source.sha,page};
 }
@@ -5288,7 +5288,7 @@ async function publishGithub(token,target){
   const currentSource=target==="live"?decodeGithubHtml(info):null;
   if(target==="live"&&(liveSourceProvenance!=="github"||
       liveDisplayedSourceHtml!==currentSource))
-    throw Error("The GitHub page changed since your editing view was loaded, or the editor is showing an unverified fallback. No publication was submitted. Your draft is preserved. Reload the live page and review the edits before publishing.");
+    throw Error("The GitHub page changed since your editing view was loaded, or the editor is showing an unverified fallback. No publication was submitted. Your edits remain open in this editor session. Reload the live page and review the edits before publishing.");
 
   // The exact same source assembler builds verified previews and the live
   // update; the GitHub Contents API SHA guards the write from later changes.
@@ -5477,7 +5477,7 @@ function showPublishResult(result){
     "GitHub confirmed the staging preview. GitHub Pages may take a little time to deploy. ";
   const link=document.createElement("a");
   link.href=result.url;link.target="_blank";link.rel="noopener noreferrer";
-  link.textContent="Open published page";
+  link.textContent="Open page URL (deployment may be pending)";
   const commit=document.createElement("a");
   commit.href="https://github.com/"+REPO+"/commit/"+result.commit;
   commit.target="_blank";commit.rel="noopener noreferrer";
