@@ -17,8 +17,6 @@ from urllib.request import Request, urlopen
 SITE = "https://gmoon-code.github.io"
 PAGES = ("research-scoping.html", "research-action.html", "teaching.html")
 OUT = Path("site-parity-output")
-VOID = {"area", "base", "br", "col", "embed", "hr", "img", "input",
-        "link", "meta", "param", "source", "track", "wbr"}
 
 
 class VisibleText(HTMLParser):
@@ -41,7 +39,7 @@ class VisibleText(HTMLParser):
 
 
 def main_text(html):
-    match = re.search(r"<main\\b[^>]*>(.*?)</main\\s*>", html, re.I | re.S)
+    match = re.search(r"<main\b[^>]*>(.*?)</main\s*>", html, re.I | re.S)
     if not match:
         raise ValueError("Page has no identifiable <main> block")
     parser = VisibleText()
