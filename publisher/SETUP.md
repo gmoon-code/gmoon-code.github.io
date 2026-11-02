@@ -6,6 +6,8 @@ The visual editor includes an **optional** private proposal service implemented 
 
 After a verified GitHub sign-in from the approved owner, the service accepts a replacement for **one of the 17 explicitly allowlisted portfolio HTML pages**. It checks that the submitted page was edited from the current `main` version, verifies document structure and unchanged scripts, stylesheets and metadata, creates a **new branch**, and opens a **draft pull request**. It never commits directly to `main`, merges, or modifies a second repository.
 
+The proposal service also enforces a **250,000-byte HTML limit** in addition to the 17-page allowlist. The current Home file exceeds that limit, and `contact.html` is not in this older service's allowlist. Those restrictions apply to this optional draft-PR workflow, not to the editor's separate direct publication route.
+
 The server requires HTTPS and verifies the exact origin `https://gmoon-code.github.io`. Its OAuth code exchange and GitHub token are performed on the server. It sends an AES-GCM encrypted, 15-minute session credential to the browser and never sends the GitHub token in plaintext. The encrypted session remains in JavaScript memory and is lost when the page reloads. The browser stores only an OAuth anti-CSRF state value temporarily in session storage.
 
 A draft PR still requires inspection and approval in GitHub. The file itself is a public website file, so do not use the editor for private or identifying content before publication.
