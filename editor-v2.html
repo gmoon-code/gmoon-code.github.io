@@ -549,17 +549,17 @@
     <p id="publishTargetHelp" class="help">Live publishing is available only for edits made in Live website mode.</p>
     <p>GitHub file to update: <code id="stagePath">index.html</code></p>
     <div id="publishPatchList" class="publish-patches" aria-label="Saved edits that will be published"></div>
-    <button type="button" id="checkPublishEdits">Check saved edits before publishing</button>
+    <button type="button" id="checkPublishEdits">Check draft edits before publishing</button>
     <details id="imageReconnectPanel" class="image-reconnect" hidden>
-      <summary>Reconnect an image edit to the original page</summary>
+      <summary>Reconnect an image edit to a page image</summary>
       <p class="help">If an image moved or its reference changed, choose the intended image from the currently deployed page. That version may lag behind GitHub's latest source. Your replacement, size and styling remain in the draft; check the edits against GitHub again before publishing.</p>
-      <label for="reconnectSavedImage">Saved image edit</label>
+      <label for="reconnectSavedImage">Draft image edit</label>
       <select id="reconnectSavedImage"></select>
       <label for="reconnectSourceImage">Existing image in <span id="reconnectPageName">this page</span></label>
       <select id="reconnectSourceImage"></select>
-      <img id="reconnectImagePreview" alt="Preview of selected image in original webpage" hidden>
+      <img id="reconnectImagePreview" alt="Preview of selected image from deployed webpage" hidden>
       <p id="reconnectSourceInfo" class="help"></p>
-      <button type="button" id="reconnectImageButton">Use this original image for the saved edit</button>
+      <button type="button" id="reconnectImageButton">Use this page image for the draft edit</button>
     </details>
     <p class="help">Each edit must match a unique element in the original page. You can remove an unmatched edit from the list above without discarding the others. The editor checks the latest file in GitHub when you publish.</p>
     <label for="githubToken">GitHub fine-grained personal access token (Contents: Read and write)</label>
