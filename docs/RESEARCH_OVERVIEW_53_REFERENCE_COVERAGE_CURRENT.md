@@ -2,7 +2,7 @@
 
 **Current through C-RV28a, 2 November 2026.** Rolling content and scholarly-verification inventory of all 53 references in `research.html`, reconciled against stages C-RV23a–f, C-RV24a–f. This is a living coverage index, not a declaration that every reference has been read cover to cover. The original [C-RV24c inventory](RESEARCH_OVERVIEW_53_REFERENCE_COVERAGE_C-RV24c_2026-11-02.md) remains an immutable record of its earlier checkpoint.
 
-**Authoritative GitHub source:** `research.html` blob `9437512368d44a590b3d986f82bb8e6d6eea61ad`. Extracted **53** distinct `<li id="reading-*">` entries; each has at least one internal `href` use elsewhere on the page.
+**Authoritative GitHub source:** `research.html` blob `46344e3dbb864a5d922720d766a9346ce1d86f5b`. Extracted **53** distinct `<li id="reading-*">` entries; each has at least one internal `href` use elsewhere on the page.
 
 ## Defined coverage tiers
 
