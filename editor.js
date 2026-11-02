@@ -4290,7 +4290,9 @@
     $("mediaDialog").showModal();
     const images=await availableImages();
     if(!$("mediaDialog").open)return;
-    renderMediaResults(images);
+    const query=$("mediaSearch").value.trim().toLowerCase();
+    renderMediaResults(images.filter(item=>
+      (item.path+" "+item.description).toLowerCase().includes(query)));
   }
 
   function updateOutline() {
