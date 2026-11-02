@@ -1,12 +1,12 @@
 {
-  "sourceHead": "f11b61d1d3a1f6a72f9ad72233b7425b0f936b23",
+  "sourceHead": "d3ac532121019918aef856b40bc6f2a15f68e138",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
-  "verifiedExactMatches": 24,
-  "httpErrors": 0,
+  "verifiedExactMatches": 23,
+  "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-f11b61d1d3a1",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-d3ac53212101",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -14,26 +14,30 @@
   "auditEvidence": {
     "links": {
       "report": "docs/PUBLIC_LINKGRAPH_LATEST_RESULTS.json",
-      "run": "41367250227",
-      "head_sha": "8d234d567c2ce7630c596490017cb3c7eb2f9a8e",
+      "run": "41383895656",
+      "head_sha": "f11b61d1d3a1f6a72f9ad72233b7425b0f936b23",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "problems": 0
       }
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "41367250415",
-      "head_sha": "8d234d567c2ce7630c596490017cb3c7eb2f9a8e",
+      "run": "41383895659",
+      "head_sha": "f11b61d1d3a1f6a72f9ad72233b7425b0f936b23",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
-        "issues": 42
+        "issues": 43
       },
       "counts": {
-        "reachable": 73,
-        "unverified": 42
+        "reachable": 72,
+        "unverified": 43
       }
     },
     "metadata": {
@@ -41,7 +45,9 @@
       "run": "41367250211",
       "head_sha": "8d234d567c2ce7630c596490017cb3c7eb2f9a8e",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "unverified": 0
       },
@@ -53,30 +59,36 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "41367250242",
-      "head_sha": "8d234d567c2ce7630c596490017cb3c7eb2f9a8e",
+      "run": "41383895767",
+      "head_sha": "f11b61d1d3a1f6a72f9ad72233b7425b0f936b23",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "failures": 0
       }
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "41367250251",
-      "head_sha": "8d234d567c2ce7630c596490017cb3c7eb2f9a8e",
+      "run": "41383895602",
+      "head_sha": "f11b61d1d3a1f6a72f9ad72233b7425b0f936b23",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "failures": 0
       }
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "41367250226",
-      "head_sha": "8d234d567c2ce7630c596490017cb3c7eb2f9a8e",
+      "run": "41383895648",
+      "head_sha": "f11b61d1d3a1f6a72f9ad72233b7425b0f936b23",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "failures": 0,
         "combinedStressFailures": 0
@@ -84,10 +96,12 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "41367250322",
-      "head_sha": "8d234d567c2ce7630c596490017cb3c7eb2f9a8e",
+      "run": "41383895900",
+      "head_sha": "f11b61d1d3a1f6a72f9ad72233b7425b0f936b23",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "failures": 0,
         "axeViolations": 0
@@ -100,11 +114,116 @@
       "note": "U1 route audit documents successful run 40825886279; legacy utility machine report refers to an early missing-script failure. Do not treat it as latest successful evidence."
     }
   },
-  "sourceDriftSinceAudits": [],
-  "pass": true,
-  "errors": [],
+  "sourceDriftSinceAudits": [
+    {
+      "category": "links",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "external",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "metadata",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "reflow",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "engines",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "typography",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "interactions",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    }
+  ],
+  "pass": false,
+  "errors": [
+    {
+      "path": "research.html",
+      "errors": [
+        "deployed bytes differ from checked-out production source"
+      ],
+      "firstDiff": [
+        "--- source\n",
+        "+++ deployed\n",
+        "@@ -119,3 +119,3 @@\n",
+        "     <p>Interpreting students' ideas across talk, writing, and images raises a methodological question about which records to preserve. Research on plurilingual identity texts has examined conversations alongside students' written and visual work (<a href=\"#reading-prasad\">Prasad, 2015</a>). A relational account of multiliteracies considers how meaning develops within social and cultural relationships (<a href=\"#reading-simon\">Simon, 2011</a>). The literacy settings differ from those of secondary science. The same attention to conversations and classroom relationships may help me interpret written and visual work in science.</p>",
+        "-    <p>Language proficiency scores offer one account of university students' experiences. A longitudinal study examined academic acculturation alongside English proficiency and achievement, attending to factors a language test score might leave unexplained (<a href=\"#reading-neumann\">Neumann et al., 2023</a>). Conversations with students present a different interpretive challenge. In a Canadian university English-language programme, tensions around racism emerged during a post-semester interview and a private conversation about a student's poem, both examined in a study of a spoken-word-poetry curriculum (<a href=\"#reading-burton\">Burton, 2024</a>). Both studies concern university language learning. In secondary science, they lead me to consider how the setting and relationships surrounding a contribution affect what an observer can reasonably conclude from it.</p>",
+        "+    <p>Language proficiency scores offer one account of university students' experiences. A longitudinal study examined academic acculturation alongside English proficiency and achievement, attending to factors a language test score might leave unexplained (<a href=\"#reading-neumann\">Neumann et al., 2023</a>). Classroom exchanges present a different interpretive challenge. During spoken-word-poetry activities in an academic English programme, multilingual students discussed racism amid emotional tensions that shaped their interactions (<a href=\"#reading-burton\">Burton, 2024</a>). Both studies concern university language learning. In secondary science, they lead me to consider how the setting and relationships surrounding a contribution affect what an observer can reasonably conclude from it.</p>",
+        "   </div>"
+      ]
+    },
+    {
+      "sourceDrift": [
+        {
+          "category": "links",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "external",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "metadata",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "reflow",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "engines",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "typography",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "interactions",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        }
+      ]
+    }
+  ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41383895760",
-  "run_sha": "f11b61d1d3a1f6a72f9ad72233b7425b0f936b23",
-  "exit_code": "0"
+  "workflow_run_id": "41390363768",
+  "run_sha": "d3ac532121019918aef856b40bc6f2a15f68e138",
+  "exit_code": "1"
 }
