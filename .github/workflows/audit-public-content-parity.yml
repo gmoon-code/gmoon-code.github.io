@@ -5,9 +5,7 @@ on:
     branches: [main]
     paths:
       - "sitemap.xml"
-      - "research-scoping.html"
-      - "research-action.html"
-      - "teaching.html"
+      - "*.html"
       - "scripts/audit-public-content-parity.py"
       - ".github/workflows/audit-public-content-parity.yml"
   workflow_dispatch:
