@@ -74,7 +74,7 @@
   const state = {
     page:null,source:"",doc:null,frameDoc:null,original:new Map(),dirty:new Set(),
     selected:null,history:[],redo:[],fingerprint:"",loadToken:0,saveTimer:null,staleDraft:false,
-    originalSections:[],sectionGroups:[],sectionOrder:[],draftSaveIssue:"",draftRecoveryIssue:"",mediaAssets:null,mediaPromise:null,
+    originalSections:[],sectionGroups:[],sectionOrder:[],draftSaveIssue:"",draftRecoveryIssue:"",mediaAssets:null,mediaPromise:null,mediaReadIssue:"",
     stagedMedia:null,responsiveGroup:null,responsiveGroups:[],additions:[],resizeStart:null,imageSliderActive:false,
     pageFindKeys:[],pageFindIndex:-1,mediaChooseInsert:false,removals:[],selectedAddition:null,blockOrders:[],columnPointer:null,blockPointer:null,addedPointer:null,addedWidthPointer:null,sourceWidthPointer:null,addedBlockSliderActive:false
   };
@@ -2514,7 +2514,7 @@
       hrefField.style.display=hrefField.hidden?"none":"block";
       imageGroup.style.display=imageField.hidden?"none":"block";
       updateImagePreview();
-      textField.firstChild.textContent=selection==="image"?"Image description (alt text)":"Text";
+      textField.firstChild.textContent=selection==="image"?"Image description for this use (alt text)":"Text";
       description.maxLength=selection==="paragraph"?2000:selection==="image"?200:140;
       status.textContent="";
       if(form.isConnected)positionQuickComposer();
@@ -4169,8 +4169,8 @@
     return html;
   }
 
-  /* The media browser uses image files already referenced on the public site.
-     It never uploads assets or introduces arbitrary third-party sources. */
+  /* The media browser discovers relative image paths in editor-listed public
+     page HTML. Discovery does not establish that a file exists or may be reused. */
   const IMAGE_PATH=/^assets\/[a-z0-9._/-]+\.(?:webp|png|jpg|jpeg|gif|avif)$/i;
   async function availableImages() {
     if(state.mediaAssets)return state.mediaAssets;
@@ -4190,11 +4190,19 @@
         for(const img of doc.querySelectorAll("img[src]")){
           const src=img.getAttribute("src")||"";
           if(!IMAGE_PATH.test(src)||src.includes(".."))continue;
-          if(!found.has(src))found.set(src,{
-            path:src,description:img.getAttribute("alt")||src.split("/").at(-1)
-          });
+          if(!found.has(src)){
+            const alt=(img.getAttribute("alt")||"").trim();
+            found.set(src,{
+              path:src,description:alt||src.split("/").at(-1),
+              suggestedAlt:alt
+            });
+          }
         }
       }
+      const incomplete=pages.length-results.filter(Boolean).length;
+      state.mediaReadIssue=incomplete?
+        incomplete+" listed page"+(incomplete===1?" was":"s were")+
+        " unavailable during this scan. Results may be incomplete.":"";
       state.mediaAssets=[...found.values()].sort((a,b)=>a.path.localeCompare(b.path));
       return state.mediaAssets;
     })();
@@ -4226,20 +4234,23 @@
           }
           path.value=item.path;
           path.dispatchEvent(new Event("input",{bubbles:true}));
-          if(!text.value.trim())text.value=item.description.slice(0,200);
+          if(!text.value.trim()&&item.suggestedAlt)
+            text.value=item.suggestedAlt.slice(0,200);
           $("mediaDialog").close();
           path.focus({preventScroll:true});
           return;
         }
         if(state.mediaChooseInsert==="added"){
           $("addedBlockSrc").value=item.path;
-          if(!$("addedBlockText").value.trim())$("addedBlockText").value=item.description;
+          if(!$("addedBlockText").value.trim()&&item.suggestedAlt)
+            $("addedBlockText").value=item.suggestedAlt;
           $("mediaDialog").close();
           return;
         }
         if(state.mediaChooseInsert){
           $("insertImageSrc").value=item.path;
-          if(!$("insertContentText").value.trim())$("insertContentText").value=item.description;
+          if(!$("insertContentText").value.trim()&&item.suggestedAlt)
+            $("insertContentText").value=item.suggestedAlt;
           $("mediaDialog").close();
           return;
         }
@@ -4254,8 +4265,12 @@
       });
       root.appendChild(button);
     }
-    $("mediaStatus").textContent=items.length+
-      " existing image"+(items.length===1?"":"s")+".";
+    $("mediaStatus").textContent=(items.length?
+      items.length+" matching image path"+(items.length===1?"":"s")+
+        " from retrieved page copies.":
+      "No matching image paths found in retrieved page copies.")+
+      (state.mediaReadIssue?" "+state.mediaReadIssue:"")+
+      " Check the file and review alt text for its intended use.";
   }
   async function openMediaLibrary(forInsertion=false){
     const selected=state.frameDoc?.querySelector(
@@ -4271,7 +4286,7 @@
     state.mediaChooseInsert=forInsertion;
     $("mediaSearch").value="";
     $("mediaResults").replaceChildren();
-    $("mediaStatus").textContent="Finding images already used on the site…";
+    $("mediaStatus").textContent="Reading image references from listed website pages…";
     $("mediaDialog").showModal();
     const images=await availableImages();
     if(!$("mediaDialog").open)return;
