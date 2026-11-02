@@ -74,7 +74,7 @@
   const state = {
     page:null,source:"",doc:null,frameDoc:null,original:new Map(),dirty:new Set(),
     selected:null,history:[],redo:[],fingerprint:"",loadToken:0,saveTimer:null,staleDraft:false,
-    originalSections:[],sectionGroups:[],sectionOrder:[],mediaAssets:null,mediaPromise:null,
+    originalSections:[],sectionGroups:[],sectionOrder:[],draftSaveIssue:"",mediaAssets:null,mediaPromise:null,
     stagedMedia:null,responsiveGroup:null,responsiveGroups:[],additions:[],resizeStart:null,imageSliderActive:false,
     pageFindKeys:[],pageFindIndex:-1,mediaChooseInsert:false,removals:[],selectedAddition:null,blockOrders:[],columnPointer:null,blockPointer:null,addedPointer:null,addedWidthPointer:null,sourceWidthPointer:null,addedBlockSliderActive:false
   };
@@ -103,7 +103,9 @@
     return MoonResponsiveLayout.cssForGroups(doc,layoutGroups());
   }
   function updateStatus(message) {
-    $("editorSaveStatus").textContent=message;
+    // Keep a failed browser-save warning visible when later edit-status messages appear.
+    const warning=state.draftSaveIssue;
+    $("editorSaveStatus").textContent=warning&&message!==warning?message+" · "+warning:message;
     const moved=state.sectionOrder.filter((id,i)=>id!==state.originalSections[i]).length;
     const total=state.dirty.size+moved+layoutGroups().length+state.additions.length+state.removals.length+state.blockOrders.length;
     $("changeCount").textContent=state.dirty.size+" edited element"+(state.dirty.size===1?"":"s")+
@@ -241,16 +243,27 @@
   }
 
   function saveDraft() {
-    if (!state.page||!state.doc) return;
+    if (!state.page||!state.doc) return true;
     const items=[...state.dirty].map(id=>{
       const node=getWorking(id);
       return node?{id,markup:node.outerHTML}:null;
     }).filter(Boolean);
     const key=DRAFT_PREFIX+state.page;
+    const orderChanged=state.sectionOrder.some((id,i)=>id!==state.originalSections[i]);
+    const changed=items.length||orderChanged||layoutGroups().length||state.additions.length||state.removals.length||state.blockOrders.length;
+    // Keep an older mismatched draft intact. New session edits require an HTML export.
+    if(state.staleDraft){
+      if(!changed){
+        state.draftSaveIssue="";
+        updateStatus("Older local draft exists · Not applied");
+        return true;
+      }
+      state.draftSaveIssue="Older browser draft retained · Current edits not saved; export HTML before leaving";
+      updateStatus(state.draftSaveIssue);
+      return false;
+    }
     try {
-      const orderChanged=state.sectionOrder.some((id,i)=>id!==state.originalSections[i]);
-      if (!items.length&&!orderChanged&&!layoutGroups().length&&!state.additions.length&&!state.removals.length&&!state.blockOrders.length) {
-        if (state.staleDraft) return;
+      if (!changed) {
         localStorage.removeItem(key);
       } else {
         localStorage.setItem(key,JSON.stringify({
@@ -258,9 +271,13 @@
           sectionOrder:state.sectionOrder.slice(),responsiveGroup:state.responsiveGroup,responsiveGroups:state.responsiveGroups,additions:state.additions,removals:state.removals,blockOrders:state.blockOrders
         }));
       }
-      updateStatus(items.length||orderChanged||layoutGroups().length||state.additions.length||state.removals.length||state.blockOrders.length?"Draft saved in this browser · Not published":"No changes · Not published");
+      state.draftSaveIssue="";
+      updateStatus(changed?"Draft saved in this browser · Not published":"No changes · Not published");
+      return true;
     } catch (e) {
-      updateStatus("Draft storage unavailable · Export your HTML");
+      state.draftSaveIssue="Draft not saved in browser · Export HTML before leaving";
+      updateStatus(state.draftSaveIssue);
+      return false;
     }
   }
 
@@ -695,7 +712,7 @@
     };
     node.addEventListener("blur",finish,{once:true});
     node.focus({preventScroll:true});
-    updateStatus("Editing text in place · Changes save to your local draft");
+    updateStatus("Editing text in place · Saving depends on browser storage");
   }
   function onPreviewDoubleClick(event){
     if(!freeCanvasActive||event.target.closest("#moon-quick-toolbar,#moon-free-selection"))return;
@@ -1231,7 +1248,7 @@
         undo();notice(error.message,"Position not saved");return;
       }
       saveDraft();
-      updateStatus("Free-positioned content saved · Not published");
+      updateStatus("Free-positioned content updated · Not published");
     }else if(state.selected){
       updateDirty(state.selected);
     }
@@ -1684,7 +1701,7 @@
       sel.node.style.setProperty("--moon-object-layer",String(level));
       updateDirty(state.selected);
     }
-    updateStatus("Layer "+level+" saved · Not published");
+    updateStatus("Layer "+level+" updated · Not published");
     createQuickToolbar();
     positionFreeSelection();
   }
