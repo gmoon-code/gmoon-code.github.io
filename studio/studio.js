@@ -115,7 +115,7 @@
       if((response.status===409||response.status===422)&&method==="PATCH")
         throw Error("GitHub could not move the main branch to the new commit ("+
           response.status+"). Another edit or repository protection may have intervened. "+
-          "Your drafts remain safe. GitHub says: "+message);
+          "Your current drafts remain open in this Studio session. GitHub says: "+message);
       // Keep the existing (404) marker used when creating new pages and photos.
       throw Error("GitHub error during "+label+". "+message+" ("+response.status+")");
     }
