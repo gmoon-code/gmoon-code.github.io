@@ -63,7 +63,7 @@
       panel.querySelector('[data-step-action="remove"]').disabled=!li||items.length<=1;
     }
     if(ctx.kind==="columns"){
-      $("studioComponentDescription").textContent="Column layout. Edit text inside each card, add a column or adjust the spacing.";
+      $("studioComponentDescription").textContent="Edit text and spacing in this column layout. Adding or removing columns is available only in supported layouts.";
       const computed=docOf().defaultView.getComputedStyle(ctx.root);
       let n=parseInt(ctx.root.style.getPropertyValue("--studio-cols"),10);
       if(!n)n=ctx.root.classList.contains("grid-3")?3:2;
