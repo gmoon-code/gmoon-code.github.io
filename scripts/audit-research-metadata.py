@@ -98,7 +98,7 @@ def preprint_metadata():
           "posted":a.get("posted"),"created":a.get("created"),"type":a.get("type"),
           "publisher":a.get("publisher"),"titles":a.get("title"),
           "creators":[{"name":f"{c.get('given','')} {c.get('family','')}".strip(),"givenName":c.get("given"),"familyName":c.get("family")} for c in a.get("author",[])],
-          "url":a.get("URL"),"description":(a.get("abstract") or "")[:250],
+          "url":a.get("URL"),"description":(a.get("abstract") or "")[:5000],
           "subtype":a.get("subtype"),"relation":a.get("relation")})
         return record
     dc=request("https://api.datacite.org/dois/"+encoded,timeout=14)
