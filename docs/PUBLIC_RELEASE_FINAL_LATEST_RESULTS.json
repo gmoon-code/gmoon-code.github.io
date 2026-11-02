@@ -1,12 +1,12 @@
 {
-  "sourceHead": "bd6c5dee81f4ab033b779f1f08ea2c9a80f7c913",
+  "sourceHead": "d36e4b518d14eeb66900bb036b1f9a5dd23b2c02",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-bd6c5dee81f4",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-d36e4b518d14",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -14,11 +14,11 @@
   "auditEvidence": {
     "links": {
       "report": "docs/PUBLIC_LINKGRAPH_LATEST_RESULTS.json",
-      "run": "41319251437",
-      "head_sha": "8605f53ce129be927c4d482cd063eef2402e5af0",
+      "run": "41358594528",
+      "head_sha": "bd6c5dee81f4ab033b779f1f08ea2c9a80f7c913",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "cv.html"
+        "research-action.html"
       ],
       "failureCounts": {
         "problems": 0
@@ -26,11 +26,11 @@
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "41319251436",
-      "head_sha": "8605f53ce129be927c4d482cd063eef2402e5af0",
+      "run": "41358594543",
+      "head_sha": "bd6c5dee81f4ab033b779f1f08ea2c9a80f7c913",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "cv.html"
+        "research-action.html"
       ],
       "failureCounts": {
         "issues": 42
@@ -42,11 +42,11 @@
     },
     "metadata": {
       "report": "docs/RESEARCH_METADATA_LATEST_RESULTS.json",
-      "run": "41319251599",
-      "head_sha": "8605f53ce129be927c4d482cd063eef2402e5af0",
+      "run": "41359051595",
+      "head_sha": "f74a8f7fb34eaf6afe2140b3ce7a5913adb567d7",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "cv.html"
+        "research-action.html"
       ],
       "failureCounts": {
         "unverified": 0
@@ -59,11 +59,11 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "41319251277",
-      "head_sha": "8605f53ce129be927c4d482cd063eef2402e5af0",
+      "run": "41358594599",
+      "head_sha": "bd6c5dee81f4ab033b779f1f08ea2c9a80f7c913",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "cv.html"
+        "research-action.html"
       ],
       "failureCounts": {
         "failures": 0
@@ -71,11 +71,11 @@
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "41319251407",
-      "head_sha": "8605f53ce129be927c4d482cd063eef2402e5af0",
+      "run": "41358594608",
+      "head_sha": "bd6c5dee81f4ab033b779f1f08ea2c9a80f7c913",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "cv.html"
+        "research-action.html"
       ],
       "failureCounts": {
         "failures": 0
@@ -83,11 +83,11 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "41319251435",
-      "head_sha": "8605f53ce129be927c4d482cd063eef2402e5af0",
+      "run": "41358594593",
+      "head_sha": "bd6c5dee81f4ab033b779f1f08ea2c9a80f7c913",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "cv.html"
+        "research-action.html"
       ],
       "failureCounts": {
         "failures": 0,
@@ -96,11 +96,11 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "41319251270",
-      "head_sha": "8605f53ce129be927c4d482cd063eef2402e5af0",
+      "run": "41358594513",
+      "head_sha": "bd6c5dee81f4ab033b779f1f08ea2c9a80f7c913",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "cv.html"
+        "research-action.html"
       ],
       "failureCounts": {
         "failures": 0,
@@ -118,61 +118,61 @@
     {
       "category": "links",
       "sourceModifiedSinceAudit": [
-        "cv.html"
+        "research-action.html"
       ]
     },
     {
       "category": "external",
       "sourceModifiedSinceAudit": [
-        "cv.html"
+        "research-action.html"
       ]
     },
     {
       "category": "metadata",
       "sourceModifiedSinceAudit": [
-        "cv.html"
+        "research-action.html"
       ]
     },
     {
       "category": "reflow",
       "sourceModifiedSinceAudit": [
-        "cv.html"
+        "research-action.html"
       ]
     },
     {
       "category": "engines",
       "sourceModifiedSinceAudit": [
-        "cv.html"
+        "research-action.html"
       ]
     },
     {
       "category": "typography",
       "sourceModifiedSinceAudit": [
-        "cv.html"
+        "research-action.html"
       ]
     },
     {
       "category": "interactions",
       "sourceModifiedSinceAudit": [
-        "cv.html"
+        "research-action.html"
       ]
     }
   ],
   "pass": false,
   "errors": [
     {
-      "path": "cv.html",
+      "path": "research-action.html",
       "errors": [
         "deployed bytes differ from checked-out production source"
       ],
       "firstDiff": [
         "--- source\n",
         "+++ deployed\n",
-        "@@ -239,3 +239,3 @@\n",
-        "       <ul class=\"resume-credentials\">",
-        "-        <li>Massachusetts Department of Elementary and Secondary Education · Digital Literacy/Computer Science License, Grades 5–12 (Jan 2024)</li>",
-        "+        <li>Massachusetts Department of Elementary and Secondary Education · Digital Literacy/Computer Science License, Grades 9–12 (Jan 2024)</li>",
-        "         <li>Harvard University, Derek Bok Center for Teaching and Learning · Higher Education Teaching Certificate</li>"
+        "@@ -177,3 +177,3 @@\n",
+        "     <p>The school director authorized the inquiry. A volunteer without teaching or grading responsibilities managed consent, and I learned which students participated only after the relevant grades were finalized. To check the stability of my classifications, I recoded 24 assessment responses after two weeks and retained the same categories in every case. A second reader independently classified twelve reflections and all ten reconstructions. Initial agreement was eleven of twelve and nine of ten, respectively, and the reader agreed with the predominant comparison pattern for all ten response pairs. Disagreements about individual classifications were discussed using the coding criteria.</p>",
+        "-    <p>The analysis was confined to one class, three distinct assessment questions, and ten paired responses to the Unit 3 mechanism. The Unit 2 question followed a proposed sodium-transport-to-dehydration pathway, although studies in severely affected frogs documented electrolyte depletion and cardiac dysfunction, and one found hydration measures unchanged (<a href=\"https://pubmed.ncbi.nlm.nih.gov/17972752/\" target=\"_blank\" rel=\"noopener noreferrer\">Voyles et al., 2007</a>; <a href=\"https://pubmed.ncbi.nlm.nih.gov/19900897/\" target=\"_blank\" rel=\"noopener noreferrer\">Voyles et al., 2009</a>). Its completeness classification therefore concerns students' explanations under that particular assessment premise. Further instruction, intervening practice, feedback, and the revised reconstruction prompt all complicate causal interpretations. The written records reveal what students expressed under each set of conditions, without independently establishing changes in their understanding.</p>",
+        "+    <p>The analysis was confined to one class, three distinct assessment questions, and ten paired responses to the Unit 3 mechanism. Further instruction, intervening practice, feedback, and the revised reconstruction prompt all complicate causal interpretations. The written records reveal what students expressed under each set of conditions, without independently establishing changes in their understanding.</p>",
+        "   </div>"
       ]
     },
     {
@@ -180,50 +180,50 @@
         {
           "category": "links",
           "sourceModifiedSinceAudit": [
-            "cv.html"
+            "research-action.html"
           ]
         },
         {
           "category": "external",
           "sourceModifiedSinceAudit": [
-            "cv.html"
+            "research-action.html"
           ]
         },
         {
           "category": "metadata",
           "sourceModifiedSinceAudit": [
-            "cv.html"
+            "research-action.html"
           ]
         },
         {
           "category": "reflow",
           "sourceModifiedSinceAudit": [
-            "cv.html"
+            "research-action.html"
           ]
         },
         {
           "category": "engines",
           "sourceModifiedSinceAudit": [
-            "cv.html"
+            "research-action.html"
           ]
         },
         {
           "category": "typography",
           "sourceModifiedSinceAudit": [
-            "cv.html"
+            "research-action.html"
           ]
         },
         {
           "category": "interactions",
           "sourceModifiedSinceAudit": [
-            "cv.html"
+            "research-action.html"
           ]
         }
       ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41358594551",
-  "run_sha": "bd6c5dee81f4ab033b779f1f08ea2c9a80f7c913",
+  "workflow_run_id": "41366000927",
+  "run_sha": "d36e4b518d14eeb66900bb036b1f9a5dd23b2c02",
   "exit_code": "1"
 }
