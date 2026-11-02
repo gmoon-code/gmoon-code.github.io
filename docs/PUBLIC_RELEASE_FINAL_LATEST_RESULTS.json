@@ -1,12 +1,12 @@
 {
-  "sourceHead": "4005acec4a2694827b867aa07d7be5fb4c3bd5e1",
+  "sourceHead": "2dcfeda4b2b371186f6c500dfed88867fd492fe2",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 24,
   "httpErrors": 0,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-4005acec4a26",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-2dcfeda4b2b3",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -14,8 +14,8 @@
   "auditEvidence": {
     "links": {
       "report": "docs/PUBLIC_LINKGRAPH_LATEST_RESULTS.json",
-      "run": "41444412218",
-      "head_sha": "d45911642ab07bd3b40e132b327e6f83b57b3fae",
+      "run": "41446189463",
+      "head_sha": "4005acec4a2694827b867aa07d7be5fb4c3bd5e1",
       "exit": "0",
       "sourceModifiedSinceAudit": [],
       "failureCounts": {
@@ -24,16 +24,16 @@
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "41444637791",
-      "head_sha": "89b746349ff76253a89172721a5e5d0af38d2e11",
+      "run": "41446189338",
+      "head_sha": "4005acec4a2694827b867aa07d7be5fb4c3bd5e1",
       "exit": "0",
       "sourceModifiedSinceAudit": [],
       "failureCounts": {
-        "issues": 43
+        "issues": 42
       },
       "counts": {
-        "reachable": 72,
-        "unverified": 43
+        "reachable": 73,
+        "unverified": 42
       }
     },
     "metadata": {
@@ -53,8 +53,8 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "41444638298",
-      "head_sha": "89b746349ff76253a89172721a5e5d0af38d2e11",
+      "run": "41446189495",
+      "head_sha": "4005acec4a2694827b867aa07d7be5fb4c3bd5e1",
       "exit": "0",
       "sourceModifiedSinceAudit": [],
       "failureCounts": {
@@ -63,8 +63,8 @@
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "41444638289",
-      "head_sha": "89b746349ff76253a89172721a5e5d0af38d2e11",
+      "run": "41446189318",
+      "head_sha": "4005acec4a2694827b867aa07d7be5fb4c3bd5e1",
       "exit": "0",
       "sourceModifiedSinceAudit": [],
       "failureCounts": {
@@ -73,8 +73,8 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "41444637834",
-      "head_sha": "89b746349ff76253a89172721a5e5d0af38d2e11",
+      "run": "41446189344",
+      "head_sha": "4005acec4a2694827b867aa07d7be5fb4c3bd5e1",
       "exit": "0",
       "sourceModifiedSinceAudit": [],
       "failureCounts": {
@@ -84,8 +84,8 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "41444638311",
-      "head_sha": "89b746349ff76253a89172721a5e5d0af38d2e11",
+      "run": "41446189470",
+      "head_sha": "4005acec4a2694827b867aa07d7be5fb4c3bd5e1",
       "exit": "0",
       "sourceModifiedSinceAudit": [],
       "failureCounts": {
@@ -104,7 +104,7 @@
   "pass": true,
   "errors": [],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41446189331",
-  "run_sha": "4005acec4a2694827b867aa07d7be5fb4c3bd5e1",
+  "workflow_run_id": "41446585787",
+  "run_sha": "2dcfeda4b2b371186f6c500dfed88867fd492fe2",
   "exit_code": "0"
 }
