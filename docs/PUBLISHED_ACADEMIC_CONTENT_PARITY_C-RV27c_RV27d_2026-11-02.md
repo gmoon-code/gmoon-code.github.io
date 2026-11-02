@@ -39,7 +39,7 @@ The verifier was extended to read the **actual current `sitemap.xml`**, validate
 
 A second run [41389539388](https://github.com/gmoon-code/gmoon-code.github.io/actions/runs/41389539388) also succeeded after the workflow trigger was updated. This check is important for `pungmul.html` and `writing-biological-classification.html`, which are academically public but outside the **15-entry** Studio page manifest. The public sitemap's 16 URLs, Studio manifest's 15 editable paths, and whole repository's additional noindex or authoring routes serve distinct purposes and must not be conflated.
 
-After these checks, a small wording-only clarification to the parity script explicitly bounded it to **static text nodes**, avoiding an overbroad implication that it measures visible rendering. The underlying comparison was unchanged, and the new test run was initially in progress. Existing source and public academic HTML were not rewritten.
+After these checks, a small wording-only clarification to the parity script explicitly bounded it to **static text nodes**, avoiding an overbroad implication that it measures visible rendering. The underlying comparison was unchanged. The subsequent [wording-clarification CI run 41389607081](https://github.com/gmoon-code/gmoon-code.github.io/actions/runs/41389607081) **completed successfully**. Existing source and public academic HTML were not rewritten.
 
 ## Editorial, factual and verification status
 
