@@ -1,8 +1,8 @@
 # Research overview | Current 53-reference scholarly evidence coverage
 
-**Current through C-RV28p, 2 November 2026.** Rolling content and scholarly-verification inventory of all 53 references in `research.html`, reconciled against stages C-RV23a–f, C-RV24a–f. This is a living coverage index, not a declaration that every reference has been read cover to cover. The original [C-RV24c inventory](RESEARCH_OVERVIEW_53_REFERENCE_COVERAGE_C-RV24c_2026-11-02.md) remains an immutable record of its earlier checkpoint.
+**Current through C-RV28q, 2 November 2026.** Rolling content and scholarly-verification inventory of all 53 references in `research.html`, reconciled against stages C-RV23a–f, C-RV24a–f. This is a living coverage index, not a declaration that every reference has been read cover to cover. The original [C-RV24c inventory](RESEARCH_OVERVIEW_53_REFERENCE_COVERAGE_C-RV24c_2026-11-02.md) remains an immutable record of its earlier checkpoint.
 
-**Authoritative GitHub source:** `research.html` blob `46344e3dbb864a5d922720d766a9346ce1d86f5b`. Extracted **53** distinct `<li id="reading-*">` entries; each has at least one internal `href` use elsewhere on the page.
+**Authoritative GitHub source:** `research.html` blob `9a0f3a301e481e2023ac01b660e468aff4845ddd`. Extracted **53** distinct `<li id="reading-*">` entries; each has at least one internal `href` use elsewhere on the page.
 
 ## Defined coverage tiers
 
@@ -11,7 +11,7 @@
 - **M | Primary bibliographic/book metadata only.** The record confirms publication identity and general scope, but specific full-text chapter/page claims remain unverified.
 - **P | Not source-by-source established by C-RV23a–f / C-RV24a–d records.** This is a **documentation gap in the recent staged audit**, not proof that no earlier review occurred, and not evidence a reference is inaccurate. The audit may already have broadly checked citation metadata.
 
-**Coverage counts:** **37 F**, **15 A**, **1 M**, **0 P**. In all, **53/53** references have a documented, study-specific source check in these stages, of which **37** have substantial original-text support as defined above. Claims' factual accuracy, title/DOI match and visual/browser behavior are separate verification dimensions.
+**Coverage counts:** **38 F**, **14 A**, **1 M**, **0 P**. In all, **53/53** references have a documented, study-specific source check in these stages, of which **38** have substantial original-text support as defined above. Claims' factual accuracy, title/DOI match and visual/browser behavior are separate verification dimensions.
 
 ## Complete ordered bibliography crosswalk
 
@@ -19,7 +19,7 @@
 | --- | --- | --- | --- | --- |
 | 1 | [Airton, L. (2023). You don’t know me: Welcoming gender diversity in schools via an ethic of hospitality. Curriculum Inquiry, 53 (2), 148–168. https://doi.org/10.1080/03626784.2023.2200810](../research.html#reading-airton) | **A** | [C-RV23b](./RESEARCH_OVERVIEW_PRIMARY_CLAIM_AUDIT_C-RV23b_2026-11-02.md) | 1 |
 | 2 | [Alexander, Q. D. (2023). TERF logics are carceral logics: Toward the abolition of gender-critical movements or Black trans life as pedagogical praxis. Women’s Studies in Communication, 46 (2), 230–234. https://doi.org/10.1080/07491409.2023.2193543](../research.html#reading-alexander) | **A** | [C-RV24e](./RESEARCH_OVERVIEW_CLASSIFICATION_HISTORY_AUDIT_C-RV24e_2026-11-02.md) | 1 |
-| 3 | [Alsop, S., & Watts, M. (2000). Facts and feelings: Exploring the affective domain in the learning of physics. Physics Education, 35 (2), 132–138. https://doi.org/10.1088/0031-9120/35/2/311](../research.html#reading-alsop) | **A** | [C-RV24a](./RESEARCH_OVERVIEW_CULTURAL_LITERACY_AUDIT_C-RV24a_2026-11-02.md) | 1 |
+| 3 | [Alsop, S., & Watts, M. (2000). Facts and feelings: Exploring the affective domain in the learning of physics. Physics Education, 35 (2), 132–138. https://doi.org/10.1088/0031-9120/35/2/311](../research.html#reading-alsop) | **F** | [C-RV28q](./RESEARCH_PLURILINGUAL_PROVENANCE_AND_AFFECT_STUDY_C-RV28q_2026-11-02.md) | 1 |
 | 4 | [Arboleda, V. A., Sandberg, D. E., & Vilain, E. (2014). DSDs: Genetics, underlying pathologies and psychosexual differentiation. Nature Reviews Endocrinology, 10 (10), 603–615. https://doi.org/10.1038/nrendo.2014.130](../research.html#reading-arboleda) | **F** | [C-RV28e](./RESEARCH_SEX_DEVELOPMENT_INCLUSIVE_BIOLOGY_AUDIT_C-RV28e_2026-11-02.md) | 1 |
 | 5 | [Asghar, A. (2013). Canadian and Pakistani Muslim teachers’ perceptions of evolutionary science and evolution education. Evolution: Education and Outreach, 6 , article 10. https://doi.org/10.1186/1936-6434-6-10](../research.html#reading-asghar) | **F** | [C-RV24a](./RESEARCH_OVERVIEW_CULTURAL_LITERACY_AUDIT_C-RV24a_2026-11-02.md) | 1 |
 | 6 | [Bang, M., & Medin, D. (2010). Cultural processes in science education: Supporting the navigation of multiple epistemologies. Science Education, 94 (6), 1008–1026. https://doi.org/10.1002/sce.20392](../research.html#reading-bang-medin) | **F** | [C-RV23d](./RESEARCH_OVERVIEW_CONCEPTUAL_WARRANT_AUDIT_C-RV23d_2026-11-02.md) | 1 |
@@ -159,6 +159,12 @@ For the second, distinct informal example, the original journal-formatted **Puvi
 ## C-RV28p | Original Simon multiliteracies response
 
 [C-RV28p](RESEARCH_RELATIONAL_MULTILITERACIES_ORIGINAL_SIMON_C-RV28p_2026-11-02.md) directly reviewed the full five-page original **Rob Simon (2011)** SAGE publisher PDF and **successfully screenshot-verified its first page**. The paper is explicitly a **response to Sandra Hesterman's earlier early-childhood research**, developing a relational account of multiliteracies, children’s visual and cultural resources, and teachers’ positions as creators of pedagogical knowledge. It does **not** report an independent classroom intervention or measure secondary science learning. The existing `research.html#multilingual-participation` paragraph correctly describes a **relational account** and qualifies its distinct literacy setting before the author's tentative science-education reflection. **No public HTML change warranted.** Simon row **46** advances A to F; the resulting source roster is **37 F / 15 A / 1 M / 0 P**. The earlier register header's missing closing Markdown emphasis marker was also corrected in this commit.
+
+## C-RV28q | Prasad abstract remains limited; Alsop learner-population correction
+
+[C-RV28q](RESEARCH_PLURILINGUAL_PROVENANCE_AND_AFFECT_STUDY_C-RV28q_2026-11-02.md) rechecked **Gail Prasad (2015)** at first-party publisher level, confirming **four Toronto and one Montpellier school**, five student-produced plurilingual books, children's associated research conversations and teacher/parent interviews. Despite publisher and author-project checks, this exact original journal article remained inaccessible in full (publisher 403; ResearchGate request-full-text), so **Prasad row 39 stays A**, with the 2015 issue year verified against first-online 2016.
+
+The full text of **Alsop and Watts (2000)**, in a user-uploaded copy retaining IOP's original journal formatting and complete methods, comparative responses and conclusion, revealed a **substantive factual problem** in the public `research.html#cultural-knowledge` description. The study sampled **30 non-science undergraduates and 30 A-level physics students**, using **different interview and questionnaire techniques**; not two uniformly “physics learner” groups, nor a study directly observing instructional effects. The precise population misidentification was corrected in public HTML commit `ecd16a1c35ced949a4c6c1658a30efadae077472`. The publisher's original abstract corroborates article identity. Full text access occurred through a **third-party Scribd reproduction**, not an original IOP binary or PDF screenshot; this access limit is explicit in the report. Alsop source **row 3 advances A to F** under the substantial-original-text criterion. Roster **38 F / 14 A / 1 M / 0 P**, with `research.html` blob `9a0f3a301e481e2023ac01b660e468aff4845ddd`. Verify published-site static text after Pages deployment because the HTML changed.
 
 ## Exact next checkpoint
 
