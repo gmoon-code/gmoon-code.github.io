@@ -2047,7 +2047,7 @@
       bar.append(make("+ Add",()=>openQuickComposer(addAnchor),null,
         "Add new content after this block"));
       bar.append(make("+ Image",()=>openQuickComposer(addAnchor,"image"),null,
-        "Add an existing website image after selected content"));
+        "Add an image from site assets after selected content"));
     }
     if(selected.added){
       const divider=doc.createElement("span");
@@ -2417,7 +2417,7 @@
     };
     const kind=doc.createElement("select");
     for(const [value,label] of [["paragraph","Paragraph"],["heading","Heading"],
-      ["link","Link"],["image","Existing website image"]]){
+      ["link","Link"],["image","Image from site assets"]]){
       const option=doc.createElement("option");
       option.value=value;option.textContent=label;kind.append(option);
     }
@@ -2438,11 +2438,11 @@
     const levelField=field("level","Heading level",headingLevel);
     const textField=field("text","Text",description);
     const hrefField=field("href","Link destination",href);
-    const imageField=field("image","Existing image path",imagePath);
+    const imageField=field("image","Site image path (assets/)",imagePath);
     const browseImages=doc.createElement("button");
     browseImages.type="button";
-    browseImages.textContent="Browse website images";
-    browseImages.setAttribute("aria-label","Choose an existing website image from the image gallery");
+    browseImages.textContent="Browse paths from site pages";
+    browseImages.setAttribute("aria-label","Browse image paths referenced in listed site pages");
     browseImages.style.cssText="display:block;width:100%;margin-top:6px;"+
       "padding:8px;border:1px solid "+(dark?"#9bad9e":"#9cb0a6")+
       ";border-radius:6px;background:"+(dark?"#303d33":"#e8f2eb")+
@@ -2635,8 +2635,8 @@
     $("addedBlockSpaceBelow").value=String(layout.spaceBelow);
     $("resetAddedBlockLayout").disabled=!addition.layout;
     const kind=insertionKind(addition);
-    $("addedBlockKind").textContent=kind==="image"?"Existing website image":kind;
-    $("addedBlockTextLabel").textContent=kind==="image"?"Image description (alt text)":"Block text";
+    $("addedBlockKind").textContent=kind==="image"?"Image from site assets":kind;
+    $("addedBlockTextLabel").textContent=kind==="image"?"Image description for this use (alt text)":"Block text";
     $("addedBlockText").maxLength=kind==="paragraph"?2000:kind==="image"?200:140;
     $("addedBlockText").value=addition.text;
     $("addedBlockHeadingField").hidden=kind!=="heading";
@@ -5326,7 +5326,7 @@
     $("insertHeadingField").hidden=kind!=="heading";
     $("insertLinkField").hidden=kind!=="link";
     $("insertImageField").hidden=kind!=="image";
-    $("insertContentLabel").textContent=kind==="image"?"Image description (alt text)":"New text";
+    $("insertContentLabel").textContent=kind==="image"?"Image description for this use (alt text)":"New text";
     $("insertContentText").maxLength=kind==="paragraph"?2000:kind==="image"?200:140;
   }
   function addContentFromInspector(){
@@ -5641,7 +5641,7 @@
         nextItem.href=href.trim();
       }
       if(insertionKind(previous)==="image"){
-        const src=prompt("Existing website image path (assets/...)",previous.src);
+        const src=prompt("Site image path (assets/...)",previous.src);
         if(src===null)return;
         nextItem.src=src.trim();
       }
