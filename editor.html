@@ -205,7 +205,7 @@
               <input type="file" id="newImageFile" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp">
               <button type="button" id="stageImageBtn" class="secondary" disabled>Stage image in preview</button>
               <button type="button" id="downloadStagedImage" class="secondary" disabled>Download staged image</button>
-              <p id="stagedImageStatus" class="small-note" role="status" aria-live="polite">New images remain local until they are published separately. Publish live cannot upload a new image. If you export HTML for review, download the image file as well.</p>
+              <p id="stagedImageStatus" class="small-note" role="status" aria-live="polite">New images remain local until published through a separate reviewed repository update. Publish live cannot upload a new image. The HTML export references a path under assets/ but does not contain the image file. Download the staged image separately and preserve its generated filename when adding it to that repository path.</p>
             </fieldset>
             <label for="imageAlt">Image description (alt text)</label>
             <textarea id="imageAlt" rows="3"></textarea>
@@ -213,7 +213,7 @@
             <input type="range" id="imageWidthPercent" min="20" max="100" step="5" value="100">
             <output id="imageWidthValue" for="imageWidthPercent">100%</output>
             <p class="small-note">Drag the bottom-right handle on the selected image to resize it directly, or use this slider with a mouse or keyboard. Revert this element to restore its original dimensions.</p>
-            <p class="small-note">Existing images and staged uploads can be previewed. Direct publishing does not support new image files. Publish a staged image through an appropriately configured review service or include it in a separately reviewed GitHub update.</p>
+            <p class="small-note">Existing images and staged uploads can be previewed. Direct publishing does not support new image files. Include a newly staged image and its matching HTML reference in a separately reviewed repository update. The optional pull-request service is not configured.</p>
           </div>
           <div id="moveOriginalBlockFields" class="inspector-group" hidden>
             <h3>Move existing content</h3>
