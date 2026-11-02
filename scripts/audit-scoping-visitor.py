@@ -11,7 +11,7 @@ SECTIONS=["evidence-routes","case-study","learner-reporting","review-method","sc
 PRINT_REQUIRED=["Evidence of multilingual students", "Forms of evidence in the included studies",
  "Ecological modelling and language use","Reporting language and schooling conditions",
  "Search and charting methods","Interpretation and limitations",
- "20 of 20","14 of 20","5 of 20","1 of 20","216","79","20"]
+ "20 of 20","18 of 20","7 of 20","3 of 20","1 of 20","216","79","20"]
 async def main():
     OUT.mkdir(exist_ok=True)
     results=[]
@@ -83,12 +83,12 @@ async def main():
                 if data["sections"]!=SECTIONS:errors.append("scoping section structure")
                 if not data["uniqueIds"] or data["brokenAnchors"] or data["unnamedLinks"]:errors.append("fragment/links/ids")
                 if data["navCurrent"]!=["Research"]:errors.append("Research nav active state")
-                if data["routeCounts"]!=["8","7","5"] or data["cardCount"]!=3:errors.append("wrong study-form counts")
+                if data["routeCounts"]!=["10","6","4"] or data["cardCount"]!=3:errors.append("wrong study-form counts")
                 if data["table"]["cols"]!=["Information reported","Studies","What it helps a reader understand"]:
                     errors.append("table columns missing")
-                if [x[1] for x in data["table"]["rows"]]!=["20 of 20","14 of 20","5 of 20","1 of 20"]:
+                if [x[1] for x in data["table"]["rows"]]!=["20 of 20","18 of 20","7 of 20","3 of 20","1 of 20"]:
                     errors.append("reported learner data altered")
-                if data["table"]["rowHeaderCount"]!=4 or data["table"]["headers"]!=["col"]*3:
+                if data["table"]["rowHeaderCount"]!=5 or data["table"]["headers"]!=["col"]*3:
                     errors.append("table header semantics")
                 if not data["table"]["correctHintOrder"] or data["table"]["tabIndex"]!=0:
                     errors.append("table keyboard/hint semantics")
