@@ -5330,7 +5330,7 @@ function renderPublishPatchList(){
   }
   list.hidden=false;
   const heading=document.createElement("strong");
-  heading.textContent="Saved edits to this webpage ("+livePatches.size+")";
+  heading.textContent="Draft edits to this webpage ("+livePatches.size+")";
   list.append(heading);
   if(!livePatches.size){
     const empty=document.createElement("p");
@@ -5379,11 +5379,11 @@ function updateReconnectPreview(){
   image.removeAttribute("src");
   if(entry){
     image.src=entry.url;
-    message.textContent="Original source "+entry.src+" · "+(entry.alt||"No description")+
+    message.textContent="Image on deployed page "+entry.src+" · "+(entry.alt||"No description")+
       ". Only reconnect if this is the intended image.";
   }else message.textContent=reconnectImages.length?
     "Select the corresponding source image before reconnecting.":
-    "No eligible original images loaded for this page.";
+    "No eligible images loaded from the deployed page.";
   $("reconnectImageButton").disabled=!entry;
 }
 async function loadReconnectImages(){
@@ -5391,11 +5391,11 @@ async function loadReconnectImages(){
   const select=$("reconnectSourceImage");
   reconnectImages=[];reconnectForPage="";
   select.replaceChildren();
-  $("reconnectSourceInfo").textContent="Checking images in the original "+page+"…";
+  $("reconnectSourceInfo").textContent="Checking images on the deployed "+page+"…";
   try{
     const url=new URL(page,location.href);
     const response=await fetch(url,{cache:"no-store",credentials:"same-origin"});
-    if(!response.ok)throw Error("Could not fetch original page (HTTP "+response.status+")");
+    if(!response.ok)throw Error("Could not fetch deployed page (HTTP "+response.status+")");
     const doc=new DOMParser().parseFromString(await response.text(),"text/html");
     if(page!==currentPage)return;
     for(const node of doc.querySelectorAll("main img[src]")){
@@ -5418,10 +5418,10 @@ async function loadReconnectImages(){
     if(exact)select.value=exact.selector;
     updateReconnectPreview();
     if(!reconnectImages.length)
-      $("reconnectSourceInfo").textContent="No local images found in "+page+
-        ". The saved edit may belong to another page.";
+      $("reconnectSourceInfo").textContent="No eligible same-site images found on the deployed "+page+
+        ". The edit may refer to a different page or an earlier version.";
   }catch(error){
-    $("reconnectSourceInfo").textContent="Could not inspect this source page. "+
+    $("reconnectSourceInfo").textContent="Could not inspect the deployed page. "+
       (error.message||error);
     updateReconnectPreview();
   }
@@ -5448,15 +5448,15 @@ function reconnectSavedImage(){
   $("reconnectSavedImage").value=destination;
   $("publishError").hidden=true;
   loadLivePage();
-  status("Image edit reconnected to "+image.src+" · Review and check saved edits again.");
+  status("Image mapping updated to "+image.src+" from the deployed page · Check against GitHub before publishing.");
 }
 
 function updatePublishTarget(){
   const target=$("publishTarget").value,live=target==="live";
   $("publishTitle").textContent=live?"Publish changes to the live website":"Publish staging preview";
   $("publishDescription").textContent=live?
-    "This updates the actual public webpage after checking the latest GitHub source. The independent design canvas is not published.":
-    "This creates a preview at a separate public URL without replacing the existing webpage.";
+    "This commits the selected page’s edits to GitHub after checking its latest source. GitHub Pages may need time to deploy. The independent design canvas is not published.":
+    "This commits a preview file at a separate public URL without replacing the existing webpage. GitHub Pages may need time to deploy.";
   $("stagePath").textContent=live?currentPage:
     "editor-v2-previews/"+(workspaceMode==="live"?"source-":"")+currentPage;
   $("acknowledgeLive").closest("label").hidden=!live;
@@ -6091,7 +6091,7 @@ function attachEvents(){
       message.hidden=false;
       message.classList.add("publish-success");
       message.textContent="All "+livePatches.size+
-        " saved edits match the current webpage source. GitHub will also verify its latest version when you publish.";
+        " draft edits match the current GitHub source. GitHub will check that version again when you publish.";
     }catch(error){
       message.classList.remove("publish-success");
       message.textContent=error.message||"Saved edit verification failed";
