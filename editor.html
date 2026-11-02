@@ -198,7 +198,7 @@
           <div id="imageFields" class="inspector-group" hidden>
             <label for="imageSrc">Image path or URL</label>
             <input id="imageSrc" type="text" spellcheck="false" autocomplete="off">
-            <button type="button" id="chooseExistingImage" class="secondary">Choose from existing images</button>
+            <button type="button" id="chooseExistingImage" class="secondary">Browse images referenced on site pages</button>
             <fieldset class="editor-media-upload">
               <legend>Upload a new image</legend>
               <label for="newImageFile">Select PNG, JPEG, or WebP (up to 1.5 MB)</label>
@@ -209,6 +209,7 @@
             </fieldset>
             <label for="imageAlt">Image description (alt text)</label>
             <textarea id="imageAlt" rows="3"></textarea>
+            <p class="small-note">When replacing an image, review its description for the new subject and context. Choosing another image path does not update the description automatically.</p>
             <label for="imageWidthPercent">Image width within its container</label>
             <input type="range" id="imageWidthPercent" min="20" max="100" step="5" value="100">
             <output id="imageWidthValue" for="imageWidthPercent">100%</output>
@@ -253,7 +254,7 @@
               <option value="paragraph">Paragraph</option>
               <option value="heading">Heading</option>
               <option value="link">Link</option>
-              <option value="image">Existing website image</option>
+              <option value="image">Image from site assets</option>
             </select>
             <label id="insertContentLabel" for="insertContentText">New text</label>
             <textarea id="insertContentText" rows="3" spellcheck="true" maxlength="2000"></textarea>
@@ -268,8 +269,8 @@
             <div id="insertImageField" hidden>
               <label for="insertImageSrc">Existing image path</label>
               <input id="insertImageSrc" type="text" placeholder="assets/example.webp" autocomplete="off" spellcheck="false">
-              <button type="button" id="chooseInsertImageBtn" class="secondary">Browse existing site images</button>
-              <p class="small-note">Choose an image already referenced by the website. A meaningful image description is required.</p>
+              <button type="button" id="chooseInsertImageBtn" class="secondary">Browse image paths from site pages</button>
+              <p class="small-note">Choose a path referenced in the listed site pages or enter an existing assets/ image path. Check that the file loads and review the image description for this placement. A meaningful description is required for a new image block.</p>
             </div>
             <button type="button" id="insertContentBtn" class="secondary">Add to local draft</button>
             <button type="button" id="duplicateSourceBtn" class="secondary" disabled>Duplicate selected plain-text block</button>
@@ -302,7 +303,8 @@
           <div id="addedBlockImageField" hidden>
             <label for="addedBlockSrc">Existing image path</label>
             <input id="addedBlockSrc" type="text" spellcheck="false" autocomplete="off">
-            <button type="button" id="chooseAddedImageBtn" class="secondary">Browse existing images</button>
+            <button type="button" id="chooseAddedImageBtn" class="secondary">Browse image paths from site pages</button>
+            <p class="small-note">An earlier image description may be suggested. Review it for this placement and check the image file before publishing.</p>
             <label for="addedImageWidthPercent">Image width within its container</label>
             <input type="range" id="addedImageWidthPercent" min="20" max="100" step="5" value="100">
             <output id="addedImageWidthValue" for="addedImageWidthPercent">100%</output>
@@ -362,9 +364,9 @@
     </div>
   </div>
   <dialog id="mediaDialog" class="media-dialog" aria-labelledby="mediaTitle">
-    <h2 id="mediaTitle">Choose an existing website image</h2>
-    <p class="small-note">This picker uses images already referenced by the portfolio. New image files must be published in a separate reviewed update; the picker does not upload them.</p>
-    <label for="mediaSearch">Search images by filename or description</label>
+    <h2 id="mediaTitle">Choose an image path found on listed pages</h2>
+    <p class="small-note">This picker reads image paths from the website pages listed in the editor. Its cached page copies may be incomplete, and a listed path does not confirm that the file loads or that reuse is permitted. Descriptions come from the first matching image or, when none is given, its filename. Review the image and write appropriate alt text for its new context. New image files require a separate reviewed update; this picker does not upload them.</p>
+    <label for="mediaSearch">Search image paths or recorded descriptions</label>
     <input id="mediaSearch" type="search" placeholder="Search images">
     <div id="mediaResults" class="media-results" role="list"></div>
     <p id="mediaStatus" class="small-note" role="status"></p>
