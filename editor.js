@@ -116,7 +116,7 @@
       (state.blockOrders.length?" · "+state.blockOrders.length+" rearranged content group"+(state.blockOrders.length===1?"":"s"):"");
     $("exportBtn").disabled=!total;
     $("reviewBtn").disabled=!total;
-    $("resetBtn").disabled=!total;
+    $("resetBtn").disabled=!total&&!state.staleDraft;
     $("undoBtn").disabled=!state.history.length;
     $("redoBtn").disabled=!state.redo.length;
     updatePublishControls();
@@ -5887,6 +5887,7 @@
 
   function resetPage() {
     if (!state.doc||!confirm(state.draftRecoveryIssue?"Discard current edits and delete the browser draft that could not be restored?":state.staleDraft?"Discard current edits and delete the older browser draft saved for this page?":"Discard all local changes to this page?")) return;
+    const retainedDraft=state.staleDraft,retainedIssue=state.draftRecoveryIssue;
     clearStagedMedia();
     state.doc=new DOMParser().parseFromString(state.source,"text/html");
     initialIndex();
@@ -5897,7 +5898,12 @@
     state.draftRecoveryIssue="";
     state.responsiveGroup=null;state.responsiveGroups=[];state.additions=[];state.removals=[];state.blockOrders=[];
     renderPreview();
-    saveDraft();
+    if(!saveDraft()&&retainedDraft){
+      state.staleDraft=true;
+      state.draftRecoveryIssue=retainedIssue;
+      state.draftSaveIssue="Saved browser draft could not be deleted · New edits will not replace it; export HTML before leaving";
+      updateStatus(state.draftSaveIssue);
+    }
   }
 
   function revertSelected() {
