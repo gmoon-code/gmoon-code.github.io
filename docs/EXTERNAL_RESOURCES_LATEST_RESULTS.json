@@ -2,13 +2,13 @@
   "pages_scanned": 19,
   "distinct_destinations": 115,
   "counts": {
-    "reachable": 73,
-    "unverified": 42
+    "reachable": 70,
+    "unverified": 45
   },
   "by_category": {
     "external": {
-      "reachable": 50,
-      "unverified": 1
+      "reachable": 47,
+      "unverified": 4
     },
     "scholarly-identifier": {
       "unverified": 41,
@@ -19,6 +19,44 @@
     }
   },
   "issues": [
+    {
+      "url": "https://covers.openlibrary.org/b/isbn/9780062951465-L.jpg",
+      "status": "unverified",
+      "category": "external",
+      "pages": [
+        "interests.html"
+      ],
+      "head": {
+        "code": 502,
+        "finalUrl": "https://archive.org/download/l_covers_0010/l_covers_0010_84.zip/0010843754-L.jpg",
+        "error": "Bad Gateway"
+      },
+      "get": {
+        "code": 502,
+        "finalUrl": "https://archive.org/download/l_covers_0010/l_covers_0010_84.zip/0010843754-L.jpg",
+        "error": "Bad Gateway"
+      },
+      "warnings": []
+    },
+    {
+      "url": "https://covers.openlibrary.org/b/isbn/9780547928227-L.jpg",
+      "status": "unverified",
+      "category": "external",
+      "pages": [
+        "interests.html"
+      ],
+      "head": {
+        "code": 502,
+        "finalUrl": "https://archive.org/download/l_covers_0011/l_covers_0011_06.zip/0011065702-L.jpg",
+        "error": "Bad Gateway"
+      },
+      "get": {
+        "code": 502,
+        "finalUrl": "https://archive.org/download/l_covers_0011/l_covers_0011_06.zip/0011065702-L.jpg",
+        "error": "Bad Gateway"
+      },
+      "warnings": []
+    },
     {
       "url": "https://doi.org/10.1002/sce.20264",
       "status": "unverified",
@@ -818,6 +856,23 @@
         "error": "Forbidden"
       },
       "warnings": []
+    },
+    {
+      "url": "https://openlibrary.org/",
+      "status": "unverified",
+      "category": "external",
+      "pages": [
+        "interests.html"
+      ],
+      "head": {
+        "code": null,
+        "error": "The read operation timed out"
+      },
+      "get": {
+        "code": null,
+        "error": "The read operation timed out"
+      },
+      "warnings": []
     }
   ],
   "important_apps": [
@@ -841,10 +896,10 @@
   "doi_registry": {
     "checked": 41,
     "counts": {
-      "not-confirmed": 10,
-      "registered": 31
+      "not-confirmed": 13,
+      "registered": 28
     },
-    "secondary_index_matches": 10,
+    "secondary_index_matches": 13,
     "not_confirmed": [
       {
         "url": "https://doi.org/10.1002/sce.20264",
@@ -863,36 +918,52 @@
         "indexedYear": 2008
       },
       {
-        "url": "https://doi.org/10.1002/sce.21622",
-        "doi": "10.1002/sce.21622",
-        "pages": [
-          "research-scoping.html"
-        ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21622",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Scientific modeling and translanguaging: A multilingual and multimodal approach to support science learning and engagement",
-        "indexedYear": 2021
-      },
-      {
-        "url": "https://doi.org/10.1002/tea.20237",
-        "doi": "10.1002/tea.20237",
+        "url": "https://doi.org/10.1002/sce.21099",
+        "doi": "10.1002/sce.21099",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.20237",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21099",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Understanding the science experiences of successful women of color: Science identity as an analytic lens",
-        "indexedYear": 2007
+        "indexedTitle": "An Integrative Framework for the Analysis of Multiple and Multimodal Representations for Meaning‐Making in Science Education",
+        "indexedYear": 2014
+      },
+      {
+        "url": "https://doi.org/10.1002/sce.21112",
+        "doi": "10.1002/sce.21112",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21112",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Examining Classroom Science Practice Communities: How Teachers and Students Negotiate Epistemic Agency and Learn Science‐as‐Practice",
+        "indexedYear": 2014
+      },
+      {
+        "url": "https://doi.org/10.1002/tea.20311",
+        "doi": "10.1002/tea.20311",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.20311",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Developing a learning progression for scientific modeling: Making scientific modeling accessible and meaningful for learners",
+        "indexedYear": 2009
       },
       {
         "url": "https://doi.org/10.1002/tea.21459",
@@ -927,20 +998,20 @@
         "indexedYear": 2021
       },
       {
-        "url": "https://doi.org/10.1002/tea.70072",
-        "doi": "10.1002/tea.70072",
+        "url": "https://doi.org/10.1080/09500690903386435",
+        "doi": "10.1080/09500690903386435",
         "pages": [
-          "research.html"
+          "teaching-ap-chemistry.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.70072",
+        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/09500690903386435",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Students' Construction, Evaluation, and Revision of Scientific Models Through Multimodal Representations",
-        "indexedYear": 2026
+        "indexedTitle": "Macro, Submicro, and Symbolic: The many faces of the chemistry “triplet”",
+        "indexedYear": 2010
       },
       {
         "url": "https://doi.org/10.1080/14675986.2015.1109775",
@@ -959,58 +1030,91 @@
         "indexedYear": 2015
       },
       {
-        "url": "https://doi.org/10.1111/j.1365-2729.1991.tb00230.x",
-        "doi": "10.1111/j.1365-2729.1991.tb00230.x",
-        "pages": [
-          "teaching-ap-chemistry.html"
-        ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1111/j.1365-2729.1991.tb00230.x",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Why is science difficult to learn? Things are seldom what they seem",
-        "indexedYear": 1991
-      },
-      {
-        "url": "https://doi.org/10.1177/01614681251401633",
-        "doi": "10.1177/01614681251401633",
+        "url": "https://doi.org/10.1159/000345322",
+        "doi": "10.1159/000345322",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://journals.sagepub.com/doi/10.1177/01614681251401633",
+        "publisherLanding": "https://karger.com/article/doi/10.1159/000345322",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Queer Joy as Pedagogy",
-        "indexedYear": 2025
+        "indexedTitle": "Desettling Expectations in Science Education",
+        "indexedYear": 2012
       },
       {
-        "url": "https://doi.org/10.2304/ciec.2011.12.4.362",
-        "doi": "10.2304/ciec.2011.12.4.362",
+        "url": "https://doi.org/10.3102/0013189X20927363",
+        "doi": "10.3102/0013189X20927363",
+        "pages": [
+          "research.html",
+          "writing-biological-classification.html"
+        ],
+        "publisherLanding": "https://journals.sagepub.com/doi/10.3102/0013189X20927363",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Beyond Equity as Inclusion: A Framework of “Rightful Presence” for Guiding Justice-Oriented Studies in Teaching and Learning",
+        "indexedYear": 2020
+      },
+      {
+        "url": "https://doi.org/10.3102/0013189X231206172",
+        "doi": "10.3102/0013189X231206172",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://journals.sagepub.com/doi/10.2304/ciec.2011.12.4.362",
+        "publisherLanding": "https://journals.sagepub.com/doi/10.3102/0013189X231206172",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "On the Human Challenges of Multiliteracies Pedagogy",
-        "indexedYear": 2011
+        "indexedTitle": "Language Views for Scientific Sensemaking Matter: A Synthesis of Research on Multilingual Students’ Experiences with Science Practices Through a Translanguaging Lens",
+        "indexedYear": 2023
+      },
+      {
+        "url": "https://doi.org/10.3102/0034654314558490",
+        "doi": "10.3102/0034654314558490",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://journals.sagepub.com/doi/10.3102/0034654314558490",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Representing Student Argumentation as Functionally Emergent From Scientific Activity",
+        "indexedYear": 2014
+      },
+      {
+        "url": "https://doi.org/10.3138/cmlr-2021-0055",
+        "doi": "10.3138/cmlr-2021-0055",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://utppublishing.com/doi/10.3138/cmlr-2021-0055",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "The Impact of Academic Acculturation and Language Proficiency on International Students’ University Experience and Academic Success: A Longitudinal Study",
+        "indexedYear": 2023
       }
     ],
     "unresolved": [],
     "limitation": "Crossref/DataCite registration is distinct from publisher access, correct article metadata or article availability. OpenAlex is independent secondary corroboration, not registration proof."
   },
-  "workflow_run_id": "41447733280",
-  "head_sha": "c02c652616898209b2bf259081b47729446d8549",
+  "workflow_run_id": "41449751626",
+  "head_sha": "20365f57fc315f25462e2d08a67c785522fad432",
   "audit_exit_code": "0"
 }
