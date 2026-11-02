@@ -3975,7 +3975,7 @@
     const target=key&&getWorking(key);
     if(!file||target?.tagName!=="IMG")return;
     if(state.stagedMedia&&state.stagedMedia.key!==key){
-      notice("Only one new image can be staged per review request. Reset or publish the current page before adding another.");
+      notice("An image is already staged for a different element. This editor can stage only one new image at a time. Export the page HTML and download that image separately before resetting the page or switching to another image.");
       return;
     }
     if(file.size>1572864||file.size<24){
@@ -4009,7 +4009,7 @@
     updateStagedPreview();
     $("downloadStagedImage").disabled=false;
     $("stagedImageStatus").textContent=file.name+" · "+Math.round(file.size/1024)+
-      " KB staged at "+newPath+". Not published. Keep the image file with exported HTML.";
+      " KB staged for "+newPath+". Not published. Download the image separately from the HTML. A reviewed repository update must place the file at that assets/ path.";
     scheduleDraft();
   }
   function downloadStagedImage(){
@@ -5801,7 +5801,7 @@
     if(state.stagedMedia){
       const node=document.createElement("p");
       node.textContent="Staged image · "+state.stagedMedia.path+
-        ". The binary file must accompany this HTML in the review PR.";
+        ". The HTML export refers to this assets/ path. Download the image separately and include it in a reviewed repository update.";
       list.appendChild(node);
     }
     if(reordered){
@@ -5814,7 +5814,7 @@
     const status=$("reviewExportStatus");
     try {
       buildExport();
-      status.textContent="Source check passed. Changes can be exported for review.";
+      status.textContent="HTML assembly check passed against the page loaded in this editor. Export for review. The current GitHub source is checked separately before direct publication.";
       status.dataset.tone="ok";
     } catch(error) {
       status.textContent="Export requires attention. "+error.message;
@@ -5837,7 +5837,7 @@
       link.remove();
       setTimeout(()=>URL.revokeObjectURL(url),10000);
       updateStatus(state.stagedMedia?
-        "HTML download requested. Download the staged image separately · Not published":
+        "HTML download requested · Download the staged image separately and retain its assets/ path · Not published":
         "Edited HTML download requested · Not published");
     } catch(e) {
       notice(e.message||"Could not export this page safely.","Export stopped");
