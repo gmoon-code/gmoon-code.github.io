@@ -1,12 +1,12 @@
 {
-  "sourceHead": "d3ac532121019918aef856b40bc6f2a15f68e138",
+  "sourceHead": "ecd16a1c35ced949a4c6c1658a30efadae077472",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-d3ac53212101",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-ecd16a1c35ce",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -14,8 +14,8 @@
   "auditEvidence": {
     "links": {
       "report": "docs/PUBLIC_LINKGRAPH_LATEST_RESULTS.json",
-      "run": "41383895656",
-      "head_sha": "f11b61d1d3a1f6a72f9ad72233b7425b0f936b23",
+      "run": "41390363734",
+      "head_sha": "d3ac532121019918aef856b40bc6f2a15f68e138",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research.html"
@@ -26,8 +26,8 @@
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "41383895659",
-      "head_sha": "f11b61d1d3a1f6a72f9ad72233b7425b0f936b23",
+      "run": "41390363671",
+      "head_sha": "d3ac532121019918aef856b40bc6f2a15f68e138",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research.html"
@@ -42,8 +42,8 @@
     },
     "metadata": {
       "report": "docs/RESEARCH_METADATA_LATEST_RESULTS.json",
-      "run": "41367250211",
-      "head_sha": "8d234d567c2ce7630c596490017cb3c7eb2f9a8e",
+      "run": "41390363808",
+      "head_sha": "d3ac532121019918aef856b40bc6f2a15f68e138",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research.html"
@@ -59,8 +59,8 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "41383895767",
-      "head_sha": "f11b61d1d3a1f6a72f9ad72233b7425b0f936b23",
+      "run": "41390363788",
+      "head_sha": "d3ac532121019918aef856b40bc6f2a15f68e138",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research.html"
@@ -71,8 +71,8 @@
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "41383895602",
-      "head_sha": "f11b61d1d3a1f6a72f9ad72233b7425b0f936b23",
+      "run": "41390363727",
+      "head_sha": "d3ac532121019918aef856b40bc6f2a15f68e138",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research.html"
@@ -83,8 +83,8 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "41383895648",
-      "head_sha": "f11b61d1d3a1f6a72f9ad72233b7425b0f936b23",
+      "run": "41390363756",
+      "head_sha": "d3ac532121019918aef856b40bc6f2a15f68e138",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research.html"
@@ -96,8 +96,8 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "41383895900",
-      "head_sha": "f11b61d1d3a1f6a72f9ad72233b7425b0f936b23",
+      "run": "41390363673",
+      "head_sha": "d3ac532121019918aef856b40bc6f2a15f68e138",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research.html"
@@ -168,11 +168,11 @@
       "firstDiff": [
         "--- source\n",
         "+++ deployed\n",
-        "@@ -119,3 +119,3 @@\n",
-        "     <p>Interpreting students' ideas across talk, writing, and images raises a methodological question about which records to preserve. Research on plurilingual identity texts has examined conversations alongside students' written and visual work (<a href=\"#reading-prasad\">Prasad, 2015</a>). A relational account of multiliteracies considers how meaning develops within social and cultural relationships (<a href=\"#reading-simon\">Simon, 2011</a>). The literacy settings differ from those of secondary science. The same attention to conversations and classroom relationships may help me interpret written and visual work in science.</p>",
-        "-    <p>Language proficiency scores offer one account of university students' experiences. A longitudinal study examined academic acculturation alongside English proficiency and achievement, attending to factors a language test score might leave unexplained (<a href=\"#reading-neumann\">Neumann et al., 2023</a>). Conversations with students present a different interpretive challenge. In a Canadian university English-language programme, tensions around racism emerged during a post-semester interview and a private conversation about a student's poem, both examined in a study of a spoken-word-poetry curriculum (<a href=\"#reading-burton\">Burton, 2024</a>). Both studies concern university language learning. In secondary science, they lead me to consider how the setting and relationships surrounding a contribution affect what an observer can reasonably conclude from it.</p>",
-        "+    <p>Language proficiency scores offer one account of university students' experiences. A longitudinal study examined academic acculturation alongside English proficiency and achievement, attending to factors a language test score might leave unexplained (<a href=\"#reading-neumann\">Neumann et al., 2023</a>). Classroom exchanges present a different interpretive challenge. During spoken-word-poetry activities in an academic English programme, multilingual students discussed racism amid emotional tensions that shaped their interactions (<a href=\"#reading-burton\">Burton, 2024</a>). Both studies concern university language learning. In secondary science, they lead me to consider how the setting and relationships surrounding a contribution affect what an observer can reasonably conclude from it.</p>",
-        "   </div>"
+        "@@ -105,3 +105,3 @@\n",
+        "     <p>People can know similar things while drawing on different relationships to organize an explanation. In research with Menominee and European American fish experts, Menominee participants more often mentioned habitat when explaining how they grouped local fish. When the researchers explicitly asked both groups to sort by habitat, strong agreement emerged without a reliable difference between them (<a href=\"#reading-cultural-mosaics\">Bang et al., 2007</a>). The earlier difference therefore concerned which ecological relationships participants brought forward on their own. It cautions me against interpreting an unmentioned relationship as necessarily unknown. Later scholarship places such differences within cultural practices and examines the assumptions about nature that science education brings into classrooms (<a href=\"#reading-bang-medin\">Bang &amp; Medin, 2010</a>; <a href=\"#reading-bang\">Bang et al., 2012</a>).</p>",
+        "-    <p>The fish studies concern particular communities with their own histories. In other settings, researchers have examined how participants' commitments and feelings enter into their accounts of science. Interviews with Muslim secondary science teachers in Canada and Pakistan examined how religious commitments informed their views of evolution and its teaching, while also identifying gaps in some teachers' understanding of evolutionary mechanisms (<a href=\"#reading-asghar\">Asghar, 2013</a>). A study comparing non-science undergraduates with A-level physics students examined how their feelings about radioactivity appeared in their accounts of the subject (<a href=\"#reading-alsop\">Alsop &amp; Watts, 2000</a>). In my teaching, I would need to consider those experiences while examining the scientific adequacy of students' explanations.</p>",
+        "+    <p>The fish studies concern particular communities with their own histories. In other settings, researchers have examined how participants' commitments and feelings enter into their accounts of science. Interviews with Muslim secondary science teachers in Canada and Pakistan examined how religious commitments informed their views of evolution and its teaching, while also identifying gaps in some teachers' understanding of evolutionary mechanisms (<a href=\"#reading-asghar\">Asghar, 2013</a>). In a separate study, two groups of physics learners approached radioactivity in ways that the researchers examined in relation to their feelings about the subject (<a href=\"#reading-alsop\">Alsop &amp; Watts, 2000</a>). In my teaching, I would need to consider those experiences while examining the scientific adequacy of students' explanations.</p>",
+        "     <p>Children attending community science clubs in Canada valued hands-on activities and the relationships they formed. Their accounts also showed how club science and school science could be treated as separate, making it difficult to connect the enjoyment of club activities with learning at school (<a href=\"#reading-burke\">Burke &amp; Navas Iannini, 2021</a>). I wonder how this distinction affects the scientific work students feel able to pursue when they move between settings.</p>"
       ]
     },
     {
@@ -223,7 +223,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41390363768",
-  "run_sha": "d3ac532121019918aef856b40bc6f2a15f68e138",
+  "workflow_run_id": "41396577446",
+  "run_sha": "ecd16a1c35ced949a4c6c1658a30efadae077472",
   "exit_code": "1"
 }
