@@ -72,7 +72,7 @@
 
   const $ = id => document.getElementById(id);
   const state = {
-    page:null,source:"",doc:null,frameDoc:null,original:new Map(),dirty:new Set(),
+    page:null,source:"",doc:null,frameDoc:null,original:new Map(),dirty:new Set(),pendingPreviewStatus:"",previewLoadIssue:"",
     selected:null,history:[],redo:[],fingerprint:"",loadToken:0,saveTimer:null,staleDraft:false,
     originalSections:[],sectionGroups:[],sectionOrder:[],draftSaveIssue:"",draftRecoveryIssue:"",mediaAssets:null,mediaPromise:null,mediaReadIssue:"",
     stagedMedia:null,responsiveGroup:null,responsiveGroups:[],additions:[],resizeStart:null,imageSliderActive:false,
@@ -103,9 +103,9 @@
     return MoonResponsiveLayout.cssForGroups(doc,layoutGroups());
   }
   function updateStatus(message) {
-    // Keep a failed browser-save warning visible when later edit-status messages appear.
-    const warning=state.draftSaveIssue;
-    $("editorSaveStatus").textContent=warning&&message!==warning?message+" · "+warning:message;
+    // Keep save and preview-readiness problems visible across later edit messages.
+    const warnings=[state.draftSaveIssue,state.previewLoadIssue].filter(Boolean);
+    $("editorSaveStatus").textContent=[message,...warnings.filter(w=>w!==message)].join(" · ");
     const moved=state.sectionOrder.filter((id,i)=>id!==state.originalSections[i]).length;
     const total=state.dirty.size+moved+layoutGroups().length+state.additions.length+state.removals.length+state.blockOrders.length;
     $("changeCount").textContent=state.dirty.size+" edited element"+(state.dirty.size===1?"":"s")+
@@ -555,10 +555,10 @@
 
         refreshPageFind();
         updateBrowseControls();
-        // Previously saved free positions must be checked after every load,
-        // not just after a user finishes a new drag in this session.
-        if(!verifyFreeCanvasPlacement())
-          updateStatus("Canvas placement mismatch · Review this layout before publishing");
+        // Previously saved free positions must be checked after every load.
+        const placementOk=verifyFreeCanvasPlacement();
+        state.previewLoadIssue=placementOk?"":"Canvas placement mismatch · Review this layout before publishing";
+        if(!placementOk)updateStatus(state.previewLoadIssue);
         if(reselectKey){
           const target=d.querySelector('[data-editor-key="'+reselectKey+'"]');
           if(target){selectElement(target);target.scrollIntoView({block:"center"});}
@@ -568,7 +568,15 @@
           d.querySelector('[data-editor-added-index="'+reselectAddition+'"]')
             ?.scrollIntoView({block:"center"});
         }
-      } catch(e) {notice("The preview did not become editable. Please reload the editor.");}
+        const pending=state.pendingPreviewStatus;
+        state.pendingPreviewStatus="";
+        if(pending&&placementOk)updateStatus(pending);
+      } catch(e) {
+        state.pendingPreviewStatus="";
+        state.previewLoadIssue="Preview did not become editable · Review or reload before publishing";
+        updateStatus(state.previewLoadIssue);
+        notice("The page source may be loaded, but the preview did not become editable. Review the page before exporting or publishing, or reload the editor.","Preview not ready");
+      }
     };
     frame.srcdoc=previewMarkup();
     updateOutline();
