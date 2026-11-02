@@ -5060,7 +5060,7 @@
       directGithub.token=token;
       directGithub.login=user.login;
       $("directGithubSetup").hidden=true;
-      directGithubMessage("Connected as "+user.login+". Repository file read access confirmed; GitHub checks write permission when you publish. The token stays in this tab until you disconnect or close it.");
+      directGithubMessage("Connected as "+user.login+". Repository file read access confirmed; GitHub checks write permission when you publish. The token remains in editor memory until you disconnect, reload, or leave this page.");
     }catch(error){
       directGithub.token="";directGithub.login="";
       directGithubMessage(error.message||"Could not connect to GitHub.");
