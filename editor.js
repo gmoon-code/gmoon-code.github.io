@@ -6115,6 +6115,7 @@
         return;
       }
     }
+    const stagedAtRequest=state.stagedMedia;
     const token=++state.loadToken;
     updateStatus("Loading page source…");
     let previous=null;
@@ -6127,6 +6128,27 @@
       if(!/<main\b/i.test(source))throw new Error("The requested page has no main region.");
       const incoming=new DOMParser().parseFromString(source,"text/html");
       if(!incoming.querySelector("main"))throw new Error("The requested page could not be parsed with a main region.");
+      if(page!==state.page&&state.doc){
+        // Edits made while the request was in flight need their own save attempt.
+        const storedNow=saveDraft();
+        const changedNow=state.dirty.size||
+          state.sectionOrder.some((id,i)=>id!==state.originalSections[i])||
+          layoutGroups().length||state.additions.length||state.removals.length||state.blockOrders.length;
+        if(!storedNow&&changedNow){
+          $("pagePicker").value=state.page;
+          $("mobilePagePicker").value=state.page;
+          updateStatus("Page switch stopped · Current edits remain open");
+          notice("Recent edits could not be saved while the next page was loading. Export the current HTML before switching pages.","Page switch stopped");
+          return;
+        }
+      }
+      if(page!==state.page&&state.stagedMedia&&state.stagedMedia!==stagedAtRequest&&
+         !confirm("A different image was staged while this page was loading. Switching pages discards that new file. Continue?")){
+        $("pagePicker").value=state.page;
+        $("mobilePagePicker").value=state.page;
+        updateStatus("Page switch cancelled · Current page retained");
+        return;
+      }
       // Preserve the previous working draft if indexing or preview preparation
       // fails after the fetched source has been accepted.
       previous={
