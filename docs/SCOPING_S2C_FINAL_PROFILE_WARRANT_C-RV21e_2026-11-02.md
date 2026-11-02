@@ -1,0 +1,43 @@
+# Stage C-RV21e | Bounding programme-placement recoding and focal-language warrant
+
+**Date:** 2 November 2026. Continued from [C-RV21d](SCOPING_S2C_SOURCE_CROSSWALK_C-RV21d_2026-11-02.md). Original article-level checks were intentionally limited to the remaining identified programme and task-language coding candidates. The goal was to avoid confusing study intervention, school-level demographic information, ordinary mainstream science enrolment and a *documented language-related instructional placement*.
+
+## Exact records reviewed
+
+- The July 16 original author's **20-row S2C Learner Profile** and matching **S1A study IDs**, which coded five of 20 as having identifiable programme or instructional placement. They were S06 Cameron, S08 Kang, S09 Lo et al., S16 Zhang and S19 Lo & Fung. The July table coded S01 Pando, S04 Widing, S07 Menon, S10 Ryoo & Bedell, S11 Lara-Alecio, S17 Swanson and other studies as placement-negative.
+- The **12 August manuscript's Table 3** reports **seven** placements but does not include a study-ID roster for these entries; no final August S2C workbook was located during the previously documented Project/Library search.
+- [Widing, Nilsson and Enochson (2022), original journal page](https://www.icaseonline.net/journal/index.php/sei/article/view/406) and [original full-text PDF](https://www.diva-portal.org/smash/get/diva2%3A1711475/FULLTEXT01.pdf) describe three multilingual upper-secondary chemistry classes, students' first-language grouping, Swedish as the instructional language and modelling-based written concept descriptions. The required original PDF page-image screenshot request **timed out** in this stage, as in C-RV21a, so no successful figure/page-image inspection is claimed. Text from the original PDF and journal page was inspected.
+- [Ryoo and Bedell (2017), original publisher record](https://doi.org/10.1002/tea.21405) and the [April 2026 IES What Works Clearinghouse study record](https://ies.ed.gov/ncee/WWC/Study/94401), which reports **16 seventh-grade mainstream science classrooms** in two public middle schools, a mixed English-learner/non-English-learner sample and dynamic/static visualisation assignment.
+- [Lara-Alecio et al. (2018), original open journal text](https://www.mdpi.com/2227-7102/8/1/27), whose science literacy intervention was developed and assessed among middle-school English learners and other economically challenged students.
+- [Menon (2018), original ERIC archival study PDF](https://files.eric.ed.gov/fulltext/EJ1181627.pdf) and an original PDF page screenshot. The original source distinguishes general California school policy from actual classroom assessment-conversation data.
+- [Swanson, Bianchini and Lee (2014), author original repository PDF](https://escholarship.org/content/qt3bg9z756/qt3bg9z756.pdf) with a methods-page screenshot. This source's introductory Integrated Coordinated Science course enrolled all freshmen at the high school rather than naming a separate ELL programme.
+- The directly read [Pando (2024) original author article](https://doi.org/10.1080/09500782.2024.2348588) from C-RV21d, as positive calibration: **Grade 6 ESL instructional model**, prior K–5 dual-language schooling, and a described English-language task/instruction condition.
+
+## Distinction between evidence and inference
+
+| Study | Language programme/placement judgment | Grounded reason |
+| --- | --- | --- |
+| S01 Pando | **Explicit positive candidate** | Participants were specifically taught in a named ESL instructional model at Grade 6; the same study records their prior bilingual K–5 placement |
+| S04 Widing | **Not demonstrated as a distinct named programme** | Swedish-language chemistry in multilingual regular classes and a second-language learner designation identify the language situation, without specifying special bilingual/ESL/CLIL placement for the focal participants |
+| S10 Ryoo & Bedell | **Mainstream setting confirmed; code-rule ambiguity** | WWC and publisher describe regular/mainstream grade-seven science classes. Whether **mainstream science placement itself** is included as an 'instructional placement' category is a definitional question; the August manuscript examples emphasize named *language-related* arrangements |
+| S11 Lara-Alecio | **Instructional intervention confirmed; named programme not demonstrated** | Literacy-infused science curriculum, teacher professional development and ESL scaffolds are explicit elements of the tested intervention. This is not equivalent to documenting each learner's assignment to a distinct language-education programme |
+| S07 Menon | **No participant-specific placement confirmed** | Article recounts California statewide choices of mainstream versus structured English classes, but the observed participants' particular language-programme assignment is not established by that general description |
+| S17 Swanson | **General science-course setting confirmed; named language programme not demonstrated** | School's introductory Integrated Coordinated Science course enrolled all freshmen. Course structure is an ordinary science placement, not proof of a distinct ELL/bilingual programme |
+
+**Numerical status:** The original five July placement positives plus Pando yield **six source-identifiable candidate cases** under the earlier strict named programme rule. The original sources checked here do **not independently identify the further case** needed to reproduce the later manuscript's seven. This does not prove that the August 7/20 is wrong, since it may reflect a redefined placement rule or one of the other 20 studies not yet inspected for the updated assignment.
+
+**Focal task language:** C-RV21d established Pando as a newly explicit case. The Menon study's language analysis supports a spoken-language performance context but does not on its own specify whether every response language was recorded or how the August review operationalised 'reported comparably'. Lara-Alecio's emphasis on English academic language and the assessment of science through an integrated literacy curriculum makes it a **candidate**, but a generic assertion that the intervention improved ELs' achievement cannot substitute for actual task language and judgment-procedure evidence. The August manuscript's 18 of 20 focal-language total remains author-document corroborated, with earlier stage sources already confirming S05 and S20 task-language candidates. Do not guess that these exact studies were coded as positive absent their updated row-level memo.
+
+## Scholarly claim protection and writing review
+
+Re-read the published `research-scoping.html` evidence-form cards, reporting-language prose/table and methodology/limitations as an integrated section. Its 10/6/4 primary route groups are expressly attributed to the registered August preprint; the language/placement/previous-schooling table describes **what reports made available**, not population-level incidence of those characteristics. This framing remains factually and stylistically defensible. The author-reported **7/20** placement tally is accompanied by broad limits on cross-study comparison; the primary study-level mapping remains unresolved in the audit ledger.
+
+**Public website changes in C-RV21e: none.** No unsupported reversal of August figures was implemented, and no browser, print or whole-site full verification is claimed.
+
+## Exact next checkpoint
+
+**Stage C-RV22 | Shift out of bounded scoping-profile recurrence to independent action-research evidence and scholarship-integrity closure.** The remaining seventh placement and precise final S2C study-ID mapping should be returned to **only if the August final coded spreadsheet or explicit study-level author's rationale becomes accessible**. Additional speculative searches among older July-negative papers would not currently provide an authoritative mapping and risk mistaking an inference for the author's decision.
+
+Prioritise original **action-research** de-identified responses/rater-reconciliation documentation, ethics and permission records if appropriately accessible, alongside the current `research-action.html` prose; maintain clear author manuscript vs original data vs public source tiers. Afterwards continue high-impact 53-reference full-text scholarly claim checks, public email preference verification and live source/delivered-site consistency as separately tracked stages. None of these is silently marked completed by the scoping closure.
+
+**Overall academic website content audit: In progress.** C-RV21e documented the unresolved placement provenance without unnecessary rewriting, preserved user voice, and set a concrete next research-integrity stage.
