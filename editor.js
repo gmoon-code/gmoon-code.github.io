@@ -323,7 +323,7 @@
         state.blockOrders=validateBlockOrders(draft.blockOrders);
         applyBlockOrdersToWorking(state.blockOrders);
       }
-      updateStatus(state.dirty.size||state.removals.length?"Draft restored from this browser · Not published":"No changes · Not published");
+      updateStatus(state.dirty.size||state.removals.length||state.additions.length||state.blockOrders.length||layoutGroups().length||state.sectionOrder.some((id,i)=>id!==state.originalSections[i])?"Draft restored from this browser · Not published":"No changes · Not published");
     } catch(e) {
       notice("The saved draft could not be restored safely. The original page has been left available.","Draft mismatch");
     }
@@ -5060,7 +5060,7 @@
       directGithub.token=token;
       directGithub.login=user.login;
       $("directGithubSetup").hidden=true;
-      directGithubMessage("Connected as "+user.login+". Token is kept only until this tab closes or you disconnect.");
+      directGithubMessage("Connected as "+user.login+". Repository file read access confirmed; GitHub checks write permission when you publish. The token stays in this tab until you disconnect or close it.");
     }catch(error){
       directGithub.token="";directGithub.login="";
       directGithubMessage(error.message||"Could not connect to GitHub.");
@@ -5125,7 +5125,7 @@
       const link=document.createElement("a");
       link.href="https://github.com/"+DIRECT_REPO+"/commit/"+commit;
       link.target="_blank";link.rel="noopener noreferrer";
-      link.textContent="View published GitHub commit ↗";
+      link.textContent="View GitHub commit ↗";
       const live=document.createElement("a");
       live.href="https://gmoon-code.github.io/"+page;
       live.target="_blank";live.rel="noopener noreferrer";
@@ -5773,8 +5773,8 @@
       link.remove();
       setTimeout(()=>URL.revokeObjectURL(url),10000);
       updateStatus(state.stagedMedia?
-        "HTML exported. Download the staged image separately · Not published":
-        "Edited HTML exported · Not published");
+        "HTML download requested. Download the staged image separately · Not published":
+        "Edited HTML download requested · Not published");
     } catch(e) {
       notice(e.message||"Could not export this page safely.","Export stopped");
     }
@@ -6212,7 +6212,7 @@
     $("publisherSummary").addEventListener("input",updatePublishControls);
     publishMessage(publisherConfigured()?
       "Not connected. Sign in with your authorized GitHub account.":
-      "GitHub publishing is not configured. Export HTML remains available.");
+      "The optional pull-request service is not configured. Direct GitHub publishing and HTML export remain separate options.");
     updatePublishControls();
     processPublisherCallback();
     window.addEventListener("beforeunload",()=>{if (state.page) saveDraft();});
