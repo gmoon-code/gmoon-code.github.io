@@ -74,7 +74,7 @@
   const state = {
     page:null,source:"",doc:null,frameDoc:null,original:new Map(),dirty:new Set(),
     selected:null,history:[],redo:[],fingerprint:"",loadToken:0,saveTimer:null,staleDraft:false,
-    originalSections:[],sectionGroups:[],sectionOrder:[],draftSaveIssue:"",mediaAssets:null,mediaPromise:null,
+    originalSections:[],sectionGroups:[],sectionOrder:[],draftSaveIssue:"",draftRecoveryIssue:"",mediaAssets:null,mediaPromise:null,
     stagedMedia:null,responsiveGroup:null,responsiveGroups:[],additions:[],resizeStart:null,imageSliderActive:false,
     pageFindKeys:[],pageFindIndex:-1,mediaChooseInsert:false,removals:[],selectedAddition:null,blockOrders:[],columnPointer:null,blockPointer:null,addedPointer:null,addedWidthPointer:null,sourceWidthPointer:null,addedBlockSliderActive:false
   };
@@ -255,10 +255,10 @@
     if(state.staleDraft){
       if(!changed){
         state.draftSaveIssue="";
-        updateStatus("Older local draft exists · Not applied");
+        updateStatus(state.draftRecoveryIssue||"Older local draft exists · Not applied");
         return true;
       }
-      state.draftSaveIssue="Older browser draft retained · Current edits not saved; export HTML before leaving";
+      state.draftSaveIssue=state.draftRecoveryIssue?"Unapplied browser draft retained · Current edits not saved; export HTML before leaving":"Older browser draft retained · Current edits not saved; export HTML before leaving";
       updateStatus(state.draftSaveIssue);
       return false;
     }
@@ -5839,7 +5839,7 @@
   }
 
   function resetPage() {
-    if (!state.doc||!confirm(state.staleDraft?"Discard current edits and delete the older browser draft saved for this page?":"Discard all local changes to this page?")) return;
+    if (!state.doc||!confirm(state.draftRecoveryIssue?"Discard current edits and delete the browser draft that could not be restored?":state.staleDraft?"Discard current edits and delete the older browser draft saved for this page?":"Discard all local changes to this page?")) return;
     clearStagedMedia();
     state.doc=new DOMParser().parseFromString(state.source,"text/html");
     initialIndex();
@@ -5847,6 +5847,7 @@
     state.history.length=0;
     state.redo.length=0;
     state.staleDraft=false;
+    state.draftRecoveryIssue="";
     state.responsiveGroup=null;state.responsiveGroups=[];state.additions=[];state.removals=[];state.blockOrders=[];
     renderPreview();
     saveDraft();
@@ -6028,6 +6029,7 @@
       if (!/<main\b/i.test(source)) throw new Error("The requested page has no main region.");
       state.page=page;
       state.draftSaveIssue="";
+      state.draftRecoveryIssue="";
       $("mobilePagePicker").value=page;
       state.source=source;
       state.fingerprint=hashText(source);
@@ -6042,7 +6044,7 @@
       const transferred=consumeFluidTextHandoff(page);
       renderPreview();
       const moved=state.sectionOrder.some((id,i)=>id!==state.originalSections[i]);
-      updateStatus(transferred?"Verified content, style and/or responsive layout transferred · Not published":state.dirty.size||moved||layoutGroups().length||state.additions.length||state.removals.length||state.blockOrders.length?"Draft restored · Not published":state.staleDraft?"Older local draft exists · Not applied":"Ready to edit · Not published");
+      updateStatus(transferred?"Verified content, style and/or responsive layout transferred · Not published":state.dirty.size||moved||layoutGroups().length||state.additions.length||state.removals.length||state.blockOrders.length?"Draft restored · Not published":state.staleDraft?(state.draftRecoveryIssue||"Older local draft exists · Not applied"):"Ready to edit · Not published");
     } catch(e) {
       notice("Could not load "+page+". "+e.message,"Page load failed");
       if (state.page) {
