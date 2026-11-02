@@ -99,12 +99,12 @@
       if(response.status===403||response.status===429){
         if(/secondary rate limit|abuse detection|too many requests/i.test(message))
           throw Error("GitHub temporarily limited the publishing requests during "+label+
-            ". Your drafts are safe. "+
+            ". Your current drafts remain open in this Studio session. "+
             (retryAfter?"GitHub requested a retry after "+retryAfter+" seconds. ":"")+
             "Try Publish again after the limit clears. GitHub says: "+message);
         if(remaining==="0"||/API rate limit exceeded|rate limit exceeded/i.test(message))
           throw Error("GitHub's API request allowance has been reached during "+label+
-            ". Your drafts are safe. Try again when the limit resets. GitHub says: "+message);
+            ". Your current drafts remain open in this Studio session. Try again when the limit resets. GitHub says: "+message);
         if(/Resource not accessible by personal access token|requires authentication|must have|permission|insufficient/i.test(message))
           throw Error("This token cannot complete "+label+
             ". In GitHub token settings, allow this repository and set Contents to Read and write. "+
@@ -183,7 +183,7 @@
     setupParentChoices();
     const restoredPath=await window.WebsiteStudioPlus?.restore?.();
     await switchPage(restoredPath||"index.html");
-    toast("Connected as "+OWNER+". Your edits stay private until you publish.");
+    toast("Connected as "+OWNER+". Your edits remain unpublished until you publish.");
   }
   function showLoginError(message){
     const el=$("loginError"); el.hidden=false; el.textContent=message;
@@ -915,7 +915,7 @@
         }
         if(expectedSha&&actualSha!==expectedSha)
           throw Error("Another change updated "+path+
-            " after you opened it. Your draft is safe; review the newer version before publishing.");
+            " after you opened it. Your draft remains open in Studio; review the newer version before publishing.");
         if(!expectedSha&&actualSha)
           throw Error(path+" already exists. Choose another page address.");
       }
