@@ -395,8 +395,8 @@
     return fragment;
   }
   function updateNavPreview(){
-    // Navigation edits are applied to every public page together on Publish.
-    $("saveStatus").title="Menu changes will update all pages when published.";
+    // Navigation edits apply to Studio-listed HTML pages and the 404 page on Publish.
+    $("saveStatus").title="Menu changes will update Studio-listed pages when published.";
   }
   function navEdited(){
     persistNavDraft();
