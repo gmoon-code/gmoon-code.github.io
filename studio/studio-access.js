@@ -17,8 +17,8 @@
   dialog.innerHTML=[
     '<div class="dialog-heading"><h2 id="studioAccessTitle">GitHub publishing access</h2>',
     '<button type="button" id="accessClose" class="plain-button">Close</button></div>',
-    '<p class="micro-help">Your unpublished drafts stay in this Studio tab. Do not sign out to change your access token.</p>',
-    '<p class="micro-help">A token can open the website but still lack the permission needed to publish. Test it here without changing the live site.</p>',
+    '<p class="micro-help">You can update your token without signing out or clearing this session’s drafts. When browser recovery is available, a local draft copy may also be saved.</p>',
+    '<p class="micro-help">A token may connect to GitHub without permission to write to this repository. Check its Git object access here without changing any published page.</p>',
     '<button type="button" id="accessTestBtn" class="small-button">Check current publishing permission</button>',
     '<p id="accessCheckResult" role="status" class="access-result" aria-live="polite"></p>',
     '<details class="access-token-details"><summary>Replace my GitHub access token</summary>',
@@ -60,7 +60,7 @@
         body:{content:"Website Studio publishing permission check",encoding:"utf-8"}
       });
       if(!probe.sha)throw Error("GitHub did not confirm the permission check.");
-      showResult("Publishing write access verified. You can close this panel and try Publish changes again.");
+      showResult("GitHub accepted an unattached Git object. This does not test the full publishing process. You can close this panel and try Publish changes again.");
     }catch(error){
       showResult("GitHub write test failed. "+(error?.message||String(error)),true);
     }finally{
@@ -90,7 +90,7 @@
       state.token=oldToken;
       setAccessToken(next);
       clearToken();
-      showResult("New token verified and connected. Your current drafts are unchanged. You can now publish.");
+      showResult("New token passed the GitHub write check and is connected. Your current drafts are unchanged. Review your changes and try publishing.");
       toast("GitHub access updated without signing out or clearing your drafts.");
     }catch(error){
       state.token=oldToken;
