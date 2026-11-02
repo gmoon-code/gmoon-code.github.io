@@ -1,12 +1,12 @@
 {
-  "sourceHead": "ecd16a1c35ced949a4c6c1658a30efadae077472",
+  "sourceHead": "9b710918cb09678c4b337d247cab12ebd1e255f1",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
-  "verifiedExactMatches": 23,
-  "httpErrors": 1,
+  "verifiedExactMatches": 24,
+  "httpErrors": 0,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-ecd16a1c35ce",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-9b710918cb09",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -14,40 +14,34 @@
   "auditEvidence": {
     "links": {
       "report": "docs/PUBLIC_LINKGRAPH_LATEST_RESULTS.json",
-      "run": "41390363734",
-      "head_sha": "d3ac532121019918aef856b40bc6f2a15f68e138",
+      "run": "41396577439",
+      "head_sha": "ecd16a1c35ced949a4c6c1658a30efadae077472",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "problems": 0
       }
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "41390363671",
-      "head_sha": "d3ac532121019918aef856b40bc6f2a15f68e138",
+      "run": "41396577393",
+      "head_sha": "ecd16a1c35ced949a4c6c1658a30efadae077472",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
-        "issues": 43
+        "issues": 42
       },
       "counts": {
-        "reachable": 72,
-        "unverified": 43
+        "reachable": 73,
+        "unverified": 42
       }
     },
     "metadata": {
       "report": "docs/RESEARCH_METADATA_LATEST_RESULTS.json",
-      "run": "41390363808",
-      "head_sha": "d3ac532121019918aef856b40bc6f2a15f68e138",
+      "run": "41396577432",
+      "head_sha": "ecd16a1c35ced949a4c6c1658a30efadae077472",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "unverified": 0
       },
@@ -59,36 +53,30 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "41390363788",
-      "head_sha": "d3ac532121019918aef856b40bc6f2a15f68e138",
+      "run": "41396577425",
+      "head_sha": "ecd16a1c35ced949a4c6c1658a30efadae077472",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0
       }
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "41390363727",
-      "head_sha": "d3ac532121019918aef856b40bc6f2a15f68e138",
+      "run": "41396577455",
+      "head_sha": "ecd16a1c35ced949a4c6c1658a30efadae077472",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0
       }
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "41390363756",
-      "head_sha": "d3ac532121019918aef856b40bc6f2a15f68e138",
+      "run": "41396577351",
+      "head_sha": "ecd16a1c35ced949a4c6c1658a30efadae077472",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0,
         "combinedStressFailures": 0
@@ -96,12 +84,10 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "41390363673",
-      "head_sha": "d3ac532121019918aef856b40bc6f2a15f68e138",
+      "run": "41396577357",
+      "head_sha": "ecd16a1c35ced949a4c6c1658a30efadae077472",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0,
         "axeViolations": 0
@@ -114,116 +100,11 @@
       "note": "U1 route audit documents successful run 40825886279; legacy utility machine report refers to an early missing-script failure. Do not treat it as latest successful evidence."
     }
   },
-  "sourceDriftSinceAudits": [
-    {
-      "category": "links",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ]
-    },
-    {
-      "category": "external",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ]
-    },
-    {
-      "category": "metadata",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ]
-    },
-    {
-      "category": "reflow",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ]
-    },
-    {
-      "category": "engines",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ]
-    },
-    {
-      "category": "typography",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ]
-    },
-    {
-      "category": "interactions",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ]
-    }
-  ],
-  "pass": false,
-  "errors": [
-    {
-      "path": "research.html",
-      "errors": [
-        "deployed bytes differ from checked-out production source"
-      ],
-      "firstDiff": [
-        "--- source\n",
-        "+++ deployed\n",
-        "@@ -105,3 +105,3 @@\n",
-        "     <p>People can know similar things while drawing on different relationships to organize an explanation. In research with Menominee and European American fish experts, Menominee participants more often mentioned habitat when explaining how they grouped local fish. When the researchers explicitly asked both groups to sort by habitat, strong agreement emerged without a reliable difference between them (<a href=\"#reading-cultural-mosaics\">Bang et al., 2007</a>). The earlier difference therefore concerned which ecological relationships participants brought forward on their own. It cautions me against interpreting an unmentioned relationship as necessarily unknown. Later scholarship places such differences within cultural practices and examines the assumptions about nature that science education brings into classrooms (<a href=\"#reading-bang-medin\">Bang &amp; Medin, 2010</a>; <a href=\"#reading-bang\">Bang et al., 2012</a>).</p>",
-        "-    <p>The fish studies concern particular communities with their own histories. In other settings, researchers have examined how participants' commitments and feelings enter into their accounts of science. Interviews with Muslim secondary science teachers in Canada and Pakistan examined how religious commitments informed their views of evolution and its teaching, while also identifying gaps in some teachers' understanding of evolutionary mechanisms (<a href=\"#reading-asghar\">Asghar, 2013</a>). A study comparing non-science undergraduates with A-level physics students examined how their feelings about radioactivity appeared in their accounts of the subject (<a href=\"#reading-alsop\">Alsop &amp; Watts, 2000</a>). In my teaching, I would need to consider those experiences while examining the scientific adequacy of students' explanations.</p>",
-        "+    <p>The fish studies concern particular communities with their own histories. In other settings, researchers have examined how participants' commitments and feelings enter into their accounts of science. Interviews with Muslim secondary science teachers in Canada and Pakistan examined how religious commitments informed their views of evolution and its teaching, while also identifying gaps in some teachers' understanding of evolutionary mechanisms (<a href=\"#reading-asghar\">Asghar, 2013</a>). In a separate study, two groups of physics learners approached radioactivity in ways that the researchers examined in relation to their feelings about the subject (<a href=\"#reading-alsop\">Alsop &amp; Watts, 2000</a>). In my teaching, I would need to consider those experiences while examining the scientific adequacy of students' explanations.</p>",
-        "     <p>Children attending community science clubs in Canada valued hands-on activities and the relationships they formed. Their accounts also showed how club science and school science could be treated as separate, making it difficult to connect the enjoyment of club activities with learning at school (<a href=\"#reading-burke\">Burke &amp; Navas Iannini, 2021</a>). I wonder how this distinction affects the scientific work students feel able to pursue when they move between settings.</p>"
-      ]
-    },
-    {
-      "sourceDrift": [
-        {
-          "category": "links",
-          "sourceModifiedSinceAudit": [
-            "research.html"
-          ]
-        },
-        {
-          "category": "external",
-          "sourceModifiedSinceAudit": [
-            "research.html"
-          ]
-        },
-        {
-          "category": "metadata",
-          "sourceModifiedSinceAudit": [
-            "research.html"
-          ]
-        },
-        {
-          "category": "reflow",
-          "sourceModifiedSinceAudit": [
-            "research.html"
-          ]
-        },
-        {
-          "category": "engines",
-          "sourceModifiedSinceAudit": [
-            "research.html"
-          ]
-        },
-        {
-          "category": "typography",
-          "sourceModifiedSinceAudit": [
-            "research.html"
-          ]
-        },
-        {
-          "category": "interactions",
-          "sourceModifiedSinceAudit": [
-            "research.html"
-          ]
-        }
-      ]
-    }
-  ],
+  "sourceDriftSinceAudits": [],
+  "pass": true,
+  "errors": [],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41396577446",
-  "run_sha": "ecd16a1c35ced949a4c6c1658a30efadae077472",
-  "exit_code": "1"
+  "workflow_run_id": "41402943877",
+  "run_sha": "9b710918cb09678c4b337d247cab12ebd1e255f1",
+  "exit_code": "0"
 }
