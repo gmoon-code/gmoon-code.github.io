@@ -55,7 +55,7 @@ aside .palette button{text-align:left}
 </style>
 <a class="skip-link" href="#workspace">Skip to canvas</a>
 <header>
- <div class="editor-ident"><h1>Fluid layout lab</h1><p>Visual layout drafts · private to this browser · unpublished</p></div>
+ <div class="editor-ident"><h1>Fluid layout lab</h1><p>Browser-local layout drafts · not published</p></div>
  <div class="actions" aria-label="Editor toolbar">
   <div class="action-group" role="group" aria-label="Edit history">
    <button id="undo" type="button">Undo</button><button id="redo" type="button">Redo</button><button id="reset" type="button">Reset</button><button id="save" type="button">Save now</button>
@@ -63,7 +63,7 @@ aside .palette button{text-align:left}
   <div class="action-group" role="group" aria-label="Review layout">
    <button id="viewSitePreview" type="button" class="action-primary">Preview inside website</button>
    <button id="reviewPatch" type="button">Review text edits</button>
-   <button id="exportSitePreview" type="button">Full-site preview file</button><button id="exportAppliedPreview" type="button">Publishable-edits review file</button>
+   <button id="exportSitePreview" type="button">Selected-page preview file</button><button id="exportAppliedPreview" type="button">Publishable-edits review file</button>
   </div>
   <div class="action-group" role="group" aria-label="Export drafts">
    <button id="export" type="button">Export JSON</button><button id="exportHtml" type="button">Layout HTML</button>
@@ -80,7 +80,7 @@ aside .palette button{text-align:left}
 <dialog id="sitePreviewDialog" aria-label="In-context website layout preview">
  <div class="review-bar"><div><h2>Website layout review</h2><p>Experimental preview only. The live website remains unchanged.</p><p id="sitePreviewAudit" role="status"></p></div>
  <div class="actions"><button id="previewSiteOriginal" type="button">Original</button><button id="previewSiteProposal" type="button">Proposal</button><button id="previewSiteApplied" type="button">Publishable edits</button><button id="previewSiteDesktop" type="button">Desktop</button><button id="previewSiteMobile" type="button">Mobile</button><button id="closeSitePreview" type="button">Close preview</button></div></div>
- <iframe id="sitePreviewFrame" sandbox="" title="Full website with experimental layout"></iframe>
+ <iframe id="sitePreviewFrame" sandbox="" title="Selected website page with experimental layout"></iframe>
 </dialog>
 <script src="responsive-layout.js"></script>
 <script>
@@ -854,7 +854,7 @@ async function buildSiteLayoutReviewHtml(){
 async function exportAppliedPageReview(){
  const review=await buildSiteLayoutReviewHtml();
  downloadFile(sourcePage.replace(/\.html$/,'.applied-review.html'),review.applied,'text/html');
- $('status').textContent='Downloaded a full-site review of publishable text and style edits. No website files were modified.';
+ $('status').textContent='Downloaded a review of publishable edits for the selected page. No website files were modified.';
 }
 $('exportAppliedPreview').onclick=async()=>{
  try{await exportAppliedPageReview()}catch(error){$('status').textContent='Publishable-edits review blocked: '+error.message}
@@ -862,9 +862,9 @@ $('exportAppliedPreview').onclick=async()=>{
 async function exportSiteLayoutPreview(){
  const review=await buildSiteLayoutReviewHtml();
  downloadFile(sourcePage.replace(/\.html$/,'.layout-review.html'),review.proposed,'text/html');
- $('status').textContent='Downloaded full-site layout review. The live page and publishing draft remain unchanged.';
+ $('status').textContent='Downloaded the selected page’s layout review. The live page and publishing draft remain unchanged.';
 }
-$('exportSitePreview').onclick=async()=>{try{await exportSiteLayoutPreview()}catch(error){$('status').textContent='Full-site preview blocked: '+error.message}};
+$('exportSitePreview').onclick=async()=>{try{await exportSiteLayoutPreview()}catch(error){$('status').textContent='Selected-page preview blocked: '+error.message}};
 let sitePreviewVersions=null;
 $('viewSitePreview').onclick=async()=>{
  const button=$('viewSitePreview');button.disabled=true;
