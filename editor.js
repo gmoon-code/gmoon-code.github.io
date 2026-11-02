@@ -6004,7 +6004,18 @@
       $("pagePicker").value=state.page;
       $("mobilePagePicker").value=state.page;return;
     }
-    if (state.doc) saveDraft();
+    if (state.doc) {
+      const stored=saveDraft();
+      const unsavedEdits=state.dirty.size||
+        state.sectionOrder.some((id,i)=>id!==state.originalSections[i])||
+        layoutGroups().length||state.additions.length||state.removals.length||state.blockOrders.length;
+      if(page!==state.page&&!stored&&unsavedEdits){
+        notice("Edits to the current page remain open, but browser storage could not save them or an older draft was retained. Export edited HTML before switching pages. To leave without these edits, reset the current page first.","Draft not saved");
+        $("pagePicker").value=state.page;
+        $("mobilePagePicker").value=state.page;
+        return;
+      }
+    }
     if(page!==state.page)clearStagedMedia();
     const token=++state.loadToken;
     updateStatus("Loading page…");
@@ -6016,6 +6027,7 @@
       if (token!==state.loadToken) return;
       if (!/<main\b/i.test(source)) throw new Error("The requested page has no main region.");
       state.page=page;
+      state.draftSaveIssue="";
       $("mobilePagePicker").value=page;
       state.source=source;
       state.fingerprint=hashText(source);
@@ -6232,7 +6244,14 @@
       "The optional pull-request service is not configured. Direct GitHub publishing and HTML export remain separate options.");
     updatePublishControls();
     processPublisherCallback();
-    window.addEventListener("beforeunload",()=>{if (state.page) saveDraft();});
+    window.addEventListener("beforeunload",event=>{
+      if(!state.page||saveDraft())return;
+      const unsavedEdits=state.dirty.size||
+        state.sectionOrder.some((id,i)=>id!==state.originalSections[i])||
+        layoutGroups().length||state.additions.length||state.removals.length||state.blockOrders.length;
+      // Browsers may offer a native leave-page confirmation after user interaction.
+      if(unsavedEdits){event.preventDefault();event.returnValue="";}
+    });
     const requestedPage=new URLSearchParams(window.location.search).get("page");
     const pageOptions=[...$("pagePicker").options].map(option=>option.value);
     if(requestedPage&&pageOptions.includes(requestedPage))$("pagePicker").value=requestedPage;
