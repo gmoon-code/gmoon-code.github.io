@@ -5800,8 +5800,8 @@
     }
     if(state.stagedMedia){
       const node=document.createElement("p");
-      node.textContent="Staged image · "+state.stagedMedia.path+
-        ". The HTML export refers to this assets/ path. Download the image separately and include it in a reviewed repository update.";
+      node.textContent="Image staged at "+state.stagedMedia.path+
+        ". If the exported HTML still references this path, download the image separately and include it in a reviewed repository update.";
       list.appendChild(node);
     }
     if(reordered){
@@ -5836,9 +5836,15 @@
       link.click();
       link.remove();
       setTimeout(()=>URL.revokeObjectURL(url),10000);
-      updateStatus(state.stagedMedia?
+      const stagedPath=state.stagedMedia?.path;
+      const stagedReferenced=!!stagedPath&&(
+        result.includes('src="'+stagedPath+'"')||
+        result.includes("src='"+stagedPath+"'"));
+      updateStatus(stagedReferenced?
         "HTML download requested · Download the staged image separately and retain its assets/ path · Not published":
-        "Edited HTML download requested · Not published");
+        stagedPath?
+          "HTML download requested · Staged image not referenced in this HTML · Not published":
+          "Edited HTML download requested · Not published");
     } catch(e) {
       notice(e.message||"Could not export this page safely.","Export stopped");
     }
