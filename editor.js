@@ -496,7 +496,10 @@
     $("selectionTag").textContent="Nothing selected";
     state.frameDoc?.getElementById("moon-free-selection")?.remove();
     const frame=$("pageFrame");
+    const previewLoadToken=state.loadToken;
     frame.onload=function () {
+      // A late iframe load must not override the newer page request's status.
+      if(previewLoadToken!==state.loadToken)return;
       try {
         state.frameDoc=frame.contentDocument;
         const d=state.frameDoc;
@@ -556,6 +559,7 @@
         refreshPageFind();
         updateBrowseControls();
         // Previously saved free positions must be checked after every load.
+        const previousPreviewIssue=state.previewLoadIssue;
         const placementOk=verifyFreeCanvasPlacement();
         state.previewLoadIssue=placementOk?"":"Canvas placement mismatch · Review this layout before publishing";
         if(!placementOk)updateStatus(state.previewLoadIssue);
@@ -571,6 +575,8 @@
         const pending=state.pendingPreviewStatus;
         state.pendingPreviewStatus="";
         if(pending&&placementOk)updateStatus(pending);
+        else if(previousPreviewIssue&&placementOk)
+          updateStatus("Preview editable again · Not published");
       } catch(e) {
         state.pendingPreviewStatus="";
         state.previewLoadIssue="Preview did not become editable · Review or reload before publishing";
