@@ -1,0 +1,39 @@
+# Stage C-RV21a | Source examination of two reclassified studies
+
+**Date:** 2 November 2026. Continued from [C-RV20](SCOPING_REGISTERED_PREPRINT_VERSION_AUDIT_C-RV20_2026-11-02.md). Scope is specifically the two August primary-evidence-form recodings, not a fresh complete 20-study chart.
+
+## Current August preprint classification and provenance
+
+The [fresh successful Crossref metadata run 41367250211](https://github.com/gmoon-code/gmoon-code.github.io/actions/runs/41367250211) establishes that the DOI-posted August preprint's registered abstract reports **10 written, 6 interactional and 4 representational** studies. The 12 August author manuscript's Table 1 classifies S03 (Fine 2022) and S04 (Widing et al. 2022) as primarily written, whereas the author's July charting workbook respectively classified them as interactional and representational. These two switches account exactly for the 8/7/5 to 10/6/4 change.
+
+The manuscript uses its *own analytic selection of the dominant warrant*, rather than assuming every study has only one form of student work. Evidence-form attribution must therefore be examined in relation to what the source article actually analysed and the claim the scoping reviewer is inferring.
+
+## S04 | Widing, Nilsson and Granklint Enochson (2022)
+
+**Primary article:** [Widing et al., *Science Education International* 33(2), 181–191](https://www.diva-portal.org/smash/get/diva2%3A1711475/FULLTEXT01.pdf), DOI [10.33828/sei.v33.i2.6](https://doi.org/10.33828/sei.v33.i2.6). Original PDF full text was retrieved through the public scholarly web reader. Its page-image screenshot operation was attempted but **timed out**, so no visual page-layout verification is claimed. The publication's [official journal abstract](https://www.icaseonline.net/journal/index.php/sei/article/view/406) also corroborates the study design.
+
+**Original methods / primary evidence:** Three multilingual upper-secondary chemistry classes included 16 second-language learners and 14 first-language learners. Students supplied **written descriptions of 14 non-spontaneous polymer concepts before and after modelling activity**; researchers also collected group-audio recordings and photographs of the models. Inductive analysis of the concept descriptions provided categories, used subsequently to analyse modelling discussions and representations. The research question asked how modelling affected learners' **descriptions** of polymer chemistry concepts. The article reports 65% of second-language learners' descriptions showed greater clarity and 45% increased use of chemistry concepts. These percentages are original paper outcomes, not claims of causal intervention effectiveness established by the author's scoping website.
+
+**Classification judgment:** The August choice of written/constructed response as *dominant measured outcome* is scientifically defensible when the scoping synthesis tracks written before/after concept descriptions as the performance supporting its claim. The July representation-based code was also understandable as a characterization of the instructional process through which the descriptions changed. Both design elements must remain recognizable. The public website's brief evidence-form classification now explicitly notes that other forms could have been used in the same study, reducing the risk of flattening this distinction.
+
+**Prior-schooling check:** The original methods explicitly state the 16 second-language learners had lived in Sweden **3–6 years** and attended Swedish schools for approximately equivalent lengths of time. This supports **one source-level instance** of reported prior schooling in the later author's three-study tally; it does **not** independently verify the other two studies or prove the updated manuscript's reporting-category rule was applied uniformly.
+
+## S03 | Fine (2022)
+
+**Published original abstract:** [Fine, *Journal of Language, Identity & Education* 21(3), 191–211](https://www.tandfonline.com/doi/full/10.1080/15348458.2022.2058858), DOI [10.1080/15348458.2022.2058858](https://doi.org/10.1080/15348458.2022.2058858). The original publisher abstract was retrieved; an attempt to obtain the full page returned **403** through the available web reader. A contemporary [science education review](https://onlinelibrary.wiley.com/doi/full/10.1002/sce.21791) independently places this work in the teacher translanguaging-assessment co-design literature, describing teachers' changed interpretation of multilingual learners' contributions.
+
+**Actual research object from accessible publisher text:** The abstract identifies illustrative **teacher–researcher conversations** in the Reflect and Modify phase of four assessment co-design cycles, with findings emphasizing one teacher's developing interpretive power and agentive practice. Student science formative-assessment artifacts were part of the context for the dialogue. The accessible abstract does not independently establish that students' **written responses** were the primary analysed performance supporting a direct claim about the students' science understanding.
+
+**Unresolved high-priority methodological question:** The August manuscript assigns this work the written/task-response evidence route. Its earlier July code was interactional, closer to the data-analysis description available in the publisher abstract. If the study's actual empirical warrant concerns teacher–researcher interpretation rather than a direct student science-understanding inference, it may also warrant revisiting the review's **eligibility boundary**, not merely its dominant evidence-form code. This is a *possible* mismatch, not a demonstrated mistake in the full study: the complete original paper and the August charting rationale have not been examined together. Do not revise the source author's article description, the preprint's registered abstract or the website's overall counts without that further review.
+
+## Scholarly-editorial decision and verification
+
+**No further public text edit was justified in this stage.** C-RV20 already aligned `research-scoping.html` with the publicly registered abstract and clearly attributes categories to the preprint's own classification. The Widing classification has primary-methods support, while Fine remains a real interpretive and possible eligibility question. Preserve the explanatory power of different evidence forms rather than changing the public numbers back to an obsolete workbook.
+
+Evidence tiers: Widing original PDF text **directly consulted**, publisher journal record corroborated, page screenshot **not obtained** after attempted timeout. Fine original publisher **abstract directly consulted**, full text **not retrieved**, secondary scholarly review corroborated the teacher-interpretation focus. No 20-study full-text recharting or live browser page test was completed.
+
+## Exact next checkpoint
+
+**Stage C-RV21b | Fine (2022) full-text eligibility, coding warrant and learner-profile rows.** Locate an authorized full copy or a sufficient original study methods/findings extract; ask whether and how student work supported an analyzable claim about science understanding and whether task-response was its dominant warrant. Check the final August charting rationale if accessible. Then independently inspect the other two source articles supporting the August manuscript's **3 prior-schooling** tally and the additional focal-language/placement recodings, preserving the distinction between manuscript consistency and independently verified source coding. If full text or updated chart is inaccessible, mark the corresponding claims *Blocked* or *Author-manuscript corroborated* rather than Fully verified.
+
+Action-research confidential primary/ethics evidence, remaining 53-reference source tiers and public delivered-site parity continue as distinct unresolved tracks. **Overall audit status remains In progress.**
