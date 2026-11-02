@@ -1,12 +1,12 @@
 {
-  "sourceHead": "8d234d567c2ce7630c596490017cb3c7eb2f9a8e",
+  "sourceHead": "f11b61d1d3a1f6a72f9ad72233b7425b0f936b23",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
-  "verifiedExactMatches": 23,
-  "httpErrors": 1,
+  "verifiedExactMatches": 24,
+  "httpErrors": 0,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-8d234d567c2c",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-f11b61d1d3a1",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -14,24 +14,20 @@
   "auditEvidence": {
     "links": {
       "report": "docs/PUBLIC_LINKGRAPH_LATEST_RESULTS.json",
-      "run": "41366000998",
-      "head_sha": "d36e4b518d14eeb66900bb036b1f9a5dd23b2c02",
+      "run": "41367250227",
+      "head_sha": "8d234d567c2ce7630c596490017cb3c7eb2f9a8e",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research-scoping.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "problems": 0
       }
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "41366000963",
-      "head_sha": "d36e4b518d14eeb66900bb036b1f9a5dd23b2c02",
+      "run": "41367250415",
+      "head_sha": "8d234d567c2ce7630c596490017cb3c7eb2f9a8e",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research-scoping.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "issues": 42
       },
@@ -42,12 +38,10 @@
     },
     "metadata": {
       "report": "docs/RESEARCH_METADATA_LATEST_RESULTS.json",
-      "run": "41367071570",
-      "head_sha": "c90379391a1602326806d2398aec1882b29ba0dc",
+      "run": "41367250211",
+      "head_sha": "8d234d567c2ce7630c596490017cb3c7eb2f9a8e",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research-scoping.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "unverified": 0
       },
@@ -59,36 +53,30 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "41366000907",
-      "head_sha": "d36e4b518d14eeb66900bb036b1f9a5dd23b2c02",
+      "run": "41367250242",
+      "head_sha": "8d234d567c2ce7630c596490017cb3c7eb2f9a8e",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research-scoping.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0
       }
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "41366001061",
-      "head_sha": "d36e4b518d14eeb66900bb036b1f9a5dd23b2c02",
+      "run": "41367250251",
+      "head_sha": "8d234d567c2ce7630c596490017cb3c7eb2f9a8e",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research-scoping.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0
       }
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "41366001000",
-      "head_sha": "d36e4b518d14eeb66900bb036b1f9a5dd23b2c02",
+      "run": "41367250226",
+      "head_sha": "8d234d567c2ce7630c596490017cb3c7eb2f9a8e",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research-scoping.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0,
         "combinedStressFailures": 0
@@ -96,12 +84,10 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "41366000999",
-      "head_sha": "d36e4b518d14eeb66900bb036b1f9a5dd23b2c02",
+      "run": "41367250322",
+      "head_sha": "8d234d567c2ce7630c596490017cb3c7eb2f9a8e",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research-scoping.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0,
         "axeViolations": 0
@@ -114,125 +100,11 @@
       "note": "U1 route audit documents successful run 40825886279; legacy utility machine report refers to an early missing-script failure. Do not treat it as latest successful evidence."
     }
   },
-  "sourceDriftSinceAudits": [
-    {
-      "category": "links",
-      "sourceModifiedSinceAudit": [
-        "research-scoping.html"
-      ]
-    },
-    {
-      "category": "external",
-      "sourceModifiedSinceAudit": [
-        "research-scoping.html"
-      ]
-    },
-    {
-      "category": "metadata",
-      "sourceModifiedSinceAudit": [
-        "research-scoping.html"
-      ]
-    },
-    {
-      "category": "reflow",
-      "sourceModifiedSinceAudit": [
-        "research-scoping.html"
-      ]
-    },
-    {
-      "category": "engines",
-      "sourceModifiedSinceAudit": [
-        "research-scoping.html"
-      ]
-    },
-    {
-      "category": "typography",
-      "sourceModifiedSinceAudit": [
-        "research-scoping.html"
-      ]
-    },
-    {
-      "category": "interactions",
-      "sourceModifiedSinceAudit": [
-        "research-scoping.html"
-      ]
-    }
-  ],
-  "pass": false,
-  "errors": [
-    {
-      "path": "research-scoping.html",
-      "errors": [
-        "deployed bytes differ from checked-out production source"
-      ],
-      "firstDiff": [
-        "--- source\n",
-        "+++ deployed\n",
-        "@@ -97,3 +97,3 @@\n",
-        "     <h2>Forms of evidence in the included studies</h2>",
-        "-    <p>The counts below follow the classifications reported in the August 2026 preprint. Each of the 20 studies appears once according to its primary evidence form, although some studies used additional forms that I recorded separately.</p>",
-        "+    <p>Each of the 20 studies appears once below, according to the form of student work most central to its analysis. I also recorded other evidence forms used within the same study.</p>",
-        "   </div>",
-        "@@ -101,3 +101,3 @@\n",
-        "     <article class=\"research-route-card\">",
-        "-      <p class=\"research-route-count\"><strong>10</strong> <span>of 20 studies</span></p>",
-        "+      <p class=\"research-route-count\"><strong>8</strong> <span>of 20 studies</span></p>",
-        "       <h3>Written and constructed responses</h3>",
-        "@@ -107,3 +107,3 @@\n",
-        "     <article class=\"research-route-card\">",
-        "-      <p class=\"research-route-count\"><strong>6</strong> <span>of 20 studies</span></p>",
-        "+      <p class=\"research-route-count\"><strong>7</strong> <span>of 20 studies</span></p>"
-      ]
-    },
-    {
-      "sourceDrift": [
-        {
-          "category": "links",
-          "sourceModifiedSinceAudit": [
-            "research-scoping.html"
-          ]
-        },
-        {
-          "category": "external",
-          "sourceModifiedSinceAudit": [
-            "research-scoping.html"
-          ]
-        },
-        {
-          "category": "metadata",
-          "sourceModifiedSinceAudit": [
-            "research-scoping.html"
-          ]
-        },
-        {
-          "category": "reflow",
-          "sourceModifiedSinceAudit": [
-            "research-scoping.html"
-          ]
-        },
-        {
-          "category": "engines",
-          "sourceModifiedSinceAudit": [
-            "research-scoping.html"
-          ]
-        },
-        {
-          "category": "typography",
-          "sourceModifiedSinceAudit": [
-            "research-scoping.html"
-          ]
-        },
-        {
-          "category": "interactions",
-          "sourceModifiedSinceAudit": [
-            "research-scoping.html"
-          ]
-        }
-      ]
-    }
-  ],
+  "sourceDriftSinceAudits": [],
+  "pass": true,
+  "errors": [],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41367250316",
-  "run_sha": "8d234d567c2ce7630c596490017cb3c7eb2f9a8e",
-  "exit_code": "1"
+  "workflow_run_id": "41383895760",
+  "run_sha": "f11b61d1d3a1f6a72f9ad72233b7425b0f936b23",
+  "exit_code": "0"
 }
