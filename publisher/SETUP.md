@@ -1,6 +1,6 @@
 # Secure visual-editor publishing setup
 
-The visual editor includes an **optional** private proposal service implemented in `publisher/worker.mjs`. No private service is currently connected. The public editor remains useful for local drafting and HTML export until the owner chooses to configure publishing.
+The visual editor includes an **optional** private proposal service implemented in `publisher/worker.mjs`. The checked public configuration does not connect this service. Separately, the editor supports local drafts, HTML export, and direct GitHub publication by an authorized owner using a repository-scoped token. Direct publishing updates `main` after review; it does not use this Worker or create a draft pull request.
 
 ## What it does
 
@@ -30,7 +30,7 @@ The following steps must be performed by the repository owner. **None of them ha
 6. Update only the public values in `editor-publisher-config.js`. Set `apiBase` to the HTTPS Worker origin and `clientId` to the GitHub App client ID. Do not add the client secret, AES key, installation token, or an API access token to the frontend.
 7. Re-run the automated browser tests and the mocked Worker tests. Then follow the editor's **Connect GitHub → Review changes → Create draft pull request** flow. Verify the draft PR changes only the intended file, its base is `main`, and the public website remains unchanged until merge.
 
-If the private Worker is not configured, GitHub sign-in and proposing changes remain disabled. **HTML export still works.** No arbitrary endpoint or credentials are requested from visitors.
+If the private Worker is not configured, GitHub App sign-in and draft pull request proposals **through this service** remain disabled. **HTML export still works**, and an authorized owner can use the editor's separate direct GitHub publishing flow. Neither path should be mistaken for a configured proposal service. No arbitrary endpoint or credentials are requested from visitors.
 
 ## Publishing service API
 
