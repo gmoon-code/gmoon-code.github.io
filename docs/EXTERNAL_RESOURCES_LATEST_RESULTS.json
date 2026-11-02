@@ -841,10 +841,10 @@
   "doi_registry": {
     "checked": 41,
     "counts": {
-      "not-confirmed": 12,
-      "registered": 29
+      "not-confirmed": 15,
+      "registered": 26
     },
-    "secondary_index_matches": 12,
+    "secondary_index_matches": 15,
     "not_confirmed": [
       {
         "url": "https://doi.org/10.1002/sce.20264",
@@ -861,6 +861,70 @@
         "secondaryIndex": "OpenAlex",
         "indexedTitle": "Recognizing mechanistic reasoning in student scientific inquiry: A framework for discourse analysis developed from philosophy of science",
         "indexedYear": 2008
+      },
+      {
+        "url": "https://doi.org/10.1002/sce.21099",
+        "doi": "10.1002/sce.21099",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21099",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "An Integrative Framework for the Analysis of Multiple and Multimodal Representations for Meaning‐Making in Science Education",
+        "indexedYear": 2014
+      },
+      {
+        "url": "https://doi.org/10.1002/sce.21112",
+        "doi": "10.1002/sce.21112",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21112",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Examining Classroom Science Practice Communities: How Teachers and Students Negotiate Epistemic Agency and Learn Science‐as‐Practice",
+        "indexedYear": 2014
+      },
+      {
+        "url": "https://doi.org/10.1002/sce.21622",
+        "doi": "10.1002/sce.21622",
+        "pages": [
+          "research-scoping.html"
+        ],
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21622",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Scientific modeling and translanguaging: A multilingual and multimodal approach to support science learning and engagement",
+        "indexedYear": 2021
+      },
+      {
+        "url": "https://doi.org/10.1002/tea.20237",
+        "doi": "10.1002/tea.20237",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.20237",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Understanding the science experiences of successful women of color: Science identity as an analytic lens",
+        "indexedYear": 2007
       },
       {
         "url": "https://doi.org/10.1002/tea.21257",
@@ -895,36 +959,20 @@
         "indexedYear": 2018
       },
       {
-        "url": "https://doi.org/10.1002/tea.21714",
-        "doi": "10.1002/tea.21714",
+        "url": "https://doi.org/10.1080/07491409.2023.2193543",
+        "doi": "10.1080/07491409.2023.2193543",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21714",
+        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/07491409.2023.2193543",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Science engagement as insight into the science identity work nurtured in community‐based science clubs",
-        "indexedYear": 2021
-      },
-      {
-        "url": "https://doi.org/10.1080/09500690903386435",
-        "doi": "10.1080/09500690903386435",
-        "pages": [
-          "teaching-ap-chemistry.html"
-        ],
-        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/09500690903386435",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Macro, Submicro, and Symbolic: The many faces of the chemistry “triplet”",
-        "indexedYear": 2010
+        "indexedTitle": "TERF Logics Are Carceral Logics: Toward the Abolition of Gender-Critical Movements or Black Trans Life as Pedagogical Praxis",
+        "indexedYear": 2023
       },
       {
         "url": "https://doi.org/10.1080/14675986.2015.1109775",
@@ -943,6 +991,22 @@
         "indexedYear": 2015
       },
       {
+        "url": "https://doi.org/10.1080/14790718.2021.1898619",
+        "doi": "10.1080/14790718.2021.1898619",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/14790718.2021.1898619",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Translanguaging as an agentive pedagogy for multilingual learners: affordances and constraints",
+        "indexedYear": 2021
+      },
+      {
         "url": "https://doi.org/10.1080/15265161.2012.680533",
         "doi": "10.1080/15265161.2012.680533",
         "pages": [
@@ -959,20 +1023,37 @@
         "indexedYear": 2012
       },
       {
-        "url": "https://doi.org/10.1111/j.1365-2729.1991.tb00230.x",
-        "doi": "10.1111/j.1365-2729.1991.tb00230.x",
+        "url": "https://doi.org/10.1086/430744",
+        "doi": "10.1086/430744",
         "pages": [
-          "teaching-ap-chemistry.html"
+          "teaching-ap-evolution.html",
+          "writing-biological-classification.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1111/j.1365-2729.1991.tb00230.x",
+        "publisherLanding": "https://academic.oup.com/jid/article-lookup/doi/10.1086/430744",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Why is science difficult to learn? Things are seldom what they seem",
-        "indexedYear": 1991
+        "indexedTitle": "Sickle Cell Trait and the Risk ofPlasmodium falciparumMalaria and Other Childhood Diseases",
+        "indexedYear": 2005
+      },
+      {
+        "url": "https://doi.org/10.1093/applin/amab044",
+        "doi": "10.1093/applin/amab044",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://academic.oup.com/applij/article/43/2/316/6375538",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Affordances of Plurilingual Instruction in Higher Education: A Mixed Methods Study with a Quasi-experiment in an English Language Program",
+        "indexedYear": 2021
       },
       {
         "url": "https://doi.org/10.1159/000345322",
@@ -991,58 +1072,26 @@
         "indexedYear": 2012
       },
       {
-        "url": "https://doi.org/10.2304/ciec.2011.12.4.362",
-        "doi": "10.2304/ciec.2011.12.4.362",
+        "url": "https://doi.org/10.1187/cbe.23-08-0157",
+        "doi": "10.1187/cbe.23-08-0157",
         "pages": [
-          "research.html"
+          "teaching-ap-biology.html"
         ],
-        "publisherLanding": "https://journals.sagepub.com/doi/10.2304/ciec.2011.12.4.362",
+        "publisherLanding": "https://www.lifescied.org/doi/10.1187/cbe.23-08-0157",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "On the Human Challenges of Multiliteracies Pedagogy",
-        "indexedYear": 2011
-      },
-      {
-        "url": "https://doi.org/10.3102/0034654314558490",
-        "doi": "10.3102/0034654314558490",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://journals.sagepub.com/doi/10.3102/0034654314558490",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Representing Student Argumentation as Functionally Emergent From Scientific Activity",
-        "indexedYear": 2014
-      },
-      {
-        "url": "https://doi.org/10.3138/cmlr-2021-0055",
-        "doi": "10.3138/cmlr-2021-0055",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://utppublishing.com/doi/10.3138/cmlr-2021-0055",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "The Impact of Academic Acculturation and Language Proficiency on International Students’ University Experience and Academic Success: A Longitudinal Study",
-        "indexedYear": 2023
+        "indexedTitle": "Examining and Supporting Mechanistic Explanations Across Chemistry and Biology Courses",
+        "indexedYear": 2024
       }
     ],
     "unresolved": [],
     "limitation": "Crossref/DataCite registration is distinct from publisher access, correct article metadata or article availability. OpenAlex is independent secondary corroboration, not registration proof."
   },
-  "workflow_run_id": "41366000963",
-  "head_sha": "d36e4b518d14eeb66900bb036b1f9a5dd23b2c02",
+  "workflow_run_id": "41367250415",
+  "head_sha": "8d234d567c2ce7630c596490017cb3c7eb2f9a8e",
   "audit_exit_code": "0"
 }
