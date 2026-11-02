@@ -1,6 +1,6 @@
 {
-  "workflow_run_id": "41366000946",
-  "head_sha": "d36e4b518d14eeb66900bb036b1f9a5dd23b2c02",
+  "workflow_run_id": "41367071570",
+  "head_sha": "c90379391a1602326806d2398aec1882b29ba0dc",
   "exit_code": "0",
   "preprint": {
     "doi": "10.35542/osf.io/kznvj_v1",
@@ -42,7 +42,7 @@
       }
     ],
     "url": "https://doi.org/10.35542/osf.io/kznvj_v1",
-    "description": "<p>Multilingual learners may demonstrate science understanding through written responses, classroom interaction, models, drawings, and other representational forms. However, the validity of claims drawn from these performances depends on how studies ",
+    "description": "<p>Multilingual learners may demonstrate science understanding through written responses, classroom interaction, models, drawings, and other representational forms. However, the validity of claims drawn from these performances depends on how studies connect the observed work to the disciplinary understanding being inferred. Existing syntheses have examined learners’ use of linguistic and semiotic resources in science, while the evidentiary reasoning that turns those performances into claims of understanding has received less attention. This scoping review examined evidence routes and inferential warrants in ERIC-indexed secondary science research. A systematic search of ERIC yielded 216 peer-reviewed journal records. Twenty empirical studies published from 2010 onward met the eligibility criteria. Charting addressed evidence form, inferential pathway, disciplinary specificity, validity location, and learner-profile reporting. Ten studies relied primarily on written or constructed-response assessment, six on classroom talk or interaction, and four on models, drawings, or visual representations. Validity risk entered through task design, testing language, interpretive recognition, participation conditions, representational access, and alignment across task, representation, and discourse. Learner-profile reporting was uneven, limiting cross-study interpretation. The resulting framework clarifies how evidence route, disciplinary target, learner conditions, and judgment procedure must be connected to support more defensible claims about multilingual learners’ science understanding.</p>",
     "subtype": "preprint",
     "relation": {}
   },
