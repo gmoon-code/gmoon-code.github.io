@@ -287,62 +287,109 @@
   }
 
   function restoreDraft() {
+    function markUnapplied(message){
+      state.staleDraft=true;
+      state.draftRecoveryIssue=message;
+      updateStatus(message);
+    }
     let raw;
-    try { raw=localStorage.getItem(DRAFT_PREFIX+state.page); } catch(e) {return;}
-    if (!raw) return;
+    try { raw=localStorage.getItem(DRAFT_PREFIX+state.page); }
+    catch(e){
+      state.draftSaveIssue="Browser draft storage unavailable · Restoration not checked";
+      updateStatus(state.draftSaveIssue);
+      return;
+    }
+    if(!raw)return;
     let draft;
-    try { draft=JSON.parse(raw); } catch(e) {return;}
-    if (draft.version!==1||!Array.isArray(draft.items)) return;
-    if (draft.sourceHash!==state.fingerprint) {
+    try { draft=JSON.parse(raw); }
+    catch(e){
+      markUnapplied("Saved browser draft could not be read · Not applied");
+      notice("The browser draft could not be read. It has not been replaced. The page opens without those saved edits. Resetting this page deletes its saved draft.","Draft not restored");
+      return;
+    }
+    if(!draft||draft.version!==1||!Array.isArray(draft.items)){
+      markUnapplied("Saved browser draft format not recognised · Not applied");
+      notice("The saved browser draft has an unrecognised format and was not applied or replaced. Resetting this page deletes its saved draft.","Draft not restored");
+      return;
+    }
+    if(draft.sourceHash!==state.fingerprint){
       state.staleDraft=true;
       updateStatus("Older local draft exists · Not applied");
       return;
     }
-    const stagedMarkup=draft.items.some(item=>typeof item.markup==="string"&&
-      /assets\/editor-[a-z0-9-]+\.(?:png|jpg|webp)/i.test(item.markup));
-    if(stagedMarkup){
-      $("stagedImageStatus").textContent=
-        "This draft references an uploaded image whose binary file was not retained after reload. Select the image on the page and stage its file again.";
-    }
+    // Restoration must be all-or-nothing. A later validator can reject a
+    // previously edited block, section or source removal after earlier edits.
+    const before={
+      doc:state.doc.cloneNode(true),dirty:new Set(state.dirty),
+      sectionOrder:state.sectionOrder.slice(),responsiveGroup:state.responsiveGroup,
+      responsiveGroups:state.responsiveGroups.slice(),additions:state.additions.slice(),
+      removals:state.removals.slice(),blockOrders:state.blockOrders.slice()
+    };
     try {
       const incoming=Array.isArray(draft.responsiveGroups)&&draft.responsiveGroups.length?
         draft.responsiveGroups:(draft.responsiveGroup?[draft.responsiveGroup]:[]);
       if(incoming.length){
-        if(!window.MoonResponsiveLayout)throw Error('Responsive layout validator missing');
-        MoonResponsiveLayout.verifyGroups(new DOMParser().parseFromString(state.source,'text/html'),incoming);
+        if(!window.MoonResponsiveLayout)throw Error("Responsive layout validator missing");
+        MoonResponsiveLayout.verifyGroups(new DOMParser().parseFromString(state.source,"text/html"),incoming);
         state.responsiveGroups=incoming.slice();
         state.responsiveGroup=incoming.length===1?incoming[0]:null;
       }
-      if(Array.isArray(draft.additions)&&draft.additions.length){
+      if(draft.additions!==undefined){
         state.additions=validateParagraphAdditions(draft.additions);
       }
-      for (const item of draft.items) {
-        if (!state.original.has(item.id)||checkEditedMarkupDangerous(item.markup,state.original.get(item.id))) continue;
+      const seen=new Set();
+      for(const item of draft.items){
+        if(!item||typeof item.id!=="string"||!/^e\d+$/.test(item.id)||
+           typeof item.markup!=="string"||seen.has(item.id)||
+           !state.original.has(item.id)||
+           checkEditedMarkupDangerous(item.markup,state.original.get(item.id)))
+          throw Error("A saved element could not be validated");
         const destination=getWorking(item.id);
-        if (!destination) continue;
+        if(!destination)throw Error("A saved element is missing from this page");
         const holder=new DOMParser().parseFromString(item.markup,"text/html");
         const edited=holder.body.firstElementChild;
-        if (!edited||edited.tagName!==destination.tagName) continue;
+        if(!edited||edited.tagName!==destination.tagName)
+          throw Error("A saved element does not match the page");
         edited.setAttribute("data-editor-key",item.id);
         destination.replaceWith(state.doc.importNode(edited,true));
         state.dirty.add(item.id);
+        seen.add(item.id);
       }
       reindex();
-      if(Array.isArray(draft.sectionOrder)&&draft.sectionOrder.length)
-        applySectionOrder(draft.sectionOrder);
-      for (const key of [...state.dirty]) {
-        const node=getWorking(key);
-        if (!node||cleanOuter(node)===state.original.get(key)) state.dirty.delete(key);
+      if(draft.sectionOrder!==undefined){
+        if(!Array.isArray(draft.sectionOrder))throw Error("Saved section order is invalid");
+        if(draft.sectionOrder.length)applySectionOrder(draft.sectionOrder);
       }
-      if(Array.isArray(draft.removals)&&draft.removals.length)
+      for(const key of [...state.dirty]){
+        const node=getWorking(key);
+        if(!node||cleanOuter(node)===state.original.get(key))state.dirty.delete(key);
+      }
+      if(draft.removals!==undefined)
         state.removals=validateSourceRemovals(draft.removals);
-      if(Array.isArray(draft.blockOrders)&&draft.blockOrders.length){
+      if(draft.blockOrders!==undefined){
         state.blockOrders=validateBlockOrders(draft.blockOrders);
         applyBlockOrdersToWorking(state.blockOrders);
       }
-      updateStatus(state.dirty.size||state.removals.length||state.additions.length||state.blockOrders.length||layoutGroups().length||state.sectionOrder.some((id,i)=>id!==state.originalSections[i])?"Draft restored from this browser · Not published":"No changes · Not published");
-    } catch(e) {
-      notice("The saved draft could not be restored safely. The original page has been left available.","Draft mismatch");
+      reindex();
+      if(draft.items.some(item=>/assets\/editor-[a-z0-9-]+\.(?:png|jpg|webp)/i.test(item.markup))){
+        $("stagedImageStatus").textContent=
+          "This draft references an uploaded image whose binary file was not retained after reload. Select the image on the page and stage its file again.";
+      }
+      updateStatus(state.dirty.size||state.removals.length||state.additions.length||
+        state.blockOrders.length||layoutGroups().length||
+        state.sectionOrder.some((id,i)=>id!==state.originalSections[i])?
+        "Draft restored from this browser · Not published":"No changes · Not published");
+    } catch(e){
+      state.doc=before.doc;
+      state.dirty=before.dirty;
+      state.sectionOrder=before.sectionOrder;
+      state.responsiveGroup=before.responsiveGroup;
+      state.responsiveGroups=before.responsiveGroups;
+      state.additions=before.additions;
+      state.removals=before.removals;
+      state.blockOrders=before.blockOrders;
+      markUnapplied("Saved browser draft could not be fully restored · Not applied");
+      notice("The saved browser draft did not pass all restoration checks. None of its edits were applied to this page, and the browser draft was retained. Resetting this page deletes that saved draft.","Draft not restored");
     }
   }
 
