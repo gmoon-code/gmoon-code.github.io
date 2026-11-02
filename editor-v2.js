@@ -145,7 +145,6 @@ function saveActiveDraft(){
     // Source edits are normally autosaved; the explicit action confirms the
     // correct page's source draft is persisted.
     storeLiveDraft();
-    status("Live-page edits saved in this browser · Use Publish to update the website");
   }else{
     if(editingId!==null)finishTextEdit();
     save();
@@ -430,9 +429,9 @@ function setWorkspaceMode(mode){
   $("addShape").textContent=isLive?"▢ Add webpage shape":"▢ Canvas shape";
   $("addImage").textContent=isLive?"▧ Add webpage image":"▧ Canvas image";
   $("workspaceTitle").textContent=isLive?"Live website":"Free design canvas";
-  $("workspacePill").textContent=isLive?"GitHub main · source-matched editing":"Independent objects · staging only";
+  $("workspacePill").textContent=isLive?"Website page · check GitHub source status below":"Independent objects · staging only";
   $("workspaceExplanation").textContent=isLive?
-    "The editing view uses the website's GitHub main HTML, styles, scripts and responsive layout. Verified preview and before/after use the same HTML assembler as live publishing, at the selected screen width. GitHub Pages may display a previous deployment until publication completes.":
+    "When available, this editing view loads the website’s GitHub main HTML, styles, scripts and responsive layout. If GitHub cannot be checked, the editor may show a deployed-page fallback. Verified preview and before/after check the GitHub source and use the same HTML assembler as live publishing. GitHub Pages may display an earlier deployment until publication completes.":
     "This canvas is a simplified, independent reconstruction. It does not yet reproduce every original section or responsive rule. Use Live website to verify the real page; only the staging preview can be published.";
   $("workspaceFooter").textContent=isLive?
     "GitHub source · Drag elements · Resize handles · Double-click text · Search website elements · Stack forward/back · Undo and verified preview":
@@ -2219,9 +2218,9 @@ function loadLiveDraft(page){
 }
 function renderLiveEditCount(){
   $("liveEditCount").textContent=livePatches.size?
-    livePatches.size+" saved edit"+(livePatches.size===1?"":"s")+
+    livePatches.size+" draft edit"+(livePatches.size===1?"":"s")+
       " · Original website unchanged":
-    "No saved live-page edits. Original website unchanged.";
+    "No live-page draft edits. Original website unchanged.";
 }
 function storeLiveDraft(){
   try{
