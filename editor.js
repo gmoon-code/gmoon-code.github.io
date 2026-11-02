@@ -76,7 +76,7 @@
     selected:null,history:[],redo:[],fingerprint:"",loadToken:0,saveTimer:null,staleDraft:false,
     originalSections:[],sectionGroups:[],sectionOrder:[],draftSaveIssue:"",draftRecoveryIssue:"",mediaAssets:null,mediaPromise:null,mediaReadIssue:"",
     stagedMedia:null,responsiveGroup:null,responsiveGroups:[],additions:[],resizeStart:null,imageSliderActive:false,
-    pageFindKeys:[],pageFindIndex:-1,mediaChooseInsert:false,removals:[],selectedAddition:null,blockOrders:[],columnPointer:null,blockPointer:null,addedPointer:null,addedWidthPointer:null,sourceWidthPointer:null,addedBlockSliderActive:false
+    pageFindKeys:[],pageFindIndex:-1,pageFindTotal:0,mediaChooseInsert:false,removals:[],selectedAddition:null,blockOrders:[],columnPointer:null,blockPointer:null,addedPointer:null,addedWidthPointer:null,sourceWidthPointer:null,addedBlockSliderActive:false
   };
 
   function hashText(text) {
@@ -585,6 +585,7 @@
     const doc=state.frameDoc;
     const former=state.pageFindKeys[state.pageFindIndex];
     state.pageFindKeys=[];
+    state.pageFindTotal=0;
     if(reset)state.pageFindIndex=-1;
     if(!doc||!doc.querySelector("main")){
       $("pageFindStatus").textContent="Load a page to search its editable elements.";
@@ -604,6 +605,7 @@
           .toLocaleLowerCase().includes(query));
     });
     const limited=hits.slice(0,80);
+    state.pageFindTotal=hits.length;
     state.pageFindKeys=limited.map(node=>node.getAttribute("data-editor-key"));
     state.pageFindIndex=!limited.length?-1:!reset&&state.pageFindKeys.includes(former)?
       state.pageFindKeys.indexOf(former):0;
@@ -620,10 +622,13 @@
       if(index<30)list.append(button);
     });
     const count=hits.length;
-    $("pageFindStatus").textContent=!query?"Find headings, paragraphs, links and image descriptions within the page.":
-      count?count+" matching element"+(count===1?"":"s")+
-        (count>80?" · first 80 available":"")+" · "+(state.pageFindIndex+1)+" of "+limited.length:
-        "No matching editable elements on this page.";
+    $("pageFindStatus").textContent=!query?
+      "Search editable headings, text, links and image descriptions in this page preview.":
+      count?count+" matching indexed element"+(count===1?"":"s")+
+        " · selected "+(state.pageFindIndex+1)+" of "+limited.length+
+        (count>80?" navigable (first 80 of "+count+" matches)":"")+
+        (limited.length>30?" · first 30 listed below":""):
+        "No matching indexed elements in this page preview.";
     $("pageFindNext").disabled=limited.length<2;
     $("pageFindPrev").disabled=limited.length<2;
     $("pageFindClear").disabled=!query;
@@ -644,8 +649,10 @@
     for(const [i,button] of [...$("pageFindResults").children].entries())
       button.setAttribute("aria-current",String(i===index));
     const q=$("pageFindQuery").value.trim();
-    $("pageFindStatus").textContent=keys.length+" results · selected "+(index+1)+" of "+keys.length+
-      " for “"+q.slice(0,80)+"”";
+    $("pageFindStatus").textContent=state.pageFindTotal+" matching indexed element"+
+      (state.pageFindTotal===1?"":"s")+" · selected "+(index+1)+" of "+keys.length+
+      (state.pageFindTotal>keys.length?" navigable (first "+keys.length+" of "+state.pageFindTotal+" matches)":"")+
+      (keys.length>30?" · first 30 listed below":"")+" for “"+q.slice(0,80)+"”";
   }
   function navigatePageFind(direction){
     if(!state.pageFindKeys.length)return;
@@ -856,11 +863,12 @@
     $("browsePrevElement").disabled=!nodes.length;
     $("browseNextElement").disabled=!nodes.length;
     $("browseElementStatus").textContent=!nodes.length?
-      "No editable content available on this page.":
-      selected<0?"Use Previous or Next to select one of "+nodes.length+" original elements.":
-      "Element "+(selected+1)+" of "+nodes.length+
+      "No visible indexed elements outside navigation are available in this preview.":
+      selected<0?"Use Previous or Next to browse "+nodes.length+" visible indexed element"+
+        (nodes.length===1?"":"s")+" outside navigation in the page preview.":
+      "Visible element "+(selected+1)+" of "+nodes.length+
         " · "+nodes[selected].tagName.toLowerCase()+
-        " · Selection is in the page preview.";
+        " · Selected in the page preview.";
   }
   function browseElement(direction){
     const nodes=browsableElements();
@@ -4312,7 +4320,7 @@
       });
       nav.appendChild(b);
     }
-    if (!nav.children.length) nav.textContent="No section headings found.";
+    if (!nav.children.length) nav.textContent="No level 1–3 headings found in the main content.";
   }
 
   function cleanEditedElement(markup,originalMarkup) {
@@ -6096,7 +6104,6 @@
     if(page!==state.page)clearStagedMedia();
     const token=++state.loadToken;
     updateStatus("Loading page…");
-    $("previewHeading").textContent=$("pagePicker").selectedOptions[0]?.textContent||page;
     try {
       const response=await fetch(page,{cache:"no-store",credentials:"same-origin"});
       if (!response.ok) throw new Error("HTTP "+response.status);
@@ -6119,6 +6126,7 @@
       restoreDraft();
       const transferred=consumeFluidTextHandoff(page);
       renderPreview();
+      $("previewHeading").textContent=$("pagePicker").selectedOptions[0]?.textContent||page;
       const moved=state.sectionOrder.some((id,i)=>id!==state.originalSections[i]);
       updateStatus(transferred?"Verified content, style and/or responsive layout transferred · Not published":state.dirty.size||moved||layoutGroups().length||state.additions.length||state.removals.length||state.blockOrders.length?"Draft restored · Not published":state.staleDraft?(state.draftRecoveryIssue||"Older local draft exists · Not applied"):"Ready to edit · Not published");
     } catch(e) {
