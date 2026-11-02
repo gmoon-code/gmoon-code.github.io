@@ -5839,7 +5839,7 @@
   }
 
   function resetPage() {
-    if (!state.doc||!confirm("Discard all local changes to this page?")) return;
+    if (!state.doc||!confirm(state.staleDraft?"Discard current edits and delete the older browser draft saved for this page?":"Discard all local changes to this page?")) return;
     clearStagedMedia();
     state.doc=new DOMParser().parseFromString(state.source,"text/html");
     initialIndex();
@@ -6010,7 +6010,7 @@
         state.sectionOrder.some((id,i)=>id!==state.originalSections[i])||
         layoutGroups().length||state.additions.length||state.removals.length||state.blockOrders.length;
       if(page!==state.page&&!stored&&unsavedEdits){
-        notice("Edits to the current page remain open, but browser storage could not save them or an older draft was retained. Export edited HTML before switching pages. To leave without these edits, reset the current page first.","Draft not saved");
+        notice("Edits to the current page remain open, but browser storage could not save them or an older draft was retained. Export edited HTML before switching pages. Resetting this page discards the current edits and any older browser draft stored for it.","Draft not saved");
         $("pagePicker").value=state.page;
         $("mobilePagePicker").value=state.page;
         return;
