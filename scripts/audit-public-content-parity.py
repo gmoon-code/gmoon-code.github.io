@@ -1,8 +1,9 @@
 """Read-only parity check of scholarly text actually served by GitHub Pages.
 
-Compare the complete visible-text stream in each <main> with the current
-repository source. Deployment success and localhost tests alone cannot
-establish remotely delivered content parity.
+Compare normalized static text nodes within each <main>, excluding
+script/style/template contents. This does not test dynamically generated text,
+CSS visibility or byte-for-byte HTML. Deployment success and localhost tests
+alone cannot establish remotely delivered content parity.
 """
 import hashlib
 import json
@@ -120,7 +121,7 @@ def main():
         if attempt < 5:
             time.sleep(12)
     payload = {"attempts": attempt, "sitemap_page_count": len(pages),
-               "scope": "complete normalized main text of every sitemap-listed academic HTML page",
+               "scope": "normalized static main text nodes of every sitemap-listed academic HTML page",
                "method": "independent HTTPS GET from GitHub Actions runner",
                "results": report}
     (OUT / "report.json").write_text(json.dumps(payload, indent=2, ensure_ascii=False),
