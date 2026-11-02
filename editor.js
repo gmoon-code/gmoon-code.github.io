@@ -6109,22 +6109,38 @@
         return;
       }
     }
-    if(page!==state.page)clearStagedMedia();
     const token=++state.loadToken;
-    updateStatus("Loading page…");
+    updateStatus("Loading page source…");
+    let previous=null;
     try {
       const response=await fetch(page,{cache:"no-store",credentials:"same-origin"});
+      if(token!==state.loadToken)return;
       if (!response.ok) throw new Error("HTTP "+response.status);
       const source=await response.text();
-      if (token!==state.loadToken) return;
-      if (!/<main\b/i.test(source)) throw new Error("The requested page has no main region.");
+      if(token!==state.loadToken)return;
+      if(!/<main\b/i.test(source))throw new Error("The requested page has no main region.");
+      const incoming=new DOMParser().parseFromString(source,"text/html");
+      if(!incoming.querySelector("main"))throw new Error("The requested page could not be parsed with a main region.");
+      // Preserve the previous working draft if indexing or preview preparation
+      // fails after the fetched source has been accepted.
+      previous={
+        ...state,original:new Map(state.original),dirty:new Set(state.dirty),
+        history:state.history.slice(),redo:state.redo.slice(),
+        originalSections:state.originalSections.slice(),
+        sectionGroups:state.sectionGroups.map(group=>group.slice()),
+        sectionOrder:state.sectionOrder.slice(),responsiveGroups:state.responsiveGroups.slice(),
+        additions:state.additions.slice(),removals:state.removals.slice(),
+        blockOrders:state.blockOrders.slice(),pageFindKeys:state.pageFindKeys.slice()
+      };
       state.page=page;
       state.draftSaveIssue="";
       state.draftRecoveryIssue="";
+      state.previewLoadIssue="";
+      state.pendingPreviewStatus="";
       $("mobilePagePicker").value=page;
       state.source=source;
       state.fingerprint=hashText(source);
-      state.doc=new DOMParser().parseFromString(source,"text/html");
+      state.doc=incoming;
       state.responsiveGroup=null;state.responsiveGroups=[];state.additions=[];state.removals=[];state.blockOrders=[];
       state.dirty.clear();
       state.history.length=0;
@@ -6133,17 +6149,38 @@
       initialIndex();
       restoreDraft();
       const transferred=consumeFluidTextHandoff(page);
-      renderPreview();
-      $("previewHeading").textContent=$("pagePicker").selectedOptions[0]?.textContent||page;
       const moved=state.sectionOrder.some((id,i)=>id!==state.originalSections[i]);
-      updateStatus(transferred?"Verified content, style and/or responsive layout transferred · Not published":state.dirty.size||moved||layoutGroups().length||state.additions.length||state.removals.length||state.blockOrders.length?"Draft restored · Not published":state.staleDraft?(state.draftRecoveryIssue||"Older local draft exists · Not applied"):"Ready to edit · Not published");
+      state.pendingPreviewStatus=transferred?
+        "Verified content, style and/or responsive layout transferred · Not published":
+        state.staleDraft?(state.draftRecoveryIssue||"Older local draft exists · Not applied"):
+        state.dirty.size||moved||layoutGroups().length||state.additions.length||
+          state.removals.length||state.blockOrders.length?
+          "Draft restored · Not published":"Ready to edit · Not published";
+      renderPreview();
+      if(page!==previous.page)clearStagedMedia();
+      $("previewHeading").textContent=$("pagePicker").selectedOptions[0]?.textContent||page;
+      updateStatus("Page source loaded · Preview initializing · Not published");
     } catch(e) {
-      notice("Could not load "+page+". "+e.message,"Page load failed");
-      if (state.page) {
+      if(token!==state.loadToken)return;
+      let previewRestored=true;
+      if(previous){
+        Object.assign(state,previous);
+        // Re-create the prior preview if a later preparation step altered it.
+        if(state.doc){
+          try{renderPreview()}
+          catch(recoveryError){previewRestored=false}
+        }
+      }
+      if(state.page){
         $("pagePicker").value=state.page;
         $("mobilePagePicker").value=state.page;
       }
-      updateStatus("Unable to load page");
+      updateStatus(state.page?
+        "Page load failed · Previous page retained"+(previewRestored?"":" · Reload to restore preview"):
+        "Unable to load page · No editable preview");
+      notice("Could not load "+page+". "+e.message+
+        (state.page?" The previous page draft remains selected.":""),
+        "Page load failed");
     }
   }
 
