@@ -18,7 +18,7 @@
   const btn=document.createElement("button");
   btn.type="button";btn.id="siteChromeBtn";btn.className="plain-button";
   btn.textContent="Header & footer";
-  btn.title="Edit the shared site title, contact text and footer link across every page";
+  btn.title="Edit the shared title and footer on Studio-listed pages";
   document.getElementById("siteLookBtn")?.after(btn);
   const dialog=document.createElement("dialog");
   dialog.id="siteChromeDialog";dialog.className="studio-dialog site-chrome-dialog";
@@ -159,7 +159,7 @@
     if(applyToDocument(docOf(),settings))api.syncCurrent();
     else{api.updateStatus();plus.onChanged?.();}
     dialog.close();
-    toast("Header and footer updated in your draft. Publish to apply across the website.");
+    toast("Header and footer updated in your draft. Publish to apply to Studio-listed pages.");
   }
   btn.addEventListener("click",()=>open().catch(e=>toast(e.message,true)));
   el("closeSiteChrome").addEventListener("click",()=>dialog.close());
