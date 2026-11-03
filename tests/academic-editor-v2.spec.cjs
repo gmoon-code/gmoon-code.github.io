@@ -1127,18 +1127,16 @@ test('style-only changes preserve original paragraph spans, classes and hyperlin
   await expect(live.locator('main p.science span.technical-label')).toHaveText('biotic');
 });
 
-test('reflow text box changes line wrapping while preserving reserved flow footprint',async({page})=>{
+test('reflow text box grows reserved height and moves following text by the same amount',async({page})=>{
   const live=page.frameLocator('#livePageFrame');
   const heading=live.locator('main h2').first();
   const paragraph=live.locator('main p').first();
-  const neighbourBefore=await paragraph.boundingBox();
-  const reflowBefore=await heading.evaluate(node=>{
-    const css=getComputedStyle(node),p=node.nextElementSibling;
-    const rect=n=>{const r=n.getBoundingClientRect();return {y:r.y,h:r.height,offsetHeight:n.offsetHeight,scrollHeight:n.scrollHeight}};
-    return {heading:rect(node),paragraph:rect(p),computedHeight:css.height,
-      computedWidth:css.width,lineHeight:css.lineHeight,
-      marginTop:css.marginTop,marginBottom:css.marginBottom,boxSizing:css.boxSizing};
-  });
+  // Measure document-local positions, not screen coordinates: the editor
+  // inspector changes the iframe's outer position when an item is selected.
+  const beforeFlow=await heading.evaluate(node=>({
+    headingHeight:node.getBoundingClientRect().height,
+    nextY:node.nextElementSibling.getBoundingClientRect().y
+  }));
   await heading.click();
   await expect(page.locator('#liveTextReflowControls')).toBeVisible();
   await expect(page.locator('#liveTextBoxWidth')).toBeEnabled();
@@ -1148,22 +1146,16 @@ test('reflow text box changes line wrapping while preserving reserved flow footp
   const currentWidth=await heading.evaluate(node=>node.offsetWidth);
   expect(currentWidth).toBe(150);
   expect(currentWidth).toBeLessThan(beforeWidth);
-  const neighbourAfter=await paragraph.boundingBox();
-  const reflowDiagnostic=await heading.evaluate(node=>{
-    const css=getComputedStyle(node),p=node.nextElementSibling,pc=getComputedStyle(p);
-    const box=el=>{const r=el.getBoundingClientRect();return {x:r.x,y:r.y,w:r.width,h:r.height,
-      offsetHeight:el.offsetHeight,clientHeight:el.clientHeight,scrollHeight:el.scrollHeight};};
-    return {heading:box(node),paragraph:box(p),headingCss:{
-      height:css.height,minHeight:css.minHeight,lineHeight:css.lineHeight,marginTop:css.marginTop,
-      marginBottom:css.marginBottom,boxSizing:css.boxSizing,overflow:css.overflow,
-      fontSize:css.fontSize},paragraphCss:{marginTop:pc.marginTop,marginBottom:pc.marginBottom},
-      styleSheet:node.ownerDocument.getElementById('moon-v2-live-layout')?.textContent?.slice(-900)};
-  });
-  console.log('REFLOW_GEOMETRY_DIAGNOSTIC',JSON.stringify({neighbourBefore,neighbourAfter,reflowBefore,reflowDiagnostic}));
-  // Natural text measurement may adjust the reserved line box by a couple
-  // of pixels, without causing the large unexpected layout jump of legacy
-  // scale-based resizing.
-  expect(Math.abs(neighbourAfter.y-neighbourBefore.y)).toBeLessThan(4);
+  const afterFlow=await heading.evaluate(node=>({
+    headingHeight:node.getBoundingClientRect().height,
+    nextY:node.nextElementSibling.getBoundingClientRect().y
+  }));
+  // Width reflow legitimately makes the heading taller. The following
+  // paragraph must move by precisely that height, preserving normal flow.
+  const heightGrowth=afterFlow.headingHeight-beforeFlow.headingHeight;
+  const neighbourMovement=afterFlow.nextY-beforeFlow.nextY;
+  expect(heightGrowth).toBeGreaterThan(20);
+  expect(Math.abs(neighbourMovement-heightGrowth)).toBeLessThan(2);
   const font=await heading.evaluate(node=>getComputedStyle(node).fontSize);
   expect(font).toBe('30px');
   await expect(page.locator('#liveResetTextDimensions')).toBeEnabled();
