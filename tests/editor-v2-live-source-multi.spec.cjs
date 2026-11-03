@@ -1001,7 +1001,19 @@ test('match widths uses the first selected webpage object while preserving text 
   await expect(page.locator('#liveMatchWidth')).toBeEnabled();
   await page.locator('#liveMatchWidth').click();
   const after=await localRect(b);
-  expect(Math.abs(after.w-firstWidth)).toBeLessThan(2);
+  const widthDiagnostic=await live.locator('.boxes').evaluate(parent=>{
+    const items=[...parent.children].map(node=>{
+      const css=getComputedStyle(node),rect=node.getBoundingClientRect();
+      return {className:node.className,rectWidth:rect.width,cssWidth:css.width,
+        flexShrink:css.flexShrink,flexBasis:css.flexBasis,
+        minWidth:css.minWidth,boxSizing:css.boxSizing};
+    });
+    return {containerWidth:parent.getBoundingClientRect().width,
+      display:getComputedStyle(parent).display,gap:getComputedStyle(parent).columnGap,items};
+  });
+  expect(Math.abs(after.w-firstWidth),
+    'Match-width geometry diagnostic: '+JSON.stringify({firstWidth,afterWidth:after.w,widthDiagnostic}))
+    .toBeLessThan(2);
   expect(Math.abs(after.x-before.x)).toBeLessThan(3);
   expect(await b.evaluate(el=>getComputedStyle(el).fontSize)).toBe(beforeFont);
   await expect(page.locator('#liveMultiCount')).toHaveText('2 selected');
