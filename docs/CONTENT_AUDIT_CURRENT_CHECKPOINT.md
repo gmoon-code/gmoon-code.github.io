@@ -1,6 +1,6 @@
 # Academic website content audit | Current checkpoint
 
-**Current through C-RV29cf, 3 November 2026. Whole-site audit: In progress.** This is the current living continuation index, not a replacement for prior original stage files or a declaration of complete research ethics, student-text or browser verification.
+**Current through C-RV29cg, 3 November 2026. Whole-site audit: In progress.** This is the current living continuation index, not a replacement for prior original stage files or a declaration of complete research ethics, student-text or browser verification.
 
 ## New verified stages since C-RV29ao
 
@@ -77,9 +77,12 @@
 - [C-RV29cb | Dated answer-text transformation documentation not recovered](ACTION_RESEARCH_TRANSFORMATION_LOG_BOUNDARY_C-RV29cb_2026-11-03.md). Read September research-package provenance and integrity notes alongside later October documentation. These neither contain original submitted facsimiles nor establish the successive response-text transformation or when revised enactment criteria first applied. The source boundary remains open without asserting originals never existed.
 - [C-RV29cc | Original Airton full-text source recovered and evidence tier strengthened](RESEARCH_AIRTON_ORIGINAL_FULL_TEXT_RECOVERY_C-RV29cc_2026-11-03.md). An authorized private 22-page publisher-formatted 2023 article was read in substantial original sections with PDF title/conclusion image checks. Airton row 1 is now **F**, replacing earlier abstract-only **A**, and the **then-current register was 43 F / 9 A / 1 M / 0 P**. Site prose remains accurate and unchanged. Historical C-RV29v and other dated reports remain valid snapshots.
 
+- [C-RV29cf | Original DeCoito STEM inquiry chapter recovered](RESEARCH_DECOITO_ORIGINAL_CHAPTER_C-RV29cf_2026-11-03.md). A 125-PDF-page authorized Springer original includes chapter 4, printed pp. 51–72; substantial book text and publisher author listing establish the STEM inquiry planning/teacher scaffolding claim and support a source tier upgrade **A→F**. The current reference register is **46 F / 6 A / 1 M / 0 P**. No website prose changed.
+- [C-RV29cg | Remaining A-tier article-access limits](REMAINING_A_TIER_SOURCE_ACCESS_C-RV29cg_2026-11-03.md). First-party publisher records for Alexander (2023), Gilbert (2021) and Prasad (2015) support citation identities and the qualified site claims, but not original continuous article-body reading. All three retain **A**, leaving current totals unchanged. No page edits.
+
 ## Exact next unfinished stage
 
-**C-RV29cg | Source-tier and research-record continuation.** The current Research register is **46 F / 6 A / 1 M / 0 P** after substantial original DeCoito (2024) chapter review. See [C-RV29cf](RESEARCH_DECOITO_ORIGINAL_CHAPTER_C-RV29cf_2026-11-03.md) and [the current next-stage note](CONTENT_AUDIT_C-RV29cf_NEXT_STAGE.md). The remaining A/M material requires exact original texts. Original student submissions, historical permissions and final August scoping coding remain separately unresolved.
+**C-RV29ch | Exact-original source checks and empirical proof priorities.** The current 53-reference register is **46 F / 6 A / 1 M / 0 P** after direct DeCoito chapter inspection. The bounded C-RV29cg recheck retains A for Alexander, Gilbert and Prasad because first-party publisher pages remain abstract-level, without authenticated continuous originals. Check the other four restricted A/M records only where exact original evidence is available. Keep final August scoping coding, authentic student submissions and historical study permission sources independently unresolved. [Next-stage details](REMAINING_A_TIER_SOURCE_ACCESS_C-RV29cg_2026-11-03.md).
 
 ## Other prior audit boundaries remain open
 
