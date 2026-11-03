@@ -46,7 +46,7 @@ def main():
   row=next(x for x in result if x["path"]==p)
   refs=GALLERIES[p]
   row["sourceGallery"]={name:s.count(f'src="{name}"') for name in refs}
-  actual=set(re.findall(r'<img\\b[^>]*\\bsrc="(assets/[^"]+)"',s))
+  actual=set(re.findall(r'<img\b[^>]*\bsrc="(assets/[^"]+)"',s))
   row["unexpectedLocalImages"]=sorted(actual-set(refs))
   row["noEditorImages"]=not any(q in s for q in ("data-moon-v2-added-id","data-moon-v2-added-layer"))
   if (any(n!=1 for n in row["sourceGallery"].values())
