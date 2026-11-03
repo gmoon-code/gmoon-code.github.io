@@ -1,0 +1,33 @@
+name: C-RV29bq live public Research reader proof
+on:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/audit-public-research-reader.py"
+      - ".github/workflows/audit-public-research-reader.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  public-research-reader:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout exact academic source
+        uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install real Chromium browser
+        run: |
+          python -m pip install playwright==1.57.0
+          python -m playwright install --with-deps chromium
+      - name: Inspect production GitHub Pages through real Chromium
+        run: python scripts/audit-public-research-reader.py
+      - name: Retain source comparisons, DOM metrics and screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: c-rv29bq-live-research-reader-proof
+          path: public-research-reader-output/
+          retention-days: 21
