@@ -1,0 +1,46 @@
+# C-RV29dg | Restricted Burke original-text access and current Editor V2 regression status
+
+**Date:** 4 November 2026. **Continued from:** [C-RV29df](WISE_ORIGINAL_BOOK_PREVIEW_PROVENANCE_C-RV29df_2026-11-04.md). **Audit remit:** Seek genuinely new source evidence for one still-A-tier reference, reconcile historical Editor V2 failing-tests notes with the later passing workflows, check the unchanged current Research source, and preserve independent outstanding evidence limitations. **Disposition:** No new authored Research paragraph error or substantial original Burke text was recovered. Four separate Editor V2 Chromium test suites are **indeed independently passing at their exact tested source versions**, and current JS/HTML plus the applicable test files are byte-identical to those successful versions. Do **not** continue to report the six early browser regression cases as currently failing tests. No public HTML or scientific study dataset was edited.
+
+## Actual current source version and unchanged public passage
+
+Opened the current GitHub checkpoint through C-RV29df and compared Git history from the verified full-release commit **`d0e8d06d9f2f0222627cabc1ee7b2590479b7fed`** to the beginning-of-stage head **`b9eefe1a16a863413f5c84b77896807b386ca31a`**. The diff contains only audit documentation and one recorded test-report JSON update; **zero HTML, CSS, JS or site media changes**. The current `research.html` blob remains **`f083527f1cc0f8d60587133333b15ccc0d994237`**.
+
+The third of the five authored paragraphs in `research.html#cultural-knowledge` says:
+
+> Children attending community science clubs in Canada valued hands-on activities and the relationships they formed. Their accounts also showed how club science and school science could be treated as separate, making it difficult to connect the enjoyment of club activities with learning at school (Burke & Navas Iannini, 2021). I wonder how this distinction affects the scientific work students feel able to pursue when they move between settings.
+
+The exact website reference `#reading-burke` names Burke and Navas Iannini (2021), *Journal of Research in Science Teaching*, **58(9), 1425–1454**, DOI **10.1002/tea.21714**. This is correct and independently repeated in the publisher and ERIC sources. The original abstract explicitly reports survey responses from **202 children** at 21 club sites, **45** children's focus-group commentary from 14 clubs, **nine** staff interviews, and children/staff distinctions between club and school science. It supports the website's bounded interpretation while **not establishing an experimentally measured school-performance change or a causal transfer effect**. The other four paragraphs and the neighbouring multilingual section had already been closely reviewed in [C-RV29t](RESEARCH_BURKE_NAVAS_IANNINI_SCIENCE_CLUBS_AUDIT_C-RV29t_2026-11-03.md) and have not changed.
+
+## Actual first-party article access and the false full-text label
+
+- [Wiley original publisher page](https://onlinelibrary.wiley.com/doi/10.1002/tea.21714) and [ERIC EJ1310767](https://eric.ed.gov/?id=EJ1310767) establish the article identity, study population, original abstract and claims. A publisher control labelled **“Read the full text”** returned the abstract/reference page rather than a continuous article body in this browser environment.
+- [ResearchGate publication page](https://www.researchgate.net/publication/351814176_Science_engagement_as_insight_into_the_science_identity_work_nurtured_in_community-based_science_clubs) advertises a publisher preview and an option to **request** the complete PDF from the authors. Its directly retrievable preview, headed **“Publisher Preview 1”**, reproduces only the opening article page, including part of the abstract. It cannot authenticate the complete published 30-page methods, analysis or discussion. A distinct ResearchGate *figure* page labels the source publication “full-text available”, but following that publication link leads back to the **one-page preview**, not a new article-body source.
+- A targeted authorized private Library title search also did not return a copy of the original Burke article. Searches that returned similarly themed research are **not source-equivalent substitutes**.
+
+Consequently, reference **#11 remains A**, rather than promoting to F. Its identity and central abstract-level claim are supported, and the current paragraph is proportionate to that evidence. The visible full-text/preview label mismatch is a **source-access classification trap**, not a documented fault of the author's webpage.
+
+## Current editor-suite proof, superseding the older failure observations
+
+The chronological audit had [C-RV29bf](EDITOR_V2_BROWSER_RUN_PROVENANCE_C-RV29bf_2026-11-03.md) recording six distinct early failed Editor V2 browser-test assertions and [C-RV29bg–bo](EDITOR_V2_DRAFT_STATUS_COPY_AND_CI_RECHECK_C-RV29bg_2026-11-03.md) recording subsequent fixes. [C-RV29bp](EDITOR_V2_ALL_PASS_REPOSITORY_RECONCILIATION_C-RV29bp_2026-11-03.md) already reported four later successes. This stage **independently re-fetched the real runs and current/historical file blobs**, rather than relying on the earlier memo alone.
+
+| Test suite | Exact tested commit and Actions run | Independently retrieved GitHub result |
+| --- | --- | --- |
+| Editor V2 browser regressions | `68c90369a665cde84fae18db7786e1af8d764de0`, [run 41594681399](https://github.com/gmoon-code/gmoon-code.github.io/actions/runs/41594681399) | **Success, 51/51 passing** as recorded in original stage run logs |
+| Editor V2 advanced editing interactions | Same `68c90369`, [run 41594681368](https://github.com/gmoon-code/gmoon-code.github.io/actions/runs/41594681368) | **Success, 55/55 passing** |
+| Source parity / live object checks | `4bec181452838125ce46da303c4593730eb4cb4a`, [run 41595195115](https://github.com/gmoon-code/gmoon-code.github.io/actions/runs/41595195115) | **Success, 19/19 passing** |
+| Academic Editor V2 browser checks | `ebde9b7ee333ec721d2ace95d3bf134816138cee`, [run 41596652652](https://github.com/gmoon-code/gmoon-code.github.io/actions/runs/41596652652) | **Success, 57/57 passing** |
+
+The original pass counts are further documented in C-RV29bp and preceding detailed CI stage reports; current stage independently confirms each Actions run's **completed/success** status and corresponding successful job. The suites were **not all run at one identical Git commit**, and this is Chromium/Playwright under local same-origin test fixtures, not authenticated live-site production publishing.
+
+Current GitHub file fetch versus the three tested revisions confirms the same application source blobs everywhere: **`editor-v2.js` = `9a88e1f910fab85cef34d6ee564dc3a6bbfa4710`** and **`editor-v2.html` = `8a1a5a28629e80daaa9d4fef6fbafa1b283bed4c`**. The regression-spec blob **`5039732b9fda3766dab0e426314e60779db24442`** matches all three. The source-parity-insertion spec is **`a1596c74f5d848ae2a07682d2e8e995a0140ad12`** both now and at its tested `4bec1814` commit; it differs from a still-earlier pre-fix commit, which is expected. The academic-editor spec **`e15272ec8c30ad9442e39f99d00e00094e4d1005`** matches the corresponding `ebde9b7` successful run; it legitimately differs from early pre-fix revisions. This is **test-specific exact source equivalence**, not a false claim that each test file was unchanged through its own historical development.
+
+## Editorial and ongoing evidence status
+
+**Research prose and references:** No justified change. The Burke citation and its limited cross-setting inference remain appropriate to the accessible original abstract. **Editor V2:** The six previously failing browser regressions were **historical and superseded** by the passing four-suite results. The correct current status is *passed in documented Chromium source-equivalent runs, with independent live authenticated publishing unverified*. The earlier failing observations should remain in their dated logs rather than be deleted or rewritten.
+
+**Other source boundaries:** Historical Unit 3 administered form, school marks and response facsimiles, prior text transformation records, independently dated signed school and guardian permission, original second-reader/adjudication records, final August scoping S2B/S2C 20-study matrix, several restricted original scholarly bodies and owner-selected contact email remain evidence-gated. The 53-item scholarly evidence register is still **46 F / 6 A / 1 M / 0 P**. **Full academic website content audit: In progress.**
+
+## Exact next checkpoint
+
+**C-RV29dh | Non-repetition and original-evidence gap triage.** First check whether any public scholarly source or site code was actually modified since the last successful S8 release, or whether authentic new original research materials now exist. If no such material is available, do **not** re-run the same A-tier abstract searches or revive the six superseded Editor V2 failures. Select a separately testable content claim or audit coverage gap, or explicitly record which evidence-gated branches are blocked pending originals. Keep the passing Editor V2 Chromium test record distinct from unverified authenticated production publishing.
