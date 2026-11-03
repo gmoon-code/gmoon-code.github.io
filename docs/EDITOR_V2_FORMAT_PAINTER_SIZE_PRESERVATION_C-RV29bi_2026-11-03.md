@@ -27,3 +27,15 @@ Push-triggered real-browser Actions jobs on commit `f1372d4` were observed **in 
 No public academic prose, manuscript evidence, ethics statuses, or source-register tiers changed. The independent normalized main-text delivery check from C-RV29bg remains historical evidence for the unchanged academic HTML.
 
 **Exact next checkpoint: C-RV29bj | Retrieve completed C-RV29bi GitHub Actions Chromium results and check picture format painter 12×6→12×6 preservation, along with effects and mask assertions.** If it passes, triage the remaining source multi width match / distribution failures separately. If it fails, inspect actual decoded error lines and correct only the established cause. Maintain separate blockers for image insertion, live-text persistence/reflow, original primary research evidence, and full rendered public browser parity.
+
+## Independent Chromium results recovered after the original checkpoint write
+
+The real-browser push jobs on the exact corrective commit `f1372d4` subsequently completed. Actual GitHub Actions job logs were fetched, rather than inferring success from the source patch.
+
+- [Primary Editor V2 browser regressions, run 41592625209](https://github.com/gmoon-code/gmoon-code.github.io/actions/runs/41592625209), job `125772602218`: **49 passed / 2 failed**. The picture format painter case at test line 924 ran without a failure, following the formerly failing 12×6 preservation assertion. Previously **48 passed / 3 failed**. Remaining failures are match widths (**57.25 px mismatch**) and distribution selection (**1 rather than 3 selected**).
+- [Advanced editing interactions, run 41592625290](https://github.com/gmoon-code/gmoon-code.github.io/actions/runs/41592625290), job `125772602446`: **53 passed / 2 failed**. The logs explicitly mark `format painter transfers picture adjustments without replacing photo content` **passed**. The same width/distribution failures remain. Previously **52 passed / 3 failed**.
+- [Source-parity and live-object checks, run 41592625230](https://github.com/gmoon-code/gmoon-code.github.io/actions/runs/41592625230), job `125772602399`: **18 passed / 1 failed**, distinct from the format painter work. The separate image-insertion timeout remains for independent triage.
+
+**Conclusion:** The exact former picture-format painter regression is independently verified repaired in two Chromium suites. A test pass does not establish full production-browser parity or guarantee every crop/mask interaction. Other failures are expressly unresolved.
+
+**Revised exact next stage: C-RV29bj | Diagnose source-object match-width discrepancy (57.25 px), starting at `tests/editor-v2-live-source-multi.spec.cjs:993–1005` and the matching editor implementation.** Preserve distribution multi-selection, image insertion, text reflow and academic source-evidence issues as separate tracks.
