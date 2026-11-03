@@ -1132,6 +1132,13 @@ test('reflow text box changes line wrapping while preserving reserved flow footp
   const heading=live.locator('main h2').first();
   const paragraph=live.locator('main p').first();
   const neighbourBefore=await paragraph.boundingBox();
+  const reflowBefore=await heading.evaluate(node=>{
+    const css=getComputedStyle(node),p=node.nextElementSibling;
+    const rect=n=>{const r=n.getBoundingClientRect();return {y:r.y,h:r.height,offsetHeight:n.offsetHeight,scrollHeight:n.scrollHeight}};
+    return {heading:rect(node),paragraph:rect(p),computedHeight:css.height,
+      computedWidth:css.width,lineHeight:css.lineHeight,
+      marginTop:css.marginTop,marginBottom:css.marginBottom,boxSizing:css.boxSizing};
+  });
   await heading.click();
   await expect(page.locator('#liveTextReflowControls')).toBeVisible();
   await expect(page.locator('#liveTextBoxWidth')).toBeEnabled();
@@ -1152,7 +1159,7 @@ test('reflow text box changes line wrapping while preserving reserved flow footp
       fontSize:css.fontSize},paragraphCss:{marginTop:pc.marginTop,marginBottom:pc.marginBottom},
       styleSheet:node.ownerDocument.getElementById('moon-v2-live-layout')?.textContent?.slice(-900)};
   });
-  console.log('REFLOW_GEOMETRY_DIAGNOSTIC',JSON.stringify({neighbourBefore,neighbourAfter,reflowDiagnostic}));
+  console.log('REFLOW_GEOMETRY_DIAGNOSTIC',JSON.stringify({neighbourBefore,neighbourAfter,reflowBefore,reflowDiagnostic}));
   // Natural text measurement may adjust the reserved line box by a couple
   // of pixels, without causing the large unexpected layout jump of legacy
   // scale-based resizing.
