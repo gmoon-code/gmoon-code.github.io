@@ -1273,7 +1273,7 @@ function liveLayoutRules(patches=[...livePatches.values()]){
         "width:"+entry.wrapWidth+"px!important;"+
         (sectionLike?containerHeight:
           "height:"+entry.reserveHeight+"px!important;")+
-        "box-sizing:border-box!important;min-width:0!important;"+
+        "box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;"+
         "max-width:none!important;max-height:none!important;overflow:visible!important;"+
         (patch.kind==="image"||tag==="img"?
           "object-fit:contain!important;":""):"";
@@ -3954,7 +3954,13 @@ function arrangeSelectedLive(mode){
       const dy=Math.round(item.g.y-item.rect.y);
       const widthChanged=sizing&&Math.abs(item.g.w-item.rect.width)>0.5;
       const heightChanged=sizing&&Math.abs(item.g.h-item.rect.height)>0.5;
-      if(!dx&&!dy&&!widthChanged&&!heightChanged)continue;
+      // In a flex row, resizing the receiver also shrinks the reference
+      // unless its measured width is fixed as part of the same operation.
+      const flexReference=sizing&&item===items[0]&&
+        (mode==="matchWidth"||mode==="matchSize")&&
+        /^(inline-)?flex$/.test(
+          item.node.ownerDocument.defaultView.getComputedStyle(item.node.parentElement).display);
+      if(!dx&&!dy&&!widthChanged&&!heightChanged&&!flexReference)continue;
       const layout=sizing?
         normaliseElementBoxLayout(item.node,item.layout):{...item.layout};
       layout.dx=clamp(Math.round(item.layout.dx+dx),-4000,4000);
