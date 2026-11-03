@@ -79,7 +79,7 @@
 
 ## Exact next unfinished stage
 
-**C-RV29cd | Remaining nine A-tier and one M-tier original text availability.** C-RV29cb found no authenticated dated transformation log for the changed retained action-research wording. C-RV29cc independently read the privately available 22-page original Airton (2023) article, checked its public Research use and upgraded source row 1 from A to F. The current 53-reference source-reading distribution is now **43 F / 9 A / 1 M / 0 P**, with the original article retained privately. Check other still-A/M works for authentic sustained original access without repeating completed source audits; preserve historical source-tier entries as dated snapshots. Original classroom submissions/permissions and final August scoping S2B/S2C remain independently unresolved.
+**C-RV29cg | Source-tier and research-record continuation.** The current Research register is **46 F / 6 A / 1 M / 0 P** after substantial original DeCoito (2024) chapter review. See [C-RV29cf](RESEARCH_DECOITO_ORIGINAL_CHAPTER_C-RV29cf_2026-11-03.md) and [the current next-stage note](CONTENT_AUDIT_C-RV29cf_NEXT_STAGE.md). The remaining A/M material requires exact original texts. Original student submissions, historical permissions and final August scoping coding remain separately unresolved.
 
 ## Other prior audit boundaries remain open
 
