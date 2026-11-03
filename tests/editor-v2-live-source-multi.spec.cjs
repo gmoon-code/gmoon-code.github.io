@@ -1101,7 +1101,9 @@ test('distribution equalises gaps between differently sized source boxes',async(
       return {rect:{x:rect.x,y:rect.y,w:rect.width,h:rect.height},
         hit:hit?.className||hit?.tagName,hitInside:node.contains(hit)};
     });
-    await target.click(index?{modifiers:['Shift']}:{});
+    // The first paragraph's centre hits its original anchor. An ordinary
+    // link click does not select the object, so click its non-link lower area.
+    await target.click(index?{modifiers:['Shift']}:{position:{x:10,y:70}});
     selectionTrace.push({name,...before,
       count:await page.locator('#liveMultiCount').textContent(),
       selected:await live.locator('[data-moon-v2-source-selected]').evaluateAll(
