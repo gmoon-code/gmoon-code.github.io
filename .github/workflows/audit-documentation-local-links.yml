@@ -1,0 +1,27 @@
+name: Academic audit documentation local-link integrity
+on:
+  push:
+    branches: [main]
+    paths:
+      - "docs/**"
+      - "README.md"
+      - "scripts/audit-documentation-local-links.py"
+      - ".github/workflows/audit-documentation-local-links.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  documentation-links:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect documentation references against the checked repository
+        run: python3 scripts/audit-documentation-local-links.py
+      - name: Retain complete local-link evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: academic-audit-documentation-link-evidence
+          path: audit-documentation-links-output/
+          retention-days: 21
