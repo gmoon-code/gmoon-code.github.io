@@ -1,12 +1,12 @@
 {
-  "sourceHead": "2d8732b0ea612d918e3a27b89a2fd6c47a6d28d8",
+  "sourceHead": "06e58a6e8f461dc791504cc8e018f3b95efe126f",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-2d8732b0ea61",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-06e58a6e8f46",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -18,6 +18,7 @@
       "head_sha": "b3946c29403c8d110510dbdd00903789b882edcd",
       "exit": "0",
       "sourceModifiedSinceAudit": [
+        "research-methods-studio.html",
         "research.html"
       ],
       "failureCounts": {
@@ -26,27 +27,27 @@
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "41458088826",
-      "head_sha": "b020f5c36ab4610a1214aacf459e06cb2155edb5",
+      "run": "41557107100",
+      "head_sha": "2d8732b0ea612d918e3a27b89a2fd6c47a6d28d8",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "research.html"
+        "research-methods-studio.html"
       ],
       "failureCounts": {
-        "issues": 44
+        "issues": 42
       },
       "counts": {
-        "reachable": 71,
-        "unverified": 44
+        "reachable": 73,
+        "unverified": 42
       }
     },
     "metadata": {
       "report": "docs/RESEARCH_METADATA_LATEST_RESULTS.json",
-      "run": "41396577432",
-      "head_sha": "ecd16a1c35ced949a4c6c1658a30efadae077472",
+      "run": "41557106961",
+      "head_sha": "2d8732b0ea612d918e3a27b89a2fd6c47a6d28d8",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "research.html"
+        "research-methods-studio.html"
       ],
       "failureCounts": {
         "unverified": 0
@@ -59,11 +60,11 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "41458088821",
-      "head_sha": "b020f5c36ab4610a1214aacf459e06cb2155edb5",
+      "run": "41557107167",
+      "head_sha": "2d8732b0ea612d918e3a27b89a2fd6c47a6d28d8",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "research.html"
+        "research-methods-studio.html"
       ],
       "failureCounts": {
         "failures": 0
@@ -71,11 +72,11 @@
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "41458088770",
-      "head_sha": "b020f5c36ab4610a1214aacf459e06cb2155edb5",
+      "run": "41557107060",
+      "head_sha": "2d8732b0ea612d918e3a27b89a2fd6c47a6d28d8",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "research.html"
+        "research-methods-studio.html"
       ],
       "failureCounts": {
         "failures": 0
@@ -83,11 +84,11 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "41458088772",
-      "head_sha": "b020f5c36ab4610a1214aacf459e06cb2155edb5",
+      "run": "41557107245",
+      "head_sha": "2d8732b0ea612d918e3a27b89a2fd6c47a6d28d8",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "research.html"
+        "research-methods-studio.html"
       ],
       "failureCounts": {
         "failures": 0,
@@ -96,11 +97,11 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "41458089004",
-      "head_sha": "b020f5c36ab4610a1214aacf459e06cb2155edb5",
+      "run": "41557107090",
+      "head_sha": "2d8732b0ea612d918e3a27b89a2fd6c47a6d28d8",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "research.html"
+        "research-methods-studio.html"
       ],
       "failureCounts": {
         "failures": 0,
@@ -118,61 +119,71 @@
     {
       "category": "links",
       "sourceModifiedSinceAudit": [
+        "research-methods-studio.html",
         "research.html"
       ]
     },
     {
       "category": "external",
       "sourceModifiedSinceAudit": [
-        "research.html"
+        "research-methods-studio.html"
       ]
     },
     {
       "category": "metadata",
       "sourceModifiedSinceAudit": [
-        "research.html"
+        "research-methods-studio.html"
       ]
     },
     {
       "category": "reflow",
       "sourceModifiedSinceAudit": [
-        "research.html"
+        "research-methods-studio.html"
       ]
     },
     {
       "category": "engines",
       "sourceModifiedSinceAudit": [
-        "research.html"
+        "research-methods-studio.html"
       ]
     },
     {
       "category": "typography",
       "sourceModifiedSinceAudit": [
-        "research.html"
+        "research-methods-studio.html"
       ]
     },
     {
       "category": "interactions",
       "sourceModifiedSinceAudit": [
-        "research.html"
+        "research-methods-studio.html"
       ]
     }
   ],
   "pass": false,
   "errors": [
     {
-      "path": "research.html",
+      "path": "research-methods-studio.html",
       "errors": [
         "deployed bytes differ from checked-out production source"
       ],
       "firstDiff": [
         "--- source\n",
         "+++ deployed\n",
-        "@@ -26,3 +26,3 @@\n",
-        "     <h1>Research</h1>",
-        "-    <p class=\"research-essay-lead\">In a biology lesson, students may examine a simplified diagram tracing human sex development from chromosomes to reproductive anatomy. A student might ask how differences in hormone responses fit into that pathway. The teacher could explain the missing processes and continue with the lesson, or invite students to examine what the diagram leaves out and consider which relationships a more adequate model should represent.</p>",
-        "+    <p class=\"research-essay-lead\">Imagine a biology class examining a simplified diagram that traces human sex development from chromosomes to reproductive anatomy. A student asks where differences in hormone responses fit into that pathway. The teacher could explain the missing processes and continue with the lesson, or invite students to examine what the diagram leaves out and decide which relationships a more adequate model should represent.</p>",
-        "     <p>Teachers make these decisions within curricular and disciplinary expectations, choosing which questions to pursue and whether students' explanations can shape the work that follows. These judgments take place within institutions and histories marked by racism, colonialism, and inequalities connected to gender, sexuality, social class, and language. My interest in justice-oriented science education includes how students can participate in evaluating scientific representations and the grounds on which their contributions are recognized. Scholarship on epistemic agency and rightful presence helps me examine these relationships alongside the scientific reasoning involved.</p>"
+        "@@ -139,3 +139,3 @@\n",
+        "   <div class=\"section-head\"><h2>Application preview</h2></div>",
+        "-  <p class=\"project-preview-intro\">The preview opens the published Research Methods Studio workspace inside this page. The full-size application provides more room for developing a research plan and recording work.</p>",
+        "+  <p class=\"project-preview-intro\">The published workspace brings these decisions into the student's ongoing project. You can explore its opening guidance below, while the full-size application provides more room for developing a research plan and recording work.</p>",
+        "   <div class=\"project-preview-panel\" data-live-preview=\"methods\">",
+        "@@ -143,3 +143,3 @@\n",
+        "     <div class=\"project-preview-before\">",
+        "-      <p class=\"project-preview-caption\">This is the live application, with access to any Research Methods Studio project already saved in this browser. Opening the preview can display earlier work, and editing here can change the project available in the full workspace. Consider who can see the screen before opening private work.</p>",
+        "+      <p>Look at the opening research guidance and the tools available along the path.</p>",
+        "       <button type=\"button\" class=\"control primary project-preview-open\" data-preview-open=\"\" hidden=\"\">Show the live preview</button>",
+        "@@ -156,3 +156,3 @@\n",
+        "       <div class=\"project-preview-stage\" data-preview-stage=\"\" data-device=\"desktop\"></div>",
+        "-      <p class=\"project-preview-caption\">The preview and full-size application use the same locally stored Research Methods Studio project when browser storage is available. Closing the preview does not undo saved edits. For extended writing and backups, use the full workspace.</p>",
+        "+      <p class=\"project-preview-caption\">The preview and full-size application may share a locally stored project in this browser. For extended writing and backups, use the full workspace.</p>"
       ]
     },
     {
@@ -180,50 +191,51 @@
         {
           "category": "links",
           "sourceModifiedSinceAudit": [
+            "research-methods-studio.html",
             "research.html"
           ]
         },
         {
           "category": "external",
           "sourceModifiedSinceAudit": [
-            "research.html"
+            "research-methods-studio.html"
           ]
         },
         {
           "category": "metadata",
           "sourceModifiedSinceAudit": [
-            "research.html"
+            "research-methods-studio.html"
           ]
         },
         {
           "category": "reflow",
           "sourceModifiedSinceAudit": [
-            "research.html"
+            "research-methods-studio.html"
           ]
         },
         {
           "category": "engines",
           "sourceModifiedSinceAudit": [
-            "research.html"
+            "research-methods-studio.html"
           ]
         },
         {
           "category": "typography",
           "sourceModifiedSinceAudit": [
-            "research.html"
+            "research-methods-studio.html"
           ]
         },
         {
           "category": "interactions",
           "sourceModifiedSinceAudit": [
-            "research.html"
+            "research-methods-studio.html"
           ]
         }
       ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41557107086",
-  "run_sha": "2d8732b0ea612d918e3a27b89a2fd6c47a6d28d8",
+  "workflow_run_id": "41569070522",
+  "run_sha": "06e58a6e8f461dc791504cc8e018f3b95efe126f",
   "exit_code": "1"
 }
