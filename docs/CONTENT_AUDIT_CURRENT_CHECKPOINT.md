@@ -1,6 +1,6 @@
 # Academic website content audit | Current checkpoint
 
-**Current through C-RV29cg, 3 November 2026. Whole-site audit: In progress.** This is the current living continuation index, not a replacement for prior original stage files or a declaration of complete research ethics, student-text or browser verification.
+**Current through C-RV29ci, 3 November 2026. Whole-site audit: In progress.** This is the current living continuation index, not a replacement for prior original stage files or a declaration of complete research ethics, student-text or browser verification.
 
 ## New verified stages since C-RV29ao
 
@@ -80,9 +80,12 @@
 - [C-RV29cf | Original DeCoito STEM inquiry chapter recovered](RESEARCH_DECOITO_ORIGINAL_CHAPTER_C-RV29cf_2026-11-03.md). A 125-PDF-page authorized Springer original includes chapter 4, printed pp. 51–72; substantial book text and publisher author listing establish the STEM inquiry planning/teacher scaffolding claim and support a source tier upgrade **A→F**. The current reference register is **46 F / 6 A / 1 M / 0 P**. No website prose changed.
 - [C-RV29cg | Remaining A-tier article-access limits](REMAINING_A_TIER_SOURCE_ACCESS_C-RV29cg_2026-11-03.md). First-party publisher records for Alexander (2023), Gilbert (2021) and Prasad (2015) support citation identities and the qualified site claims, but not original continuous article-body reading. All three retain **A**, leaving current totals unchanged. No page edits.
 
+- [C-RV29ch | Four restricted original works, publisher facts and current page claims](RESTRICTED_ORIGINALS_READER_CROSSCHECK_C-RV29ch_2026-11-03.md). Current Research and classification-essay sentences were compared with exact publisher/book records for Burke & Navas Iannini (2021), Nasir et al. (2014 second edition), Richardson (2013 chapter 5) and Slotta & Linn (2009). No authentic substantial original body newly accessible. **A/A/A/M** source grades remain correct; public prose unchanged; current bibliography **46 F / 6 A / 1 M / 0 P**.
+- [C-RV29ci | Correct master ledger's stale browser-status statement](PUBLIC_BROWSER_EVIDENCE_STATUS_CORRECTION_C-RV29ci_2026-11-03.md). The old current-state paragraph still described an early 16-indexed-page static-parity check while later [C-RV29bx](ALL_26_PUBLIC_ROUTES_SCOPE_RECONCILIATION_C-RV29bx_2026-11-03.md) had already proved **26/26 real public HTML routes** in bounded 390/1280 px Chromium cases. Reconciled audit prose with the separate 17 academic readers, custom 404 and eight supplementary entry states; maintained physical-device, accessibility, authenticated publishing and research-source boundaries. **No academic website HTML changed**.
+
 ## Exact next unfinished stage
 
-**C-RV29ch | Exact-original source checks and empirical proof priorities.** The current 53-reference register is **46 F / 6 A / 1 M / 0 P** after direct DeCoito chapter inspection. The bounded C-RV29cg recheck retains A for Alexander, Gilbert and Prasad because first-party publisher pages remain abstract-level, without authenticated continuous originals. Check the other four restricted A/M records only where exact original evidence is available. Keep final August scoping coding, authentic student submissions and historical study permission sources independently unresolved. [Next-stage details](REMAINING_A_TIER_SOURCE_ACCESS_C-RV29cg_2026-11-03.md).
+**C-RV29cj | Evidence-triggered primary-record verification.** C-RV29ch reconfirmed accurate, qualified public source uses for the four remaining restricted original works without authenticated sustained original text; the current 53-reference tier count stays **46 F / 6 A / 1 M / 0 P**. C-RV29ci reconciled the ledger's old 16-page static-parity statement with later independent **26-route live Chromium** proof, retaining narrower functional, accessibility and research-source limits. Seek newly available **final August 20-study S2B/S2C** charting, original classroom submissions and documented text revisions, executed historical permissions or independent-coder logs. Do not repeat unavailable scholarly sources without a new access route. [See the source check](RESTRICTED_ORIGINALS_READER_CROSSCHECK_C-RV29ch_2026-11-03.md) and [browser status correction](PUBLIC_BROWSER_EVIDENCE_STATUS_CORRECTION_C-RV29ci_2026-11-03.md).
 
 ## Other prior audit boundaries remain open
 
