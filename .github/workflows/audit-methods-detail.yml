@@ -12,6 +12,7 @@ on:
       - "appearance.js"
       - "assets/research-methods-data-lab.webp"
       - "scripts/audit-methods-detail.py"
+      - "tests/methods-preview-storage-disclosure.test.mjs"
       - ".github/workflows/audit-methods-detail.yml"
   workflow_dispatch:
 
@@ -28,6 +29,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Verify preview data-sharing disclosure and iframe opening semantics
+        run: node --test tests/methods-preview-storage-disclosure.test.mjs
       - name: Install browser and PDF inspection
         run: |
           python -m pip install playwright==1.57.0 PyMuPDF==1.26.7
