@@ -1,6 +1,6 @@
 # Academic website content audit | Current checkpoint
 
-**Current through C-RV29av, 3 November 2026. Whole-site audit: In progress.** This is the current living continuation index, not a replacement for prior original stage files or a declaration of complete research ethics, student-text or browser verification.
+**Current through C-RV29aw, 3 November 2026. Whole-site audit: In progress.** This is the current living continuation index, not a replacement for prior original stage files or a declaration of complete research ethics, student-text or browser verification.
 
 ## New verified stages since C-RV29ao
 
@@ -16,11 +16,13 @@
 
 - [C-RV29av | Bounded public production delivery parity attempt](PUBLIC_SITE_DELIVERY_PARITY_REATTEMPT_C-RV29av_2026-11-03.md). Direct public-reader access was **unavailable for Home, Research, Action Research and the classification essay**; an independent runtime `urllib` attempt failed with **tool-environment DNS resolution**, without fetching an HTTP response. GitHub Actions confirmed a **successful Pages deployment run `41583023946`** for a commit containing the corrected public prose, but Actions success **does not prove delivered source parity or browser operation**. No website content edited, production parity **Blocked by retrieval environment**, site availability to other visitors **not determined**.
 
+- [C-RV29aw | Source-tier, documentation and retained-count consistency](ACADEMIC_SOURCE_STATUS_REGISTER_CROSSCHECK_C-RV29aw_2026-11-03.md). Reconciled all **53** current Research bibliography entries against **42 F / 10 A / 1 M / 0 P** in the register; **53/53** valid fragment targets and body uses, **178/178** valid current report relative links. Recomputed the September analytic workbook's 84 classifiable responses, unit complete counts **7/18/25**, word-count medians **40/74/62**, 31 linked reflection/reconstruction entries and **7/10** complete reconstructions. Repeated the live-site reader and runtime DNS access checks, preserving **blocked public delivery parity**. **No evidence-tier upgrade or public HTML/documentation correction** was warranted; the single M entry is **Slotta & Linn (2009)**.
+
 **Current checked Git blob for `research-action.html`: `80277bba0aa0ad715be87865e5a30e609b419147`.** The two public content changes are the only changes confirmed across its successive C-RV29ap–aq blobs. The class totals **28/84/31**, Unit 2/3/4 complete-mechanistic counts **7/18/25**, reflection-specificity comparison **10/12 versus 3/9**, and the C-RV29ap reconstructed 5/2/2/1 patterns remain supported at the **retained analytic data tier**. Different assessment prompts and feedback conditions prevent claims of causal improvement on a common scale.
 
 ## Exact next unfinished stage
 
-**C-RV29aw | Cross-report source-evidence status and tier consistency.** Check the current 53-reference Research register, the new C-RV29ap–av stage reports and source boundary language for overstated claims, incompatible tallies or confusion between manuscript-reported and directly authenticated evidence. Correct only demonstrable **documentation** discrepancies; preserve source-history snapshots. Do not repeat blocked public URL retrieval without a new access path, or re-edit sound published prose to satisfy an artificial completion target.
+**C-RV29ax | Slotta and Linn (2009) WISE original-book access.** Assess whether an authentic, legally accessible substantial excerpt from `WISE Science: Web-Based Inquiry in the Classroom` supports the Research page's claim about prepared web inquiry resources and student explanations. ERIC catalogues and a different WISE paper alone do **not** meet the register's F tier. Keep M if only metadata/abstract can be inspected and preserve the current page if its cautious statement is already supported. Document the exact source boundary and any tier change; continue tracking original AP Biology submissions, the final-August scoping coding, consent and live-browser blockers separately.
 
 ## Other prior audit boundaries remain open
 
