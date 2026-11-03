@@ -1671,12 +1671,13 @@ function pasteLiveFormat(){
       patch.design={...patch.design,rotation:0};
     patch.pictureEffects={...(patch.pictureEffects||{}),
       [device]:copy(clipboard.pictureEffects)};
-    // Mask shape travels with appearance, but independently cropped sides
-    // and source-image content are left unchanged.
-    const prepared=prepareImageCrop(node,patch,device);
-    if(prepared){
+    // Copy the mask without normalising the receiving frame. Crop-frame
+    // preparation enforces a 64×24 minimum intended for resizing, which would
+    // enlarge small existing images when merely pasting their appearance.
+    const targetCrop=selectedImageCrop(patch,device);
+    if(targetCrop.mask!==clipboard.mask){
       patch.imageCrop={...(patch.imageCrop||{}),
-        [device]:{...prepared,mask:clipboard.mask,reset:false}};
+        [device]:{...targetCrop,mask:clipboard.mask,reset:false}};
     }
   }else if(clipboard.kind==="shape"){
     if(patch.kind!=="insert")return;
