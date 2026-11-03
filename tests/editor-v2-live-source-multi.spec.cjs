@@ -1090,7 +1090,25 @@ test('distribution equalises gaps between differently sized source boxes',async(
   await live.locator('p.second').click();
   await page.locator('#liveMoveX').fill('90');
   await page.locator('#liveMoveX').press('Tab');
-  await selectSourceGroup(page,['first','second','third']);
+  // Capture actual hit targets after the second source box moves.
+  const selectionTrace=[];
+  for(const [index,name] of ['first','second','third'].entries()){
+    const target=live.locator('p.'+name);
+    const before=await target.evaluate(node=>{
+      const rect=node.getBoundingClientRect();
+      const x=rect.left+rect.width/2,y=rect.top+rect.height/2;
+      const hit=node.ownerDocument.elementFromPoint(x,y);
+      return {rect:{x:rect.x,y:rect.y,w:rect.width,h:rect.height},
+        hit:hit?.className||hit?.tagName,hitInside:node.contains(hit)};
+    });
+    await target.click(index?{modifiers:['Shift']}:{});
+    selectionTrace.push({name,...before,
+      count:await page.locator('#liveMultiCount').textContent(),
+      selected:await live.locator('[data-moon-v2-source-selected]').evaluateAll(
+        nodes=>nodes.map(node=>node.className))});
+  }
+  expect(await page.locator('#liveMultiCount').textContent(),
+    'Distribution click/selection trace: '+JSON.stringify(selectionTrace)).toBe('3 selected');
   await page.locator('#liveDistributeH').click();
   const a=await localRect(live.locator('p.first'));
   const b=await localRect(live.locator('p.second'));
