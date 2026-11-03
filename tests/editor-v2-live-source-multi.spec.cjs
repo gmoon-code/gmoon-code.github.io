@@ -885,7 +885,7 @@ test('PowerPoint-format image effects survive reload, stay responsive and reset 
   await img.click();
   await page.locator('#livePictureReset').click();
   await expect(img).toHaveCSS('rotate','0deg');
-  await expect(img).toHaveCSS('scale','1 1');
+  await expect(img).toHaveCSS('scale',/^1(?: 1)?$/);
 });
 test('direct rotate grip rotates an image and Shift constrains angles to 15 degrees',async({page})=>{
   await loadCropFixture(page);
