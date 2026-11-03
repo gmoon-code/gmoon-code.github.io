@@ -44,7 +44,7 @@ The underlying standard localStorage API provides per-key `setItem` atomicity bu
 | Multi-key project save and rollback | 6/6 |
 | **Total across five suites** | **68/68** |
 
-The corresponding [GitHub Pages build/deployment run 41566251685](https://github.com/gmoon-code/research-methods/actions/runs/41566251685) was **queued** on the initial status check. Its final result must be verified rather than anticipated; passing CI is not a proxy for delivery or live browser cache state.
+The corresponding [GitHub Pages build/deployment run 41566251685](https://github.com/gmoon-code/research-methods/actions/runs/41566251685) was initially queued and subsequently **verified completed successfully** on the same final code commit. Passing CI and Pages deployment do not verify visitor cache state, real-device browser storage or external-file durability.
 
 ## Academic website writing and credibility
 
