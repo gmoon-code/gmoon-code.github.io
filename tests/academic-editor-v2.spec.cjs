@@ -1142,6 +1142,17 @@ test('reflow text box changes line wrapping while preserving reserved flow footp
   expect(currentWidth).toBe(150);
   expect(currentWidth).toBeLessThan(beforeWidth);
   const neighbourAfter=await paragraph.boundingBox();
+  const reflowDiagnostic=await heading.evaluate(node=>{
+    const css=getComputedStyle(node),p=node.nextElementSibling,pc=getComputedStyle(p);
+    const box=el=>{const r=el.getBoundingClientRect();return {x:r.x,y:r.y,w:r.width,h:r.height,
+      offsetHeight:el.offsetHeight,clientHeight:el.clientHeight,scrollHeight:el.scrollHeight};};
+    return {heading:box(node),paragraph:box(p),headingCss:{
+      height:css.height,minHeight:css.minHeight,lineHeight:css.lineHeight,marginTop:css.marginTop,
+      marginBottom:css.marginBottom,boxSizing:css.boxSizing,overflow:css.overflow,
+      fontSize:css.fontSize},paragraphCss:{marginTop:pc.marginTop,marginBottom:pc.marginBottom},
+      styleSheet:node.ownerDocument.getElementById('moon-v2-live-layout')?.textContent?.slice(-900)};
+  });
+  console.log('REFLOW_GEOMETRY_DIAGNOSTIC',JSON.stringify({neighbourBefore,neighbourAfter,reflowDiagnostic}));
   // Natural text measurement may adjust the reserved line box by a couple
   // of pixels, without causing the large unexpected layout jump of legacy
   // scale-based resizing.
