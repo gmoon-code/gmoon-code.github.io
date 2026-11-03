@@ -3,13 +3,20 @@
 from pathlib import Path
 from urllib.request import Request,urlopen
 from urllib.parse import quote
-import hashlib,json,time
+import hashlib,json,re,time
 from urllib.error import HTTPError,URLError
 OUT=Path("photo-restore-live-check")
 OUT.mkdir(exist_ok=True)
 PAGES=["interests.html","pungmul.html"]
-FILES=PAGES+["pungmul.css"]+["assets/"+p for p in (
-"pungmul-stage.webp","pungmul-group.webp","pungmul-solo.webp","pungmul-rehearsal.webp")]
+GALLERIES={
+ "interests.html":("assets/interests-pungmul-street.webp","assets/interests-pungmul-dancers.webp"),
+ "pungmul.html":("assets/pungmul-rehearsal-studio.webp","assets/pungmul-ensemble-stage-photo.webp",
+                 "assets/pungmul-outdoor-autumn.webp","assets/pungmul-portrait-janggu.webp",
+                 "assets/pungmul-gong-jump.webp"),
+}
+# Verify the intentionally distinct gallery sources as well as the served page bytes.
+assert not set(GALLERIES[PAGES[0]]) & set(GALLERIES[PAGES[1]])
+FILES=PAGES+["pungmul.css"]+list(dict.fromkeys(name for page in PAGES for name in GALLERIES[page]))
 def digest(b):return hashlib.sha256(b).hexdigest()
 def one(path):
  original=Path(path).read_bytes()
@@ -37,11 +44,13 @@ def main():
  for p in PAGES:
   s=Path(p).read_text()
   row=next(x for x in result if x["path"]==p)
-  refs=[f'assets/{name}' for name in (
-  "pungmul-stage.webp","pungmul-group.webp","pungmul-solo.webp","pungmul-rehearsal.webp")]
+  refs=GALLERIES[p]
   row["sourceGallery"]={name:s.count(f'src="{name}"') for name in refs}
+  actual=set(re.findall(r'<img\\b[^>]*\\bsrc="(assets/[^"]+)"',s))
+  row["unexpectedLocalImages"]=sorted(actual-set(refs))
   row["noEditorImages"]=not any(q in s for q in ("data-moon-v2-added-id","data-moon-v2-added-layer"))
-  if any(n!=1 for n in row["sourceGallery"].values()) or not row["noEditorImages"]:
+  if (any(n!=1 for n in row["sourceGallery"].values())
+      or row["unexpectedLocalImages"] or not row["noEditorImages"]):
    row["verified"]=False
  summary={"files":len(FILES),"matched":sum(x["verified"] for x in result),
  "failed":[x for x in result if not x["verified"]],
