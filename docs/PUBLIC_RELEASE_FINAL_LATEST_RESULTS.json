@@ -3,8 +3,8 @@
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
-  "verifiedExactMatches": 23,
-  "httpErrors": 1,
+  "verifiedExactMatches": 24,
+  "httpErrors": 0,
   "customNested404": {
     "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-7f147beca823",
     "status": 404,
@@ -160,26 +160,6 @@
   ],
   "pass": false,
   "errors": [
-    {
-      "path": "teaching-ap-biology.html",
-      "errors": [
-        "deployed bytes differ from checked-out production source"
-      ],
-      "firstDiff": [
-        "--- source\n",
-        "+++ deployed\n",
-        "@@ -101,3 +101,3 @@\n",
-        " <section id=\"bio-record-criteria\" class=\"section teaching-case-section\">",
-        "-  <div class=\"section-head\"><h2>Classification of mechanistic explanations</h2><p>These research classifications described the causal relationships expressed in students’ explanations, using criteria separate from classroom marks.</p></div>",
-        "+  <div class=\"section-head\"><h2>Classification of mechanistic explanations</h2><p>These research classifications were distinct from the two-point scores students received on the original assessment.</p></div>",
-        "   <div class=\"reading teaching-case-prose\">",
-        "@@ -164,3 +164,3 @@\n",
-        "   ",
-        "-  <p class=\"teaching-evidence-note\">The experimental values and student task are constructed examples.</p>",
-        "+  <p class=\"teaching-evidence-note\">The experimental values and student task are constructed examples. This prospective assessment has a different evidential purpose from the original two-point classroom question and the subsequent research reconstruction.</p>",
-        " </section>"
-      ]
-    },
     {
       "sourceDrift": [
         {
