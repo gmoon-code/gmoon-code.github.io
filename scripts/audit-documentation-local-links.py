@@ -86,6 +86,33 @@ def local_target(source, raw):
     return {"resolved": resolved, "raw": raw}
 
 
+
+def checkpoint_integrity_issues():
+    """Check the living next-stage block, which links alone cannot validate."""
+    path = ROOT / "docs" / "CONTENT_AUDIT_CURRENT_CHECKPOINT.md"
+    issues = []
+    if not path.is_file():
+        return [{"document": "docs/CONTENT_AUDIT_CURRENT_CHECKPOINT.md",
+                 "error": "living audit checkpoint missing"}]
+    text = path.read_text(encoding="utf-8")
+    next_marker = "## Exact next unfinished stage"
+    boundary_marker = "## Other prior audit boundaries remain open"
+    if text.count(next_marker) != 1 or text.count(boundary_marker) != 1:
+        return [{"document": path.relative_to(ROOT).as_posix(),
+                 "error": "checkpoint stage/boundary heading must occur exactly once"}]
+    next_start = text.index(next_marker) + len(next_marker)
+    next_end = text.index(boundary_marker)
+    if next_end <= next_start:
+        return [{"document": path.relative_to(ROOT).as_posix(),
+                 "error": "next-stage heading does not precede boundary heading"}]
+    stage = text[next_start:next_end].strip()
+    paragraphs = [p.strip() for p in re.split(r"\n\s*\n", stage) if p.strip()]
+    if len(paragraphs) != 1 or not re.match(r"^\*\*C-RV\d+[a-z]+ \| ", stage):
+        issues.append({"document": path.relative_to(ROOT).as_posix(),
+                       "error": "next-stage block must contain one identifiable checkpoint paragraph",
+                       "paragraphCount": len(paragraphs)})
+    return issues
+
 def main():
     scanned = []
     checked = []
@@ -106,22 +133,24 @@ def main():
         print("DOC_LINKS",source.relative_to(ROOT).as_posix(),
               sum(x["document"] == source.relative_to(ROOT).as_posix() for x in checked),
               flush=True)
+    checkpoint_issues = checkpoint_integrity_issues()
     report = {
-        "scope": "All docs/*.md and root README.md local Markdown file links and explicit HTML id fragments",
+        "scope": "All docs/*.md and root README.md local Markdown file links, explicit HTML ids and living next-stage integrity",
         "documentationFilesScanned": len(scanned),
         "localTargetsChecked": len(checked),
         "htmlFragmentsChecked": sum(bool(x.get("htmlFragment")) or "fragment" in x for x in checked),
-        "unresolved": len(invalid),
-        "unresolvedDetails": invalid,
+        "unresolved": len(invalid) + len(checkpoint_issues),
+        "unresolvedDetails": invalid + checkpoint_issues,
+        "checkpointIntegrityIssues": checkpoint_issues,
         "limitations": "Does not check external URLs, Markdown heading fragments, dynamic JavaScript-generated anchors, textual citation validity, PDF internal links, GitHub API URLs, or code samples.",
     }
     OUTPUT.mkdir(exist_ok=True)
     (OUTPUT / "report.json").write_text(json.dumps(report,indent=2,ensure_ascii=False)+"\n",encoding="utf-8")
     print("DOC_LINKS_SUMMARY",json.dumps({
         "documents":len(scanned),"links":len(checked),
-        "unresolved":len(invalid),"details":invalid
+        "unresolved":len(invalid) + len(checkpoint_issues),"details":invalid + checkpoint_issues
     },ensure_ascii=False),flush=True)
-    return int(bool(invalid))
+    return int(bool(invalid or checkpoint_issues))
 
 
 if __name__ == "__main__":
