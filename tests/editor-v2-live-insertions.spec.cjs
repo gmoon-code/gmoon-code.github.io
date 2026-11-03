@@ -223,11 +223,15 @@ test('Added photos retain visible crop shape and image proportions when frame wi
   await page.locator('#liveAddedWidth').fill('410');
   await page.locator('#liveAddedWidth').press('Tab');
   await expect(image).toHaveCSS('width','410px');
-  await expect(image).toHaveCSS('object-fit','contain');
+  // A shaped crop uses a source-image background layer instead of stretching
+  // the img's pixels. The underlying img therefore has object-fit:none.
+  await expect(image).toHaveCSS('object-fit','none');
+  await expect(image).toHaveCSS('background-image',/url\(/);
   await expect(image).toHaveCSS('border-radius','12px');
   await page.locator('#preview').click();
   const preview=page.frameLocator('#previewFrame').locator('img[data-moon-v2-added-id]');
-  await expect(preview).toHaveCSS('object-fit','contain');
+  await expect(preview).toHaveCSS('object-fit','none');
+  await expect(preview).toHaveCSS('background-image',/url\(/);
   await expect(preview).toHaveCSS('border-radius','12px');
   await expect(preview).toHaveCSS('width','410px');
 });
