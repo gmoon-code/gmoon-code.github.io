@@ -46,9 +46,11 @@
 
 - [C-RV29bl | Visible added-photo crop regression aligned with current UI](EDITOR_V2_ADDED_IMAGE_CROP_TEST_C-RV29bl_2026-11-03.md). Original image insertion test timed out on deliberately hidden legacy `#liveImageFit`. Corrected the test to use visible `#liveCropShape` and verified image and preview preserve 410 px resized frame, rounded mask and non-stretching background-image crop. Browser source-parity suite at `4bec181` now **19/19 passed**, previously 18/19; app code and academic HTML unchanged. Reconciled test CSS expectation with actual `object-fit:none` for background-layer cropping.
 
+- [C-RV29bm | Two academic-editor failures triaged without inventing a correction](ACADEMIC_EDITOR_REGRESSION_TRIAGE_C-RV29bm_2026-11-03.md). Retrieved actual Chromium log for academic suite run `41593693042` (**55 passed / 2 failed**) and exact current test cases. Live-text persistence test across mode switching, reload and navigation timed out at 30 seconds with no uniquely identified failing step. Reflow heading width reached **150 px**, but the next paragraph shifted **14.84375 px** against the asserted <4 px tolerance. Both remain **unresolved**, needing isolated diagnostics. No JS or academic content change.
+
 ## Exact next unfinished stage
 
-**C-RV29bm | Academic-editor browser regressions.** Main Chromium suites previously independently passed **51/51** primary and **55/55** advanced on their tested source revision; image insertion suite now passes **19/19** on current crop-test revision. Reopen most recent academic editor workflow, previously **55 passed / 2 failed**, and diagnose its two distinct cases individually. Preserve full public browser visual parity and original research, consent and August scoping primary-evidence blocks as unresolved; do not treat editor test fixes as academic research verification.
+**C-RV29bn | Live-text persistence timeout localization.** C-RV29bm triaged both still-failing academic-editor browser cases without implying fixes. Inspect `tests/academic-editor-v2.spec.cjs:792–818` and the current `saveLiveText()`, `setWorkspaceMode()` and `loadLivePage()` paths. Isolate whether the 30-second timeout occurs during mode change, force reload, or page navigation through actual Chromium diagnostics before editing implementation. Keep the **14.84375 px reflow neighbour shift**, original research/consent/scoping documentation and full rendered public-browser parity as separately unresolved.
 
 ## Other prior audit boundaries remain open
 
