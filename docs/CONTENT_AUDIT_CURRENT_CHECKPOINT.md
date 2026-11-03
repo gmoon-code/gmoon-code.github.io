@@ -1,6 +1,6 @@
 # Academic website content audit | Current checkpoint
 
-**Current through C-RV29bd, 3 November 2026. Whole-site audit: In progress.** This is the current living continuation index, not a replacement for prior original stage files or a declaration of complete research ethics, student-text or browser verification.
+**Current through C-RV29be, 3 November 2026. Whole-site audit: In progress.** This is the current living continuation index, not a replacement for prior original stage files or a declaration of complete research ethics, student-text or browser verification.
 
 ## New verified stages since C-RV29ao
 
@@ -29,11 +29,13 @@
 
 - [C-RV29bd | Unchanged GitHub source and evidence-triggered audit boundary](CURRENT_REPOSITORY_NO_DELTA_CHECK_C-RV29bd_2026-11-03.md). Directly compared the current default-branch Git commit `df3146b7c3c9fd41b29de17d81c7bc2a386564e6` to the saved C-RV29bc baseline, including a complete recursive tree of **485 Git blobs and 26 HTML routes**. **0 new, 0 modified, 0 removed files** before this stage's documentation commits. No newly changed academic content or added original research record was provided, so **no public website edit** was warranted. Main primary-source, consent, scoping August matrix and production/browser blockers remain unchanged. The next work is tied to verifiable new source evidence rather than repeated earlier audits.
 
+- [C-RV29be | Historical public main-text parity recovered from actual GitHub Actions logs](PUBLIC_MAIN_TEXT_HISTORICAL_ACTIONS_PARITY_C-RV29be_2026-11-03.md). Inspected successful 3 November **GitHub Actions public HTTPS parity run 41572108104**, decoded job logs and compared the run's exact source Git tree to current HTML blobs. The historical run independently returned **HTTP 200 and normalized source=served main-text SHA-256 for all 16/16 sitemap-listed academic pages** at 03:26 UTC. **14 pages** have unchanged complete Git blobs now; the classification essay changed only print CSS and retains **exactly identical main HTML**, yielding **15/16 current source main text bodies matching the historic successfully checked contents**. `research-action.html` has two real later textual revisions at 04:27/04:37 UTC, so its **current served text remains independently untested**. This improves historical live-delivery evidence without claiming present live CDN/DOM or browser parity.
+
 **Current checked Git blob for `research-action.html`: `80277bba0aa0ad715be87865e5a30e609b419147`.** The two public content changes are the only changes confirmed across its successive C-RV29ap–aq blobs. The class totals **28/84/31**, Unit 2/3/4 complete-mechanistic counts **7/18/25**, reflection-specificity comparison **10/12 versus 3/9**, and the C-RV29ap reconstructed 5/2/2/1 patterns remain supported at the **retained analytic data tier**. Different assessment prompts and feedback conditions prevent claims of causal improvement on a common scale.
 
 ## Exact next unfinished stage
 
-**C-RV29be | New evidence-triggered scholarly audit.** Compare new Git HEAD and HTML blobs with the prior stable baseline, discounting this audit's documentation-only changes. If a genuine visitor-facing modification, authenticated original study record, final August S2B/S2C author coding, signed school/participant documentation, or usable real-browser test evidence becomes accessible, audit exactly that content with source-accurate limitations and the author's established writing rules. Otherwise preserve the current verified source coverage and blocked evidential status without repeating completed work.
+**C-RV29bf | Editor V2 real-browser regression evidence and historical workflow outcomes.** Inspect the latest available actual Editor V2 Playwright workflow run and its job logs or explicit result artifacts, revalidate the six outstanding failures' provenance against the current editor source blob and unchanged browser-test source. Distinguish historical test evidence, new successful execution, source code changes and missing testing. Do not touch public academic prose or functional editor implementation without a concrete error and verification. The most recent Action Research text still lacks independent post-edit remote-delivery testing; original scoping/consent-source gaps stay separate.
 
 ## Other prior audit boundaries remain open
 
