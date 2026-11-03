@@ -1,12 +1,12 @@
 {
-  "sourceHead": "717493c4d7a4c35b3f90bc9d926ce5dde639c698",
+  "sourceHead": "33dba48e0cf1830bca6742c994c2735619dd8bdc",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-717493c4d7a4",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-33dba48e0cf1",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -14,8 +14,8 @@
   "auditEvidence": {
     "links": {
       "report": "docs/PUBLIC_LINKGRAPH_LATEST_RESULTS.json",
-      "run": "41572377050",
-      "head_sha": "0cfd255ccabb5dcca1830a2b443c34cb0ef50ac1",
+      "run": "41578250549",
+      "head_sha": "717493c4d7a4c35b3f90bc9d926ce5dde639c698",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research-action.html"
@@ -26,8 +26,8 @@
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "41572377075",
-      "head_sha": "0cfd255ccabb5dcca1830a2b443c34cb0ef50ac1",
+      "run": "41578250659",
+      "head_sha": "717493c4d7a4c35b3f90bc9d926ce5dde639c698",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research-action.html"
@@ -42,8 +42,8 @@
     },
     "metadata": {
       "report": "docs/RESEARCH_METADATA_LATEST_RESULTS.json",
-      "run": "41572377024",
-      "head_sha": "0cfd255ccabb5dcca1830a2b443c34cb0ef50ac1",
+      "run": "41578250635",
+      "head_sha": "717493c4d7a4c35b3f90bc9d926ce5dde639c698",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research-action.html"
@@ -59,8 +59,8 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "41572377073",
-      "head_sha": "0cfd255ccabb5dcca1830a2b443c34cb0ef50ac1",
+      "run": "41578250608",
+      "head_sha": "717493c4d7a4c35b3f90bc9d926ce5dde639c698",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research-action.html"
@@ -71,8 +71,8 @@
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "41572377101",
-      "head_sha": "0cfd255ccabb5dcca1830a2b443c34cb0ef50ac1",
+      "run": "41578250649",
+      "head_sha": "717493c4d7a4c35b3f90bc9d926ce5dde639c698",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research-action.html"
@@ -83,8 +83,8 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "41572377088",
-      "head_sha": "0cfd255ccabb5dcca1830a2b443c34cb0ef50ac1",
+      "run": "41578250694",
+      "head_sha": "717493c4d7a4c35b3f90bc9d926ce5dde639c698",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research-action.html"
@@ -96,8 +96,8 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "41572377057",
-      "head_sha": "0cfd255ccabb5dcca1830a2b443c34cb0ef50ac1",
+      "run": "41578250575",
+      "head_sha": "717493c4d7a4c35b3f90bc9d926ce5dde639c698",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research-action.html"
@@ -168,11 +168,11 @@
       "firstDiff": [
         "--- source\n",
         "+++ deployed\n",
-        "@@ -107,3 +107,3 @@\n",
-        "     <tbody>",
-        "-      <tr><th scope=\"row\">Earlier pathway extended</th><td>5</td><td>Later reconstructions added missing causal connections or extended earlier pathways through to plant death.</td></tr>",
-        "+      <tr><th scope=\"row\">Earlier pathway extended</th><td>5</td><td>Additional intermediate causal connections appeared following correction.</td></tr>",
-        "       <tr><th scope=\"row\">Earlier contradiction not repeated</th><td>2</td><td>A previously expressed contradiction about the proton gradient did not appear in the reconstruction.</td></tr>"
+        "@@ -137,3 +137,3 @@\n",
+        "   </div>",
+        "-  <p class=\"research-table-note\">These descriptions paraphrase the de-identified records retained for analysis and are not verbatim excerpts. They illustrate two of the recorded comparison patterns; the counts for all ten pairs appear in the table above.</p>",
+        "+  <p class=\"research-table-note\">These descriptions paraphrase de-identified student responses and are not verbatim excerpts. They illustrate two of the recorded comparison patterns; the counts for all ten pairs appear in the table above.</p>",
+        " </section>"
       ]
     },
     {
@@ -223,7 +223,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41578250657",
-  "run_sha": "717493c4d7a4c35b3f90bc9d926ce5dde639c698",
+  "workflow_run_id": "41579179806",
+  "run_sha": "33dba48e0cf1830bca6742c994c2735619dd8bdc",
   "exit_code": "1"
 }
