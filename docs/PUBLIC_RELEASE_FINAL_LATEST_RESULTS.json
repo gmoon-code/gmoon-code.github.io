@@ -1,12 +1,12 @@
 {
-  "sourceHead": "44f437044391d1e06dd43fe28b79ad29edd8f405",
+  "sourceHead": "7f147beca823e70fae2b20ddd1d5881034402f13",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-44f437044391",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-7f147beca823",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -14,8 +14,8 @@
   "auditEvidence": {
     "links": {
       "report": "docs/PUBLIC_LINKGRAPH_LATEST_RESULTS.json",
-      "run": "41591205452",
-      "head_sha": "e4a40217b93b45e5f74c639384a8435899fb5848",
+      "run": "41644754502",
+      "head_sha": "44f437044391d1e06dd43fe28b79ad29edd8f405",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "teaching-ap-biology.html"
@@ -26,24 +26,24 @@
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "41591205466",
-      "head_sha": "e4a40217b93b45e5f74c639384a8435899fb5848",
+      "run": "41644754656",
+      "head_sha": "44f437044391d1e06dd43fe28b79ad29edd8f405",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "teaching-ap-biology.html"
       ],
       "failureCounts": {
-        "issues": 44
+        "issues": 42
       },
       "counts": {
-        "reachable": 71,
-        "unverified": 44
+        "reachable": 73,
+        "unverified": 42
       }
     },
     "metadata": {
       "report": "docs/RESEARCH_METADATA_LATEST_RESULTS.json",
-      "run": "41579179865",
-      "head_sha": "33dba48e0cf1830bca6742c994c2735619dd8bdc",
+      "run": "41644754608",
+      "head_sha": "44f437044391d1e06dd43fe28b79ad29edd8f405",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "teaching-ap-biology.html"
@@ -59,8 +59,8 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "41591205443",
-      "head_sha": "e4a40217b93b45e5f74c639384a8435899fb5848",
+      "run": "41644754614",
+      "head_sha": "44f437044391d1e06dd43fe28b79ad29edd8f405",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "teaching-ap-biology.html"
@@ -71,8 +71,8 @@
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "41591205441",
-      "head_sha": "e4a40217b93b45e5f74c639384a8435899fb5848",
+      "run": "41644754660",
+      "head_sha": "44f437044391d1e06dd43fe28b79ad29edd8f405",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "teaching-ap-biology.html"
@@ -83,8 +83,8 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "41591205442",
-      "head_sha": "e4a40217b93b45e5f74c639384a8435899fb5848",
+      "run": "41644754689",
+      "head_sha": "44f437044391d1e06dd43fe28b79ad29edd8f405",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "teaching-ap-biology.html"
@@ -96,8 +96,8 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "41591205482",
-      "head_sha": "e4a40217b93b45e5f74c639384a8435899fb5848",
+      "run": "41644754610",
+      "head_sha": "44f437044391d1e06dd43fe28b79ad29edd8f405",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "teaching-ap-biology.html"
@@ -168,20 +168,16 @@
       "firstDiff": [
         "--- source\n",
         "+++ deployed\n",
-        "@@ -35,7 +35,7 @@\n",
-        " <section id=\"bio-question\" class=\"section teaching-case-section\">",
-        "-  <div class=\"section-head\"><h2>Assessment question recorded in the manuscript</h2></div>",
-        "+  <div class=\"section-head\"><h2>Original assessment question</h2></div>",
-        "   <div class=\"teaching-original-prompt\">",
-        "-    <p class=\"meta\">Unit 3 assessment · Wording reproduced in the research manuscript</p>",
-        "+    <p class=\"meta\">Unit 3 assessment · Original two-point free-response prompt</p>",
-        "     <blockquote>Discuss how Bentazon binding at the plastoquinone-binding site of photosystem II inhibits electron transport and can lead to plant death.</blockquote>",
-        "-    <p class=\"teaching-small-note\">This wording follows the assessment question reproduced in my research manuscript.</p>",
-        "+    <p class=\"teaching-small-note\">Reproduced from the student-facing question documented in my classroom inquiry. The prompt was selected before student responses were examined.</p>",
-        "   </div>",
-        "@@ -82,3 +82,3 @@\n",
-        "   <div class=\"teaching-record-sequence\">",
-        "-    <div><span class=\"teaching-step-code\">01</span><h3>Original Unit 3 assessment</h3><p>All 28 students responded to the selected Unit 3 question about bentazon and photosynthetic electron transport. Their original written explanations provided a record to retain for later comparison.</p></div>"
+        "@@ -101,3 +101,3 @@\n",
+        " <section id=\"bio-record-criteria\" class=\"section teaching-case-section\">",
+        "-  <div class=\"section-head\"><h2>Classification of mechanistic explanations</h2><p>These research classifications described the causal relationships expressed in students’ explanations, using criteria separate from classroom marks.</p></div>",
+        "+  <div class=\"section-head\"><h2>Classification of mechanistic explanations</h2><p>These research classifications were distinct from the two-point scores students received on the original assessment.</p></div>",
+        "   <div class=\"reading teaching-case-prose\">",
+        "@@ -164,3 +164,3 @@\n",
+        "   ",
+        "-  <p class=\"teaching-evidence-note\">The experimental values and student task are constructed examples.</p>",
+        "+  <p class=\"teaching-evidence-note\">The experimental values and student task are constructed examples. This prospective assessment has a different evidential purpose from the original two-point classroom question and the subsequent research reconstruction.</p>",
+        " </section>"
       ]
     },
     {
@@ -232,7 +228,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41644754704",
-  "run_sha": "44f437044391d1e06dd43fe28b79ad29edd8f405",
+  "workflow_run_id": "41646697728",
+  "run_sha": "7f147beca823e70fae2b20ddd1d5881034402f13",
   "exit_code": "1"
 }
