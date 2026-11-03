@@ -1,6 +1,6 @@
 # Academic website content audit | Current checkpoint
 
-**Current through C-RV29ba, 3 November 2026. Whole-site audit: In progress.** This is the current living continuation index, not a replacement for prior original stage files or a declaration of complete research ethics, student-text or browser verification.
+**Current through C-RV29bc, 3 November 2026. Whole-site audit: In progress.** This is the current living continuation index, not a replacement for prior original stage files or a declaration of complete research ethics, student-text or browser verification.
 
 ## New verified stages since C-RV29ao
 
@@ -24,11 +24,14 @@
 - [C-RV29ba | August scoping supplement access and public wording](SCOPING_FINAL_SUPPLEMENT_PUBLIC_CLAIM_AUDIT_C-RV29ba_2026-11-03.md). Re-read the current scoping, Research, CV and Home sources against the August manuscript data-availability language. The website **does not promise a publicly downloadable final coding workbook**, while historical July ledger and manuscript-submitted supplementary-material descriptions remain distinct. No website change warranted. The final August row-level coding and learner-profile adjudications remain unverified.
 
 
+- [C-RV29bb | Scoping Pierson Figure 3, Kane reference and preprint source links](SCOPING_PIERSON_KANE_FIGURE_DOI_SOURCE_AUDIT_C-RV29bb_2026-11-03.md). Direct original Wiley article confirms Pierson, Clark and Brady's Luis/Carlos/Sean model, mixed-language to English change, and **actual Figure 3** biosphere-plan label. Kane (2013) DOI and argument-based validity source identity correct. Original article URL is **not a guaranteed direct Figure 3 anchor**. OSF DOI had prior registry authentication but current DOI landing request remains tool-blocked. No public correction.
+- [C-RV29bc | Whole-site editorial coverage versus primary-evidence proof boundaries](WEBSITE_ACADEMIC_CONTENT_AUDIT_EVIDENCE_BOUNDARY_C-RV29bc_2026-11-03.md). Summarized 26-route historically covered GitHub source copy, original research-source tiers and exact still-unavailable proof. Prioritized original student text transformations and actual school/participant consent and reader files, final August S2B/S2C source rows, delivered-browser parity and **six Editor V2 regressions**, restricted originals and the owner-decided contact address. **No public changes, no unsupported “Fully verified” claim.**
+
 **Current checked Git blob for `research-action.html`: `80277bba0aa0ad715be87865e5a30e609b419147`.** The two public content changes are the only changes confirmed across its successive C-RV29ap–aq blobs. The class totals **28/84/31**, Unit 2/3/4 complete-mechanistic counts **7/18/25**, reflection-specificity comparison **10/12 versus 3/9**, and the C-RV29ap reconstructed 5/2/2/1 patterns remain supported at the **retained analytic data tier**. Different assessment prompts and feedback conditions prevent claims of causal improvement on a common scale.
 
 ## Exact next unfinished stage
 
-**C-RV29bb | Scoping page original-source and figure-link reader check.** Verify exact Pierson et al. (2021) Figure 3 link/attribution, Kane (2013) citation, and the preprint DOI against prior original-source stage reports and actual current `research-scoping.html`. Distinguish a scholarly identity and semantic destination test from a rendered-browser link check. Make only concrete corrections; otherwise do not repeat completed full-text scholarship. Keep the final August S2B/S2C author-coded matrix, original student transcripts, consent/permissions and browser parity as separate blocked issues.
+**C-RV29bd | New repository changes or verifiable blocked-source evidence only.** Consult [C-RV29bc](WEBSITE_ACADEMIC_CONTENT_AUDIT_EVIDENCE_BOUNDARY_C-RV29bc_2026-11-03.md), then compare actual GitHub HEAD/public page blobs with the current audit. Select the next genuinely changed claim, newly accessible scholarly primary record, original August S2B/S2C coding, authorized historical student/ethics record or usable browser regression observation. If the environment and sources have not changed, maintain the existing verification limits rather than repeat completed work. Public content changes require a demonstrated source warrant, preserved scholarly accuracy and the author's natural style.
 
 ## Other prior audit boundaries remain open
 
