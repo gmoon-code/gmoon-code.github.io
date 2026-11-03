@@ -12,6 +12,7 @@ on:
       - "appearance.js"
       - "assets/story-method-observation-window.webp"
       - "scripts/audit-story-detail.py"
+      - "tests/story-preview-shared-progress.test.mjs"
       - ".github/workflows/audit-story-detail.yml"
   workflow_dispatch:
 
@@ -30,6 +31,8 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Verify Story Method preview shares Unit 1 progress and discloses it
+        run: node --test tests/story-preview-shared-progress.test.mjs
       - name: Install Chromium and PDF parser
         run: |
           python -m pip install playwright==1.57.0 PyMuPDF==1.26.7
