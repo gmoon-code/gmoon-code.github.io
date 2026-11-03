@@ -1,12 +1,12 @@
 {
-  "sourceHead": "b020f5c36ab4610a1214aacf459e06cb2155edb5",
+  "sourceHead": "2d8732b0ea612d918e3a27b89a2fd6c47a6d28d8",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
-  "verifiedExactMatches": 24,
-  "httpErrors": 0,
+  "verifiedExactMatches": 23,
+  "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-b020f5c36ab4",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-2d8732b0ea61",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -17,17 +17,21 @@
       "run": "41457589383",
       "head_sha": "b3946c29403c8d110510dbdd00903789b882edcd",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "problems": 0
       }
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "41457589228",
-      "head_sha": "b3946c29403c8d110510dbdd00903789b882edcd",
+      "run": "41458088826",
+      "head_sha": "b020f5c36ab4610a1214aacf459e06cb2155edb5",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "issues": 44
       },
@@ -41,7 +45,9 @@
       "run": "41396577432",
       "head_sha": "ecd16a1c35ced949a4c6c1658a30efadae077472",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "unverified": 0
       },
@@ -53,30 +59,36 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "41457589412",
-      "head_sha": "b3946c29403c8d110510dbdd00903789b882edcd",
+      "run": "41458088821",
+      "head_sha": "b020f5c36ab4610a1214aacf459e06cb2155edb5",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "failures": 0
       }
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "41457589098",
-      "head_sha": "b3946c29403c8d110510dbdd00903789b882edcd",
+      "run": "41458088770",
+      "head_sha": "b020f5c36ab4610a1214aacf459e06cb2155edb5",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "failures": 0
       }
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "41457589141",
-      "head_sha": "b3946c29403c8d110510dbdd00903789b882edcd",
+      "run": "41458088772",
+      "head_sha": "b020f5c36ab4610a1214aacf459e06cb2155edb5",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "failures": 0,
         "combinedStressFailures": 0
@@ -84,10 +96,12 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "41457589247",
-      "head_sha": "b3946c29403c8d110510dbdd00903789b882edcd",
+      "run": "41458089004",
+      "head_sha": "b020f5c36ab4610a1214aacf459e06cb2155edb5",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "failures": 0,
         "axeViolations": 0
@@ -100,11 +114,116 @@
       "note": "U1 route audit documents successful run 40825886279; legacy utility machine report refers to an early missing-script failure. Do not treat it as latest successful evidence."
     }
   },
-  "sourceDriftSinceAudits": [],
-  "pass": true,
-  "errors": [],
+  "sourceDriftSinceAudits": [
+    {
+      "category": "links",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "external",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "metadata",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "reflow",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "engines",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "typography",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "interactions",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    }
+  ],
+  "pass": false,
+  "errors": [
+    {
+      "path": "research.html",
+      "errors": [
+        "deployed bytes differ from checked-out production source"
+      ],
+      "firstDiff": [
+        "--- source\n",
+        "+++ deployed\n",
+        "@@ -26,3 +26,3 @@\n",
+        "     <h1>Research</h1>",
+        "-    <p class=\"research-essay-lead\">In a biology lesson, students may examine a simplified diagram tracing human sex development from chromosomes to reproductive anatomy. A student might ask how differences in hormone responses fit into that pathway. The teacher could explain the missing processes and continue with the lesson, or invite students to examine what the diagram leaves out and consider which relationships a more adequate model should represent.</p>",
+        "+    <p class=\"research-essay-lead\">Imagine a biology class examining a simplified diagram that traces human sex development from chromosomes to reproductive anatomy. A student asks where differences in hormone responses fit into that pathway. The teacher could explain the missing processes and continue with the lesson, or invite students to examine what the diagram leaves out and decide which relationships a more adequate model should represent.</p>",
+        "     <p>Teachers make these decisions within curricular and disciplinary expectations, choosing which questions to pursue and whether students' explanations can shape the work that follows. These judgments take place within institutions and histories marked by racism, colonialism, and inequalities connected to gender, sexuality, social class, and language. My interest in justice-oriented science education includes how students can participate in evaluating scientific representations and the grounds on which their contributions are recognized. Scholarship on epistemic agency and rightful presence helps me examine these relationships alongside the scientific reasoning involved.</p>"
+      ]
+    },
+    {
+      "sourceDrift": [
+        {
+          "category": "links",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "external",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "metadata",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "reflow",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "engines",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "typography",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "interactions",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        }
+      ]
+    }
+  ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41458088774",
-  "run_sha": "b020f5c36ab4610a1214aacf459e06cb2155edb5",
-  "exit_code": "0"
+  "workflow_run_id": "41557107086",
+  "run_sha": "2d8732b0ea612d918e3a27b89a2fd6c47a6d28d8",
+  "exit_code": "1"
 }
