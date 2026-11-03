@@ -1,6 +1,6 @@
 # Academic website content audit | Current checkpoint
 
-**Current through C-RV29bw, 3 November 2026. Whole-site audit: In progress.** This is the current living continuation index, not a replacement for prior original stage files or a declaration of complete research ethics, student-text or browser verification.
+**Current through C-RV29bx, 3 November 2026. Whole-site audit: In progress.** This is the current living continuation index, not a replacement for prior original stage files or a declaration of complete research ethics, student-text or browser verification.
 
 ## New verified stages since C-RV29ao
 
@@ -67,9 +67,11 @@
 
 - [C-RV29bw | All eight supplementary route public landing checks](PUBLIC_SUPPLEMENTARY_LANDING_C-RV29bw_2026-11-03.md). New real public HTTPS probe at [run 41612787456](https://github.com/gmoon-code/gmoon-code.github.io/actions/runs/41612787456) confirmed **8/8 exact deployed HTML byte matches**, **16/16 Chromium 390/1280 px landing cases**, no recorded script exceptions or horizontal document overflow, and **9/9** tested-to-current source blobs identical. About automatically reaches Contact; editor directory contains three entries; Studio offers unauthenticated token login; Connection Studio renders dynamic heading and navigation; historical Editor V2 source snapshot remains noindex/canonical to Home. Screenshot initial viewports spot-checked. No author credentials, publishing actions or academic HTML edits.
 
+- [C-RV29bx | All 26 HTML routes and public verification scope reconciled](ALL_26_PUBLIC_ROUTES_SCOPE_RECONCILIATION_C-RV29bx_2026-11-03.md). Independently compared source route lists at the tested C-RV29bs/bt/bu/bv Git revisions plus the C-RV29bw supplementary route list with the current recursive Git tree. **26/26 unique .html paths covered**, **0 omitted**, **0 duplicates**. Distinct scope includes **17 academic-reader routes, custom 404, eight supplementary utility/authoring entries**; 18 normalized `main` parity checks, eight byte-level checks, **52 two-width browser cases** across separate successful runs. Sitemap lists **16/17 reader pages**; the deliberate exception, `teaching-osmosis-practice.html`, is a `noindex, follow` printable aid, not an indexing error. No site copy changed; browser evidence remains bounded and not full research/ethics verification.
+
 ## Exact next unfinished stage
 
-**C-RV29bx | Reconcile the complete 26-route public HTTPS evidence inventory and identify next genuine scholarly source-dependent blocker.** C-RV29bs/bt/bu/bv/bw tested sets comprise exactly **26 distinct current HTML routes**. Sixteen sitemap-indexed pages also have separate historical source/main-text parity evidence. Route test scope differs: **17 scholarly reader pages, custom 404 document, eight supplementary/authoring routes**. Recheck this against the current repository tree and stage-run source IDs, then avoid converting bounded two-width Chromium passes into complete WCAG, physical-device, authenticated publishing or original-data verification. Prioritize primary research, final August scoping and restricted reference evidence where obtainable; document blocked items without inventing source records.
+**C-RV29by | Recheck non-identifier external scholarly/resource links against current source and independent authoritative destinations.** All **26 current HTML routes** have source-matched public HTTPS delivery and page-type-appropriate two-width Chromium checks at bounded test depth. The latest external-resource register still reports **71 reachable / 44 unverified destinations**, with 42 scholarly identifiers handled through separate 27 registry-confirmed and 15 secondary-index-only evidence. Inspect the remaining **two non-identifier unverified external destinations** and their actual current HTML context; differentiate access blocks from incorrect links and edit only if demonstrably necessary. Original student-record facsimiles, executed historical authorization/assent, final August scoping matrix and restricted full-text verification remain independently open.
 
 ## Other prior audit boundaries remain open
 
