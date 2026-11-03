@@ -186,30 +186,43 @@ async def main():
                     row=await inspect(browser,path,width)
                     browser_cases.append(row)
                     print("PUBLIC_BROWSER",path,width,"PASS" if not row["errors"] else row["errors"],flush=True)
-            # Follow the real public Research hub link using an actual browser.
-            page=await browser.new_page(viewport={"width":1280,"height":850})
-            try:
-                await page.goto(BASE+"/research.html",wait_until="domcontentloaded",timeout=35000)
-                await page.locator('main a[href="research-action.html"]').first.click(timeout=10000)
-                navigation={"url":page.url,"h1":await page.locator("main h1").inner_text(),
-                            "success":urlparse(page.url).path=="/research-action.html"}
-                if not navigation["success"]:
-                    navigation["error"]="Research hub did not navigate to Action Research"
-            except Exception as exc:
-                navigation={"success":False,"error":str(exc)[:350]}
-            finally:
-                await page.close()
+            # Follow links from real public Research and Teaching hub pages.
+            navigation=[]
+            for origin,destination in (
+                ("research.html","research-action.html"),
+                ("research.html","research-scoping.html"),
+                ("research.html","writing-biological-classification.html"),
+                ("teaching.html","teaching-ap-biology.html"),
+            ):
+                page=await browser.new_page(viewport={"width":1280,"height":850})
+                try:
+                    await page.goto(BASE+"/"+origin,wait_until="domcontentloaded",timeout=35000)
+                    await page.locator(f'main a[href="{destination}"]').first.click(timeout=10000)
+                    row={"origin":origin,"destination":destination,"finalUrl":page.url,
+                         "h1":await page.locator("main h1").inner_text(),
+                         "success":urlparse(page.url).path=="/"+destination}
+                    if not row["success"]:
+                        row["error"]="Public link landed at unexpected destination"
+                except Exception as exc:
+                    row={"origin":origin,"destination":destination,
+                         "success":False,"error":str(exc)[:350]}
+                finally:
+                    await page.close()
+                navigation.append(row)
         finally:
             await browser.close()
     errors=[{"kind":"source", "page":x["path"],"errors":x["errors"]} for x in static_checks if x["errors"]]
     errors.extend({"kind":"browser","page":x["path"],"width":x["width"],"errors":x["errors"]}
                   for x in browser_cases if x["errors"])
-    if not navigation.get("success"):
-        errors.append({"kind":"navigation","errors":[navigation.get("error","navigation failed")]})
+    for link in navigation:
+        if not link.get("success"):
+            errors.append({"kind":"navigation","origin":link["origin"],
+                           "destination":link["destination"],
+                           "errors":[link.get("error","navigation failed")]})
     report={"scope":"Five live public academic pages, Research, Action Research, Scoping Review, Classification essay and AP Biology",
             "browser":"Playwright Chromium on Linux, headless, real public HTTPS origin",
             "widths":WIDTHS,"staticChecks":static_checks,"browserCases":browser_cases,
-            "researchToActionNavigation":navigation,"failedCount":len(errors),"failures":errors,
+            "navigationChecks":navigation,"failedCount":len(errors),"failures":errors,
             "limitations":"Automated DOM, CSS-resource, image, navigation, keyboard-skip, and overflow checks with screenshot artifacts. Screenshots are evidence for later inspection, not human-reviewed in this run. No claim for physical devices, screen readers, remaining pages or all interaction states."}
     (OUT/"report.json").write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     print("SUMMARY",json.dumps({"static":[x.get("textEqual") for x in static_checks],
