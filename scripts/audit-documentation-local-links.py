@@ -2,13 +2,15 @@
 """Read-only local Markdown-file link audit for the academic website evidence archive.
 
 Checks resolved local filenames against the repository checkout. This does not
-claim to verify remote URLs, in-document fragment targets, bibliography content,
-or correctness of academic assertions.
+claim to verify remote URLs, Markdown-heading fragments, bibliography content,
+or correctness of academic assertions. It checks explicit HTML id fragments.
 """
+import html
 import json
 import pathlib
 import posixpath
 import re
+from functools import lru_cache
 from urllib.parse import unquote, urlsplit
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
@@ -19,6 +21,13 @@ OTHER = [ROOT / "README.md"] if (ROOT / "README.md").exists() else []
 MARKDOWN_LINK = re.compile(r"!?(?:\[[^\]\n]*\])\(((?:[^()\n]|\([^()\n]*\))*)\)")
 REFERENCE_LINK = re.compile(r"^\s{0,3}\[[^\]\n]+\]:\s*(\S+)", re.MULTILINE)
 EXTERNAL = re.compile(r"^(?:[a-z][a-z0-9+.-]*:|//|#)", re.I)
+HTML_IDS = re.compile(r'''\bid\s*=\s*([\"'])(.*?)\1''', re.I | re.S)
+
+
+@lru_cache(maxsize=100)
+def explicit_html_ids(path):
+    contents = (ROOT / path).read_text(encoding="utf-8")
+    return {html.unescape(m.group(2)) for m in HTML_IDS.finditer(contents)}
 
 
 def strip_code_fences(text):
@@ -68,6 +77,12 @@ def local_target(source, raw):
         return {"error": "link escapes repository root", "raw": raw, "resolved": resolved}
     if not (ROOT / resolved).is_file():
         return {"error": "referenced local file missing", "raw": raw, "resolved": resolved}
+    fragment = unquote(target.fragment)
+    if resolved.lower().endswith(".html") and fragment:
+        if fragment not in explicit_html_ids(resolved):
+            return {"error": "referenced HTML id does not exist", "raw": raw,
+                    "resolved": resolved, "fragment": fragment}
+        return {"resolved": resolved, "raw": raw, "htmlFragment": fragment}
     return {"resolved": resolved, "raw": raw}
 
 
@@ -92,12 +107,13 @@ def main():
               sum(x["document"] == source.relative_to(ROOT).as_posix() for x in checked),
               flush=True)
     report = {
-        "scope": "All docs/*.md and root README.md local Markdown link filenames",
+        "scope": "All docs/*.md and root README.md local Markdown file links and explicit HTML id fragments",
         "documentationFilesScanned": len(scanned),
         "localTargetsChecked": len(checked),
+        "htmlFragmentsChecked": sum(bool(x.get("htmlFragment")) or "fragment" in x for x in checked),
         "unresolved": len(invalid),
         "unresolvedDetails": invalid,
-        "limitations": "Does not check external URLs, fragment IDs, textual citation validity, PDF internal links, GitHub API URLs, or code samples.",
+        "limitations": "Does not check external URLs, Markdown heading fragments, dynamic JavaScript-generated anchors, textual citation validity, PDF internal links, GitHub API URLs, or code samples.",
     }
     OUTPUT.mkdir(exist_ok=True)
     (OUTPUT / "report.json").write_text(json.dumps(report,indent=2,ensure_ascii=False)+"\n",encoding="utf-8")
