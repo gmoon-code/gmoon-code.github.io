@@ -1,12 +1,12 @@
 {
-  "sourceHead": "af9934217663b16e848f331013a6a2ae561d3cd8",
+  "sourceHead": "369d5d7cbcec00c711b1c4bb8a291acc927445ad",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-af9934217663",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-369d5d7cbcec",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -18,7 +18,8 @@
       "head_sha": "06e58a6e8f461dc791504cc8e018f3b95efe126f",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "story-method.html"
+        "story-method.html",
+        "writing-biological-classification.html"
       ],
       "failureCounts": {
         "problems": 0
@@ -26,11 +27,11 @@
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "41569070618",
-      "head_sha": "06e58a6e8f461dc791504cc8e018f3b95efe126f",
+      "run": "41569729209",
+      "head_sha": "af9934217663b16e848f331013a6a2ae561d3cd8",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "story-method.html"
+        "writing-biological-classification.html"
       ],
       "failureCounts": {
         "issues": 43
@@ -47,7 +48,8 @@
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research-methods-studio.html",
-        "story-method.html"
+        "story-method.html",
+        "writing-biological-classification.html"
       ],
       "failureCounts": {
         "unverified": 0
@@ -60,11 +62,11 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "41569070655",
-      "head_sha": "06e58a6e8f461dc791504cc8e018f3b95efe126f",
+      "run": "41569729193",
+      "head_sha": "af9934217663b16e848f331013a6a2ae561d3cd8",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "story-method.html"
+        "writing-biological-classification.html"
       ],
       "failureCounts": {
         "failures": 0
@@ -72,11 +74,11 @@
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "41569070544",
-      "head_sha": "06e58a6e8f461dc791504cc8e018f3b95efe126f",
+      "run": "41569729131",
+      "head_sha": "af9934217663b16e848f331013a6a2ae561d3cd8",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "story-method.html"
+        "writing-biological-classification.html"
       ],
       "failureCounts": {
         "failures": 0
@@ -84,11 +86,11 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "41569070553",
-      "head_sha": "06e58a6e8f461dc791504cc8e018f3b95efe126f",
+      "run": "41569729280",
+      "head_sha": "af9934217663b16e848f331013a6a2ae561d3cd8",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "story-method.html"
+        "writing-biological-classification.html"
       ],
       "failureCounts": {
         "failures": 0,
@@ -97,11 +99,11 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "41569070647",
-      "head_sha": "06e58a6e8f461dc791504cc8e018f3b95efe126f",
+      "run": "41569729153",
+      "head_sha": "af9934217663b16e848f331013a6a2ae561d3cd8",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "story-method.html"
+        "writing-biological-classification.html"
       ],
       "failureCounts": {
         "failures": 0,
@@ -119,67 +121,64 @@
     {
       "category": "links",
       "sourceModifiedSinceAudit": [
-        "story-method.html"
+        "story-method.html",
+        "writing-biological-classification.html"
       ]
     },
     {
       "category": "external",
       "sourceModifiedSinceAudit": [
-        "story-method.html"
+        "writing-biological-classification.html"
       ]
     },
     {
       "category": "metadata",
       "sourceModifiedSinceAudit": [
         "research-methods-studio.html",
-        "story-method.html"
+        "story-method.html",
+        "writing-biological-classification.html"
       ]
     },
     {
       "category": "reflow",
       "sourceModifiedSinceAudit": [
-        "story-method.html"
+        "writing-biological-classification.html"
       ]
     },
     {
       "category": "engines",
       "sourceModifiedSinceAudit": [
-        "story-method.html"
+        "writing-biological-classification.html"
       ]
     },
     {
       "category": "typography",
       "sourceModifiedSinceAudit": [
-        "story-method.html"
+        "writing-biological-classification.html"
       ]
     },
     {
       "category": "interactions",
       "sourceModifiedSinceAudit": [
-        "story-method.html"
+        "writing-biological-classification.html"
       ]
     }
   ],
   "pass": false,
   "errors": [
     {
-      "path": "story-method.html",
+      "path": "writing-biological-classification.html",
       "errors": [
         "deployed bytes differ from checked-out production source"
       ],
       "firstDiff": [
         "--- source\n",
         "+++ deployed\n",
-        "@@ -101,3 +101,3 @@\n",
-        "     <div class=\"project-preview-before\">",
-        "-      <p class=\"project-preview-caption\">This live Unit 1 preview uses the same saved progress as the full-size Story Method in this browser. Opening it can change your last-opened unit and journey, even before you answer a question. Completing scenes or reviews here can also change your saved progress.</p>",
-        "+      <p>Begin with the Unit 1 home screen and follow a journey when you're ready.</p>",
-        "       <button type=\"button\" class=\"control primary project-preview-open\" data-preview-open=\"\" hidden=\"\">Show the live preview</button>",
-        "@@ -114,3 +114,3 @@\n",
-        "       <div class=\"project-preview-stage\" data-preview-stage=\"\" data-device=\"desktop\"></div>",
-        "-      <p class=\"project-preview-caption\">The preview and full-size Story Method use the same locally stored progress when browser storage is available. Closing the preview does not undo saved changes. For longer sessions, open the full-size application.</p>",
-        "+      <p class=\"project-preview-caption\">Progress made in the preview may also appear in the full site because both use the same browser storage. For longer sessions, open the full-size application.</p>",
-        "     </div>"
+        "@@ -73,3 +73,3 @@\n",
+        "     <p>The differences among these malaria outcomes become consequential when the class moves from clinical protection to the persistence of HbS across generations. Modelling that change requires estimates of how each genotype contributes to subsequent generations through survival and reproduction, with malaria exposure and population history also affecting those relationships. The cohort's estimates of protection against particular illnesses do not supply those reproductive fitness values. Asking what the researchers followed over time would therefore help students establish which parts of an evolutionary explanation the study supports and where additional evidence is needed.</p>",
+        "-    <p>A second difficulty arises if a lesson substitutes a racial designation for the genotype measured in the study. HbS has a history associated with malaria selection in geographically and historically varied populations. A person's racial identity therefore cannot establish whether they carry the allele. The educational problem extends beyond correcting a factual mistake. When racial labels appear to explain a genetic outcome, the class needs to examine what was measured, how the participants were described, and which relationships the proposed category actually helps explain. Randomized studies reviewed by <a href=\"#essay-donovan\">Donovan (2022)</a> found stronger genetic-essentialist beliefs among secondary students who learned about genetic-disease prevalence through racial categories than among students in comparison conditions. The choice of categories can shape what students infer beyond the genetic condition under examination.</p>",
+        "+    <p>A second difficulty arises if a lesson substitutes a racial designation for the genotype measured in the study. HbS has a history associated with malaria selection in geographically and historically varied populations. A person's racial identity therefore cannot establish whether they carry the allele. The educational problem extends beyond correcting a factual mistake. When racial labels appear to explain a genetic outcome, the class needs to examine what was measured, how the participants were described, and which relationships the proposed category actually helps explain. In his review of genetic essentialism and genetics education, <a href=\"#essay-donovan\">Donovan (2022)</a> discusses how the framing of genetic content can influence students' beliefs about racial groups. The biological precision of a lesson and its social implications are connected through the claims students are asked to accept.</p>",
+        "   </div>"
       ]
     },
     {
@@ -187,51 +186,53 @@
         {
           "category": "links",
           "sourceModifiedSinceAudit": [
-            "story-method.html"
+            "story-method.html",
+            "writing-biological-classification.html"
           ]
         },
         {
           "category": "external",
           "sourceModifiedSinceAudit": [
-            "story-method.html"
+            "writing-biological-classification.html"
           ]
         },
         {
           "category": "metadata",
           "sourceModifiedSinceAudit": [
             "research-methods-studio.html",
-            "story-method.html"
+            "story-method.html",
+            "writing-biological-classification.html"
           ]
         },
         {
           "category": "reflow",
           "sourceModifiedSinceAudit": [
-            "story-method.html"
+            "writing-biological-classification.html"
           ]
         },
         {
           "category": "engines",
           "sourceModifiedSinceAudit": [
-            "story-method.html"
+            "writing-biological-classification.html"
           ]
         },
         {
           "category": "typography",
           "sourceModifiedSinceAudit": [
-            "story-method.html"
+            "writing-biological-classification.html"
           ]
         },
         {
           "category": "interactions",
           "sourceModifiedSinceAudit": [
-            "story-method.html"
+            "writing-biological-classification.html"
           ]
         }
       ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41569729159",
-  "run_sha": "af9934217663b16e848f331013a6a2ae561d3cd8",
+  "workflow_run_id": "41572107792",
+  "run_sha": "369d5d7cbcec00c711b1c4bb8a291acc927445ad",
   "exit_code": "1"
 }
