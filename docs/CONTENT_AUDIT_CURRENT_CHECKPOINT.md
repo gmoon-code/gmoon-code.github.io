@@ -1,6 +1,6 @@
 # Academic website content audit | Current checkpoint
 
-**Current through C-RV29at, 3 November 2026. Whole-site audit: In progress.** This is the current living continuation index, not a replacement for prior original stage files or a declaration of complete research ethics, student-text or browser verification.
+**Current through C-RV29au, 3 November 2026. Whole-site audit: In progress.** This is the current living continuation index, not a replacement for prior original stage files or a declaration of complete research ethics, student-text or browser verification.
 
 ## New verified stages since C-RV29ao
 
@@ -12,11 +12,13 @@
 
 - [C-RV29at | Current six-page academic link and fragment source audit](SIX_PAGE_ACADEMIC_LINK_TARGET_AUDIT_C-RV29at_2026-11-03.md). Across the six current research/home/CV/projects/teaching sources, verified **97 local relative links**, **20/20 unique repository file destinations**, **88/88 own-page fragments** and **6/6 cross-page fragment destinations**. Verified source-level semantic targets for paired action-research, scoping included study, and genuinely **proposed** teaching. The **82 HTTPS links, including 2 separate learning apps, were not all live browser tested**. No public HTML change warranted.
 
+- [C-RV29au | Current full 26-route editorial coverage and source-delta audit](CURRENT_26_ROUTE_CONTENT_COVERAGE_DELTA_C-RV29au_2026-11-03.md). Compared a **non-truncated current GitHub repository tree** against every page/blob in C-RV29ai. **26/26** existing academic/tool HTML routes persist, **24** unchanged and **2** changed. The only changed pages are `research-action.html` (the two C-RV29ap/aq source-verified revisions) and `writing-biological-classification.html` (already explicitly source-audited at C-RV29aj/ak). **No unreviewed newly changed page** was identified and no public content edit warranted.
+
 **Current checked Git blob for `research-action.html`: `80277bba0aa0ad715be87865e5a30e609b419147`.** The two public content changes are the only changes confirmed across its successive C-RV29ap–aq blobs. The class totals **28/84/31**, Unit 2/3/4 complete-mechanistic counts **7/18/25**, reflection-specificity comparison **10/12 versus 3/9**, and the C-RV29ap reconstructed 5/2/2/1 patterns remain supported at the **retained analytic data tier**. Different assessment prompts and feedback conditions prevent claims of causal improvement on a common scale.
 
 ## Exact next unfinished stage
 
-**C-RV29au | Current 26-route audit and genuinely remaining content coverage.** Read the original source route inventory and its stage ledger, compare source modifications since completed reviews, and select only the next actually unaudited or changed visitor-facing page content. Keep source-level copy verification separate from blocked original student transcript/ethics evidence, final-August scoping coding, restricted publisher content, rendered-browser parity and Editor V2 six outstanding regressions. If all identified public routes already have adequate current-stage review, record the boundary rather than inventing new work.
+**C-RV29av | Bounded public delivered-site parity reattempt.** Try a live public retrieval of Home, Research and Classroom Action Research, and compare the exact distinctive current GitHub source phrases when possible. Extend to the classification essay only if public access works. Distinguish successful file retrieval from rendered browser/functionality and avoid declaring the website down if the retrieval tool is blocked. Preserve all confidential study-source, publisher, ethical authorization and Editor V2 testing boundaries.
 
 ## Other prior audit boundaries remain open
 
