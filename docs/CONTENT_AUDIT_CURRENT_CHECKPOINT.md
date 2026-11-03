@@ -1,6 +1,6 @@
 # Academic website content audit | Current checkpoint
 
-**Current through C-RV29cl, 3 November 2026. Whole-site audit: In progress.** This is the current living continuation index, not a replacement for prior original stage files or a declaration of complete research ethics, student-text or browser verification.
+**Current through C-RV29cm, 3 November 2026. Whole-site audit: In progress.** This is the current living continuation index, not a replacement for prior original stage files or a declaration of complete research ethics, student-text or browser verification.
 
 ## New verified stages since C-RV29ao
 
@@ -88,9 +88,11 @@
 
 - [C-RV29cl | Production source deltas and 200% CSS text-enlargement stress](PUBLIC_TEXT_ENLARGEMENT_STRESS_C-RV29cl_2026-11-03.md). Compared deployed HTML, CSS, JavaScript and media from the successful complete-route baseline to current main, finding **no production asset changes**. Built read-only actual public-origin Chromium run [41632877001](https://github.com/gmoon-code/gmoon-code.github.io/actions/runs/41632877001), with **34/34** cases across **17 academic pages × 390/1280 px**, zero flagged page-width overflow, reader-text protrusion or hidden-container clipping under **simulated doubling of computed text font sizes**. Eight 390px full-page screenshots retained and sampled; longer titles show occasional midword line wrapping but no missing text observed. This does **not** verify native zoom or WCAG compliance; public pages unchanged.
 
+- [C-RV29cm | Enlarged-text disclosure and keyboard access checks](PUBLIC_ENLARGED_TEXT_INTERACTIONS_C-RV29cm_2026-11-03.md). Independent [run 41634062813](https://github.com/gmoon-code/gmoon-code.github.io/actions/runs/41634062813) passed **12/12** actual public Chromium cases at 390/1280 px across six scholarly/teaching routes. Four in-main source/teacher/release disclosures were opened before CSS font enlargement and then closed/reopened; skip links focused main and the Home anchor activated from the keyboard; four scientific table regions remained labelled, focusable and ArrowRight-scrollable at 390 px. Eight screenshots reviewed in sampled initial viewports; eight of eight exact tested/current Git source blob pairs equal. Not an actual browser zoom or comprehensive keyboard-order audit; no public copy changed.
+
 ## Exact next unfinished stage
 
-**C-RV29cm | Expanded reader disclosures and keyboard access under simulated text enlargement.** [C-RV29cl](PUBLIC_TEXT_ENLARGEMENT_STRESS_C-RV29cl_2026-11-03.md) verified **34/34** real public academic-page Chromium cases at 390/1280 CSS px with doubled computed text sizes, zero flagged horizontal overflow/clipping and eight inspected screenshot samples. Actual browser zoom is still **not proven**, and some very long headings wrap midword at synthetic double size. Test expanded source/teacher/release disclosures, keyboard skip-links, page navigation and horizontal scientific table scrolling under the enlarged state; keep actual native browser zoom and primary student/ethics/scoping record authentication separate. No public HTML change is justified by the synthetic stress alone.
+**C-RV29cn | Printable Osmosis worksheet and CV representations.** [C-RV29cm](PUBLIC_ENLARGED_TEXT_INTERACTIONS_C-RV29cm_2026-11-03.md) ran **12/12** real HTTPS Chromium page-width cases successfully with enlarged in-page disclosures, keyboard skip-link activation, Home navigation and keyboard-scrolled scientific tables. At 390 px all four Chem/Evolution table regions remained named, keyboard-focusable and scrollable; at 1280 no table scrolling was necessary. This remains a synthetic CSS text-enlargement test, not native zoom or WCAG certification. Next inspect how public Osmosis practice and CV content appears under actual Chromium **print media**, including readability, page breaks and content retention, without modifying website copy unless a proved fault emerges. Original action-research documentation and final-August scoping row sources remain separately unresolved.
 
 ## Other prior audit boundaries remain open
 
