@@ -107,3 +107,30 @@ test('exported backups restore local attempts only after user confirmation', asy
   await page.locator('button[data-action="reset"]').click();
   await expect(page.locator('#session-stat')).toContainText('1 activities logged');
 });
+
+
+test('malformed backup must not replace an intact local practice record', async ({ page }) => {
+  await page.goto('http://127.0.0.1:8765/connection-studio/', { waitUntil: 'load' });
+  await page.locator('#navigation [data-tab="diagnose"]').click();
+  await page.locator('button[data-action="answer"][data-kind="diagnose"]').first().click();
+  await page.locator('#navigation [data-tab="progress"]').click();
+  await expect(page.locator('#session-stat')).toContainText('1 activities logged');
+  const original = await page.evaluate(() => localStorage.getItem('connection-studio-v1'));
+  const malformed = {
+    app: 'Connection Studio',
+    version: 1,
+    progress: { attempts: [null], drafts: {}, completedWrites: {}, bookmarks: [], notes: {} }
+  };
+  const accepted = page.waitForEvent('dialog').then(dialog => dialog.accept());
+  await page.locator('#import-file').setInputFiles({
+    name: 'malformed-but-parseable.json',
+    mimeType: 'application/json',
+    buffer: Buffer.from(JSON.stringify(malformed))
+  });
+  await accepted;
+  await expect(page.locator('#toast')).toContainText('not a valid Connection Studio backup');
+  expect(await page.evaluate(() => localStorage.getItem('connection-studio-v1'))).toBe(original);
+  await page.reload();
+  await page.locator('#navigation [data-tab="progress"]').click();
+  await expect(page.locator('#session-stat')).toContainText('1 activities logged');
+});
