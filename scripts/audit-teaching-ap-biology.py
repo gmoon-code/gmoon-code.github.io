@@ -69,6 +69,12 @@ async def main():
                          right:Math.round(rect(e).right)}))
                     };
                 }""")
+                body_text = await page.locator("#main").inner_text()
+                if re.search(r"\b(?:two|five)[-\s]point\b", body_text, re.I):
+                    errors.append("unverified original assessment point value")
+                if ("Assessment question recorded in the manuscript" not in body_text
+                        or "Wording reproduced in the research manuscript" not in body_text):
+                    errors.append("manuscript assessment attribution missing")
                 if response is None or response.status != 200:
                     errors.append("HTTP response not 200")
                 if data["documentWidth"] > width:
