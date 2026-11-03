@@ -165,7 +165,7 @@
   "failedCount": 0,
   "failures": [],
   "limitations": "Playwright Linux Chromium Firefox WebKit are not physical Safari/Firefox devices. Keyboard zoom shortcuts without a measured viewport/scale change do not verify real browser Ctrl-plus. Forced-colour emulation and automatic focus checks do not constitute WCAG certification or screen-reader testing.",
-  "workflow_run_id": "41458088770",
-  "head_sha": "b020f5c36ab4610a1214aacf459e06cb2155edb5",
+  "workflow_run_id": "41557107060",
+  "head_sha": "2d8732b0ea612d918e3a27b89a2fd6c47a6d28d8",
   "exit_code": "0"
 }
