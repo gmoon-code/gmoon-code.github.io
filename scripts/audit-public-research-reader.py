@@ -16,7 +16,10 @@ from urllib.parse import urlparse
 
 from playwright.async_api import async_playwright
 
-from audit_public_content_parity import main_text
+# The established parity helper uses a hyphenated filename, not an importable
+# Python module name. Reuse its exact parser without changing its algorithm.
+import runpy
+main_text = runpy.run_path("scripts/audit-public-content-parity.py")["main_text"]
 
 BASE = "https://gmoon-code.github.io"
 PAGES = ("research.html", "research-action.html")
