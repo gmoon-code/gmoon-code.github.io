@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""C-RV29bu live Chromium check of core profile and academic hub pages.
+"""C-RV29bv live Chromium check of last ordinary public reader routes.
 
 Unlike earlier localhost browser tests, page navigation, CSS, images and fonts
 are fetched directly from the public GitHub Pages host over HTTPS. This is a
@@ -22,7 +22,7 @@ import runpy
 main_text = runpy.run_path("scripts/audit-public-content-parity.py")["main_text"]
 
 BASE = "https://gmoon-code.github.io"
-PAGES = ("index.html", "teaching.html", "interests.html", "contact.html", "cv.html")
+PAGES = ("pungmul.html", "research-methods-studio.html", "404.html")
 WIDTHS = (390, 1280)
 OUT = pathlib.Path("public-scholarly-reader-output")
 METRICS = r"""() => {
@@ -213,13 +213,11 @@ async def main():
                     row=await inspect(browser,path,width)
                     browser_cases.append(row)
                     print("PUBLIC_BROWSER",path,width,"PASS" if not row["errors"] else row["errors"],flush=True)
-            # Follow links from real public Home and Interests pages.
+            # Follow links from the real public Interests and Projects pages.
             navigation=[]
             for origin,destination in (
-                ("index.html","research.html"),
-                ("index.html","story-method.html"),
-                ("index.html","interests.html"),
                 ("interests.html","pungmul.html"),
+                ("projects.html","research-methods-studio.html"),
             ):
                 page=await browser.new_page(viewport={"width":1280,"height":850})
                 try:
@@ -246,7 +244,7 @@ async def main():
             errors.append({"kind":"navigation","origin":link["origin"],
                            "destination":link["destination"],
                            "errors":[link.get("error","navigation failed")]})
-    report={"scope":"Five live public core pages, Home, Teaching, Interests, Contact and CV",
+    report={"scope":"Three live public routes, Pungmul, Research Methods Studio and custom 404 document",
             "browser":"Playwright Chromium on Linux, headless, real public HTTPS origin",
             "widths":WIDTHS,"staticChecks":static_checks,"browserCases":browser_cases,
             "navigationChecks":navigation,"failedCount":len(errors),"failures":errors,
