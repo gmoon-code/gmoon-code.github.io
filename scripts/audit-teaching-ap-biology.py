@@ -204,7 +204,7 @@ async def main():
             (OUT/"biology-A4.pdf").write_bytes(raw)
             doc=fitz.open(stream=raw,filetype="pdf")
             pages=[re.sub(r"\s+"," ",p.get_text("text")) for p in doc]
-            titles=["Original assessment question",
+            titles=["Assessment question recorded in the manuscript",
                     "Thylakoid structure and the inhibition pathway",
                     "Correction and independent reconstruction",
                     "Classification of mechanistic explanations",
