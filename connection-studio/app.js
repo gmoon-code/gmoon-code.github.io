@@ -73,7 +73,46 @@ function jumpTo(kind,id){const arr=kind==='diagnose'?DIAGNOSE:kind==='choose'?CH
 function markWriting(kind){let arr=kind==='rewrite'?REWRITE:PARAGRAPHS,item=arr[ui.index[kind]],draft=progress.drafts[item.id]||{};if(Math.max((draft.a||'').trim().length,(draft.b||'').trim().length)<35){showToast('Write at least 35 characters in one version before logging this practice.');return}const rating=document.getElementById('self-rating-'+kind)?.value||'Practising';progress.completedWrites[item.id]={date:nowDate(),rating};if(save()){render();showToast('Practice and reflection saved locally.')}else{render()}}
 function focusRelation(focus){const i=DIAGNOSE.findIndex(d=>d.answer===focus);if(i<0){tabswitch('diagnose');return}ui.index.diagnose=i;ui.answers.diagnose=null;tabswitch('diagnose')}
 function downloadJSON(){const blob=new Blob([JSON.stringify({app:'Connection Studio',version:1,exported:new Date().toISOString(),progress},null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='connection-studio-backup-'+nowDate()+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
-function importJSON(file){if(!file)return;const reader=new FileReader();reader.onload=()=>{try{const parsed=JSON.parse(reader.result);if(parsed.app!=='Connection Studio'||!parsed.progress||!Array.isArray(parsed.progress.attempts)||typeof parsed.progress.drafts!=='object'||!parsed.progress.completedWrites)throw new Error('Unsupported backup');if(!window.confirm('Replace the saved practice record and drafts on this device with this backup?'))return;progress={...DEFAULT_PROGRESS(),...parsed.progress};if(save()){render();showToast('Backup imported successfully.')}else{render()}}catch{showToast('The selected file is not a valid Connection Studio backup.')}};reader.readAsText(file)}
+// Reject malformed imported records before presenting a destructive replacement prompt.
+// These fields are the shape this application's own v1 export and renderers use.
+const isBackupRecord=value=>value!==null&&typeof value==='object'&&!Array.isArray(value);
+function validBackupProgress(data){
+ if(!isBackupRecord(data)||!Array.isArray(data.attempts)||
+    !isBackupRecord(data.drafts)||!isBackupRecord(data.completedWrites))return false;
+ if(!data.attempts.every(item=>isBackupRecord(item)&&
+    (item.kind==='diagnose'||item.kind==='choose')&&
+    typeof item.id==='string'&&typeof item.focus==='string'&&
+    typeof item.correct==='boolean'&&typeof item.date==='string'))return false;
+ if(!Object.values(data.drafts).every(d=>isBackupRecord(d)&&
+    (d.a===undefined||typeof d.a==='string')&&
+    (d.b===undefined||typeof d.b==='string')))return false;
+ if(!Object.values(data.completedWrites).every(d=>isBackupRecord(d)&&
+    typeof d.date==='string'&&(d.rating===undefined||typeof d.rating==='string')))return false;
+ if(data.bookmarks!==undefined&&(!Array.isArray(data.bookmarks)||
+    !data.bookmarks.every(id=>typeof id==='string')))return false;
+ if(data.notes!==undefined&&!isBackupRecord(data.notes))return false;
+ return true;
+}
+function importJSON(file){
+ if(!file)return;
+ const reader=new FileReader();
+ reader.onload=()=>{
+  try{
+   const parsed=JSON.parse(reader.result);
+   if(parsed.app!=='Connection Studio'||parsed.version!==1||
+      !validBackupProgress(parsed.progress))throw new Error('Unsupported backup');
+   if(!window.confirm('Replace the saved practice record and drafts on this device with this backup?'))return;
+   const previous=progress;
+   progress={...DEFAULT_PROGRESS(),...parsed.progress};
+   if(!save()){progress=previous;render();return;}
+   try{render()}catch(error){progress=previous;save();render();throw error}
+   showToast('Backup imported successfully.');
+  }catch{
+   showToast('The selected file is not a valid Connection Studio backup.');
+  }
+ };
+ reader.readAsText(file);
+}
 
 document.addEventListener('click',event=>{const tab=event.target.closest('[data-tab]');if(tab){tabswitch(tab.dataset.tab);return}const el=event.target.closest('[data-action]');if(!el)return;const action=el.dataset.action,kind=el.dataset.kind;
  switch(action){case'answer':recordAnswer(kind,Number(el.dataset.val));break;case'next':adjacent(kind,1);break;case'prev':adjacent(kind,-1);break;case'toggleBookmark':{const item=(kind==='diagnose'?DIAGNOSE:CHOOSE)[ui.index[kind]],id=item.id;if(progress.bookmarks.includes(id))progress.bookmarks=progress.bookmarks.filter(x=>x!==id);else progress.bookmarks.push(id);save();render();break}case'showHint':ui.hints[kind]=!ui.hints[kind];render();break;case'showModels':ui.models[kind]=!ui.models[kind];render();break;case'complete':markWriting(kind);break;case'category':ui.category=el.dataset.category;render();break;case'bankCategory':ui.bankCategory=el.dataset.category;render();break;case'clearBank':ui.bankCategory='All';ui.bankSearch='';render();break;case'clearFilters':ui.category='All';ui.search='';render();break;case'focus':focusRelation(el.dataset.focus);break;case'openItem':jumpTo(kind,el.dataset.id);break;case'export':downloadJSON();break;case'reset':if(window.confirm('Erase all locally saved drafts, practice records and bookmarks? This cannot be undone unless you have an exported backup.')){progress=DEFAULT_PROGRESS();const saved=save();ui.answers.diagnose=null;ui.answers.choose=null;render();if(saved)showToast('Local progress reset.')}break}
