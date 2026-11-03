@@ -791,48 +791,31 @@ test('live-page asset status identifies missing original resources',async({page}
 
 test('live text in progress is saved when switching modes, reloading or changing pages',async({page})=>{
   const live=page.frameLocator('#livePageFrame');
-  console.log('PERSISTENCE_STAGE await live.locator(\'main h2\').click();');
   await live.locator('main h2').click({timeout:6000});
-  console.log('PERSISTENCE_STAGE await page.locator(\'#editLiveText\').click();');
   await page.locator('#editLiveText').click({timeout:6000});
-  console.log('PERSISTENCE_STAGE await live.locator(\'main h2\').fill(\'Draft saved on mode change\');');
   await live.locator('main h2').fill('Draft saved on mode change');
-  console.log('PERSISTENCE_STAGE await page.locator(\'#designMode\').click();');
   await page.locator('#designMode').click({timeout:6000});
-  console.log('PERSISTENCE_STAGE await expect(page.locator(\'#scrollspace\')).toBeVisible();');
   await expect(page.locator('#scrollspace')).toBeVisible();
-  console.log('PERSISTENCE_STAGE await page.locator(\'#liveMode\').click();');
   await page.locator('#liveMode').click({timeout:6000});
-  console.log('PERSISTENCE_STAGE await expect(live.locator(\'main h2\')).toHaveText(\'Draft saved on mode change\');');
   await expect(live.locator('main h2')).toHaveText('Draft saved on mode change');
-  console.log('PERSISTENCE_STAGE await live.locator(\'main h2\').click();');
-  await live.locator('main h2').click({timeout:6000});
-  console.log('PERSISTENCE_STAGE await page.locator(\'#editLiveText\').click();');
+  // Returning to Live mode retains this selection; clicking its centre again
+  // hits the selected-heading resize grip instead of the text.
+  await expect(page.locator('#editLiveText')).toBeEnabled();
   await page.locator('#editLiveText').click({timeout:6000});
-  console.log('PERSISTENCE_STAGE await live.locator(\'main h2\').fill(\'Draft saved on reload\');');
   await live.locator('main h2').fill('Draft saved on reload');
-  console.log('PERSISTENCE_STAGE await page.locator(\'#reloadLive\').click();');
   await page.locator('#reloadLive').click({timeout:6000});
-  console.log('PERSISTENCE_STAGE await expect(live.locator(\'main h2\')).toHaveText(\'Draft saved on reload\');');
   await expect(live.locator('main h2')).toHaveText('Draft saved on reload');
   const researchSource='<!doctype html><html><body><main><h1>Research</h1></main></body></html>';
   await page.route('**/research.html',route=>route.fulfill({
     status:200,contentType:'text/html',body:researchSource
   }));
   await mockVerifiedSource(page,'research.html',researchSource);
-  console.log('PERSISTENCE_STAGE await live.locator(\'main h2\').click();');
-  await live.locator('main h2').click({timeout:6000});
-  console.log('PERSISTENCE_STAGE await page.locator(\'#editLiveText\').click();');
+  await live.locator('main h2').click({position:{x:12,y:12},timeout:6000});
   await page.locator('#editLiveText').click({timeout:6000});
-  console.log('PERSISTENCE_STAGE await live.locator(\'main h2\').fill(\'Draft saved on navigation\');');
   await live.locator('main h2').fill('Draft saved on navigation');
-  console.log('PERSISTENCE_STAGE await page.locator(\'#page\').selectOption(\'research.html\');');
   await page.locator('#page').selectOption('research.html',{timeout:6000});
-  console.log('PERSISTENCE_STAGE await expect(live.locator(\'main h1\')).toHaveText(\'Research\');');
   await expect(live.locator('main h1')).toHaveText('Research');
-  console.log('PERSISTENCE_STAGE await page.locator(\'#page\').selectOption(\'about.html\');');
   await page.locator('#page').selectOption('about.html',{timeout:6000});
-  console.log('PERSISTENCE_STAGE await expect(live.locator(\'main h2\')).toHaveText(\'Draft saved on navigation\');');
   await expect(live.locator('main h2')).toHaveText('Draft saved on navigation');
 });
 
