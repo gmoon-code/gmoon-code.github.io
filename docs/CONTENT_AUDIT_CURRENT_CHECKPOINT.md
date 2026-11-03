@@ -1,6 +1,6 @@
 # Academic website content audit | Current checkpoint
 
-**Current through C-RV29bz, 3 November 2026. Whole-site audit: In progress.** This is the current living continuation index, not a replacement for prior original stage files or a declaration of complete research ethics, student-text or browser verification.
+**Current through C-RV29ca, 3 November 2026. Whole-site audit: In progress.** This is the current living continuation index, not a replacement for prior original stage files or a declaration of complete research ethics, student-text or browser verification.
 
 ## New verified stages since C-RV29ao
 
@@ -75,7 +75,7 @@
 
 ## Exact next unfinished stage
 
-**C-RV29ca | Original scholarly-evidence priority and primary-record boundary.** The C-RV29by/bz targeted first-party source checks verified the external citation identities without claiming that historical 403/429 outcomes disappeared or that previously unread full texts were read. Of the original **15 secondary-index-only DOI records**, two received new claim-specific corroboration; **13 remain for need-based selection**, not indiscriminate re-review of already documented 53 bibliography entries. Prioritize one genuinely material unsupported passage only when original article evidence is accessible. Continue preserving original student facsimiles, consent/assent/school permissions and the 20-row final August S2B/S2C matrix as independently unresolved, with no F-tier upgrades without substantial original sources.
+**C-RV29cb | Versioned research-workbook provenance.** C-RV29ca found two response-text changes and four documentation changes between the retained September and October workbooks; the numerical study classifications remain stable. See [the private-source version comparison](ACTION_RESEARCH_OCTOBER_WORKBOOK_VERSION_DELTA_C-RV29ca_2026-11-03.md). Next, locate a dated text-transformation log and original rubric timing evidence, without publishing confidential source material.
 
 ## Other prior audit boundaries remain open
 
