@@ -1,12 +1,12 @@
 {
-  "sourceHead": "7f147beca823e70fae2b20ddd1d5881034402f13",
+  "sourceHead": "413adf30fe77033ea78d7032f69235ccfa007a2f",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
-  "verifiedExactMatches": 24,
-  "httpErrors": 0,
+  "verifiedExactMatches": 23,
+  "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-7f147beca823",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-413adf30fe77",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -18,6 +18,7 @@
       "head_sha": "44f437044391d1e06dd43fe28b79ad29edd8f405",
       "exit": "0",
       "sourceModifiedSinceAudit": [
+        "pungmul.html",
         "teaching-ap-biology.html"
       ],
       "failureCounts": {
@@ -26,27 +27,27 @@
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "41644754656",
-      "head_sha": "44f437044391d1e06dd43fe28b79ad29edd8f405",
+      "run": "41646697781",
+      "head_sha": "7f147beca823e70fae2b20ddd1d5881034402f13",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-biology.html"
+        "pungmul.html"
       ],
       "failureCounts": {
-        "issues": 42
+        "issues": 44
       },
       "counts": {
-        "reachable": 73,
-        "unverified": 42
+        "reachable": 71,
+        "unverified": 44
       }
     },
     "metadata": {
       "report": "docs/RESEARCH_METADATA_LATEST_RESULTS.json",
-      "run": "41644754608",
-      "head_sha": "44f437044391d1e06dd43fe28b79ad29edd8f405",
+      "run": "41646697877",
+      "head_sha": "7f147beca823e70fae2b20ddd1d5881034402f13",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-biology.html"
+        "pungmul.html"
       ],
       "failureCounts": {
         "unverified": 0
@@ -59,11 +60,11 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "41644754614",
-      "head_sha": "44f437044391d1e06dd43fe28b79ad29edd8f405",
+      "run": "41646697982",
+      "head_sha": "7f147beca823e70fae2b20ddd1d5881034402f13",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-biology.html"
+        "pungmul.html"
       ],
       "failureCounts": {
         "failures": 0
@@ -71,11 +72,11 @@
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "41644754660",
-      "head_sha": "44f437044391d1e06dd43fe28b79ad29edd8f405",
+      "run": "41646697850",
+      "head_sha": "7f147beca823e70fae2b20ddd1d5881034402f13",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-biology.html"
+        "pungmul.html"
       ],
       "failureCounts": {
         "failures": 0
@@ -83,11 +84,11 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "41644754689",
-      "head_sha": "44f437044391d1e06dd43fe28b79ad29edd8f405",
+      "run": "41646697733",
+      "head_sha": "7f147beca823e70fae2b20ddd1d5881034402f13",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-biology.html"
+        "pungmul.html"
       ],
       "failureCounts": {
         "failures": 0,
@@ -96,11 +97,11 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "41644754610",
-      "head_sha": "44f437044391d1e06dd43fe28b79ad29edd8f405",
+      "run": "41646697950",
+      "head_sha": "7f147beca823e70fae2b20ddd1d5881034402f13",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-biology.html"
+        "pungmul.html"
       ],
       "failureCounts": {
         "failures": 0,
@@ -118,97 +119,114 @@
     {
       "category": "links",
       "sourceModifiedSinceAudit": [
+        "pungmul.html",
         "teaching-ap-biology.html"
       ]
     },
     {
       "category": "external",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-biology.html"
+        "pungmul.html"
       ]
     },
     {
       "category": "metadata",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-biology.html"
+        "pungmul.html"
       ]
     },
     {
       "category": "reflow",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-biology.html"
+        "pungmul.html"
       ]
     },
     {
       "category": "engines",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-biology.html"
+        "pungmul.html"
       ]
     },
     {
       "category": "typography",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-biology.html"
+        "pungmul.html"
       ]
     },
     {
       "category": "interactions",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-biology.html"
+        "pungmul.html"
       ]
     }
   ],
   "pass": false,
   "errors": [
     {
+      "path": "pungmul.html",
+      "errors": [
+        "deployed bytes differ from checked-out production source"
+      ],
+      "firstDiff": [
+        "--- source\n",
+        "+++ deployed\n",
+        "@@ -100,3 +100,3 @@\n",
+        "          <li id=\"ref-nikh\">National Institute of Korean History. (n.d.). <a href=\"https://contents.history.go.kr/play/view.do?levelId=tz_b59\" target=\"_blank\" rel=\"noopener noreferrer\"><em>Nongak, or farmers' music</em><span class=\"new-tab-note\"> (opens in a new tab)</span></a> [Documentary and historical overview].</li>",
+        "-        <li id=\"ref-park\">Park, H.-J. (2014). <a href=\"https://www.kci.go.kr/kciportal/landing/article.kci?arti_id=ART001857639\" target=\"_blank\" rel=\"noopener noreferrer\" lang=\"ko\">1980년대 전반기 서울지역의 풍물운동계열 작품에 나타난 굿성 연구－1980~1987년 6월항쟁 사이의 작품을 중심으로－<span class=\"new-tab-note\"> (opens in a new tab)</span></a> [Study of gut characteristics in Seoul's pungmul movement performances, 1980–1987]. <em>실천민속학 연구, 23</em>, 115–163.</li>",
+        "+        <li id=\"ref-park\">Park, H.-J. (2014). <a href=\"https://www.kci.go.kr/kciportal/ci/sereArticleSearch/ciSereArtiView.kci?sereArticleSearchBean.artiId=ART001857639\" target=\"_blank\" rel=\"noopener noreferrer\" lang=\"ko\">1980년대 전반기 서울지역의 풍물운동계열 작품에 나타난 굿성 연구－1980~1987년 6월항쟁 사이의 작품을 중심으로－<span class=\"new-tab-note\"> (opens in a new tab)</span></a> [Study of gut characteristics in Seoul's pungmul movement performances, 1980–1987]. <em>실천민속학 연구, 23</em>, 115–163.</li>",
+        "         <li id=\"ref-unesco\">UNESCO. (2014). <a href=\"https://ich.unesco.org/en/RL/nongak-community-band-music-dance-and-rituals-in-the-republic-of-korea-00717\" target=\"_blank\" rel=\"noopener noreferrer\"><em>Nongak, community band music, dance and rituals in the Republic of Korea</em><span class=\"new-tab-note\"> (opens in a new tab)</span></a>. <a href=\"https://ich.unesco.org/en/video/27434\" target=\"_blank\" rel=\"noopener noreferrer\">Watch the heritage film<span class=\"new-tab-note\"> (opens in a new tab)</span></a>.</li>"
+      ]
+    },
+    {
       "sourceDrift": [
         {
           "category": "links",
           "sourceModifiedSinceAudit": [
+            "pungmul.html",
             "teaching-ap-biology.html"
           ]
         },
         {
           "category": "external",
           "sourceModifiedSinceAudit": [
-            "teaching-ap-biology.html"
+            "pungmul.html"
           ]
         },
         {
           "category": "metadata",
           "sourceModifiedSinceAudit": [
-            "teaching-ap-biology.html"
+            "pungmul.html"
           ]
         },
         {
           "category": "reflow",
           "sourceModifiedSinceAudit": [
-            "teaching-ap-biology.html"
+            "pungmul.html"
           ]
         },
         {
           "category": "engines",
           "sourceModifiedSinceAudit": [
-            "teaching-ap-biology.html"
+            "pungmul.html"
           ]
         },
         {
           "category": "typography",
           "sourceModifiedSinceAudit": [
-            "teaching-ap-biology.html"
+            "pungmul.html"
           ]
         },
         {
           "category": "interactions",
           "sourceModifiedSinceAudit": [
-            "teaching-ap-biology.html"
+            "pungmul.html"
           ]
         }
       ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41646697728",
-  "run_sha": "7f147beca823e70fae2b20ddd1d5881034402f13",
+  "workflow_run_id": "41655799383",
+  "run_sha": "413adf30fe77033ea78d7032f69235ccfa007a2f",
   "exit_code": "1"
 }
