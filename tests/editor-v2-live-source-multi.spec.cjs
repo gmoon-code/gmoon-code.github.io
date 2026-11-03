@@ -1101,9 +1101,10 @@ test('distribution equalises gaps between differently sized source boxes',async(
       return {rect:{x:rect.x,y:rect.y,w:rect.width,h:rect.height},
         hit:hit?.className||hit?.tagName,hitInside:node.contains(hit)};
     });
-    // The first paragraph's centre hits its original anchor. An ordinary
-    // link click does not select the object, so click its non-link lower area.
-    await target.click(index?{modifiers:['Shift']}:{position:{x:10,y:70}});
+    // Alt-click the first paragraph's anchor to select its parent object
+    // without navigating. This matches the proven source-selection fixture.
+    if(index===0)await target.locator('a').click({modifiers:['Alt']});
+    else await target.click({modifiers:['Shift']});
     selectionTrace.push({name,...before,
       count:await page.locator('#liveMultiCount').textContent(),
       selected:await live.locator('[data-moon-v2-source-selected]').evaluateAll(
