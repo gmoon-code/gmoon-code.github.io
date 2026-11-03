@@ -205,6 +205,7 @@ async def main():
 
     browser_cases=[]
     navigation={}
+    notFoundRoute={}
     async with async_playwright() as pw:
         browser=await pw.chromium.launch(headless=True)
         try:
@@ -234,6 +235,27 @@ async def main():
                 finally:
                     await page.close()
                 navigation.append(row)
+            # A direct 404.html request is not proof that an actually missing
+            # nested public URL receives the custom 404 page and correct code.
+            missing=await browser.new_page(viewport={"width":390,"height":850})
+            try:
+                url=BASE+"/missing/c-rv29bv-unmatched-reader-route"
+                response=await missing.goto(url,wait_until="domcontentloaded",timeout=35000)
+                status=response.status if response else None
+                heading=(await missing.locator("main h1").inner_text()).strip()
+                link=missing.locator('main a[href="/"]').first
+                available=await link.count()>0
+                if available:
+                    await link.click(timeout=10000)
+                notFoundRoute={"requestedUrl":url,"http":status,"heading":heading,
+                               "homeRecoveryLink":available,
+                               "recoveryUrl":missing.url,
+                               "pass":status==404 and heading=="Page not found"
+                                 and available and urlparse(missing.url).path=="/"}
+            except Exception as exc:
+                notFoundRoute={"pass":False,"error":str(exc)[:350]}
+            finally:
+                await missing.close()
         finally:
             await browser.close()
     errors=[{"kind":"source", "page":x["path"],"errors":x["errors"]} for x in static_checks if x["errors"]]
@@ -244,15 +266,19 @@ async def main():
             errors.append({"kind":"navigation","origin":link["origin"],
                            "destination":link["destination"],
                            "errors":[link.get("error","navigation failed")]})
+    if not notFoundRoute.get("pass"):
+        errors.append({"kind":"custom-not-found","errors":[notFoundRoute.get("error","custom 404 status or home recovery failed")]})
     report={"scope":"Three live public routes, Pungmul, Research Methods Studio and custom 404 document",
             "browser":"Playwright Chromium on Linux, headless, real public HTTPS origin",
             "widths":WIDTHS,"staticChecks":static_checks,"browserCases":browser_cases,
-            "navigationChecks":navigation,"failedCount":len(errors),"failures":errors,
+            "navigationChecks":navigation,"customNotFoundRoute":notFoundRoute,
+            "failedCount":len(errors),"failures":errors,
             "limitations":"Automated DOM, CSS-resource, image, navigation, keyboard-skip, and overflow checks with screenshot artifacts. Screenshots are evidence for later inspection, not human-reviewed in this run. No claim for physical devices, screen readers, remaining pages or all interaction states."}
     (OUT/"report.json").write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     print("SUMMARY",json.dumps({"static":[x.get("textEqual") for x in static_checks],
           "browser":[{"page":x["path"],"width":x["width"],"errors":x["errors"]} for x in browser_cases],
-          "navigation":navigation,"failedCount":len(errors)},ensure_ascii=False),flush=True)
+          "navigation":navigation,"customNotFoundRoute":notFoundRoute,
+          "failedCount":len(errors)},ensure_ascii=False),flush=True)
     return 1 if errors else 0
 
 if __name__=="__main__":
