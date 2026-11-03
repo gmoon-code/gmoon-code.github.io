@@ -19,6 +19,11 @@ HTML=["index.html","research.html","research-action.html","research-scoping.html
 ASSETS=["styles-20261013.css","site-theme.css","appearance.css","appearance.js","site-previews.js"]
 URL="https://gmoon-code.github.io/"
 SOURCE=HTML+ASSETS
+# Scholarly metadata is computed from this bounded academic page set.
+# Changes to unrelated public routes do not stale its findings.
+METADATA_HTML=["research.html","research-scoping.html","writing-biological-classification.html",
+ "teaching-ap-biology.html","teaching-ap-chemistry.html","teaching-ap-evolution.html",
+ "teaching.html","research-action.html","cv.html"]
 HEAD=subprocess.check_output(["git","rev-parse","HEAD"],text=True).strip()
 REPORTS={
   "links":("docs/PUBLIC_LINKGRAPH_LATEST_RESULTS.json",["problems"]),
@@ -77,7 +82,8 @@ def recorded():
     for category,(path,problem_fields) in REPORTS.items():
         doc=json.loads((ROOT/path).read_text())
         src=doc.get("head_sha")
-        changes=git("diff","--name-only",src,HEAD,"--",*SOURCE).splitlines() if src else []
+        relevant=METADATA_HTML if category=="metadata" else SOURCE
+        changes=git("diff","--name-only",src,HEAD,"--",*relevant).splitlines() if src else []
         r={"report":path,"run":doc.get("workflow_run_id"),"head_sha":src,"exit":doc.get("exit_code",doc.get("audit_exit_code")),
           "sourceModifiedSinceAudit":changes,
           "failureCounts":{k:len(doc.get(k,[])) if isinstance(doc.get(k),list) else None for k in problem_fields}}
