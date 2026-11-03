@@ -1,12 +1,12 @@
 {
-  "sourceHead": "369d5d7cbcec00c711b1c4bb8a291acc927445ad",
+  "sourceHead": "0cfd255ccabb5dcca1830a2b443c34cb0ef50ac1",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-369d5d7cbcec",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-0cfd255ccabb",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -27,28 +27,26 @@
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "41569729209",
-      "head_sha": "af9934217663b16e848f331013a6a2ae561d3cd8",
+      "run": "41572107791",
+      "head_sha": "369d5d7cbcec00c711b1c4bb8a291acc927445ad",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "writing-biological-classification.html"
       ],
       "failureCounts": {
-        "issues": 43
+        "issues": 42
       },
       "counts": {
-        "reachable": 72,
-        "unverified": 43
+        "reachable": 73,
+        "unverified": 42
       }
     },
     "metadata": {
       "report": "docs/RESEARCH_METADATA_LATEST_RESULTS.json",
-      "run": "41557106961",
-      "head_sha": "2d8732b0ea612d918e3a27b89a2fd6c47a6d28d8",
+      "run": "41572108052",
+      "head_sha": "369d5d7cbcec00c711b1c4bb8a291acc927445ad",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "research-methods-studio.html",
-        "story-method.html",
         "writing-biological-classification.html"
       ],
       "failureCounts": {
@@ -62,8 +60,8 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "41569729193",
-      "head_sha": "af9934217663b16e848f331013a6a2ae561d3cd8",
+      "run": "41572107829",
+      "head_sha": "369d5d7cbcec00c711b1c4bb8a291acc927445ad",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "writing-biological-classification.html"
@@ -74,8 +72,8 @@
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "41569729131",
-      "head_sha": "af9934217663b16e848f331013a6a2ae561d3cd8",
+      "run": "41572107920",
+      "head_sha": "369d5d7cbcec00c711b1c4bb8a291acc927445ad",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "writing-biological-classification.html"
@@ -86,8 +84,8 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "41569729280",
-      "head_sha": "af9934217663b16e848f331013a6a2ae561d3cd8",
+      "run": "41572108025",
+      "head_sha": "369d5d7cbcec00c711b1c4bb8a291acc927445ad",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "writing-biological-classification.html"
@@ -99,8 +97,8 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "41569729153",
-      "head_sha": "af9934217663b16e848f331013a6a2ae561d3cd8",
+      "run": "41572107846",
+      "head_sha": "369d5d7cbcec00c711b1c4bb8a291acc927445ad",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "writing-biological-classification.html"
@@ -134,8 +132,6 @@
     {
       "category": "metadata",
       "sourceModifiedSinceAudit": [
-        "research-methods-studio.html",
-        "story-method.html",
         "writing-biological-classification.html"
       ]
     },
@@ -174,11 +170,18 @@
       "firstDiff": [
         "--- source\n",
         "+++ deployed\n",
-        "@@ -73,3 +73,3 @@\n",
-        "     <p>The differences among these malaria outcomes become consequential when the class moves from clinical protection to the persistence of HbS across generations. Modelling that change requires estimates of how each genotype contributes to subsequent generations through survival and reproduction, with malaria exposure and population history also affecting those relationships. The cohort's estimates of protection against particular illnesses do not supply those reproductive fitness values. Asking what the researchers followed over time would therefore help students establish which parts of an evolutionary explanation the study supports and where additional evidence is needed.</p>",
-        "-    <p>A second difficulty arises if a lesson substitutes a racial designation for the genotype measured in the study. HbS has a history associated with malaria selection in geographically and historically varied populations. A person's racial identity therefore cannot establish whether they carry the allele. The educational problem extends beyond correcting a factual mistake. When racial labels appear to explain a genetic outcome, the class needs to examine what was measured, how the participants were described, and which relationships the proposed category actually helps explain. Randomized studies reviewed by <a href=\"#essay-donovan\">Donovan (2022)</a> found stronger genetic-essentialist beliefs among secondary students who learned about genetic-disease prevalence through racial categories than among students in comparison conditions. The choice of categories can shape what students infer beyond the genetic condition under examination.</p>",
-        "+    <p>A second difficulty arises if a lesson substitutes a racial designation for the genotype measured in the study. HbS has a history associated with malaria selection in geographically and historically varied populations. A person's racial identity therefore cannot establish whether they carry the allele. The educational problem extends beyond correcting a factual mistake. When racial labels appear to explain a genetic outcome, the class needs to examine what was measured, how the participants were described, and which relationships the proposed category actually helps explain. In his review of genetic essentialism and genetics education, <a href=\"#essay-donovan\">Donovan (2022)</a> discusses how the framing of genetic content can influence students' beliefs about racial groups. The biological precision of a lesson and its social implications are connected through the claims students are asked to accept.</p>",
-        "   </div>"
+        "@@ -18,3 +18,3 @@\n",
+        "       #main.classification-essay .research-essay-section{",
+        "-        padding:12px 0!important;",
+        "+        padding:18px 0!important;",
+        "       }",
+        "@@ -31,4 +31,4 @@\n",
+        "       #main.classification-essay .research-essay-refs li{",
+        "-        padding-top:6px!important;",
+        "-        padding-bottom:6px!important;",
+        "+        padding-top:8px!important;",
+        "+        padding-bottom:8px!important;",
+        "         break-inside:avoid-page!important;"
       ]
     },
     {
@@ -199,8 +202,6 @@
         {
           "category": "metadata",
           "sourceModifiedSinceAudit": [
-            "research-methods-studio.html",
-            "story-method.html",
             "writing-biological-classification.html"
           ]
         },
@@ -232,7 +233,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41572107792",
-  "run_sha": "369d5d7cbcec00c711b1c4bb8a291acc927445ad",
+  "workflow_run_id": "41572377046",
+  "run_sha": "0cfd255ccabb5dcca1830a2b443c34cb0ef50ac1",
   "exit_code": "1"
 }
