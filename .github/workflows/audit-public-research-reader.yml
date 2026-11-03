@@ -1,4 +1,4 @@
-name: C-RV29bq live public Research reader proof
+name: Public scholarly reader Chromium delivery proof
 on:
   push:
     branches: [main]
@@ -28,6 +28,6 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: c-rv29bq-live-research-reader-proof
-          path: public-research-reader-output/
+          name: live-scholarly-reader-evidence
+          path: public-scholarly-reader-output/
           retention-days: 21
