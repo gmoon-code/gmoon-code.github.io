@@ -1,0 +1,32 @@
+name: Public supplementary route delivery and landing-state proof
+on:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/audit-public-auxiliary-entrypoints.py"
+      - ".github/workflows/audit-public-auxiliary-entrypoints.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  supplementary-public:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Chromium
+        run: |
+          python -m pip install playwright==1.57.0
+          python -m playwright install --with-deps chromium
+      - name: Inspect live supplementary pages without editing data
+        run: python scripts/audit-public-auxiliary-entrypoints.py
+      - name: Upload exact public bytes evidence and viewport screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: supplementary-public-reader-evidence
+          path: public-auxiliary-output/
+          retention-days: 14
