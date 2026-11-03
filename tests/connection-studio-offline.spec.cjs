@@ -121,14 +121,15 @@ test('malformed backup must not replace an intact local practice record', async 
     version: 1,
     progress: { attempts: [null], drafts: {}, completedWrites: {}, bookmarks: [], notes: {} }
   };
-  const accepted = page.waitForEvent('dialog').then(dialog => dialog.accept());
+  let destructivePrompts = 0;
+  page.on('dialog', async dialog => { destructivePrompts++; await dialog.dismiss(); });
   await page.locator('#import-file').setInputFiles({
     name: 'malformed-but-parseable.json',
     mimeType: 'application/json',
     buffer: Buffer.from(JSON.stringify(malformed))
   });
-  await accepted;
   await expect(page.locator('#toast')).toContainText('not a valid Connection Studio backup');
+  expect(destructivePrompts, 'Invalid backups should be rejected before replacement confirmation').toBe(0);
   expect(await page.evaluate(() => localStorage.getItem('connection-studio-v1'))).toBe(original);
   await page.reload();
   await page.locator('#navigation [data-tab="progress"]').click();
