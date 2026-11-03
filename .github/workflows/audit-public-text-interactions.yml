@@ -1,0 +1,32 @@
+name: Public scholarly keyboard and details after text enlargement
+on:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/audit-public-text-interactions.py"
+      - ".github/workflows/audit-public-text-interactions.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  enlarged-interfaces:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Chromium
+        run: |
+          python -m pip install playwright==1.57.0
+          python -m playwright install --with-deps chromium
+      - name: Inspect real public keyboard and disclosure interactions with 200 percent text
+        run: python scripts/audit-public-text-interactions.py
+      - name: Retain machine evidence and selected disclosure/table screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: public-enlarged-text-interaction-evidence
+          path: public-enlarged-text-interactions-output/
+          retention-days: 21
