@@ -1,0 +1,32 @@
+name: Public academic 200 percent text enlargement stress check
+on:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/audit-public-text-enlargement.py"
+      - ".github/workflows/audit-public-text-enlargement.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  text-scale:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Chromium browser
+        run: |
+          python -m pip install playwright==1.57.0
+          python -m playwright install --with-deps chromium
+      - name: Examine actually served academic pages at doubled CSS text size
+        run: python scripts/audit-public-text-enlargement.py
+      - name: Preserve layout metrics and sampled full page screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: public-text-enlargement-200-percent
+          path: public-text-enlargement-output/
+          retention-days: 21
