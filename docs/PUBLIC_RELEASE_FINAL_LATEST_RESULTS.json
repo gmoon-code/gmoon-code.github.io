@@ -1,12 +1,12 @@
 {
-  "sourceHead": "0cfd255ccabb5dcca1830a2b443c34cb0ef50ac1",
+  "sourceHead": "717493c4d7a4c35b3f90bc9d926ce5dde639c698",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-0cfd255ccabb",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-717493c4d7a4",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -14,12 +14,11 @@
   "auditEvidence": {
     "links": {
       "report": "docs/PUBLIC_LINKGRAPH_LATEST_RESULTS.json",
-      "run": "41569070662",
-      "head_sha": "06e58a6e8f461dc791504cc8e018f3b95efe126f",
+      "run": "41572377050",
+      "head_sha": "0cfd255ccabb5dcca1830a2b443c34cb0ef50ac1",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "story-method.html",
-        "writing-biological-classification.html"
+        "research-action.html"
       ],
       "failureCounts": {
         "problems": 0
@@ -27,11 +26,11 @@
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "41572107791",
-      "head_sha": "369d5d7cbcec00c711b1c4bb8a291acc927445ad",
+      "run": "41572377075",
+      "head_sha": "0cfd255ccabb5dcca1830a2b443c34cb0ef50ac1",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "writing-biological-classification.html"
+        "research-action.html"
       ],
       "failureCounts": {
         "issues": 42
@@ -43,11 +42,11 @@
     },
     "metadata": {
       "report": "docs/RESEARCH_METADATA_LATEST_RESULTS.json",
-      "run": "41572108052",
-      "head_sha": "369d5d7cbcec00c711b1c4bb8a291acc927445ad",
+      "run": "41572377024",
+      "head_sha": "0cfd255ccabb5dcca1830a2b443c34cb0ef50ac1",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "writing-biological-classification.html"
+        "research-action.html"
       ],
       "failureCounts": {
         "unverified": 0
@@ -60,11 +59,11 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "41572107829",
-      "head_sha": "369d5d7cbcec00c711b1c4bb8a291acc927445ad",
+      "run": "41572377073",
+      "head_sha": "0cfd255ccabb5dcca1830a2b443c34cb0ef50ac1",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "writing-biological-classification.html"
+        "research-action.html"
       ],
       "failureCounts": {
         "failures": 0
@@ -72,11 +71,11 @@
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "41572107920",
-      "head_sha": "369d5d7cbcec00c711b1c4bb8a291acc927445ad",
+      "run": "41572377101",
+      "head_sha": "0cfd255ccabb5dcca1830a2b443c34cb0ef50ac1",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "writing-biological-classification.html"
+        "research-action.html"
       ],
       "failureCounts": {
         "failures": 0
@@ -84,11 +83,11 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "41572108025",
-      "head_sha": "369d5d7cbcec00c711b1c4bb8a291acc927445ad",
+      "run": "41572377088",
+      "head_sha": "0cfd255ccabb5dcca1830a2b443c34cb0ef50ac1",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "writing-biological-classification.html"
+        "research-action.html"
       ],
       "failureCounts": {
         "failures": 0,
@@ -97,11 +96,11 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "41572107846",
-      "head_sha": "369d5d7cbcec00c711b1c4bb8a291acc927445ad",
+      "run": "41572377057",
+      "head_sha": "0cfd255ccabb5dcca1830a2b443c34cb0ef50ac1",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "writing-biological-classification.html"
+        "research-action.html"
       ],
       "failureCounts": {
         "failures": 0,
@@ -119,69 +118,61 @@
     {
       "category": "links",
       "sourceModifiedSinceAudit": [
-        "story-method.html",
-        "writing-biological-classification.html"
+        "research-action.html"
       ]
     },
     {
       "category": "external",
       "sourceModifiedSinceAudit": [
-        "writing-biological-classification.html"
+        "research-action.html"
       ]
     },
     {
       "category": "metadata",
       "sourceModifiedSinceAudit": [
-        "writing-biological-classification.html"
+        "research-action.html"
       ]
     },
     {
       "category": "reflow",
       "sourceModifiedSinceAudit": [
-        "writing-biological-classification.html"
+        "research-action.html"
       ]
     },
     {
       "category": "engines",
       "sourceModifiedSinceAudit": [
-        "writing-biological-classification.html"
+        "research-action.html"
       ]
     },
     {
       "category": "typography",
       "sourceModifiedSinceAudit": [
-        "writing-biological-classification.html"
+        "research-action.html"
       ]
     },
     {
       "category": "interactions",
       "sourceModifiedSinceAudit": [
-        "writing-biological-classification.html"
+        "research-action.html"
       ]
     }
   ],
   "pass": false,
   "errors": [
     {
-      "path": "writing-biological-classification.html",
+      "path": "research-action.html",
       "errors": [
         "deployed bytes differ from checked-out production source"
       ],
       "firstDiff": [
         "--- source\n",
         "+++ deployed\n",
-        "@@ -18,3 +18,3 @@\n",
-        "       #main.classification-essay .research-essay-section{",
-        "-        padding:12px 0!important;",
-        "+        padding:18px 0!important;",
-        "       }",
-        "@@ -31,4 +31,4 @@\n",
-        "       #main.classification-essay .research-essay-refs li{",
-        "-        padding-top:6px!important;",
-        "-        padding-bottom:6px!important;",
-        "+        padding-top:8px!important;",
-        "+        padding-bottom:8px!important;",
-        "         break-inside:avoid-page!important;"
+        "@@ -107,3 +107,3 @@\n",
+        "     <tbody>",
+        "-      <tr><th scope=\"row\">Earlier pathway extended</th><td>5</td><td>Later reconstructions added missing causal connections or extended earlier pathways through to plant death.</td></tr>",
+        "+      <tr><th scope=\"row\">Earlier pathway extended</th><td>5</td><td>Additional intermediate causal connections appeared following correction.</td></tr>",
+        "       <tr><th scope=\"row\">Earlier contradiction not repeated</th><td>2</td><td>A previously expressed contradiction about the proton gradient did not appear in the reconstruction.</td></tr>"
       ]
     },
     {
@@ -189,51 +180,50 @@
         {
           "category": "links",
           "sourceModifiedSinceAudit": [
-            "story-method.html",
-            "writing-biological-classification.html"
+            "research-action.html"
           ]
         },
         {
           "category": "external",
           "sourceModifiedSinceAudit": [
-            "writing-biological-classification.html"
+            "research-action.html"
           ]
         },
         {
           "category": "metadata",
           "sourceModifiedSinceAudit": [
-            "writing-biological-classification.html"
+            "research-action.html"
           ]
         },
         {
           "category": "reflow",
           "sourceModifiedSinceAudit": [
-            "writing-biological-classification.html"
+            "research-action.html"
           ]
         },
         {
           "category": "engines",
           "sourceModifiedSinceAudit": [
-            "writing-biological-classification.html"
+            "research-action.html"
           ]
         },
         {
           "category": "typography",
           "sourceModifiedSinceAudit": [
-            "writing-biological-classification.html"
+            "research-action.html"
           ]
         },
         {
           "category": "interactions",
           "sourceModifiedSinceAudit": [
-            "writing-biological-classification.html"
+            "research-action.html"
           ]
         }
       ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41572377046",
-  "run_sha": "0cfd255ccabb5dcca1830a2b443c34cb0ef50ac1",
+  "workflow_run_id": "41578250657",
+  "run_sha": "717493c4d7a4c35b3f90bc9d926ce5dde639c698",
   "exit_code": "1"
 }
