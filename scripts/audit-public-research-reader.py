@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""C-RV29bq read-only Chromium check of two actually deployed academic pages.
+"""C-RV29bs live Chromium check of five deployed academic pages.
 
 Unlike earlier localhost browser tests, page navigation, CSS, images and fonts
 are fetched directly from the public GitHub Pages host over HTTPS. This is a
@@ -22,9 +22,10 @@ import runpy
 main_text = runpy.run_path("scripts/audit-public-content-parity.py")["main_text"]
 
 BASE = "https://gmoon-code.github.io"
-PAGES = ("research.html", "research-action.html")
+PAGES = ("research.html", "research-action.html", "research-scoping.html",
+         "writing-biological-classification.html", "teaching-ap-biology.html")
 WIDTHS = (390, 1280)
-OUT = pathlib.Path("public-research-reader-output")
+OUT = pathlib.Path("public-scholarly-reader-output")
 METRICS = r"""() => {
   const main = document.querySelector('main');
   const html = document.documentElement;
@@ -123,6 +124,18 @@ async def inspect(browser, path, width):
         case["images"]=images
         if any(not image.get("complete") or image.get("naturalWidth",0)<=0 for image in images):
             case["errors"].append("one or more on-page images did not load")
+        # Verify expanded reading sections on the publicly served page.
+        case["details"]=[]
+        for detail in await page.locator("main details").all():
+            summary=detail.locator("summary")
+            state={"summary":(await summary.inner_text()).strip()[:100],
+                   "initialOpen":await detail.get_attribute("open") is not None}
+            if not state["initialOpen"]:
+                await summary.click(timeout=9000)
+            state["openAfterClick"]=await detail.get_attribute("open") is not None
+            case["details"].append(state)
+            if not state["openAfterClick"]:
+                case["errors"].append("expandable scholarly detail failed to open")
         await page.evaluate("window.scrollTo(0,0)")
         await page.screenshot(path=str(OUT/f"{path[:-5]}-{width}.png"), full_page=True, animations="disabled", timeout=25000)
         case["screenshot"]=str(OUT/f"{path[:-5]}-{width}.png")
@@ -193,11 +206,11 @@ async def main():
                   for x in browser_cases if x["errors"])
     if not navigation.get("success"):
         errors.append({"kind":"navigation","errors":[navigation.get("error","navigation failed")]})
-    report={"scope":"Live production Research and Classroom Action Research pages only",
+    report={"scope":"Five live public academic pages, Research, Action Research, Scoping Review, Classification essay and AP Biology",
             "browser":"Playwright Chromium on Linux, headless, real public HTTPS origin",
             "widths":WIDTHS,"staticChecks":static_checks,"browserCases":browser_cases,
             "researchToActionNavigation":navigation,"failedCount":len(errors),"failures":errors,
-            "limitations":"Automated DOM, CSS-resource, image, navigation, keyboard-skip, and overflow checks with screenshot artifacts. Screenshots are evidence for later inspection, not human-reviewed in this run. No claim for physical devices, screen readers, other pages or all interaction states."}
+            "limitations":"Automated DOM, CSS-resource, image, navigation, keyboard-skip, and overflow checks with screenshot artifacts. Screenshots are evidence for later inspection, not human-reviewed in this run. No claim for physical devices, screen readers, remaining pages or all interaction states."}
     (OUT/"report.json").write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     print("SUMMARY",json.dumps({"static":[x.get("textEqual") for x in static_checks],
           "browser":[{"page":x["path"],"width":x["width"],"errors":x["errors"]} for x in browser_cases],
