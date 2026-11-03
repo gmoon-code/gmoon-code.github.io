@@ -441,7 +441,7 @@ test('hover preview and keyboard layer navigation identify real source elements 
   await expect(rows.first()).toBeFocused();
   await page.locator('#liveElementSearch').focus();
   await expect(live.locator('[data-moon-v2-layer-preview]')).toHaveCount(0);
-  await expect(page.locator('#liveEditCount')).toContainText('No saved live-page edits');
+  await expect(page.locator('#liveEditCount')).toContainText('No live-page draft edits');
 });
 
 test('original webpage position lock persists after reload and prevents nudging',async({page})=>{
