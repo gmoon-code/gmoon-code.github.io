@@ -1,0 +1,33 @@
+# C-RV29bb | Scoping-page Pierson figure, Kane validity citation and preprint reader links
+
+**Date:** 3 November 2026. **Continued from:** [C-RV29ba](SCOPING_FINAL_SUPPLEMENT_PUBLIC_CLAIM_AUDIT_C-RV29ba_2026-11-03.md). **Scope:** Current `research-scoping.html` citation/link content, not repeated audit of its 20 source papers or original final coding workbooks. **Result:** Original publisher pages corroborate the exact Pierson student episode and **Figure 3**; the Kane source's title, DOI and argument-based scope align with the site's conceptual use. The linked 2026 OSF preprint DOI is present and historically confirmed at original registry level in [C-RV20](SCOPING_REGISTERED_PREPRINT_VERSION_AUDIT_C-RV20_2026-11-02.md), while current direct DOI delivery is blocked in this retrieval environment. **No public page change warranted.**
+
+## GitHub source and specific statements
+
+Re-fetched the site's currently authoritative `research-scoping.html` Git blob **`cf0eaaa192876264d47f57ea9b30ffec36e84ebb`**.
+
+- At the top, the page identifies an **initial ERIC-bounded 2026 preprint** and links its DOI **`10.35542/osf.io/kznvj_v1`**.
+- In **Included study**, the descriptive text attributes the ecological model to **Pierson, Clark and Brady (2021)**, uses the pseudonyms **Luis, Carlos and Sean**, calls the specific original source's **Figure 3** the group's biosphere plan, and treats the short English version as evidence of **less-explicit ecological relationships**, not proof of reduced student understanding. The author describes these examples as **paraphrases** rather than verbatim participant accounts.
+- In **Interpretation and limitations**, the author identifies **Kane's argument-based validity account** as a way to inspect inferential assumptions and explicitly introduces the application to student science work as **“Applied here”**, distinguishing an educational measurement framework from Kane having observed this specific classroom. The bibliography correctly gives Kane **2013, Journal of Educational Measurement 50(1), pp. 1–73, DOI 10.1111/jedm.12000**.
+
+## Direct original publisher source evidence
+
+**Pierson, A. E., Clark, D. B. and Brady, C. E. (2021), *Scientific modeling and translanguaging: A multilingual and multimodal approach to support science learning and engagement*, *Science Education* 105(4), 776–813, DOI 10.1002/sce.21622.**
+
+The publisher's [full original article](https://onlinelibrary.wiley.com/doi/full/10.1002/sce.21622), retrieved as substantial HTML, directly presents the sixth-grade English-dominant ecological modelling episode, names Luis/Carlos/Sean, identifies **Figure 3** as **their biosphere plan**, and describes Carlos's drawn, sticker, string and numbered representations. It explicitly contrasts Luis's fuller Spanish-English account of plants/algae as food and oxygen for breathing with a shorter English rendering that no longer distinguishes those functions clearly. It also documents Sean's expressed difficulty reading Spanish, his encouragement to use English and the teachers' failure to notice the interaction in the moment.
+
+The source itself cautions against assuming language policing was necessarily intentional hostility. The site calls Sean's difficulty reading Spanish a participation condition and avoids making an unsupported claim about ultimate adoption of a particular science explanation. The cited Figure 3 is **the correct figure in that original article**. However, the site's link is to the accessible **article-level** URL `https://onlinelibrary.wiley.com/doi/full/10.1002/sce.21622` without a publisher fragment specifically guaranteed to scroll to Figure 3. Thus the correct description is **“the article contains the named Figure 3”**, not **“the user is taken directly to Figure 3”** or proof of a rendered browser lightbox.
+
+**Kane, M. T. (2013), *Validating the Interpretations and Uses of Test Scores*, *Journal of Educational Measurement* 50(1), 1–73, DOI 10.1111/jedm.12000.** The [original Wiley source record](https://onlinelibrary.wiley.com/doi/10.1111/jedm.12000) matches the bibliography, date and scope. Its original abstract, independently corroborated by [ERIC EJ996447](https://eric.ed.gov/?id=EJ996447), explains score-interpretation/use arguments, their inference steps and assumptions. The page's careful generalization to evaluating what a science performance can warrant is a conceptual application, not a causal classroom result attributed to Kane.
+
+**Preprint DOI.** This stage did not successfully retrieve the current DOI resolver's landing page when requesting `https://doi.org/10.35542/osf.io/kznvj_v1`; the public reader returned a tool-access error without landing content. Prior [C-RV20](SCOPING_REGISTERED_PREPRINT_VERSION_AUDIT_C-RV20_2026-11-02.md) had already verified the **registered preprint identity and August abstract counts** through independently successful Crossref metadata evidence. That historical verification remains valid, but it is not proof of **current** publicly delivered OSF PDF bytes, supplement download availability or browser DOI navigation. No basis for replacing an exact previously registry-confirmed DOI.
+
+## Editorial decision and remaining boundaries
+
+**No public prose, figure URL or bibliography edits.** The link to the Pierson article points to the right original work and the claimed Figure 3 is actually there; a guessed deep-link fragment would be less reliable. The ethics of presenting multilingual students' linguistic contributions are treated carefully, and the page does not use original participant words as though they were the author's transcription. Kane's use is correctly qualified. Retain the existing citations and restrained authorial tone.
+
+**Remaining:** exact archived August S2B/S2C author-coded supplementary workbook, original action-research classroom submissions and consent records, live DOI/production HTML delivery and interactive navigation remain independently unverified in the respective previously recorded tiers.
+
+## Exact next checkpoint
+
+**C-RV29bc | Source audit completion boundaries and action-priority map.** Reconcile the now-completed C-RV29aw–bb source-level checks with the master 26-route editorial inventory. Identify what can realistically be called *editorially complete* versus independently unverified. Avoid new redundant publisher lookups, revise only false audit-status claims, and make a short priority list for the exact highest-value proof that remains unavailable (August S2B/S2C, classroom original submissions and ethical authorizations, deployed browser parity and Editor V2 regressions). The old supplementary worksheet is not a substitute for final source codes. No automatic full-site “verified” status.
