@@ -2,17 +2,17 @@
   "pages_scanned": 19,
   "distinct_destinations": 115,
   "counts": {
-    "reachable": 71,
-    "unverified": 44
+    "reachable": 73,
+    "unverified": 42
   },
   "by_category": {
     "external": {
-      "reachable": 49,
-      "unverified": 2
+      "reachable": 50,
+      "unverified": 1
     },
     "scholarly-identifier": {
-      "unverified": 42,
-      "reachable": 19
+      "unverified": 41,
+      "reachable": 20
     },
     "separate-site-application": {
       "reachable": 3
@@ -320,24 +320,6 @@
         "code": 403,
         "finalUrl": "https://onlinelibrary.wiley.com/doi/10.1002/tea.70072",
         "error": "Forbidden"
-      },
-      "warnings": []
-    },
-    {
-      "url": "https://doi.org/10.1017/CBO9781139519526.041",
-      "status": "unverified",
-      "category": "scholarly-identifier",
-      "pages": [
-        "research.html"
-      ],
-      "head": {
-        "code": 503,
-        "finalUrl": "https://www.cambridge.org/core/product/identifier/9781139519526%23c03325-34-1/type/book_part",
-        "error": "Service Unavailable"
-      },
-      "get": {
-        "code": null,
-        "error": "The read operation timed out"
       },
       "warnings": []
     },
@@ -836,24 +818,6 @@
         "error": "Forbidden"
       },
       "warnings": []
-    },
-    {
-      "url": "https://www.kci.go.kr/kciportal/ci/sereArticleSearch/ciSereArtiView.kci?sereArticleSearchBean.artiId=ART001857639",
-      "status": "unverified",
-      "category": "external",
-      "pages": [
-        "pungmul.html"
-      ],
-      "head": {
-        "code": 405,
-        "finalUrl": "https://www.kci.go.kr/kciportal/ci/sereArticleSearch/ciSereArtiView.kci?sereArticleSearchBean.artiId=ART001857639",
-        "error": "Method Not Allowed"
-      },
-      "get": {
-        "code": null,
-        "error": "The read operation timed out"
-      },
-      "warnings": []
     }
   ],
   "important_apps": [
@@ -875,13 +839,29 @@
   ],
   "limits": "HTTP availability is not content authenticity or DOI landing-page accuracy. 403, 429, DNS, SSL, and timeout results remain unverified.",
   "doi_registry": {
-    "checked": 42,
+    "checked": 41,
     "counts": {
-      "registered": 33,
-      "not-confirmed": 9
+      "not-confirmed": 18,
+      "registered": 23
     },
-    "secondary_index_matches": 9,
+    "secondary_index_matches": 18,
     "not_confirmed": [
+      {
+        "url": "https://doi.org/10.1002/sce.20264",
+        "doi": "10.1002/sce.20264",
+        "pages": [
+          "teaching-ap-biology.html"
+        ],
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.20264",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Recognizing mechanistic reasoning in student scientific inquiry: A framework for discourse analysis developed from philosophy of science",
+        "indexedYear": 2008
+      },
       {
         "url": "https://doi.org/10.1002/sce.21099",
         "doi": "10.1002/sce.21099",
@@ -899,101 +879,164 @@
         "indexedYear": 2014
       },
       {
-        "url": "https://doi.org/10.1002/sce.21112",
-        "doi": "10.1002/sce.21112",
+        "url": "https://doi.org/10.1002/sce.21511",
+        "doi": "10.1002/sce.21511",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21112",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21511",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Examining Classroom Science Practice Communities: How Teachers and Students Negotiate Epistemic Agency and Learn Science‐as‐Practice",
-        "indexedYear": 2014
+        "indexedTitle": "Opening up curricula to redistribute epistemic agency: A framework for supporting science teaching",
+        "indexedYear": 2019
       },
       {
-        "url": "https://doi.org/10.1002/tea.70072",
-        "doi": "10.1002/tea.70072",
+        "url": "https://doi.org/10.1002/tea.20311",
+        "doi": "10.1002/tea.20311",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.70072",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.20311",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Students' Construction, Evaluation, and Revision of Scientific Models Through Multimodal Representations",
-        "indexedYear": 2026
+        "indexedTitle": "Developing a learning progression for scientific modeling: Making scientific modeling accessible and meaningful for learners",
+        "indexedYear": 2009
       },
       {
-        "url": "https://doi.org/10.1017/CBO9781139519526.041",
-        "doi": "10.1017/CBO9781139519526.041",
+        "url": "https://doi.org/10.1002/tea.21714",
+        "doi": "10.1002/tea.21714",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": null,
-        "publisherResult": null,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Learning as a Cultural Process",
-        "indexedYear": 2014
-      },
-      {
-        "url": "https://doi.org/10.1080/03626784.2021.1947732",
-        "doi": "10.1080/03626784.2021.1947732",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/03626784.2021.1947732",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21714",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Getting dirty and coming clean: Sex education and the problem of expertise",
+        "indexedTitle": "Science engagement as insight into the science identity work nurtured in community‐based science clubs",
         "indexedYear": 2021
       },
       {
-        "url": "https://doi.org/10.1086/430744",
-        "doi": "10.1086/430744",
-        "pages": [
-          "teaching-ap-evolution.html",
-          "writing-biological-classification.html"
-        ],
-        "publisherLanding": "https://academic.oup.com/jid/article-lookup/doi/10.1086/430744",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Sickle Cell Trait and the Risk ofPlasmodium falciparumMalaria and Other Childhood Diseases",
-        "indexedYear": 2005
-      },
-      {
-        "url": "https://doi.org/10.1093/biosci/biac013",
-        "doi": "10.1093/biosci/biac013",
+        "url": "https://doi.org/10.1073/pnas.0706627104",
+        "doi": "10.1073/pnas.0706627104",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://academic.oup.com/bioscience/article/72/5/481/6547662",
+        "publisherLanding": "https://pnas.org/doi/full/10.1073/pnas.0706627104",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Six Principles for Embracing Gender and Sexual Diversity in Postsecondary Biology Classrooms",
-        "indexedYear": 2022
+        "indexedTitle": "Cultural mosaics and mental models of nature",
+        "indexedYear": 2007
+      },
+      {
+        "url": "https://doi.org/10.1080/03626784.2023.2200810",
+        "doi": "10.1080/03626784.2023.2200810",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/03626784.2023.2200810",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "You don’t know me: Welcoming gender diversity in schools via an ethic of hospitality",
+        "indexedYear": 2023
+      },
+      {
+        "url": "https://doi.org/10.1080/07491409.2023.2193543",
+        "doi": "10.1080/07491409.2023.2193543",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/07491409.2023.2193543",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "TERF Logics Are Carceral Logics: Toward the Abolition of Gender-Critical Movements or Black Trans Life as Pedagogical Praxis",
+        "indexedYear": 2023
+      },
+      {
+        "url": "https://doi.org/10.1080/10508400903452884",
+        "doi": "10.1080/10508400903452884",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/10508400903452884",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Conducting Video Research in the Learning Sciences: Guidance on Selection, Analysis, Technology, and Ethics",
+        "indexedYear": 2010
+      },
+      {
+        "url": "https://doi.org/10.1080/14675986.2015.1109775",
+        "doi": "10.1080/14675986.2015.1109775",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/14675986.2015.1109775",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Beyond the mirror towards a plurilingual prism: exploring the creation of plurilingual ‘identity texts’ in English and French classrooms in Toronto and Montpellier",
+        "indexedYear": 2015
+      },
+      {
+        "url": "https://doi.org/10.1080/14790718.2021.1898619",
+        "doi": "10.1080/14790718.2021.1898619",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/14790718.2021.1898619",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Translanguaging as an agentive pedagogy for multilingual learners: affordances and constraints",
+        "indexedYear": 2021
+      },
+      {
+        "url": "https://doi.org/10.1093/applin/amab044",
+        "doi": "10.1093/applin/amab044",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://academic.oup.com/applij/article/43/2/316/6375538",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Affordances of Plurilingual Instruction in Higher Education: A Mixed Methods Study with a Quasi-experiment in an English Language Program",
+        "indexedYear": 2021
       },
       {
         "url": "https://doi.org/10.1159/000345322",
@@ -1010,6 +1053,71 @@
         "secondaryIndex": "OpenAlex",
         "indexedTitle": "Desettling Expectations in Science Education",
         "indexedYear": 2012
+      },
+      {
+        "url": "https://doi.org/10.1187/cbe.23-08-0157",
+        "doi": "10.1187/cbe.23-08-0157",
+        "pages": [
+          "teaching-ap-biology.html"
+        ],
+        "publisherLanding": "https://www.lifescied.org/doi/10.1187/cbe.23-08-0157",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Examining and Supporting Mechanistic Explanations Across Chemistry and Biology Courses",
+        "indexedYear": 2024
+      },
+      {
+        "url": "https://doi.org/10.3102/0013189X20927363",
+        "doi": "10.3102/0013189X20927363",
+        "pages": [
+          "research.html",
+          "writing-biological-classification.html"
+        ],
+        "publisherLanding": "https://journals.sagepub.com/doi/10.3102/0013189X20927363",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Beyond Equity as Inclusion: A Framework of “Rightful Presence” for Guiding Justice-Oriented Studies in Teaching and Learning",
+        "indexedYear": 2020
+      },
+      {
+        "url": "https://doi.org/10.3102/0013189X231206172",
+        "doi": "10.3102/0013189X231206172",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://journals.sagepub.com/doi/10.3102/0013189X231206172",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Language Views for Scientific Sensemaking Matter: A Synthesis of Research on Multilingual Students’ Experiences with Science Practices Through a Translanguaging Lens",
+        "indexedYear": 2023
+      },
+      {
+        "url": "https://doi.org/10.3102/0034654314558490",
+        "doi": "10.3102/0034654314558490",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://journals.sagepub.com/doi/10.3102/0034654314558490",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Representing Student Argumentation as Functionally Emergent From Scientific Activity",
+        "indexedYear": 2014
       },
       {
         "url": "https://doi.org/10.3390/plants10081501",
@@ -1031,7 +1139,7 @@
     "unresolved": [],
     "limitation": "Crossref/DataCite registration is distinct from publisher access, correct article metadata or article availability. OpenAlex is independent secondary corroboration, not registration proof."
   },
-  "workflow_run_id": "41458088826",
-  "head_sha": "b020f5c36ab4610a1214aacf459e06cb2155edb5",
+  "workflow_run_id": "41557107100",
+  "head_sha": "2d8732b0ea612d918e3a27b89a2fd6c47a6d28d8",
   "audit_exit_code": "0"
 }
