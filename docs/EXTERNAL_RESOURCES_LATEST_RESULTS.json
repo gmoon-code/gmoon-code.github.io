@@ -2,13 +2,13 @@
   "pages_scanned": 19,
   "distinct_destinations": 115,
   "counts": {
-    "reachable": 73,
-    "unverified": 42
+    "reachable": 72,
+    "unverified": 43
   },
   "by_category": {
     "external": {
-      "reachable": 50,
-      "unverified": 1
+      "reachable": 49,
+      "unverified": 2
     },
     "scholarly-identifier": {
       "unverified": 41,
@@ -801,6 +801,23 @@
       "warnings": []
     },
     {
+      "url": "https://eric.ed.gov/?id=ED527596",
+      "status": "unverified",
+      "category": "external",
+      "pages": [
+        "research.html"
+      ],
+      "head": {
+        "code": null,
+        "error": "The read operation timed out"
+      },
+      "get": {
+        "code": null,
+        "error": "Remote end closed connection without response"
+      },
+      "warnings": []
+    },
+    {
       "url": "https://onlinelibrary.wiley.com/doi/full/10.1002/sce.21622",
       "status": "unverified",
       "category": "external",
@@ -841,10 +858,10 @@
   "doi_registry": {
     "checked": 41,
     "counts": {
-      "not-confirmed": 18,
-      "registered": 23
+      "not-confirmed": 16,
+      "registered": 25
     },
-    "secondary_index_matches": 18,
+    "secondary_index_matches": 16,
     "not_confirmed": [
       {
         "url": "https://doi.org/10.1002/sce.20264",
@@ -863,52 +880,52 @@
         "indexedYear": 2008
       },
       {
-        "url": "https://doi.org/10.1002/sce.21099",
-        "doi": "10.1002/sce.21099",
+        "url": "https://doi.org/10.1002/sce.21112",
+        "doi": "10.1002/sce.21112",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21099",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21112",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "An Integrative Framework for the Analysis of Multiple and Multimodal Representations for Meaning‐Making in Science Education",
+        "indexedTitle": "Examining Classroom Science Practice Communities: How Teachers and Students Negotiate Epistemic Agency and Learn Science‐as‐Practice",
         "indexedYear": 2014
       },
       {
-        "url": "https://doi.org/10.1002/sce.21511",
-        "doi": "10.1002/sce.21511",
+        "url": "https://doi.org/10.1002/sce.21592",
+        "doi": "10.1002/sce.21592",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21511",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21592",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Opening up curricula to redistribute epistemic agency: A framework for supporting science teaching",
-        "indexedYear": 2019
+        "indexedTitle": "Acting with epistemic agency: Characterizing student critique during argumentation discussions",
+        "indexedYear": 2020
       },
       {
-        "url": "https://doi.org/10.1002/tea.20311",
-        "doi": "10.1002/tea.20311",
+        "url": "https://doi.org/10.1002/tea.21459",
+        "doi": "10.1002/tea.21459",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.20311",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21459",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Developing a learning progression for scientific modeling: Making scientific modeling accessible and meaningful for learners",
-        "indexedYear": 2009
+        "indexedTitle": "Addressing the epistemic elephant in the room: Epistemic agency and the next generation science standards",
+        "indexedYear": 2018
       },
       {
         "url": "https://doi.org/10.1002/tea.21714",
@@ -927,20 +944,20 @@
         "indexedYear": 2021
       },
       {
-        "url": "https://doi.org/10.1073/pnas.0706627104",
-        "doi": "10.1073/pnas.0706627104",
+        "url": "https://doi.org/10.1002/tea.70072",
+        "doi": "10.1002/tea.70072",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://pnas.org/doi/full/10.1073/pnas.0706627104",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.70072",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Cultural mosaics and mental models of nature",
-        "indexedYear": 2007
+        "indexedTitle": "Students' Construction, Evaluation, and Revision of Scientific Models Through Multimodal Representations",
+        "indexedYear": 2026
       },
       {
         "url": "https://doi.org/10.1080/03626784.2023.2200810",
@@ -959,19 +976,19 @@
         "indexedYear": 2023
       },
       {
-        "url": "https://doi.org/10.1080/07491409.2023.2193543",
-        "doi": "10.1080/07491409.2023.2193543",
+        "url": "https://doi.org/10.1080/1046560X.2022.2155355",
+        "doi": "10.1080/1046560X.2022.2155355",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/07491409.2023.2193543",
+        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/1046560X.2022.2155355",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "TERF Logics Are Carceral Logics: Toward the Abolition of Gender-Critical Movements or Black Trans Life as Pedagogical Praxis",
+        "indexedTitle": "Teacher Noticing for Supporting Students’ Epistemic Agency in Science Sensemaking Discussions",
         "indexedYear": 2023
       },
       {
@@ -1023,36 +1040,36 @@
         "indexedYear": 2021
       },
       {
-        "url": "https://doi.org/10.1093/applin/amab044",
-        "doi": "10.1093/applin/amab044",
+        "url": "https://doi.org/10.1093/biosci/biac013",
+        "doi": "10.1093/biosci/biac013",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://academic.oup.com/applij/article/43/2/316/6375538",
+        "publisherLanding": "https://academic.oup.com/bioscience/article/72/5/481/6547662",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Affordances of Plurilingual Instruction in Higher Education: A Mixed Methods Study with a Quasi-experiment in an English Language Program",
-        "indexedYear": 2021
+        "indexedTitle": "Six Principles for Embracing Gender and Sexual Diversity in Postsecondary Biology Classrooms",
+        "indexedYear": 2022
       },
       {
-        "url": "https://doi.org/10.1159/000345322",
-        "doi": "10.1159/000345322",
+        "url": "https://doi.org/10.1177/01614681251401633",
+        "doi": "10.1177/01614681251401633",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://karger.com/article/doi/10.1159/000345322",
+        "publisherLanding": "https://journals.sagepub.com/doi/10.1177/01614681251401633",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Desettling Expectations in Science Education",
-        "indexedYear": 2012
+        "indexedTitle": "Queer Joy as Pedagogy",
+        "indexedYear": 2025
       },
       {
         "url": "https://doi.org/10.1187/cbe.23-08-0157",
@@ -1088,58 +1105,26 @@
         "indexedYear": 2020
       },
       {
-        "url": "https://doi.org/10.3102/0013189X231206172",
-        "doi": "10.3102/0013189X231206172",
+        "url": "https://doi.org/10.3138/cmlr-2021-0055",
+        "doi": "10.3138/cmlr-2021-0055",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://journals.sagepub.com/doi/10.3102/0013189X231206172",
+        "publisherLanding": "https://utppublishing.com/doi/10.3138/cmlr-2021-0055",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Language Views for Scientific Sensemaking Matter: A Synthesis of Research on Multilingual Students’ Experiences with Science Practices Through a Translanguaging Lens",
+        "indexedTitle": "The Impact of Academic Acculturation and Language Proficiency on International Students’ University Experience and Academic Success: A Longitudinal Study",
         "indexedYear": 2023
-      },
-      {
-        "url": "https://doi.org/10.3102/0034654314558490",
-        "doi": "10.3102/0034654314558490",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://journals.sagepub.com/doi/10.3102/0034654314558490",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Representing Student Argumentation as Functionally Emergent From Scientific Activity",
-        "indexedYear": 2014
-      },
-      {
-        "url": "https://doi.org/10.3390/plants10081501",
-        "doi": "10.3390/plants10081501",
-        "pages": [
-          "teaching-ap-biology.html"
-        ],
-        "publisherLanding": "https://www.mdpi.com/2223-7747/10/8/1501",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Binding Properties of Photosynthetic Herbicides with the QB Site of the D1 Protein in Plant Photosystem II: A Combined Functional and Molecular Docking Study",
-        "indexedYear": 2021
       }
     ],
     "unresolved": [],
     "limitation": "Crossref/DataCite registration is distinct from publisher access, correct article metadata or article availability. OpenAlex is independent secondary corroboration, not registration proof."
   },
-  "workflow_run_id": "41557107100",
-  "head_sha": "2d8732b0ea612d918e3a27b89a2fd6c47a6d28d8",
+  "workflow_run_id": "41569070618",
+  "head_sha": "06e58a6e8f461dc791504cc8e018f3b95efe126f",
   "audit_exit_code": "0"
 }
