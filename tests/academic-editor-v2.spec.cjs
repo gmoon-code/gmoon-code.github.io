@@ -618,7 +618,7 @@ test('live image library replaces source image without creating a canvas object'
   await expect(live.locator('main img').first()).toHaveAttribute('src','assets/second.webp');
   await expect(page.locator('#liveViewport')).toBeVisible();
   await expect(page.locator('#stage .scene-object')).toHaveCount(0);
-  await expect(page.locator('#liveEditCount')).toContainText('1 saved edit');
+  await expect(page.locator('#liveEditCount')).toContainText('1 draft edit');
 });
 
 test('top-bar preview and compare show faithful original-layout edits in live mode',async({page})=>{
@@ -836,7 +836,7 @@ test('direct movement on actual webpage changes only selected text and supports 
   const headingAfter=await heading.boundingBox();
   expect(Math.abs(headingAfter.x-headingBefore.x)).toBeLessThan(1);
   expect(Math.abs(headingAfter.y-headingBefore.y)).toBeLessThan(1);
-  await expect(page.locator('#liveEditCount')).toContainText('1 saved edit');
+  await expect(page.locator('#liveEditCount')).toContainText('1 draft edit');
   await page.locator('#undo').click();
   const undone=await paragraph.boundingBox();
   expect(Math.abs(undone.x-before.x)).toBeLessThan(1);
@@ -1037,7 +1037,7 @@ test('selecting and moving a real website section preserves nested links and HTM
   expect(output).toContain('href="#citation"');
   expect(output).toContain('id="moon-v2-live-layout"');
   await page.locator('#resetLiveLayout').click();
-  await expect(page.locator('#liveEditCount')).toContainText('No saved live-page edits');
+  await expect(page.locator('#liveEditCount')).toContainText('No live-page draft edits');
   await page.reload();
   await expect(live.locator('main section h2')).toHaveText('Whole card');
 });
@@ -1086,7 +1086,7 @@ test('whole-section background changes keep nested markup and reset cleanly',asy
   await expect(section).toHaveCSS('background-color','rgb(221, 238, 255)');
   await page.locator('#resetLiveAppearance').click();
   await expect(section).not.toHaveCSS('background-color','rgb(221, 238, 255)');
-  await expect(page.locator('#liveEditCount')).toContainText('No saved live-page edits');
+  await expect(page.locator('#liveEditCount')).toContainText('No live-page draft edits');
   const pending=page.waitForEvent('download');
   await page.locator('#exportLiveEdits').click();
   const exported=fs.readFileSync(await (await pending).path(),'utf8');
