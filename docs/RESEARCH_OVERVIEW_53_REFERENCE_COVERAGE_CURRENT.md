@@ -1,6 +1,6 @@
 # Research overview | Current 53-reference scholarly evidence coverage
 
-**Current through C-RV29ai, 3 November 2026.** Rolling content and scholarly-verification inventory of all 53 references in `research.html`, reconciled against stages C-RV23a–f, C-RV24a–f. This is a living coverage index, not a declaration that every reference has been read cover to cover. The original [C-RV24c inventory](RESEARCH_OVERVIEW_53_REFERENCE_COVERAGE_C-RV24c_2026-11-02.md) remains an immutable record of its earlier checkpoint.
+**Current through C-RV29cc, 3 November 2026.** Rolling content and scholarly-verification inventory of all 53 references in `research.html`, reconciled against stages C-RV23a–f, C-RV24a–f. This is a living coverage index, not a declaration that every reference has been read cover to cover. The original [C-RV24c inventory](RESEARCH_OVERVIEW_53_REFERENCE_COVERAGE_C-RV24c_2026-11-02.md) remains an immutable record of its earlier checkpoint.
 
 **Current authoritative GitHub source:** `research.html` blob `f083527f1cc0f8d60587133333b15ccc0d994237` (the 3 November opening-paragraph revision). The earlier `9a0f3a301e481e2023ac01b660e468aff4845ddd` blob remains a valid **historical** audit snapshot. Extracted **53** distinct `<li id="reading-*">` entries; each has at least one internal `href` use elsewhere on the page.
 
@@ -11,13 +11,13 @@
 - **M | Primary bibliographic/book metadata only.** The record confirms publication identity and general scope, but specific full-text chapter/page claims remain unverified.
 - **P | Not source-by-source established by C-RV23a–f / C-RV24a–d records.** This is a **documentation gap in the recent staged audit**, not proof that no earlier review occurred, and not evidence a reference is inaccurate. The audit may already have broadly checked citation metadata.
 
-**Coverage counts:** **42 F**, **10 A**, **1 M**, **0 P**. In all, **53/53** references have a documented, study-specific source check in these stages, of which **42** have substantial original-text support as defined above. Claims' factual accuracy, title/DOI match and visual/browser behavior are separate verification dimensions.
+**Coverage counts:** **43 F**, **9 A**, **1 M**, **0 P**. In all, **53/53** references have a documented, study-specific source check in these stages, of which **43** have substantial original-text support as defined above. Claims' factual accuracy, title/DOI match and visual/browser behavior are separate verification dimensions.
 
 ## Complete ordered bibliography crosswalk
 
 | # | Reference on the live source list | Evidence tier | Stage-level evidence | In-page uses |
 | --- | --- | --- | --- | --- |
-| 1 | [Airton, L. (2023). You don’t know me: Welcoming gender diversity in schools via an ethic of hospitality. Curriculum Inquiry, 53 (2), 148–168. https://doi.org/10.1080/03626784.2023.2200810](../research.html#reading-airton) | **A** | [C-RV29v](./RESEARCH_AIRTON_ETHIC_HOSPITALITY_SOURCE_AUDIT_C-RV29v_2026-11-03.md) | 1 |
+| 1 | [Airton, L. (2023). You don’t know me: Welcoming gender diversity in schools via an ethic of hospitality. Curriculum Inquiry, 53 (2), 148–168. https://doi.org/10.1080/03626784.2023.2200810](../research.html#reading-airton) | **F** | [C-RV29cc](./RESEARCH_AIRTON_ORIGINAL_FULL_TEXT_RECOVERY_C-RV29cc_2026-11-03.md), superseding C-RV29v's earlier A-tier access limit | 1 |
 | 2 | [Alexander, Q. D. (2023). TERF logics are carceral logics: Toward the abolition of gender-critical movements or Black trans life as pedagogical praxis. Women’s Studies in Communication, 46 (2), 230–234. https://doi.org/10.1080/07491409.2023.2193543](../research.html#reading-alexander) | **A** | [C-RV28s](./RESEARCH_ALEXANDER_EDITION_PROVENANCE_C-RV28s_2026-11-02.md) | 1 |
 | 3 | [Alsop, S., & Watts, M. (2000). Facts and feelings: Exploring the affective domain in the learning of physics. Physics Education, 35 (2), 132–138. https://doi.org/10.1088/0031-9120/35/2/311](../research.html#reading-alsop) | **F** | [C-RV28q](./RESEARCH_PLURILINGUAL_PROVENANCE_AND_AFFECT_STUDY_C-RV28q_2026-11-02.md) | 1 |
 | 4 | [Arboleda, V. A., Sandberg, D. E., & Vilain, E. (2014). DSDs: Genetics, underlying pathologies and psychosexual differentiation. Nature Reviews Endocrinology, 10 (10), 603–615. https://doi.org/10.1038/nrendo.2014.130](../research.html#reading-arboleda) | **F** | [C-RV28e](./RESEARCH_SEX_DEVELOPMENT_INCLUSIVE_BIOLOGY_AUDIT_C-RV28e_2026-11-02.md) | 1 |
@@ -325,3 +325,8 @@ The current HTML contains **53** bibliography items, **68 unique element IDs**, 
 The [C-RV29ai whole-site reconciliation](./CONTENT_COVERAGE_RECONCILIATION_C-RV29ai_2026-11-03.md) separately maps the 26 extant HTML routes and substantive disclosure sections; its inventory is **not** a statement of complete original-data or full-browser verification.
 
 **Exact next checkpoint C-RV29aj:** revisit a currently still-partial source-verification claim or genuinely unverified authored subpassage identified from the 26-route reconciliation. Preserve the final-August S2C and original AP Biology student/ethics record blockers, the author-selected public contact address decision, and the six Editor V2 browser regressions. The comprehensive academic website content audit remains **In progress**.
+
+
+## C-RV29cc | Updated original-text source tier for Airton (2023)
+
+The earlier C-RV29v Airton **A** tier was correct when only the publisher's abstract/notes could be read. On 3 November an authorized private Library copy of the **22-page publisher-formatted original article** was located. Its journal title/DOI were checked against the first-party record, and sustained original body text from journal pp. 152–162, including policy critique, hospitality framework, three interventions and conclusion, was read. The public Research sentence accurately selects its argument and **needs no revision**. [C-RV29cc](RESEARCH_AIRTON_ORIGINAL_FULL_TEXT_RECOVERY_C-RV29cc_2026-11-03.md) documents the source and pages without sharing the copyrighted PDF. Airton row 1 is now **F**, with other tiers unchanged. **Current total 43 F / 9 A / 1 M / 0 P.** Prior stage sections reporting 42/10 and Airton A retain their historical access-snapshot meaning; the table and current header above are authoritative.
