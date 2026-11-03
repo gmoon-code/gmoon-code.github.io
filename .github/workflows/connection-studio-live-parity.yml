@@ -1,0 +1,29 @@
+name: Connection Studio published source byte parity
+on:
+  push:
+    branches: [main]
+    paths:
+      - "connection-studio/**"
+      - "scripts/audit-connection-studio-live-parity.py"
+      - ".github/workflows/connection-studio-live-parity.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  public-parity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compare all seven public Connection Studio app files with checkout
+        run: python3 scripts/audit-connection-studio-live-parity.py
+      - name: Retain exact HTTP comparison evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: connection-studio-live-parity
+          path: connection-studio-live-parity-output/
+          retention-days: 21
