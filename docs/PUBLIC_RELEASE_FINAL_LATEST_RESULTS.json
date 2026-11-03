@@ -1,12 +1,12 @@
 {
-  "sourceHead": "33dba48e0cf1830bca6742c994c2735619dd8bdc",
+  "sourceHead": "e4a40217b93b45e5f74c639384a8435899fb5848",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
-  "verifiedExactMatches": 23,
-  "httpErrors": 1,
+  "verifiedExactMatches": 24,
+  "httpErrors": 0,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-33dba48e0cf1",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-e4a40217b93b",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -14,12 +14,10 @@
   "auditEvidence": {
     "links": {
       "report": "docs/PUBLIC_LINKGRAPH_LATEST_RESULTS.json",
-      "run": "41578250549",
-      "head_sha": "717493c4d7a4c35b3f90bc9d926ce5dde639c698",
+      "run": "41579179772",
+      "head_sha": "33dba48e0cf1830bca6742c994c2735619dd8bdc",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research-action.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "problems": 0
       }
@@ -42,12 +40,10 @@
     },
     "metadata": {
       "report": "docs/RESEARCH_METADATA_LATEST_RESULTS.json",
-      "run": "41578250635",
-      "head_sha": "717493c4d7a4c35b3f90bc9d926ce5dde639c698",
+      "run": "41579179865",
+      "head_sha": "33dba48e0cf1830bca6742c994c2735619dd8bdc",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research-action.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "unverified": 0
       },
@@ -59,36 +55,30 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "41578250608",
-      "head_sha": "717493c4d7a4c35b3f90bc9d926ce5dde639c698",
+      "run": "41579179893",
+      "head_sha": "33dba48e0cf1830bca6742c994c2735619dd8bdc",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research-action.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0
       }
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "41578250649",
-      "head_sha": "717493c4d7a4c35b3f90bc9d926ce5dde639c698",
+      "run": "41579179872",
+      "head_sha": "33dba48e0cf1830bca6742c994c2735619dd8bdc",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research-action.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0
       }
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "41578250694",
-      "head_sha": "717493c4d7a4c35b3f90bc9d926ce5dde639c698",
+      "run": "41579179912",
+      "head_sha": "33dba48e0cf1830bca6742c994c2735619dd8bdc",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research-action.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0,
         "combinedStressFailures": 0
@@ -96,12 +86,10 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "41578250575",
-      "head_sha": "717493c4d7a4c35b3f90bc9d926ce5dde639c698",
+      "run": "41579179797",
+      "head_sha": "33dba48e0cf1830bca6742c994c2735619dd8bdc",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research-action.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0,
         "axeViolations": 0
@@ -116,43 +104,7 @@
   },
   "sourceDriftSinceAudits": [
     {
-      "category": "links",
-      "sourceModifiedSinceAudit": [
-        "research-action.html"
-      ]
-    },
-    {
       "category": "external",
-      "sourceModifiedSinceAudit": [
-        "research-action.html"
-      ]
-    },
-    {
-      "category": "metadata",
-      "sourceModifiedSinceAudit": [
-        "research-action.html"
-      ]
-    },
-    {
-      "category": "reflow",
-      "sourceModifiedSinceAudit": [
-        "research-action.html"
-      ]
-    },
-    {
-      "category": "engines",
-      "sourceModifiedSinceAudit": [
-        "research-action.html"
-      ]
-    },
-    {
-      "category": "typography",
-      "sourceModifiedSinceAudit": [
-        "research-action.html"
-      ]
-    },
-    {
-      "category": "interactions",
       "sourceModifiedSinceAudit": [
         "research-action.html"
       ]
@@ -161,60 +113,9 @@
   "pass": false,
   "errors": [
     {
-      "path": "research-action.html",
-      "errors": [
-        "deployed bytes differ from checked-out production source"
-      ],
-      "firstDiff": [
-        "--- source\n",
-        "+++ deployed\n",
-        "@@ -137,3 +137,3 @@\n",
-        "   </div>",
-        "-  <p class=\"research-table-note\">These descriptions paraphrase the de-identified records retained for analysis and are not verbatim excerpts. They illustrate two of the recorded comparison patterns; the counts for all ten pairs appear in the table above.</p>",
-        "+  <p class=\"research-table-note\">These descriptions paraphrase de-identified student responses and are not verbatim excerpts. They illustrate two of the recorded comparison patterns; the counts for all ten pairs appear in the table above.</p>",
-        " </section>"
-      ]
-    },
-    {
       "sourceDrift": [
         {
-          "category": "links",
-          "sourceModifiedSinceAudit": [
-            "research-action.html"
-          ]
-        },
-        {
           "category": "external",
-          "sourceModifiedSinceAudit": [
-            "research-action.html"
-          ]
-        },
-        {
-          "category": "metadata",
-          "sourceModifiedSinceAudit": [
-            "research-action.html"
-          ]
-        },
-        {
-          "category": "reflow",
-          "sourceModifiedSinceAudit": [
-            "research-action.html"
-          ]
-        },
-        {
-          "category": "engines",
-          "sourceModifiedSinceAudit": [
-            "research-action.html"
-          ]
-        },
-        {
-          "category": "typography",
-          "sourceModifiedSinceAudit": [
-            "research-action.html"
-          ]
-        },
-        {
-          "category": "interactions",
           "sourceModifiedSinceAudit": [
             "research-action.html"
           ]
@@ -223,7 +124,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41579179806",
-  "run_sha": "33dba48e0cf1830bca6742c994c2735619dd8bdc",
+  "workflow_run_id": "41591205424",
+  "run_sha": "e4a40217b93b45e5f74c639384a8435899fb5848",
   "exit_code": "1"
 }
