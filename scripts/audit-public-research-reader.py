@@ -136,6 +136,34 @@ async def inspect(browser, path, width):
             case["details"].append(state)
             if not state["openAfterClick"]:
                 case["errors"].append("expandable scholarly detail failed to open")
+        # On narrow screens the Chemistry and Evolution curricular tables are
+        # intentionally wider than the reading column. Verify the named,
+        # keyboard-focusable containers really scroll instead of clipping data.
+        case["scientificTables"]=[]
+        if width == 390 and path in ("teaching-ap-chemistry.html","teaching-ap-evolution.html"):
+            wrappers=await page.locator("main .teaching-sequence-table-wrap").all()
+            hints=await page.locator("main .teaching-table-hint").all()
+            if len(wrappers)<2 or len(hints)<2:
+                case["errors"].append("expected two accessible tables and scroll hints")
+            for i,wrap in enumerate(wrappers):
+                before=await wrap.evaluate("""node => ({
+                    scrollLeft:node.scrollLeft,scrollWidth:node.scrollWidth,
+                    clientWidth:node.clientWidth,tabIndex:node.tabIndex,
+                    ariaLabel:node.getAttribute('aria-label'),
+                    overflowX:getComputedStyle(node).overflowX
+                })""")
+                hintVisible=(await hints[i].is_visible()) if i<len(hints) else False
+                await wrap.focus()
+                await page.keyboard.press("ArrowRight")
+                await page.wait_for_timeout(180)
+                after=await wrap.evaluate("node => node.scrollLeft")
+                record={"before":before,"hintVisible":hintVisible,"afterArrowRight":after}
+                case["scientificTables"].append(record)
+                if (before["scrollWidth"] <= before["clientWidth"] + 5
+                    or before["tabIndex"] < 0 or not before["ariaLabel"]
+                    or before["overflowX"] not in ("auto","scroll")
+                    or not hintVisible or after <= before["scrollLeft"]):
+                    case["errors"].append("scientific table cannot be accessed through documented horizontal keyboard scrolling")
         await page.evaluate("window.scrollTo(0,0)")
         await page.screenshot(path=str(OUT/f"{path[:-5]}-{width}.png"), full_page=True, animations="disabled", timeout=25000)
         case["screenshot"]=str(OUT/f"{path[:-5]}-{width}.png")
