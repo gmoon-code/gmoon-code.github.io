@@ -208,21 +208,26 @@ test('Original website image resizing uses box geometry, never uneven CSS scale'
   await page.locator('#undo').click();
   await expect(image).not.toHaveCSS('width','240px');
 });
-test('Added photos fit or crop their frame without stretching',async({page})=>{
+test('Added photos retain visible crop shape and image proportions when frame width changes',async({page})=>{
   const frame=page.frameLocator('#livePageFrame');
   await page.locator('#imageLibrary button').first().click();
   const image=frame.locator('img[data-moon-v2-added-id]').first();
   await expect(image).toHaveCount(1);
   await expect(image).toHaveCSS('object-fit','contain');
-  await page.locator('#liveImageFit').selectOption('cover');
-  await expect(image).toHaveCSS('object-fit','cover');
+  // The old liveImageFit selector belongs to a hidden legacy inspector.
+  // Exercise the actual visible image framing control instead.
+  await expect(page.locator('#liveCropShape')).toBeVisible();
+  await page.locator('#liveCropShape').selectOption('rounded');
+  await expect(image).toHaveCSS('border-radius','12px');
   await page.locator('#liveLockImageRatio').uncheck();
   await page.locator('#liveAddedWidth').fill('410');
   await page.locator('#liveAddedWidth').press('Tab');
   await expect(image).toHaveCSS('width','410px');
-  await expect(image).toHaveCSS('object-fit','cover');
+  await expect(image).toHaveCSS('object-fit','contain');
+  await expect(image).toHaveCSS('border-radius','12px');
   await page.locator('#preview').click();
   const preview=page.frameLocator('#previewFrame').locator('img[data-moon-v2-added-id]');
-  await expect(preview).toHaveCSS('object-fit','cover');
+  await expect(preview).toHaveCSS('object-fit','contain');
+  await expect(preview).toHaveCSS('border-radius','12px');
   await expect(preview).toHaveCSS('width','410px');
 });
