@@ -1847,3 +1847,58 @@ test('Canvas recovery: two tabs cannot silently overwrite each other',
     expect(JSON.parse(savedA).objects.map(obj=>obj.type)).toEqual(['text','shape']);
     await other.close();
   });
+
+
+test('Canvas recovery: denied storage reads retain an exportable in-memory draft',
+  async({page})=>{
+    const name='research.html',key='moon-academic-editor-v2:'+name;
+    await installVerifiedCurrentSource(page,[]);
+    await page.goto(BASE+'/editor-v2.html?page=contact.html',{waitUntil:'domcontentloaded'});
+    await page.evaluate(()=>{
+      window.__canvasRealGetItem=Storage.prototype.getItem;
+      Storage.prototype.getItem=function(key){
+        if(key==='moon-academic-editor-v2:research.html')
+          throw new DOMException('Storage denied','SecurityError');
+        return window.__canvasRealGetItem.call(this,key);
+      };
+    });
+    await page.locator('#page').selectOption(name);
+    await page.locator('#designMode').click();
+    await expect(page.locator('#canvasDraftWarning')).toBeVisible();
+    await page.locator('#addShape').click();
+    const backupEvent=page.waitForEvent('download');
+    await page.locator('#downloadCanvasBackup').click();
+    const backup=JSON.parse(readFileSync(await (await backupEvent).path(),'utf8'));
+    expect(backup.page).toBe(name);
+    expect(backup.objects).toHaveLength(1);
+    await page.locator('#retryCanvasSave').click();
+    await expect(page.locator('#canvasDraftWarning')).toBeVisible();
+    await page.evaluate(()=>{
+      Storage.prototype.getItem=window.__canvasRealGetItem;
+      delete window.__canvasRealGetItem;
+    });
+    await page.locator('#retryCanvasSave').click();
+    await expect(page.locator('#canvasDraftWarning')).toBeHidden();
+    expect(JSON.parse(await page.evaluate(key=>localStorage.getItem(key),key)).objects)
+      .toHaveLength(1);
+  });
+
+test('Canvas recovery: a JSON backup over the former 3 MB import cap is accepted',
+  async({page})=>{
+    const name='contact.html',key='moon-academic-editor-v2:'+name;
+    await installVerifiedCurrentSource(page,[]);
+    await page.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+    await page.locator('#designMode').click();
+    await page.locator('#addText').click();
+    const source=JSON.parse(await page.evaluate(key=>localStorage.getItem(key),key));
+    source.backupNotes='x'.repeat(3200000);
+    const backup=Buffer.from(JSON.stringify(source),'utf8');
+    expect(backup.byteLength).toBeGreaterThan(3000000);
+    page.once('dialog',dialog=>dialog.accept());
+    await page.locator('#sceneFile').setInputFiles({
+      name:name+'.canvas.json',mimeType:'application/json',buffer:backup
+    });
+    await expect(page.locator('#stage .scene-object')).toHaveCount(1);
+    await expect(page.locator('#status')).not.toContainText('JSON backup exceeds 3 MB');
+    await expect(page.locator('#status')).not.toContainText('JSON import rejected');
+  });
