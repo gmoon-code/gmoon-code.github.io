@@ -5,6 +5,7 @@ on:
     paths:
       - "studio/index.html"
       - "studio/studio.js"
+      - "studio/studio-plus.js"
       - "studio/studio-chrome.js"
       - "scripts/audit-studio-guidance-public-parity.py"
       - ".github/workflows/studio-guidance-public-parity.yml"
