@@ -26,7 +26,7 @@
   dialog.innerHTML=[
     '<div class="dialog-heading"><h2 id="siteChromeTitle">Header & footer</h2>',
     '<button type="button" id="closeSiteChrome" class="plain-button">Close</button></div>',
-    '<p class="micro-help">Changes appear across your public pages when you publish. Menu links are edited in Navigation. Leave both fields for an optional link blank to remove it from the footer.</p>',
+    '<p class="micro-help">Publishing updates the header and footer on Studio-listed pages and the 404 page. It replaces the Contact page’s current thank-you footer and the CV footer’s link to Contact. Review those pages before publishing. Menu links are edited in Navigation. Leave both fields of an optional footer link blank to remove it.</p>',
     '<label for="chromeBrand">Website title in the header</label>',
     '<input type="text" id="chromeBrand" maxlength="100">',
     '<fieldset class="chrome-footer-fields"><legend>Footer contact</legend>',
