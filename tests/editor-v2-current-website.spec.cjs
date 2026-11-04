@@ -1166,6 +1166,9 @@ test('Unreadable live draft is preserved byte-for-byte, cannot publish, and reco
     await page.reload({waitUntil:'domcontentloaded'});
     await expect(page.locator('#liveDraftRecovery')).toBeVisible();
     await expect(page.locator('#liveEditCount')).toContainText('needs recovery');
+    await page.locator('#exportLiveDraftJson').click();
+    await expect(page.locator('#status')).toContainText('Unreadable stored draft has no recoverable edits');
+    expect(await page.evaluate(key=>localStorage.getItem(key),key)).toBe(invalid);
     const heading=page.frameLocator('#livePageFrame')
       .locator('main h1:visible,main h2:visible').first();
     await heading.click();
