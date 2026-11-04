@@ -1,0 +1,44 @@
+# C-RV29er | Restorable original-layout page drafts
+
+**Date:** 4 November 2026  
+**Previous verified stage:** [C-RV29eq](EDITOR_V2_MULTI_TAB_DRAFT_CONFLICT_C-RV29eq_2026-11-04.md) passed 87/87 in each browser (261/261), 22/22 exact production files and the deployed browser smoke.  
+**Stage status:** **Implemented, verification pending.** Do not advance the fully verified Editor V2 baseline from C-RV29eq until the latest 92-case/engine run and new production delivery checks finish.
+
+## Identified gap
+
+The previous two-tab conflict workflow could download an unstructured JSON patch array but could not restore those patches directly from the editor. The existing canvas JSON importer applies only to the independent canvas scene, not to real source-preserving web-page edits. The previously available **Export original-layout HTML** produces useful HTML for review but cannot reconstruct the editable live-page draft.
+
+## Implemented
+
+Added **Download editable draft JSON** and **Restore editable draft JSON** alongside the original-layout HTML export in Editor V2's live inspector.
+
+- New versioned backups use `{"format":"moon-editor-v2-live-draft","version":1,"page":"contact.html","patches":[...]}` and download as `contact.html.live-draft.json` for the selected file. Backups include source text, layout, appearance, picture framing/effects, inserted objects and grouping where present in the patch map. The token is not part of the backup.
+- Import also accepts the legacy C-RV29eq bare patch arrays **only** if their filename exactly matches `<selected-page>.unsaved-live-edits.json`. The new backup format carries an explicit page identity. Both require an existing editable page in the editor's page selector.
+- Validate the JSON shape, a 3 MB file cap, 180-record limit, every patch schema and unique selectors. Before any write, test the candidate against a freshly parsed copy of the **displayed, verified GitHub source** with the same strict edit assembler used for live publication. Reject unresolved selectors and conflicting edits without changing storage or the current draft.
+- Confirm any import that replaces current work. Recheck selected page, in-memory edit snapshot and source bytes after reading the selected file and again after confirmation. Compare saved browser storage with the value present before reading the file, preventing a restore from overwriting another tab's newer local draft. On mismatch, stop and display the existing cross-tab conflict alert.
+- Only after validation and explicit confirmation write the restored patch list to localStorage. Reload the saved draft and editing frame. The new backup does not publish anything to GitHub. The user must review the verified preview and separately authorize publication.
+- Show status explaining rejected, cancelled or successful imports. Unreadable stored drafts can be replaced by an authenticated-by-user valid local backup after confirmation, without falsely claiming that the original corrupted data has been repaired automatically.
+
+Relevant source commits `41f5ba3e` (restorable draft workflow), `101bf89d` (correct source-element validation regex), `941bb05a` (controls and cache-busted JS `v61`).
+
+## New browser regressions
+
+Added five real-site browser cases to `tests/editor-v2-current-website.spec.cjs`, commits `864177b1` and `f7d90b1d`.
+
+1. Contact live-page formatting backup is downloaded, checked for format/page/content, then restored after clearing the draft; saved localStorage, original layout and verified preview must agree after reload.
+2. Research page rejects invalid JSON, mismatched page, duplicate patches, invalid patch schema, stale source selector, independent canvas JSON and unlabelled bare arrays without altering the original stored draft.
+3. A valid legacy `contact.html.unsaved-live-edits.json` backup restores over an unreadable stored draft only after confirmation, with refusal preserving its exact original storage bytes.
+4. A second browser tab writes during import confirmation. The restore must not overwrite it; a conflict warning must be shown, and there must be no GitHub PUT.
+5. Pungmul photograph's rounded crop, rotation, source description and picture metadata survive editable JSON import, remain in the current patch list, and appear in the verified assembled preview.
+
+**Expected size:** 92/92 checks per engine, 276 across Chromium, Firefox and WebKit. **Verification is not yet established**, and must be checked from final run [41819586446](https://github.com/gmoon-code/gmoon-code.github.io/actions/runs/41819586446). On success, recheck GitHub Pages delivered editor resources and browser smoke for final `v61` version.
+
+## Remaining limits
+
+- No editor's local JSON backup is a publication event or authentication document. Real owner-authorized GitHub PUT remains separate from mocked browser publication.
+- Restore deliberately replaces the existing draft, does not merge two divergent sets of changes automatically, and does not rewrite student or academic website content on its own.
+- A malformed or partially corrupt JSON file cannot be salvaged automatically; it is preserved rather than silently applied.
+- Same-origin script/token isolation and physical-device operation remain outside the currently verified tier.
+- An original-page HTML export cannot be imported as an editable draft, by design. Use the new JSON backup for editability.
+
+**Next:** Inspect the latest current-website browser results, correct any regressions, confirm source and deployed editor versions, then close C-RV29er in the master checkpoint with exact evidence. Do not treat passing previous revisions as verification for this change.
