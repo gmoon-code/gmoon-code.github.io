@@ -1,0 +1,30 @@
+name: Website Studio guidance public byte parity
+on:
+  push:
+    branches: [main]
+    paths:
+      - "studio/index.html"
+      - "studio/studio-chrome.js"
+      - "scripts/audit-studio-guidance-public-parity.py"
+      - ".github/workflows/studio-guidance-public-parity.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  published-guidance-parity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compare public Website Studio page and generated guidance bytes
+        run: python3 scripts/audit-studio-guidance-public-parity.py
+      - name: Preserve HTTPS comparison evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: studio-guidance-public-parity
+          path: studio-guidance-parity-output/
+          retention-days: 21
