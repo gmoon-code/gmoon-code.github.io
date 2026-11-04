@@ -1039,3 +1039,116 @@ test('Quick start shows how to edit and publish live rather than staging',
     await expect(guide).toContainText('staging previews only');
     expect(writes).toEqual([]);
   });
+
+
+test('Pungmul photo description keeps crop and rotation through draft, preview and mock publication',
+  async({page})=>{
+    const name='pungmul.html',otherWrites=[],puts=[];
+    await installVerifiedCurrentSource(page,otherWrites);
+    await page.route('https://api.github.com/repos/gmoon-code/gmoon-code.github.io/contents/'+name,
+      async route=>{
+        if(route.request().method()!=='PUT')return route.fallback();
+        puts.push(JSON.parse(route.request().postData()));
+        await route.fulfill({status:200,contentType:'application/json',
+          headers:{'access-control-allow-origin':'*'},
+          body:JSON.stringify({commit:{sha:'mock-photo-combined-edit'}})});
+      });
+    await page.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    const image=page.frameLocator('#livePageFrame').locator('main img:visible').first();
+    await image.click();
+    const src=await image.getAttribute('src');
+    await page.locator('#liveCropShape').selectOption('rounded');
+    await page.locator('#livePictureRotation').fill('30');
+    await page.locator('#livePictureRotation').dispatchEvent('change');
+    const saved=()=>page.evaluate(file=>JSON.parse(
+      localStorage.getItem('moon-academic-editor-v2:source:'+file)||'[]'),name);
+    const initial=(await saved()).find(p=>p.kind==='image'&&p.imageCrop&&p.pictureEffects);
+    expect(initial,'crop and rotation must both exist before editing alt text').toBeTruthy();
+    expect(initial.imageCrop.desktop.mask).toBe('rounded');
+    expect(initial.pictureEffects.desktop.rotation).toBe(30);
+
+    const alt='Synthetic Pungmul description after framing and rotation';
+    await page.locator('#liveImageAlt').click();
+    await page.locator('#liveImageAlt').fill(alt);
+    await page.locator('#applyLiveImage').click();
+    await expect(image).toHaveAttribute('src',src);
+    await expect(image).toHaveAttribute('alt',alt);
+    const edited=(await saved()).find(p=>p.selector===initial.selector);
+    expect(edited.alt).toBe(alt);
+    expect(edited.imageCrop).toEqual(initial.imageCrop);
+    expect(edited.pictureEffects).toEqual(initial.pictureEffects);
+    expect(edited.layout).toEqual(initial.layout);
+
+    await page.locator('#preview').click();
+    await expect(page.locator('#previewDialog')).toBeVisible();
+    const preview=page.frameLocator('#previewFrame').locator('main img').first();
+    await expect(preview).toHaveAttribute('alt',alt);
+    const html=await page.locator('#previewFrame').getAttribute('srcdoc');
+    expect(html).toContain('data-moon-v2-image-crop');
+    expect(html).toContain('data-moon-v2-picture-effects');
+    await page.locator('#closePreview').click();
+    await page.reload({waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    await expect(page.frameLocator('#livePageFrame').locator('main img:visible').first())
+      .toHaveAttribute('alt',alt);
+    expect((await saved()).find(p=>p.selector===initial.selector).pictureEffects)
+      .toEqual(initial.pictureEffects);
+
+    await page.locator('#publish').click();
+    await page.locator('#githubToken').fill('synthetic-combined-photo-token');
+    await page.locator('#acknowledgeLive').check();
+    await page.locator('#confirmPublish').click();
+    await expect.poll(()=>puts.length,{timeout:25000}).toBe(1);
+    expect(Buffer.from(puts[0].content,'base64').toString('utf8')).toBe(html);
+    expect(puts[0].sha).toBe(blobSha(SOURCE.get(name)));
+    expect(otherWrites).toEqual([]);
+  });
+
+test('Editing grouped Contact text retains source group membership after reload and preview',
+  async({page})=>{
+    const name='contact.html',writes=[];
+    await installVerifiedCurrentSource(page,writes);
+    await page.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    const live=page.frameLocator('#livePageFrame');
+    const first=live.locator('p.contact-introduction');
+    const second=live.locator('p.contact-card-heading');
+    await first.click();
+    await second.click({modifiers:['Shift']});
+    await expect(page.locator('#liveMultiCount')).toHaveText('2 selected');
+    await expect(page.locator('#liveGroup')).toBeEnabled();
+    await page.locator('#liveGroup').click();
+    const draft=()=>page.evaluate(file=>JSON.parse(
+      localStorage.getItem('moon-academic-editor-v2:source:'+file)||'[]'),name);
+    const grouped=(await draft()).filter(p=>typeof p.groupId==='string');
+    expect(grouped).toHaveLength(2);
+    expect(grouped[0].groupId).toBe(grouped[1].groupId);
+
+    await page.locator('#editLiveText').click();
+    const changed='Synthetic revised contact heading within a grouped pair';
+    await second.fill(changed);
+    await page.locator('#saveLiveText').click();
+    const after=await draft();
+    const textPatch=after.find(p=>p.kind==='text'&&p.html.includes(changed));
+    expect(textPatch,'saved content edit must keep its original group').toBeTruthy();
+    expect(textPatch.groupId).toBe(grouped[0].groupId);
+    expect(after.filter(p=>p.groupId===grouped[0].groupId)).toHaveLength(2);
+
+    await page.reload({waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    await expect(second).toHaveText(changed);
+    await first.click();
+    await expect(page.locator('#liveMultiCount')).toHaveText('2 selected');
+    await expect(page.locator('#liveUngroup')).toBeEnabled();
+    await page.locator('#preview').click();
+    await expect(page.locator('#previewDialog')).toBeVisible();
+    await expect(page.frameLocator('#previewFrame').locator('p.contact-card-heading'))
+      .toHaveText(changed);
+    await page.locator('#closePreview').click();
+    expect(writes).toEqual([]);
+  });
