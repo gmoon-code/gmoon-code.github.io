@@ -1,6 +1,12 @@
 name: Secure editor publisher checks
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - "publisher/**"
+      - "tests/publisher-worker.test.mjs"
+      - ".github/workflows/editor-publisher-tests.yml"
   pull_request:
     paths:
       - "publisher/**"
