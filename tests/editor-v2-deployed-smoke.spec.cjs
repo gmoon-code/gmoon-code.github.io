@@ -41,7 +41,7 @@ for(const name of PAGES){
       const response=await page.goto(BASE+'/editor-v2.html?page='+name,
         {waitUntil:'domcontentloaded',timeout:45000});
       expect(response?.status()).toBe(200);
-      await expect(page).toHaveTitle(/Academic Editor/i);
+      await expect(page).toHaveTitle(/Academic (?:Website )?Editor/i);
       await expect(page.locator('#liveAssetStatus'))
         .toContainText('GitHub main source verified',{timeout:35000});
       await expect(page.locator('#page')).toHaveValue(name);
