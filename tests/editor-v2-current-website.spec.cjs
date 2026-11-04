@@ -1272,6 +1272,7 @@ test('Two real editor tabs preserve the newer valid draft and require explicit o
     const savedA=await page.evaluate(key=>localStorage.getItem(key),key);
     expect(JSON.parse(savedA)).toHaveLength(1);
     await expect(other.locator('#liveDraftConflict')).toBeVisible({timeout:10000});
+    await expect(other.locator('#restoreConflictingLiveDraft')).toBeVisible();
     await heading(other).click();
     await other.locator('#liveTextAlign').selectOption(chosenB);
     await other.locator('#save').click();
@@ -1516,8 +1517,11 @@ test('Legacy two-tab edit records and unreadable stored drafts restore without d
     await page.reload({waitUntil:'domcontentloaded'});
     await expect(page.locator('#liveDraftRecovery')).toBeVisible();
     expect(await page.evaluate(key=>localStorage.getItem(key),key)).toBe(unreadable);
+    await expect(page.locator('#restoreUnreadableLiveDraft')).toBeVisible();
     page.once('dialog',dialog=>dialog.dismiss());
-    await page.locator('#liveDraftFile').setInputFiles({
+    let chooser=page.waitForEvent('filechooser');
+    await page.locator('#restoreUnreadableLiveDraft').click();
+    await (await chooser).setFiles({
       name:name+'.unsaved-live-edits.json',mimeType:'application/json',
       buffer:Buffer.from(JSON.stringify(previous))
     });
@@ -1525,7 +1529,9 @@ test('Legacy two-tab edit records and unreadable stored drafts restore without d
     expect(await page.evaluate(key=>localStorage.getItem(key),key)).toBe(unreadable);
     await expect(page.locator('#liveDraftRecovery')).toBeVisible();
     page.once('dialog',dialog=>dialog.accept());
-    await page.locator('#liveDraftFile').setInputFiles({
+    chooser=page.waitForEvent('filechooser');
+    await page.locator('#restoreUnreadableLiveDraft').click();
+    await (await chooser).setFiles({
       name:name+'.unsaved-live-edits.json',mimeType:'application/json',
       buffer:Buffer.from(JSON.stringify(previous))
     });
