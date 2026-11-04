@@ -33,6 +33,7 @@ let livePositionLocks=new Set(); // Local editor preference, never published.
 let livePatches=new Map(),liveEditing=null,liveHistory=[],liveRedo=[],liveGesture=null,liveOverlay=null;
 let liveDraftRecovery=null; // Unreadable browser draft stays untouched until explicit recovery.
 let liveDraftLoadedRaw=null,liveDraftConflict=null; // Protect valid local edits across editor tabs.
+let liveDraftSaveFailure=null; // Preserve in-memory edits and warn if persistent browser storage fails.
 let liveImageInputNode=null,liveImageInputDirty=false; // Preserve unsaved inspector edits during browser re-renders.
 let githubTabToken=""; // In-memory only. Never written to storage or page files.
 let reconnectImages=[],reconnectForPage="";
@@ -2227,6 +2228,7 @@ function toggleLiveGeometryLock(){
 function loadLiveDraft(page){
   livePatches=new Map();liveHistory=[];liveRedo=[];
   liveDraftRecovery=null;liveDraftConflict=null;liveDraftLoadedRaw=null;
+  liveDraftSaveFailure=null;
   livePositionLocks=new Set();
   try{
     const ids=JSON.parse(localStorage.getItem(LIVE_POSITION_LOCK_KEY+page)||"[]");
@@ -2261,7 +2263,8 @@ function loadLiveDraft(page){
       liveDraftRecovery={page,raw};
       status("Saved live-page draft cannot be read · Original stored data preserved · Review recovery");
     }else{
-      status("Browser draft storage is unavailable · Changes may not be retained");
+      liveDraftSaveFailure={page};
+      status("Browser draft storage is unavailable · Changes may not be retained · Download a JSON backup");
     }
   }
   renderLiveEditCount();
@@ -2269,12 +2272,16 @@ function loadLiveDraft(page){
 function renderLiveEditCount(){
   const blocked=liveDraftRecovery?.page===currentPage;
   const conflicted=liveDraftConflict?.page===currentPage;
+  const notSaved=liveDraftSaveFailure?.page===currentPage;
   $("liveDraftRecovery").hidden=!blocked||workspaceMode!=="live";
   $("liveDraftConflict").hidden=!conflicted||workspaceMode!=="live";
+  $("liveDraftStorageFailure").hidden=!notSaved||workspaceMode!=="live";
   $("liveEditCount").textContent=blocked?
     "Stored live-page draft needs recovery · New edits cannot be saved or published until resolved.":
     conflicted?
       "Another tab changed this page's saved draft · Current edits remain in memory only · Resolve before publishing.":
+      notSaved?
+        "Browser storage refused to save this page · Current edits are in memory only · Download a JSON backup.":
       livePatches.size?
         livePatches.size+" draft edit"+(livePatches.size===1?"":"s")+
           " · Original website unchanged":
@@ -2300,10 +2307,12 @@ function storeLiveDraft(){
     const serialized=JSON.stringify([...livePatches.values()]);
     localStorage.setItem(key,serialized);
     liveDraftLoadedRaw=serialized;
+    liveDraftSaveFailure=null;
     status("Original-layout edits saved locally · Website unchanged");
     renderLiveEditCount();return true;
   }catch{
-    status("Local draft could not be saved · Export the edited HTML");
+    liveDraftSaveFailure={page:currentPage};
+    status("Browser storage could not save this draft · Edits remain in this tab · Download editable JSON before closing");
     renderLiveEditCount();return false;
   }
 }
@@ -2417,7 +2426,11 @@ async function restoreLiveDraftJson(file){
       status("Another tab changed this draft during restore · Nothing overwritten");
       renderLiveEditCount();return;
     }
-    localStorage.setItem(LIVE_DRAFT_KEY+page,JSON.stringify([...candidate.values()]));
+    try{localStorage.setItem(LIVE_DRAFT_KEY+page,JSON.stringify([...candidate.values()]));}
+    catch{
+      liveDraftSaveFailure={page};renderLiveEditCount();
+      throw Error("Browser storage refused the restored draft. The original stored data was not overwritten.");
+    }
     loadLiveDraft(page);
     loadLivePage(page);
     status(count+" editable "+(count===1?"change":"changes")+
@@ -5396,8 +5409,9 @@ async function importPage(force=false){
 }
 function changePage(page){
   if(!PAGES.has(page))return;
-  if(liveDraftConflict?.page===currentPage&&
-      !confirm("This tab's live-page edits are not saved because another tab changed the draft. Download a copy or resolve the conflict before reloading or switching pages. Continue and discard this tab's unsaved edits?")){
+  if((liveDraftConflict?.page===currentPage||
+       (liveDraftSaveFailure?.page===currentPage&&livePatches.size))&&
+      !confirm("This tab has unsaved live-page edits. Download an editable JSON backup or resolve the storage warning before leaving this page. Continue and discard the unsaved edits in this tab?")){
     $("page").value=currentPage;
     return;
   }
@@ -5517,6 +5531,8 @@ function applyLiveEditsToGithubHtml(html){
   return {html:output,resolved,normalized};
 }
 function assertLiveDraftNotSuperseded(page){
+  if(liveDraftSaveFailure?.page===page)
+    throw Error("This live-page draft could not be saved to browser storage. Download a JSON backup and retry saving before publishing.");
   if(liveDraftConflict?.page===page)
     throw Error("Another editor tab changed this page's saved draft. Resolve the draft conflict before publishing.");
   let latest;
@@ -5967,6 +5983,17 @@ function attachEvents(){
   ])$(field).addEventListener("change",event=>
     setLiveAppearance(key,event.target.value));
   $("resetLiveAppearance").addEventListener("click",resetLiveAppearance);
+  $("downloadUnsavedStorageDraft").addEventListener("click",()=>{
+    if(liveDraftSaveFailure?.page!==currentPage)return;
+    const backup={format:LIVE_DRAFT_BACKUP_FORMAT,version:1,
+      page:currentPage,patches:liveSnapshot()};
+    download(currentPage+".live-draft.json",JSON.stringify(backup,null,2),"application/json");
+    status("Unsaved edits downloaded as restorable JSON · Browser storage still unavailable");
+  });
+  $("retryLiveDraftSave").addEventListener("click",()=>{
+    if(liveDraftSaveFailure?.page!==currentPage)return;
+    storeLiveDraft();
+  });
   $("downloadUnreadableLiveDraft").addEventListener("click",()=>{
     const recovery=liveDraftRecovery;
     if(!recovery||recovery.page!==currentPage)return;
@@ -6020,7 +6047,8 @@ function attachEvents(){
   // Browsers may show a generic navigation prompt after user interaction.
   // The draft conflict alert and download remain the primary recovery path.
   window.addEventListener("beforeunload",event=>{
-    if(liveDraftConflict?.page===currentPage&&livePatches.size){
+    if((liveDraftConflict?.page===currentPage||
+        liveDraftSaveFailure?.page===currentPage)&&livePatches.size){
       event.preventDefault();
       event.returnValue="";
     }
