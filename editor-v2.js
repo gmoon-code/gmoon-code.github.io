@@ -2340,7 +2340,7 @@ function parseLiveDraftBackup(raw,filename,page){
   return validatedLiveDraftRecords(patches);
 }
 function checkRestoredLiveDraft(patches,originalHtml){
-  if(liveSourceProvenance!=="github"||!originalHtml||!/<main\\b/i.test(originalHtml))
+  if(liveSourceProvenance!=="github"||!originalHtml||!/<main\b/i.test(originalHtml))
     throw Error("Restore requires the selected page's verified GitHub source. Reload the page after GitHub verification is available.");
   const original=livePatches;
   try{
