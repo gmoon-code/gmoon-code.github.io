@@ -6006,13 +6006,13 @@ function attachEvents(){
     button.disabled=true;
     try{
       if(mode==="live"){
-        status("Building publication-identical preview from the latest GitHub HTML…");
+        status("Building source-matched preview from the latest GitHub HTML…");
         const pair=await verifiedSourcePreviewPair();
         if(currentPage!==page||workspaceMode!==mode)return;
         $("previewFrame").srcdoc=pair.edited;
         $("previewSourceStatus").textContent="Verified against GitHub main · "+
           pair.page+" · source "+pair.sha.slice(0,10)+
-          " · This is the HTML produced by the live-publishing assembler.";
+          " · Uses the live-publishing HTML assembler. Preview scripts are isolated and some interactive effects may differ.";
       }else{
         $("previewFrame").srcdoc=standaloneHtml();
         $("previewSourceStatus").textContent="Free design canvas · staging-only preview";
@@ -6034,7 +6034,7 @@ function attachEvents(){
         $("originalFrame").srcdoc=pair.original;
         $("sceneFrame").srcdoc=pair.edited;
         $("compareSourceStatus").textContent="Both views use GitHub source "+
-          pair.sha.slice(0,10)+". Resize the comparison to inspect layout changes.";
+          pair.sha.slice(0,10)+". Resize to inspect layout changes. Scripts are isolated, so some interactive effects may differ.";
       }else{
         const source=await fetchGithubPageSource(page,{force:true});
         if(page!==currentPage)return;
