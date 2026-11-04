@@ -1229,6 +1229,17 @@ function liveLayoutFor(selector,device=liveDevice()){
       originalLiveTransform(selectedNode):{ox:0,oy:0,osx:1,osy:1};
   return {...defaultLiveLayout(),...origin,...current};
 }
+// Many existing site styles use #main and !important for images. A deliberate
+// V2 image edit must take precedence only for that exact edited source image.
+// Two impossible-ID negations increase specificity without changing which
+// document element matches; ordinary page CSS remains unchanged elsewhere.
+function editedSourceImageSelector(patch){
+  const image=patch.kind==="image"||patch.tag==="img"||
+    / > img:nth-of-type\(\d+\)$/.test(patch.selector);
+  return (image?
+    ":root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) ":"")+
+    patch.selector;
+}
 function liveLayoutRules(patches=[...livePatches.values()]){
   const result=[];
   for(const patch of patches){
@@ -1250,7 +1261,7 @@ function liveLayoutRules(patches=[...livePatches.values()]){
     if(value.align)style.push("text-align:"+value.align+"!important");
     if(value.layer!==undefined)
       style.push("position:relative!important","z-index:"+value.layer+"!important");
-    if(style.length)result.push(patch.selector+"{"+style.join(";")+";}");
+    if(style.length)result.push(editedSourceImageSelector(patch)+"{"+style.join(";")+";}");
   }
   for(const [device,media] of Object.entries(LIVE_DEVICE_RULES)){
     const selectors=[];
@@ -1277,7 +1288,7 @@ function liveLayoutRules(patches=[...livePatches.values()]){
         "max-width:none!important;max-height:none!important;overflow:visible!important;"+
         (patch.kind==="image"||tag==="img"?
           "object-fit:contain!important;":""):"";
-      selectors.push(patch.selector+"{translate:"+
+      selectors.push(editedSourceImageSelector(patch)+"{translate:"+
         (Math.round(((entry.ox||0)+entry.dx)*1000)/1000)+"px "+
         (Math.round(((entry.oy||0)+entry.dy)*1000)/1000)+"px!important;scale:"+
         (Math.round(((entry.osx||1)*entry.sx)*1000)/1000)+" "+
@@ -1300,7 +1311,7 @@ function liveLayoutRules(patches=[...livePatches.values()]){
       if(patch.kind==="insert"||patch.kind==="delete"||!patch.pictureEffects?.[device])continue;
       const e=patch.layout?.[device];
       const sx=e?(e.osx||1)*e.sx:1,sy=e?(e.osy||1)*e.sy:1;
-      selectors.push(patch.selector+"{"+pictureEffectsCss(patch.pictureEffects[device],sx,sy)+"}");
+      selectors.push(editedSourceImageSelector(patch)+"{"+pictureEffectsCss(patch.pictureEffects[device],sx,sy)+"}");
     }
     for(const patch of patches){
       if(patch.kind==="insert"||patch.kind==="delete"||!patch.imageCrop?.[device])continue;
@@ -1308,7 +1319,7 @@ function liveLayoutRules(patches=[...livePatches.values()]){
       if(tail!=="img")continue;
       const crop=patch.imageCrop[device],layout=patch.layout?.[device];
       const dims=layout?.wrapWidth?{w:layout.wrapWidth,h:layout.reserveHeight}:null;
-      selectors.push(patch.selector+"{"+imageCropCss(crop,patch.src,dims)+"}");
+      selectors.push(editedSourceImageSelector(patch)+"{"+imageCropCss(crop,patch.src,dims)+"}");
     }
     if(selectors.length||unclipped.length)
       result.push("@media "+media+"{"+unclipped.join("")+selectors.join("")+"}");
