@@ -3381,7 +3381,11 @@ function moveLiveGesture(event){
     }
     refreshLiveLayoutRules(g.node.ownerDocument);
     drawLiveSnapGuides(snap.x,snap.y,g.node.ownerDocument);
-    syncLiveOverlay();return;
+    // Moving the outline beneath a directly dragged source node can keep
+    // retriggering hit tests in a sandboxed frame. Defer its repaint until
+    // pointerup; editor-overlay handle drags still repaint continuously.
+    if(g.anchor.closest?.("#moon-v2-live-overlay"))syncLiveOverlay();
+    return;
   }
   if(g.group&&g.dir!=="move"){
     const frame=g.rect,device=liveDevice();
