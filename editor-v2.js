@@ -6032,12 +6032,19 @@ function attachEvents(){
   $("previewLiveEdits").addEventListener("click",()=>$("preview").click());
   $("exportLiveDraftJson").addEventListener("click",()=>{
     if(liveEditing)saveLiveText();
+    const damaged=liveDraftRecovery?.page===currentPage;
+    if(damaged&&!livePatches.size){
+      status("Unreadable stored draft has no recoverable edits to export · Use Download original draft to preserve its exact contents");
+      return;
+    }
     const backup={
       format:LIVE_DRAFT_BACKUP_FORMAT,version:1,page:currentPage,
       patches:liveSnapshot()
     };
     download(currentPage+".live-draft.json",JSON.stringify(backup,null,2),"application/json");
-    status(backup.patches.length+" editable page changes downloaded as a restorable JSON backup · Website unchanged");
+    status(damaged?
+      "This tab's readable edits downloaded · Unreadable stored draft is not included · Download its original separately":
+      backup.patches.length+" editable page changes downloaded as a restorable JSON backup · Website unchanged");
   });
   for(const id of ["importLiveDraftJson","restoreConflictingLiveDraft","restoreUnreadableLiveDraft"])
     $(id).addEventListener("click",()=>$("liveDraftFile").click());
