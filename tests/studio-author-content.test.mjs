@@ -12,6 +12,8 @@ const pages=JSON.parse(read('studio/pages.json')).pages;
 const studio=read('studio/studio.js');
 const studioHTML=read('studio/index.html');
 const contact=read('contact.html');
+const cv=read('cv.html');
+const chrome=read('studio/studio-chrome.js');
 const about=read('about.html');
 const projects=read('projects.html');
 
@@ -68,4 +70,16 @@ test('Duplicated pages with no source canonical receive their own, with inherite
   assert.match(studio,/doc\.head\.appendChild\(canonical\)/);
   assert.match(studio,/canonical\.setAttribute\("href",ROOT\+path\)/);
   assert.match(studio,/Check inherited citations, image credits, links, and search-indexing settings before publishing/);
+});
+
+test('shared footer publishing warns when tailored CV and Contact messages will be replaced',()=>{
+  assert.ok(pages.some(p=>p.path==='contact.html'));
+  assert.ok(pages.some(p=>p.path==='cv.html'));
+  assert.match(contact, /<footer\b[\s\S]*?Thank you for stopping by\./);
+  assert.match(cv, /<footer\b[\s\S]*?<a href="contact\.html">get in touch<\/a>/);
+  assert.match(chrome, /Publishing updates the header and footer on Studio-listed pages and the 404 page/);
+  assert.match(chrome, /It replaces the Contact page’s current thank-you footer and the CV footer’s link to Contact/);
+  assert.match(chrome, /for\(const path of new Set\(\[\.\.\.pages,"404\.html"\]\)\)/);
+  assert.match(chrome, /paragraph\.replaceChildren\(\.\.\.fragments\)/);
+  new vm.Script(chrome);
 });
