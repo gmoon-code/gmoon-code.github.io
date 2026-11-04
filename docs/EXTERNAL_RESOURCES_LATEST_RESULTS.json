@@ -841,27 +841,11 @@
   "doi_registry": {
     "checked": 41,
     "counts": {
-      "registered": 31,
-      "not-confirmed": 10
+      "registered": 30,
+      "not-confirmed": 11
     },
-    "secondary_index_matches": 10,
+    "secondary_index_matches": 11,
     "not_confirmed": [
-      {
-        "url": "https://doi.org/10.1002/sce.20392",
-        "doi": "10.1002/sce.20392",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.20392",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Cultural processes in science education: Supporting the navigation of multiple epistemologies",
-        "indexedYear": 2010
-      },
       {
         "url": "https://doi.org/10.1002/sce.21099",
         "doi": "10.1002/sce.21099",
@@ -876,6 +860,22 @@
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
         "indexedTitle": "An Integrative Framework for the Analysis of Multiple and Multimodal Representations for Meaning‐Making in Science Education",
+        "indexedYear": 2014
+      },
+      {
+        "url": "https://doi.org/10.1002/sce.21112",
+        "doi": "10.1002/sce.21112",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21112",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Examining Classroom Science Practice Communities: How Teachers and Students Negotiate Epistemic Agency and Learn Science‐as‐Practice",
         "indexedYear": 2014
       },
       {
@@ -895,36 +895,36 @@
         "indexedYear": 2021
       },
       {
-        "url": "https://doi.org/10.1002/sce.21938",
-        "doi": "10.1002/sce.21938",
+        "url": "https://doi.org/10.1002/tea.21459",
+        "doi": "10.1002/tea.21459",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21938",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21459",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "“That's Just Gonna Make Them Upset”: Youth Authoring Emerging Epistemic Ideals Through Rightful Presence",
-        "indexedYear": 2025
+        "indexedTitle": "Addressing the epistemic elephant in the room: Epistemic agency and the next generation science standards",
+        "indexedYear": 2018
       },
       {
-        "url": "https://doi.org/10.1080/03626784.2023.2200810",
-        "doi": "10.1080/03626784.2023.2200810",
+        "url": "https://doi.org/10.1002/tea.21714",
+        "doi": "10.1002/tea.21714",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/03626784.2023.2200810",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21714",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "You don’t know me: Welcoming gender diversity in schools via an ethic of hospitality",
-        "indexedYear": 2023
+        "indexedTitle": "Science engagement as insight into the science identity work nurtured in community‐based science clubs",
+        "indexedYear": 2021
       },
       {
         "url": "https://doi.org/10.1080/10508400903452884",
@@ -959,36 +959,37 @@
         "indexedYear": 2012
       },
       {
-        "url": "https://doi.org/10.1111/j.1365-2729.1991.tb00230.x",
-        "doi": "10.1111/j.1365-2729.1991.tb00230.x",
+        "url": "https://doi.org/10.1086/430744",
+        "doi": "10.1086/430744",
         "pages": [
-          "teaching-ap-chemistry.html"
+          "teaching-ap-evolution.html",
+          "writing-biological-classification.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1111/j.1365-2729.1991.tb00230.x",
+        "publisherLanding": "https://academic.oup.com/jid/article-lookup/doi/10.1086/430744",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Why is science difficult to learn? Things are seldom what they seem",
-        "indexedYear": 1991
+        "indexedTitle": "Sickle Cell Trait and the Risk ofPlasmodium falciparumMalaria and Other Childhood Diseases",
+        "indexedYear": 2005
       },
       {
-        "url": "https://doi.org/10.1159/000345322",
-        "doi": "10.1159/000345322",
+        "url": "https://doi.org/10.1187/cbe.23-08-0157",
+        "doi": "10.1187/cbe.23-08-0157",
         "pages": [
-          "research.html"
+          "teaching-ap-biology.html"
         ],
-        "publisherLanding": "https://karger.com/article/doi/10.1159/000345322",
+        "publisherLanding": "https://www.lifescied.org/doi/10.1187/cbe.23-08-0157",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Desettling Expectations in Science Education",
-        "indexedYear": 2012
+        "indexedTitle": "Examining and Supporting Mechanistic Explanations Across Chemistry and Biology Courses",
+        "indexedYear": 2024
       },
       {
         "url": "https://doi.org/10.3102/0013189X231206172",
@@ -1005,12 +1006,28 @@
         "secondaryIndex": "OpenAlex",
         "indexedTitle": "Language Views for Scientific Sensemaking Matter: A Synthesis of Research on Multilingual Students’ Experiences with Science Practices Through a Translanguaging Lens",
         "indexedYear": 2023
+      },
+      {
+        "url": "https://doi.org/10.3102/0034654314558490",
+        "doi": "10.3102/0034654314558490",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://journals.sagepub.com/doi/10.3102/0034654314558490",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Representing Student Argumentation as Functionally Emergent From Scientific Activity",
+        "indexedYear": 2014
       }
     ],
     "unresolved": [],
     "limitation": "Crossref/DataCite registration is distinct from publisher access, correct article metadata or article availability. OpenAlex is independent secondary corroboration, not registration proof."
   },
-  "workflow_run_id": "41815608296",
-  "head_sha": "b7f24ccd8fad1fad27f766fbe1a36f1f27a6935c",
+  "workflow_run_id": "41816920875",
+  "head_sha": "cfcebd39c2d5dd49d07fa9fb9ed9fdf3a1c54eeb",
   "audit_exit_code": "0"
 }
