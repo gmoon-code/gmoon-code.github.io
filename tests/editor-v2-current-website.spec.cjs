@@ -917,7 +917,18 @@ for(const name of ['projects.html','research.html','interests.html','pungmul.htm
       await expect(page.locator('#liveImageControls')).toBeVisible();
       await expect(page.locator('#liveImageSrc')).toHaveValue(source);
       await page.locator('#liveImageAlt').fill(alt);
+      await expect(page.locator('#liveImageAlt')).toHaveValue(alt);
       await page.locator('#applyLiveImage').click();
+      const appliedAlt=await image.getAttribute('alt');
+      if(appliedAlt!==alt){
+        const inspector=await page.locator('#liveImageAlt').inputValue();
+        const editorStatus=await page.locator('#status').innerText();
+        const draft=await page.evaluate(file=>
+          localStorage.getItem('moon-academic-editor-v2:source:'+file),name);
+        console.log('IMAGE-EDIT-DIAGNOSTIC',JSON.stringify({page:name,requested:alt,
+          applied:appliedAlt,inspector,editorStatus,draft:JSON.parse(draft||'[]')
+            .map(p=>({kind:p.kind,selector:p.selector,alt:p.alt,src:p.src?.slice(0,65)}))}));
+      }
       await expect(image).toHaveAttribute('src',source);
       await expect(image).toHaveAttribute('alt',alt);
       await page.locator('#save').click();
