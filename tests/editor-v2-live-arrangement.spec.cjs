@@ -47,9 +47,11 @@ test('Select all, align left and undo act on three actual webpage shapes',async(
   const aligned=await geom(page);
   expect(new Set(aligned.map(o=>o.x)).size).toBe(1);
   await page.locator('#undo').click();
+  await expect(page.frameLocator('#livePageFrame').locator('[data-moon-v2-added-id]')).toHaveCount(3);
   const undone=await geom(page);
   expect(undone.map(o=>o.x)).toEqual(before.map(o=>o.x));
   await page.locator('#redo').click();
+  await expect(page.frameLocator('#livePageFrame').locator('[data-moon-v2-added-id]')).toHaveCount(3);
   const redone=await geom(page);
   expect(new Set(redone.map(o=>o.x)).size).toBe(1);
 });
