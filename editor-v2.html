@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex,nofollow">
 <title>Academic Website Editor 2 | Ye Eun Moon</title>
 <link rel="stylesheet" href="editor-v2.css?v=20261104-editor-v2-json-restore-dialog-v64">
-<script src="editor-v2.js?v=20261104-editor-v2-storage-failure-v65" defer></script>
+<script src="editor-v2.js?v=20261104-editor-v2-canvas-recovery-v66" defer></script>
 </head>
 <body>
 <a class="skip" href="#workspace">Skip to editor canvas</a>
@@ -175,6 +175,19 @@
       </div>
       <div id="workspaceExplanation" class="workspace-explanation" role="status">The real website is shown with its existing styling and responsive layout. Select text or an image to edit it using the original-page inspector, or copy it to the free-design canvas.</div>
 
+        <div id="canvasDraftWarning" class="live-draft-recovery" role="alert" hidden>
+          <strong>Free Design Canvas draft needs attention</strong>
+          <p id="canvasDraftWarningText">Canvas changes may not have been saved.</p>
+          <div class="inline-actions">
+            <button id="downloadCanvasBackup" type="button">Download this canvas JSON</button>
+            <button id="retryCanvasSave" type="button">Retry saving canvas</button>
+            <button id="downloadCanvasOriginal" type="button" hidden>Download unreadable original</button>
+            <button id="discardCanvasOriginal" type="button" class="danger" hidden>Discard unreadable stored draft</button>
+            <button id="loadNewerCanvas" type="button" hidden>Load newer saved canvas</button>
+            <button id="overwriteNewerCanvas" type="button" class="danger" hidden>Keep this canvas instead</button>
+          </div>
+          <p class="help">These actions affect only local canvas drafts. The public website is unchanged. Staging publication is blocked until the browser draft has been saved and verified.</p>
+        </div>
         <div id="liveDraftStorageFailure" class="live-draft-recovery" role="alert" hidden>
           <strong>Browser storage could not save your edits</strong>
           <p>Your edits are still open in this tab, but they may be lost if you reload or close it. Download an editable JSON backup now. After clearing browser storage space or fixing storage permissions, retry saving.</p>
