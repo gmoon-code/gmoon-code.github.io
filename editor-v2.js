@@ -504,7 +504,7 @@ function setWorkspaceMode(mode){
   $("addText").textContent=isLive?"T Add webpage text":"T Canvas text";
   $("addShape").textContent=isLive?"▢ Add webpage shape":"▢ Canvas shape";
   $("addImage").textContent=isLive?"▧ Add webpage image":"▧ Canvas image";
-  $("workspaceTitle").textContent=isLive?"Live website":"Free design canvas";
+  $("workspaceTitle").textContent=isLive?"GitHub source editor":"Free design canvas";
   $("workspacePill").textContent=isLive?"Editable GitHub source · not the deployed page":"Independent objects · staging only";
   $("workspaceExplanation").textContent=isLive?
     "This editable pane renders GitHub main HTML inside a simulated "+(LIVE_WIDTHS[$("devicePreview").value]||1160)+"px frame. It does not directly display the published page. Choose View actual published site to load the visitor URL, or Verified live preview to inspect changes prepared for publication. Page scripts in same-origin frames can access an open GitHub token form; use the token option only with trusted code. GitHub Pages deployment and browser viewport width can affect appearances.":
