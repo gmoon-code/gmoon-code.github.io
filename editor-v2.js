@@ -5884,6 +5884,14 @@ function attachEvents(){
     }catch{status("Could not resolve the draft conflict · Other tab's data preserved");}
     renderLiveEditCount();
   });
+  // Browsers may show a generic navigation prompt after user interaction.
+  // The draft conflict alert and download remain the primary recovery path.
+  window.addEventListener("beforeunload",event=>{
+    if(liveDraftConflict?.page===currentPage&&livePatches.size){
+      event.preventDefault();
+      event.returnValue="";
+    }
+  });
   window.addEventListener("storage",event=>{
     if(event.storageArea!==localStorage||event.key!==LIVE_DRAFT_KEY+currentPage)return;
     if(liveDraftRecovery?.page===currentPage)return;
