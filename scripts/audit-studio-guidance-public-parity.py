@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verify public Studio page/Chrome source bytes independently over HTTPS.
+"""Verify public Studio interface and guidance source bytes independently over HTTPS.
 
 This checks exact public delivery, not editor login, user authorization,
 dialog interactions, or actual production publishing.
@@ -15,7 +15,7 @@ import urllib.request
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 OUT = ROOT / "studio-guidance-parity-output"
 BASE = "https://gmoon-code.github.io/"
-FILES = ("studio/index.html", "studio/studio-chrome.js")
+FILES = ("studio/index.html", "studio/studio.js", "studio/studio-chrome.js")
 HEAD = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
 
 
