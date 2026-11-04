@@ -87,8 +87,11 @@ test('Add Shape, Duplicate and Delete remain reversible in live mode',async({pag
 });
 test('Add an image from the real-page asset library without switching modes',async({page})=>{
   const frame=page.frameLocator('#livePageFrame');
-  await expect(page.locator('#imageLibrary button')).not.toHaveCount(0);
-  await page.locator('#imageLibrary button').first().click();
+  // The deployed-page image library can load before the verified GitHub
+  // fixture. Wait for the source-verified library and select the named asset.
+  await expect(page.locator('#liveAssetStatus'))
+    .toContainText('GitHub main source verified');
+  await page.getByRole('button',{name:'Use image: Original portrait'}).click();
   await expect(frame.locator('img[data-moon-v2-added-id]')).toHaveCount(1);
   await expect(frame.locator('img[data-moon-v2-added-id]'))
     .toHaveAttribute('src','assets/profile-portrait.webp');
