@@ -182,3 +182,39 @@ for(const name of [
       expect(writes).toEqual([]);
     });
 }
+
+test('Real Pungmul photo crop retains original asset, verified preview and local draft',async({page})=>{
+  const writes=[];
+  await installVerifiedCurrentSource(page,writes);
+  await page.goto(BASE+'/editor-v2.html?page=pungmul.html',{waitUntil:'domcontentloaded'});
+  await expect(page.locator('#liveAssetStatus'))
+    .toContainText('GitHub main source verified',{timeout:35000});
+  const live=page.frameLocator('#livePageFrame');
+  const image=live.locator('main img').first();
+  await expect(image).toBeVisible();
+  await image.scrollIntoViewIfNeeded();
+  await expect.poll(()=>image.evaluate(node=>node.naturalWidth),{timeout:15000})
+    .toBeGreaterThan(0);
+  const src=await image.getAttribute('src');
+  expect(src).toMatch(/^assets\/[^?#]+\.(?:jpg|jpeg|png|webp)$/i);
+  await image.click();
+  await expect(page.locator('#cropImageTool')).toBeEnabled();
+  await page.locator('#cropImageTool').click();
+  await page.locator('#liveCropRight').evaluate(el=>{
+    el.value='20';el.dispatchEvent(new Event('change',{bubbles:true}));
+  });
+  await expect(page.locator('#liveCropRightValue')).toHaveText('20%');
+  await expect(image).toHaveAttribute('src',src);
+  await page.locator('#preview').click();
+  await expect(page.locator('#previewDialog')).toBeVisible();
+  const preview=page.frameLocator('#previewFrame');
+  await expect(preview.locator('main img').first()).toHaveAttribute('src',src);
+  await expect(preview.locator('main img').first()).toHaveCSS('object-fit','none');
+  await page.locator('#closePreview').click();
+  await page.reload({waitUntil:'domcontentloaded'});
+  await expect(page.locator('#liveAssetStatus'))
+    .toContainText('GitHub main source verified',{timeout:35000});
+  await expect(live.locator('main img').first()).toHaveAttribute('src',src);
+  await expect(live.locator('main img').first()).toHaveCSS('object-fit','none');
+  expect(writes).toEqual([]);
+});
