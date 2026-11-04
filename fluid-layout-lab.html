@@ -695,7 +695,7 @@ function reviewPatch(){
    'This group retains its original HTML, links, and reading order'
  ]);
  panel.hidden=false;
- $('status').textContent='Reviewing '+texts.length+' text edits, '+styles.length+' visual style edits, and '+allResponsiveGroups().length+' responsive groups. Source conflicts are checked before transfer.';
+ $('status').textContent='Reviewing '+texts.length+' text edits, '+styles.length+' visual style edits, '+allResponsiveGroups().length+' responsive groups, and '+insertionBlocks().length+' staged content additions. Source conflicts are checked before transfer.';
 }
 $('reviewPatch').onclick=reviewPatch;
 async function prepareContentChanges(){
