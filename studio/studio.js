@@ -48,7 +48,7 @@
     const el=$("saveStatus");
     if(state.busy){el.textContent="Working…";el.className="save-status is-working";$("publishBtn").disabled=true;return}
     const dirty=hasChanges();
-    el.textContent=dirty?"Unpublished changes":"Everything published";
+    el.textContent=dirty?"Unpublished changes":"No pending changes in this Studio session";
     el.className="save-status"+(dirty?" is-dirty":"");
     $("publishBtn").disabled=!dirty;
     const d=activeDraft();
