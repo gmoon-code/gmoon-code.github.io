@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>Academic Website Editor 2 | Ye Eun Moon</title>
-<link rel="stylesheet" href="editor-v2.css?v=20261104-editor-v2-github-handoff-v67">
-<script src="editor-v2.js?v=20261104-editor-v2-github-handoff-v67" defer></script>
+<link rel="stylesheet" href="editor-v2.css?v=20261105-actual-public-preview-v68">
+<script src="editor-v2.js?v=20261105-actual-public-preview-v68" defer></script>
 </head>
 <body>
 <a class="skip" href="#workspace">Skip to editor canvas</a>
@@ -158,9 +158,9 @@
       </section>
     </aside>
     <main id="workspace" class="workspace" tabindex="-1">
-      <div class="workspace-heading"><span id="workspaceTitle">Live website</span><span id="workspacePill" class="workspace-pill">Original layout · editable text and images</span></div>
+      <div class="workspace-heading"><span id="workspaceTitle">GitHub source editor</span><span id="workspacePill" class="workspace-pill">GitHub source editor · not the deployed page</span></div>
       <div class="workspace-modes" aria-label="Editor view">
-        <button type="button" id="liveMode" aria-pressed="true" class="active">Live website</button>
+        <button type="button" id="liveMode" aria-pressed="true" class="active">Edit GitHub source</button>
         <button type="button" id="designMode" aria-pressed="false">Free design canvas</button>
         <label class="device-control">Screen
           <select id="devicePreview">
@@ -170,10 +170,11 @@
           </select>
         </label>
         <button type="button" id="focusPage" aria-pressed="false">Focus page</button>
-        <button type="button" id="reloadLive">Reload live page</button>
+        <button type="button" id="reloadLive">Reload GitHub source</button>
+        <button type="button" id="viewPublished" title="View the real deployed page at the selected screen width, separate from unsaved edits">View actual published site</button>
         <button type="button" id="copyLiveObject" disabled>Copy selected element to canvas</button>
       </div>
-      <div id="workspaceExplanation" class="workspace-explanation" role="status">The real website is shown with its existing styling and responsive layout. Select text or an image to edit it using the original-page inspector, or copy it to the free-design canvas.</div>
+      <div id="workspaceExplanation" class="workspace-explanation" role="status">This editable view uses GitHub main HTML in a simulated screen-width frame, not the public website URL. Use View actual published site to check what visitors currently receive, and Verified live preview to inspect the HTML prepared for publication.</div>
 
         <div id="canvasDraftWarning" class="live-draft-recovery" role="alert" hidden>
           <strong>Free Design Canvas draft needs attention</strong>
@@ -663,6 +664,22 @@
       <iframe id="previewFrame" title="Preview of HTML prepared for publication" sandbox="allow-same-origin allow-scripts"></iframe>
     </div>
   </div>
+</dialog>
+<dialog id="publishedDialog" aria-labelledby="publishedDialogTitle">
+  <div class="preview-top">
+    <strong id="publishedDialogTitle">Actual published website · read only</strong>
+    <div class="inline-actions">
+      <a id="publishedPageLink" href="https://gmoon-code.github.io/" target="_blank" rel="noopener noreferrer">Open full website</a>
+      <button type="button" id="closePublished">Close</button>
+    </div>
+  </div>
+  <p id="publishedSourceStatus" class="verification-note" role="status">Loading the public website URL</p>
+  <div id="publishedViewport" class="verified-frame-viewport">
+    <div id="publishedShell" class="verified-frame-shell">
+      <iframe id="publishedFrame" title="Actual HTTPS-deployed public page, read only" loading="eager" sandbox="allow-same-origin allow-scripts"></iframe>
+    </div>
+  </div>
+  <p class="published-source-note">This iframe loads the actual public page URL. It does not show your unsaved editor changes. Its selected screen width may differ from your normal browser window. The GitHub source editor and publication preview are separate views.</p>
 </dialog>
 <dialog id="compareDialog">
   <div class="preview-top">

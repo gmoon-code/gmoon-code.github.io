@@ -2033,3 +2033,104 @@ test('Token-free GitHub handoff keeps verified download available when clipboard
     expect(readFileSync(await saved.path(),'utf8')).toContain('<main');
     expect(writes).toEqual([]);
   });
+
+
+test('Actual published site preview loads a real page URL instead of GitHub srcdoc, with matching viewport',
+  async({page})=>{
+    const writes=[];
+    await installVerifiedCurrentSource(page,writes);
+    await page.goto(BASE+'/editor-v2.html?page=contact.html',{waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    await expect(page.locator('#workspacePill')).toContainText('not the deployed page');
+    await page.locator('#devicePreview').selectOption('phone');
+    await page.locator('#viewPublished').click();
+    await expect(page.locator('#publishedDialog')).toBeVisible();
+    await expect(page.locator('#publishedFrame')).toHaveAttribute('src',BASE+'/contact.html');
+    expect(await page.locator('#publishedFrame').getAttribute('srcdoc')).toBeNull();
+    await expect(page.frameLocator('#publishedFrame').locator('main')).toHaveCount(1);
+    expect(await page.frameLocator('#publishedFrame').locator('html').evaluate(node=>
+      node.ownerDocument.defaultView.innerWidth)).toBe(390);
+    await expect(page.locator('#publishedSourceStatus'))
+      .toContainText('Deployed HTML matches the currently loaded GitHub source');
+    await expect(page.locator('#publishedPageLink')).toHaveAttribute('href',BASE+'/contact.html');
+    await page.locator('#closePublished').click();
+    await expect(page.locator('#publishedDialog')).toBeHidden();
+    await expect(page.frameLocator('#livePageFrame').locator('main')).toHaveCount(1);
+    expect(writes).toEqual([]);
+  });
+
+test('Actual published view reports deployment drift while preserving unsaved GitHub-source edits',
+  async({page})=>{
+    const writes=[],name='contact.html';
+    await installVerifiedCurrentSource(page,writes);
+    const source=SOURCE.get(name).toString('utf8');
+    const newPublic=source.replace('</main>',
+      '<p id="public-deployment-marker">Different deployed public version</p></main>');
+    expect(newPublic).not.toBe(source);
+    await page.route(BASE+'/'+name,async route=>{
+      await route.fulfill({status:200,contentType:'text/html',body:newPublic});
+    });
+    await page.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    const heading=page.frameLocator('#livePageFrame')
+      .locator('main h1:visible,main h2:visible').first();
+    await heading.click();
+    const before=await page.locator('#liveTextAlign').inputValue();
+    const next=before==='right'?'center':'right';
+    await page.locator('#liveTextAlign').selectOption(next);
+    await expect(heading).toHaveCSS('text-align',next);
+    await page.locator('#viewPublished').click();
+    await expect(page.locator('#publishedSourceStatus'))
+      .toContainText('Deployed HTML differs from the GitHub source editor');
+    await expect(page.frameLocator('#publishedFrame')
+      .locator('#public-deployment-marker')).toHaveText('Different deployed public version');
+    await expect(page.frameLocator('#livePageFrame')
+      .locator('#public-deployment-marker')).toHaveCount(0);
+    await page.locator('#closePublished').click();
+    await expect(heading).toHaveCSS('text-align',next);
+    expect(writes).toEqual([]);
+  });
+
+
+for(const name of ['index.html','contact.html']){
+  test('Same-width visitor versus source-edit geometry on '+name,
+    async({page})=>{
+      const writes=[],width=1160;
+      await installVerifiedCurrentSource(page,writes);
+      await page.setViewportSize({width,height:900});
+      const capture=async locator=>locator.evaluate(async main=>{
+        const doc=main.ownerDocument,view=doc.defaultView;
+        await doc.fonts?.ready;
+        const root=main.getBoundingClientRect();
+        const nodes=[main,...main.querySelectorAll('h1,h2,h3,p,img,figure')].slice(0,18);
+        return nodes.map(node=>{
+          const rect=node.getBoundingClientRect();
+          const style=view.getComputedStyle(node);
+          return {tag:node.tagName,relativeX:rect.left-root.left,
+            relativeY:rect.top-root.top,width:rect.width,height:rect.height,
+            fontSize:style.fontSize,display:style.display,objectFit:style.objectFit};
+        });
+      });
+      await page.goto(BASE+'/'+name,{waitUntil:'load'});
+      const publicGeometry=await capture(page.locator('main'));
+      await page.goto(BASE+'/editor-v2.html?page='+name,
+        {waitUntil:'domcontentloaded'});
+      await expect(page.locator('#liveAssetStatus'))
+        .toContainText('GitHub main source verified',{timeout:35000});
+      const editGeometry=await capture(page.frameLocator('#livePageFrame').locator('main'));
+      expect(editGeometry.length).toBe(publicGeometry.length);
+      for(let i=0;i<publicGeometry.length;i++){
+        const actual=editGeometry[i],expected=publicGeometry[i];
+        expect(actual.tag,name+' tag '+i).toBe(expected.tag);
+        for(const key of ['relativeX','relativeY','width','height'])
+          expect(Math.abs(actual[key]-expected[key]),
+            name+' '+i+' '+key+' must match published visitor at 1160px')
+            .toBeLessThan(6);
+        expect(actual.fontSize,name+' '+i+' font').toBe(expected.fontSize);
+        expect(actual.display,name+' '+i+' display').toBe(expected.display);
+      }
+      expect(writes).toEqual([]);
+    });
+}

@@ -504,10 +504,10 @@ function setWorkspaceMode(mode){
   $("addText").textContent=isLive?"T Add webpage text":"T Canvas text";
   $("addShape").textContent=isLive?"▢ Add webpage shape":"▢ Canvas shape";
   $("addImage").textContent=isLive?"▧ Add webpage image":"▧ Canvas image";
-  $("workspaceTitle").textContent=isLive?"Live website":"Free design canvas";
-  $("workspacePill").textContent=isLive?"Website page · check GitHub source status below":"Independent objects · staging only";
+  $("workspaceTitle").textContent=isLive?"GitHub source editor":"Free design canvas";
+  $("workspacePill").textContent=isLive?"Editable GitHub source · not the deployed page":"Independent objects · staging only";
   $("workspaceExplanation").textContent=isLive?
-    "When available, this editing view loads the website’s GitHub main HTML, styles, scripts and responsive layout. The editing and preview frames run same-origin website scripts, which can access an open publishing form. Enter a GitHub token only when the site code is trusted. If GitHub cannot be checked, the editor may show a deployed-page fallback. Verified previews use the same HTML assembler as live publishing. GitHub Pages may display an earlier deployment until publication completes.":
+    "This editable pane renders GitHub main HTML inside a simulated "+(LIVE_WIDTHS[$("devicePreview").value]||1160)+"px frame. It does not directly display the published page. Choose View actual published site to load the visitor URL, or Verified live preview to inspect changes prepared for publication. Page scripts in same-origin frames can access an open GitHub token form; use the token option only with trusted code. GitHub Pages deployment and browser viewport width can affect appearances.":
     "This canvas is a simplified, independent reconstruction. It does not yet reproduce every original section or responsive rule. Use Live website to verify the real page; only the staging preview can be published.";
   $("workspaceFooter").textContent=isLive?
     "GitHub source · Drag elements · Resize handles · Double-click text · Search website elements · Stack forward/back · Undo and verified preview":
@@ -526,18 +526,23 @@ function fitVerifiedPreviewFrames(){
   const pageHeight=workspaceMode==="live"?LIVE_HEIGHTS[$("devicePreview").value]||900:Math.max(900,Math.min(scene.height,1400));
   for(const [dialogId,viewportId,shellId,frameId] of [
     ["previewDialog","previewViewport","previewShell","previewFrame"],
+    ["publishedDialog","publishedViewport","publishedShell","publishedFrame"],
     ["compareDialog","originalViewport","originalShell","originalFrame"],
     ["compareDialog","sceneViewport","sceneShell","sceneFrame"]
   ]){
     if(!$(dialogId).open)continue;
     const viewport=$(viewportId),shell=$(shellId),frame=$(frameId);
+    const width=dialogId==="publishedDialog"?
+      LIVE_WIDTHS[$("devicePreview").value]||1160:pageWidth;
+    const height=dialogId==="publishedDialog"?
+      LIVE_HEIGHTS[$("devicePreview").value]||900:pageHeight;
     const available=Math.max(180,viewport.clientWidth-24);
-    const scale=Math.min(1,available/pageWidth);
-    frame.style.width=pageWidth+"px";
-    frame.style.height=pageHeight+"px";
+    const scale=Math.min(1,available/width);
+    frame.style.width=width+"px";
+    frame.style.height=height+"px";
     frame.style.transform="scale("+scale+")";
-    shell.style.width=Math.ceil(pageWidth*scale)+"px";
-    shell.style.height=Math.ceil(pageHeight*scale)+"px";
+    shell.style.width=Math.ceil(width*scale)+"px";
+    shell.style.height=Math.ceil(height*scale)+"px";
   }
 }
 function togglePageFocus(){
@@ -6627,6 +6632,47 @@ function attachEvents(){
     download(currentPage+".canvas.json",JSON.stringify(scene,null,2),"application/json");
   });
   $("exportHtml").addEventListener("click",()=>download(currentPage.replace(".html","-canvas-preview.html"),standaloneHtml(),"text/html"));
+  $("viewPublished").addEventListener("click",async()=>{
+    const selectedPage=currentPage;
+    if(!PAGES.has(selectedPage))return;
+    const dialog=$("publishedDialog"),frame=$("publishedFrame");
+    const url=new URL(selectedPage,location.href);
+    $("publishedPageLink").href=url.href;
+    $("publishedDialogTitle").textContent="Actual published website · "+selectedPage+" · read only";
+    $("publishedSourceStatus").textContent=
+      "Loading the deployed URL · "+selectedPage+
+      " · "+(LIVE_WIDTHS[$("devicePreview").value]||1160)+"px simulated viewport";
+    dialog.showModal();
+    fitVerifiedPreviewFrames();
+    frame.src=url.href;
+    requestAnimationFrame(fitVerifiedPreviewFrames);
+    // The source and the CDN can differ while a GitHub Pages deploy is active.
+    // Byte equality is not a promise of identical screenshots across browsers.
+    try{
+      const response=await fetch(url.href,{cache:"no-store"});
+      if(!response.ok)throw Error("HTTP "+response.status);
+      const deployed=await response.text();
+      if(!dialog.open||currentPage!==selectedPage)return;
+      const latest=liveDisplayedSourceHtml;
+      const sourceVerified=liveSourceProvenance==="github"&&latest!==null;
+      const parity=sourceVerified?
+        (latest===deployed?"Deployed HTML matches the currently loaded GitHub source.":
+          "Deployed HTML differs from the GitHub source editor. The public site can look different."):
+        "GitHub source was not verified for this editor view.";
+      $("publishedSourceStatus").textContent=
+        "Actual public URL · "+selectedPage+" · "+parity+
+        " This comparison checks HTML bytes, not visual pixel equality.";
+    }catch(error){
+      if(dialog.open&&currentPage===selectedPage)
+        $("publishedSourceStatus").textContent=
+          "Public URL opened in the frame. Automatic source comparison unavailable ("+
+          (error.message||"fetch failed")+"). Inspect the rendered page itself.";
+    }
+  });
+  $("closePublished").addEventListener("click",()=>$("publishedDialog").close());
+  $("publishedDialog").addEventListener("close",()=>{
+    $("publishedFrame").removeAttribute("src");
+  });
   $("preview").addEventListener("click",async()=>{
     if(workspaceMode==="live"&&liveEditing)saveLiveText();
     const button=$("preview"),page=currentPage,mode=workspaceMode;
