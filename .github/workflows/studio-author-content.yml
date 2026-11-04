@@ -7,6 +7,8 @@ on:
       - 'studio/navigation.json'
       - 'studio/pages.json'
       - 'studio/studio.js'
+      - 'studio/studio-chrome.js'
+      - 'cv.html'
       - 'studio/index.html'
       - 'contact.html'
       - 'about.html'
