@@ -103,3 +103,48 @@ for(const name of PAGES){
     await page.locator('#closePreview').click();
   });
 }
+
+for(const name of [
+  'index.html','research.html','research-scoping.html','contact.html','pungmul.html'
+]){
+  test('Real-page heading appearance, undo/redo, local save and reload on '+name,
+    async({page})=>{
+      const writes=[];
+      await installVerifiedCurrentSource(page,writes);
+      await page.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+      await expect(page.locator('#liveAssetStatus'))
+        .toContainText('GitHub main source verified',{timeout:35000});
+      const live=page.frameLocator('#livePageFrame');
+      const heading=live.locator('main h1:visible,main h2:visible').first();
+      await expect(heading).toBeVisible();
+      const before=await heading.evaluate(node=>
+        node.ownerDocument.defaultView.getComputedStyle(node).textAlign);
+      const wanted=before==='center'?'right':'center';
+      await heading.click({modifiers:['Alt']});
+      await expect(page.locator('#liveTextControls')).toBeVisible();
+      await page.locator('#liveTextAlign').selectOption(wanted);
+      await expect(heading).toHaveCSS('text-align',wanted);
+      await page.locator('#undo').click();
+      await expect(heading).toHaveCSS('text-align',before);
+      await page.locator('#redo').click();
+      await expect(heading).toHaveCSS('text-align',wanted);
+      await page.locator('#save').click();
+      const saved=await page.evaluate(file=>
+        localStorage.getItem('moon-academic-editor-v2:source:'+file),name);
+      expect(JSON.parse(saved).length).toBeGreaterThan(0);
+
+      await page.locator('#preview').click();
+      await expect(page.locator('#previewDialog')).toBeVisible();
+      await expect(page.frameLocator('#previewFrame')
+        .locator('main h1:visible,main h2:visible').first())
+        .toHaveCSS('text-align',wanted);
+      await page.locator('#closePreview').click();
+
+      await page.reload({waitUntil:'domcontentloaded'});
+      await expect(page.locator('#liveAssetStatus'))
+        .toContainText('GitHub main source verified',{timeout:35000});
+      await expect(live.locator('main h1:visible,main h2:visible').first())
+        .toHaveCSS('text-align',wanted);
+      expect(writes,name+' must not perform a GitHub write').toEqual([]);
+    });
+}
