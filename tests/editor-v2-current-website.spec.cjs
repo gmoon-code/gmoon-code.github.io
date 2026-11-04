@@ -1574,3 +1574,51 @@ test('A second tab writing during JSON restore confirmation cannot be overwritte
     expect(writes).toEqual([]);
     await other.close();
   });
+
+
+test('Pungmul image mask, crop, rotation and description survive editable JSON backup restore',
+  async({page})=>{
+    const name='pungmul.html',key='moon-academic-editor-v2:source:'+name,writes=[];
+    await installVerifiedCurrentSource(page,writes);
+    await page.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    const photo=page.frameLocator('#livePageFrame').locator('main img:visible').first();
+    await photo.click();
+    await page.locator('#liveCropShape').selectOption('rounded');
+    await page.locator('#livePictureRotation').fill('25');
+    await page.locator('#livePictureRotation').dispatchEvent('change');
+    const alt='Pungmul photo with restorable mask and rotation';
+    await page.locator('#liveImageAlt').fill(alt);
+    await page.locator('#applyLiveImage').click();
+    const original=JSON.parse(await page.evaluate(key=>localStorage.getItem(key),key));
+    const patch=original.find(p=>p.kind==='image'&&p.imageCrop&&p.pictureEffects);
+    expect(patch).toBeTruthy();
+    expect(patch.imageCrop.desktop.mask).toBe('rounded');
+    expect(patch.pictureEffects.desktop.rotation).toBe(25);
+    expect(patch.alt).toBe(alt);
+    const file={format:'moon-editor-v2-live-draft',version:1,page:name,patches:original};
+    await page.evaluate(key=>localStorage.removeItem(key),key);
+    await page.reload({waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    page.once('dialog',dialog=>dialog.accept());
+    await page.locator('#liveDraftFile').setInputFiles({
+      name:name+'.live-draft.json',mimeType:'application/json',
+      buffer:Buffer.from(JSON.stringify(file))
+    });
+    await expect(page.locator('#status')).toContainText('restored locally');
+    await expect(photo).toHaveAttribute('alt',alt);
+    const reloaded=JSON.parse(await page.evaluate(key=>localStorage.getItem(key),key));
+    const restored=reloaded.find(p=>p.selector===patch.selector);
+    expect(restored.imageCrop).toEqual(patch.imageCrop);
+    expect(restored.pictureEffects).toEqual(patch.pictureEffects);
+    expect(restored.alt).toBe(patch.alt);
+    await page.locator('#preview').click();
+    await expect(page.locator('#previewDialog')).toBeVisible();
+    const html=await page.locator('#previewFrame').getAttribute('srcdoc');
+    expect(html).toContain('data-moon-v2-image-crop');
+    expect(html).toContain('data-moon-v2-picture-effects');
+    expect(html).toContain(alt);
+    expect(writes).toEqual([]);
+  });
