@@ -6039,7 +6039,8 @@ function attachEvents(){
     download(currentPage+".live-draft.json",JSON.stringify(backup,null,2),"application/json");
     status(backup.patches.length+" editable page changes downloaded as a restorable JSON backup · Website unchanged");
   });
-  $("importLiveDraftJson").addEventListener("click",()=>$("liveDraftFile").click());
+  for(const id of ["importLiveDraftJson","restoreConflictingLiveDraft","restoreUnreadableLiveDraft"])
+    $(id).addEventListener("click",()=>$("liveDraftFile").click());
   $("liveDraftFile").addEventListener("change",async event=>{
     const file=event.target.files?.[0];event.target.value="";
     if(file)await restoreLiveDraftJson(file);
