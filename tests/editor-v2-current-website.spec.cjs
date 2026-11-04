@@ -581,6 +581,17 @@ test('Two consecutive source-faithful simulated live publications preserve both 
     await expect(live.locator('main h1:visible,main h2:visible').first())
       .toHaveCSS('text-align',selectedAlignment);
 
+    // The editor retains a recoverable draft after a confirmed GitHub PUT,
+    // but a second click must not commit the already published HTML again.
+    await page.locator('#publish').click();
+    await page.locator('#githubToken').fill('synthetic-two-publish-token');
+    await page.locator('#acknowledgeLive').check();
+    await page.locator('#confirmPublish').click();
+    await expect(page.locator('#publishError'))
+      .toContainText('already matches the latest GitHub page',{timeout:20000});
+    expect(pubs).toHaveLength(1);
+    await page.locator('#cancelPublish').click();
+
     // A second user edit must be rebased onto the successful first commit.
     const paragraph=live.locator('main p:visible').first();
     await paragraph.click();
