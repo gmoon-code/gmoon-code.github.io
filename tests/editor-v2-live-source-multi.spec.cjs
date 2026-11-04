@@ -84,9 +84,7 @@ test('dragging a different selected source member retains the original group',as
   const start={x:rect.x+12,y:rect.y+Math.min(65,rect.height*.7)};
   await page.mouse.move(start.x,start.y);
   await page.mouse.down();
-  // A single pointer movement validates the group displacement while avoiding
-  // repeated cross-frame pointer synchronization under sandboxed srcdoc.
-  await page.mouse.move(start.x+38,start.y+22);
+  await page.mouse.move(start.x+38,start.y+22,{steps:9});
   await page.mouse.up();
   const firstAfter=await x(first),secondAfter=await x(second);
   expect(firstAfter).toBeGreaterThan(firstBefore+20);
