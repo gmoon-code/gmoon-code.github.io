@@ -516,3 +516,100 @@ for(const [name,expectedCount] of [['index.html',2],['contact.html',1]]){
       }finally{await visitor.close();}
     });
 }
+
+
+test('Two consecutive source-faithful simulated live publications preserve both edits',
+  async({page})=>{
+    const name='teaching.html',url='https://api.github.com/repos/gmoon-code/gmoon-code.github.io/contents/'+name;
+    const gitReads=[],pubs=[],otherWrites=[];
+    let committed=SOURCE.get(name);
+    await page.route(/^https:\/\/api\.github\.com\/repos\/gmoon-code\/gmoon-code\.github\.io\//,
+      async route=>{
+        const req=route.request(),requestUrl=new URL(req.url());
+        if(requestUrl.pathname!=='/repos/gmoon-code/gmoon-code.github.io/contents/'+name){
+          otherWrites.push({method:req.method(),path:requestUrl.pathname});
+          await route.abort();return;
+        }
+        if(req.method()==='GET'&&requestUrl.searchParams.get('ref')==='main'){
+          gitReads.push(blobSha(committed));
+          await route.fulfill({status:200,contentType:'application/json',
+            headers:{'access-control-allow-origin':'*'},
+            body:JSON.stringify({type:'file',name,sha:blobSha(committed),
+              encoding:'base64',content:committed.toString('base64')})});
+          return;
+        }
+        if(req.method()==='PUT'){
+          const put=JSON.parse(req.postData());
+          expect(put.branch).toBe('main');
+          expect(put.sha).toBe(blobSha(committed));
+          const next=Buffer.from(put.content,'base64');
+          pubs.push({put,html:next.toString('utf8')});
+          committed=next;
+          await route.fulfill({status:200,contentType:'application/json',
+            headers:{'access-control-allow-origin':'*'},
+            body:JSON.stringify({commit:{sha:'mock-consecutive-'+pubs.length}})});
+          return;
+        }
+        otherWrites.push({method:req.method(),path:requestUrl.pathname});
+        await route.abort();
+      });
+
+    await page.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    const live=page.frameLocator('#livePageFrame');
+    const heading=live.locator('main h1:visible,main h2:visible').first();
+    const previousAlignment=await heading.evaluate(node=>
+      node.ownerDocument.defaultView.getComputedStyle(node).textAlign);
+    const selectedAlignment=previousAlignment==='center'?'right':'center';
+    await heading.click();
+    await page.locator('#liveTextAlign').selectOption(selectedAlignment);
+    await expect(heading).toHaveCSS('text-align',selectedAlignment);
+    await page.locator('#preview').click();
+    await expect(page.locator('#previewDialog')).toBeVisible();
+    const firstPreview=await page.locator('#previewFrame').getAttribute('srcdoc');
+    await page.locator('#closePreview').click();
+    await page.locator('#publish').click();
+    await page.locator('#githubToken').fill('synthetic-two-publish-token');
+    await page.locator('#acknowledgeLive').check();
+    await page.locator('#confirmPublish').click();
+    await expect.poll(()=>pubs.length,{timeout:25000}).toBe(1);
+    await expect(page.locator('#publishDialog')).not.toBeVisible({timeout:25000});
+    expect(pubs[0].html).toBe(firstPreview);
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    await expect(live.locator('main h1:visible,main h2:visible').first())
+      .toHaveCSS('text-align',selectedAlignment);
+
+    // A second user edit must be rebased onto the successful first commit.
+    const paragraph=live.locator('main p:visible').first();
+    await paragraph.click();
+    await page.locator('#editLiveText').click();
+    const replacement='Synthetic follow-up content change for publication regression.';
+    await paragraph.fill(replacement);
+    await page.locator('#saveLiveText').click();
+    await expect(paragraph).toHaveText(replacement);
+    await page.locator('#preview').click();
+    await expect(page.locator('#previewDialog')).toBeVisible();
+    const secondPreview=await page.locator('#previewFrame').getAttribute('srcdoc');
+    await page.locator('#closePreview').click();
+    await page.locator('#publish').click();
+    await page.locator('#githubToken').fill('synthetic-two-publish-token');
+    await page.locator('#acknowledgeLive').check();
+    await page.locator('#confirmPublish').click();
+    await expect.poll(()=>pubs.length,{timeout:25000}).toBe(2);
+    await expect(page.locator('#publishDialog')).not.toBeVisible({timeout:25000});
+    expect(pubs[1].put.sha).toBe(blobSha(Buffer.from(pubs[0].html)));
+    expect(pubs[1].html).toBe(secondPreview);
+    expect(pubs[1].html).toContain(replacement);
+    await expect(page.frameLocator('#livePageFrame').locator('main p:visible').first())
+      .toHaveText(replacement,{timeout:20000});
+    await expect(live.locator('main h1:visible,main h2:visible').first())
+      .toHaveCSS('text-align',selectedAlignment);
+    const countStyles=html=>(html.match(/id="moon-v2-live-layout"/g)||[]).length;
+    expect(countStyles(pubs[1].html)).toBeLessThanOrEqual(1);
+    expect(otherWrites).toEqual([]);
+    expect(gitReads.length).toBeGreaterThanOrEqual(4);
+    expect(await page.evaluate(()=>JSON.stringify(localStorage)))
+      .not.toContain('synthetic-two-publish-token');
+  });
