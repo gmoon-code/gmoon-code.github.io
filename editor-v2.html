@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex,nofollow">
 <title>Academic Website Editor 2 | Ye Eun Moon</title>
 <link rel="stylesheet" href="editor-v2.css?v=20261104-editor-v2-draft-recovery-v57">
-<script src="editor-v2.js?v=20261104-editor-v2-multi-tab-v60" defer></script>
+<script src="editor-v2.js?v=20261104-editor-v2-json-restore-v61" defer></script>
 </head>
 <body>
 <a class="skip" href="#workspace">Skip to editor canvas</a>
@@ -183,7 +183,7 @@
             <button id="loadNewerLiveDraft" type="button">Load newer saved draft</button>
             <button id="overwriteNewerLiveDraft" type="button" class="danger">Keep my edits instead</button>
           </div>
-          <p class="help">Loading or replacing a draft requires confirmation. Publishing is blocked until you resolve this warning. Downloaded edit records are a technical backup, not a file you can import directly in the editor.</p>
+          <p class="help">Loading or replacing a draft requires confirmation. Publishing is blocked until you resolve this warning. Downloaded edit records can be restored using Restore editable draft JSON while this same page is selected.</p>
         </div>
         <div id="liveDraftRecovery" class="live-draft-recovery" role="alert" hidden>
           <strong>Saved draft needs recovery</strong>
@@ -502,6 +502,11 @@
           <button id="previewLiveEdits" type="button">Preview live-page draft</button>
         </div>
         <button id="exportLiveEdits" type="button">Export original-layout HTML</button>
+        <div class="inline-actions">
+          <button id="exportLiveDraftJson" type="button">Download editable draft JSON</button>
+          <button id="importLiveDraftJson" type="button">Restore editable draft JSON</button>
+        </div>
+        <p class="help">Save a restorable backup of this page's text, photos and layout changes. To restore, select the same page first, then choose its JSON backup. Restoring requires verified GitHub source and confirmation before replacing this browser's draft.</p>
         <p id="liveEditCount" class="help">No live-page draft edits. Original website unchanged.</p>
       </section>
       <section id="canvasPropertiesPanel" class="panel-section" hidden>
