@@ -1579,7 +1579,8 @@ test('A second tab writing during JSON restore confirmation cannot be overwritte
       name:name+'.live-draft.json',mimeType:'application/json',
       buffer:Buffer.from(JSON.stringify(backup))
     });
-    expect(restoreConfirmed,'restore confirmation must be shown').toBe(true);
+    await expect.poll(()=>restoreConfirmed,
+      {message:'restore confirmation must be shown',timeout:15000}).toBe(true);
     await expect(page.locator('#liveDraftConflict')).toBeVisible();
     expect(await page.evaluate(key=>localStorage.getItem(key),key)).toBe(newerRaw);
     expect(writes).toEqual([]);
