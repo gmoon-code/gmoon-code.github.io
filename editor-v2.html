@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex,nofollow">
 <title>Academic Website Editor 2 | Ye Eun Moon</title>
 <link rel="stylesheet" href="editor-v2.css?v=20261104-editor-v2-json-restore-dialog-v64">
-<script src="editor-v2.js?v=20261104-editor-v2-json-restore-v64" defer></script>
+<script src="editor-v2.js?v=20261104-editor-v2-storage-failure-v65" defer></script>
 </head>
 <body>
 <a class="skip" href="#workspace">Skip to editor canvas</a>
@@ -175,6 +175,15 @@
       </div>
       <div id="workspaceExplanation" class="workspace-explanation" role="status">The real website is shown with its existing styling and responsive layout. Select text or an image to edit it using the original-page inspector, or copy it to the free-design canvas.</div>
 
+        <div id="liveDraftStorageFailure" class="live-draft-recovery" role="alert" hidden>
+          <strong>Browser storage could not save your edits</strong>
+          <p>Your edits are still open in this tab, but they may be lost if you reload or close it. Download an editable JSON backup now. After clearing browser storage space or fixing storage permissions, retry saving.</p>
+          <div class="inline-actions">
+            <button id="downloadUnsavedStorageDraft" type="button">Download editable JSON backup</button>
+            <button id="retryLiveDraftSave" type="button">Retry saving in this browser</button>
+          </div>
+          <p class="help">The public website has not changed. Publishing is blocked until the local save succeeds. Keep this tab open until you have a backup or a successful save.</p>
+        </div>
         <div id="liveDraftConflict" class="live-draft-recovery" role="alert" hidden>
           <strong>Another editor tab changed this page</strong>
           <p>Your edits in this tab are still visible but could not be saved. The newer stored draft has not been overwritten. Download a backup, then choose which draft to keep.</p>
