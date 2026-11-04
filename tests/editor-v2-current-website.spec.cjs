@@ -1633,3 +1633,105 @@ test('Pungmul image mask, crop, rotation and description survive editable JSON b
     expect(html).toContain(alt);
     expect(writes).toEqual([]);
   });
+
+
+test('Storage quota rejection retains live edits, downloadable backup and blocks publishing',
+  async({page})=>{
+    const name='contact.html',key='moon-academic-editor-v2:source:'+name,writes=[];
+    await installVerifiedCurrentSource(page,writes);
+    await page.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    await page.evaluate(()=>{
+      window.__realStorageSetItem=Storage.prototype.setItem;
+      Storage.prototype.setItem=function(key,value){
+        if(String(key).startsWith('moon-academic-editor-v2:source:'))
+          throw new DOMException('Storage quota exceeded','QuotaExceededError');
+        return window.__realStorageSetItem.call(this,key,value);
+      };
+    });
+    const heading=page.frameLocator('#livePageFrame')
+      .locator('main h1:visible,main h2:visible').first();
+    await heading.click();
+    const original=await page.locator('#liveTextAlign').inputValue();
+    const desired=original==='right'?'center':'right';
+    await page.locator('#liveTextAlign').selectOption(desired);
+    await expect(page.locator('#liveDraftStorageFailure')).toBeVisible();
+    await expect(page.locator('#liveEditCount')).toContainText('in memory only');
+    expect(await page.evaluate(key=>localStorage.getItem(key),key)).toBeNull();
+    await expect(heading).toHaveCSS('text-align',desired);
+
+    const backupPromise=page.waitForEvent('download');
+    await page.locator('#downloadUnsavedStorageDraft').click();
+    const backup=await backupPromise;
+    expect(backup.suggestedFilename()).toBe(name+'.live-draft.json');
+    const json=JSON.parse(readFileSync(await backup.path(),'utf8'));
+    expect(json).toMatchObject({
+      format:'moon-editor-v2-live-draft',version:1,page:name
+    });
+    expect(json.patches).toHaveLength(1);
+    expect(json.patches[0].appearance.align).toBe(desired);
+
+    await page.locator('#publish').click();
+    await expect(page.locator('#publishDialog')).toBeVisible();
+    await page.locator('#githubToken').fill('synthetic-quota-token');
+    await page.locator('#acknowledgeLive').check();
+    await page.locator('#confirmPublish').click();
+    await expect(page.locator('#publishError')).toContainText('could not be saved');
+    expect(writes).toEqual([]);
+    await page.locator('#cancelPublish').click();
+
+    page.once('dialog',dialog=>dialog.dismiss());
+    await page.locator('#page').selectOption('research.html');
+    await expect(page.locator('#page')).toHaveValue(name);
+    await expect(page.locator('#liveDraftStorageFailure')).toBeVisible();
+    await page.locator('#retryLiveDraftSave').click();
+    await expect(page.locator('#liveDraftStorageFailure')).toBeVisible();
+    await page.evaluate(()=>{
+      Storage.prototype.setItem=window.__realStorageSetItem;
+      delete window.__realStorageSetItem;
+    });
+    await page.locator('#retryLiveDraftSave').click();
+    await expect(page.locator('#liveDraftStorageFailure')).toBeHidden();
+    const stored=JSON.parse(await page.evaluate(key=>localStorage.getItem(key),key));
+    expect(stored).toHaveLength(1);
+    expect(stored[0].appearance.align).toBe(desired);
+    await page.reload({waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveDraftStorageFailure')).toBeHidden();
+    await expect(page.locator('#liveEditCount')).toContainText('1 draft edit');
+    expect(writes).toEqual([]);
+  });
+
+test('Read-denied browser draft storage displays a persistent recoverable warning',
+  async({page})=>{
+    const name='research.html',writes=[];
+    await installVerifiedCurrentSource(page,writes);
+    await page.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    await page.evaluate(()=>{
+      window.__realStorageGetItem=Storage.prototype.getItem;
+      Storage.prototype.getItem=function(key){
+        if(String(key).startsWith('moon-academic-editor-v2:source:'))
+          throw new DOMException('Blocked by browser policy','SecurityError');
+        return window.__realStorageGetItem.call(this,key);
+      };
+    });
+    await page.locator('#page').selectOption('contact.html');
+    await expect(page.locator('#liveDraftStorageFailure')).toBeVisible();
+    await page.locator('#retryLiveDraftSave').click();
+    await expect(page.locator('#liveDraftStorageFailure')).toBeVisible();
+    const backupPromise=page.waitForEvent('download');
+    await page.locator('#downloadUnsavedStorageDraft').click();
+    const backup=JSON.parse(readFileSync(await (await backupPromise).path(),'utf8'));
+    expect(backup).toMatchObject({
+      format:'moon-editor-v2-live-draft',version:1,page:'contact.html',patches:[]
+    });
+    await page.evaluate(()=>{
+      Storage.prototype.getItem=window.__realStorageGetItem;
+      delete window.__realStorageGetItem;
+    });
+    await page.locator('#retryLiveDraftSave').click();
+    await expect(page.locator('#liveDraftStorageFailure')).toBeHidden();
+    expect(writes).toEqual([]);
+  });
