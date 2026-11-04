@@ -1405,3 +1405,172 @@ test('A second tab saving during GitHub source verification stops publication be
     await expect(page.locator('#liveDraftConflict')).toBeVisible();
     await other.close();
   });
+
+
+test('Editable live draft JSON downloads and restores the full Contact page edit',
+  async({page})=>{
+    const name='contact.html',key='moon-academic-editor-v2:source:'+name,writes=[];
+    await installVerifiedCurrentSource(page,writes);
+    await page.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    const heading=page.frameLocator('#livePageFrame')
+      .locator('main h1:visible,main h2:visible').first();
+    await heading.click();
+    const starting=await page.locator('#liveTextAlign').inputValue();
+    const desired=starting==='right'?'center':'right';
+    await page.locator('#liveTextAlign').selectOption(desired);
+    const original=JSON.parse(await page.evaluate(key=>localStorage.getItem(key),key));
+    expect(original).toHaveLength(1);
+    const downloadPromise=page.waitForEvent('download');
+    await page.locator('#exportLiveDraftJson').click();
+    const download=await downloadPromise;
+    expect(download.suggestedFilename()).toBe(name+'.live-draft.json');
+    const backup=JSON.parse(readFileSync(await download.path(),'utf8'));
+    expect(backup).toMatchObject({
+      format:'moon-editor-v2-live-draft',version:1,page:name,patches:original
+    });
+    await page.evaluate(key=>localStorage.removeItem(key),key);
+    await page.reload({waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    await expect(page.locator('#liveEditCount')).toContainText('No live-page draft edits');
+    await expect(heading).not.toHaveCSS('text-align',desired);
+    page.once('dialog',dialog=>dialog.accept());
+    await page.locator('#liveDraftFile').setInputFiles({
+      name:download.suggestedFilename(),mimeType:'application/json',
+      buffer:Buffer.from(JSON.stringify(backup))
+    });
+    await expect(page.locator('#liveEditCount')).toContainText('1 draft edit');
+    await expect(page.locator('#status')).toContainText('restored locally');
+    expect(JSON.parse(await page.evaluate(key=>localStorage.getItem(key),key)))
+      .toEqual(original);
+    await expect(heading).toHaveCSS('text-align',desired);
+    await page.locator('#preview').click();
+    await expect(page.locator('#previewSourceStatus')).toContainText('GitHub main');
+    await expect(page.locator('#previewDialog')).toBeVisible();
+    await page.locator('#closePreview').click();
+    await page.reload({waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveEditCount')).toContainText('1 draft edit');
+    await expect(heading).toHaveCSS('text-align',desired);
+    expect(writes).toEqual([]);
+  });
+
+test('Live draft JSON import refuses mismatched pages, malformed data, and stale selectors',
+  async({page})=>{
+    const name='research.html',key='moon-academic-editor-v2:source:'+name,writes=[];
+    await installVerifiedCurrentSource(page,writes);
+    await page.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    const heading=page.frameLocator('#livePageFrame')
+      .locator('main h1:visible,main h2:visible').first();
+    await heading.click();
+    const oldAlign=await page.locator('#liveTextAlign').inputValue();
+    await page.locator('#liveTextAlign').selectOption(oldAlign==='right'?'center':'right');
+    const originalRaw=await page.evaluate(key=>localStorage.getItem(key),key);
+    const valid=JSON.parse(originalRaw);
+    const cases=[
+      {name:name+'.live-draft.json',body:'not valid JSON'},
+      {name:name+'.live-draft.json',
+        body:JSON.stringify({format:'moon-editor-v2-live-draft',version:1,page:'contact.html',patches:valid})},
+      {name:name+'.live-draft.json',
+        body:JSON.stringify({format:'moon-editor-v2-live-draft',version:1,page:name,patches:[...valid,...valid]})},
+      {name:name+'.live-draft.json',
+        body:JSON.stringify({format:'moon-editor-v2-live-draft',version:1,page:name,patches:[{selector:'bad',kind:'text'}]})},
+      {name:name+'.live-draft.json',
+        body:JSON.stringify({format:'moon-editor-v2-live-draft',version:1,page:name,
+          patches:[{...valid[0],expected:'No academic heading with this expected text.'}]})},
+      {name:'canvas.json',
+        body:JSON.stringify({version:2,page:name,objects:[]})},
+      {name:'unlabelled.json',body:JSON.stringify(valid)}
+    ];
+    for(const failure of cases){
+      await page.locator('#liveDraftFile').setInputFiles({
+        name:failure.name,mimeType:'application/json',buffer:Buffer.from(failure.body)
+      });
+      await expect(page.locator('#status')).toContainText('Draft restore rejected');
+      expect(await page.evaluate(key=>localStorage.getItem(key),key)).toBe(originalRaw);
+      await expect(page.locator('#liveEditCount')).toContainText('1 draft edit');
+    }
+    expect(writes).toEqual([]);
+  });
+
+test('Legacy two-tab edit records and unreadable stored drafts restore without data loss',
+  async({page})=>{
+    const name='contact.html',key='moon-academic-editor-v2:source:'+name,writes=[];
+    await installVerifiedCurrentSource(page,writes);
+    await page.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    const heading=page.frameLocator('#livePageFrame')
+      .locator('main h1:visible,main h2:visible').first();
+    await heading.click();
+    const starting=await page.locator('#liveTextAlign').inputValue();
+    const desired=starting==='right'?'center':'right';
+    await page.locator('#liveTextAlign').selectOption(desired);
+    const previous=JSON.parse(await page.evaluate(key=>localStorage.getItem(key),key));
+    const unreadable='[{"bad":"saved text"';
+    await page.evaluate(({key,unreadable})=>localStorage.setItem(key,unreadable),
+      {key,unreadable});
+    await page.reload({waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveDraftRecovery')).toBeVisible();
+    expect(await page.evaluate(key=>localStorage.getItem(key),key)).toBe(unreadable);
+    page.once('dialog',dialog=>dialog.dismiss());
+    await page.locator('#liveDraftFile').setInputFiles({
+      name:name+'.unsaved-live-edits.json',mimeType:'application/json',
+      buffer:Buffer.from(JSON.stringify(previous))
+    });
+    await expect(page.locator('#status')).toContainText('Restore cancelled');
+    expect(await page.evaluate(key=>localStorage.getItem(key),key)).toBe(unreadable);
+    await expect(page.locator('#liveDraftRecovery')).toBeVisible();
+    page.once('dialog',dialog=>dialog.accept());
+    await page.locator('#liveDraftFile').setInputFiles({
+      name:name+'.unsaved-live-edits.json',mimeType:'application/json',
+      buffer:Buffer.from(JSON.stringify(previous))
+    });
+    await expect(page.locator('#liveDraftRecovery')).toBeHidden();
+    await expect(page.locator('#liveEditCount')).toContainText('1 draft edit');
+    expect(JSON.parse(await page.evaluate(key=>localStorage.getItem(key),key)))
+      .toEqual(previous);
+    await expect(heading).toHaveCSS('text-align',desired);
+    expect(writes).toEqual([]);
+  });
+
+test('A second tab writing during JSON restore confirmation cannot be overwritten',
+  async({page,context})=>{
+    const name='contact.html',key='moon-academic-editor-v2:source:'+name,writes=[];
+    await installVerifiedCurrentSource(page,writes);
+    const other=await context.newPage();
+    await installVerifiedCurrentSource(other,writes);
+    for(const tab of [page,other]){
+      await tab.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+      await expect(tab.locator('#liveAssetStatus'))
+        .toContainText('GitHub main source verified',{timeout:35000});
+    }
+    await page.frameLocator('#livePageFrame')
+      .locator('main h1:visible,main h2:visible').first().click();
+    const starting=await page.locator('#liveTextAlign').inputValue();
+    const desired=starting==='right'?'center':'right';
+    await page.locator('#liveTextAlign').selectOption(desired);
+    const baseRaw=await page.evaluate(key=>localStorage.getItem(key),key);
+    const backup={format:'moon-editor-v2-live-draft',version:1,page:name,
+      patches:JSON.parse(baseRaw)};
+    const newer=JSON.parse(baseRaw);
+    newer[0].appearance.align=desired==='left'?'right':'left';
+    const newerRaw=JSON.stringify(newer);
+    page.once('dialog',async dialog=>{
+      await other.evaluate(({key,raw})=>localStorage.setItem(key,raw),
+        {key,raw:newerRaw});
+      await dialog.accept();
+    });
+    await page.locator('#liveDraftFile').setInputFiles({
+      name:name+'.live-draft.json',mimeType:'application/json',
+      buffer:Buffer.from(JSON.stringify(backup))
+    });
+    await expect(page.locator('#status')).toContainText('Nothing overwritten');
+    await expect(page.locator('#liveDraftConflict')).toBeVisible();
+    expect(await page.evaluate(key=>localStorage.getItem(key),key)).toBe(newerRaw);
+    expect(writes).toEqual([]);
+    await other.close();
+  });
