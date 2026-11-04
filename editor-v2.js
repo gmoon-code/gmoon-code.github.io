@@ -5315,6 +5315,10 @@ async function publishGithub(token,target){
   const html=production?.html||
     (sourceMode?await sourcePreservingHtml("https://gmoon-code.github.io/"):
       standaloneHtml("../"));
+  // Retained drafts after a successful publication are intentional backups.
+  // Re-applying them must not generate a duplicate commit with no new edits.
+  if(target==="live"&&html===currentSource)
+    throw Error("This draft already matches the latest GitHub page. No new changes need publishing. You can continue editing or review the public page after deployment.");
   requireUnchangedDraft(); // Keep the output and target page paired up.
   const body={
     message:(target==="live"?"Publish verified Editor V2 edits to ":"Update Editor V2 staging preview of ")+publicationPage,
