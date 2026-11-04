@@ -916,7 +916,37 @@ for(const name of ['projects.html','research.html','interests.html','pungmul.htm
       await image.click();
       await expect(page.locator('#liveImageControls')).toBeVisible();
       await expect(page.locator('#liveImageSrc')).toHaveValue(source);
+      await page.evaluate(()=>{
+        window.__imageEditTrace=[];
+        const field=document.getElementById('liveImageAlt');
+        const native=Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value');
+        Object.defineProperty(field,'value',{
+          configurable:true,
+          get(){return native.get.call(this);},
+          set(v){
+            window.__imageEditTrace.push({kind:'script-value-set',value:String(v).slice(0,110),
+              stack:new Error().stack?.slice(0,500)});
+            return native.set.call(this,v);
+          }
+        });
+        for(const type of ['focus','input','change','blur']){
+          field.addEventListener(type,()=>{
+            window.__imageEditTrace.push({kind:'event-'+type,value:field.value.slice(0,110)});
+          });
+        }
+      });
       await page.locator('#liveImageAlt').fill(alt);
+      const immediately=await page.locator('#liveImageAlt').inputValue();
+      if(immediately!==alt){
+        const trace=await page.evaluate(()=>({
+          events:window.__imageEditTrace,
+          field:document.getElementById('liveImageAlt').value.slice(0,110),
+          selection:document.getElementById('liveSelectionLabel').textContent.slice(0,110),
+          focus:document.activeElement?.id,
+          status:document.getElementById('status').textContent
+        }));
+        console.log('IMAGE-FIELD-TRACE',JSON.stringify({page:name,trace}));
+      }
       await expect(page.locator('#liveImageAlt')).toHaveValue(alt);
       await page.locator('#applyLiveImage').click();
       const appliedAlt=await image.getAttribute('alt');
