@@ -2,7 +2,7 @@
 
 **Date:** 4 November 2026  
 **Continued from:** [C-RV29er](EDITOR_V2_EDITABLE_DRAFT_JSON_RESTORE_C-RV29er_2026-11-04.md).  
-**Status:** **Implementation and tests committed, cross-engine verification pending**. Do not claim this stage passed before final current-revision Actions and public-delivery checks complete.  
+**Status:** **Verified** at the final source revision. [Run 41827530696](https://github.com/gmoon-code/gmoon-code.github.io/actions/runs/41827530696) passed **94/94 in each Chromium, Firefox and WebKit (282/282)**. [Public-delivery run 41827410750](https://github.com/gmoon-code/gmoon-code.github.io/actions/runs/41827410750) passed **22/22 exact files**, and [deployed-browser smoke rerun 41827410799](https://github.com/gmoon-code/gmoon-code.github.io/actions/runs/41827410799) passed in all three browsers.  
 **Prior fully verified baseline:** C-RV29er passed 92/92 source-faithful cases in each of Chromium, Firefox and WebKit (276/276), 22/22 production exact bytes and deployed-browser smoke in all three engines.
 
 ## Identified defect
@@ -28,13 +28,13 @@ Commit `ba7c94afc020710917f8db6a437a69c204d3bd95` adds two tests to `tests/edito
 1. **Quota refusal on Contact:** patch `Storage.prototype.setItem` for live draft keys to simulate a real quota exception, make a source text-formatting edit, assert the storage warning remains visible and the edit remains in the page while localStorage remains empty; download the exact in-memory patch records in a restorable JSON backup. Attempt mock GitHub publication, confirm no GitHub PUT. Cancel an attempted page switch, confirm repeated retry fails while storage is blocked, then restore writes and confirm retry saves the draft and survives reload.
 2. **Read refusal on Research/Contact page transition:** patch `Storage.prototype.getItem` for live draft keys to raise `SecurityError`, switch page and assert the persistent warning, failed retry and downloadable versioned backup. Restore browser storage access, retry successfully and verify no GitHub PUT.
 
-**Current browser workflow:** [C-RV29es current website run 41827530696](https://github.com/gmoon-code/gmoon-code.github.io/actions/runs/41827530696). Status remains provisional until inspected.
+**Final current-site browser verification:** [run 41827530696](https://github.com/gmoon-code/gmoon-code.github.io/actions/runs/41827530696) passed **94/94 per engine**, including quota-denied Contact and read-denied Research/Contact cases on all three engines. The deployed editor CSS, JS and HTML, plus 19 other resources, matched exact HTTPS-delivered bytes in [run 41827410750](https://github.com/gmoon-code/gmoon-code.github.io/actions/runs/41827410750) (**22/22**). The first deployed-smoke attempt ran during Pages propagation and timed out at the unchanged initial loading message; after a successful Pages deployment, [the same run's failed jobs were retried](https://github.com/gmoon-code/gmoon-code.github.io/actions/runs/41827410799) and all three passed. This distinction preserves the initial failures as historical evidence rather than silently ignoring them.
 
 ## Remaining verification
 
-- Final Chromium, Firefox and WebKit outcome for 94 cases per engine if both added cases complete.
-- New public HTTPS byte parity for 22 checked resources, including `editor-v2.html` and `editor-v2.js` with `v65`.
-- Deployment smoke in all three browsers.
+- Chromium, Firefox and WebKit completed **94/94 cases each (282/282)**.
+- Public HTTPS source verification completed **22/22 exact file comparisons**, including `editor-v2.html` and `editor-v2.js` at `v65`.
+- Deployed HTTPS browser smoke passed in **all three engines** on retry after Pages propagation.
 - Separate Canvas storage failures, owner-authenticated real GitHub publication, direct-token same-origin isolation and physical-device interactions remain outside this stage. The backup is locally downloaded and must be kept by the owner; no cloud persistence is implied.
 
-**Next checkpoint:** only after successful workflows and parity, close C-RV29es and select the next genuinely outstanding issue without redoing verified live-source editing or backup restoration.
+**Next checkpoint C-RV29et:** inspect the independent canvas workspace's storage-failure persistence and export safety, then evaluate the remaining real owner-authorized GitHub publication and script-isolation boundaries independently. Do not conflate mocked REST PUT checks with a real account-authenticated publication, and do not ask for private tokens in chat.
