@@ -209,6 +209,14 @@ test('Real Pungmul photo crop retains original asset, verified preview and local
   await expect(page.locator('#previewDialog')).toBeVisible();
   const preview=page.frameLocator('#previewFrame');
   await expect(preview.locator('main img').first()).toHaveAttribute('src',src);
+  const cropDiagnostics=await Promise.all([image,preview.locator('main img').first()]
+    .map(node=>node.evaluate(img=>({
+      computedFit:img.ownerDocument.defaultView.getComputedStyle(img).objectFit,
+      crop:img.getAttribute('data-moon-v2-image-crop'),
+      sheet:img.ownerDocument.getElementById('moon-v2-live-layout')?.textContent.slice(-1400),
+      width:Math.round(img.getBoundingClientRect().width)
+    }))));
+  console.log('PUNGMUL_CURRENT_CROP_DIAGNOSTICS',JSON.stringify(cropDiagnostics));
   await expect(preview.locator('main img').first()).toHaveCSS('object-fit','none');
   await page.locator('#closePreview').click();
   await page.reload({waitUntil:'domcontentloaded'});
