@@ -227,7 +227,7 @@ test('Real Pungmul photo crop retains original asset, verified preview and local
   expect(writes).toEqual([]);
 });
 
-for(const name of ['contact.html','research.html']){
+for(const name of ['index.html','research.html','contact.html','interests.html']){
   test('Source-faithful simulated GitHub publication of an actual '+name+' appearance edit',
     async({page})=>{
       const unexpectedWrites=[],mockPublications=[];
