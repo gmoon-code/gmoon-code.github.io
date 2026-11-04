@@ -12,7 +12,7 @@
   "failures": [],
   "rules": {},
   "caveats": "CSS viewport equivalence to 200/400% reflow, not physical browser zoom. Automated axe findings do not certify WCAG. Exemptions apply only to intentional horizontal scroll containers.",
-  "workflow_run_id": "41801027385",
-  "head_sha": "a442abf74aca9432330266e0a7626015fb547271",
+  "workflow_run_id": "41807290377",
+  "head_sha": "b7ab455ecedc18c18f0c363a506346fd83b36794",
   "exit_code": "0"
 }
