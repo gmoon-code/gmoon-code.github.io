@@ -1440,11 +1440,12 @@ test('Editable live draft JSON downloads and restores the full Contact page edit
       .toContainText('GitHub main source verified',{timeout:35000});
     await expect(page.locator('#liveEditCount')).toContainText('No live-page draft edits');
     await expect(heading).not.toHaveCSS('text-align',desired);
-    page.once('dialog',dialog=>dialog.accept());
     await page.locator('#liveDraftFile').setInputFiles({
       name:download.suggestedFilename(),mimeType:'application/json',
       buffer:Buffer.from(JSON.stringify(backup))
     });
+    await expect(page.locator('#liveDraftRestoreDialog')).toBeVisible();
+    await page.locator('#confirmLiveDraftRestore').click();
     await expect(page.locator('#liveEditCount')).toContainText('1 draft edit');
     await expect(page.locator('#status')).toContainText('restored locally');
     expect(JSON.parse(await page.evaluate(key=>localStorage.getItem(key),key)))
@@ -1521,23 +1522,25 @@ test('Legacy two-tab edit records and unreadable stored drafts restore without d
     await expect(page.locator('#liveDraftRecovery')).toBeVisible();
     expect(await page.evaluate(key=>localStorage.getItem(key),key)).toBe(unreadable);
     await expect(page.locator('#restoreUnreadableLiveDraft')).toBeVisible();
-    page.once('dialog',dialog=>dialog.dismiss());
     let chooser=page.waitForEvent('filechooser');
     await page.locator('#restoreUnreadableLiveDraft').click();
     await (await chooser).setFiles({
       name:name+'.unsaved-live-edits.json',mimeType:'application/json',
       buffer:Buffer.from(JSON.stringify(previous))
     });
+    await expect(page.locator('#liveDraftRestoreDialog')).toBeVisible();
+    await page.locator('#cancelLiveDraftRestore').click();
     await expect(page.locator('#status')).toContainText('Restore cancelled');
     expect(await page.evaluate(key=>localStorage.getItem(key),key)).toBe(unreadable);
     await expect(page.locator('#liveDraftRecovery')).toBeVisible();
-    page.once('dialog',dialog=>dialog.accept());
     chooser=page.waitForEvent('filechooser');
     await page.locator('#restoreUnreadableLiveDraft').click();
     await (await chooser).setFiles({
       name:name+'.unsaved-live-edits.json',mimeType:'application/json',
       buffer:Buffer.from(JSON.stringify(previous))
     });
+    await expect(page.locator('#liveDraftRestoreDialog')).toBeVisible();
+    await page.locator('#confirmLiveDraftRestore').click();
     await expect(page.locator('#liveDraftRecovery')).toBeHidden();
     await expect(page.locator('#liveEditCount')).toContainText('1 draft edit');
     expect(JSON.parse(await page.evaluate(key=>localStorage.getItem(key),key)))
@@ -1568,19 +1571,14 @@ test('A second tab writing during JSON restore confirmation cannot be overwritte
     const newer=JSON.parse(baseRaw);
     newer[0].appearance.align=desired==='left'?'right':'left';
     const newerRaw=JSON.stringify(newer);
-    let restoreConfirmed=false;
-    page.once('dialog',async dialog=>{
-      restoreConfirmed=true;
-      await other.evaluate(({key,raw})=>localStorage.setItem(key,raw),
-        {key,raw:newerRaw});
-      await dialog.accept();
-    });
     await page.locator('#liveDraftFile').setInputFiles({
       name:name+'.live-draft.json',mimeType:'application/json',
       buffer:Buffer.from(JSON.stringify(backup))
     });
-    await expect.poll(()=>restoreConfirmed,
-      {message:'restore confirmation must be shown',timeout:15000}).toBe(true);
+    await expect(page.locator('#liveDraftRestoreDialog')).toBeVisible();
+    await other.evaluate(({key,raw})=>localStorage.setItem(key,raw),
+      {key,raw:newerRaw});
+    await page.locator('#confirmLiveDraftRestore').click();
     await expect(page.locator('#liveDraftConflict')).toBeVisible();
     expect(await page.evaluate(key=>localStorage.getItem(key),key)).toBe(newerRaw);
     expect(writes).toEqual([]);
@@ -1614,11 +1612,12 @@ test('Pungmul image mask, crop, rotation and description survive editable JSON b
     await page.reload({waitUntil:'domcontentloaded'});
     await expect(page.locator('#liveAssetStatus'))
       .toContainText('GitHub main source verified',{timeout:35000});
-    page.once('dialog',dialog=>dialog.accept());
     await page.locator('#liveDraftFile').setInputFiles({
       name:name+'.live-draft.json',mimeType:'application/json',
       buffer:Buffer.from(JSON.stringify(file))
     });
+    await expect(page.locator('#liveDraftRestoreDialog')).toBeVisible();
+    await page.locator('#confirmLiveDraftRestore').click();
     await expect(page.locator('#status')).toContainText('restored locally');
     await expect(photo).toHaveAttribute('alt',alt);
     const reloaded=JSON.parse(await page.evaluate(key=>localStorage.getItem(key),key));
