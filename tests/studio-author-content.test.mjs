@@ -90,3 +90,17 @@ test('Studio idle status describes local drafts rather than claiming all website
   assert.match(studio,/await github\(prefix\+"\/git\/refs\/heads\/main",\{/);
   assert.match(studio,/toast\("All changes were published together\. GitHub Pages may need a few minutes to refresh\."\)/);
 });
+
+test('Site style explains shared stylesheet coverage and responsive layout effects',()=>{
+  const plus=read('studio/studio-plus.js');
+  const independent=read('connection-studio/index.html');
+  assert.match(studioHTML,/Change the shared appearance of pages that use this site theme/);
+  assert.match(studioHTML,/The page content stays intact, although text size, widths and spacing can change/);
+  assert.match(plus,/Shared site style updated in your draft\. Publish to apply it to pages that use this theme/);
+  assert.match(plus,/await ensureDraft\("site-theme\.css"\)/);
+  assert.match(plus,/--page-max:/);
+  assert.match(plus,/--editorial-measure:/);
+  assert.match(read('index.html'),/href="site-theme\.css"/);
+  assert.doesNotMatch(independent,/site-theme\.css/);
+  assert.doesNotMatch(plus,/Publish to apply it to every page/);
+});
