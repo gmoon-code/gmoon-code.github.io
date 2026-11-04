@@ -606,7 +606,7 @@
     themeDraft.dirty=themeDraft.html!==themeDraft.savedHtml;
     updateStatus();applyThemeInPreview();onChanged();
     $("siteLookDialog").close();
-    toast("Site-wide style updated in your draft. Publish to apply it to every page.");
+    toast("Shared site style updated in your draft. Publish to apply it to pages that use this theme.");
   }
 
   // IndexedDB stores drafts on this browser only; never access tokens or credentials.
