@@ -2279,7 +2279,11 @@ function renderLiveInspector(){
     if(liveImageInputNode!==node){
       liveImageInputNode=node;liveImageInputDirty=false;
     }
-    if(!liveImageInputDirty){
+    // Firefox can dispatch a layout refresh between field focus and its
+    // first input event. A focused field is already an active, unsaved edit.
+    const editingImageField=document.activeElement===$("liveImageSrc")||
+      document.activeElement===$("liveImageAlt");
+    if(!liveImageInputDirty&&!editingImageField){
       $("liveImageSrc").value=node.getAttribute("src")||"";
       $("liveImageAlt").value=node.alt||"";
     }
@@ -5610,8 +5614,12 @@ function attachEvents(){
   $("editLiveText").addEventListener("click",editLiveText);
   $("saveLiveText").addEventListener("click",saveLiveText);
   $("cancelLiveText").addEventListener("click",cancelLiveText);
-  for(const id of ["liveImageSrc","liveImageAlt"])
+  for(const id of ["liveImageSrc","liveImageAlt"]){
+    // Mark the field as in use on focus, before any asynchronous re-render can
+    // replace the user's newly typed path or alternative text.
+    $(id).addEventListener("focus",()=>{liveImageInputDirty=true;});
     $(id).addEventListener("input",()=>{liveImageInputDirty=true;});
+  }
   $("applyLiveImage").addEventListener("click",applyLiveImage);
   $("liveCopyFormat").addEventListener("click",copyLiveFormat);
   $("livePasteFormat").addEventListener("click",pasteLiveFormat);
