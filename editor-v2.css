@@ -169,3 +169,11 @@
 .quick-start summary:focus-visible{outline:2px solid var(--focus);outline-offset:3px}
 .quick-start ol{padding-left:17px;margin:10px 0 8px}
 .quick-start li{margin-bottom:8px}
+
+/* Persistent, keyboard-accessible warning for a damaged local live-page draft.
+   The stored bytes remain unchanged until the owner explicitly resolves it. */
+.live-draft-recovery{margin-top:12px;padding:12px;border:2px solid #aa6949;border-radius:9px;background:#fff4e9;color:#56301f;line-height:1.45}
+.live-draft-recovery strong{display:block;font-size:12px}
+.live-draft-recovery p{font-size:11px;line-height:1.55;margin:8px 0}
+.live-draft-recovery .inline-actions button{white-space:normal}
+.live-draft-recovery .help{color:#704936}
