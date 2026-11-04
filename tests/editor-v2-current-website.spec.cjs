@@ -1565,7 +1565,9 @@ test('A second tab writing during JSON restore confirmation cannot be overwritte
     const newer=JSON.parse(baseRaw);
     newer[0].appearance.align=desired==='left'?'right':'left';
     const newerRaw=JSON.stringify(newer);
+    let restoreConfirmed=false;
     page.once('dialog',async dialog=>{
+      restoreConfirmed=true;
       await other.evaluate(({key,raw})=>localStorage.setItem(key,raw),
         {key,raw:newerRaw});
       await dialog.accept();
@@ -1574,7 +1576,7 @@ test('A second tab writing during JSON restore confirmation cannot be overwritte
       name:name+'.live-draft.json',mimeType:'application/json',
       buffer:Buffer.from(JSON.stringify(backup))
     });
-    await expect(page.locator('#status')).toContainText('Nothing overwritten');
+    expect(restoreConfirmed,'restore confirmation must be shown').toBe(true);
     await expect(page.locator('#liveDraftConflict')).toBeVisible();
     expect(await page.evaluate(key=>localStorage.getItem(key),key)).toBe(newerRaw);
     expect(writes).toEqual([]);
