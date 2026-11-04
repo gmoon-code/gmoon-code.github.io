@@ -5480,9 +5480,7 @@ function changePage(page){
     if(liveEditing)saveLiveText();
     const liveUnsaved=(liveDraftConflict?.page===currentPage||
       liveDraftSaveFailure?.page===currentPage)&&livePatches.size;
-    const canvasUnsaved=canvasDraftDirty||
-      (canvasDraftSaveFailure?.page===currentPage&&
-       JSON.stringify(scene)!==canvasDraftLoadedRaw);
+    const canvasUnsaved=canvasDraftDirty;
     if((liveUnsaved||canvasUnsaved)&&
        !confirm("This tab contains unsaved "+(liveUnsaved&&canvasUnsaved?
          "live-page and canvas edits":liveUnsaved?"live-page edits":"canvas edits")+
@@ -5613,8 +5611,26 @@ function assertLiveDraftNotSuperseded(page){
     throw Error("Another editor tab changed this page's saved draft. Resolve the draft conflict before publishing.");
   }
 }
+function assertCanvasDraftNotSuperseded(page){
+  if(canvasDraftRecovery?.page===page)
+    throw Error("Stored canvas draft is unreadable. Resolve recovery before publishing.");
+  if(canvasDraftConflict?.page===page)
+    throw Error("Another tab changed this canvas. Resolve its conflict before publishing.");
+  if(canvasDraftSaveFailure?.page===page||canvasDraftDirty)
+    throw Error("Canvas draft has not been saved. Download JSON and retry saving before publishing.");
+  let latest;
+  try{latest=localStorage.getItem(NEW_DRAFT+page);}
+  catch{throw Error("Cannot verify saved canvas storage. Nothing was published.");}
+  if(latest!==canvasDraftLoadedRaw){
+    canvasDraftConflict={page,stored:latest};renderCanvasDraftWarning();
+    throw Error("Another tab changed the saved canvas. Nothing was published.");
+  }
+  if(JSON.stringify(scene)!==canvasDraftLoadedRaw)
+    throw Error("The canvas has unsaved edits. Save before publishing a staging preview.");
+}
 async function publishGithub(token,target){
   if(target==="live")assertLiveDraftNotSuperseded(currentPage);
+  if(target==="staging"&&workspaceMode==="design")assertCanvasDraftNotSuperseded(currentPage);
   if(target==="live"&&liveDraftRecovery?.page===currentPage)
     throw Error("Stored draft is unreadable. Original data is protected. Download or resolve the saved-draft recovery warning before publishing.");
   if(!token)throw Error("Enter your GitHub token to publish.");
@@ -5637,6 +5653,7 @@ async function publishGithub(token,target){
     // A second tab can save while GitHub source verification is in flight.
     // Reject the result before constructing or sending the GitHub PUT.
     if(target==="live")assertLiveDraftNotSuperseded(publicationPage);
+    if(target==="staging"&&!sourceMode)assertCanvasDraftNotSuperseded(publicationPage);
   };
   const path=target==="live"?publicationPage:
     "editor-v2-previews/"+(sourceMode?"source-":"")+publicationPage;
@@ -6116,14 +6133,24 @@ function attachEvents(){
   // Browsers may show a generic navigation prompt after user interaction.
   // The draft conflict alert and download remain the primary recovery path.
   window.addEventListener("beforeunload",event=>{
-    if((liveDraftConflict?.page===currentPage||
-        liveDraftSaveFailure?.page===currentPage)&&livePatches.size){
+    if(canvasDraftDirty||
+       ((liveDraftConflict?.page===currentPage||
+         liveDraftSaveFailure?.page===currentPage)&&livePatches.size)){
       event.preventDefault();
       event.returnValue="";
     }
   });
   window.addEventListener("storage",event=>{
-    if(event.storageArea!==localStorage||event.key!==LIVE_DRAFT_KEY+currentPage)return;
+    if(event.storageArea!==localStorage)return;
+    if(event.key===NEW_DRAFT+currentPage){
+      if(!canvasDraftRecovery&&event.newValue!==canvasDraftLoadedRaw){
+        canvasDraftConflict={page:currentPage,stored:event.newValue};
+        status("Another tab changed the canvas draft · Review the conflict before saving");
+        renderCanvasDraftWarning();
+      }
+      return;
+    }
+    if(event.key!==LIVE_DRAFT_KEY+currentPage)return;
     if(liveDraftRecovery?.page===currentPage)return;
     if(event.newValue!==liveDraftLoadedRaw){
       liveDraftConflict={page:currentPage,stored:event.newValue};
@@ -6192,6 +6219,57 @@ function attachEvents(){
   });
   const workspaceObserver=new ResizeObserver(()=>{if(workspaceMode==="live")fitLivePage();});
   workspaceObserver.observe($("liveViewport"));
+  $("downloadCanvasBackup").addEventListener("click",()=>{
+    if(editingId!==null)finishTextEdit();
+    download(currentPage+".canvas.json",JSON.stringify(scene,null,2),"application/json");
+    status("Current canvas downloaded as restorable JSON · Website unchanged");
+  });
+  $("retryCanvasSave").addEventListener("click",()=>save());
+  $("downloadCanvasOriginal").addEventListener("click",()=>{
+    if(canvasDraftRecovery?.page!==currentPage)return;
+    download(currentPage+".unreadable-canvas-draft.txt",canvasDraftRecovery.raw,"text/plain");
+    status("Unreadable canvas draft downloaded unchanged · Stored copy preserved");
+  });
+  $("discardCanvasOriginal").addEventListener("click",()=>{
+    const recovery=canvasDraftRecovery;
+    if(!recovery||recovery.page!==currentPage)return;
+    if(!confirm("Discard this unreadable saved canvas? Download its original contents first if they might be needed. The public website is unchanged."))return;
+    try{
+      if(localStorage.getItem(NEW_DRAFT+currentPage)!==recovery.raw){
+        status("Stored canvas changed during recovery · Nothing was discarded");return;
+      }
+      localStorage.removeItem(NEW_DRAFT+currentPage);
+      canvasDraftRecovery=null;canvasDraftLoadedRaw=null;
+      if(save())status("Unreadable canvas discarded by confirmation · Current canvas saved locally");
+    }catch{status("Could not discard unreadable canvas · Original stored data preserved");}
+  });
+  $("loadNewerCanvas").addEventListener("click",()=>{
+    const conflict=canvasDraftConflict;
+    if(!conflict||conflict.page!==currentPage)return;
+    if(!confirm("Replace this tab's canvas with the newer version saved by another tab? Download this tab's canvas JSON first if needed."))return;
+    try{
+      if(localStorage.getItem(NEW_DRAFT+currentPage)!==conflict.stored){
+        status("Saved canvas changed again · Reload cancelled");return;
+      }
+      loadCanvasDraft(currentPage);history=[];redo=[];
+      selected.clear();activeId=null;editingId=null;render();refreshUndo();
+      status(canvasDraftRecovery?"The newer stored canvas is unreadable · Original data protected":
+        "Newer saved canvas loaded after confirmation · Website unchanged");
+    }catch{status("Cannot read newer canvas · Current canvas retained");}
+  });
+  $("overwriteNewerCanvas").addEventListener("click",()=>{
+    const conflict=canvasDraftConflict;
+    if(!conflict||conflict.page!==currentPage)return;
+    if(!confirm("Replace the newer saved canvas with this tab's current canvas? The newer copy may be lost. Download backups first if needed."))return;
+    try{
+      const latest=localStorage.getItem(NEW_DRAFT+currentPage);
+      if(latest!==conflict.stored){
+        status("Saved canvas changed again · No overwrite attempted");return;
+      }
+      canvasDraftLoadedRaw=latest;canvasDraftConflict=null;
+      if(save())status("Current canvas saved after explicit overwrite confirmation");
+    }catch{status("Cannot resolve canvas conflict · Stored copy preserved");}
+  });
   $("importScene").addEventListener("click",()=>$("sceneFile").click());
   $("sceneFile").addEventListener("change",async event=>{
     const file=event.target.files?.[0];event.target.value="";
@@ -6203,11 +6281,14 @@ function attachEvents(){
       if(currentPage!==requestedPage){
         status("JSON import cancelled because the website page changed");return;
       }
-      if(scene.objects.length&&!confirm("Replace this page's local canvas with the selected JSON backup?"))return;
+      if((scene.objects.length||canvasDraftRecovery||canvasDraftConflict)&&
+         !confirm("Replace the open canvas with the selected JSON backup? Download this canvas and resolve any protected stored-draft warning first if either copy may be needed."))return;
       const before=copy(scene);
       scene=restored;selected.clear();activeId=null;
-      remember(before);render();save();
-      status("Canvas restored from JSON · Original website unchanged");
+      remember(before);render();
+      status(canvasDraftDirty?
+        "Canvas restored in this tab only · Browser save blocked · Download JSON and resolve the warning":
+        "Canvas restored from JSON and saved locally · Original website unchanged");
     }catch(error){status("JSON import rejected · "+(error.message||error));}
   });
   $("importPage").addEventListener("click",()=>importPage());
@@ -6486,7 +6567,10 @@ function attachEvents(){
     mutate(()=>{scene.objects=[];scene.nextId=1;selected.clear();activeId=null;});
     save();
   });
-  $("exportScene").addEventListener("click",()=>download(currentPage+".canvas.json",JSON.stringify(scene,null,2),"application/json"));
+  $("exportScene").addEventListener("click",()=>{
+    if(editingId!==null)finishTextEdit();
+    download(currentPage+".canvas.json",JSON.stringify(scene,null,2),"application/json");
+  });
   $("exportHtml").addEventListener("click",()=>download(currentPage.replace(".html","-canvas-preview.html"),standaloneHtml(),"text/html"));
   $("preview").addEventListener("click",async()=>{
     if(workspaceMode==="live"&&liveEditing)saveLiveText();
@@ -6545,6 +6629,10 @@ function attachEvents(){
   $("closePreview").addEventListener("click",()=>$("previewDialog").close());
   $("publish").addEventListener("click",()=>{
     if(liveEditing)saveLiveText();
+    if(workspaceMode==="design"){
+      if(editingId!==null)finishTextEdit();
+      if(saveTimer!==null)save();
+    }
     if(workspaceMode==="live"&&!livePatches.size){
       status("Save a live-page text, image, appearance, or layout edit before publishing.");return;
     }
