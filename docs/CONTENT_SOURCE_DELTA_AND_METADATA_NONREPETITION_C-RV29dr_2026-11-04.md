@@ -1,0 +1,41 @@
+# C-RV29dr | Evidence-limited academic content source checkpoint, with no unsupported edits
+
+**Date:** 4 November 2026. **Continued from:** [C-RV29dq](RESEARCH_ASSESSMENT_VERSION_EVIDENCE_GATE_C-RV29dq_2026-11-04.md). **Scope:** Exact current code delta, selection of candidate distinct academic claims, comparison against prior source-level audit inventories, all sixteen ordinary indexable page-head descriptions and a scoped author-prose punctuation review. **Disposition:** No new scientific claim error, invalid public research paraphrase, publication-status overclaim, or style defect was demonstrated. **No academic website file changed.** The factually important result is that the original-document gates are genuine and repeatedly revisiting reviewed source abstracts or instrument copies would not constitute new evidence.
+
+## Current checkout and source difference
+
+At this stage's beginning, the repository main branch remained **`dd7d83ce8779968fdb313bb88cd0ddd9ec0ab3b6`**, exactly the recorded C-RV29dq ledger source. A direct GitHub comparison since that checkpoint found **zero changed files**. The complete Git tree still contains **26 HTML routes**. The current published prose therefore presents no new sentence-level delta for re-review.
+
+## Distinct scholarly candidate triage
+
+Re-read selected original current site paragraphs from `writing-biological-classification.html`, `teaching-ap-evolution.html`, `teaching-ap-chemistry.html`, `teaching-osmosis-practice.html` and `pungmul.html`. Candidate points included the Kenyan HbAS cohort's endpoint-specific protection, XYY claims, racial categories in genetics teaching, synthetic Hardy–Weinberg and selection arithmetic, the ammonia reaction quotient and compression, hypothetical potato osmosis data, and the Pungmul academic historical source. Before opening a source-review stage, reconciled those passages with the actual earlier reports:
+
+- [AP Biology evolution source review](TEACHING_AP_EVOLUTION_REAUDIT_2026-10-29.md) had already retrieved the original Williams (2005), Piel (2010) and Donovan (2022) sources and recomputed the example population-genetics values.
+- [Biological classification original review](CLASSIFICATION_DONOVAN_ORIGINAL_REVIEW_AND_PRINT_AUDIT_C-RV29aj_2026-11-03.md) and [earlier primary-source review](CLASSIFICATION_ESSAY_PRIMARY_SOURCE_AUDIT_C-RV3_2026-11-01.md) had already checked the original open Donovan paper and classified the Richardson full-book access limit separately.
+- [Chemistry source and numerical re-audit](TEACHING_AP_CHEMISTRY_REAUDIT_2026-10-29.md) had already recomputed all five reaction-quotient cases and confirmed the cited Johnstone/Talanquer/College Board source scope.
+- [Osmosis visitor/content review](TEACHING_OSMOSIS_REAUDIT_2026-10-29.md) had already scoped the hypothetical measurements and inference from tissue mass.
+- [Pungmul original sources and live reader review](PUNGMUL_VISITOR_REAUDIT_2026-10-29.md) had already matched the UNESCO heritage record, Folk Museum's Samulnori history and Park's Korean article, while [the KCI link correction](PUNGMUL_KCI_LINK_DESTINATION_C-RV29db_2026-11-03.md) verified the correct official landing page.
+
+There was no new original article, amended figure or erroneous passage requiring another prose correction. The original Unit 3 administered-question/score version, historical response transcription, signed consent/permission and separate final August scoping source codes are **not resolved** merely by these previously reviewed external papers.
+
+## Source metadata and author's prose punctuation
+
+Independently read source heads of all **16 ordinary indexable academic/public pages** and adjacent auxiliary routes. Titles and per-page meta descriptions are bounded, accurate summaries of the page content, including the prospective/non-evaluated teaching materials and the ERIC-bounded scoping review. Page-specific canonical links are consistent. Before claiming a new discovery, cross-checked against the earlier [all-26-route original metadata audit](PUBLIC_SOURCE_METADATA_AUDIT_C-RV16_2026-11-02.md), which had **already verified this inventory and source statuses**.
+
+The experimental `fluid-layout-lab.html` omits an explicit HTML `head` wrapper, so a simplistic head-only metadata extractor misleadingly returns a blank title and robot instruction. Actual opening source reads **`<meta name="robots" content="noindex,nofollow"><title>Fluid layout lab | Ye Eun Moon</title>`**. This exact parser trap had been documented in C-RV16 and is **not an absent-title defect or fresh finding**.
+
+Also examined static public paragraphs/headings/lists/captions/table text for the user's style restriction on colons in **authored prose**. In the ordinary pages sampled, colons were confined to external scholarly reference titles, DOI URLs, the author's manuscript *title* and source-attribution **labels** in figure captions (e.g. “Source: author's constructed teaching exemplar”). These are not ordinary narrative sentence punctuation. The previously tested [C-RV29dm original-prose sentinel](ACADEMIC_AUTHORED_PROSE_STYLE_SENTINEL_C-RV29dm_2026-11-04.md) had already verified **895 static segments** for non-bibliographic em dashes and the corrected non-“Imagine” Research opening. No reason exists to alter faithful titles, links, academic credit labels or the author's clear scientific explanations to eliminate legitimate punctuation.
+
+This stage did **not** re-run original third-party DOI full-text access gates, recalculate already checked synthetic fitness or radish tables, use unverified original study respondents, or attempt authenticated website publishing. No tool-assisted automatic copy edit was made.
+
+## Evidence conclusions and explicit remaining boundary
+
+**Current site content:** No demonstrated new unsupported published sentence. **Main-page scholarly bibliography access:** Historical register **46 full original bodies / 6 abstract-limited / 1 metadata-only / 0 pending**, unchanged. **Student research:** Original administered/scored assessment and mark-conversion evidence, original unnormalized responses/transformation maps, timestamped blind coder and recoder sheets, required school/consent/assent records and applicable ethical governance evidence remain unavailable for independent authentication. **Scoping review:** Original final-August twenty-study S2B/S2C row-level judgment and language/schooling matrix remains unavailable, even though the reported manuscript-level numbers and July corpus are documented. **Other:** Current journal's actual editorial state, author-selected public contact preference, authenticated editor publishing, real physical device and spoken screen-reader access are not established by static source review.
+
+These are **explicit limits on the auditor's available evidence**, not assertions that the records never existed or that the author’s work is incorrect. A website can correctly state a method reported in an author manuscript without possessing independent proof of the study's historical performance. The important restriction is never to promote the former into the latter.
+
+The full academic website content audit remains **In progress**. **No HTML, JS, CSS, source scholarly reference, student data, media or public user-facing prose was changed.**
+
+## Exact next checkpoint
+
+**C-RV29ds | Evidence-triggered substantive continuation.** Check current repository for an academic HTML, manuscript, externally linked study or app-content change. **If none, do not create another exploratory source-repetition stage without a genuinely new evidence target.** Independent original-record verification can advance only on production of one or more authentic original administered tests/grade-scale records, original unnormalized student-answer transcriptions plus normalization map, dated blinded reader/recode sheets, signed/dated school and student/guardian authorizations and ethical review/determination, or the final August 20-study scoping S2B/S2C primary extraction. A truly novel independently source-checkable scientific or attribution issue in an otherwise unchanged public page is also sufficient. Preserve existing correct prose and the bibliography grades **46 F / 6 A / 1 M / 0 P**; audit status **In progress**.
