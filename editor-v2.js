@@ -1339,8 +1339,13 @@ function refreshLiveLayoutRules(doc=$("livePageFrame").contentDocument,patches=[
     sheet=doc.createElement("style");sheet.id="moon-v2-live-layout";
     doc.head.append(sheet);
   }
-  const existing=liveSourceCss.get(doc),next=liveLayoutRules(patches);
-  sheet.textContent=[existing,next].filter(Boolean).join("\n");
+  const existing=liveSourceCss.get(doc)||"",next=liveLayoutRules(patches);
+  // The editor deliberately retains a published draft so it can be recovered
+  // while GitHub Pages deploys. Applying the same draft a second time must
+  // not append its identical final CSS rules to the already committed sheet.
+  // A genuinely changed rule is still appended to override the prior rule.
+  sheet.textContent=next&&existing.endsWith(next)?existing:
+    [existing,next].filter(Boolean).join("\n");
 }
 function addedPatchFromNode(node,selector=liveSelector(node)){
   if(!node||!LIVE_ADDED_ID.test(selector))return null;
