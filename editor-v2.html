@@ -168,7 +168,7 @@
       <div id="liveAssetStatus" class="live-assets" role="status" aria-live="polite">Loading the original webpage…</div>
       <div id="liveViewport" class="scrollspace live-scrollspace" role="region" aria-label="Scrollable live webpage preview" tabindex="0">
         <div id="livePageShell" class="live-page-shell">
-          <iframe id="livePageFrame" title="Original academic website page" loading="eager"></iframe>
+          <iframe id="livePageFrame" title="Original academic website page" loading="eager" sandbox="allow-same-origin"></iframe>
         </div>
       </div>
       <div class="scrollspace" id="scrollspace" hidden>
@@ -577,7 +577,7 @@
   <p class="verification-note" id="previewSourceStatus" role="status">Preparing source-verified preview</p>
   <div id="previewViewport" class="verified-frame-viewport">
     <div id="previewShell" class="verified-frame-shell">
-      <iframe id="previewFrame" title="Preview of HTML prepared for publication" sandbox="allow-same-origin allow-scripts"></iframe>
+      <iframe id="previewFrame" title="Preview of HTML prepared for publication" sandbox="allow-scripts"></iframe>
     </div>
   </div>
 </dialog>
@@ -590,12 +590,12 @@
   <div class="compare-grid">
     <section><span>Original GitHub source · before</span>
       <div id="originalViewport" class="verified-frame-viewport"><div id="originalShell" class="verified-frame-shell">
-        <iframe id="originalFrame" title="Original website from GitHub main" sandbox="allow-same-origin allow-scripts"></iframe>
+        <iframe id="originalFrame" title="Original website from GitHub main" sandbox="allow-scripts"></iframe>
       </div></div>
     </section>
     <section><span>Edited output · after</span>
       <div id="sceneViewport" class="verified-frame-viewport"><div id="sceneShell" class="verified-frame-shell">
-        <iframe id="sceneFrame" title="Edited HTML assembled for live publishing" sandbox="allow-same-origin allow-scripts"></iframe>
+        <iframe id="sceneFrame" title="Edited HTML assembled for live publishing" sandbox="allow-scripts"></iframe>
       </div></div>
     </section>
   </div>
