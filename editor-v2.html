@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex,nofollow">
 <title>Academic Website Editor 2 | Ye Eun Moon</title>
 <link rel="stylesheet" href="editor-v2.css?v=20261104-editor-v2-draft-recovery-v57">
-<script src="editor-v2.js?v=20261104-editor-v2-json-restore-v61" defer></script>
+<script src="editor-v2.js?v=20261104-editor-v2-json-restore-v62" defer></script>
 </head>
 <body>
 <a class="skip" href="#workspace">Skip to editor canvas</a>
@@ -180,6 +180,7 @@
           <p>Your edits in this tab are still visible but could not be saved. The newer stored draft has not been overwritten. Download a backup, then choose which draft to keep.</p>
           <div class="inline-actions">
             <button id="downloadConflictingLiveDraft" type="button">Download this tab's edits</button>
+            <button id="restoreConflictingLiveDraft" type="button">Restore saved JSON backup</button>
             <button id="loadNewerLiveDraft" type="button">Load newer saved draft</button>
             <button id="overwriteNewerLiveDraft" type="button" class="danger">Keep my edits instead</button>
           </div>
@@ -190,6 +191,7 @@
           <p>This browser contains an unreadable live-page draft. Its original data has not been changed. New edits cannot be saved or published until you resolve it.</p>
           <div class="inline-actions">
             <button id="downloadUnreadableLiveDraft" type="button">Download original draft</button>
+            <button id="restoreUnreadableLiveDraft" type="button">Restore valid JSON backup</button>
             <button id="discardUnreadableLiveDraft" type="button" class="danger">Discard unreadable draft</button>
           </div>
           <p class="help">Download the original draft first if you may need it. Discarding requires confirmation and never changes the public website.</p>
