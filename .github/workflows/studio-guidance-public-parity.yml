@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - "studio/index.html"
+      - "studio/studio.js"
       - "studio/studio-chrome.js"
       - "scripts/audit-studio-guidance-public-parity.py"
       - ".github/workflows/studio-guidance-public-parity.yml"
@@ -19,7 +20,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Compare public Website Studio page and generated guidance bytes
+      - name: Compare public Website Studio interface and generated guidance bytes
         run: python3 scripts/audit-studio-guidance-public-parity.py
       - name: Preserve HTTPS comparison evidence
         if: always()
