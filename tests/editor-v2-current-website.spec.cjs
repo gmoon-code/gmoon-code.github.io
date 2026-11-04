@@ -891,3 +891,65 @@ test('Publishing a second change to the same source heading preserves the new in
     expect(await page.evaluate(()=>JSON.stringify(localStorage)))
       .not.toContain('synthetic-reedit-token');
   });
+
+
+for(const name of ['projects.html','research.html','interests.html','pungmul.html']){
+  test('Real-page photo description change publishes exact verified preview on '+name,
+    async({page})=>{
+      const otherWrites=[],puts=[];
+      await installVerifiedCurrentSource(page,otherWrites);
+      await page.route('https://api.github.com/repos/gmoon-code/gmoon-code.github.io/contents/'+name,
+        async route=>{
+          if(route.request().method()!=='PUT')return route.fallback();
+          puts.push(JSON.parse(route.request().postData()));
+          await route.fulfill({status:200,contentType:'application/json',
+            headers:{'access-control-allow-origin':'*'},
+            body:JSON.stringify({commit:{sha:'mock-photo-accessibility-'+name}})});
+        });
+      await page.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+      await expect(page.locator('#liveAssetStatus'))
+        .toContainText('GitHub main source verified',{timeout:35000});
+      const image=page.frameLocator('#livePageFrame').locator('main img:visible').first();
+      await expect(image).toBeVisible();
+      const source=await image.getAttribute('src');
+      const alt='Synthetic edited photo description for '+name;
+      await image.click();
+      await expect(page.locator('#liveImageControls')).toBeVisible();
+      await expect(page.locator('#liveImageSrc')).toHaveValue(source);
+      await page.locator('#liveImageAlt').fill(alt);
+      await page.locator('#applyLiveImage').click();
+      await expect(image).toHaveAttribute('src',source);
+      await expect(image).toHaveAttribute('alt',alt);
+      await page.locator('#save').click();
+      await page.locator('#preview').click();
+      await expect(page.locator('#previewDialog')).toBeVisible();
+      await expect(page.frameLocator('#previewFrame').locator('main img').first())
+        .toHaveAttribute('alt',alt,{timeout:20000});
+      const expectedHtml=await page.locator('#previewFrame').getAttribute('srcdoc');
+      await page.locator('#closePreview').click();
+      await page.reload({waitUntil:'domcontentloaded'});
+      await expect(page.locator('#liveAssetStatus'))
+        .toContainText('GitHub main source verified',{timeout:35000});
+      await expect(page.frameLocator('#livePageFrame').locator('main img:visible').first())
+        .toHaveAttribute('alt',alt,{timeout:20000});
+      await page.locator('#publish').click();
+      await page.locator('#githubToken').fill('synthetic-photo-edit-token');
+      await page.locator('#acknowledgeLive').check();
+      await page.locator('#confirmPublish').click();
+      await expect.poll(()=>puts.length,{timeout:20000}).toBe(1);
+      expect(puts[0].sha).toBe(blobSha(SOURCE.get(name)));
+      const submitted=Buffer.from(puts[0].content,'base64').toString('utf8');
+      expect(submitted,name+' preview and submitted HTML equality').toBe(expectedHtml);
+      const sourceRefs=await page.evaluate(({before,after})=>{
+        const parser=new DOMParser();
+        const a=parser.parseFromString(before,'text/html');
+        const b=parser.parseFromString(after,'text/html');
+        return {before:[...a.querySelectorAll('main img')].map(x=>x.getAttribute('src')),
+          after:[...b.querySelectorAll('main img')].map(x=>x.getAttribute('src'))};
+      },{before:SOURCE.get(name).toString('utf8'),after:submitted});
+      expect(sourceRefs.after).toEqual(sourceRefs.before);
+      expect(otherWrites).toEqual([]);
+      expect(await page.evaluate(()=>JSON.stringify(localStorage)))
+        .not.toContain('synthetic-photo-edit-token');
+    });
+}
