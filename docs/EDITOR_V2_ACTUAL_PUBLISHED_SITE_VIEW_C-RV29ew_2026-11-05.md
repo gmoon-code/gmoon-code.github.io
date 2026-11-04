@@ -26,6 +26,8 @@ Two new real-page Playwright tests verify the public URL iframe, phone-width vie
 
 Two additional diagnostics compare the first 18 representative Home and Contact DOM elements (including headings, text, images, figures and the main content) between direct public-page rendering and the source iframe at **the exact same 1160-pixel width**. The tests compare relative element geometry within a 6-pixel tolerance, CSS font size and display state. They passed in all three browser engines, as did the published-site preview tests, in [final pre-merge run 41931396502](https://github.com/gmoon-code/gmoon-code.github.io/actions/runs/41931396502), **107/107 cases per browser, 321/321 total**. This sampled controlled-width result does not extend automatically to every page and breakpoint. It does support the need to compare at equal viewport sizes.
 
+The [post-merge current-website run 41931940993](https://github.com/gmoon-code/gmoon-code.github.io/actions/runs/41931940993) independently passed **107/107 in all three engines (321/321)**. After final public byte confirmation, [deployed browser smoke run 41931940946, attempt 2](https://github.com/gmoon-code/gmoon-code.github.io/actions/runs/41931940946) passed **3/3 in Chromium**. The earlier Firefox and WebKit deployed smoke checks also passed 3/3, but occurred before the final byte-match confirmation.
+
 The final PR altered only `editor-v2.html`, `editor-v2.js`, `editor-v2.css` and the source-faithful current-website test file. It changed no academic page HTML, public content, original website photograph or other authored material.
 
 ## Production delivery and remaining limits
