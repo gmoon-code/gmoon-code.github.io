@@ -617,8 +617,14 @@ test('Two consecutive source-faithful simulated live publications preserve both 
       .toHaveText(replacement,{timeout:20000});
     await expect(live.locator('main h1:visible,main h2:visible').first())
       .toHaveCSS('text-align',selectedAlignment);
+    const extractSourceCss=html=>{
+      const match=html.match(/<style id="moon-v2-live-layout">([\s\S]*?)<\/style>/i);
+      return match?.[1]||'';
+    };
     const countStyles=html=>(html.match(/id="moon-v2-live-layout"/g)||[]).length;
     expect(countStyles(pubs[1].html)).toBeLessThanOrEqual(1);
+    expect(extractSourceCss(pubs[1].html),'text-only follow-up must not duplicate existing style rules')
+      .toBe(extractSourceCss(pubs[0].html));
     expect(otherWrites).toEqual([]);
     expect(gitReads.length).toBeGreaterThanOrEqual(4);
     expect(await page.evaluate(()=>JSON.stringify(localStorage)))
