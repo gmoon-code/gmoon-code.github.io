@@ -5335,8 +5335,10 @@ async function publishGithub(token,target){
     body:JSON.stringify(body)
   });
   if(!response.ok){
-    if(response.status===409||response.status===422)
+    if(response.status===409)
       throw Error("The file changed on GitHub during publication. No changes were published. Review the page and retry.");
+    if(response.status===422)
+      throw Error("GitHub rejected the update (HTTP 422). The file may have changed, or GitHub may have rejected the request. Nothing was confirmed. Check the latest page source before retrying.");
     if(response.status===401||response.status===403)
       throw Error("GitHub refused the update. Check your token's repository permissions.");
     throw Error("GitHub did not accept this publication (HTTP "+response.status+").");
