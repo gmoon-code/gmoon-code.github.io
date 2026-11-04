@@ -1,12 +1,12 @@
 {
-  "sourceHead": "d8fc85d29048946910ed6fa4e7b0350f728ca57f",
+  "sourceHead": "90cfc245d1200b94c8226272b983bdc89ff97029",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 24,
   "httpErrors": 0,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-d8fc85d29048",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-90cfc245d120",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -14,24 +14,20 @@
   "auditEvidence": {
     "links": {
       "report": "docs/PUBLIC_LINKGRAPH_LATEST_RESULTS.json",
-      "run": "41655799407",
-      "head_sha": "413adf30fe77033ea78d7032f69235ccfa007a2f",
+      "run": "41759436405",
+      "head_sha": "d8fc85d29048946910ed6fa4e7b0350f728ca57f",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research-methods-studio.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "problems": 0
       }
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "41655799495",
-      "head_sha": "413adf30fe77033ea78d7032f69235ccfa007a2f",
+      "run": "41759436334",
+      "head_sha": "d8fc85d29048946910ed6fa4e7b0350f728ca57f",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research-methods-studio.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "issues": 42
       },
@@ -57,36 +53,30 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "41655799523",
-      "head_sha": "413adf30fe77033ea78d7032f69235ccfa007a2f",
+      "run": "41759436440",
+      "head_sha": "d8fc85d29048946910ed6fa4e7b0350f728ca57f",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research-methods-studio.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0
       }
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "41655799440",
-      "head_sha": "413adf30fe77033ea78d7032f69235ccfa007a2f",
+      "run": "41759436426",
+      "head_sha": "d8fc85d29048946910ed6fa4e7b0350f728ca57f",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research-methods-studio.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0
       }
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "41655799480",
-      "head_sha": "413adf30fe77033ea78d7032f69235ccfa007a2f",
+      "run": "41759436518",
+      "head_sha": "d8fc85d29048946910ed6fa4e7b0350f728ca57f",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research-methods-studio.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0,
         "combinedStressFailures": 0
@@ -94,12 +84,10 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "41655799513",
-      "head_sha": "413adf30fe77033ea78d7032f69235ccfa007a2f",
+      "run": "41759436477",
+      "head_sha": "d8fc85d29048946910ed6fa4e7b0350f728ca57f",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research-methods-studio.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0,
         "axeViolations": 0
@@ -112,89 +100,11 @@
       "note": "U1 route audit documents successful run 40825886279; legacy utility machine report refers to an early missing-script failure. Do not treat it as latest successful evidence."
     }
   },
-  "sourceDriftSinceAudits": [
-    {
-      "category": "links",
-      "sourceModifiedSinceAudit": [
-        "research-methods-studio.html"
-      ]
-    },
-    {
-      "category": "external",
-      "sourceModifiedSinceAudit": [
-        "research-methods-studio.html"
-      ]
-    },
-    {
-      "category": "reflow",
-      "sourceModifiedSinceAudit": [
-        "research-methods-studio.html"
-      ]
-    },
-    {
-      "category": "engines",
-      "sourceModifiedSinceAudit": [
-        "research-methods-studio.html"
-      ]
-    },
-    {
-      "category": "typography",
-      "sourceModifiedSinceAudit": [
-        "research-methods-studio.html"
-      ]
-    },
-    {
-      "category": "interactions",
-      "sourceModifiedSinceAudit": [
-        "research-methods-studio.html"
-      ]
-    }
-  ],
-  "pass": false,
-  "errors": [
-    {
-      "sourceDrift": [
-        {
-          "category": "links",
-          "sourceModifiedSinceAudit": [
-            "research-methods-studio.html"
-          ]
-        },
-        {
-          "category": "external",
-          "sourceModifiedSinceAudit": [
-            "research-methods-studio.html"
-          ]
-        },
-        {
-          "category": "reflow",
-          "sourceModifiedSinceAudit": [
-            "research-methods-studio.html"
-          ]
-        },
-        {
-          "category": "engines",
-          "sourceModifiedSinceAudit": [
-            "research-methods-studio.html"
-          ]
-        },
-        {
-          "category": "typography",
-          "sourceModifiedSinceAudit": [
-            "research-methods-studio.html"
-          ]
-        },
-        {
-          "category": "interactions",
-          "sourceModifiedSinceAudit": [
-            "research-methods-studio.html"
-          ]
-        }
-      ]
-    }
-  ],
+  "sourceDriftSinceAudits": [],
+  "pass": true,
+  "errors": [],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41759436451",
-  "run_sha": "d8fc85d29048946910ed6fa4e7b0350f728ca57f",
-  "exit_code": "1"
+  "workflow_run_id": "41762038695",
+  "run_sha": "90cfc245d1200b94c8226272b983bdc89ff97029",
+  "exit_code": "0"
 }
