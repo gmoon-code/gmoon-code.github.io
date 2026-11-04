@@ -287,3 +287,93 @@ for(const name of ['index.html','research.html','contact.html','interests.html']
       expect(localText).not.toContain('isolated-browser-test-only');
     });
 }
+
+
+// Publishing failure checks use the real current page HTML, but intercept every
+// GitHub API request. They never submit any request to the actual repository.
+test('A changed GitHub source blocks real-page publication without losing the draft',
+  async({page})=>{
+    const name='contact.html',unexpectedWrites=[];
+    await installVerifiedCurrentSource(page,unexpectedWrites);
+    await page.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    const heading=page.frameLocator('#livePageFrame')
+      .locator('main h1:visible,main h2:visible').first();
+    await heading.click();
+    await page.locator('#liveTextAlign').selectOption('right');
+    await page.locator('#save').click();
+    const savedBefore=await page.evaluate(file=>
+      localStorage.getItem('moon-academic-editor-v2:source:'+file),name);
+    expect(savedBefore).toBeTruthy();
+
+    const currentBytes=SOURCE.get(name);
+    const changedBytes=Buffer.from(currentBytes.toString('utf8')
+      .replace('</main>','<p data-test-new-revision="true">New external revision</p></main>'));
+    expect(changedBytes.equals(currentBytes)).toBe(false);
+    const endpoint='https://api.github.com/repos/gmoon-code/gmoon-code.github.io/contents/'+name;
+    let revisionChecks=0;
+    await page.route(endpoint+'?ref=main',async route=>{
+      revisionChecks++;
+      await route.fulfill({status:200,contentType:'application/json',
+        headers:{'access-control-allow-origin':'*'},
+        body:JSON.stringify({type:'file',name,sha:blobSha(changedBytes),
+          encoding:'base64',content:changedBytes.toString('base64')})});
+    });
+    await page.locator('#publish').click();
+    await page.locator('#githubToken').fill('isolated-test-token-never-sent');
+    await page.locator('#acknowledgeLive').check();
+    await page.locator('#confirmPublish').click();
+    await expect(page.locator('#publishError'))
+      .toContainText('changed since your editing view was loaded',{timeout:20000});
+    expect(revisionChecks).toBeGreaterThan(0);
+    expect(unexpectedWrites).toEqual([]);
+    expect(await page.evaluate(file=>
+      localStorage.getItem('moon-academic-editor-v2:source:'+file),name))
+      .toBe(savedBefore);
+    await expect(page.locator('#publishResult')).toBeHidden();
+    expect(await page.evaluate(()=>JSON.stringify(localStorage)))
+      .not.toContain('isolated-test-token-never-sent');
+  });
+
+test('A simulated GitHub 409 conflict retains a real-page draft and reports no publication',
+  async({page})=>{
+    const name='research.html',unexpectedWrites=[],submitted=[];
+    await installVerifiedCurrentSource(page,unexpectedWrites);
+    const endpoint='https://api.github.com/repos/gmoon-code/gmoon-code.github.io/contents/'+name;
+    await page.route(endpoint,async route=>{
+      if(route.request().method()!=='PUT')return route.fallback();
+      submitted.push(JSON.parse(route.request().postData()));
+      await route.fulfill({status:409,contentType:'application/json',
+        headers:{'access-control-allow-origin':'*'},
+        body:JSON.stringify({message:'Conflict, source was updated'})});
+    });
+    await page.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    const heading=page.frameLocator('#livePageFrame')
+      .locator('main h1:visible,main h2:visible').first();
+    await heading.click();
+    await page.locator('#liveTextAlign').selectOption('right');
+    await page.locator('#save').click();
+    const savedBefore=await page.evaluate(file=>
+      localStorage.getItem('moon-academic-editor-v2:source:'+file),name);
+    expect(savedBefore).toBeTruthy();
+
+    await page.locator('#publish').click();
+    await page.locator('#githubToken').fill('isolated-test-conflict-token');
+    await page.locator('#acknowledgeLive').check();
+    await page.locator('#confirmPublish').click();
+    await expect(page.locator('#publishError'))
+      .toContainText('changed on GitHub during publication',{timeout:20000});
+    expect(submitted).toHaveLength(1);
+    expect(submitted[0].branch).toBe('main');
+    expect(submitted[0].sha).toBe(blobSha(SOURCE.get(name)));
+    expect(unexpectedWrites).toEqual([]);
+    expect(await page.evaluate(file=>
+      localStorage.getItem('moon-academic-editor-v2:source:'+file),name))
+      .toBe(savedBefore);
+    await expect(page.locator('#publishResult')).toBeHidden();
+    expect(await page.evaluate(()=>JSON.stringify(localStorage)))
+      .not.toContain('isolated-test-conflict-token');
+  });
