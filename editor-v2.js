@@ -31,6 +31,7 @@ const LIVE_DRAFT_KEY="moon-academic-editor-v2:source:";
 const LIVE_POSITION_LOCK_KEY="moon-academic-editor-v2:position-lock:";
 let livePositionLocks=new Set(); // Local editor preference, never published.
 let livePatches=new Map(),liveEditing=null,liveHistory=[],liveRedo=[],liveGesture=null,liveOverlay=null;
+let liveDraftRecovery=null; // Unreadable browser draft stays untouched until explicit recovery.
 let liveImageInputNode=null,liveImageInputDirty=false; // Preserve unsaved inspector edits during browser re-renders.
 let githubTabToken=""; // In-memory only. Never written to storage or page files.
 let reconnectImages=[],reconnectForPage="";
@@ -2224,6 +2225,7 @@ function toggleLiveGeometryLock(){
 }
 function loadLiveDraft(page){
   livePatches=new Map();liveHistory=[];liveRedo=[];
+  liveDraftRecovery=null;
   livePositionLocks=new Set();
   try{
     const ids=JSON.parse(localStorage.getItem(LIVE_POSITION_LOCK_KEY+page)||"[]");
@@ -2234,27 +2236,58 @@ function loadLiveDraft(page){
             validLivePatch({selector,kind:"layout",expected:""})))
           livePositionLocks.add(selector);
   }catch{}
+  let raw=null;
   try{
-    const patches=JSON.parse(localStorage.getItem(LIVE_DRAFT_KEY+page)||"[]");
-    if(!Array.isArray(patches)||patches.length>180)return;
-    for(const patch of patches){
-      if(validLivePatch(patch))livePatches.set(patch.selector,patch);
+    raw=localStorage.getItem(LIVE_DRAFT_KEY+page);
+    if(raw!==null){
+      const patches=JSON.parse(raw);
+      if(!Array.isArray(patches)||patches.length>180)
+        throw Error("Saved draft has an invalid structure or too many edits.");
+      // Atomic validation. Never apply only the valid subset of a damaged
+      // draft, or replace its original bytes on the next normal save.
+      const validated=new Map();
+      for(const patch of patches){
+        if(!validLivePatch(patch)||validated.has(patch.selector))
+          throw Error("Saved draft contains an invalid or duplicate edit.");
+        validated.set(patch.selector,patch);
+      }
+      livePatches=validated;
     }
-  }catch{}
+  }catch(error){
+    livePatches=new Map();
+    if(raw!==null){
+      liveDraftRecovery={page,raw};
+      status("Saved live-page draft cannot be read · Original stored data preserved · Review recovery");
+    }else{
+      status("Browser draft storage is unavailable · Changes may not be retained");
+    }
+  }
+  renderLiveEditCount();
 }
 function renderLiveEditCount(){
-  $("liveEditCount").textContent=livePatches.size?
-    livePatches.size+" draft edit"+(livePatches.size===1?"":"s")+
-      " · Original website unchanged":
-    "No live-page draft edits. Original website unchanged.";
+  const blocked=liveDraftRecovery?.page===currentPage;
+  $("liveDraftRecovery").hidden=!blocked;
+  $("liveEditCount").textContent=blocked?
+    "Stored live-page draft needs recovery · New edits cannot be saved or published until resolved.":
+    livePatches.size?
+      livePatches.size+" draft edit"+(livePatches.size===1?"":"s")+
+        " · Original website unchanged":
+      "No live-page draft edits. Original website unchanged.";
 }
 function storeLiveDraft(){
+  if(liveDraftRecovery?.page===currentPage){
+    status("Saved draft is unreadable · Storage protected · Download it and resolve the warning before saving");
+    renderLiveEditCount();return false;
+  }
   try{
     localStorage.setItem(LIVE_DRAFT_KEY+currentPage,
       JSON.stringify([...livePatches.values()]));
     status("Original-layout edits saved locally · Website unchanged");
-  }catch{status("Local draft could not be saved · Export the edited HTML");}
-  renderLiveEditCount();
+    renderLiveEditCount();return true;
+  }catch{
+    status("Local draft could not be saved · Export the edited HTML");
+    renderLiveEditCount();return false;
+  }
 }
 function renderLiveInspector(){
   const live=workspaceMode==="live",sel=liveSelected;
@@ -2914,6 +2947,8 @@ async function fetchGithubPageSource(page,{force=false}={}){
   return data;
 }
 async function verifiedSourcePreviewPair(){
+  if(liveDraftRecovery?.page===currentPage)
+    throw Error("Stored draft is unreadable. Download the original draft and resolve its recovery warning before previewing or publishing.");
   const page=currentPage,revision=JSON.stringify(liveSnapshot());
   // Both before and after come from one immutable GitHub blob. Its edited
   // version uses the exact patch assembler used by Publish Live.
@@ -5340,6 +5375,8 @@ function applyLiveEditsToGithubHtml(html){
   return {html:output,resolved,normalized};
 }
 async function publishGithub(token,target){
+  if(target==="live"&&liveDraftRecovery?.page===currentPage)
+    throw Error("Stored draft is unreadable. Original data is protected. Download or resolve the saved-draft recovery warning before publishing.");
   if(!token)throw Error("Enter your GitHub token to publish.");
   if(!["live","staging"].includes(target))throw Error("Choose a valid publishing destination.");
   const sourceMode=workspaceMode==="live";
@@ -5772,6 +5809,32 @@ function attachEvents(){
   ])$(field).addEventListener("change",event=>
     setLiveAppearance(key,event.target.value));
   $("resetLiveAppearance").addEventListener("click",resetLiveAppearance);
+  $("downloadUnreadableLiveDraft").addEventListener("click",()=>{
+    const recovery=liveDraftRecovery;
+    if(!recovery||recovery.page!==currentPage)return;
+    download(recovery.page+".unreadable-saved-draft.txt",recovery.raw,"text/plain");
+    status("Stored draft downloaded without changing its browser copy");
+  });
+  $("discardUnreadableLiveDraft").addEventListener("click",()=>{
+    const recovery=liveDraftRecovery;
+    if(!recovery||recovery.page!==currentPage)return;
+    if(!confirm("Discard this page's unreadable saved draft from this browser? Download its original contents first if you might need them. Any new changes currently visible in this editor will be saved as a fresh draft. The public website is unchanged."))return;
+    try{
+      // Another editor tab may have replaced the key since this page loaded.
+      // Never delete that newer data on the strength of an older warning.
+      if(localStorage.getItem(LIVE_DRAFT_KEY+currentPage)!==recovery.raw){
+        status("Stored draft changed in another tab · Reload this page before resolving it");
+        return;
+      }
+      localStorage.removeItem(LIVE_DRAFT_KEY+currentPage);
+      liveDraftRecovery=null;
+      storeLiveDraft();
+      status("Unreadable stored draft discarded by confirmation · Current edits saved locally · Website unchanged");
+    }catch{
+      status("Could not discard stored draft · Original browser data preserved");
+    }
+    renderLiveEditCount();
+  });
   $("revertLiveElement").addEventListener("click",revertLiveElement);
   $("deleteLiveElement").addEventListener("click",deleteSelectedLiveElement);
   $("previewLiveEdits").addEventListener("click",()=>$("preview").click());
