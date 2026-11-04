@@ -3227,7 +3227,13 @@ function startLiveGesture(event,direction,anchor){
     patch,layout:liveLayoutFor(selector),snapshot:liveSnapshot(),
     moved:false,selector,node,snapLines:candidateLiveSnapLines(node,
       (sourceGroup||group)?.map(item=>item.node)||[node])};
-  anchor.setPointerCapture?.(event.pointerId);
+  // The source document is sandboxed against page-script access to the
+  // publishing form. Chromium may stall when an original source node captures
+  // a drag pointer inside that sandbox. Its document already listens for
+  // pointer movement and release, so reserve capture for editor handles and
+  // added objects, which require it for reliable off-object movement.
+  if(anchor.closest?.("#moon-v2-live-overlay")||LIVE_ADDED_ID.test(selector))
+    anchor.setPointerCapture?.(event.pointerId);
 }
 // Each source box is resized around a shared group frame. We first establish
 // the new natural dimensions, then measure the resulting browser layout and
