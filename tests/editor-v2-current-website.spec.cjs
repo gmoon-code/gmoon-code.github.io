@@ -148,3 +148,37 @@ for(const name of [
       expect(writes,name+' must not perform a GitHub write').toEqual([]);
     });
 }
+
+for(const name of [
+  'index.html','research.html','research-scoping.html','contact.html','pungmul.html'
+]){
+  test('Real-page phone and tablet viewports remain responsive on '+name,
+    async({page})=>{
+      const writes=[];
+      await installVerifiedCurrentSource(page,writes);
+      await page.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+      await expect(page.locator('#liveAssetStatus'))
+        .toContainText('GitHub main source verified',{timeout:35000});
+      for(const [screen,width] of [['phone',390],['tablet',768]]){
+        await page.locator('#devicePreview').selectOption(screen);
+        await expect(page.locator('#livePageFrame')).toHaveCSS('width',width+'px');
+        const live=page.frameLocator('#livePageFrame');
+        await expect(live.locator('main')).toHaveCount(1);
+        const liveViewport=await live.locator('html').evaluate(node=>
+          node.ownerDocument.defaultView.innerWidth);
+        expect(liveViewport).toBe(width);
+
+        await page.locator('#preview').click();
+        await expect(page.locator('#previewDialog')).toBeVisible();
+        await expect(page.locator('#previewFrame')).toHaveCSS('width',width+'px');
+        await expect(page.locator('#previewSourceStatus')).toContainText('GitHub main');
+        const preview=page.frameLocator('#previewFrame');
+        await expect(preview.locator('main')).toHaveCount(1);
+        const verifiedViewport=await preview.locator('html').evaluate(node=>
+          node.ownerDocument.defaultView.innerWidth);
+        expect(verifiedViewport).toBe(width);
+        await page.locator('#closePreview').click();
+      }
+      expect(writes).toEqual([]);
+    });
+}
