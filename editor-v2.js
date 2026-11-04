@@ -8,6 +8,7 @@ const VERSION=2, REPO="gmoon-code/gmoon-code.github.io";
 const PAGES=new Set([...$("page").options].map(opt=>opt.value));
 const STANDARD_WIDTH=1160, MAX_OBJECTS=350, MIN_W=40, MIN_H=24;
 const MAX_GITHUB_PAGE_BYTES=900000; // Keep REST Contents API base64 readable.
+const MAX_CANVAS_IMPORT_BYTES=64*1024*1024; // Preserve JSON backups containing multiple inline photographs.
 const HANDLES=["nw","n","ne","e","se","s","sw","w"];
 const NEW_DRAFT="moon-academic-editor-v2:";
 let currentPage="index.html";
@@ -6275,7 +6276,7 @@ function attachEvents(){
     const file=event.target.files?.[0];event.target.value="";
     const requestedPage=currentPage;
     if(!file)return;
-    if(file.size>3000000){status("JSON backup exceeds 3 MB");return;}
+    if(file.size>MAX_CANVAS_IMPORT_BYTES){status("Canvas JSON backup exceeds 64 MB · Nothing restored");return;}
     try{
       const restored=validateScene(JSON.parse(await file.text()),requestedPage);
       if(currentPage!==requestedPage){
