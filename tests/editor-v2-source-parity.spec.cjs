@@ -32,7 +32,9 @@ test.beforeEach(async({page})=>{
 });
 test('editable page, verified output, and same-revision comparison match',async({page})=>{
   const live=page.frameLocator('#livePageFrame');
-  await expect(live.locator('body')).toHaveAttribute('data-website-script','executed');
+  // Source scripts are intentionally inert in the parent-editable iframe.
+  // The isolated publication preview can run the same site script.
+  await expect(live.locator('body')).not.toHaveAttribute('data-website-script','executed');
   await expect(page.locator('#liveAssetStatus')).toContainText('GitHub main source verified');
   await live.locator('main p').first().click();
   await page.locator('#liveTextAlign').selectOption('center');
