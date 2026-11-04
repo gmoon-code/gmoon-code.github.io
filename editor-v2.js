@@ -422,6 +422,14 @@ function setWorkspaceMode(mode){
   $("exportScene").disabled=isLive;
   $("exportScene").title=isLive?"Switch to Free design canvas to export canvas JSON":"Export the current free design canvas";
   $("save").textContent=isLive?"Save live-page edits":"Save canvas draft";
+  $("preview").textContent=isLive?"Verified live preview":"Canvas preview";
+  $("preview").title=isLive?
+    "Preview the HTML that would be submitted when publishing this live page":
+    "Preview the independent canvas for staging only; it cannot replace the live page";
+  $("publish").textContent=isLive?"Publish live website":"Publish staging preview";
+  $("publish").title=isLive?
+    "Publish reviewed edits to the selected website page on GitHub":
+    "Publish only a separate staging preview. Switch to Live website to edit the public page.";
   $("selectTool").textContent=isLive?"↖ Select webpage":"↖ Select canvas";
   $("liveSectionPickMode").hidden=!isLive;
   $("cropImageTool").hidden=!isLive;
