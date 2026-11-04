@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex,nofollow">
 <title>Academic Website Editor 2 | Ye Eun Moon</title>
 <link rel="stylesheet" href="editor-v2.css?v=20261104-editor-v2-quickstart-v54">
-<script src="editor-v2.js?v=20261104-editor-v2-combined-edit-v56" defer></script>
+<script src="editor-v2.js?v=20261104-editor-v2-draft-recovery-v57" defer></script>
 </head>
 <body>
 <a class="skip" href="#workspace">Skip to editor canvas</a>
@@ -483,6 +483,15 @@
         </div>
         <button id="exportLiveEdits" type="button">Export original-layout HTML</button>
         <p id="liveEditCount" class="help">No live-page draft edits. Original website unchanged.</p>
+        <div id="liveDraftRecovery" class="live-draft-recovery" role="alert" hidden>
+          <strong>Saved draft needs recovery</strong>
+          <p>This browser contains an unreadable live-page draft. Its original data has not been changed. New edits cannot be saved or published until you resolve it.</p>
+          <div class="inline-actions">
+            <button id="downloadUnreadableLiveDraft" type="button">Download original draft</button>
+            <button id="discardUnreadableLiveDraft" type="button" class="danger">Discard unreadable draft</button>
+          </div>
+          <p class="help">Download the original draft first if you may need it. Discarding requires confirmation and never changes the public website.</p>
+        </div>
       </section>
       <section id="canvasPropertiesPanel" class="panel-section" hidden>
         <h2>Canvas object properties</h2>
