@@ -2,13 +2,13 @@
   "pages_scanned": 19,
   "distinct_destinations": 115,
   "counts": {
-    "reachable": 73,
-    "unverified": 42
+    "reachable": 72,
+    "unverified": 43
   },
   "by_category": {
     "external": {
-      "reachable": 50,
-      "unverified": 1
+      "reachable": 49,
+      "unverified": 2
     },
     "scholarly-identifier": {
       "unverified": 41,
@@ -818,6 +818,25 @@
         "error": "Forbidden"
       },
       "warnings": []
+    },
+    {
+      "url": "https://www.kci.go.kr/kciportal/landing/article.kci?arti_id=ART001857639",
+      "status": "unverified",
+      "category": "external",
+      "pages": [
+        "pungmul.html"
+      ],
+      "head": {
+        "code": 400,
+        "finalUrl": "https://www.kci.go.kr/kciportal/landing/article.kci?arti_id=ART001857639",
+        "error": "Bad Request"
+      },
+      "get": {
+        "code": 400,
+        "finalUrl": "https://www.kci.go.kr/kciportal/landing/article.kci?arti_id=ART001857639",
+        "error": "Bad Request"
+      },
+      "warnings": []
     }
   ],
   "important_apps": [
@@ -841,203 +860,90 @@
   "doi_registry": {
     "checked": 41,
     "counts": {
-      "not-confirmed": 13,
-      "registered": 28
+      "registered": 35,
+      "not-confirmed": 6
     },
-    "secondary_index_matches": 13,
+    "secondary_index_matches": 6,
     "not_confirmed": [
       {
-        "url": "https://doi.org/10.1002/sce.20264",
-        "doi": "10.1002/sce.20264",
-        "pages": [
-          "teaching-ap-biology.html"
-        ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.20264",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Recognizing mechanistic reasoning in student scientific inquiry: A framework for discourse analysis developed from philosophy of science",
-        "indexedYear": 2008
-      },
-      {
-        "url": "https://doi.org/10.1002/sce.21938",
-        "doi": "10.1002/sce.21938",
+        "url": "https://doi.org/10.1002/sce.21112",
+        "doi": "10.1002/sce.21112",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21938",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21112",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "“That's Just Gonna Make Them Upset”: Youth Authoring Emerging Epistemic Ideals Through Rightful Presence",
-        "indexedYear": 2025
+        "indexedTitle": "Examining Classroom Science Practice Communities: How Teachers and Students Negotiate Epistemic Agency and Learn Science‐as‐Practice",
+        "indexedYear": 2014
       },
       {
-        "url": "https://doi.org/10.1002/tea.20237",
-        "doi": "10.1002/tea.20237",
+        "url": "https://doi.org/10.1002/sce.21622",
+        "doi": "10.1002/sce.21622",
+        "pages": [
+          "research-scoping.html"
+        ],
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21622",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Scientific modeling and translanguaging: A multilingual and multimodal approach to support science learning and engagement",
+        "indexedYear": 2021
+      },
+      {
+        "url": "https://doi.org/10.1002/tea.20311",
+        "doi": "10.1002/tea.20311",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.20237",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.20311",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Understanding the science experiences of successful women of color: Science identity as an analytic lens",
-        "indexedYear": 2007
+        "indexedTitle": "Developing a learning progression for scientific modeling: Making scientific modeling accessible and meaningful for learners",
+        "indexedYear": 2009
       },
       {
-        "url": "https://doi.org/10.1002/tea.21257",
-        "doi": "10.1002/tea.21257",
+        "url": "https://doi.org/10.1080/14675986.2015.1109775",
+        "doi": "10.1080/14675986.2015.1109775",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21257",
+        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/14675986.2015.1109775",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Epistemologies in practice: Making scientific practices meaningful for students",
+        "indexedTitle": "Beyond the mirror towards a plurilingual prism: exploring the creation of plurilingual ‘identity texts’ in English and French classrooms in Toronto and Montpellier",
         "indexedYear": 2015
       },
       {
-        "url": "https://doi.org/10.1002/tea.21459",
-        "doi": "10.1002/tea.21459",
+        "url": "https://doi.org/10.1111/jedm.12000",
+        "doi": "10.1111/jedm.12000",
         "pages": [
-          "research.html"
+          "research-scoping.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21459",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1111/jedm.12000",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Addressing the epistemic elephant in the room: Epistemic agency and the next generation science standards",
-        "indexedYear": 2018
-      },
-      {
-        "url": "https://doi.org/10.1002/tea.70072",
-        "doi": "10.1002/tea.70072",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.70072",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Students' Construction, Evaluation, and Revision of Scientific Models Through Multimodal Representations",
-        "indexedYear": 2026
-      },
-      {
-        "url": "https://doi.org/10.1080/03626784.2023.2200810",
-        "doi": "10.1080/03626784.2023.2200810",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/03626784.2023.2200810",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "You don’t know me: Welcoming gender diversity in schools via an ethic of hospitality",
-        "indexedYear": 2023
-      },
-      {
-        "url": "https://doi.org/10.1080/1046560X.2022.2155355",
-        "doi": "10.1080/1046560X.2022.2155355",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/1046560X.2022.2155355",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Teacher Noticing for Supporting Students’ Epistemic Agency in Science Sensemaking Discussions",
-        "indexedYear": 2023
-      },
-      {
-        "url": "https://doi.org/10.1080/15265161.2012.680533",
-        "doi": "10.1080/15265161.2012.680533",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://www.tandfonline.com/doi/abs/10.1080/15265161.2012.680533",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Out of Bounds? A Critique of the New Policies on Hyperandrogenism in Elite Female Athletes",
-        "indexedYear": 2012
-      },
-      {
-        "url": "https://doi.org/10.1207/S1532690XCI2004_1",
-        "doi": "10.1207/S1532690XCI2004_1",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://www.tandfonline.com/doi/abs/10.1207/S1532690XCI2004_1",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Guiding Principles for Fostering Productive Disciplinary Engagement: Explaining an Emergent Argument in a Community of Learners Classroom",
-        "indexedYear": 2002
-      },
-      {
-        "url": "https://doi.org/10.2304/ciec.2011.12.4.362",
-        "doi": "10.2304/ciec.2011.12.4.362",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://journals.sagepub.com/doi/10.2304/ciec.2011.12.4.362",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "On the Human Challenges of Multiliteracies Pedagogy",
-        "indexedYear": 2011
-      },
-      {
-        "url": "https://doi.org/10.3102/0013189X20927363",
-        "doi": "10.3102/0013189X20927363",
-        "pages": [
-          "research.html",
-          "writing-biological-classification.html"
-        ],
-        "publisherLanding": "https://journals.sagepub.com/doi/10.3102/0013189X20927363",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Beyond Equity as Inclusion: A Framework of “Rightful Presence” for Guiding Justice-Oriented Studies in Teaching and Learning",
-        "indexedYear": 2020
+        "indexedTitle": "Validating the Interpretations and Uses of Test Scores",
+        "indexedYear": 2013
       },
       {
         "url": "https://doi.org/10.3102/0034654314558490",
@@ -1059,7 +965,7 @@
     "unresolved": [],
     "limitation": "Crossref/DataCite registration is distinct from publisher access, correct article metadata or article availability. OpenAlex is independent secondary corroboration, not registration proof."
   },
-  "workflow_run_id": "41807290344",
-  "head_sha": "b7ab455ecedc18c18f0c363a506346fd83b36794",
+  "workflow_run_id": "41812555955",
+  "head_sha": "e76cef65d3ff8999d4113cec07ab543310526243",
   "audit_exit_code": "0"
 }
