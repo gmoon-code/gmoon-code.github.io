@@ -120,7 +120,7 @@ for(const name of [
       const before=await heading.evaluate(node=>
         node.ownerDocument.defaultView.getComputedStyle(node).textAlign);
       const wanted=before==='center'?'right':'center';
-      await heading.click({modifiers:['Alt']});
+      await heading.click();
       await expect(page.locator('#liveTextControls')).toBeVisible();
       await page.locator('#liveTextAlign').selectOption(wanted);
       await expect(heading).toHaveCSS('text-align',wanted);
