@@ -162,3 +162,10 @@
 
 /* Layers are navigable by keyboard and inspectable by hover. */
 #liveElementList button[data-live-selector]:focus-visible{outline:2px solid var(--focus,#287dbb);outline-offset:-2px}
+
+/* Contextual instructions stay collapsed until the owner requests them. */
+.quick-start{border-top:1px solid var(--rule);padding-top:10px;margin-top:14px}
+.quick-start summary{cursor:pointer;color:var(--accent);font-size:12px;font-weight:650;line-height:1.5}
+.quick-start summary:focus-visible{outline:2px solid var(--focus);outline-offset:3px}
+.quick-start ol{padding-left:17px;margin:10px 0 8px}
+.quick-start li{margin-bottom:8px}
