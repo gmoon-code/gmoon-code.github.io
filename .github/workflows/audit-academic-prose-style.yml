@@ -1,0 +1,27 @@
+name: Academic website authored prose style integrity
+on:
+  push:
+    branches: [main]
+    paths:
+      - "*.html"
+      - "**/*.html"
+      - "scripts/audit-academic-prose-style.py"
+      - ".github/workflows/audit-academic-prose-style.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  prose-integrity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check static authored prose without rewriting source titles
+        run: python3 scripts/audit-academic-prose-style.py
+      - name: Retain audit extraction evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: academic-prose-style-evidence
+          path: audit-academic-style-output/
+          retention-days: 21
