@@ -5640,6 +5640,13 @@ function attachEvents(){
     // replace the user's newly typed path or alternative text.
     $(id).addEventListener("focus",()=>{liveImageInputDirty=true;});
     $(id).addEventListener("input",()=>{liveImageInputDirty=true;});
+    // Firefox occasionally dispatches a real click on this parent-document
+    // field without moving keyboard focus out of the source-page iframe.
+    // Restore the clicked control as the typing destination in that case.
+    $(id).addEventListener("click",event=>{
+      if(document.activeElement!==event.currentTarget)
+        event.currentTarget.focus({preventScroll:true});
+    });
   }
   $("applyLiveImage").addEventListener("click",applyLiveImage);
   $("liveCopyFormat").addEventListener("click",copyLiveFormat);
