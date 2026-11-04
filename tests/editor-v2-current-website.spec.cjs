@@ -1267,7 +1267,7 @@ test('Two real editor tabs preserve the newer valid draft and require explicit o
     await heading(page).click();
     const initial=await page.locator('#liveTextAlign').inputValue();
     const chosenA=initial==='right'?'center':'right';
-    const chosenB=chosenA==='left'?'center':'left';
+    const chosenB=initial==='left'?'center':'left';
     await page.locator('#liveTextAlign').selectOption(chosenA);
     const savedA=await page.evaluate(key=>localStorage.getItem(key),key);
     expect(JSON.parse(savedA)).toHaveLength(1);
