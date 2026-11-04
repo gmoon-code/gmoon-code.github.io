@@ -1,0 +1,75 @@
+name: Editor V2 current website compatibility
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'editor-v2.js'
+      - 'editor-v2.html'
+      - 'editor-v2.css'
+      - 'index.html'
+      - 'research.html'
+      - 'projects.html'
+      - 'teaching.html'
+      - 'interests.html'
+      - 'contact.html'
+      - 'cv.html'
+      - 'pungmul.html'
+      - 'research-methods-studio.html'
+      - 'story-method.html'
+      - 'research-action.html'
+      - 'research-scoping.html'
+      - 'writing-biological-classification.html'
+      - 'teaching-ap-biology.html'
+      - 'teaching-ap-chemistry.html'
+      - 'teaching-ap-evolution.html'
+      - 'teaching-osmosis-practice.html'
+      - 'site-theme.css'
+      - 'styles-20261013.css'
+      - 'appearance.css'
+      - 'assets/**'
+      - 'tests/editor-v2-current-website.spec.cjs'
+      - '.github/workflows/editor-v2-current-website.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  current-page-compatibility:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate editor and test syntax
+        run: |
+          node --check editor-v2.js
+          node --check tests/editor-v2-current-website.spec.cjs
+      - name: Install isolated browser test tools
+        run: npm install --no-save --no-package-lock @playwright/test
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Serve real source pages locally
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/editor-v2-current-http.log 2>&1 &
+          for i in $(seq 1 20); do
+            if curl -sSf http://127.0.0.1:8765/editor-v2.html >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/editor-v2-current-http.log
+          exit 1
+      - name: Verify every current page uses original source without publishing
+        run: npx playwright test tests/editor-v2-current-website.spec.cjs --browser chromium --workers=2 --reporter=list
+        env:
+          CI: 'true'
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: editor-v2-current-site-failure
+          path: |
+            test-results/
+          retention-days: 7
+          if-no-files-found: ignore
