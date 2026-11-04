@@ -2033,3 +2033,62 @@ test('Token-free GitHub handoff keeps verified download available when clipboard
     expect(readFileSync(await saved.path(),'utf8')).toContain('<main');
     expect(writes).toEqual([]);
   });
+
+
+test('Actual published site preview loads a real page URL instead of GitHub srcdoc, with matching viewport',
+  async({page})=>{
+    const writes=[];
+    await installVerifiedCurrentSource(page,writes);
+    await page.goto(BASE+'/editor-v2.html?page=contact.html',{waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    await expect(page.locator('#workspacePill')).toContainText('not the deployed page');
+    await page.locator('#devicePreview').selectOption('phone');
+    await page.locator('#viewPublished').click();
+    await expect(page.locator('#publishedDialog')).toBeVisible();
+    await expect(page.locator('#publishedFrame')).toHaveAttribute('src',BASE+'/contact.html');
+    expect(await page.locator('#publishedFrame').getAttribute('srcdoc')).toBeNull();
+    await expect(page.frameLocator('#publishedFrame').locator('main')).toHaveCount(1);
+    expect(await page.frameLocator('#publishedFrame').locator('html').evaluate(node=>
+      node.ownerDocument.defaultView.innerWidth)).toBe(390);
+    await expect(page.locator('#publishedSourceStatus'))
+      .toContainText('Deployed HTML matches the currently loaded GitHub source');
+    await expect(page.locator('#publishedPageLink')).toHaveAttribute('href',BASE+'/contact.html');
+    await page.locator('#closePublished').click();
+    await expect(page.locator('#publishedDialog')).toBeHidden();
+    await expect(page.frameLocator('#livePageFrame').locator('main')).toHaveCount(1);
+    expect(writes).toEqual([]);
+  });
+
+test('Actual published view reports deployment drift while preserving unsaved GitHub-source edits',
+  async({page})=>{
+    const writes=[],name='contact.html';
+    await installVerifiedCurrentSource(page,writes);
+    const source=SOURCE.get(name).toString('utf8');
+    const newPublic=source.replace('</main>',
+      '<p id="public-deployment-marker">Different deployed public version</p></main>');
+    expect(newPublic).not.toBe(source);
+    await page.route(BASE+'/'+name,async route=>{
+      await route.fulfill({status:200,contentType:'text/html',body:newPublic});
+    });
+    await page.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    const heading=page.frameLocator('#livePageFrame')
+      .locator('main h1:visible,main h2:visible').first();
+    await heading.click();
+    const before=await page.locator('#liveTextAlign').inputValue();
+    const next=before==='right'?'center':'right';
+    await page.locator('#liveTextAlign').selectOption(next);
+    await expect(heading).toHaveCSS('text-align',next);
+    await page.locator('#viewPublished').click();
+    await expect(page.locator('#publishedSourceStatus'))
+      .toContainText('Deployed HTML differs from the GitHub source editor');
+    await expect(page.frameLocator('#publishedFrame')
+      .locator('#public-deployment-marker')).toHaveText('Different deployed public version');
+    await expect(page.frameLocator('#livePageFrame')
+      .locator('#public-deployment-marker')).toHaveCount(0);
+    await page.locator('#closePublished').click();
+    await expect(heading).toHaveCSS('text-align',next);
+    expect(writes).toEqual([]);
+  });
