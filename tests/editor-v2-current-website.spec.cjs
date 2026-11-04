@@ -2001,3 +2001,35 @@ test('Token-free GitHub handoff rejects a GitHub page changed after editor load'
     await expect(page.locator('#githubWebPublishReady')).toBeHidden();
     expect(writes).toEqual([]);
   });
+
+
+test('Token-free GitHub handoff keeps verified download available when clipboard is denied',
+  async({page})=>{
+    const name='contact.html',writes=[];
+    await installVerifiedCurrentSource(page,writes);
+    await page.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    const heading=page.frameLocator('#livePageFrame')
+      .locator('main h1:visible,main h2:visible').first();
+    await heading.click();
+    const previous=await page.locator('#liveTextAlign').inputValue();
+    await page.locator('#liveTextAlign').selectOption(previous==='right'?'center':'right');
+    await page.evaluate(()=>{
+      Object.defineProperty(navigator,'clipboard',{configurable:true,value:{
+        writeText:async()=>{throw new DOMException('Clipboard denied','NotAllowedError');}
+      }});
+    });
+    await page.locator('#publish').click();
+    await page.locator('#prepareGithubWebEdit').click();
+    await expect(page.locator('#githubWebPublishReady')).toBeVisible();
+    await page.locator('#copyGithubWebHtml').click();
+    await expect(page.locator('#githubWebPublishError')).toContainText('Download the verified HTML');
+    await expect(page.locator('#githubWebPublishReady')).toBeVisible();
+    const download=page.waitForEvent('download');
+    await page.locator('#downloadGithubWebHtml').click();
+    const saved=await download;
+    expect(saved.suggestedFilename()).toBe(name);
+    expect(readFileSync(await saved.path(),'utf8')).toContain('<main');
+    expect(writes).toEqual([]);
+  });
