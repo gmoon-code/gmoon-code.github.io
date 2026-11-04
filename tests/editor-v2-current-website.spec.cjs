@@ -226,3 +226,64 @@ test('Real Pungmul photo crop retains original asset, verified preview and local
   await expect(live.locator('main img').first()).toHaveCSS('object-fit','none');
   expect(writes).toEqual([]);
 });
+
+for(const name of ['contact.html','research.html']){
+  test('Source-faithful simulated GitHub publication of an actual '+name+' appearance edit',
+    async({page})=>{
+      const unexpectedWrites=[],mockPublications=[];
+      await installVerifiedCurrentSource(page,unexpectedWrites);
+      // The only permitted write is answered in-browser. Nothing is sent
+      // to GitHub. Any unrecognised write request remains blocked.
+      await page.route('https://api.github.com/repos/gmoon-code/gmoon-code.github.io/contents/'+name,
+        async route=>{
+          if(route.request().method()!=='PUT')return route.fallback();
+          mockPublications.push(JSON.parse(route.request().postData()));
+          await route.fulfill({status:200,contentType:'application/json',
+            headers:{'access-control-allow-origin':'*'},
+            body:JSON.stringify({commit:{sha:'isolated-browser-test-commit'}})});
+        });
+      await page.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+      await expect(page.locator('#liveAssetStatus'))
+        .toContainText('GitHub main source verified',{timeout:35000});
+      const heading=page.frameLocator('#livePageFrame')
+        .locator('main h1:visible,main h2:visible').first();
+      await expect(heading).toBeVisible();
+      const before=await heading.evaluate(node=>
+        node.ownerDocument.defaultView.getComputedStyle(node).textAlign);
+      const wanted=before==='right'?'center':'right';
+      await heading.click();
+      await page.locator('#liveTextAlign').selectOption(wanted);
+      await expect(heading).toHaveCSS('text-align',wanted);
+      await page.locator('#publish').click();
+      await expect(page.locator('#publishDialog')).toBeVisible();
+      await page.locator('#githubToken').fill('isolated-browser-test-only');
+      await page.locator('#acknowledgeLive').check();
+      await page.locator('#confirmPublish').click();
+      await expect.poll(()=>mockPublications.length,{timeout:20000}).toBe(1);
+      const payload=mockPublications[0];
+      expect(payload.branch).toBe('main');
+      expect(payload.sha).toBe(blobSha(SOURCE.get(name)));
+      const published=Buffer.from(payload.content,'base64').toString('utf8');
+      expect(published).toContain('moon-v2-live-layout');
+      const inspected=await page.evaluate(({original,published})=>{
+        const parser=new DOMParser();
+        const a=parser.parseFromString(original,'text/html');
+        const b=parser.parseFromString(published,'text/html');
+        const clean=s=>s.replace(/\s+/g,' ').trim();
+        return {
+          textOriginal:clean(a.querySelector('main')?.textContent||''),
+          textPublished:clean(b.querySelector('main')?.textContent||''),
+          linkCountOriginal:a.querySelectorAll('main a[href]').length,
+          linkCountPublished:b.querySelectorAll('main a[href]').length,
+          imageSourcesOriginal:[...a.querySelectorAll('main img')].map(x=>x.getAttribute('src')),
+          imageSourcesPublished:[...b.querySelectorAll('main img')].map(x=>x.getAttribute('src'))
+        };
+      },{original:SOURCE.get(name).toString('utf8'),published});
+      expect(inspected.textPublished).toBe(inspected.textOriginal);
+      expect(inspected.linkCountPublished).toBe(inspected.linkCountOriginal);
+      expect(inspected.imageSourcesPublished).toEqual(inspected.imageSourcesOriginal);
+      expect(unexpectedWrites).toEqual([]);
+      const localText=await page.evaluate(()=>JSON.stringify(localStorage));
+      expect(localText).not.toContain('isolated-browser-test-only');
+    });
+}
