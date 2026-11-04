@@ -939,7 +939,28 @@ for(const name of ['projects.html','research.html','interests.html','pungmul.htm
       // photo inside the iframe. In Firefox, direct Playwright fill can leave
       // focus in the iframe and dispatch no input event unless this transfer
       // is explicit, producing an artificial editor no-op.
+      await page.evaluate(()=>{
+        window.__pointerInspectorTrace=[];
+        for(const eventName of ['pointerdown','click','focusin','focusout'])
+          document.addEventListener(eventName,event=>{
+            window.__pointerInspectorTrace.push({name:eventName,
+              target:event.target?.id||event.target?.tagName,
+              active:document.activeElement?.id,
+              elementUnderPointer:event.clientX===undefined?null:
+                document.elementFromPoint(event.clientX,event.clientY)?.id});
+          },true);
+      });
       await page.locator('#liveImageAlt').click();
+      const focusEvidence=await page.evaluate(()=>{
+        const field=document.getElementById('liveImageAlt');
+        const rect=field.getBoundingClientRect();
+        return {active:document.activeElement?.id,
+          fieldRect:{x:rect.x,y:rect.y,width:rect.width,height:rect.height},
+          hit:document.elementFromPoint(rect.x+rect.width/2,rect.y+rect.height/2)?.id,
+          pointer:window.__pointerInspectorTrace,events:window.__imageEditTrace};
+      });
+      if(focusEvidence.active!=='liveImageAlt')
+        console.log('FIREFOX-IMAGE-FOCUS-TRACE',JSON.stringify({page:name,focusEvidence}));
       await expect.poll(()=>page.evaluate(()=>document.activeElement?.id))
         .toBe('liveImageAlt');
       await page.locator('#liveImageAlt').fill(alt);
