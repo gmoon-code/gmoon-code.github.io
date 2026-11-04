@@ -633,7 +633,7 @@ test('Two consecutive source-faithful simulated live publications preserve both 
 
 
 for(const name of PAGES){
-  test('Original paragraph text editing and reload on actual '+name,async({page})=>{
+  test('Original paragraph text editing, reload and mock publishing on actual '+name,async({page})=>{
     const writes=[];
     await installVerifiedCurrentSource(page,writes);
     await page.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
@@ -670,6 +670,28 @@ for(const name of PAGES){
     await expect(page.frameLocator('#livePageFrame').locator('main p:visible').first())
       .toHaveText(synthetic,{timeout:20000});
     expect(writes,name+' text editing must remain unpublished').toEqual([]);
+    const published=[];
+    await page.route('https://api.github.com/repos/gmoon-code/gmoon-code.github.io/contents/'+name,
+      async route=>{
+        if(route.request().method()!=='PUT')return route.fallback();
+        published.push(JSON.parse(route.request().postData()));
+        await route.fulfill({status:200,contentType:'application/json',
+          headers:{'access-control-allow-origin':'*'},
+          body:JSON.stringify({commit:{sha:'mock-text-publication-'+name}})});
+      });
+    await page.locator('#publish').click();
+    await page.locator('#githubToken').fill('synthetic-text-publication-token');
+    await page.locator('#acknowledgeLive').check();
+    await page.locator('#confirmPublish').click();
+    await expect.poll(()=>published.length,{timeout:20000}).toBe(1);
+    expect(published[0].sha,name+' latest source SHA').toBe(blobSha(SOURCE.get(name)));
+    expect(published[0].branch).toBe('main');
+    expect(Buffer.from(published[0].content,'base64').toString('utf8'),
+      name+' text publication must exactly match verified preview').toBe(html);
+    await expect(page.locator('#publishDialog')).not.toBeVisible({timeout:20000});
+    expect(writes,name+' no unexpected external writes').toEqual([]);
+    expect(await page.evaluate(()=>JSON.stringify(localStorage)))
+      .not.toContain('synthetic-text-publication-token');
   });
 }
 
