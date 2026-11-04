@@ -2266,7 +2266,7 @@ function loadLiveDraft(page){
 }
 function renderLiveEditCount(){
   const blocked=liveDraftRecovery?.page===currentPage;
-  $("liveDraftRecovery").hidden=!blocked;
+  $("liveDraftRecovery").hidden=!blocked||workspaceMode!=="live";
   $("liveEditCount").textContent=blocked?
     "Stored live-page draft needs recovery · New edits cannot be saved or published until resolved.":
     livePatches.size?
@@ -5828,8 +5828,10 @@ function attachEvents(){
       }
       localStorage.removeItem(LIVE_DRAFT_KEY+currentPage);
       liveDraftRecovery=null;
-      storeLiveDraft();
-      status("Unreadable stored draft discarded by confirmation · Current edits saved locally · Website unchanged");
+      const saved=storeLiveDraft();
+      status(saved?
+        "Unreadable stored draft discarded by confirmation · Current edits saved locally · Website unchanged":
+        "Unreadable stored draft discarded by confirmation · Current edits could not be saved · Export an HTML draft");
     }catch{
       status("Could not discard stored draft · Original browser data preserved");
     }
