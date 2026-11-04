@@ -194,3 +194,15 @@
 #publishDialog .github-web-publish-ready .inline-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 #publishDialog .github-web-publish-ready a{display:inline-block;padding:8px 3px;font-size:12px;line-height:1.4;color:var(--accent);font-weight:700;text-decoration:underline}
 #publishDialog .github-web-publish [hidden]{display:none!important}
+
+/* C-RV29ew: real deployed page is a distinct, read-only URL view. */
+#publishedDialog{width:min(95vw,1050px);height:min(92vh,1000px);padding:0;border:1px solid var(--rule);border-radius:8px;box-shadow:0 20px 70px #0003}
+#publishedDialog::backdrop{background:#1c2a2499}
+#publishedDialog{display:none;grid-template-rows:auto auto minmax(0,1fr) auto;overflow:hidden}
+#publishedDialog[open]{display:grid}
+#publishedDialog .preview-top{height:auto;min-height:47px;gap:10px}
+#publishedDialog .preview-top .inline-actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+#publishedDialog .preview-top a{font-size:12px;color:var(--accent);text-decoration:underline;font-weight:700}
+#publishedDialog .verified-frame-viewport{min-height:0;min-width:0;overflow:auto;padding:12px;box-sizing:border-box;background:#edf2ed}
+#publishedDialog .published-source-note{font-size:11px;line-height:1.5;color:var(--muted);margin:0;padding:8px 14px;border-top:1px solid var(--rule)}
+#publishedDialog .verification-note{overflow-wrap:anywhere}
