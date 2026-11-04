@@ -10,7 +10,7 @@ The previous two-tab conflict workflow could download an unstructured JSON patch
 
 ## Implemented
 
-Added **Download editable draft JSON** and **Restore editable draft JSON** alongside the original-layout HTML export in Editor V2's live inspector.
+Added **Download editable draft JSON** and **Restore editable draft JSON** alongside the original-layout HTML export in Editor V2's live inspector. The damaged-draft and concurrent-tab warning panels also offer **Restore valid JSON backup** and **Restore saved JSON backup** shortcuts to the same validated file picker. The original unreadable browser bytes remain available through the separate **Download original draft** action.
 
 - New versioned backups use `{"format":"moon-editor-v2-live-draft","version":1,"page":"contact.html","patches":[...]}` and download as `contact.html.live-draft.json` for the selected file. Backups include source text, layout, appearance, picture framing/effects, inserted objects and grouping where present in the patch map. The token is not part of the backup.
 - Import also accepts the legacy C-RV29eq bare patch arrays **only** if their filename exactly matches `<selected-page>.unsaved-live-edits.json`. The new backup format carries an explicit page identity. Both require an existing editable page in the editor's page selector.
@@ -19,11 +19,11 @@ Added **Download editable draft JSON** and **Restore editable draft JSON** along
 - Only after validation and explicit confirmation write the restored patch list to localStorage. Reload the saved draft and editing frame. The new backup does not publish anything to GitHub. The user must review the verified preview and separately authorize publication.
 - Show status explaining rejected, cancelled or successful imports. Unreadable stored drafts can be replaced by an authenticated-by-user valid local backup after confirmation, without falsely claiming that the original corrupted data has been repaired automatically.
 
-Relevant source commits `41f5ba3e` (restorable draft workflow), `101bf89d` (correct source-element validation regex), `941bb05a` (controls and cache-busted JS `v61`).
+Relevant source commits `41f5ba3e` (restorable draft workflow), `101bf89d` (correct source-element validation regex), `941bb05a` (initial UI), `5debf638` and `446a3530` (direct recovery-alert shortcuts), `97629c3b` (prevent misleading empty backups for unreadable drafts), and `945f8e30` (final cache-busted editor script `v63`). The standalone `liveDraftFile` input is created by JavaScript; it is not a static HTML form control.
 
 ## New browser regressions
 
-Added five real-site browser cases to `tests/editor-v2-current-website.spec.cjs`, commits `864177b1` and `f7d90b1d`.
+Added five real-site browser cases to `tests/editor-v2-current-website.spec.cjs`, commits `864177b1` and `f7d90b1d`. Later source-matched test corrections and expansions are `48a20343` (direct warning-panel file chooser), `80bbb493` (confirm storage values, not transient status text) and `19ccf93d` (unreadable draft export protection).
 
 1. Contact live-page formatting backup is downloaded, checked for format/page/content, then restored after clearing the draft; saved localStorage, original layout and verified preview must agree after reload.
 2. Research page rejects invalid JSON, mismatched page, duplicate patches, invalid patch schema, stale source selector, independent canvas JSON and unlabelled bare arrays without altering the original stored draft.
@@ -31,7 +31,7 @@ Added five real-site browser cases to `tests/editor-v2-current-website.spec.cjs`
 4. A second browser tab writes during import confirmation. The restore must not overwrite it; a conflict warning must be shown, and there must be no GitHub PUT.
 5. Pungmul photograph's rounded crop, rotation, source description and picture metadata survive editable JSON import, remain in the current patch list, and appear in the verified assembled preview.
 
-**Expected size:** 92/92 checks per engine, 276 across Chromium, Firefox and WebKit. **Verification is not yet established**, and must be checked from final run [41819586446](https://github.com/gmoon-code/gmoon-code.github.io/actions/runs/41819586446). On success, recheck GitHub Pages delivered editor resources and browser smoke for final `v61` version.
+**Expected size:** 92/92 checks per engine, 276 across Chromium, Firefox and WebKit. **Final verification is not yet established**. Intermediate pre-correction [run 41819586446](https://github.com/gmoon-code/gmoon-code.github.io/actions/runs/41819586446) passed 92/92 Firefox and 91/92 Chromium and WebKit. The sole failure in each browser was a test relying on one exact transient status message after another tab changed localStorage. It was replaced by direct assertions that confirmation occurred, the conflict alert appeared, storage retained the newer bytes and no GitHub write occurred. The final `v63` browser run is [41820366907](https://github.com/gmoon-code/gmoon-code.github.io/actions/runs/41820366907). Its outcome and a fresh deployed 22/22 parity and smoke verification must be checked before closing the stage.
 
 ## Remaining limits
 
