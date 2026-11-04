@@ -18,14 +18,14 @@ const OWNER="gmoon-code";
 const BASE_BRANCH="main";
 const ALLOWED_PAGES=new Set([
   "index.html","research.html","projects.html","teaching.html","interests.html",
-  "about.html","cv.html","pungmul.html","research-action.html",
+  "contact.html","cv.html","pungmul.html","research-action.html",
   "research-scoping.html","writing-biological-classification.html",
   "research-methods-studio.html","story-method.html","teaching-ap-biology.html",
   "teaching-ap-chemistry.html","teaching-ap-evolution.html","teaching-osmosis-practice.html"
 ]);
-const MAX_CONTENT=250000;
+const MAX_CONTENT=900000; // Keep in step with Editor V2's GitHub page byte bound.
 const MAX_MEDIA_BYTES=1572864;
-const MAX_REQUEST_BYTES=2500000;
+const MAX_REQUEST_BYTES=4000000; // HTML plus one permitted base64 media proposal.
 const API="https://api.github.com";
 const enc=new TextEncoder();
 const dec=new TextDecoder();
@@ -496,4 +496,4 @@ export default {
     }
   }
 };
-export const __testing={digest,validateEdit,validateMedia,issueSession,verifySession,encodeGithubContent,decodeGithubContent,ALLOWED_PAGES};
+export const __testing={digest,validateEdit,validateMedia,issueSession,verifySession,encodeGithubContent,decodeGithubContent,ALLOWED_PAGES,MAX_CONTENT,MAX_REQUEST_BYTES};
