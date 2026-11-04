@@ -1360,3 +1360,48 @@ test('Switching pages with a cross-tab draft conflict requires explicit confirma
     expect(writes).toEqual([]);
     await other.close();
   });
+
+
+test('A second tab saving during GitHub source verification stops publication before PUT',
+  async({page,context})=>{
+    const name='contact.html',key='moon-academic-editor-v2:source:'+name,writes=[];
+    await installVerifiedCurrentSource(page,writes);
+    await page.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    await page.frameLocator('#livePageFrame')
+      .locator('main h1:visible,main h2:visible').first().click();
+    const current=await page.locator('#liveTextAlign').inputValue();
+    await page.locator('#liveTextAlign').selectOption(current==='right'?'center':'right');
+    const initial=JSON.parse(await page.evaluate(key=>localStorage.getItem(key),key));
+    expect(initial).toHaveLength(1);
+    const newer=structuredClone(initial);
+    newer[0].appearance.align=initial[0].appearance.align==='left'?'right':'left';
+    const newerRaw=JSON.stringify(newer);
+    const other=await context.newPage();
+    await installVerifiedCurrentSource(other,writes);
+    await other.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+    await expect(other.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+
+    let intercepted=0;
+    await page.route(/^https:\/\/api\.github\.com\/repos\/gmoon-code\/gmoon-code\.github\.io\/contents\/contact\.html\?ref=main$/,
+      async route=>{
+        if(route.request().method()==='GET'){
+          intercepted++;
+          await other.evaluate(({key,raw})=>localStorage.setItem(key,raw),{key,raw:newerRaw});
+        }
+        await route.fallback();
+      });
+    await page.locator('#publish').click();
+    await expect(page.locator('#publishDialog')).toBeVisible();
+    await page.locator('#githubToken').fill('synthetic-race-guard-token');
+    await page.locator('#acknowledgeLive').check();
+    await page.locator('#confirmPublish').click();
+    await expect(page.locator('#publishError')).toContainText('Another editor tab');
+    expect(intercepted).toBeGreaterThan(0);
+    expect(writes).toEqual([]);
+    expect(await page.evaluate(key=>localStorage.getItem(key),key)).toBe(newerRaw);
+    await expect(page.locator('#liveDraftConflict')).toBeVisible();
+    await other.close();
+  });
