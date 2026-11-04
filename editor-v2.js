@@ -6781,8 +6781,14 @@ function attachEvents(){
       $("githubWebPublishDetails").textContent=
         "Complete verified "+prepared.page+" HTML copied · Paste into the same GitHub file, inspect the diff, and commit on GitHub. No publication occurred here.";
       status("Verified GitHub page HTML copied · GitHub commit still required");
-    }catch(error){githubWebHandoffError(error);}
-    finally{button.disabled=false;}
+    }catch(error){
+      if(error?.name==="NotAllowedError"||/clipboard/i.test(error?.message||"")){
+        const message=$("githubWebPublishError");
+        message.textContent="The browser did not allow clipboard copying. Download the verified HTML from this panel instead.";
+        message.hidden=false;
+        status("Clipboard unavailable · Verified HTML remains available for download");
+      }else githubWebHandoffError(error);
+    }finally{button.disabled=false;}
   });
   $("downloadGithubWebHtml").addEventListener("click",async()=>{
     const button=$("downloadGithubWebHtml");
