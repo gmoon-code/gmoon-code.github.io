@@ -3257,7 +3257,14 @@ function startLiveGesture(event,direction,anchor){
     patch,layout:liveLayoutFor(selector),snapshot:liveSnapshot(),
     moved:false,selector,node,snapLines:candidateLiveSnapLines(node,
       (sourceGroup||group)?.map(item=>item.node)||[node])};
-  anchor.setPointerCapture?.(event.pointerId);
+  // A simple click on an existing source image must not capture the pointer.
+  // Firefox can otherwise retain iframe focus when the user immediately
+  // clicks the image-description field in the parent editor. Start capture
+  // only after movement establishes a genuine drag; overlay grips and added
+  // editor objects keep their original immediate capture behaviour.
+  if(direction!=="move"||anchor.closest?.("#moon-v2-live-overlay")||
+     LIVE_ADDED_ID.test(selector))
+    anchor.setPointerCapture?.(event.pointerId);
 }
 // Each source box is resized around a shared group frame. We first establish
 // the new natural dimensions, then measure the resulting browser layout and
@@ -3328,7 +3335,13 @@ function moveLiveGesture(event){
   event.preventDefault();
   const deltaX=event.clientX-g.startX,deltaY=event.clientY-g.startY;
   if(!g.moved&&Math.hypot(deltaX,deltaY)<3)return;
-  g.moved=true;
+  if(!g.moved){
+    g.moved=true;
+    try{
+      if(!g.anchor?.hasPointerCapture?.(g.pointer))
+        g.anchor?.setPointerCapture?.(g.pointer);
+    }catch{/* The pointer may already have left the source frame. */}
+  }
   if(g.dir==="rotate"&&g.node.tagName==="IMG"){
     const midX=g.rect.left+g.rect.width/2,midY=g.rect.top+g.rect.height/2;
     const before=Math.atan2(g.startY-midY,g.startX-midX);
