@@ -5636,14 +5636,6 @@ function currentGithubWebHandoff(){
   assertLiveDraftNotSuperseded(candidate.page);
   return candidate;
 }
-async function verifyGithubWebHandoff(){
-  const candidate=currentGithubWebHandoff();
-  const latest=await fetchGithubPageSource(candidate.page,{force:true});
-  if(latest.sha!==candidate.sha||latest.html!==candidate.original)
-    throw Error("The GitHub source changed after preparation. Nothing copied. Reload the webpage editor and review changes before preparing again.");
-  // Another tab or an edit could occur while the GitHub GET was in flight.
-  return currentGithubWebHandoff();
-}
 async function prepareGithubWebHandoff(){
   if(workspaceMode!=="live"||!livePatches.size)
     throw Error("Make and save an original-layout page edit before preparing its GitHub HTML.");
@@ -5667,7 +5659,7 @@ async function prepareGithubWebHandoff(){
   $("githubWebPublishDetails").textContent=
     "Prepared "+page+" from GitHub source "+pair.sha.slice(0,12)+
     " · "+new TextEncoder().encode(pair.edited).length+
-    " UTF-8 bytes. Copy or download the complete file. Review every difference on GitHub before committing.";
+    " UTF-8 bytes at preparation. Copy or download the complete file, then check GitHub's latest version and review every difference before committing.";
   $("githubWebPublishReady").hidden=false;
   $("githubWebPublishError").hidden=true;
   status("GitHub HTML prepared locally · No token entered · No public changes made");
@@ -6782,7 +6774,7 @@ function attachEvents(){
     const button=$("copyGithubWebHtml");
     button.disabled=true;
     try{
-      const prepared=await verifyGithubWebHandoff();
+      const prepared=currentGithubWebHandoff();
       if(!navigator.clipboard?.writeText)
         throw Error("Browser clipboard permission is unavailable. Download the prepared HTML instead.");
       await navigator.clipboard.writeText(prepared.html);
@@ -6796,7 +6788,7 @@ function attachEvents(){
     const button=$("downloadGithubWebHtml");
     button.disabled=true;
     try{
-      const prepared=await verifyGithubWebHandoff();
+      const prepared=currentGithubWebHandoff();
       download(prepared.page,prepared.html,"text/html");
       $("githubWebPublishDetails").textContent=
         "Verified complete "+prepared.page+" downloaded · Open the same file in GitHub, replace its content and review the diff. Nothing was published automatically.";
