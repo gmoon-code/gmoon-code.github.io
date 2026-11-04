@@ -185,3 +185,12 @@
 .live-restore-dialog h2{font-size:16px}
 .live-restore-dialog p{overflow-wrap:anywhere}
 .live-restore-dialog .dialog-actions{flex-wrap:wrap}
+
+/* C-RV29eu: credential-free GitHub file review is distinct from token-based publishing. */
+#publishDialog .github-web-publish{margin:15px 0;padding:14px;border:1px solid var(--rule);border-radius:8px;background:#fbfcfa}
+#publishDialog .github-web-publish h3{font-size:14px;margin:0 0 9px}
+#publishDialog .github-web-publish .help{font-size:12px;line-height:1.55}
+#publishDialog .github-web-publish-ready{border-top:1px solid var(--rule);margin-top:11px;padding-top:10px}
+#publishDialog .github-web-publish-ready .inline-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+#publishDialog .github-web-publish-ready a{display:inline-block;padding:8px 3px;font-size:12px;line-height:1.4;color:var(--accent);font-weight:700;text-decoration:underline}
+#publishDialog .github-web-publish [hidden]{display:none!important}
