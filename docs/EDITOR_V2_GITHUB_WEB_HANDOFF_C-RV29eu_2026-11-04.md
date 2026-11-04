@@ -2,7 +2,7 @@
 
 **Date:** 4 November 2026  
 **Continued from:** [C-RV29et](EDITOR_V2_CANVAS_DRAFT_RECOVERY_C-RV29et_2026-11-04.md).  
-**Status:** Repository implementation **verified** across all current-page browser engines. **Exact production HTTPS-delivery verification remains pending** after an initial 19/22 byte mismatch while GitHub Pages was still serving older editor assets.
+**Status:** Repository implementation **verified** in Chromium, Firefox and WebKit, and exact public HTTPS delivery **verified 22/22** after the successful GitHub Pages deployment. The first 19/22 attempt remains a documented historical deployment failure.
 
 ## Audited boundaries
 
@@ -43,10 +43,10 @@ The PR altered only `editor-v2.js`, `editor-v2.html`, `editor-v2.css` and the re
 
 The first [public HTTPS byte-verification run 41845353211](https://github.com/gmoon-code/gmoon-code.github.io/actions/runs/41845353211) failed **19/22 exact resource comparisons** because `editor-v2.css`, `editor-v2.html` and `editor-v2.js` were still delivered at their previous revisions. The 17 academic pages and two other resources matched. Multiple Pages builds were cancelled when other automated workflows committed generated audit-result JSON. This is a real deployment evidence mismatch at the checked time, not a proof that the changed code is already served. The initial [deployed browser smoke 41845353072](https://github.com/gmoon-code/gmoon-code.github.io/actions/runs/41845353072) passed in three engines, but preceded exact delivery confirmation, so it does not independently prove execution of the new interface.
 
-**Required before closing delivery assurance:** A successful GitHub Pages build followed by the same 22/22 exact-byte audit, and ideally another deployed-browser smoke after the bytes match. Do not label the v67 editor live until then.
+After [successful Pages deployment 41846620503](https://github.com/gmoon-code/gmoon-code.github.io/actions/runs/41846620503), **attempt 2 of [delivery run 41845353211](https://github.com/gmoon-code/gmoon-code.github.io/actions/runs/41845353211) passed 22/22 exact HTTPS byte comparisons on its first round** with no failed resources. This establishes that the v67 editor HTML, CSS and JS have reached the checked public URLs. A separately rerun deployed-browser smoke after byte confirmation is additional runtime evidence, not a substitute for this byte comparison.
 
 ## Outstanding assurance
 
 No real GitHub owner sign-in, actual final owner commit from this handoff, securely isolated one-click publication, physical mobile/tablet device testing or independent security penetration test was completed. These remain distinct from the browser regression result.
 
-**Next checkpoint C-RV29ev:** first reconcile production delivery and deployed runtime of the merged handoff without asking for private credentials or making unapproved website edits. Then document the requirements for a future separately hosted authenticated publishing service, or continue bounded academic-content verification. Keep historical failed Pages attempts in the evidence trail.
+**Next checkpoint C-RV29ev:** evaluate credential-isolation architecture for a future owner-authorized one-click publisher, and pursue physical-device review or bounded public academic-content checks independently. A real owner-authenticated commit from the new GitHub.com handoff remains outside the verified tier; do not request private credentials in chat. Preserve the historical 19/22 Pages failure and subsequent 22/22 success.
