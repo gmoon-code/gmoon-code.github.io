@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>Academic Website Editor 2 | Ye Eun Moon</title>
-<link rel="stylesheet" href="editor-v2.css?v=20261104-editor-v2-json-restore-dialog-v64">
-<script src="editor-v2.js?v=20261104-editor-v2-canvas-recovery-v66" defer></script>
+<link rel="stylesheet" href="editor-v2.css?v=20261104-editor-v2-github-handoff-v67">
+<script src="editor-v2.js?v=20261104-editor-v2-github-handoff-v67" defer></script>
 </head>
 <body>
 <a class="skip" href="#workspace">Skip to editor canvas</a>
@@ -628,6 +628,23 @@
       <button type="button" id="reconnectImageButton">Use this page image for the draft edit</button>
     </details>
     <p class="help">Each edit must match a unique element in the original page. You can remove an unmatched edit from the list above without discarding the others. The editor checks the latest file in GitHub when you publish.</p>
+    <section id="githubWebPublish" class="github-web-publish" aria-labelledby="githubWebPublishTitle">
+      <h3 id="githubWebPublishTitle">Publish with GitHub sign-in</h3>
+      <p class="help">No GitHub token is entered into this website. Prepare the exact source-verified page, copy its full HTML, then open the same file in GitHub. Choose Edit file, replace the entire file contents, review the diff, and commit or propose the change using GitHub's own sign-in. This is a manual handoff, not an automatic publication.</p>
+      <button id="prepareGithubWebEdit" type="button" class="primary">Prepare reviewed HTML for GitHub</button>
+      <p id="githubWebPublishError" class="publish-error" role="alert" hidden></p>
+      <div id="githubWebPublishReady" class="github-web-publish-ready" hidden>
+        <p id="githubWebPublishDetails" class="help" role="status"></p>
+        <div class="inline-actions">
+          <button type="button" id="copyGithubWebHtml">Copy verified page HTML</button>
+          <button type="button" id="downloadGithubWebHtml">Download verified HTML</button>
+          <a id="openGithubWebPage" href="https://github.com/gmoon-code/gmoon-code.github.io/blob/main/index.html" target="_blank" rel="noopener noreferrer">Open this file on GitHub</a>
+        </div>
+        <p class="help">On GitHub, choose the file's pencil/Edit control, replace all existing HTML with the prepared HTML, then inspect the file diff before committing. Confirm that the latest GitHub file still matches the source you prepared. Only GitHub's final commit can update the public website.</p>
+      </div>
+      <p class="help">Your local draft remains available. If the webpage or another browser tab changes while preparing the file, this handoff is rejected.</p>
+    </section>
+    <p class="help">Alternatively, use direct publication with a fine-grained token below. That older route remains available but has the same-origin script exposure described here.</p>
     <label for="githubToken">GitHub fine-grained personal access token (Contents: Read and write)</label>
     <input id="githubToken" type="password" autocomplete="off" spellcheck="false" placeholder="github_pat_…" required>
     <p class="help">Select only the <strong>gmoon-code.github.io</strong> repository when creating a token. This editor runs the website’s first-party scripts in same-origin frames. A compromised page script could read a token while it is entered. Use only with trusted site code, choose a short expiry, and revoke the token after publication. The editor does not save your token to browser storage. <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener noreferrer">Create a fine-grained GitHub token</a>.</p>

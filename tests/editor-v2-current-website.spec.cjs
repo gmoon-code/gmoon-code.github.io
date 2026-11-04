@@ -1902,3 +1902,134 @@ test('Canvas recovery: a JSON backup over the former 3 MB import cap is accepted
     await expect(page.locator('#status')).not.toContainText('JSON backup exceeds 3 MB');
     await expect(page.locator('#status')).not.toContainText('JSON import rejected');
   });
+
+
+test('Token-free GitHub handoff exports exact verified preview HTML without publishing',
+  async({page})=>{
+    const name='contact.html',writes=[];
+    await installVerifiedCurrentSource(page,writes);
+    await page.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    const heading=page.frameLocator('#livePageFrame')
+      .locator('main h1:visible,main h2:visible').first();
+    await heading.click();
+    const previous=await page.locator('#liveTextAlign').inputValue();
+    const next=previous==='right'?'center':'right';
+    await page.locator('#liveTextAlign').selectOption(next);
+    await expect(heading).toHaveCSS('text-align',next);
+    await page.locator('#preview').click();
+    await expect(page.locator('#previewDialog')).toBeVisible();
+    const verifiedHtml=await page.locator('#previewFrame').getAttribute('srcdoc');
+    expect(verifiedHtml).toContain('<main');
+    await page.locator('#closePreview').click();
+
+    await page.evaluate(()=>{
+      Object.defineProperty(navigator,'clipboard',{configurable:true,value:{
+        writeText:async value=>{window.__githubWebCopied=value;}
+      }});
+    });
+    await page.locator('#publish').click();
+    await expect(page.locator('#githubWebPublish')).toBeVisible();
+    await expect(page.locator('#githubToken')).toHaveValue('');
+    await page.locator('#prepareGithubWebEdit').click();
+    await expect(page.locator('#githubWebPublishReady')).toBeVisible();
+    await expect(page.locator('#githubWebPublishDetails')).toContainText(name);
+    await expect(page.locator('#openGithubWebPage')).toHaveAttribute(
+      'href','https://github.com/gmoon-code/gmoon-code.github.io/blob/main/'+name);
+    const download=page.waitForEvent('download');
+    await page.locator('#downloadGithubWebHtml').click();
+    const exported=await download;
+    expect(exported.suggestedFilename()).toBe(name);
+    expect(readFileSync(await exported.path(),'utf8')).toBe(verifiedHtml);
+    await page.locator('#copyGithubWebHtml').click();
+    expect(await page.evaluate(()=>window.__githubWebCopied)).toBe(verifiedHtml);
+    await expect(page.locator('#githubToken')).toHaveValue('');
+    expect(writes).toEqual([]);
+  });
+
+test('Token-free GitHub handoff blocks a newer browser-tab draft without token or PUT',
+  async({page})=>{
+    const name='research.html',writes=[],key='moon-academic-editor-v2:source:'+name;
+    await installVerifiedCurrentSource(page,writes);
+    await page.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    const heading=page.frameLocator('#livePageFrame')
+      .locator('main h1:visible,main h2:visible').first();
+    await heading.click();
+    const previous=await page.locator('#liveTextAlign').inputValue();
+    await page.locator('#liveTextAlign').selectOption(previous==='right'?'center':'right');
+    await page.locator('#publish').click();
+    await page.evaluate(key=>localStorage.setItem(key,'[]'),key);
+    await page.locator('#prepareGithubWebEdit').click();
+    await expect(page.locator('#githubWebPublishError')).toContainText('Another editor tab');
+    await expect(page.locator('#githubWebPublishReady')).toBeHidden();
+    expect(await page.evaluate(key=>localStorage.getItem(key),key)).toBe('[]');
+    await expect(page.locator('#githubToken')).toHaveValue('');
+    expect(writes).toEqual([]);
+  });
+
+test('Token-free GitHub handoff rejects a GitHub page changed after editor load',
+  async({page})=>{
+    const name='contact.html',writes=[];
+    await installVerifiedCurrentSource(page,writes);
+    await page.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    const heading=page.frameLocator('#livePageFrame')
+      .locator('main h1:visible,main h2:visible').first();
+    await heading.click();
+    const previous=await page.locator('#liveTextAlign').inputValue();
+    await page.locator('#liveTextAlign').selectOption(previous==='right'?'center':'right');
+    await page.locator('#publish').click();
+    const changed=Buffer.from(SOURCE.get(name).toString('utf8')
+      .replace('</main>','<!-- another GitHub editor updated this file --></main>'),'utf8');
+    await page.route(/^https:\/\/api\.github\.com\/repos\/gmoon-code\/gmoon-code\.github\.io\//,
+      async route=>{
+        if(route.request().method()!=='GET'){
+          writes.push({method:route.request().method(),url:route.request().url()});
+          await route.abort();return;
+        }
+        await route.fulfill({status:200,contentType:'application/json',
+          headers:{'access-control-allow-origin':'*'},
+          body:JSON.stringify({type:'file',name,sha:blobSha(changed),encoding:'base64',
+            content:changed.toString('base64')})});
+      });
+    await page.locator('#prepareGithubWebEdit').click();
+    await expect(page.locator('#githubWebPublishError')).toContainText('source has changed');
+    await expect(page.locator('#githubWebPublishReady')).toBeHidden();
+    expect(writes).toEqual([]);
+  });
+
+
+test('Token-free GitHub handoff keeps verified download available when clipboard is denied',
+  async({page})=>{
+    const name='contact.html',writes=[];
+    await installVerifiedCurrentSource(page,writes);
+    await page.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    const heading=page.frameLocator('#livePageFrame')
+      .locator('main h1:visible,main h2:visible').first();
+    await heading.click();
+    const previous=await page.locator('#liveTextAlign').inputValue();
+    await page.locator('#liveTextAlign').selectOption(previous==='right'?'center':'right');
+    await page.evaluate(()=>{
+      Object.defineProperty(navigator,'clipboard',{configurable:true,value:{
+        writeText:async()=>{throw new DOMException('Clipboard denied','NotAllowedError');}
+      }});
+    });
+    await page.locator('#publish').click();
+    await page.locator('#prepareGithubWebEdit').click();
+    await expect(page.locator('#githubWebPublishReady')).toBeVisible();
+    await page.locator('#copyGithubWebHtml').click();
+    await expect(page.locator('#githubWebPublishError')).toContainText('Download the verified HTML');
+    await expect(page.locator('#githubWebPublishReady')).toBeVisible();
+    const download=page.waitForEvent('download');
+    await page.locator('#downloadGithubWebHtml').click();
+    const saved=await download;
+    expect(saved.suggestedFilename()).toBe(name);
+    expect(readFileSync(await saved.path(),'utf8')).toContain('<main');
+    expect(writes).toEqual([]);
+  });
