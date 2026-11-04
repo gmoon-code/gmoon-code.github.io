@@ -62,11 +62,25 @@ def probe(path, round_number):
     except Exception as exc:
         return {"path": path, "round": round_number, "ok": False,
                 "error": str(exc)[:250], "sourceHash": digest(expected)}
-    return {"path": path, "round": round_number,
-            "status": code, "ok": code == 200 and data == expected,
-            "sourceBytes": len(expected), "deliveredBytes": len(data),
-            "sourceHash": digest(expected), "deliveredHash": digest(data),
-            "url": final}
+    result = {"path": path, "round": round_number,
+              "status": code, "ok": code == 200 and data == expected,
+              "sourceBytes": len(expected), "deliveredBytes": len(data),
+              "sourceHash": digest(expected), "deliveredHash": digest(data),
+              "url": final}
+    if code == 200 and data != expected and path.endswith(".html"):
+        original = expected.decode("utf-8", "replace").splitlines()
+        delivered = data.decode("utf-8", "replace").splitlines()
+        from itertools import zip_longest
+        for line_number, (before, after) in enumerate(
+                zip_longest(original, delivered, fillvalue=""), 1):
+            if before != after:
+                result["firstDifference"] = {
+                    "line": line_number,
+                    "source": before[:240],
+                    "delivered": after[:240],
+                }
+                break
+    return result
 
 
 def main():
@@ -89,6 +103,10 @@ def main():
                 print("  Pending", result["path"],
                       "HTTP", result.get("status", "unavailable"),
                       result.get("error", "byte mismatch"), flush=True)
+                if attempt == 1 and result.get("firstDifference"):
+                    print("    First difference",
+                          json.dumps(result["firstDifference"],
+                                     ensure_ascii=False), flush=True)
         if pending and attempt < RETRIES:
             time.sleep(DELAY)
     summary = {
