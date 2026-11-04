@@ -748,3 +748,38 @@ test('GitHub HTTP 422 validation failure retains the real-page draft without fal
     await expect(page.locator('#publishResult')).toBeHidden();
     await expect(page.locator('#confirmPublish')).toBeEnabled();
   });
+
+
+test('A delayed deployed image list cannot replace verified GitHub assets',
+  async({page})=>{
+    const name='projects.html',writes=[],actualSource=SOURCE.get(name).toString('utf8');
+    await installVerifiedCurrentSource(page,writes);
+    let deployedRequests=0;
+    // This is deliberately older than GitHub main. Delay it long enough to
+    // arrive after verified source extraction, reproducing the real race.
+    await page.route('**/projects.html',async route=>{
+      deployedRequests++;
+      await new Promise(resolve=>setTimeout(resolve,600));
+      await route.fulfill({status:200,contentType:'text/html',
+        body:'<!doctype html><html><body><main>'+
+          '<img src="assets/stale-gallery-should-not-be-shown.webp" alt="Outdated image">'+
+          '</main></body></html>'});
+    });
+    await page.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    const expected=await page.evaluate(html=>{
+      const doc=new DOMParser().parseFromString(html,'text/html');
+      return [...new Set([...doc.querySelectorAll('main img[src]')]
+        .map(img=>img.getAttribute('src')))];
+    },actualSource);
+    expect(expected.length).toBeGreaterThan(0);
+    await expect(page.locator('#imageLibrary button img')).toHaveCount(expected.length);
+    await expect.poll(()=>deployedRequests,{timeout:5000}).toBeGreaterThan(0);
+    await page.waitForTimeout(800);
+    const actual=await page.locator('#imageLibrary button img').evaluateAll(nodes=>
+      nodes.map(img=>img.getAttribute('src')));
+    expect(actual).toEqual(expected);
+    expect(actual).not.toContain('assets/stale-gallery-should-not-be-shown.webp');
+    expect(writes).toEqual([]);
+  });
