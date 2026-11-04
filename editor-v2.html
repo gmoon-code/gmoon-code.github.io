@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex,nofollow">
 <title>Academic Website Editor 2 | Ye Eun Moon</title>
 <link rel="stylesheet" href="editor-v2.css?v=20261104-editor-v2-draft-recovery-v57">
-<script src="editor-v2.js?v=20261104-editor-v2-draft-recovery-v57" defer></script>
+<script src="editor-v2.js?v=20261104-editor-v2-multi-tab-v58" defer></script>
 </head>
 <body>
 <a class="skip" href="#workspace">Skip to editor canvas</a>
@@ -175,6 +175,16 @@
       </div>
       <div id="workspaceExplanation" class="workspace-explanation" role="status">The real website is shown with its existing styling and responsive layout. Select text or an image to edit it using the original-page inspector, or copy it to the free-design canvas.</div>
 
+        <div id="liveDraftConflict" class="live-draft-recovery" role="alert" hidden>
+          <strong>Another editor tab changed this page</strong>
+          <p>Your edits in this tab are still visible but could not be saved. The newer stored draft has not been overwritten. Download a backup, then choose which draft to keep.</p>
+          <div class="inline-actions">
+            <button id="downloadConflictingLiveDraft" type="button">Download this tab's edits</button>
+            <button id="loadNewerLiveDraft" type="button">Load newer saved draft</button>
+            <button id="overwriteNewerLiveDraft" type="button" class="danger">Keep my edits instead</button>
+          </div>
+          <p class="help">Loading or replacing a draft requires confirmation. Publishing is blocked until you resolve this warning. Downloaded edit records are a technical backup, not a file you can import directly in the editor.</p>
+        </div>
         <div id="liveDraftRecovery" class="live-draft-recovery" role="alert" hidden>
           <strong>Saved draft needs recovery</strong>
           <p>This browser contains an unreadable live-page draft. Its original data has not been changed. New edits cannot be saved or published until you resolve it.</p>
