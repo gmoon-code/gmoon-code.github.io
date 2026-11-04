@@ -377,3 +377,28 @@ test('A simulated GitHub 409 conflict retains a real-page draft and reports no p
     expect(await page.evaluate(()=>JSON.stringify(localStorage)))
       .not.toContain('isolated-test-conflict-token');
   });
+
+
+test('The publishing dialog discloses same-origin script access and clears a cancelled synthetic token',
+  async({page})=>{
+    const writes=[];
+    await installVerifiedCurrentSource(page,writes);
+    await page.goto(BASE+'/editor-v2.html?page=contact.html',{waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    const heading=page.frameLocator('#livePageFrame')
+      .locator('main h1:visible,main h2:visible').first();
+    await heading.click();
+    await page.locator('#liveTextAlign').selectOption('right');
+    await page.locator('#publish').click();
+    await expect(page.locator('#publishDialog')).toBeVisible();
+    await expect(page.locator('#publishDialog'))
+      .toContainText('A compromised page script could read a token while it is entered.');
+    await page.locator('#githubToken').fill('synthetic-cancelled-token');
+    await page.locator('#cancelPublish').click();
+    await expect(page.locator('#publishDialog')).not.toBeVisible();
+    await expect(page.locator('#githubToken')).toHaveValue('');
+    expect(await page.evaluate(()=>JSON.stringify(localStorage)))
+      .not.toContain('synthetic-cancelled-token');
+    expect(writes).toEqual([]);
+  });
