@@ -5277,8 +5277,8 @@ async function importPage(force=false){
 }
 function changePage(page){
   if(!PAGES.has(page))return;
-  if(page!==currentPage&&liveDraftConflict?.page===currentPage&&
-      !confirm("This tab's live-page edits are not saved because another tab changed the draft. Download a copy or resolve the conflict before switching pages. Switch anyway and discard this tab's unsaved edits?")){
+  if(liveDraftConflict?.page===currentPage&&
+      !confirm("This tab's live-page edits are not saved because another tab changed the draft. Download a copy or resolve the conflict before reloading or switching pages. Continue and discard this tab's unsaved edits?")){
     $("page").value=currentPage;
     return;
   }
@@ -5397,9 +5397,20 @@ function applyLiveEditsToGithubHtml(html){
       Math.round(size/1024)+" KB). Nothing was published. Use image paths in assets/ or remove large embedded images.");
   return {html:output,resolved,normalized};
 }
-async function publishGithub(token,target){
-  if(target==="live"&&liveDraftConflict?.page===currentPage)
+function assertLiveDraftNotSuperseded(page){
+  if(liveDraftConflict?.page===page)
     throw Error("Another editor tab changed this page's saved draft. Resolve the draft conflict before publishing.");
+  let latest;
+  try{latest=localStorage.getItem(LIVE_DRAFT_KEY+page);}
+  catch{throw Error("Cannot verify this browser's local draft before publishing. Nothing was submitted.");}
+  if(latest!==liveDraftLoadedRaw){
+    liveDraftConflict={page,stored:latest};
+    renderLiveEditCount();
+    throw Error("Another editor tab changed this page's saved draft. Resolve the draft conflict before publishing.");
+  }
+}
+async function publishGithub(token,target){
+  if(target==="live")assertLiveDraftNotSuperseded(currentPage);
   if(target==="live"&&liveDraftRecovery?.page===currentPage)
     throw Error("Stored draft is unreadable. Original data is protected. Download or resolve the saved-draft recovery warning before publishing.");
   if(!token)throw Error("Enter your GitHub token to publish.");
@@ -5419,6 +5430,9 @@ async function publishGithub(token,target){
     if(currentPage!==publicationPage||workspaceMode!==publicationMode||
        state!==draftSignature)
       throw Error("The selected page or saved edits changed during publishing. Nothing was submitted. Return to the intended page and try again.");
+    // A second tab can save while GitHub source verification is in flight.
+    // Reject the result before constructing or sending the GitHub PUT.
+    if(target==="live")assertLiveDraftNotSuperseded(publicationPage);
   };
   const path=target==="live"?publicationPage:
     "editor-v2-previews/"+(sourceMode?"source-":"")+publicationPage;
