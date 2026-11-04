@@ -2092,3 +2092,45 @@ test('Actual published view reports deployment drift while preserving unsaved Gi
     await expect(heading).toHaveCSS('text-align',next);
     expect(writes).toEqual([]);
   });
+
+
+for(const name of ['index.html','contact.html']){
+  test('Same-width visitor versus source-edit geometry on '+name,
+    async({page})=>{
+      const writes=[],width=1160;
+      await installVerifiedCurrentSource(page,writes);
+      await page.setViewportSize({width,height:900});
+      const capture=async locator=>locator.evaluate(async main=>{
+        const doc=main.ownerDocument,view=doc.defaultView;
+        await doc.fonts?.ready;
+        const root=main.getBoundingClientRect();
+        const nodes=[main,...main.querySelectorAll('h1,h2,h3,p,img,figure')].slice(0,18);
+        return nodes.map(node=>{
+          const rect=node.getBoundingClientRect();
+          const style=view.getComputedStyle(node);
+          return {tag:node.tagName,relativeX:rect.left-root.left,
+            relativeY:rect.top-root.top,width:rect.width,height:rect.height,
+            fontSize:style.fontSize,display:style.display,objectFit:style.objectFit};
+        });
+      });
+      await page.goto(BASE+'/'+name,{waitUntil:'load'});
+      const publicGeometry=await capture(page.locator('main'));
+      await page.goto(BASE+'/editor-v2.html?page='+name,
+        {waitUntil:'domcontentloaded'});
+      await expect(page.locator('#liveAssetStatus'))
+        .toContainText('GitHub main source verified',{timeout:35000});
+      const editGeometry=await capture(page.frameLocator('#livePageFrame').locator('main'));
+      expect(editGeometry.length).toBe(publicGeometry.length);
+      for(let i=0;i<publicGeometry.length;i++){
+        const actual=editGeometry[i],expected=publicGeometry[i];
+        expect(actual.tag,name+' tag '+i).toBe(expected.tag);
+        for(const key of ['relativeX','relativeY','width','height'])
+          expect(Math.abs(actual[key]-expected[key]),
+            name+' '+i+' '+key+' must match published visitor at 1160px')
+            .toBeLessThan(6);
+        expect(actual.fontSize,name+' '+i+' font').toBe(expected.fontSize);
+        expect(actual.display,name+' '+i+' display').toBe(expected.display);
+      }
+      expect(writes).toEqual([]);
+    });
+}
