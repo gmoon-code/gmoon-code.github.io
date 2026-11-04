@@ -1249,3 +1249,114 @@ test('Partly invalid, duplicate and oversized stored drafts never load a partial
     }
     expect(writes).toEqual([]);
   });
+
+
+test('Two real editor tabs preserve the newer valid draft and require explicit overwrite',
+  async({page,context})=>{
+    const name='contact.html',key='moon-academic-editor-v2:source:'+name,writes=[];
+    await installVerifiedCurrentSource(page,writes);
+    const other=await context.newPage();
+    await installVerifiedCurrentSource(other,writes);
+    for(const tab of [page,other]){
+      await tab.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+      await expect(tab.locator('#liveAssetStatus'))
+        .toContainText('GitHub main source verified',{timeout:35000});
+    }
+    const heading=tab=>tab.frameLocator('#livePageFrame')
+      .locator('main h1:visible,main h2:visible').first();
+    await heading(page).click();
+    const initial=await page.locator('#liveTextAlign').inputValue();
+    const chosenA=initial==='right'?'center':'right';
+    const chosenB=chosenA==='left'?'center':'left';
+    await page.locator('#liveTextAlign').selectOption(chosenA);
+    const savedA=await page.evaluate(key=>localStorage.getItem(key),key);
+    expect(JSON.parse(savedA)).toHaveLength(1);
+    await expect(other.locator('#liveDraftConflict')).toBeVisible({timeout:10000});
+    await heading(other).click();
+    await other.locator('#liveTextAlign').selectOption(chosenB);
+    await other.locator('#save').click();
+    expect(await other.evaluate(key=>localStorage.getItem(key),key)).toBe(savedA);
+    await expect(other.locator('#liveEditCount')).toContainText('Another tab changed');
+
+    const downloaded=other.waitForEvent('download');
+    await other.locator('#downloadConflictingLiveDraft').click();
+    const backup=await downloaded;
+    expect(backup.suggestedFilename()).toBe(name+'.unsaved-live-edits.json');
+    const backupRecords=JSON.parse(readFileSync(await backup.path(),'utf8'));
+    expect(backupRecords).toHaveLength(1);
+    expect(backupRecords[0].appearance.align).toBe(chosenB);
+    expect(await other.evaluate(key=>localStorage.getItem(key),key)).toBe(savedA);
+
+    await other.locator('#publish').click();
+    await expect(other.locator('#publishDialog')).toBeVisible();
+    await other.locator('#githubToken').fill('synthetic-cross-tab-token');
+    await other.locator('#acknowledgeLive').check();
+    await other.locator('#confirmPublish').click();
+    await expect(other.locator('#publishError')).toContainText('Another editor tab');
+    expect(writes).toEqual([]);
+    await other.locator('#cancelPublish').click();
+
+    other.once('dialog',dialog=>dialog.dismiss());
+    await other.locator('#overwriteNewerLiveDraft').click();
+    await expect(other.locator('#liveDraftConflict')).toBeVisible();
+    expect(await other.evaluate(key=>localStorage.getItem(key),key)).toBe(savedA);
+
+    other.once('dialog',dialog=>dialog.accept());
+    await other.locator('#overwriteNewerLiveDraft').click();
+    await expect(other.locator('#liveDraftConflict')).toBeHidden();
+    const savedB=await other.evaluate(key=>localStorage.getItem(key),key);
+    expect(JSON.parse(savedB)[0].appearance.align).toBe(chosenB);
+    await expect(page.locator('#liveDraftConflict')).toBeVisible({timeout:10000});
+
+    page.once('dialog',dialog=>dialog.dismiss());
+    await page.locator('#loadNewerLiveDraft').click();
+    await expect(page.locator('#liveDraftConflict')).toBeVisible();
+    page.once('dialog',dialog=>dialog.accept());
+    await page.locator('#loadNewerLiveDraft').click();
+    await expect(page.locator('#liveDraftConflict')).toBeHidden();
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    expect(await page.evaluate(key=>localStorage.getItem(key),key)).toBe(savedB);
+    await heading(page).click();
+    await expect(page.locator('#liveTextAlign')).toHaveValue(chosenB);
+    expect(writes).toEqual([]);
+    await other.close();
+  });
+
+test('Switching pages with a cross-tab draft conflict requires explicit confirmation',
+  async({page,context})=>{
+    const name='research.html',key='moon-academic-editor-v2:source:'+name,writes=[];
+    await installVerifiedCurrentSource(page,writes);
+    const other=await context.newPage();
+    await installVerifiedCurrentSource(other,writes);
+    for(const tab of [page,other]){
+      await tab.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+      await expect(tab.locator('#liveAssetStatus'))
+        .toContainText('GitHub main source verified',{timeout:35000});
+    }
+    const heading=tab=>tab.frameLocator('#livePageFrame')
+      .locator('main h1:visible,main h2:visible').first();
+    await heading(page).click();
+    const current=await page.locator('#liveTextAlign').inputValue();
+    await page.locator('#liveTextAlign').selectOption(current==='right'?'center':'right');
+    const original=await page.evaluate(key=>localStorage.getItem(key),key);
+    await expect(other.locator('#liveDraftConflict')).toBeVisible();
+    await heading(other).click();
+    const otherCurrent=await other.locator('#liveTextAlign').inputValue();
+    await other.locator('#liveTextAlign').selectOption(otherCurrent==='left'?'right':'left');
+    await other.locator('#save').click();
+    expect(await other.evaluate(key=>localStorage.getItem(key),key)).toBe(original);
+
+    other.once('dialog',dialog=>dialog.dismiss());
+    await other.locator('#page').selectOption('contact.html');
+    await expect(other.locator('#page')).toHaveValue(name);
+    await expect(other.locator('#liveDraftConflict')).toBeVisible();
+
+    other.once('dialog',dialog=>dialog.accept());
+    await other.locator('#page').selectOption('contact.html');
+    await expect(other.locator('#page')).toHaveValue('contact.html');
+    await expect(other.locator('#liveDraftConflict')).toBeHidden();
+    expect(await page.evaluate(key=>localStorage.getItem(key),key)).toBe(original);
+    expect(writes).toEqual([]);
+    await other.close();
+  });
