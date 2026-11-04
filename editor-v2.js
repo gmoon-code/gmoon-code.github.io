@@ -2717,7 +2717,9 @@ function saveLiveText(){
   livePatches.set(edit.selector,{
     selector:edit.selector,kind:"text",expected:edit.expected,html,
     ...(old?.layout?{layout:old.layout}:{}),
-    ...(old?.appearance?{appearance:old.appearance}:{})
+    ...(old?.appearance?{appearance:old.appearance}:{}),
+    // Editing a group member's wording must not silently ungroup it.
+    ...(old?.groupId!==undefined?{groupId:old.groupId}:{})
   });
   recordLiveHistory(before);renderLiveInspector();renderLiveLayers();fitLivePage();
 }
@@ -2748,8 +2750,15 @@ function applyLiveImage(){
   }
   const expected=old?.expected||node.getAttribute("src")||"";
   node.setAttribute("src",src);node.setAttribute("alt",alt);
+  // An alt-text or source-path update changes image content, not its
+  // existing presentation. Keep previously edited crop, effects, stacking
+  // and group membership instead of rebuilding a partial image patch.
   livePatches.set(selector,{selector,kind:"image",expected,src,alt,
-    ...(old?.layout?{layout:old.layout}:{})});
+    ...(old?.layout?{layout:old.layout}:{}),
+    ...(old?.appearance?{appearance:old.appearance}:{}),
+    ...(old?.imageCrop?{imageCrop:old.imageCrop}:{}),
+    ...(old?.pictureEffects?{pictureEffects:old.pictureEffects}:{}),
+    ...(old?.groupId!==undefined?{groupId:old.groupId}:{})});
   recordLiveHistory(before);liveImageInputDirty=false;
   renderLiveInspector();renderLiveLayers();
 }
