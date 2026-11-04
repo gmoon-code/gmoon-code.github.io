@@ -2352,6 +2352,34 @@ function checkRestoredLiveDraft(patches,originalHtml){
       throw Error("Some backup edits do not match this page's GitHub source.");
   }finally{livePatches=original;}
 }
+function confirmLiveDraftRestore(message){
+  // Native confirm() blocks the page event loop. Browser tabs may defer
+  // cross-tab storage notifications until after it returns, causing a
+  // stale draft read in some engines. Use a non-blocking in-page dialog.
+  return new Promise(resolve=>{
+    const dialog=$("liveDraftRestoreDialog");
+    $("liveDraftRestoreMessage").textContent=message;
+    const accept=$("confirmLiveDraftRestore"),reject=$("cancelLiveDraftRestore");
+    let settled=false;
+    const finish=approved=>{
+      if(settled)return;
+      settled=true;
+      dialog.removeEventListener("close",onClose);
+      accept.removeEventListener("click",onAccept);
+      reject.removeEventListener("click",onReject);
+      if(dialog.open)dialog.close();
+      resolve(approved);
+    };
+    const onClose=()=>finish(false);
+    const onAccept=()=>finish(true);
+    const onReject=()=>finish(false);
+    dialog.addEventListener("close",onClose);
+    accept.addEventListener("click",onAccept);
+    reject.addEventListener("click",onReject);
+    dialog.showModal();
+    reject.focus();
+  });
+}
 async function restoreLiveDraftJson(file){
   const page=currentPage;
   const source=liveDisplayedSourceHtml;
@@ -2376,7 +2404,9 @@ async function restoreLiveDraftJson(file){
     const warning="Restore "+count+" editable draft "+(count===1?"change":"changes")+
       " for "+page+"? This replaces the saved browser draft and any edits currently open in this tab. "+
       "Download a backup of those edits first if you may need them. The public website will not be changed.";
-    if(!confirm(warning)){status("Restore cancelled · Existing draft retained");return;}
+    if(!await confirmLiveDraftRestore(warning)){
+      status("Restore cancelled · Existing draft retained");return;
+    }
     if(currentPage!==page||workspaceMode!=="live"||
        liveDisplayedSourceHtml!==source||JSON.stringify(liveSnapshot())!==before){
       status("Restore cancelled · The page or edits changed after confirmation");return;
