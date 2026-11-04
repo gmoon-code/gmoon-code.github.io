@@ -2307,6 +2307,95 @@ function storeLiveDraft(){
     renderLiveEditCount();return false;
   }
 }
+const LIVE_DRAFT_BACKUP_FORMAT="moon-editor-v2-live-draft";
+function validatedLiveDraftRecords(value){
+  if(!Array.isArray(value)||value.length>180)
+    throw Error("Backup must contain no more than 180 editable page records.");
+  const validated=new Map();
+  for(const patch of value){
+    if(!validLivePatch(patch)||validated.has(patch.selector))
+      throw Error("Backup contains an invalid or duplicate page edit. No changes were restored.");
+    validated.set(patch.selector,patch);
+  }
+  return validated;
+}
+function parseLiveDraftBackup(raw,filename,page){
+  let value;
+  try{value=JSON.parse(raw);}
+  catch{throw Error("Selected JSON backup cannot be read. No draft was changed.");}
+  let patches;
+  if(Array.isArray(value)){
+    // C-RV29eq downloaded edit records as a bare array. Filename is the
+    // only available page identity, so never guess a target page.
+    if(filename!==page+".unsaved-live-edits.json")
+      throw Error("This older backup must be named "+page+
+        ".unsaved-live-edits.json to restore it to the selected page.");
+    patches=value;
+  }else if(value&&value.format===LIVE_DRAFT_BACKUP_FORMAT&&value.version===1){
+    if(value.page!==page)
+      throw Error("This backup belongs to "+String(value.page||"another page").slice(0,80)+
+        ". Switch to its original page before restoring.");
+    patches=value.patches;
+  }else throw Error("This is not a compatible original-layout draft JSON backup.");
+  return validatedLiveDraftRecords(patches);
+}
+function checkRestoredLiveDraft(patches,originalHtml){
+  if(liveSourceProvenance!=="github"||!originalHtml||!/<main\\b/i.test(originalHtml))
+    throw Error("Restore requires the selected page's verified GitHub source. Reload the page after GitHub verification is available.");
+  const original=livePatches;
+  try{
+    // Use the very same strict source merger that constructs publication
+    // HTML. DOMParser does not execute the site's scripts.
+    livePatches=patches;
+    const doc=new DOMParser().parseFromString(originalHtml,"text/html");
+    if(applyPatchesToDocument(doc,true)!==patches.size)
+      throw Error("Some backup edits do not match this page's GitHub source.");
+  }finally{livePatches=original;}
+}
+async function restoreLiveDraftJson(file){
+  const page=currentPage;
+  const source=liveDisplayedSourceHtml;
+  const before=JSON.stringify(liveSnapshot());
+  if(workspaceMode!=="live"||liveEditing||liveGesture){
+    status("Finish the current live-page edit before restoring a backup");return;
+  }
+  if(file.size>3000000){
+    status("Draft JSON backup exceeds 3 MB · No changes restored");return;
+  }
+  let originalRaw;
+  try{originalRaw=localStorage.getItem(LIVE_DRAFT_KEY+page);}
+  catch{status("Browser draft storage unavailable · No changes restored");return;}
+  try{
+    const candidate=parseLiveDraftBackup(await file.text(),file.name,page);
+    if(currentPage!==page||workspaceMode!=="live"||
+       liveDisplayedSourceHtml!==source||JSON.stringify(liveSnapshot())!==before){
+      status("Restore cancelled · The selected page or unsaved edits changed while reading the file");return;
+    }
+    checkRestoredLiveDraft(candidate,source);
+    const count=candidate.size;
+    const warning="Restore "+count+" editable draft "+(count===1?"change":"changes")+
+      " for "+page+"? This replaces the saved browser draft and any edits currently open in this tab. "+
+      "Download a backup of those edits first if you may need them. The public website will not be changed.";
+    if(!confirm(warning)){status("Restore cancelled · Existing draft retained");return;}
+    if(currentPage!==page||workspaceMode!=="live"||
+       liveDisplayedSourceHtml!==source||JSON.stringify(liveSnapshot())!==before){
+      status("Restore cancelled · The page or edits changed after confirmation");return;
+    }
+    const latest=localStorage.getItem(LIVE_DRAFT_KEY+page);
+    if(latest!==originalRaw){
+      liveDraftConflict={page,stored:latest};
+      status("Another tab changed this draft during restore · Nothing overwritten");
+      renderLiveEditCount();return;
+    }
+    localStorage.setItem(LIVE_DRAFT_KEY+page,JSON.stringify([...candidate.values()]));
+    loadLiveDraft(page);
+    loadLivePage(page);
+    status(count+" editable "+(count===1?"change":"changes")+
+      " restored locally to "+page+" · Review the verified preview before publishing");
+  }catch(error){
+    status("Draft restore rejected · "+(error.message||error));
+  }
+}
 function renderLiveInspector(){
   const live=workspaceMode==="live",sel=liveSelected;
   $("liveInspector").hidden=!live;
@@ -5941,6 +6030,20 @@ function attachEvents(){
   $("revertLiveElement").addEventListener("click",revertLiveElement);
   $("deleteLiveElement").addEventListener("click",deleteSelectedLiveElement);
   $("previewLiveEdits").addEventListener("click",()=>$("preview").click());
+  $("exportLiveDraftJson").addEventListener("click",()=>{
+    if(liveEditing)saveLiveText();
+    const backup={
+      format:LIVE_DRAFT_BACKUP_FORMAT,version:1,page:currentPage,
+      patches:liveSnapshot()
+    };
+    download(currentPage+".live-draft.json",JSON.stringify(backup,null,2),"application/json");
+    status(backup.patches.length+" editable page changes downloaded as a restorable JSON backup · Website unchanged");
+  });
+  $("importLiveDraftJson").addEventListener("click",()=>$("liveDraftFile").click());
+  $("liveDraftFile").addEventListener("change",async event=>{
+    const file=event.target.files?.[0];event.target.value="";
+    if(file)await restoreLiveDraftJson(file);
+  });
   $("exportLiveEdits").addEventListener("click",async()=>{
     if(liveEditing)saveLiveText();
     try{
@@ -6569,6 +6672,9 @@ fileInput.id="imageFile";fileInput.hidden=true;document.body.append(fileInput);
 const replaceInput=document.createElement("input");
 replaceInput.type="file";replaceInput.accept="image/png,image/jpeg,image/webp";
 replaceInput.id="replaceFile";replaceInput.hidden=true;document.body.append(replaceInput);
+const liveDraftInput=document.createElement("input");
+liveDraftInput.type="file";liveDraftInput.accept=".json,application/json";
+liveDraftInput.id="liveDraftFile";liveDraftInput.hidden=true;document.body.append(liveDraftInput);
 const sceneInput=document.createElement("input");
 sceneInput.type="file";sceneInput.accept=".json,application/json";
 sceneInput.id="sceneFile";sceneInput.hidden=true;document.body.append(sceneInput);
