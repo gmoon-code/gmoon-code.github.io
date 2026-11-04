@@ -841,10 +841,10 @@
   "doi_registry": {
     "checked": 41,
     "counts": {
-      "not-confirmed": 8,
-      "registered": 33
+      "not-confirmed": 10,
+      "registered": 31
     },
-    "secondary_index_matches": 8,
+    "secondary_index_matches": 10,
     "not_confirmed": [
       {
         "url": "https://doi.org/10.1002/sce.20264",
@@ -863,36 +863,20 @@
         "indexedYear": 2008
       },
       {
-        "url": "https://doi.org/10.1002/sce.21511",
-        "doi": "10.1002/sce.21511",
+        "url": "https://doi.org/10.1002/sce.21622",
+        "doi": "10.1002/sce.21622",
         "pages": [
-          "research.html"
+          "research-scoping.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21511",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21622",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Opening up curricula to redistribute epistemic agency: A framework for supporting science teaching",
-        "indexedYear": 2019
-      },
-      {
-        "url": "https://doi.org/10.1002/sce.21588",
-        "doi": "10.1002/sce.21588",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21588",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "“Estoy Explorando Science”: Emergent bilingual students problematizing electrical phenomena through translanguaging",
-        "indexedYear": 2020
+        "indexedTitle": "Scientific modeling and translanguaging: A multilingual and multimodal approach to support science learning and engagement",
+        "indexedYear": 2021
       },
       {
         "url": "https://doi.org/10.1002/tea.21459",
@@ -911,52 +895,85 @@
         "indexedYear": 2018
       },
       {
-        "url": "https://doi.org/10.1080/1046560X.2022.2155355",
-        "doi": "10.1080/1046560X.2022.2155355",
+        "url": "https://doi.org/10.1002/tea.70072",
+        "doi": "10.1002/tea.70072",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/1046560X.2022.2155355",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.70072",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Teacher Noticing for Supporting Students’ Epistemic Agency in Science Sensemaking Discussions",
+        "indexedTitle": "Students' Construction, Evaluation, and Revision of Scientific Models Through Multimodal Representations",
+        "indexedYear": 2026
+      },
+      {
+        "url": "https://doi.org/10.1080/03626784.2021.1947732",
+        "doi": "10.1080/03626784.2021.1947732",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/03626784.2021.1947732",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Getting dirty and coming clean: Sex education and the problem of expertise",
+        "indexedYear": 2021
+      },
+      {
+        "url": "https://doi.org/10.1080/07491409.2023.2193543",
+        "doi": "10.1080/07491409.2023.2193543",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/07491409.2023.2193543",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "TERF Logics Are Carceral Logics: Toward the Abolition of Gender-Critical Movements or Black Trans Life as Pedagogical Praxis",
         "indexedYear": 2023
       },
       {
-        "url": "https://doi.org/10.1093/biosci/biac013",
-        "doi": "10.1093/biosci/biac013",
+        "url": "https://doi.org/10.2304/ciec.2011.12.4.362",
+        "doi": "10.2304/ciec.2011.12.4.362",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://academic.oup.com/bioscience/article/72/5/481/6547662",
+        "publisherLanding": "https://journals.sagepub.com/doi/10.2304/ciec.2011.12.4.362",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Six Principles for Embracing Gender and Sexual Diversity in Postsecondary Biology Classrooms",
-        "indexedYear": 2022
+        "indexedTitle": "On the Human Challenges of Multiliteracies Pedagogy",
+        "indexedYear": 2011
       },
       {
-        "url": "https://doi.org/10.1159/000345322",
-        "doi": "10.1159/000345322",
+        "url": "https://doi.org/10.3102/0013189X20927363",
+        "doi": "10.3102/0013189X20927363",
         "pages": [
-          "research.html"
+          "research.html",
+          "writing-biological-classification.html"
         ],
-        "publisherLanding": "https://karger.com/article/doi/10.1159/000345322",
+        "publisherLanding": "https://journals.sagepub.com/doi/10.3102/0013189X20927363",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Desettling Expectations in Science Education",
-        "indexedYear": 2012
+        "indexedTitle": "Beyond Equity as Inclusion: A Framework of “Rightful Presence” for Guiding Justice-Oriented Studies in Teaching and Learning",
+        "indexedYear": 2020
       },
       {
         "url": "https://doi.org/10.3102/0034654314558490",
@@ -973,12 +990,28 @@
         "secondaryIndex": "OpenAlex",
         "indexedTitle": "Representing Student Argumentation as Functionally Emergent From Scientific Activity",
         "indexedYear": 2014
+      },
+      {
+        "url": "https://doi.org/10.3138/cmlr-2021-0055",
+        "doi": "10.3138/cmlr-2021-0055",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://utppublishing.com/doi/10.3138/cmlr-2021-0055",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "The Impact of Academic Acculturation and Language Proficiency on International Students’ University Experience and Academic Success: A Longitudinal Study",
+        "indexedYear": 2023
       }
     ],
     "unresolved": [],
     "limitation": "Crossref/DataCite registration is distinct from publisher access, correct article metadata or article availability. OpenAlex is independent secondary corroboration, not registration proof."
   },
-  "workflow_run_id": "41800913503",
-  "head_sha": "0e9c607a0a6233ca0ac246d36180cfd05279ea70",
+  "workflow_run_id": "41801027377",
+  "head_sha": "a442abf74aca9432330266e0a7626015fb547271",
   "audit_exit_code": "0"
 }
