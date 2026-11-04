@@ -83,3 +83,10 @@ test('shared footer publishing warns when tailored CV and Contact messages will 
   assert.match(chrome, /paragraph\.replaceChildren\(\.\.\.fragments\)/);
   new vm.Script(chrome);
 });
+
+test('Studio idle status describes local drafts rather than claiming all website changes are published',()=>{
+  assert.match(studio,/const dirty=hasChanges\(\);\s*el\.textContent=dirty\?"Unpublished changes":"No pending changes in this Studio session";/);
+  assert.doesNotMatch(studio,/Everything published/);
+  assert.match(studio,/await github\(prefix\+"\/git\/refs\/heads\/main",\{/);
+  assert.match(studio,/toast\("All changes were published together\. GitHub Pages may need a few minutes to refresh\."\)/);
+});
