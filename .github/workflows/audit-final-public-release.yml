@@ -4,6 +4,14 @@ on:
     branches: [main]
     paths:
       - "*.html"
+      # Reconcile after source-matched supporting reports finish publishing.
+      - "docs/PUBLIC_LINKGRAPH_LATEST_RESULTS.json"
+      - "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json"
+      - "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json"
+      - "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json"
+      - "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json"
+      - "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json"
+      - "docs/RESEARCH_METADATA_LATEST_RESULTS.json"
       - "appearance.css"
       - "appearance.js"
       - "styles-20261013.css"
