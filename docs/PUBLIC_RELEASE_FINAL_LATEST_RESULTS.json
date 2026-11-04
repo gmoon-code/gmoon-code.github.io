@@ -1,12 +1,12 @@
 {
-  "sourceHead": "90cfc245d1200b94c8226272b983bdc89ff97029",
+  "sourceHead": "6a9842f62bb21976034d6309680c39cf36cc8c9b",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
-  "verifiedExactMatches": 24,
-  "httpErrors": 0,
+  "verifiedExactMatches": 23,
+  "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-90cfc245d120",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-6a9842f62bb2",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -17,7 +17,9 @@
       "run": "41759436405",
       "head_sha": "d8fc85d29048946910ed6fa4e7b0350f728ca57f",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research-methods-studio.html"
+      ],
       "failureCounts": {
         "problems": 0
       }
@@ -27,7 +29,9 @@
       "run": "41759436334",
       "head_sha": "d8fc85d29048946910ed6fa4e7b0350f728ca57f",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research-methods-studio.html"
+      ],
       "failureCounts": {
         "issues": 42
       },
@@ -56,7 +60,9 @@
       "run": "41759436440",
       "head_sha": "d8fc85d29048946910ed6fa4e7b0350f728ca57f",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research-methods-studio.html"
+      ],
       "failureCounts": {
         "failures": 0
       }
@@ -66,7 +72,9 @@
       "run": "41759436426",
       "head_sha": "d8fc85d29048946910ed6fa4e7b0350f728ca57f",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research-methods-studio.html"
+      ],
       "failureCounts": {
         "failures": 0
       }
@@ -76,7 +84,9 @@
       "run": "41759436518",
       "head_sha": "d8fc85d29048946910ed6fa4e7b0350f728ca57f",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research-methods-studio.html"
+      ],
       "failureCounts": {
         "failures": 0,
         "combinedStressFailures": 0
@@ -87,7 +97,9 @@
       "run": "41759436477",
       "head_sha": "d8fc85d29048946910ed6fa4e7b0350f728ca57f",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research-methods-studio.html"
+      ],
       "failureCounts": {
         "failures": 0,
         "axeViolations": 0
@@ -100,11 +112,104 @@
       "note": "U1 route audit documents successful run 40825886279; legacy utility machine report refers to an early missing-script failure. Do not treat it as latest successful evidence."
     }
   },
-  "sourceDriftSinceAudits": [],
-  "pass": true,
-  "errors": [],
+  "sourceDriftSinceAudits": [
+    {
+      "category": "links",
+      "sourceModifiedSinceAudit": [
+        "research-methods-studio.html"
+      ]
+    },
+    {
+      "category": "external",
+      "sourceModifiedSinceAudit": [
+        "research-methods-studio.html"
+      ]
+    },
+    {
+      "category": "reflow",
+      "sourceModifiedSinceAudit": [
+        "research-methods-studio.html"
+      ]
+    },
+    {
+      "category": "engines",
+      "sourceModifiedSinceAudit": [
+        "research-methods-studio.html"
+      ]
+    },
+    {
+      "category": "typography",
+      "sourceModifiedSinceAudit": [
+        "research-methods-studio.html"
+      ]
+    },
+    {
+      "category": "interactions",
+      "sourceModifiedSinceAudit": [
+        "research-methods-studio.html"
+      ]
+    }
+  ],
+  "pass": false,
+  "errors": [
+    {
+      "path": "research-methods-studio.html",
+      "errors": [
+        "deployed bytes differ from checked-out production source"
+      ],
+      "firstDiff": [
+        "--- source\n",
+        "+++ deployed\n",
+        "@@ -165,3 +165,3 @@\n",
+        "     <p>Student notebooks are designed to remain in local browser storage unless the user chooses to use a networked feature. An independent backup is therefore important, especially when changing devices or clearing browser data. The application provides a Word-compatible .doc export and a JSON backup and recovery option. A full recovery backup may contain research notes, raw data, and Chat history. The separate limited progress summary cannot restore a notebook and should not be assumed anonymous. Earlier downloads labelled as privacy copies may also contain detailed notebook text, so exported files need careful handling.</p>",
+        "-    <p>Optional Research Chat uses a server. Each request sends the question and up to eight recent Chat messages, even when project context is turned off. When project context is enabled, a minimized selection of project information is also sent. Students should avoid submitting identifiable participant records or other sensitive research data through that feature without appropriate safeguards. They remain responsible for verifying sources and evaluating methodological guidance.</p>",
+        "+    <p>Optional Research Chat uses a server. When project context is enabled, a minimized selection of project information is sent with the chat request. Students should avoid submitting identifiable participant records or other sensitive research data through that feature without appropriate safeguards. They remain responsible for verifying sources and evaluating methodological guidance.</p>",
+        "   </div>"
+      ]
+    },
+    {
+      "sourceDrift": [
+        {
+          "category": "links",
+          "sourceModifiedSinceAudit": [
+            "research-methods-studio.html"
+          ]
+        },
+        {
+          "category": "external",
+          "sourceModifiedSinceAudit": [
+            "research-methods-studio.html"
+          ]
+        },
+        {
+          "category": "reflow",
+          "sourceModifiedSinceAudit": [
+            "research-methods-studio.html"
+          ]
+        },
+        {
+          "category": "engines",
+          "sourceModifiedSinceAudit": [
+            "research-methods-studio.html"
+          ]
+        },
+        {
+          "category": "typography",
+          "sourceModifiedSinceAudit": [
+            "research-methods-studio.html"
+          ]
+        },
+        {
+          "category": "interactions",
+          "sourceModifiedSinceAudit": [
+            "research-methods-studio.html"
+          ]
+        }
+      ]
+    }
+  ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41762038695",
-  "run_sha": "90cfc245d1200b94c8226272b983bdc89ff97029",
-  "exit_code": "0"
+  "workflow_run_id": "41764011722",
+  "run_sha": "6a9842f62bb21976034d6309680c39cf36cc8c9b",
+  "exit_code": "1"
 }
