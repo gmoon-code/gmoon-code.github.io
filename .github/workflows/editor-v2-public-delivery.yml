@@ -1,0 +1,35 @@
+name: Editor V2 deployed public byte verification
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'editor-v2.js'
+      - 'editor-v2.html'
+      - 'editor-v2.css'
+      - 'moon-free-responsive.js'
+      - 'responsive-personal-media.js'
+      - '*.html'
+      - 'scripts/audit-editor-v2-delivery.py'
+      - '.github/workflows/editor-v2-public-delivery.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  exact-public-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify HTTPS-delivered editor and 17 editable pages
+        run: python3 scripts/audit-editor-v2-delivery.py
+      - name: Preserve exact public delivery evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: editor-v2-public-byte-evidence
+          path: editor-v2-delivery-output/summary.json
+          retention-days: 21
+          if-no-files-found: warn
