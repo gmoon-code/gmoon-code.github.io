@@ -672,3 +672,79 @@ for(const name of PAGES){
     expect(writes,name+' text editing must remain unpublished').toEqual([]);
   });
 }
+
+
+for(const [code,message] of [[401,'GitHub denied access'],[403,'GitHub denied access']]){
+  test('A denied GitHub token prevents publication on real '+code+' response',
+    async({page})=>{
+      const name='research.html',writes=[];
+      await installVerifiedCurrentSource(page,writes);
+      await page.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+      await expect(page.locator('#liveAssetStatus'))
+        .toContainText('GitHub main source verified',{timeout:35000});
+      const heading=page.frameLocator('#livePageFrame')
+        .locator('main h1:visible,main h2:visible').first();
+      await heading.click();
+      await page.locator('#liveTextAlign').selectOption('right');
+      await page.locator('#save').click();
+      const saved=await page.evaluate(file=>
+        localStorage.getItem('moon-academic-editor-v2:source:'+file),name);
+      const endpoint='https://api.github.com/repos/gmoon-code/gmoon-code.github.io/contents/'+name+'?ref=main';
+      await page.route(endpoint,route=>route.fulfill({
+        status:code,contentType:'application/json',
+        headers:{'access-control-allow-origin':'*'},
+        body:JSON.stringify({message:'Synthetic token rejection'})}));
+      await page.locator('#publish').click();
+      await page.locator('#githubToken').fill('synthetic-invalid-token');
+      await page.locator('#acknowledgeLive').check();
+      await page.locator('#confirmPublish').click();
+      await expect(page.locator('#publishError'))
+        .toContainText(message,{timeout:20000});
+      await expect(page.locator('#publishDialog')).toBeVisible();
+      await expect(page.locator('#confirmPublish')).toBeEnabled();
+      await expect(page.locator('#githubToken')).toHaveValue('');
+      expect(await page.evaluate(file=>
+        localStorage.getItem('moon-academic-editor-v2:source:'+file),name))
+        .toBe(saved);
+      expect(writes).toEqual([]);
+      await expect(page.locator('#publishResult')).toBeHidden();
+    });
+}
+
+test('GitHub HTTP 422 validation failure retains the real-page draft without false success',
+  async({page})=>{
+    const name='contact.html',writes=[],attempted=[];
+    await installVerifiedCurrentSource(page,writes);
+    await page.route('https://api.github.com/repos/gmoon-code/gmoon-code.github.io/contents/'+name,
+      async route=>{
+        if(route.request().method()!=='PUT')return route.fallback();
+        attempted.push(JSON.parse(route.request().postData()));
+        await route.fulfill({status:422,contentType:'application/json',
+          headers:{'access-control-allow-origin':'*'},
+          body:JSON.stringify({message:'Synthetic validation failure'})});
+      });
+    await page.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    const heading=page.frameLocator('#livePageFrame')
+      .locator('main h1:visible,main h2:visible').first();
+    await heading.click();
+    await page.locator('#liveTextAlign').selectOption('right');
+    await page.locator('#save').click();
+    const saved=await page.evaluate(file=>
+      localStorage.getItem('moon-academic-editor-v2:source:'+file),name);
+    await page.locator('#publish').click();
+    await page.locator('#githubToken').fill('synthetic-422-token');
+    await page.locator('#acknowledgeLive').check();
+    await page.locator('#confirmPublish').click();
+    await expect(page.locator('#publishError'))
+      .toContainText('GitHub rejected the update (HTTP 422)',{timeout:20000});
+    expect(attempted).toHaveLength(1);
+    expect(attempted[0].sha).toBe(blobSha(SOURCE.get(name)));
+    expect(writes).toEqual([]);
+    expect(await page.evaluate(file=>
+      localStorage.getItem('moon-academic-editor-v2:source:'+file),name))
+      .toBe(saved);
+    await expect(page.locator('#publishResult')).toBeHidden();
+    await expect(page.locator('#confirmPublish')).toBeEnabled();
+  });
