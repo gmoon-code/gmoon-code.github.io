@@ -4633,6 +4633,11 @@ async function loadPageImageLibrary(page,serial){
       if(unique.size>=75)break;
     }
     if(currentPage!==page||serial!==loadSerial)return;
+    // A slower deployed-page fetch must never overwrite image choices already
+    // extracted from the verified GitHub HTML in Live website mode. Otherwise
+    // an older Pages deployment can silently replace the source-accurate list.
+    if(workspaceMode==="live"&&liveSourceProvenance==="github"&&
+       liveDisplayedSourceHtml!==null)return;
     pageImages=[...unique.values()];renderImageLibrary();
   }catch{
     // Image browsing is optional. Keep any current canvas draft untouched.
