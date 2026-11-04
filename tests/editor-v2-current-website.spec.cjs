@@ -624,3 +624,45 @@ test('Two consecutive source-faithful simulated live publications preserve both 
     expect(await page.evaluate(()=>JSON.stringify(localStorage)))
       .not.toContain('synthetic-two-publish-token');
   });
+
+
+for(const name of PAGES){
+  test('Original paragraph text editing and reload on actual '+name,async({page})=>{
+    const writes=[];
+    await installVerifiedCurrentSource(page,writes);
+    await page.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    const live=page.frameLocator('#livePageFrame');
+    const paragraph=live.locator('main p:visible').first();
+    await expect(paragraph).toBeVisible();
+    const original=await paragraph.textContent();
+    expect(original?.trim().length).toBeGreaterThan(0);
+    await paragraph.click();
+    await expect(page.locator('#editLiveText')).toBeEnabled();
+    await page.locator('#editLiveText').click();
+    const synthetic='Synthetic source-text edit for '+name+'.';
+    await expect(paragraph).toHaveAttribute('contenteditable','true');
+    await paragraph.fill(synthetic);
+    await page.locator('#saveLiveText').click();
+    await expect(paragraph).toHaveText(synthetic);
+    await page.locator('#save').click();
+    const draft=await page.evaluate(file=>
+      localStorage.getItem('moon-academic-editor-v2:source:'+file),name);
+    expect(draft,name+' draft must be saved').toBeTruthy();
+    expect(JSON.parse(draft).some(p=>p.kind==='text')).toBe(true);
+    await page.locator('#preview').click();
+    await expect(page.locator('#previewDialog')).toBeVisible({timeout:20000});
+    await expect(page.frameLocator('#previewFrame').locator('main p:visible').first())
+      .toHaveText(synthetic,{timeout:20000});
+    const html=await page.locator('#previewFrame').getAttribute('srcdoc');
+    expect(html).toContain(synthetic);
+    await page.locator('#closePreview').click();
+    await page.reload({waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    await expect(page.frameLocator('#livePageFrame').locator('main p:visible').first())
+      .toHaveText(synthetic,{timeout:20000});
+    expect(writes,name+' text editing must remain unpublished').toEqual([]);
+  });
+}
