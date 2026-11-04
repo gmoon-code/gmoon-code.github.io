@@ -31,6 +31,7 @@ const LIVE_DRAFT_KEY="moon-academic-editor-v2:source:";
 const LIVE_POSITION_LOCK_KEY="moon-academic-editor-v2:position-lock:";
 let livePositionLocks=new Set(); // Local editor preference, never published.
 let livePatches=new Map(),liveEditing=null,liveHistory=[],liveRedo=[],liveGesture=null,liveOverlay=null;
+let liveImageInputNode=null,liveImageInputDirty=false; // Preserve unsaved inspector edits during browser re-renders.
 let githubTabToken=""; // In-memory only. Never written to storage or page files.
 let reconnectImages=[],reconnectForPage="";
 const liveGithubSources=new Map();
@@ -2271,9 +2272,19 @@ function renderLiveInspector(){
   $("editLiveText").disabled=!node||tag==="IMG"||LIVE_CONTAINER_SET.has(tag)||!!liveEditing;
   $("saveLiveText").disabled=!liveEditing;
   $("cancelLiveText").disabled=!liveEditing;
+  // Rendering the inspector can occur during focus changes or responsive
+  // layout updates. Never replace unsaved image-field input for the same
+  // selected photo while its Apply button is being used, including Firefox.
   if(node&&tag==="IMG"&&!liveEditing){
-    $("liveImageSrc").value=node.getAttribute("src")||"";
-    $("liveImageAlt").value=node.alt||"";
+    if(liveImageInputNode!==node){
+      liveImageInputNode=node;liveImageInputDirty=false;
+    }
+    if(!liveImageInputDirty){
+      $("liveImageSrc").value=node.getAttribute("src")||"";
+      $("liveImageAlt").value=node.alt||"";
+    }
+  }else if(!node||tag!=="IMG"){
+    liveImageInputNode=null;liveImageInputDirty=false;
   }
   const selector=node&&liveSelector(node);
   $("revertLiveElement").disabled=!selector||!livePatches.has(selector);
@@ -2728,13 +2739,15 @@ function applyLiveImage(){
   if(old?.kind==="insert"){
     old.src=src;old.alt=alt;livePatches.set(selector,old);
     recordLiveHistory(before);refreshAddedObject(node.ownerDocument,old);
+    liveImageInputDirty=false;
     renderLiveInspector();renderLiveLayers();return;
   }
   const expected=old?.expected||node.getAttribute("src")||"";
   node.setAttribute("src",src);node.setAttribute("alt",alt);
   livePatches.set(selector,{selector,kind:"image",expected,src,alt,
     ...(old?.layout?{layout:old.layout}:{})});
-  recordLiveHistory(before);renderLiveInspector();renderLiveLayers();
+  recordLiveHistory(before);liveImageInputDirty=false;
+  renderLiveInspector();renderLiveLayers();
 }
 function deleteSelectedLiveGroup(){
   const selected=selectedAddedPatches();
@@ -5597,6 +5610,8 @@ function attachEvents(){
   $("editLiveText").addEventListener("click",editLiveText);
   $("saveLiveText").addEventListener("click",saveLiveText);
   $("cancelLiveText").addEventListener("click",cancelLiveText);
+  for(const id of ["liveImageSrc","liveImageAlt"])
+    $(id).addEventListener("input",()=>{liveImageInputDirty=true;});
   $("applyLiveImage").addEventListener("click",applyLiveImage);
   $("liveCopyFormat").addEventListener("click",copyLiveFormat);
   $("livePasteFormat").addEventListener("click",pasteLiveFormat);
