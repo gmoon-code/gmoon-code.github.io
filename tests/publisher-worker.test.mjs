@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {randomBytes} from "node:crypto";
+import {readFileSync} from "node:fs";
 import worker,{__testing as util} from "../publisher/worker.mjs";
 
 const origin="https://gmoon-code.github.io";
@@ -16,6 +17,36 @@ const page="<!doctype html><html><head><script src=\"appearance.js\"></script>"+
  "<link rel=\"stylesheet\" href=\"site-theme.css\"><meta charset=\"utf-8\"></head>"+
  "<body><main id=\"main\"><h1>Original title</h1></main></body></html>";
 const edited=page.replace("Original title","Revised title");
+
+test("dormant publisher allows exactly the current 17 Editor V2 pages, including Contact",()=>{
+ const html=readFileSync(new URL("../editor-v2.html",import.meta.url),"utf8");
+ const selector=html.match(/<select id="page">([\s\S]*?)<\/select>/);
+ assert(selector,"Editor V2 page selector must remain readable");
+ const values=[...selector[1].matchAll(/<option value="([^"]+)"/g)].map(match=>match[1]);
+ assert.equal(values.length,17);
+ assert.equal(new Set(values).size,17);
+ assert.deepEqual([...util.ALLOWED_PAGES].sort(),[...values].sort());
+ assert(util.ALLOWED_PAGES.has("contact.html"));
+ assert(!util.ALLOWED_PAGES.has("about.html"));
+ assert.throws(()=>util.validateEdit("about.html",page,edited),/approved/);
+});
+
+test("all 17 real source pages fit revised publisher limits and preserve scripts in a text-only edit",()=>{
+ assert.equal(util.MAX_CONTENT,900000);
+ assert(util.MAX_REQUEST_BYTES>=util.MAX_CONTENT+4*Math.ceil(1572864/3));
+ for(const path of util.ALLOWED_PAGES){
+  const source=readFileSync(new URL("../"+path,import.meta.url),"utf8");
+  assert(source.includes("</main>"),path+" should contain an editable main");
+  assert(Buffer.byteLength(source,"utf8")<=util.MAX_CONTENT,
+    path+" exceeds the publisher's HTML byte limit");
+  const changed=source.replace("</main>",
+    "<!-- C-RV29ev source-preserving validation probe --></main>");
+  assert.notEqual(changed,source,path+" probe must change source");
+  assert.doesNotThrow(()=>util.validateEdit(path,source,changed),
+    path+" should permit a harmless text-only source-preserving update");
+ }
+});
+
 function request(endpoint,body,token,requestOrigin=origin,method="POST"){
  return new Request("https://private-editor.example.test"+endpoint,{
   method,headers:{"Origin":requestOrigin,
@@ -265,20 +296,20 @@ test("accept only exact, bounded responsive grid CSS while protecting existing s
    child(selectors[0],1,1,12,2)+'\n'+child(selectors[1],1,4,12,3)+'\n}';
  const withCss=value=>section.replace("</head>",
    '<style id="moon-responsive-group-layout">\n'+value+'\n</style>\n</head>');
- assert.doesNotThrow(()=>util.validateEdit("about.html",section,withCss(css)));
- assert.throws(()=>util.validateEdit("about.html",section,withCss(css.replace(
+ assert.doesNotThrow(()=>util.validateEdit("contact.html",section,withCss(css)));
+ assert.throws(()=>util.validateEdit("contact.html",section,withCss(css.replace(
    'min-width:0;', 'position:fixed;min-width:0;'))),/Responsive layout CSS/);
- assert.throws(()=>util.validateEdit("about.html",section,withCss(css.replace(
+ assert.throws(()=>util.validateEdit("contact.html",section,withCss(css.replace(
    'grid-column:1 / span 11;', 'grid-column:1 / span 99;'))),/Responsive layout CSS/);
- assert.throws(()=>util.validateEdit("about.html",section,withCss(css.replace(
+ assert.throws(()=>util.validateEdit("contact.html",section,withCss(css.replace(
    'grid-row:4 / span 3;', 'grid-row:1 / span 3;'))),/Responsive layout CSS/);
- assert.throws(()=>util.validateEdit("about.html",section,withCss(css.replace(
+ assert.throws(()=>util.validateEdit("contact.html",section,withCss(css.replace(
    'grid-row:1 / span 2;', 'grid-row:7 / span 2;'))),/Responsive layout CSS/);
- assert.throws(()=>util.validateEdit("about.html",section,withCss(css).replace(
+ assert.throws(()=>util.validateEdit("contact.html",section,withCss(css).replace(
    "site-theme.css","malicious.css")) ,/Scripts, stylesheets/);
- assert.throws(()=>util.validateEdit("about.html",section,
+ assert.throws(()=>util.validateEdit("contact.html",section,
    withCss(css).replace("</head>","<style>body{display:none}</style></head>")),/Scripts, stylesheets/);
- assert.throws(()=>util.validateEdit("about.html",section,withCss(css).replace(
+ assert.throws(()=>util.validateEdit("contact.html",section,withCss(css).replace(
    'id="moon-responsive-group-layout"', 'id="moon-responsive-group-layout" onload="alert(1)"')),/responsive layout stylesheet/i);
 });
 
@@ -299,24 +330,24 @@ test("multiple distinct responsive groups are independently validated by the pub
  };
  const css=group('alpha')+'\n'+group('beta');
  const append=value=>source.replace("</head>",'<style id="moon-responsive-group-layout">\n'+value+'\n</style>\n</head>');
- assert.doesNotThrow(()=>util.validateEdit("about.html",source,append(css)));
- assert.throws(()=>util.validateEdit("about.html",source,append(css+'\n'+group('alpha'))),/Responsive layout CSS/);
- assert.throws(()=>util.validateEdit("about.html",source,append(css.replace(
+ assert.doesNotThrow(()=>util.validateEdit("contact.html",source,append(css)));
+ assert.throws(()=>util.validateEdit("contact.html",source,append(css+'\n'+group('alpha'))),/Responsive layout CSS/);
+ assert.throws(()=>util.validateEdit("contact.html",source,append(css.replace(
    'grid-column:7 / span 6','grid-column:1 / span 6'))),/Responsive layout CSS/);
- assert.throws(()=>util.validateEdit("about.html",source,append(css.replace(
+ assert.throws(()=>util.validateEdit("contact.html",source,append(css.replace(
    'grid-auto-rows:minmax(0,auto)','position:fixed;grid-auto-rows:minmax(0,auto)'))),/Responsive layout CSS/);
- assert.throws(()=>util.validateEdit("about.html",source,append(
+ assert.throws(()=>util.validateEdit("contact.html",source,append(
    Array(7).fill(group('alpha')).join('\n'))),/Responsive layout CSS/);
 });
 
 test("approved plain-text paragraph insertion preserves protected publisher resources",()=>{
  const current=page.replace("<h1>Original title</h1>","<h1>Original title</h1><p>Existing</p>");
  const updated=current.replace("<p>Existing</p>","<p>Existing</p>\n<p>New note &lt;script&gt;literal&lt;/script&gt;</p>");
- assert.doesNotThrow(()=>util.validateEdit("about.html",current,updated));
- assert.throws(()=>util.validateEdit("about.html",current,
+ assert.doesNotThrow(()=>util.validateEdit("contact.html",current,updated));
+ assert.throws(()=>util.validateEdit("contact.html",current,
    updated.replace("&lt;script&gt;literal&lt;/script&gt;","<script>alert(1)</script>")),
    /Scripts, stylesheets|executable/i);
- assert.throws(()=>util.validateEdit("about.html",current,
+ assert.throws(()=>util.validateEdit("contact.html",current,
    updated.replace("</main>","<iframe src=\"https://example.org\"></iframe></main>")),
    /executable/i);
 });
@@ -327,23 +358,23 @@ test("safe inserted headings and links pass the private proposal security checks
   '<p>Existing paragraph</p>\n<h2>New section</h2>\n'+
   '<p><a href="research.html">Read research</a></p>\n'+
   '<p><a href="https://example.org/a?one=1&amp;two=2" rel="noopener noreferrer">External source</a></p>');
- assert.doesNotThrow(()=>util.validateEdit("about.html",current,updated));
- assert.throws(()=>util.validateEdit("about.html",current,
+ assert.doesNotThrow(()=>util.validateEdit("contact.html",current,updated));
+ assert.throws(()=>util.validateEdit("contact.html",current,
   updated.replace('href="research.html"','href="javascript:alert(1)"')),/executable/i);
- assert.throws(()=>util.validateEdit("about.html",current,
+ assert.throws(()=>util.validateEdit("contact.html",current,
   updated.replace('rel="noopener noreferrer"','onclick="alert(1)"')),/executable/i);
- assert.throws(()=>util.validateEdit("about.html",current,
+ assert.throws(()=>util.validateEdit("contact.html",current,
   updated.replace('<h2>New section</h2>','<script>alert(1)</script>')),/Scripts|executable/i);
 });
 
 test("event handler validation distinguishes real attributes from URL query strings",()=>{
  const updated=page.replace("</main>",
   '<p><a href="https://example.org/learn?one=1&amp;onboarding=ok">Read documentation</a></p></main>');
- assert.doesNotThrow(()=>util.validateEdit("about.html",page,updated));
- assert.throws(()=>util.validateEdit("about.html",page,
+ assert.doesNotThrow(()=>util.validateEdit("contact.html",page,updated));
+ assert.throws(()=>util.validateEdit("contact.html",page,
   updated.replace("<p><a",'<p><a onclick="alert(1)"')),/executable/i);
- assert.throws(()=>util.validateEdit("about.html",page,
+ assert.throws(()=>util.validateEdit("contact.html",page,
   updated.replace("<p><a",'<p><img/onerror="alert(1)"><a')),/executable/i);
- assert.throws(()=>util.validateEdit("about.html",page,
+ assert.throws(()=>util.validateEdit("contact.html",page,
   updated.replace("</main>",'<img src="x" onload=alert(1)></main>')),/executable/i);
 });
