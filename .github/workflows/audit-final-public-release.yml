@@ -19,6 +19,18 @@ on:
       - "site-previews.js"
       - "scripts/audit-final-public-release.py"
       - ".github/workflows/audit-final-public-release.yml"
+  # Supporting audit reports are published with [skip ci], which suppresses
+  # their push-based trigger. Reconcile when a source-matched audit completes.
+  workflow_run:
+    workflows:
+      - "Public site link graph and metadata audit"
+      - "External resource audit"
+      - "S4 public accessibility and reflow regression"
+      - "S5 public cross-engine focus and forced-colours audit"
+      - "S6 text enlargement and spacing resilience"
+      - "S7 public accessibility semantics and interaction states"
+    types: [completed]
+    branches: [main]
   workflow_dispatch:
 permissions:
   contents: write
@@ -27,6 +39,9 @@ concurrency:
   cancel-in-progress: false
 jobs:
   final-source-and-deployment:
+    # workflow_run carries a write-capable token; only trust successful audit
+    # runs originating from this repository's main branch.
+    if: ${{ github.event_name != 'workflow_run' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_repository.full_name == github.repository && github.event.workflow_run.head_branch == 'main') }}
     runs-on: ubuntu-latest
     timeout-minutes: 14
     steps:
