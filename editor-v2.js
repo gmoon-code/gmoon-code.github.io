@@ -532,13 +532,17 @@ function fitVerifiedPreviewFrames(){
   ]){
     if(!$(dialogId).open)continue;
     const viewport=$(viewportId),shell=$(shellId),frame=$(frameId);
+    const width=dialogId==="publishedDialog"?
+      LIVE_WIDTHS[$("devicePreview").value]||1160:pageWidth;
+    const height=dialogId==="publishedDialog"?
+      LIVE_HEIGHTS[$("devicePreview").value]||900:pageHeight;
     const available=Math.max(180,viewport.clientWidth-24);
-    const scale=Math.min(1,available/pageWidth);
-    frame.style.width=pageWidth+"px";
-    frame.style.height=pageHeight+"px";
+    const scale=Math.min(1,available/width);
+    frame.style.width=width+"px";
+    frame.style.height=height+"px";
     frame.style.transform="scale("+scale+")";
-    shell.style.width=Math.ceil(pageWidth*scale)+"px";
-    shell.style.height=Math.ceil(pageHeight*scale)+"px";
+    shell.style.width=Math.ceil(width*scale)+"px";
+    shell.style.height=Math.ceil(height*scale)+"px";
   }
 }
 function togglePageFocus(){
