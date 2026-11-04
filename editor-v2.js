@@ -3587,6 +3587,14 @@ function finishLiveGesture(event){
   const g=liveGesture;
   if(!g||event.pointerId!==g.pointer)return;
   liveGesture=null;
+  // Release pointer capture explicitly when clicking an image or finishing a
+  // drag. Firefox can otherwise leave the iframe owning the next pointer
+  // gesture, preventing a click in the parent image-description field from
+  // receiving focus. Native automatic release is still respected.
+  try{
+    if(g.anchor?.hasPointerCapture?.(g.pointer))
+      g.anchor.releasePointerCapture(g.pointer);
+  }catch{/* Pointer capture may already have been released by the browser. */}
   removeLiveSnapGuides();
   if(event.type==="pointercancel"){
     livePatches=new Map(g.snapshot.map(p=>[p.selector,p]));
