@@ -783,3 +783,22 @@ test('A delayed deployed image list cannot replace verified GitHub assets',
     expect(actual).not.toContain('assets/stale-gallery-should-not-be-shown.webp');
     expect(writes).toEqual([]);
   });
+
+
+test('Editor mode switches make live-versus-staging publishing destination explicit',
+  async({page})=>{
+    const writes=[];await installVerifiedCurrentSource(page,writes);
+    await page.goto(BASE+'/editor-v2.html?page=contact.html',{waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    await expect(page.locator('#publish')).toHaveText('Publish live website');
+    await expect(page.locator('#preview')).toHaveText('Verified live preview');
+    await page.locator('#designMode').click();
+    await expect(page.locator('#publish')).toHaveText('Publish staging preview');
+    await expect(page.locator('#preview')).toHaveText('Canvas preview');
+    await expect(page.locator('#workspacePill')).toContainText('staging only');
+    await page.locator('#liveMode').click();
+    await expect(page.locator('#publish')).toHaveText('Publish live website');
+    await expect(page.locator('#preview')).toHaveText('Verified live preview');
+    expect(writes).toEqual([]);
+  });
