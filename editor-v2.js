@@ -431,7 +431,7 @@ function setWorkspaceMode(mode){
   $("workspaceTitle").textContent=isLive?"Live website":"Free design canvas";
   $("workspacePill").textContent=isLive?"Website page · check GitHub source status below":"Independent objects · staging only";
   $("workspaceExplanation").textContent=isLive?
-    "When available, this editing view loads the website’s GitHub main HTML, styles and responsive layout. Page scripts are disabled in the editable frame to protect the publishing form. The preview and before/after views isolate page scripts from editor credentials, although script-dependent visuals can differ from the public site. If GitHub cannot be checked, the editor may show a deployed-page fallback. Verified previews use the same HTML assembler as live publishing. GitHub Pages may display an earlier deployment until publication completes.":
+    "When available, this editing view loads the website’s GitHub main HTML, styles, scripts and responsive layout. The editing and preview frames run same-origin website scripts, which can access an open publishing form. Enter a GitHub token only when the site code is trusted. If GitHub cannot be checked, the editor may show a deployed-page fallback. Verified previews use the same HTML assembler as live publishing. GitHub Pages may display an earlier deployment until publication completes.":
     "This canvas is a simplified, independent reconstruction. It does not yet reproduce every original section or responsive rule. Use Live website to verify the real page; only the staging preview can be published.";
   $("workspaceFooter").textContent=isLive?
     "GitHub source · Drag elements · Resize handles · Double-click text · Search website elements · Stack forward/back · Undo and verified preview":
@@ -3227,13 +3227,7 @@ function startLiveGesture(event,direction,anchor){
     patch,layout:liveLayoutFor(selector),snapshot:liveSnapshot(),
     moved:false,selector,node,snapLines:candidateLiveSnapLines(node,
       (sourceGroup||group)?.map(item=>item.node)||[node])};
-  // The source document is sandboxed against page-script access to the
-  // publishing form. Chromium may stall when an original source node captures
-  // a drag pointer inside that sandbox. Its document already listens for
-  // pointer movement and release, so reserve capture for editor handles and
-  // added objects, which require it for reliable off-object movement.
-  if(anchor.closest?.("#moon-v2-live-overlay")||LIVE_ADDED_ID.test(selector))
-    anchor.setPointerCapture?.(event.pointerId);
+  anchor.setPointerCapture?.(event.pointerId);
 }
 // Each source box is resized around a shared group frame. We first establish
 // the new natural dimensions, then measure the resulting browser layout and
@@ -3381,11 +3375,7 @@ function moveLiveGesture(event){
     }
     refreshLiveLayoutRules(g.node.ownerDocument);
     drawLiveSnapGuides(snap.x,snap.y,g.node.ownerDocument);
-    // Moving the outline beneath a directly dragged source node can keep
-    // retriggering hit tests in a sandboxed frame. Defer its repaint until
-    // pointerup; editor-overlay handle drags still repaint continuously.
-    if(g.anchor.closest?.("#moon-v2-live-overlay"))syncLiveOverlay();
-    return;
+    syncLiveOverlay();return;
   }
   if(g.group&&g.dir!=="move"){
     const frame=g.rect,device=liveDevice();
@@ -6022,7 +6012,7 @@ function attachEvents(){
         $("previewFrame").srcdoc=pair.edited;
         $("previewSourceStatus").textContent="Verified against GitHub main · "+
           pair.page+" · source "+pair.sha.slice(0,10)+
-          " · Uses the live-publishing HTML assembler. Preview scripts are isolated and some interactive effects may differ.";
+          " · This is the HTML produced by the live-publishing assembler.";
       }else{
         $("previewFrame").srcdoc=standaloneHtml();
         $("previewSourceStatus").textContent="Free design canvas · staging-only preview";
@@ -6044,7 +6034,7 @@ function attachEvents(){
         $("originalFrame").srcdoc=pair.original;
         $("sceneFrame").srcdoc=pair.edited;
         $("compareSourceStatus").textContent="Both views use GitHub source "+
-          pair.sha.slice(0,10)+". Resize to inspect layout changes. Scripts are isolated, so some interactive effects may differ.";
+          pair.sha.slice(0,10)+". Resize the comparison to inspect layout changes.";
       }else{
         const source=await fetchGithubPageSource(page,{force:true});
         if(page!==currentPage)return;
