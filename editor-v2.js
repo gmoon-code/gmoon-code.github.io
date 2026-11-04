@@ -431,7 +431,7 @@ function setWorkspaceMode(mode){
   $("workspaceTitle").textContent=isLive?"Live website":"Free design canvas";
   $("workspacePill").textContent=isLive?"Website page · check GitHub source status below":"Independent objects · staging only";
   $("workspaceExplanation").textContent=isLive?
-    "When available, this editing view loads the website’s GitHub main HTML, styles, scripts and responsive layout. If GitHub cannot be checked, the editor may show a deployed-page fallback. Verified preview and before/after check the GitHub source and use the same HTML assembler as live publishing. GitHub Pages may display an earlier deployment until publication completes.":
+    "When available, this editing view loads the website’s GitHub main HTML, styles and responsive layout. Page scripts are disabled in the editable frame to protect the publishing form. The preview and before/after views isolate page scripts from editor credentials, although script-dependent visuals can differ from the public site. If GitHub cannot be checked, the editor may show a deployed-page fallback. Verified previews use the same HTML assembler as live publishing. GitHub Pages may display an earlier deployment until publication completes.":
     "This canvas is a simplified, independent reconstruction. It does not yet reproduce every original section or responsive rule. Use Live website to verify the real page; only the staging preview can be published.";
   $("workspaceFooter").textContent=isLive?
     "GitHub source · Drag elements · Resize handles · Double-click text · Search website elements · Stack forward/back · Undo and verified preview":
