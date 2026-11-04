@@ -39,6 +39,7 @@ let liveDraftLoadedRaw=null,liveDraftConflict=null; // Protect valid local edits
 let liveDraftSaveFailure=null; // Preserve in-memory edits and warn if persistent browser storage fails.
 let liveImageInputNode=null,liveImageInputDirty=false; // Preserve unsaved inspector edits during browser re-renders.
 let githubTabToken=""; // In-memory only. Never written to storage or page files.
+let preparedGithubWebEdit=null; // Exact source-verified HTML for owner review on github.com; no credential.
 let reconnectImages=[],reconnectForPage="";
 const liveGithubSources=new Map();
 let liveSourceProvenance="loading"; // verified GitHub main or fallback deployed HTML
@@ -5612,6 +5613,65 @@ function assertLiveDraftNotSuperseded(page){
     throw Error("Another editor tab changed this page's saved draft. Resolve the draft conflict before publishing.");
   }
 }
+function resetGithubWebHandoff(){
+  preparedGithubWebEdit=null;
+  $("githubWebPublishReady").hidden=true;
+  $("githubWebPublishError").hidden=true;
+  $("githubWebPublishError").textContent="";
+}
+function githubWebHandoffError(error){
+  const message=$("githubWebPublishError");
+  message.textContent=error.message||String(error);
+  message.hidden=false;
+  $("githubWebPublishReady").hidden=true;
+  preparedGithubWebEdit=null;
+  status("GitHub handoff stopped · Local draft retained · Nothing published");
+}
+function currentGithubWebHandoff(){
+  const candidate=preparedGithubWebEdit;
+  if(!candidate||workspaceMode!=="live"||currentPage!==candidate.page||
+     JSON.stringify(liveSnapshot())!==candidate.signature||
+     liveDraftLoadedRaw!==candidate.loadedRaw)
+    throw Error("This page or its draft changed after preparation. Prepare the HTML again before copying or downloading.");
+  assertLiveDraftNotSuperseded(candidate.page);
+  return candidate;
+}
+async function verifyGithubWebHandoff(){
+  const candidate=currentGithubWebHandoff();
+  const latest=await fetchGithubPageSource(candidate.page,{force:true});
+  if(latest.sha!==candidate.sha||latest.html!==candidate.original)
+    throw Error("The GitHub source changed after preparation. Nothing copied. Reload the webpage editor and review changes before preparing again.");
+  // Another tab or an edit could occur while the GitHub GET was in flight.
+  return currentGithubWebHandoff();
+}
+async function prepareGithubWebHandoff(){
+  if(workspaceMode!=="live"||!livePatches.size)
+    throw Error("Make and save an original-layout page edit before preparing its GitHub HTML.");
+  assertLiveDraftNotSuperseded(currentPage);
+  if(liveDraftRecovery?.page===currentPage)
+    throw Error("Resolve unreadable draft recovery before preparing GitHub HTML.");
+  if(liveSourceProvenance!=="github")
+    throw Error("The editor is not showing verified GitHub source. Reload the live page and verify it before preparing.");
+  const page=currentPage,signature=JSON.stringify(liveSnapshot()),loadedRaw=liveDraftLoadedRaw;
+  const pair=await verifiedSourcePreviewPair();
+  if(currentPage!==page||workspaceMode!=="live"||
+     JSON.stringify(liveSnapshot())!==signature||liveDraftLoadedRaw!==loadedRaw)
+    throw Error("The selected page or its draft changed while preparing GitHub HTML.");
+  assertLiveDraftNotSuperseded(page);
+  if(pair.edited===pair.original)
+    throw Error("This draft already matches the latest GitHub page. No page update is needed.");
+  preparedGithubWebEdit={
+    page,sha:pair.sha,html:pair.edited,original:pair.original,signature,loadedRaw
+  };
+  $("openGithubWebPage").href="https://github.com/"+REPO+"/blob/main/"+encodeURIComponent(page);
+  $("githubWebPublishDetails").textContent=
+    "Prepared "+page+" from GitHub source "+pair.sha.slice(0,12)+
+    " · "+new TextEncoder().encode(pair.edited).length+
+    " UTF-8 bytes. Copy or download the complete file. Review every difference on GitHub before committing.";
+  $("githubWebPublishReady").hidden=false;
+  $("githubWebPublishError").hidden=true;
+  status("GitHub HTML prepared locally · No token entered · No public changes made");
+}
 function assertCanvasDraftNotSuperseded(page){
   if(canvasDraftRecovery?.page===page)
     throw Error("Stored canvas draft is unreadable. Resolve recovery before publishing.");
@@ -5839,7 +5899,9 @@ function reconnectSavedImage(){
 }
 
 function updatePublishTarget(){
+  resetGithubWebHandoff();
   const target=$("publishTarget").value,live=target==="live";
+  $("githubWebPublish").hidden=!live;
   $("publishTitle").textContent=live?"Publish changes to the live website":"Publish staging preview";
   $("publishDescription").textContent=live?
     "This commits the selected page’s edits to GitHub after checking its latest source. GitHub Pages may need time to deploy. The independent design canvas is not published.":
@@ -6706,6 +6768,41 @@ function attachEvents(){
     $("keepGithubToken").checked=false;
     $("forgetGithubToken").hidden=true;
     status("GitHub token cleared from this editor tab");
+  });
+  $("prepareGithubWebEdit").addEventListener("click",async()=>{
+    if(liveEditing)saveLiveText();
+    const button=$("prepareGithubWebEdit");
+    button.disabled=true;resetGithubWebHandoff();
+    status("Checking current GitHub source and assembling reviewed HTML…");
+    try{await prepareGithubWebHandoff();}
+    catch(error){githubWebHandoffError(error);}
+    finally{button.disabled=false;}
+  });
+  $("copyGithubWebHtml").addEventListener("click",async()=>{
+    const button=$("copyGithubWebHtml");
+    button.disabled=true;
+    try{
+      const prepared=await verifyGithubWebHandoff();
+      if(!navigator.clipboard?.writeText)
+        throw Error("Browser clipboard permission is unavailable. Download the prepared HTML instead.");
+      await navigator.clipboard.writeText(prepared.html);
+      $("githubWebPublishDetails").textContent=
+        "Complete verified "+prepared.page+" HTML copied · Paste into the same GitHub file, inspect the diff, and commit on GitHub. No publication occurred here.";
+      status("Verified GitHub page HTML copied · GitHub commit still required");
+    }catch(error){githubWebHandoffError(error);}
+    finally{button.disabled=false;}
+  });
+  $("downloadGithubWebHtml").addEventListener("click",async()=>{
+    const button=$("downloadGithubWebHtml");
+    button.disabled=true;
+    try{
+      const prepared=await verifyGithubWebHandoff();
+      download(prepared.page,prepared.html,"text/html");
+      $("githubWebPublishDetails").textContent=
+        "Verified complete "+prepared.page+" downloaded · Open the same file in GitHub, replace its content and review the diff. Nothing was published automatically.";
+      status("Verified GitHub page HTML downloaded · GitHub commit still required");
+    }catch(error){githubWebHandoffError(error);}
+    finally{button.disabled=false;}
   });
   $("cancelPublish").addEventListener("click",()=>{
     if($("cancelPublish").disabled)return;
