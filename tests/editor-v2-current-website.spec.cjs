@@ -472,6 +472,12 @@ for(const [name,expectedCount] of [['index.html',2],['contact.html',1]]){
             .toHaveCount(1);
           const visitorPhotos=await photoLayout(visitor);
           expect(visitorPhotos.length,name+' '+device).toBe(expectedCount);
+          const intendedDestinations=name==='index.html'?
+            (device==='desktop'?['added-layer','added-layer']:
+              ['home-intro','home-outside-grid']):['contact-background'];
+          expect(visitorPhotos.map(img=>img.destination).sort(),
+            name+' '+device+' visitor script reparenting')
+            .toEqual(intendedDestinations.sort());
           expect(visitorPhotos.every(img=>img.naturalWidth>0&&img.naturalHeight>0))
             .toBe(true);
           const live=frames[0].target;
