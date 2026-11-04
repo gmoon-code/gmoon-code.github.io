@@ -15,7 +15,7 @@ import urllib.request
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 OUT = ROOT / "studio-guidance-parity-output"
 BASE = "https://gmoon-code.github.io/"
-FILES = ("studio/index.html", "studio/studio.js", "studio/studio-chrome.js")
+FILES = ("studio/index.html", "studio/studio.js", "studio/studio-plus.js", "studio/studio-chrome.js")
 HEAD = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
 
 
