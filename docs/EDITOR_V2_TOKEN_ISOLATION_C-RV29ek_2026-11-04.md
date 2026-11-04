@@ -23,10 +23,16 @@ The `editor-v2.html` publishing help text now explicitly warns that same-origin 
 
 Other than this notice and regression-test maintenance, public academic prose and publishing protocol remain untouched. The optional GitHub App/Cloudflare Worker draft-PR service documented in `publisher/SETUP.md` is not configured in `editor-publisher-config.js`; it must not be described as a functioning security replacement for Editor V2.
 
+## Restored-build regression verification
+
+The restored production frame configuration and updated publishing-token warning were tested on commit `0781328321325abe5b7eb9e03a0a6701ac8ab3fb`. [Actions run 41790774039](https://github.com/gmoon-code/gmoon-code.github.io/actions/runs/41790774039) completed successfully with **36/36 current-website checks in Chromium, 36/36 in Firefox and 36/36 in WebKit, 108/108 combined**. This includes the new form-warning and cancelled-synthetic-token regression. The other restored-build suites also passed: **51/51 source/drag regression** ([41790698259](https://github.com/gmoon-code/gmoon-code.github.io/actions/runs/41790698259)), **19/19 source-parity and insertion** ([41790698253](https://github.com/gmoon-code/gmoon-code.github.io/actions/runs/41790698253)), **55/55 advanced interaction** ([41790652668](https://github.com/gmoon-code/gmoon-code.github.io/actions/runs/41790652668)), and **57/57 academic editor** ([41790652717](https://github.com/gmoon-code/gmoon-code.github.io/actions/runs/41790652717)). Different suites and Git revisions remain separate evidence, not one simultaneous end-to-end production session.
+
+The post-test repository changes through the checked comparison were audit-document or generated-audit-result files only, not modifications to the restored Editor V2 application or browser tests. The earlier failed experimental sandbox results remain valuable **historical rejection evidence**, not current unresolved failures of the restored build.
+
 ## Boundaries and next checkpoint
 
 **Remaining:** Direct owner-token publication is not isolated from same-origin website scripts. No authenticated owner-token submission, production post-deploy parity, physical-device workflow, or independent third-party security review was undertaken. Avoid presenting the token workflow as credential-isolated or hardened merely because access is repository-scoped.
 
 **Recommended architectural direction:** Move token handling and GitHub mutations to a separately hosted, authenticated publisher origin. Prefer tightly scoped OAuth session credentials and reviewable draft pull requests, with a mechanism compatible with the 17 current Editor V2 routes. That is a separate owner-authorized deployment task, not an implicit approval to configure credentials or publish changes.
 
-**Next checkpoint: C-RV29el.** Validate that final restored Editor V2 regression suites pass again in Chromium, Firefox and WebKit, explicitly distinguish first-party script-dependent Home/Contact layouts from CSS-only edit views, and pursue no further cross-origin security refactor without dedicated design and testing.
+**Next checkpoint: C-RV29el.** Reconcile script-dependent Home and Contact photo/layout presentation in the actual public pages with their source-preserving editor views, using an isolated real-browser comparison rather than assuming static markup and script-rendered placement are identical. The restored Editor V2 regression suites have passed; authenticated publishing, physical-device use and a separately hosted credential service remain distinct work.
