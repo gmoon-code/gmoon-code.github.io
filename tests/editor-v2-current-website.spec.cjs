@@ -935,6 +935,13 @@ for(const name of ['projects.html','research.html','interests.html','pungmul.htm
           });
         }
       });
+      // A real user clicks the image-description field after selecting a
+      // photo inside the iframe. In Firefox, direct Playwright fill can leave
+      // focus in the iframe and dispatch no input event unless this transfer
+      // is explicit, producing an artificial editor no-op.
+      await page.locator('#liveImageAlt').click();
+      await expect.poll(()=>page.evaluate(()=>document.activeElement?.id))
+        .toBe('liveImageAlt');
       await page.locator('#liveImageAlt').fill(alt);
       const immediately=await page.locator('#liveImageAlt').inputValue();
       if(immediately!==alt){
