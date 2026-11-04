@@ -1,12 +1,12 @@
 {
-  "sourceHead": "e3b7b00475996ab97726cd78563208498862e718",
+  "sourceHead": "3db2e2f314fdb842410448f18a32693e4060ab6d",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 24,
   "httpErrors": 0,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-e3b7b0047599",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-3db2e2f314fd",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -53,8 +53,8 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "41817212911",
-      "head_sha": "7dece3478b9f34d4d08a575bd2f6a8a2036023a9",
+      "run": "41817716114",
+      "head_sha": "c6679abbdfc8a55c6fa88a4fb0ee849cdbc5dd3b",
       "exit": "0",
       "sourceModifiedSinceAudit": [],
       "failureCounts": {
@@ -73,8 +73,8 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "41817212908",
-      "head_sha": "7dece3478b9f34d4d08a575bd2f6a8a2036023a9",
+      "run": "41817716033",
+      "head_sha": "c6679abbdfc8a55c6fa88a4fb0ee849cdbc5dd3b",
       "exit": "0",
       "sourceModifiedSinceAudit": [],
       "failureCounts": {
@@ -84,8 +84,8 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "41817213247",
-      "head_sha": "7dece3478b9f34d4d08a575bd2f6a8a2036023a9",
+      "run": "41817716166",
+      "head_sha": "c6679abbdfc8a55c6fa88a4fb0ee849cdbc5dd3b",
       "exit": "0",
       "sourceModifiedSinceAudit": [],
       "failureCounts": {
@@ -104,7 +104,7 @@
   "pass": true,
   "errors": [],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41817900822",
-  "run_sha": "e3b7b00475996ab97726cd78563208498862e718",
+  "workflow_run_id": "41818179349",
+  "run_sha": "3db2e2f314fdb842410448f18a32693e4060ab6d",
   "exit_code": "0"
 }
