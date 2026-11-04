@@ -953,3 +953,20 @@ for(const name of ['projects.html','research.html','interests.html','pungmul.htm
         .not.toContain('synthetic-photo-edit-token');
     });
 }
+
+
+test('Quick start shows how to edit and publish live rather than staging',
+  async({page})=>{
+    const writes=[];
+    await installVerifiedCurrentSource(page,writes);
+    await page.goto(BASE+'/editor-v2.html?page=index.html',{waitUntil:'domcontentloaded'});
+    const guide=page.locator('#editorQuickStart');
+    await expect(guide).toBeVisible();
+    await expect(guide).not.toHaveAttribute('open','');
+    await guide.locator('summary').click();
+    await expect(guide).toHaveAttribute('open','');
+    await expect(guide).toContainText('Verified live preview');
+    await expect(guide).toContainText('Publish live website');
+    await expect(guide).toContainText('staging previews only');
+    expect(writes).toEqual([]);
+  });
