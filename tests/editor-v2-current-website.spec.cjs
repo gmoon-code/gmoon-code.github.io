@@ -227,7 +227,7 @@ test('Real Pungmul photo crop retains original asset, verified preview and local
   expect(writes).toEqual([]);
 });
 
-for(const name of ['index.html','research.html','contact.html','interests.html']){
+for(const name of PAGES){
   test('Source-faithful simulated GitHub publication of an actual '+name+' appearance edit',
     async({page})=>{
       const unexpectedWrites=[],mockPublications=[];
@@ -254,6 +254,13 @@ for(const name of ['index.html','research.html','contact.html','interests.html']
       await heading.click();
       await page.locator('#liveTextAlign').selectOption(wanted);
       await expect(heading).toHaveCSS('text-align',wanted);
+      await page.locator('#preview').click();
+      await expect(page.locator('#previewDialog')).toBeVisible();
+      await expect(page.locator('#previewSourceStatus'))
+        .toContainText('GitHub main');
+      const previewHtml=await page.locator('#previewFrame').getAttribute('srcdoc');
+      expect(previewHtml,name+' preview HTML should be populated').toBeTruthy();
+      await page.locator('#closePreview').click();
       await page.locator('#publish').click();
       await expect(page.locator('#publishDialog')).toBeVisible();
       await page.locator('#githubToken').fill('isolated-browser-test-only');
@@ -264,6 +271,8 @@ for(const name of ['index.html','research.html','contact.html','interests.html']
       expect(payload.branch).toBe('main');
       expect(payload.sha).toBe(blobSha(SOURCE.get(name)));
       const published=Buffer.from(payload.content,'base64').toString('utf8');
+      expect(published,name+' live PUT must exactly match verified preview')
+        .toBe(previewHtml);
       expect(published).toContain('moon-v2-live-layout');
       const inspected=await page.evaluate(({original,published})=>{
         const parser=new DOMParser();
