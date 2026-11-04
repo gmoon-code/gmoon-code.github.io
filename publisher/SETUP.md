@@ -1,4 +1,4 @@
-# Secure visual-editor publishing setup
+# Optional proposal publisher | Legacy setup, not production-ready
 
 The visual editor includes an **optional** private proposal service implemented in `publisher/worker.mjs`. The checked public configuration does not connect this service. Separately, the editor supports local drafts, HTML export, and direct GitHub publication by an authorized owner using a repository-scoped token. Direct publishing updates `main` after review; it does not use this Worker or create a draft pull request.
 
@@ -12,11 +12,11 @@ The server requires HTTPS and verifies the exact origin `https://gmoon-code.gith
 
 A draft PR still requires inspection and approval in GitHub. The file itself is a public website file, so do not use the editor for private or identifying content before publication.
 
-## Owner configuration required
+## Historical owner configuration reference | Do not deploy as an isolated Editor V2 publisher
 
 **Image proposals.** `POST /proposals` may optionally include `media` as `{path,mime,base64,sha256}`. Only one new image is allowed. The service accepts PNG, JPEG, and WebP files up to 1.5 MB, validates their signatures and checksum, requires a unique `assets/editor-…` filename, and commits the binary and HTML file on the same review branch before opening the draft PR. Images must be referenced in the page. The owner must review the binary file and image description before merging. Browser-local image blobs are not retained after a reload, so a resumed image draft requires re-staging the original file.
 
-The following steps must be performed by the repository owner. **None of them has been carried out automatically.**
+The following steps describe the earlier optional service design and **must not be treated as an approved production setup**. Do not register or deploy this service for Editor V2 until the separate publisher origin, server-side session protection, complete edit-format compatibility and live security tests are implemented. No setup step below has been carried out automatically.
 
 1. Register a GitHub App under the owner account. Set its **web application authorization callback** to `https://gmoon-code.github.io/editor.html`. Enable user-to-server authorization. Install it for **only** the `gmoon-code/gmoon-code.github.io` repository. Grant repository **Contents Read & Write**, **Pull requests Read & Write**, and **Metadata Read**. No organization access is needed.
 2. Deploy a Cloudflare Worker using `publisher/worker.mjs` as its entry point. A template is provided at `publisher/wrangler.toml`.
@@ -45,19 +45,19 @@ All mutation endpoints require `Origin: https://gmoon-code.github.io` and JSON c
 ## Security boundaries
 
 - **No auto-merge and no production write**. The GitHub App may create a proposed branch and draft PR, but approval happens through GitHub.
-- **No public API secrets**. OAuth exchange uses the Worker-only client secret.
-- **No access to other repos**. Install the App only for the portfolio, and the Worker code hardcodes that repository and all approved page paths.
-- **No cross-origin publishing**. The service checks and returns CORS headers for the single approved Pages origin.
+- **No raw GitHub token in frontend code**. OAuth exchange uses a Worker-only client secret, but the frontend still receives a reusable bearer session. This does not establish credential isolation from compromised same-origin scripts.
+- **Repository-scoped intent**. The Worker hardcodes one repository and an allowed page list. Restricting the GitHub App installation itself to that repository requires an owner-controlled setup decision.
+- **Browser origin check, not complete isolation**. The service checks one approved `Origin` and sets restrictive CORS headers. This cannot stop an already compromised same-origin script from replaying a stolen bearer session.
 - **Expired-session rejection**. Browser sessions expire after 15 minutes and are neither placed in local storage nor kept after reload.
 - **Concurrent editing protection**. Changed baseline content is rejected before creating a branch.
 - **Reviewable diff**. The editor shows a before-and-after review, and the GitHub PR allows final diff inspection, build checks and manual merge.
 - **Changed scripts and unsafe inserts blocked**. The service compares scripts, style tags, stylesheets and document metadata and rejects newly introduced executable tags and attributes.
 
-The service is suitable for a private, owner-operated authoring workflow. Additional safeguards such as authenticated per-user audit logging, rate limiting, PR linting, and protection against malformed legacy HTML are recommended before granting more accounts access.
+The service is an **undeployed, incomplete authoring prototype**. It is not yet a credential-isolated, one-click Editor V2 publisher. The separate owner-origin architecture in [C-RV29ev](../docs/EDITOR_V2_AUTHENTICATED_PUBLISHER_READINESS_C-RV29ev_2026-11-05.md), server-side session controls, authenticated audit logging, rate limiting, compatibility validation, and human approval must be in place before production use.
 
 ## Testing and operational notes
 
-The pure publishing checks and a mocked GitHub API flow are exercised by `node --test tests/publisher-worker.test.mjs` using synthetic tokens. C-RV29ev additionally checks the Worker allowlist and HTML validation against all 17 real Editor V2 page source files. These tests do not require any production secrets and **do not prove that the optional Worker is safely configured or integrated**. The GitHub Actions workflow `editor-publisher-tests.yml` runs them automatically on relevant pull requests.
+The pure publishing checks and a mocked GitHub API flow are exercised by `node --test tests/publisher-worker.test.mjs` using synthetic tokens. C-RV29ev additionally checks the Worker allowlist and HTML validation against all 17 real Editor V2 page source files. These tests do not require any production secrets and **do not prove that the optional Worker is safely configured or integrated**. The GitHub Actions workflow `editor-publisher-tests.yml` runs them automatically on relevant pull requests and `main` updates.
 
 The existing Chromium smoke test remains `tests/editor-smoke.mjs`. It tests editing without a publisher connection. Server-side OAuth and pull-request creation must additionally be tested against a real GitHub App installation before a production launch.
 
