@@ -402,3 +402,102 @@ test('The publishing dialog discloses same-origin script access and clears a can
       .not.toContain('synthetic-cancelled-token');
     expect(writes).toEqual([]);
   });
+
+
+// Client-side image placement is part of the published page, not merely a
+// property of its HTML. Compare independent visitor rendering against both
+// the editable frame and source-matched publication preview, using the same
+// real page bytes, browser engine, viewport width and viewport height.
+const photoLayout=async frame=>frame.locator('main').evaluate(main=>{
+  const round=x=>Math.round(x*10)/10;
+  const base=main.getBoundingClientRect();
+  return [...main.querySelectorAll('img[data-moon-v2-added-id]')].map(img=>{
+    const r=img.getBoundingClientRect(),style=img.ownerDocument.defaultView.getComputedStyle(img);
+    const parent=img.parentElement;
+    const destination=parent.hasAttribute('data-moon-v2-added-layer')?'added-layer':
+      parent.classList.contains('home-intro')?'home-intro':
+      parent.classList.contains('home-outside-grid')?'home-outside-grid':
+      parent.classList.contains('contact-background')?'contact-background':
+      parent.tagName.toLowerCase()+'.'+parent.className;
+    return {id:img.getAttribute('data-moon-v2-added-id'),destination,
+      srcLength:(img.getAttribute('src')||'').length,alt:img.getAttribute('alt')||'',
+      naturalWidth:img.naturalWidth,naturalHeight:img.naturalHeight,
+      objectFit:style.objectFit,borderRadius:style.borderRadius,
+      rect:{x:round(r.left-base.left),y:round(r.top-base.top),
+        width:round(r.width),height:round(r.height)}};
+  }).sort((a,b)=>a.id.localeCompare(b.id));
+});
+
+function comparePhotoSnapshots(actual,expected,label){
+  expect(actual.length,label+' original photo count').toBe(expected.length);
+  for(let i=0;i<expected.length;i++){
+    const a=actual[i],b=expected[i];
+    expect(a.id,label+' photo identity').toBe(b.id);
+    expect(a.destination,label+' parent placement').toBe(b.destination);
+    expect(a.srcLength,label+' original image source size').toBe(b.srcLength);
+    expect(a.alt,label+' original alternative text').toBe(b.alt);
+    expect(a.naturalWidth,label+' decoded width').toBe(b.naturalWidth);
+    expect(a.naturalHeight,label+' decoded height').toBe(b.naturalHeight);
+    expect(a.objectFit,label+' image fit').toBe(b.objectFit);
+    expect(a.borderRadius,label+' corner styling').toBe(b.borderRadius);
+    for(const key of ['x','y','width','height'])
+      expect(Math.abs(a.rect[key]-b.rect[key]),
+        label+' '+key+' '+JSON.stringify({actual:a.rect,expected:b.rect}))
+        .toBeLessThanOrEqual(4);
+  }
+}
+
+for(const [name,expectedCount] of [['index.html',2],['contact.html',1]]){
+  test('Source-matched visitor and Editor V2 photo placement on actual '+name,
+    async({page,browser})=>{
+      const writes=[];
+      await installVerifiedCurrentSource(page,writes);
+      await page.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+      await expect(page.locator('#liveAssetStatus'))
+        .toContainText('GitHub main source verified',{timeout:35000});
+      const visitor=await browser.newPage({viewport:{width:1160,height:900}});
+      try{
+        await visitor.goto(BASE+'/'+name,{waitUntil:'load'});
+        const frames=[
+          {label:'editor',target:page.frameLocator('#livePageFrame')},
+          {label:'preview',target:page.frameLocator('#previewFrame')}
+        ];
+        for(const [device,width,height] of [
+          ['desktop',1160,900],['tablet',768,1024],['phone',390,844]
+        ]){
+          await visitor.setViewportSize({width,height});
+          await page.locator('#devicePreview').selectOption(device);
+          await expect(page.locator('#livePageFrame')).toHaveCSS('width',width+'px');
+          await expect(page.frameLocator('#livePageFrame').locator('main'))
+            .toHaveCount(1);
+          const visitorPhotos=await photoLayout(visitor);
+          expect(visitorPhotos.length,name+' '+device).toBe(expectedCount);
+          expect(visitorPhotos.every(img=>img.naturalWidth>0&&img.naturalHeight>0))
+            .toBe(true);
+          const live=frames[0].target;
+          // Reparenting can finish after the editor frame initially exposes
+          // its main element. Poll for the full rendered photo relationship.
+          await expect.poll(async()=>{
+            try{
+              const actual=await photoLayout(live);
+              comparePhotoSnapshots(actual,visitorPhotos,name+' '+device+' editor');
+              return 'matched';
+            }catch{return 'not-yet';}
+          },{timeout:20000}).toBe('matched');
+          await page.locator('#preview').click();
+          await expect(page.locator('#previewDialog')).toBeVisible({timeout:20000});
+          await expect(page.locator('#previewFrame')).toHaveCSS('width',width+'px');
+          const preview=frames[1].target;
+          await expect.poll(async()=>{
+            try{
+              const actual=await photoLayout(preview);
+              comparePhotoSnapshots(actual,visitorPhotos,name+' '+device+' preview');
+              return 'matched';
+            }catch{return 'not-yet';}
+          },{timeout:20000}).toBe('matched');
+          await page.locator('#closePreview').click();
+        }
+        expect(writes,name+' must not publish during photo layout checks').toEqual([]);
+      }finally{await visitor.close();}
+    });
+}
