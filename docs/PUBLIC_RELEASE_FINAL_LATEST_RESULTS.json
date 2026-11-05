@@ -1,12 +1,12 @@
 {
-  "sourceHead": "f353735f237fe197520018a699b6e2cc1b72f867",
+  "sourceHead": "2b396374be5c3088cad5230b8054b557aae3fa34",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-f353735f237f",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-2b396374be5c",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -63,12 +63,10 @@
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "42012524415",
-      "head_sha": "1aa2bbdc9aa6012bd115c559098058d87b849de6",
+      "run": "42013222523",
+      "head_sha": "ce449c6da8410a76158a5ec76432376efc42496d",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "pungmul.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0
       }
@@ -102,14 +100,7 @@
       "note": "U1 route audit documents successful run 40825886279; legacy utility machine report refers to an early missing-script failure. Do not treat it as latest successful evidence."
     }
   },
-  "sourceDriftSinceAudits": [
-    {
-      "category": "engines",
-      "sourceModifiedSinceAudit": [
-        "pungmul.html"
-      ]
-    }
-  ],
+  "sourceDriftSinceAudits": [],
   "pass": false,
   "errors": [
     {
@@ -135,20 +126,10 @@
         "         <figure>",
         "-          <a href=\"assets/pungmul-outdoor-autumn.webp\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"Open the full-size outdoor performance photograph in a new tab\"><img src=\"assets/pungmul-outdoor-autumn.webp\" width=\"1100\" height=\"619\" alt=\"Pungmul performers drumming in an outdoor plaza surrounded by spectators and autumn trees\" loading=\"eager\" decoding=\"async\" data-moon-v2-image-crop=\"{&quot;desktop&quot;:{&quot;fit&quot;:&quot;contain&quot;,&quot;x&quot;:50,&quot;y&quot;:50,&quot;mask&quot;:&quot;circle&quot;,&quot;zoom&quot;:100,&quot;ratio&quot;:1.77706,&quot;baseW&quot;:534,&quot;reset&quot;:false,&quot;left&quot;:0,&quot;right&quot;:0,&quot;top&quot;:0,&quot;bottom&quot;:0}}\"></a>"
       ]
-    },
-    {
-      "sourceDrift": [
-        {
-          "category": "engines",
-          "sourceModifiedSinceAudit": [
-            "pungmul.html"
-          ]
-        }
-      ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42013386877",
-  "run_sha": "f353735f237fe197520018a699b6e2cc1b72f867",
+  "workflow_run_id": "42013497857",
+  "run_sha": "2b396374be5c3088cad5230b8054b557aae3fa34",
   "exit_code": "1"
 }
