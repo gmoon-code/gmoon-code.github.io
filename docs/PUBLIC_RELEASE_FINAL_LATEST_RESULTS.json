@@ -1,12 +1,12 @@
 {
-  "sourceHead": "583dc03f8d9f3e3b5bb519f248a44616c71869d7",
+  "sourceHead": "2b58e3b646862a27fce37f34b232939f60015060",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-583dc03f8d9f",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-2b58e3b64686",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -26,12 +26,10 @@
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "42038510097",
-      "head_sha": "c65d0538c15fcc1b3f876d542336e91a6d815056",
+      "run": "42039027894",
+      "head_sha": "583dc03f8d9f3e3b5bb519f248a44616c71869d7",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "pungmul.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "issues": 43
       },
@@ -120,12 +118,6 @@
       ]
     },
     {
-      "category": "external",
-      "sourceModifiedSinceAudit": [
-        "pungmul.html"
-      ]
-    },
-    {
       "category": "reflow",
       "sourceModifiedSinceAudit": [
         "pungmul.html"
@@ -179,12 +171,6 @@
           ]
         },
         {
-          "category": "external",
-          "sourceModifiedSinceAudit": [
-            "pungmul.html"
-          ]
-        },
-        {
           "category": "reflow",
           "sourceModifiedSinceAudit": [
             "pungmul.html"
@@ -212,7 +198,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42039027868",
-  "run_sha": "583dc03f8d9f3e3b5bb519f248a44616c71869d7",
+  "workflow_run_id": "42039094152",
+  "run_sha": "2b58e3b646862a27fce37f34b232939f60015060",
   "exit_code": "1"
 }
