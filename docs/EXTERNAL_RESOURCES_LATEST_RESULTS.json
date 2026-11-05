@@ -860,74 +860,170 @@
   "doi_registry": {
     "checked": 41,
     "counts": {
-      "registered": 33,
-      "not-confirmed": 8
+      "not-confirmed": 13,
+      "registered": 28
     },
-    "secondary_index_matches": 8,
+    "secondary_index_matches": 13,
     "not_confirmed": [
       {
-        "url": "https://doi.org/10.1002/sce.20392",
-        "doi": "10.1002/sce.20392",
+        "url": "https://doi.org/10.1002/sce.20264",
+        "doi": "10.1002/sce.20264",
+        "pages": [
+          "teaching-ap-biology.html"
+        ],
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.20264",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Recognizing mechanistic reasoning in student scientific inquiry: A framework for discourse analysis developed from philosophy of science",
+        "indexedYear": 2008
+      },
+      {
+        "url": "https://doi.org/10.1002/sce.21099",
+        "doi": "10.1002/sce.21099",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.20392",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21099",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Cultural processes in science education: Supporting the navigation of multiple epistemologies",
-        "indexedYear": 2010
+        "indexedTitle": "An Integrative Framework for the Analysis of Multiple and Multimodal Representations for Meaning‐Making in Science Education",
+        "indexedYear": 2014
       },
       {
-        "url": "https://doi.org/10.1002/sce.21622",
-        "doi": "10.1002/sce.21622",
+        "url": "https://doi.org/10.1002/sce.21588",
+        "doi": "10.1002/sce.21588",
         "pages": [
-          "research-scoping.html"
+          "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21622",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21588",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Scientific modeling and translanguaging: A multilingual and multimodal approach to support science learning and engagement",
+        "indexedTitle": "“Estoy Explorando Science”: Emergent bilingual students problematizing electrical phenomena through translanguaging",
+        "indexedYear": 2020
+      },
+      {
+        "url": "https://doi.org/10.1002/tea.21459",
+        "doi": "10.1002/tea.21459",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21459",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Addressing the epistemic elephant in the room: Epistemic agency and the next generation science standards",
+        "indexedYear": 2018
+      },
+      {
+        "url": "https://doi.org/10.1002/tea.21714",
+        "doi": "10.1002/tea.21714",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21714",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Science engagement as insight into the science identity work nurtured in community‐based science clubs",
         "indexedYear": 2021
       },
       {
-        "url": "https://doi.org/10.1002/tea.20311",
-        "doi": "10.1002/tea.20311",
+        "url": "https://doi.org/10.1080/03626784.2021.1947732",
+        "doi": "10.1080/03626784.2021.1947732",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.20311",
+        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/03626784.2021.1947732",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Developing a learning progression for scientific modeling: Making scientific modeling accessible and meaningful for learners",
-        "indexedYear": 2009
+        "indexedTitle": "Getting dirty and coming clean: Sex education and the problem of expertise",
+        "indexedYear": 2021
       },
       {
-        "url": "https://doi.org/10.1002/tea.21257",
-        "doi": "10.1002/tea.21257",
+        "url": "https://doi.org/10.1080/03626784.2023.2200810",
+        "doi": "10.1080/03626784.2023.2200810",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21257",
+        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/03626784.2023.2200810",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Epistemologies in practice: Making scientific practices meaningful for students",
-        "indexedYear": 2015
+        "indexedTitle": "You don’t know me: Welcoming gender diversity in schools via an ethic of hospitality",
+        "indexedYear": 2023
+      },
+      {
+        "url": "https://doi.org/10.1080/10508400903452884",
+        "doi": "10.1080/10508400903452884",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/10508400903452884",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Conducting Video Research in the Learning Sciences: Guidance on Selection, Analysis, Technology, and Ethics",
+        "indexedYear": 2010
+      },
+      {
+        "url": "https://doi.org/10.1093/biosci/biac013",
+        "doi": "10.1093/biosci/biac013",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://academic.oup.com/bioscience/article/72/5/481/6547662",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Six Principles for Embracing Gender and Sexual Diversity in Postsecondary Biology Classrooms",
+        "indexedYear": 2022
+      },
+      {
+        "url": "https://doi.org/10.1111/j.1365-2729.1991.tb00230.x",
+        "doi": "10.1111/j.1365-2729.1991.tb00230.x",
+        "pages": [
+          "teaching-ap-chemistry.html"
+        ],
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1111/j.1365-2729.1991.tb00230.x",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Why is science difficult to learn? Things are seldom what they seem",
+        "indexedYear": 1991
       },
       {
         "url": "https://doi.org/10.1111/jedm.12000",
@@ -962,42 +1058,26 @@
         "indexedYear": 2012
       },
       {
-        "url": "https://doi.org/10.1177/01614681251401633",
-        "doi": "10.1177/01614681251401633",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://journals.sagepub.com/doi/10.1177/01614681251401633",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Queer Joy as Pedagogy",
-        "indexedYear": 2025
-      },
-      {
-        "url": "https://doi.org/10.1187/cbe.23-08-0157",
-        "doi": "10.1187/cbe.23-08-0157",
+        "url": "https://doi.org/10.3390/plants10081501",
+        "doi": "10.3390/plants10081501",
         "pages": [
           "teaching-ap-biology.html"
         ],
-        "publisherLanding": "https://www.lifescied.org/doi/10.1187/cbe.23-08-0157",
+        "publisherLanding": "https://www.mdpi.com/2223-7747/10/8/1501",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Examining and Supporting Mechanistic Explanations Across Chemistry and Biology Courses",
-        "indexedYear": 2024
+        "indexedTitle": "Binding Properties of Photosynthetic Herbicides with the QB Site of the D1 Protein in Plant Photosystem II: A Combined Functional and Molecular Docking Study",
+        "indexedYear": 2021
       }
     ],
     "unresolved": [],
     "limitation": "Crossref/DataCite registration is distinct from publisher access, correct article metadata or article availability. OpenAlex is independent secondary corroboration, not registration proof."
   },
-  "workflow_run_id": "41986265149",
-  "head_sha": "3c13f0be3a49f34967f84ddc823090aebeb49f51",
+  "workflow_run_id": "41987133874",
+  "head_sha": "b9873a702c75c060711d4f7f3f7f7499dd8c7ec8",
   "audit_exit_code": "0"
 }
