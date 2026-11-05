@@ -1,12 +1,12 @@
 {
-  "sourceHead": "92bcc2c662373d139228a5dcb8a1f08cd934cf8f",
+  "sourceHead": "cbb8c1ec7d9dc35672e9ce6262afd6d3480603b5",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-92bcc2c66237",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-cbb8c1ec7d9d",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -53,24 +53,20 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "42022704169",
-      "head_sha": "ad4057a59640a8b50831f58700d9ba58d98342d2",
+      "run": "42027113557",
+      "head_sha": "b3e81df9a3cbea6056c34deb69fc7318d61d9738",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "pungmul.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0
       }
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "42022704109",
-      "head_sha": "ad4057a59640a8b50831f58700d9ba58d98342d2",
+      "run": "42027113550",
+      "head_sha": "b3e81df9a3cbea6056c34deb69fc7318d61d9738",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "pungmul.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0
       }
@@ -104,20 +100,7 @@
       "note": "U1 route audit documents successful run 40825886279; legacy utility machine report refers to an early missing-script failure. Do not treat it as latest successful evidence."
     }
   },
-  "sourceDriftSinceAudits": [
-    {
-      "category": "reflow",
-      "sourceModifiedSinceAudit": [
-        "pungmul.html"
-      ]
-    },
-    {
-      "category": "engines",
-      "sourceModifiedSinceAudit": [
-        "pungmul.html"
-      ]
-    }
-  ],
+  "sourceDriftSinceAudits": [],
   "pass": false,
   "errors": [
     {
@@ -135,26 +118,10 @@
         "+@media (min-width:1025px){:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(4){overflow:visible!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(4) > a:nth-of-type(1){overflow:visible!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(4) > a:nth-of-type(1) > img:nth-of-type(1){border-radius:14px!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(4) > a:nth-of-type(1) > img:nth-of-type(1){translate:-8px 0px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(1){overflow:visible!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(1) > a:nth-of-type(1){overflow:visible!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(1) > a:nth-of-type(1) > img:nth-of-type(1){border-radius:14px!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(1) > a:nth-of-type(1) > img:nth-of-type(1){translate:-8px 0px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(3){overflow:visible!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(3) > a:nth-of-type(1){overflow:visible!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(3) > a:nth-of-type(1) > img:nth-of-type(1){border-radius:14px!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(3) > a:nth-of-type(1) > img:nth-of-type(1){translate:-8px 0px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(2){overflow:visible!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(2) > a:nth-of-type(1){overflow:visible!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(2) > a:nth-of-type(1) > img:nth-of-type(1){border-radius:14px!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(2) > a:nth-of-type(1) > img:nth-of-type(1){translate:-8px 0px!important;scale:1 1!important;transform-origin:top left!important;}main > section:nth-of-type(3){translate:0px -8px!important;scale:1 1!important;transform-origin:top left!important;width:1089px!important;height:360px!important;min-height:0!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}main > section:nth-of-type(2){translate:0px 13px!important;scale:1 1!important;transform-origin:top left!important;}}</style></head>",
         " <body class=\"theme-yellow\">"
       ]
-    },
-    {
-      "sourceDrift": [
-        {
-          "category": "reflow",
-          "sourceModifiedSinceAudit": [
-            "pungmul.html"
-          ]
-        },
-        {
-          "category": "engines",
-          "sourceModifiedSinceAudit": [
-            "pungmul.html"
-          ]
-        }
-      ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42027275958",
-  "run_sha": "92bcc2c662373d139228a5dcb8a1f08cd934cf8f",
+  "workflow_run_id": "42027351106",
+  "run_sha": "cbb8c1ec7d9dc35672e9ce6262afd6d3480603b5",
   "exit_code": "1"
 }
