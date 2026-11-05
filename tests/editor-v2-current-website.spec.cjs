@@ -3398,7 +3398,7 @@ for(const [pageName,gallery] of [
         captionTop:caption?.getBoundingClientRect().top??null,
         captionText:caption?.textContent.trim()??null};
     });
-    // Widen only the first card's gallery track, and preserve its caption.
+    // Widen only the first photograph's card, leaving gallery tracks unchanged.
     const wanted=Math.round(original.w+55);
     await page.locator('#liveOriginalWidth').fill(String(wanted));
     await page.locator('#liveOriginalWidth').dispatchEvent('change');
@@ -3417,10 +3417,18 @@ for(const [pageName,gallery] of [
     expect(resized.overflow).toBe('hidden');
     const sibling=frame.locator(gallery+' figure').nth(1);
     const siblingBeforeMove=await sibling.getAttribute('class');
+    const startingY=await figure.evaluate(x=>{
+      const value=getComputedStyle(x).translate;
+      return value==='none'?0:(Number.parseFloat(value.trim().split(' ').filter(Boolean)[1]||'0')||0);
+    });
     await page.locator('#liveMoveY').fill('24');
     await page.locator('#liveMoveY').dispatchEvent('change');
-    await expect.poll(()=>figure.evaluate(x=>getComputedStyle(x).translate))
-      .toContain('24px');
+    // The existing published card may already have a nonzero translation.
+    // Moving it 24px retains that starting position rather than resetting it.
+    await expect.poll(()=>figure.evaluate(x=>{
+      const value=getComputedStyle(x).translate;
+      return value==='none'?0:(Number.parseFloat(value.trim().split(' ').filter(Boolean)[1]||'0')||0);
+    })).toBe(startingY+24);
     expect(await sibling.getAttribute('class')).toBe(siblingBeforeMove);
     expect(await photo.getAttribute('src')).toBe(source);
     const afterMove=await figure.evaluate(x=>{
@@ -3435,23 +3443,27 @@ for(const [pageName,gallery] of [
       expect(afterMove.captionTop).toBeGreaterThanOrEqual(afterMove.imageBottom-2);
       expect(afterMove.cardBottom).toBeGreaterThan(afterMove.captionTop);
     }
-    // Crop changes the photo inside the frame, not the parent/caption.
+    // Cropping trims the selected card frame and the caption stays attached.
     await page.locator('#liveCropShape').selectOption('rounded');
-    const beforeCrop=await figure.boundingBox();
+    // Use iframe-local CSS pixels for both frame and saved-layout checks.
+    // Playwright boundingBox includes the editor's fit-to-page iframe scale.
+    const beforeCrop=await figure.evaluate(x=>({width:x.getBoundingClientRect().width}));
     await page.locator('#liveCropLeft').evaluate(input=>{
       input.value="12";
       input.dispatchEvent(new Event("input",{bubbles:true}));
       input.dispatchEvent(new Event("change",{bubbles:true}));
     });
-    const afterCrop=await figure.boundingBox();
-    expect(Math.abs(afterCrop.width-beforeCrop.width)).toBeLessThan(2);
+    const afterCrop=await figure.evaluate(x=>({width:x.getBoundingClientRect().width}));
+    expect(afterCrop.width,'crop should reduce visible photo-card width')
+      .toBeLessThan(beforeCrop.width-10);
     await expect(photo).toHaveCSS('border-radius','12px');
     const key='moon-academic-editor-v2:source:'+pageName;
     const stored=await page.evaluate(k=>JSON.parse(localStorage.getItem(k)),key);
     expect(stored).toHaveLength(1);
     expect(stored[0].kind).toBe('image');
     expect(stored[0].frameMode).toBe('card');
-    expect(stored[0].layout.desktop.wrapWidth).toBeGreaterThan(original.w+30);
+    expect(stored[0].layout.desktop.wrapWidth)
+      .toBeCloseTo(afterCrop.width,0);
     expect(stored[0].imageCrop.desktop.left).toBe(12);
     await page.locator('#preview').click();
     await expect(page.locator('#previewDialog')).toBeVisible({timeout:20000});
@@ -3460,7 +3472,7 @@ for(const [pageName,gallery] of [
       await expect(preview.locator('figcaption')).toHaveText(original.captionText);
     else await expect(preview.locator('figcaption')).toHaveCount(0);
     await expect.poll(()=>preview.evaluate(x=>x.getBoundingClientRect().width))
-      .toBeGreaterThan(original.w+30);
+      .toBeCloseTo(afterCrop.width,0);
     await expect(preview.locator('img')).toHaveCSS('border-radius','12px');
     const markup=await page.locator('#previewFrame').getAttribute('srcdoc');
     expect(markup).toContain('grid-template-columns:');
@@ -3873,5 +3885,93 @@ test('Interests gallery numeric resizing changes only the selected photo and its
     const other=page.frameLocator('#previewFrame')
       .locator('.pungmul-gallery figure img').nth(1);
     expect(await metrics(other)).toEqual(untouched);
+    expect(writes).toEqual([]);
+  });
+
+test('Gallery crop handles shrink the selected frame, preserve sibling photos, and reset after resizing',
+  async({page})=>{
+    const writes=[];
+    await installVerifiedCurrentSource(page,writes);
+    await page.setViewportSize({width:1740,height:1050});
+    await page.goto(BASE+'/editor-v2.html?page=pungmul.html',
+      {waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    const frame=page.frameLocator('#livePageFrame');
+    const gallery=frame.locator('.pungmul-performance-grid');
+    const first=gallery.locator('figure img').first();
+    const other=gallery.locator('figure img').nth(1);
+    await first.scrollIntoViewIfNeeded();
+    await expect.poll(()=>first.evaluate(img=>img.naturalWidth))
+      .toBeGreaterThan(0);
+    const metrics=img=>img.evaluate(el=>{
+      const b=el.getBoundingClientRect(),style=getComputedStyle(el);
+      return {x:b.x,y:b.y,w:b.width,h:b.height,src:el.getAttribute('src'),
+        background:style.backgroundImage,backgroundSize:style.backgroundSize,
+        objectFit:style.objectFit,clipPath:style.clipPath};
+    });
+    const baseline=await metrics(first),unchanged=await metrics(other);
+    const originalTracks=await gallery.evaluate(g=>getComputedStyle(g).gridTemplateColumns);
+    await first.click();
+    await expect(page.locator('#livePhotoCardMode')).toBeChecked();
+    const key='moon-academic-editor-v2:source:pungmul.html';
+    const savedBefore=await page.evaluate(k=>localStorage.getItem(k),key);
+    await page.locator('#cropImageTool').click();
+    // Crop-mode activation alone is an inspection action, not a saved edit.
+    expect(await page.evaluate(k=>localStorage.getItem(k),key))
+      .toBe(savedBefore);
+    const sides=[
+      ['Left',12,'w','x',true],
+      ['Top',7,'h','y',true],
+      ['Right',9,'w','x',false],
+      ['Bottom',11,'h','y',false]
+    ];
+    let previous=baseline;
+    for(const [side,value,dimension,position,movingStart] of sides){
+      const control=page.locator('#liveCrop'+side);
+      await control.evaluate((input,amount)=>{
+        input.value=String(amount);
+        input.dispatchEvent(new Event('input',{bubbles:true}));
+        input.dispatchEvent(new Event('change',{bubbles:true}));
+      },value);
+      const current=await metrics(first);
+      expect(current[dimension],'trimming '+side+' changes the photo frame')
+        .toBeLessThan(previous[dimension]-5);
+      if(movingStart){
+        expect(current[position],'trimming '+side+' moves the leading frame edge')
+          .toBeGreaterThan(previous[position]+4);
+      }else{
+        expect(Math.abs(current[position]-previous[position]),
+          'trimming '+side+' holds the opposite frame edge').toBeLessThan(4);
+      }
+      expect(await metrics(other),'an unselected photo must retain its own crop and size')
+        .toEqual(unchanged);
+      expect(await gallery.evaluate(g=>getComputedStyle(g).gridTemplateColumns))
+        .toBe(originalTracks);
+      previous=current;
+    }
+    const cropped={...previous};
+    await page.locator('#cropImageTool').click();
+    await page.locator('#liveOriginalWidth').fill(String(Math.round(cropped.w+45)));
+    await page.locator('#liveOriginalWidth').dispatchEvent('change');
+    const resized=await metrics(first);
+    expect(resized.w).toBeGreaterThan(cropped.w+20);
+    expect(Math.abs(resized.h/resized.w-cropped.h/cropped.w)).toBeLessThan(.02);
+    expect(await metrics(other)).toEqual(unchanged);
+    await page.locator('#preview').click();
+    await expect(page.locator('#previewDialog')).toBeVisible();
+    const preview=page.frameLocator('#previewFrame')
+      .locator('.pungmul-performance-grid figure img').first();
+    const previewDimensions=await metrics(preview);
+    expect(Math.abs(previewDimensions.w-resized.w)).toBeLessThan(5);
+    expect(Math.abs(previewDimensions.h-resized.h)).toBeLessThan(5);
+    await page.locator('#closePreview').click();
+    await page.locator('#liveCropReset').click();
+    const restored=await metrics(first);
+    expect(restored.w,'reset restores the cropped-off image width')
+      .toBeGreaterThan(resized.w+15);
+    expect(restored.h,'reset restores the cropped-off image height')
+      .toBeGreaterThan(resized.h+15);
+    expect(await metrics(other)).toEqual(unchanged);
     expect(writes).toEqual([]);
   });
