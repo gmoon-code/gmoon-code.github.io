@@ -6030,6 +6030,41 @@ function showPublishResult(result){
   commit.target="_blank";commit.rel="noopener noreferrer";
   commit.textContent="View GitHub commit";
   panel.append(intro,link,document.createTextNode(" · "),commit);
+  if(result.target==="live"&&typeof result.publishedHtml==="string"){
+    const check=document.createElement("button");
+    check.type="button";
+    check.className="subtle";
+    check.textContent="Check public deployment";
+    check.title="Verify the actual public HTML matches the page GitHub accepted";
+    const confirmation=document.createElement("span");
+    confirmation.setAttribute("role","status");
+    confirmation.className="publication-delivery-status";
+    confirmation.textContent="GitHub commit confirmed; public delivery not yet checked.";
+    check.addEventListener("click",async()=>{
+      check.disabled=true;
+      confirmation.textContent="Checking the actual public page without cached HTML…";
+      try{
+        const address=new URL(result.url);
+        address.searchParams.set("moon-release-check",result.commit.slice(0,12));
+        const response=await fetch(address.href,{cache:"no-store"});
+        if(!response.ok)throw Error("Public page returned HTTP "+response.status);
+        const delivered=await response.text();
+        if(delivered===result.publishedHtml){
+          confirmation.textContent="Verified. The published website now serves the exact reviewed HTML from this GitHub commit. Inspect its images at the relevant Desktop, Tablet and Phone widths.";
+          link.textContent="Open verified live page";
+          status("Public delivery verified for "+result.path+" · Review photo layout at each screen width");
+        }else{
+          confirmation.textContent="GitHub accepted the edit, but the public website is still serving different HTML. Deployment may be pending, or another publication has replaced it. Check again and review the latest website before editing further.";
+          status("Public website differs from the confirmed GitHub commit · No new publication was attempted");
+        }
+      }catch(error){
+        confirmation.textContent="Could not verify public delivery ("+
+          (error.message||"network unavailable")+"). The GitHub commit is confirmed, but the website deployment is unverified. Try again.";
+        status("Public delivery not verified · GitHub commit remains confirmed");
+      }finally{check.disabled=false;}
+    });
+    panel.append(document.createTextNode(" · "),check,confirmation);
+  }
   panel.hidden=false;
 }
 
