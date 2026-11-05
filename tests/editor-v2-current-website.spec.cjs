@@ -3695,11 +3695,17 @@ test('Pungmul gallery trims four independent edges then resizes without changing
     // Drag each individual pink side handle, then refine each edge using
     // the numeric controls. This covers the two distinct crop workflows.
     for(const [side,dx,dy,field] of [
-      ['w',18,0,'Left'],['e',-18,0,'Right'],
-      ['n',0,16,'Top'],['s',0,-16,'Bottom']
+      ['w',36,0,'Left'],['e',-36,0,'Right'],
+      ['n',0,36,'Top'],['s',0,-36,'Bottom']
     ]){
+      // The last grip can initially sit beyond the iframe's visible fold
+      // even though Playwright considers it CSS-visible. Centre the picture
+      // before each pointer interaction, and allow scroll-driven overlay sync.
+      await image.evaluate(img=>img.scrollIntoView({block:'center',inline:'nearest'}));
       const grip=frame.locator('#moon-v2-live-overlay .moon-v2-grip[data-direction="'+side+'"]');
       await expect(grip).toBeVisible();
+      await expect.poll(()=>grip.boundingBox().then(box=>box!==null&&box.y>=0&&
+        box.y+box.height<=1050)).toBe(true);
       const box=await grip.boundingBox();
       const x=box.x+box.width/2,y=box.y+box.height/2;
       await page.mouse.move(x,y);
