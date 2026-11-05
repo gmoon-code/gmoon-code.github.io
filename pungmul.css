@@ -6,14 +6,14 @@
 .pungmul-eyebrow{font-size:13px;font-weight:600;letter-spacing:.03em;margin:0 0 12px}
 .pungmul-page-hero h1 span{font-size:.66em;font-weight:400;white-space:nowrap}
 .pungmul-hero-photo{margin:0}
-.pungmul-hero-photo img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;border:1px solid var(--moon-rule)}
+.pungmul-hero-photo img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;border:0}
 .pungmul-hero-photo figcaption{font-size:12px;color:var(--moon-muted);margin:7px 0 0}
 .pungmul-jump-nav{display:flex;align-items:baseline;flex-wrap:wrap;gap:12px 19px;padding:0 0 30px}
 .pungmul-jump-nav span{font-size:12px;color:var(--moon-muted);font-weight:700}
 .pungmul-jump-nav a{font-size:13px}
 .pungmul-prose p{max-width:79ch}
 .pungmul-performance-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:22px 0 0}
-.pungmul-performance-grid figure{border:1px solid var(--moon-rule);margin:0;min-width:0}
+.pungmul-performance-grid figure{border:0;margin:0;min-width:0}
 .pungmul-performance-grid a{display:block;overflow:hidden}
 .pungmul-performance-grid a:focus-visible{outline:2px solid #111;outline-offset:-2px}
 .pungmul-performance-grid img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover}
@@ -146,7 +146,7 @@ html:not(.moon-free-mode) #main.pungmul-deep-page .pungmul-reference-list a{
   aspect-ratio:4/3;
   object-fit:cover;
   object-position:center;
-  border:1px solid var(--moon-rule);
+  border:0;
   border-radius:12px;
 }
 html:not(.moon-free-mode) #main.pungmul-deep-page .pungmul-performance-grid{
@@ -157,9 +157,9 @@ html:not(.moon-free-mode) #main.pungmul-deep-page .pungmul-performance-grid{
 #main.pungmul-deep-page .pungmul-performance-grid figure{
   min-width:0;
   overflow:hidden;
-  border:1px solid var(--moon-rule);
-  border-radius:12px;
-  background:var(--moon-paper,#fff);
+  border:0;
+  border-radius:0;
+  background:transparent;
 }
 #main.pungmul-deep-page .pungmul-performance-grid a{display:block;overflow:hidden}
 #main.pungmul-deep-page .pungmul-performance-grid img{
@@ -170,6 +170,7 @@ html:not(.moon-free-mode) #main.pungmul-deep-page .pungmul-performance-grid{
   aspect-ratio:4/3;
   object-fit:cover;
   object-position:center;
+  border-radius:12px;
 }
 @media(max-width:800px){
   html:not(.moon-free-mode) #main.pungmul-deep-page .pungmul-performance-grid{
