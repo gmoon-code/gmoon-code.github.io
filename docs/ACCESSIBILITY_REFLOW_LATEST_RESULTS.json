@@ -8,11 +8,35 @@
   ],
   "axeScanCount": 36,
   "darkAxeCount": 5,
-  "failedCases": 0,
-  "failures": [],
+  "failedCases": 1,
+  "failures": [
+    {
+      "page": "interests.html",
+      "width": 1280,
+      "errors": [
+        "clipped reader text"
+      ],
+      "metrics": {
+        "documentWidth": 1280,
+        "outOfBounds": [],
+        "clipped": [
+          {
+            "tag": "A",
+            "text": ""
+          },
+          {
+            "tag": "A",
+            "text": ""
+          }
+        ]
+      },
+      "axe": [],
+      "axeDark": null
+    }
+  ],
   "rules": {},
   "caveats": "CSS viewport equivalence to 200/400% reflow, not physical browser zoom. Automated axe findings do not certify WCAG. Exemptions apply only to intentional horizontal scroll containers.",
-  "workflow_run_id": "41987378434",
-  "head_sha": "d7c600ef8dcdc33095f65a6d925493fa6b3172b5",
-  "exit_code": "0"
+  "workflow_run_id": "41987896331",
+  "head_sha": "2a72df14ab1423e6ab055e93bd0577b98fd77fcb",
+  "exit_code": "1"
 }
