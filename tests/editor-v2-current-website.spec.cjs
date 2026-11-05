@@ -2961,6 +2961,9 @@ test('Interests stale text can be explicitly kept current while image edits and 
   await expect(page.locator('#previewDialog')).toBeHidden();
   await expect(page.locator('#status')).toContainText('text-source conflict');
   await page.locator('#publish').click();
+  await page.locator('#checkPublishEdits').click();
+  await expect(page.locator('#publishError')).toContainText('text-source conflict');
+  expect(await page.locator('#imageReconnectPanel').evaluate(el=>el.open)).toBe(false);
   const resolve=page.locator('[data-resolve-text-selector]').first();
   await expect(resolve).toBeVisible();
   await resolve.click();
