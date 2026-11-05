@@ -1,12 +1,12 @@
 {
-  "sourceHead": "82f314ec725746a02938d825eee7d5be21f12c13",
+  "sourceHead": "6fa15009a447353e422bac2c3382f3aa70631e8c",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 22,
   "httpErrors": 2,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-82f314ec7257",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-6fa15009a447",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -24,18 +24,16 @@
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "41941072238",
-      "head_sha": "bbff64ce2a6e3171817d9c2e380b50aa29a78b60",
+      "run": "41941193171",
+      "head_sha": "94f3a32d5e1ec816a3305e77856cc11c01e5e0a9",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "teaching-ap-chemistry.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
-        "issues": 43
+        "issues": 44
       },
       "counts": {
-        "reachable": 72,
-        "unverified": 43
+        "reachable": 71,
+        "unverified": 44
       }
     },
     "metadata": {
@@ -55,12 +53,11 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "41940926194",
-      "head_sha": "5df2bff98059221e01a9af8d76c97074b875e75f",
+      "run": "41941071917",
+      "head_sha": "bbff64ce2a6e3171817d9c2e380b50aa29a78b60",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-chemistry.html",
-        "teaching-ap-evolution.html"
+        "teaching-ap-chemistry.html"
       ],
       "failureCounts": {
         "failures": 0
@@ -116,16 +113,9 @@
   },
   "sourceDriftSinceAudits": [
     {
-      "category": "external",
-      "sourceModifiedSinceAudit": [
-        "teaching-ap-chemistry.html"
-      ]
-    },
-    {
       "category": "reflow",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-chemistry.html",
-        "teaching-ap-evolution.html"
+        "teaching-ap-chemistry.html"
       ]
     },
     {
@@ -203,16 +193,9 @@
     {
       "sourceDrift": [
         {
-          "category": "external",
-          "sourceModifiedSinceAudit": [
-            "teaching-ap-chemistry.html"
-          ]
-        },
-        {
           "category": "reflow",
           "sourceModifiedSinceAudit": [
-            "teaching-ap-chemistry.html",
-            "teaching-ap-evolution.html"
+            "teaching-ap-chemistry.html"
           ]
         },
         {
@@ -240,7 +223,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41941229384",
-  "run_sha": "82f314ec725746a02938d825eee7d5be21f12c13",
+  "workflow_run_id": "41941269247",
+  "run_sha": "6fa15009a447353e422bac2c3382f3aa70631e8c",
   "exit_code": "1"
 }
