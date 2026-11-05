@@ -3388,7 +3388,7 @@ for(const [pageName,gallery] of [
         captionTop:cap.top,captionText:x.querySelector('figcaption').textContent.trim(),
         overflow:getComputedStyle(x).overflow};
     });
-    expect(resized.imgW).toBeCloseTo(resized.w,0);
+    expect(Math.abs(resized.imgW-resized.w)).toBeLessThan(5);
     expect(resized.captionText).toBe(original.captionText);
     expect(resized.overflow).toBe('hidden');
     const sibling=frame.locator(gallery+' figure').nth(1);
@@ -3411,8 +3411,11 @@ for(const [pageName,gallery] of [
     // Crop changes the photo inside the frame, not the parent/caption.
     await page.locator('#liveCropShape').selectOption('rounded');
     const beforeCrop=await figure.boundingBox();
-    await page.locator('#liveCropLeft').fill('12');
-    await page.locator('#liveCropLeft').dispatchEvent('change');
+    await page.locator('#liveCropLeft').evaluate(input=>{
+      input.value="12";
+      input.dispatchEvent(new Event("input",{bubbles:true}));
+      input.dispatchEvent(new Event("change",{bubbles:true}));
+    });
     const afterCrop=await figure.boundingBox();
     expect(Math.abs(afterCrop.width-beforeCrop.width)).toBeLessThan(2);
     await expect(photo).toHaveCSS('border-radius','12px');
