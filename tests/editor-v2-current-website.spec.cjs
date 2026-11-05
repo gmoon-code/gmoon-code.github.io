@@ -3630,3 +3630,31 @@ test('Pungmul independent draft photos never replace the original gallery when s
     expect(await page.evaluate(k=>localStorage.getItem(k),key)).toBeNull();
     expect(writes).toEqual([]);
   });
+
+
+test('Visitor Pungmul photos have no rectangular frame borders or clipped photo badges',
+  async({page})=>{
+    await page.goto(BASE+'/interests.html',{waitUntil:'domcontentloaded'});
+    const figures=page.locator('#main.interests-page .pungmul-gallery figure');
+    await expect(figures).toHaveCount(2);
+    for(const figure of await figures.all()){
+      await expect(figure).toHaveCSS('border-top-width','0px');
+      await expect(figure).toHaveCSS('border-right-width','0px');
+    }
+    const links=page.locator('#main.interests-page .pungmul-gallery a[target="_blank"]');
+    await expect(links).toHaveCount(2);
+    for(const link of await links.all()){
+      expect(await link.evaluate(el=>getComputedStyle(el,'::after').content)).toBe('none');
+      await expect(link.locator('img')).toBeVisible();
+    }
+
+    await page.goto(BASE+'/pungmul.html',{waitUntil:'domcontentloaded'});
+    await expect(page.locator('#main.pungmul-deep-page .pungmul-hero-photo img'))
+      .toHaveCSS('border-top-width','0px');
+    const deepFigures=page.locator('#main.pungmul-deep-page .pungmul-performance-grid figure');
+    await expect(deepFigures).toHaveCount(4);
+    for(const figure of await deepFigures.all()){
+      await expect(figure).toHaveCSS('border-top-width','0px');
+      await expect(figure.locator('img')).toHaveCSS('border-top-left-radius','12px');
+    }
+  });
