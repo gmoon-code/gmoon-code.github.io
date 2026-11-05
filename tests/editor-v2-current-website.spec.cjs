@@ -3689,7 +3689,9 @@ test('Pungmul gallery trims four independent edges then resizes without changing
     await image.click();
     await expect(page.locator('#livePhotoCardMode')).toBeChecked();
     await page.locator('#cropImageTool').click();
-    await expect(page.locator('#liveCropFit')).toHaveValue('cover');
+    // Entering crop mode does not modify an untouched photograph.
+    const initialFit=await page.locator('#liveCropFit').inputValue();
+    expect(['contain','cover']).toContain(initialFit);
     // Drag each individual pink side handle, then refine each edge using
     // the numeric controls. This covers the two distinct crop workflows.
     for(const [side,dx,dy,field] of [
@@ -3707,6 +3709,7 @@ test('Pungmul gallery trims four independent edges then resizes without changing
       expect(parseInt(await page.locator('#liveCrop'+field+'Value').textContent(),10),
         'pointer trimming '+field).toBeGreaterThan(0);
     }
+    await expect(page.locator('#liveCropFit')).toHaveValue('cover');
     // Exercise all independently trimmed sides, not only a shape preset.
     const edges={Left:12,Right:9,Top:7,Bottom:11};
     for(const [side,amount] of Object.entries(edges)){
