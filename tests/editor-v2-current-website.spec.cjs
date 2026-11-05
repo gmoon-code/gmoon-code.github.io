@@ -3720,6 +3720,22 @@ test('Pungmul gallery trims four independent edges then resizes without changing
     // Entering crop mode does not modify an untouched photograph.
     const initialFit=await page.locator('#liveCropFit').inputValue();
     expect(['contain','cover']).toContain(initialFit);
+    // Keep a bounded capture-phase record for diagnosing Firefox capture loss.
+    // Pure test instrumentation, never injected into visitor or editor source.
+    await image.evaluate(img=>{
+      const doc=img.ownerDocument,win=doc.defaultView;
+      win.__moonCropPointerEvents=[];
+      for(const type of ['pointerdown','pointermove','pointerup','pointercancel','lostpointercapture']){
+        doc.addEventListener(type,event=>{
+          const events=win.__moonCropPointerEvents;
+          if(events.length>=250)events.shift();
+          events.push({type,x:Math.round(event.clientX),y:Math.round(event.clientY),
+            pointer:event.pointerId,button:event.button,
+            dir:event.target?.dataset?.direction||null,
+            target:event.target?.tagName||null});
+        },true);
+      }
+    });
     // Drag each individual pink side handle, then refine each edge using
     // the numeric controls. This covers the two distinct crop workflows.
     for(const [side,dx,dy,field] of [
@@ -3742,8 +3758,28 @@ test('Pungmul gallery trims four independent edges then resizes without changing
       await page.mouse.down();
       await page.mouse.move(x+dx,y+dy,{steps:6});
       await page.mouse.up();
-      expect(parseInt(await page.locator('#liveCrop'+field+'Value').textContent(),10),
-        'pointer trimming '+field).toBeGreaterThan(0);
+      const value=parseInt(await page.locator('#liveCrop'+field+'Value').textContent(),10);
+      if(!(value>0)){
+        const events=await image.evaluate(img=>
+          img.ownerDocument.defaultView.__moonCropPointerEvents?.slice(-45)||[]);
+        const editorState=await page.evaluate(()=>({
+          activeElement:document.activeElement?.id||null,
+          selected:liveSelected?.node?.getAttribute?.('src')||null,
+          cropMode:liveCropMode,gesture:liveGesture?{
+            dir:liveGesture.dir,moved:liveGesture.moved,
+            startX:liveGesture.startX,startY:liveGesture.startY
+          }:null,
+          pending:liveDragPending?{
+            x:liveDragPending.clientX,y:liveDragPending.clientY
+          }:null,
+          patch:[...livePatches.values()].filter(p=>p.kind==='image').map(p=>({
+            frameMode:p.frameMode,imageCrop:p.imageCrop?.desktop,
+            width:p.layout?.desktop?.wrapWidth
+          }))
+        }));
+        throw new Error('pointer trimming '+field+' did not apply: '+
+          JSON.stringify({side,value,events,editorState}));
+      }
     }
     await expect(page.locator('#liveCropFit')).toHaveValue('cover');
     // Exercise all independently trimmed sides, not only a shape preset.
@@ -4134,5 +4170,92 @@ test('Pungmul section resizing preserves explicit width and height in editor and
     const same=await dimensions(preview);
     expect(Math.abs(same.w-dragged.w)).toBeLessThan(5);
     expect(Math.abs(same.h-dragged.h)).toBeLessThan(5);
+    expect(writes).toEqual([]);
+  });
+
+test('Rapid pointer events finish the final crop and resize before mouse release, with one undo per gesture',
+  async({page})=>{
+    const writes=[];
+    await installVerifiedCurrentSource(page,writes);
+    await page.setViewportSize({width:1740,height:1050});
+    await page.goto(BASE+'/editor-v2.html?page=pungmul.html',{waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    const frame=page.frameLocator('#livePageFrame');
+    const image=frame.locator('.pungmul-performance-grid figure img').first();
+    const sibling=frame.locator('.pungmul-performance-grid figure img').nth(1);
+    await image.scrollIntoViewIfNeeded();
+    await expect.poll(()=>image.evaluate(img=>img.naturalWidth)).toBeGreaterThan(0);
+    const rect=img=>img.evaluate(el=>{
+      const r=el.getBoundingClientRect(),s=getComputedStyle(el);
+      return {x:r.left,y:r.top,w:r.width,h:r.height,src:el.getAttribute('src'),
+        bg:s.backgroundImage};
+    });
+    // Compare untouched siblings in document coordinates. Undo reloads the
+    // iframe and may restore a different viewport scroll position in Firefox.
+    // Rectangles measured only relative to the viewport would report a false
+    // neighbour movement even when its document layout stayed unchanged.
+    const siblingMetrics=()=>sibling.evaluate(el=>{
+      const r=el.getBoundingClientRect(),css=getComputedStyle(el);
+      const view=el.ownerDocument.defaultView;
+      return {x:r.left+view.scrollX,y:r.top+view.scrollY,
+        w:r.width,h:r.height,src:el.getAttribute('src'),
+        bg:css.backgroundImage,objectFit:css.objectFit,clipPath:css.clipPath};
+    });
+    const initial=await rect(image),other=await siblingMetrics();
+    await image.click();
+    await expect(page.locator('#livePhotoCardMode')).toBeChecked();
+    await page.locator('#cropImageTool').click();
+    const rapidDrag=async(direction,deltaX,deltaY)=>{
+      const grip=frame.locator('#moon-v2-live-overlay .moon-v2-grip[data-direction="'+direction+'"]');
+      await expect(grip).toBeVisible();
+      // Deliver multiple pointer events and mouseup in ONE browser task,
+      // before any animation frame can run. The last coordinates must still
+      // be committed. Synthetic capture is stubbed only for this test.
+      await grip.evaluate((el,{dx,dy})=>{
+        const box=el.getBoundingClientRect();
+        const x=box.left+box.width/2,y=box.top+box.height/2;
+        Object.defineProperty(el,'setPointerCapture',{configurable:true,value:()=>{}});
+        Object.defineProperty(el,'hasPointerCapture',{configurable:true,value:()=>false});
+        Object.defineProperty(el,'releasePointerCapture',{configurable:true,value:()=>{}});
+        const emit=(type,amount)=>el.dispatchEvent(new PointerEvent(type,{
+          bubbles:true,cancelable:true,pointerId:173,pointerType:'mouse',
+          button:0,buttons:type==='pointerup'?0:1,
+          clientX:x+dx*amount,clientY:y+dy*amount
+        }));
+        emit('pointerdown',0);
+        for(let n=1;n<=32;n++)emit('pointermove',n/32);
+        emit('pointerup',1);
+      },{dx:deltaX,dy:deltaY});
+    };
+    await rapidDrag('w',55,0);
+    const cropped=await rect(image);
+    expect(cropped.w,'final crop event must not be dropped').toBeLessThan(initial.w-40);
+    expect(cropped.x).toBeGreaterThan(initial.x+40);
+    expect(await siblingMetrics()).toEqual(other);
+    const key='moon-academic-editor-v2:source:pungmul.html';
+    const draft=await page.evaluate(k=>JSON.parse(localStorage.getItem(k)),key);
+    expect(draft.filter(p=>p.kind==='image')).toHaveLength(1);
+    expect(draft.find(p=>p.kind==='image').imageCrop.desktop.left).toBeGreaterThan(8);
+    await page.locator('#undo').click();
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    const undone=await rect(image);
+    expect(Math.abs(undone.w-initial.w)).toBeLessThan(3);
+    expect(Math.abs(undone.x-initial.x)).toBeLessThan(3);
+    // Undo may reload the iframe and reset crop mode. Do not blindly toggle
+    // it, which would turn the subsequent resize into an outward crop.
+    await image.click();
+    const cropTool=page.locator('#cropImageTool');
+    if(await cropTool.getAttribute('aria-pressed')==='true')await cropTool.click();
+    await expect(cropTool).toHaveAttribute('aria-pressed','false');
+    await rapidDrag('se',45,45);
+    const resized=await rect(image);
+    expect(resized.w,'final resize event must not be dropped').toBeGreaterThan(initial.w+25);
+    expect(await siblingMetrics()).toEqual(other);
+    await page.locator('#undo').click();
+    const reset=await rect(image);
+    expect(Math.abs(reset.w-initial.w)).toBeLessThan(3);
+    expect(await siblingMetrics()).toEqual(other);
     expect(writes).toEqual([]);
   });

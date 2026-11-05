@@ -35,6 +35,7 @@ const LIVE_PUBLISHED_BACKUP_KEY="moon-academic-editor-v2:last-published-source:"
 const LIVE_POSITION_LOCK_KEY="moon-academic-editor-v2:position-lock:";
 let livePositionLocks=new Set(); // Local editor preference, never published.
 let livePatches=new Map(),liveEditing=null,liveHistory=[],liveRedo=[],liveGesture=null,liveOverlay=null;
+let liveDragFrame=0,liveDragPending=null;
 let liveDraftRecovery=null; // Unreadable browser draft stays untouched until explicit recovery.
 let liveDraftLoadedRaw=null,liveDraftConflict=null; // Protect valid local edits across editor tabs.
 let liveDraftSaveFailure=null; // Preserve in-memory edits and warn if persistent browser storage fails.
@@ -4222,10 +4223,44 @@ function resizeLiveSourceGroup(g,dx,dy,lockRatio=false){
   }
   refreshLiveLayoutRules(doc);
 }
+// Dragging on a full webpage repeatedly reconstructs responsive CSS and
+// measures the selection overlay. Use one browser paint at most for each
+// movement update, rather than doing that work for every raw pointer event.
+// The final coordinate is always flushed before a mouseup saves history.
+function clearLiveDragFrame(){
+  if(liveDragFrame)cancelAnimationFrame(liveDragFrame);
+  liveDragFrame=0;liveDragPending=null;
+}
+function flushLiveDragFrame(){
+  if(liveDragFrame)cancelAnimationFrame(liveDragFrame);
+  liveDragFrame=0;
+  const pending=liveDragPending;
+  liveDragPending=null;
+  if(pending&&liveGesture?.pointer===pending.pointerId)
+    applyLiveGestureMove(pending);
+}
+function liveDragCoordinates(event){
+  return {pointerId:event.pointerId,clientX:event.clientX,clientY:event.clientY,
+    shiftKey:event.shiftKey,altKey:event.altKey,preventDefault(){}};
+}
 function moveLiveGesture(event){
   const g=liveGesture;
   if(!g||g.pointer!==event.pointerId)return;
   event.preventDefault();
+  // Capture promptly even when a frame has not yet been drawn. Otherwise a
+  // quick drag can exit the chosen image before pointer capture begins.
+  if(!g.moved&&Math.hypot(event.clientX-g.startX,event.clientY-g.startY)>=3){
+    g.moved=true;
+    try{if(!g.anchor?.hasPointerCapture?.(g.pointer))
+      g.anchor?.setPointerCapture?.(g.pointer);}
+    catch{/* The pointer may leave the image during rapid movement. */}
+  }
+  liveDragPending=liveDragCoordinates(event);
+  if(!liveDragFrame)liveDragFrame=requestAnimationFrame(flushLiveDragFrame);
+}
+function applyLiveGestureMove(event){
+  const g=liveGesture;
+  if(!g||g.pointer!==event.pointerId)return;
   const deltaX=event.clientX-g.startX,deltaY=event.clientY-g.startY;
   if(!g.moved&&Math.hypot(deltaX,deltaY)<3)return;
   if(!g.moved){
@@ -4496,6 +4531,7 @@ function moveLiveGesture(event){
 }
 function cancelLiveGesture(){
   const g=liveGesture;
+  clearLiveDragFrame();
   if(!g)return;
   liveGesture=null;
   removeLiveSnapGuides();
@@ -4531,6 +4567,21 @@ function finishLiveGesture(event){
      g.node.matches(LIVE_REFLOW_TEXT)&&
      Math.hypot(event.clientX-g.startX,event.clientY-g.startY)>=3)
     moveLiveGesture(event);
+  if(event.type==="pointercancel"){
+    clearLiveDragFrame();
+  }else{
+    // A fast mouse release can happen before requestAnimationFrame. Apply
+    // its final pointer position synchronously before committing one undo
+    // step so no last pixels are discarded.
+    if(Number.isFinite(event.clientX)&&Number.isFinite(event.clientY)){
+      const dx=event.clientX-g.startX,dy=event.clientY-g.startY;
+      if(g.moved||Math.hypot(dx,dy)>=3){
+        if(!g.moved)g.moved=true;
+        liveDragPending=liveDragCoordinates(event);
+      }
+    }
+    flushLiveDragFrame();
+  }
   liveGesture=null;
   // Release pointer capture explicitly when clicking an image or finishing a
   // drag. Firefox can otherwise leave the iframe owning the next pointer
