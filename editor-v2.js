@@ -453,7 +453,82 @@ function makeSceneElement(obj){
   }
   return node;
 }
+
 const LIVE_WIDTHS={desktop:1160,tablet:768,phone:390};
+let inlineLiveView="draft";
+const INLINE_PUBLIC_EDIT_CONTROLS=["selectTool","liveSectionPickMode","addText",
+  "addImage","cropImageTool","addShape","duplicate","front","back","remove","copyLiveObject"];
+function selectedLiveViewportWidth(){
+  const device=$("devicePreview")?.value||"desktop";
+  // The CSS viewport follows the outer browser's width, not the narrow
+  // editor column. This matches a separately opened wide desktop page.
+  return device==="browser"?
+    Math.max(1024,Math.min(2560,window.innerWidth)):
+    LIVE_WIDTHS[device]||1160;
+}
+function inlineViewStatus(){
+  const actual=workspaceMode==="live"&&inlineLiveView==="published";
+  const count=livePatches.size;
+  const label=count+" unpublished draft edit"+(count===1?"":"s");
+  $("inlineViewNotice").textContent=actual?
+    "ACTUAL PUBLISHED WEBSITE · Read only · "+currentPage+
+    " · "+selectedLiveViewportWidth()+"px viewport · Your "+label+" are NOT shown.":
+    "EDITABLE DRAFT · "+label+
+    " · GitHub source plus local edits, NOT the actual public page. "+
+    "Switch to Actual published page to compare at the same width.";
+  $("inlineDraftView").textContent="Edit my draft"+(count?" ("+count+")":"");
+  $("workspacePill").textContent=actual?
+    "Actual public URL · read only":
+    "GitHub source + unpublished edits · not the deployed page";
+}
+function setInlineLiveView(view){
+  if(!["draft","published"].includes(view)||workspaceMode!=="live")return;
+  const actual=view==="published";
+  if(actual&&inlineLiveView!=="published"){
+    if(liveEditing)saveLiveText();
+    if(liveGesture)cancelLiveGesture();
+    finishCropSliderPreview();finishPictureEffectPreview();
+  }
+  inlineLiveView=view;
+  const deployed=$("inlinePublishedFrame");
+  if(actual){
+    const url=new URL(currentPage,location.href).href;
+    if(deployed.getAttribute("src")!==url)deployed.src=url;
+  }else if(deployed.hasAttribute("src")){
+    deployed.removeAttribute("src");
+  }
+  deployed.hidden=!actual;
+  $("livePageFrame").hidden=actual;
+  document.body.classList.toggle("inline-published-view",actual);
+  $("inlinePublishedView").classList.toggle("active",actual);
+  $("inlineDraftView").classList.toggle("active",!actual);
+  $("inlinePublishedView").setAttribute("aria-pressed",String(actual));
+  $("inlineDraftView").setAttribute("aria-pressed",String(!actual));
+  $("inlineReadOnlyTip").hidden=!actual;
+  for(const id of INLINE_PUBLIC_EDIT_CONTROLS){
+    const control=$(id);
+    if(!control)continue;
+    if(actual){
+      if(!control.hasAttribute("data-inline-public-was-disabled"))
+        control.dataset.inlinePublicWasDisabled=String(control.disabled);
+      control.disabled=true;
+    }else if(control.hasAttribute("data-inline-public-was-disabled")){
+      control.disabled=control.dataset.inlinePublicWasDisabled==="true";
+      delete control.dataset.inlinePublicWasDisabled;
+    }
+  }
+  $("workspaceExplanation").textContent=actual?
+    "This frame loads the real published website URL. It is read only. "+
+    "Switch to Edit my draft to change text, photographs or layout. Both "+
+    "views use the same selected viewport width.":
+    "This frame shows GitHub source with unpublished browser edits. "+
+    "Its photo crops, positions and text may differ from the public website. "+
+    "Actual published page opens the real URL at the same width, while "+
+    "Verified live preview shows what publishing would submit.";
+  inlineViewStatus();
+  if(!actual)renderLiveInspector();
+  fitLivePage();
+}
 function setWorkspaceMode(mode){
   if(mode!=="live"&&mode!=="design")return;
   if(mode!=="live"&&liveEditing)saveLiveText();
