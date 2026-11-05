@@ -1,12 +1,12 @@
 {
-  "sourceHead": "8f98711822cad28c5c7baeba237eb05f82246fba",
+  "sourceHead": "87b97a4858a5dc7ec357481239a300c730b5c26a",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
-  "verifiedExactMatches": 24,
-  "httpErrors": 0,
+  "verifiedExactMatches": 23,
+  "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-8f98711822ca",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-87b97a4858a5",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -17,7 +17,9 @@
       "run": "41994730277",
       "head_sha": "2acf194a224c17787f08f2d5cbcbbcf458b57bed",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "interests.html"
+      ],
       "failureCounts": {
         "problems": 0
       }
@@ -27,7 +29,9 @@
       "run": "41994730060",
       "head_sha": "2acf194a224c17787f08f2d5cbcbbcf458b57bed",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "interests.html"
+      ],
       "failureCounts": {
         "issues": 43
       },
@@ -56,7 +60,9 @@
       "run": "41994730279",
       "head_sha": "2acf194a224c17787f08f2d5cbcbbcf458b57bed",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "interests.html"
+      ],
       "failureCounts": {
         "failures": 0
       }
@@ -66,7 +72,9 @@
       "run": "41994730323",
       "head_sha": "2acf194a224c17787f08f2d5cbcbbcf458b57bed",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "interests.html"
+      ],
       "failureCounts": {
         "failures": 0
       }
@@ -76,7 +84,9 @@
       "run": "41994730153",
       "head_sha": "2acf194a224c17787f08f2d5cbcbbcf458b57bed",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "interests.html"
+      ],
       "failureCounts": {
         "failures": 0,
         "combinedStressFailures": 0
@@ -87,7 +97,9 @@
       "run": "41994729962",
       "head_sha": "2acf194a224c17787f08f2d5cbcbbcf458b57bed",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "interests.html"
+      ],
       "failureCounts": {
         "failures": 0,
         "axeViolations": 0
@@ -100,11 +112,105 @@
       "note": "U1 route audit documents successful run 40825886279; legacy utility machine report refers to an early missing-script failure. Do not treat it as latest successful evidence."
     }
   },
-  "sourceDriftSinceAudits": [],
-  "pass": true,
-  "errors": [],
+  "sourceDriftSinceAudits": [
+    {
+      "category": "links",
+      "sourceModifiedSinceAudit": [
+        "interests.html"
+      ]
+    },
+    {
+      "category": "external",
+      "sourceModifiedSinceAudit": [
+        "interests.html"
+      ]
+    },
+    {
+      "category": "reflow",
+      "sourceModifiedSinceAudit": [
+        "interests.html"
+      ]
+    },
+    {
+      "category": "engines",
+      "sourceModifiedSinceAudit": [
+        "interests.html"
+      ]
+    },
+    {
+      "category": "typography",
+      "sourceModifiedSinceAudit": [
+        "interests.html"
+      ]
+    },
+    {
+      "category": "interactions",
+      "sourceModifiedSinceAudit": [
+        "interests.html"
+      ]
+    }
+  ],
+  "pass": false,
+  "errors": [
+    {
+      "path": "interests.html",
+      "errors": [
+        "deployed bytes differ from checked-out production source"
+      ],
+      "firstDiff": [
+        "--- source\n",
+        "+++ deployed\n",
+        "@@ -18,4 +18,3 @@\n",
+        " <style id=\"moon-v2-live-layout\">@media (min-width:1025px){:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3){grid-template-columns:minmax(0,min(383px,calc((100% - 18px) * 0.621753))) minmax(0,min(233px,calc((100% - 18px) * 0.378247)))!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(2){width:100%!important;max-width:100%!important;min-width:0!important;height:auto!important;box-sizing:border-box!important;overflow:hidden!important;translate:-399px -305px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(2) > a:nth-of-type(1){display:block!important;width:100%!important;overflow:hidden!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(2) > a:nth-of-type(1) > img:nth-of-type(1){display:block!important;width:100%!important;max-width:100%!important;height:172px!important;box-sizing:border-box!important;object-fit:cover!important;translate:0 0!important;scale:1 1!important;}main > section:nth-of-type(2) > div:nth-of-type(2) > p:nth-of-type(1){translate:269px 0px!important;scale:1 1!important;transform-origin:top left!important;width:771px!important;height:128px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}main > section:nth-of-type(2) > div:nth-of-type(2) > p:nth-of-type(2){translate:2px 29px!important;scale:1 1!important;transform-origin:top left!important;width:648px!important;height:126px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(1){width:100%!important;max-width:100%!important;min-width:0!important;height:auto!important;box-sizing:border-box!important;overflow:hidden!important;translate:655px -164px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(1) > a:nth-of-type(1){display:block!important;width:100%!important;overflow:hidden!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(1) > a:nth-of-type(1) > img:nth-of-type(1){display:block!important;width:100%!important;max-width:100%!important;height:214px!important;box-sizing:border-box!important;object-fit:cover!important;translate:0 0!important;scale:1 1!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(2) > a:nth-of-type(1) > img:nth-of-type(1){object-fit:none!important;object-position:-100000px -100000px!important;background-image:url(assets/interests-pungmul-dancers.webp)!important;background-size:233px 174.75px!important;background-position:0px -1.375px!important;background-repeat:no-repeat!important;background-origin:border-box!important;border-radius:999px!important;clip-path:none!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(1) > a:nth-of-type(1) > img:nth-of-type(1){object-fit:none!important;object-position:-100000px -100000px!important;background-image:url(assets/interests-pungmul-street.webp)!important;background-size:383px 215.574px!important;background-position:0px -0.787px!important;background-repeat:no-repeat!important;background-origin:border-box!important;border-radius:999px!important;clip-path:none!important;}}",
+        "-@media (min-width:1025px){main > section:nth-of-type(2){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:1089px!important;height:487px!important;min-height:0!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}main > section:nth-of-type(2) > p:nth-of-type(1){translate:10px -181px!important;scale:1 1!important;transform-origin:top left!important;}main > section:nth-of-type(3){translate:0px -23px!important;scale:1 1!important;transform-origin:top left!important;width:1089px!important;height:1281px!important;min-height:0!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}}",
+        "-@media (min-width:1025px){main > section:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:1089px!important;height:71px!important;min-height:0!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}main > section:nth-of-type(2){translate:0px -28px!important;scale:1 1!important;transform-origin:top left!important;}}</style></head>",
+        "+@media (min-width:1025px){main > section:nth-of-type(2){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:1089px!important;height:487px!important;min-height:0!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}main > section:nth-of-type(2) > p:nth-of-type(1){translate:10px -181px!important;scale:1 1!important;transform-origin:top left!important;}main > section:nth-of-type(3){translate:0px -23px!important;scale:1 1!important;transform-origin:top left!important;width:1089px!important;height:1281px!important;min-height:0!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}}</style></head>",
+        " <body class=\"theme-yellow\">"
+      ]
+    },
+    {
+      "sourceDrift": [
+        {
+          "category": "links",
+          "sourceModifiedSinceAudit": [
+            "interests.html"
+          ]
+        },
+        {
+          "category": "external",
+          "sourceModifiedSinceAudit": [
+            "interests.html"
+          ]
+        },
+        {
+          "category": "reflow",
+          "sourceModifiedSinceAudit": [
+            "interests.html"
+          ]
+        },
+        {
+          "category": "engines",
+          "sourceModifiedSinceAudit": [
+            "interests.html"
+          ]
+        },
+        {
+          "category": "typography",
+          "sourceModifiedSinceAudit": [
+            "interests.html"
+          ]
+        },
+        {
+          "category": "interactions",
+          "sourceModifiedSinceAudit": [
+            "interests.html"
+          ]
+        }
+      ]
+    }
+  ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41995001097",
-  "run_sha": "8f98711822cad28c5c7baeba237eb05f82246fba",
-  "exit_code": "0"
+  "workflow_run_id": "42000219407",
+  "run_sha": "87b97a4858a5dc7ec357481239a300c730b5c26a",
+  "exit_code": "1"
 }
