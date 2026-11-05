@@ -1,12 +1,12 @@
 {
-  "sourceHead": "4ffe5d759f35102f3e2069ce18f0bc4dfc96a6b1",
+  "sourceHead": "145999908620f4a0e5f589b0c2eb7c8f65d03eea",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-4ffe5d759f35",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-145999908620",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -65,8 +65,8 @@
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "42037035284",
-      "head_sha": "d9404f7f3eb136747200e5efc64388f17ae2677d",
+      "run": "42038342347",
+      "head_sha": "015da8b24e726bf4dc465cd0b5855ef2cb35406b",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "pungmul.html"
@@ -77,12 +77,10 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "42038342499",
-      "head_sha": "015da8b24e726bf4dc465cd0b5855ef2cb35406b",
+      "run": "42038510110",
+      "head_sha": "c65d0538c15fcc1b3f876d542336e91a6d815056",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "pungmul.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0,
         "combinedStressFailures": 0
@@ -117,12 +115,6 @@
     },
     {
       "category": "engines",
-      "sourceModifiedSinceAudit": [
-        "pungmul.html"
-      ]
-    },
-    {
-      "category": "typography",
       "sourceModifiedSinceAudit": [
         "pungmul.html"
       ]
@@ -168,12 +160,6 @@
           ]
         },
         {
-          "category": "typography",
-          "sourceModifiedSinceAudit": [
-            "pungmul.html"
-          ]
-        },
-        {
           "category": "interactions",
           "sourceModifiedSinceAudit": [
             "pungmul.html"
@@ -183,7 +169,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42038615262",
-  "run_sha": "4ffe5d759f35102f3e2069ce18f0bc4dfc96a6b1",
+  "workflow_run_id": "42038665086",
+  "run_sha": "145999908620f4a0e5f589b0c2eb7c8f65d03eea",
   "exit_code": "1"
 }
