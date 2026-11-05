@@ -2800,3 +2800,120 @@ for(const [name,gallery] of [
       }
     });
 }
+
+
+// Reproduce the actual old Interests paragraph that was revised on 28 Oct.
+// A retained position/style draft must not be blocked by changed prose or
+// ever rewrite the newer words. An old TEXT replacement has stricter rules.
+for(const variant of ['layout','already-published-text','conflicting-text']){
+  test('Old Interests ensemble paragraph draft safely handles '+variant,
+    async({page})=>{
+      const writes=[];
+      await installVerifiedCurrentSource(page,writes);
+      const name='interests.html';
+      await page.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+      await expect(page.locator('#liveAssetStatus'))
+        .toContainText('GitHub main source verified',{timeout:35000});
+      const paragraph=page.frameLocator('#livePageFrame').locator('main p')
+        .filter({hasText:'Our ensemble gave a formal concert in 2024'}).first();
+      const selector=await paragraph.evaluate(node=>{
+        const parts=[];
+        for(let el=node;el&&el.tagName!=='MAIN';el=el.parentElement){
+          const siblings=[...el.parentElement.children]
+            .filter(child=>child.tagName===el.tagName);
+          parts.unshift(el.tagName.toLowerCase()+':nth-of-type('+
+            (siblings.indexOf(el)+1)+')');
+        }
+        return 'main > '+parts.join(' > ');
+      });
+      const original=await paragraph.textContent();
+      const originalMarkup=await paragraph.innerHTML();
+      const old='Our ensemble gave a formal concert in 2024, and we participate in the Seoul Pride parade every year. We also give seasonal busking and smaller performances in support of queer rights. Playing together in public has given me a way to take part in Korean cultural traditions alongside people with whom ';
+      expect(old.slice(0,96)).toBe(original.trim().slice(0,96));
+      expect(old).not.toBe(original.trim().slice(0,300));
+      const patch=variant==='layout'?{
+        selector,kind:'layout',expected:old,tag:'p',
+        layout:{desktop:{dx:31,dy:0,sx:1,sy:1}}
+      }:{
+        selector,kind:'text',expected:old,
+        html:variant==='already-published-text'?
+          originalMarkup:'<strong>Unsafe replacement of the newer text</strong>'
+      };
+      const snapshot=JSON.stringify([patch]);
+      const key='moon-academic-editor-v2:source:'+name;
+      await page.evaluate(([k,v])=>localStorage.setItem(k,v),[key,snapshot]);
+      await page.reload({waitUntil:'domcontentloaded'});
+      await expect(page.locator('#liveAssetStatus'))
+        .toContainText('GitHub main source verified',{timeout:35000});
+      const same=page.frameLocator('#livePageFrame').locator('main p')
+        .filter({hasText:'Our ensemble gave a formal concert in 2024'}).first();
+      await expect(same).toHaveText(original.trim());
+      if(variant==='layout'){
+        await expect.poll(()=>same.evaluate(el=>getComputedStyle(el).translate))
+          .toContain('31px');
+      }
+      await page.locator('#preview').click();
+      if(variant==='conflicting-text'){
+        await expect(page.locator('#previewDialog')).toBeHidden();
+        await expect(page.locator('#status')).toContainText(
+          'This is a text-source conflict, not an image-mapping problem.');
+      }else{
+        await expect(page.locator('#previewDialog')).toBeVisible({timeout:20000});
+        const verified=page.frameLocator('#previewFrame').locator('main p')
+          .filter({hasText:'Our ensemble gave a formal concert in 2024'}).first();
+        await expect(verified).toHaveText(original.trim());
+        if(variant==='layout'){
+          await expect.poll(()=>verified.evaluate(el=>getComputedStyle(el).translate))
+            .toContain('31px');
+        }
+        await page.locator('#closePreview').click();
+      }
+      expect(await page.evaluate(k=>localStorage.getItem(k),key)).toBe(snapshot);
+      expect(writes).toEqual([]);
+    });
+}
+// Duplicate historical opening is not enough to choose a paragraph.
+test('Ambiguous outdated Interests paragraph anchor blocks publication without changing draft',
+  async({page})=>{
+    const name='interests.html',writes=[];
+    const current=SOURCE.get(name).toString('utf8');
+    const match=current.match(/<p>Our ensemble gave a formal concert in 2024[^<]*<\/p>/);
+    expect(match).toBeTruthy();
+    const repeated=current.replace(match[0],match[0]+match[0]);
+    await page.route(/^https:\/\/api\.github\.com\/repos\/gmoon-code\/gmoon-code\.github\.io\//,
+      async route=>{
+        if(route.request().method()!=='GET'){
+          writes.push(route.request().method());await route.abort();return;
+        }
+        await route.fulfill({status:200,contentType:'application/json',
+          headers:{'access-control-allow-origin':'*'},
+          body:JSON.stringify({type:'file',name,sha:blobSha(Buffer.from(repeated)),
+            encoding:'base64',content:Buffer.from(repeated).toString('base64')})});
+      });
+    await page.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    const old='Our ensemble gave a formal concert in 2024, and we participate in the Seoul Pride parade every year. We also give seasonal busking and smaller performances in support of queer rights. Playing together in public has given me a way to take part in Korean cultural traditions alongside people with whom ';
+    const target=page.frameLocator('#livePageFrame').locator('main p')
+      .filter({hasText:'Our ensemble gave a formal concert in 2024'}).first();
+    const selector=await target.evaluate(node=>{
+      const bits=[];
+      for(let el=node;el&&el.tagName!=='MAIN';el=el.parentElement){
+        const peers=[...el.parentElement.children].filter(n=>n.tagName===el.tagName);
+        bits.unshift(el.tagName.toLowerCase()+':nth-of-type('+(peers.indexOf(el)+1)+')');
+      }
+      return 'main > '+bits.join(' > ');
+    });
+    const key='moon-academic-editor-v2:source:'+name;
+    const saved=JSON.stringify([{selector,kind:'layout',expected:old,tag:'p',
+      layout:{desktop:{dx:37,dy:0,sx:1,sy:1}}}]);
+    await page.evaluate(([k,v])=>localStorage.setItem(k,v),[key,saved]);
+    await page.reload({waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    await page.locator('#preview').click();
+    await expect(page.locator('#previewDialog')).toBeHidden();
+    await expect(page.locator('#status')).toContainText('No matching original element');
+    expect(await page.evaluate(k=>localStorage.getItem(k),key)).toBe(saved);
+    expect(writes).toEqual([]);
+  });
