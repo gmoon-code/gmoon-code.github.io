@@ -1,12 +1,12 @@
 {
-  "sourceHead": "44750202b6eb2bd2e7bc0e9f121292312cb8d23a",
+  "sourceHead": "bbff64ce2a6e3171817d9c2e380b50aa29a78b60",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
-  "verifiedExactMatches": 24,
-  "httpErrors": 0,
+  "verifiedExactMatches": 23,
+  "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-44750202b6eb",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-bbff64ce2a6e",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -17,7 +17,9 @@
       "run": "41940926270",
       "head_sha": "5df2bff98059221e01a9af8d76c97074b875e75f",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "teaching-ap-evolution.html"
+      ],
       "failureCounts": {
         "problems": 0
       }
@@ -27,7 +29,9 @@
       "run": "41940926190",
       "head_sha": "5df2bff98059221e01a9af8d76c97074b875e75f",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "teaching-ap-evolution.html"
+      ],
       "failureCounts": {
         "issues": 44
       },
@@ -41,7 +45,9 @@
       "run": "41940926182",
       "head_sha": "5df2bff98059221e01a9af8d76c97074b875e75f",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "teaching-ap-evolution.html"
+      ],
       "failureCounts": {
         "unverified": 0
       },
@@ -53,11 +59,11 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "41931940703",
-      "head_sha": "69e621f73438a38738c6232b803a599ab6052181",
+      "run": "41940926194",
+      "head_sha": "5df2bff98059221e01a9af8d76c97074b875e75f",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "research-scoping.html"
+        "teaching-ap-evolution.html"
       ],
       "failureCounts": {
         "failures": 0
@@ -69,7 +75,8 @@
       "head_sha": "69e621f73438a38738c6232b803a599ab6052181",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "research-scoping.html"
+        "research-scoping.html",
+        "teaching-ap-evolution.html"
       ],
       "failureCounts": {
         "failures": 0
@@ -81,7 +88,8 @@
       "head_sha": "69e621f73438a38738c6232b803a599ab6052181",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "research-scoping.html"
+        "research-scoping.html",
+        "teaching-ap-evolution.html"
       ],
       "failureCounts": {
         "failures": 0,
@@ -93,7 +101,9 @@
       "run": "41940926208",
       "head_sha": "5df2bff98059221e01a9af8d76c97074b875e75f",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "teaching-ap-evolution.html"
+      ],
       "failureCounts": {
         "failures": 0,
         "axeViolations": 0
@@ -108,51 +118,127 @@
   },
   "sourceDriftSinceAudits": [
     {
+      "category": "links",
+      "sourceModifiedSinceAudit": [
+        "teaching-ap-evolution.html"
+      ]
+    },
+    {
+      "category": "external",
+      "sourceModifiedSinceAudit": [
+        "teaching-ap-evolution.html"
+      ]
+    },
+    {
+      "category": "metadata",
+      "sourceModifiedSinceAudit": [
+        "teaching-ap-evolution.html"
+      ]
+    },
+    {
       "category": "reflow",
       "sourceModifiedSinceAudit": [
-        "research-scoping.html"
+        "teaching-ap-evolution.html"
       ]
     },
     {
       "category": "engines",
       "sourceModifiedSinceAudit": [
-        "research-scoping.html"
+        "research-scoping.html",
+        "teaching-ap-evolution.html"
       ]
     },
     {
       "category": "typography",
       "sourceModifiedSinceAudit": [
-        "research-scoping.html"
+        "research-scoping.html",
+        "teaching-ap-evolution.html"
+      ]
+    },
+    {
+      "category": "interactions",
+      "sourceModifiedSinceAudit": [
+        "teaching-ap-evolution.html"
       ]
     }
   ],
   "pass": false,
   "errors": [
     {
+      "path": "teaching-ap-evolution.html",
+      "errors": [
+        "deployed bytes differ from checked-out production source"
+      ],
+      "firstDiff": [
+        "--- source\n",
+        "+++ deployed\n",
+        "@@ -11,3 +11,3 @@\n",
+        "   <link rel=\"stylesheet\" href=\"appearance.css?v=20261028-visible-focus\">",
+        "-<style id=\"moon-v2-live-layout\"></style></head>",
+        "+</head>",
+        " <body class=\"theme-magenta\">",
+        "@@ -23,3 +23,3 @@\n",
+        " <section class=\"page-hero single teaching-case-hero\"><div class=\"hero-copy\">",
+        "-",
+        "+<p class=\"meta\">AP Biology · Unit 7 natural selection, with Units 5 and 6 connections · Developed curriculum proposal</p>",
+        " <h1>Haemoglobin S, malaria, and natural selection</h1>",
+        "@@ -35,3 +35,3 @@\n",
+        " <figure class=\"editorial-figure editorial-source-image\" aria-labelledby=\"hbs-micrograph-caption\">",
+        "-  <img src=\"https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ae/Sickle_cells_in_blood.jpg/960px-Sickle_cells_in_blood.jpg\" srcset=\"https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ae/Sickle_cells_in_blood.jpg/330px-Sickle_cells_in_blood.jpg 330w, https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ae/Sickle_cells_in_blood.jpg/960px-Sickle_cells_in_blood.jpg 960w, https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ae/Sickle_cells_in_blood.jpg/1280px-Sickle_cells_in_blood.jpg 1280w\" sizes=\"(max-width: 760px) 100vw, 700px\" width=\"960\" height=\"543\" loading=\"lazy\" decoding=\"async\" alt=\"Photomicrograph of a stained blood film containing many red cells, including several elongated, curved sickle-shaped cells.\">",
+        "+  <img src=\"https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ae/Sickle_cells_in_blood.jpg/960px-Sickle_cells_in_blood.jpg\" srcset=\"https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ae/Sickle_cells_in_blood.jpg/330px-Sickle_cells_in_blood.jpg 330w, https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ae/Sickle_cells_in_blood.jpg/960px-Sickle_cells_in_blood.jpg 960w, https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ae/Sickle_cells_in_blood.jpg/1280px-Sickle_cells_in_blood.jpg 1280w\" sizes=\"(max-width: 760px) 100vw, 700px\" width=\"960\" height=\"543\" loading=\"lazy\" decoding=\"async\" alt=\"Photomicrograph of a stained blood film containing many red cells, including several elongated, curved sickle-shaped cells.\" />"
+      ]
+    },
+    {
       "sourceDrift": [
+        {
+          "category": "links",
+          "sourceModifiedSinceAudit": [
+            "teaching-ap-evolution.html"
+          ]
+        },
+        {
+          "category": "external",
+          "sourceModifiedSinceAudit": [
+            "teaching-ap-evolution.html"
+          ]
+        },
+        {
+          "category": "metadata",
+          "sourceModifiedSinceAudit": [
+            "teaching-ap-evolution.html"
+          ]
+        },
         {
           "category": "reflow",
           "sourceModifiedSinceAudit": [
-            "research-scoping.html"
+            "teaching-ap-evolution.html"
           ]
         },
         {
           "category": "engines",
           "sourceModifiedSinceAudit": [
-            "research-scoping.html"
+            "research-scoping.html",
+            "teaching-ap-evolution.html"
           ]
         },
         {
           "category": "typography",
           "sourceModifiedSinceAudit": [
-            "research-scoping.html"
+            "research-scoping.html",
+            "teaching-ap-evolution.html"
+          ]
+        },
+        {
+          "category": "interactions",
+          "sourceModifiedSinceAudit": [
+            "teaching-ap-evolution.html"
           ]
         }
       ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41941046483",
-  "run_sha": "44750202b6eb2bd2e7bc0e9f121292312cb8d23a",
+  "workflow_run_id": "41941072339",
+  "run_sha": "bbff64ce2a6e3171817d9c2e380b50aa29a78b60",
   "exit_code": "1"
 }
