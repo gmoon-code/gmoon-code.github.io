@@ -2353,3 +2353,62 @@ for(const name of ['pungmul.html','contact.html']){
       expect(writes).toEqual([]);
     });
 }
+
+
+for(const [name,device,expectedPhotos] of [
+  ['index.html','tablet',2],['contact.html','desktop',1],
+  ['pungmul.html','desktop',5]
+]){
+  test('Editing script-reparented '+name+' photo preserves its identity, size and publication preview',
+    async({page})=>{
+      const writes=[];
+      await installVerifiedCurrentSource(page,writes);
+      await page.setViewportSize({width:1740,height:1050});
+      await page.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+      await expect(page.locator('#liveAssetStatus'))
+        .toContainText('GitHub main source verified',{timeout:35000});
+      await page.locator('#devicePreview').selectOption(device);
+      const live=page.frameLocator('#livePageFrame');
+      const photos=live.locator('main img[data-moon-v2-added-id]');
+      await expect(photos).toHaveCount(expectedPhotos);
+      const photo=photos.first();
+      await photo.scrollIntoViewIfNeeded();
+      await expect.poll(()=>photo.evaluate(img=>img.naturalWidth),{timeout:20000})
+        .toBeGreaterThan(0);
+      await photo.click();
+      const identity=await photo.getAttribute('data-moon-v2-added-id');
+      const initialParent=await photo.evaluate(node=>node.parentElement.className);
+      await photo.evaluate(node=>{node.ownerDocument.defaultView.__selectedOriginalPhoto=node;});
+      const width=Number(await page.locator('#liveAddedWidth').inputValue());
+      await page.locator('#liveAddedWidth').fill(String(width+30));
+      await page.locator('#liveAddedWidth').dispatchEvent('change');
+      await page.locator('#liveCropShape').selectOption('rounded');
+      const matches=live.locator('main img[data-moon-v2-added-id="'+identity+'"]');
+      await expect(matches).toHaveCount(1);
+      await expect(photos).toHaveCount(expectedPhotos);
+      expect(await photo.evaluate(node=>
+        node.ownerDocument.defaultView.__selectedOriginalPhoto===node)).toBe(true);
+      expect(await photo.evaluate(node=>node.parentElement.className)).toBe(initialParent);
+      const data=await photo.evaluate(img=>({
+        geometry:JSON.parse(img.getAttribute('data-moon-v2-added-geometry')||'{}'),
+        crop:JSON.parse(img.getAttribute('data-moon-v2-added-crop')||'{}')}));
+      expect(data.geometry[device].w).toBe(width+30);
+      expect(data.crop[device].mask).toBe('rounded');
+      await page.locator('#preview').click();
+      await expect(page.locator('#previewDialog')).toBeVisible();
+      const preview=page.frameLocator('#previewFrame');
+      await expect(preview.locator('main img[data-moon-v2-added-id]'))
+        .toHaveCount(expectedPhotos);
+      await expect(preview.locator('main img[data-moon-v2-added-id="'+identity+'"]'))
+        .toHaveCount(1);
+      await page.locator('#closePreview').click();
+      await page.reload({waitUntil:'domcontentloaded'});
+      await expect(page.locator('#liveAssetStatus'))
+        .toContainText('GitHub main source verified',{timeout:35000});
+      await page.locator('#devicePreview').selectOption(device);
+      await expect(page.frameLocator('#livePageFrame')
+        .locator('main img[data-moon-v2-added-id="'+identity+'"]'))
+        .toHaveCount(1);
+      expect(writes).toEqual([]);
+    });
+}
