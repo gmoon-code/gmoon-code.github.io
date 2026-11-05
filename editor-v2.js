@@ -4523,6 +4523,14 @@ function cancelLiveGesture(){
 function finishLiveGesture(event){
   const g=liveGesture;
   if(!g||event.pointerId!==g.pointer)return;
+  // Firefox can deliver a resize grip's pointerup without the final move
+  // reaching the source iframe. Complete original text-box grip resizing at
+  // the release coordinates, even if all intermediate moves were missed.
+  // Do not modify image, section, group or ordinary-click behaviour.
+  if(event.type==="pointerup"&&g.dir!=="move"&&
+     g.node.matches(LIVE_REFLOW_TEXT)&&
+     Math.hypot(event.clientX-g.startX,event.clientY-g.startY)>=3)
+    moveLiveGesture(event);
   liveGesture=null;
   // Release pointer capture explicitly when clicking an image or finishing a
   // drag. Firefox can otherwise leave the iframe owning the next pointer
