@@ -4011,8 +4011,15 @@ test('Pungmul prose box resizes numerically and by grip despite high-specificity
     await page.locator('#liveTextBoxHeight').fill(String(targetHeight));
     await page.locator('#liveTextBoxHeight').dispatchEvent('change');
     const tall=await position(paragraph);
-    expect(Math.abs(tall.h-targetHeight),'Pungmul prose height must be resizable')
-      .toBeLessThan(4);
+    if(Math.abs(tall.h-targetHeight)>=4){
+      const field=await page.locator('#liveTextBoxHeight').inputValue();
+      const draft=await page.evaluate(()=>
+        JSON.parse(localStorage.getItem('moon-academic-editor-v2:source:pungmul.html')||'[]')
+          .filter(p=>p.selector.endsWith(' > p:nth-of-type(1)'))
+          .map(p=>({selector:p.selector,layout:p.layout})));
+      throw new Error('Pungmul text box height mismatch '+JSON.stringify({
+        initial,narrow,targetHeight,tall,field,draft}));
+    }
     const grip=frame.locator('#moon-v2-live-overlay .moon-v2-grip[data-direction="e"]');
     await paragraph.evaluate(node=>node.scrollIntoView({block:'center'}));
     await expect(grip).toBeVisible();
