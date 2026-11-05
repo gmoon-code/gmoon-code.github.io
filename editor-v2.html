@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex,nofollow">
 <title>Academic Website Editor 2 | Ye Eun Moon</title>
 <link rel="stylesheet" href="editor-v2.css?v=20261105-image-deployment-check-v70">
-<script src="editor-v2.js?v=20261105-fresh-github-draft-reset-v77" defer></script>
+<script src="editor-v2.js?v=20261105-clean-publish-and-fresh-draft-v78" defer></script>
 </head>
 <body>
 <a class="skip" href="#workspace">Skip to editor canvas</a>
@@ -176,6 +176,7 @@
         </label>
         <button type="button" id="focusPage" aria-pressed="false">Focus page</button>
         <button type="button" id="reloadLive">Reload GitHub source</button>
+        <button type="button" id="startFreshLiveDraftTop" title="Download a restorable backup of this page draft, confirm before discarding, then reopen GitHub main source" disabled>Back up &amp; start fresh</button>
         <button type="button" id="viewPublished" title="View the real deployed page at the selected screen width, separate from unsaved edits">View actual published site</button>
         <button type="button" id="copyLiveObject" disabled>Copy selected element to canvas</button>
       </div>
@@ -261,6 +262,7 @@
           </div>
         </div>
         <div id="liveImageControls" hidden>
+          <p id="liveImageOriginNotice" class="help" role="status" hidden>This is a newly added, independently positioned image. It does not replace a photograph in the website gallery. To crop or resize an existing photo, select that original photograph on the page instead. Multiple added photos can overlap the text and gallery.</p>
           <label for="liveImageSrc">Image path</label>
           <input id="liveImageSrc" placeholder="assets/example.webp">
           <label for="liveImageAlt">Image description</label>
@@ -334,7 +336,7 @@
             <div id="livePhotoCardControls" hidden>
               <label class="checkbox-line">
                 <input id="livePhotoCardMode" type="checkbox">
-                Move and resize the photo, rounded frame and caption together
+                Move and resize the rounded photo card (including its caption, if present)
               </label>
               <p class="help">Gallery photographs are edited as one card. Drag the blue handles to move or resize the photo with its caption. Use Crop picture to adjust the pixels inside that frame. Your image, link and caption remain intact.</p>
             </div>
@@ -552,6 +554,7 @@
           <button id="importLiveDraftJson" type="button">Restore editable draft JSON</button>
         </div>
         <button id="startFreshLiveDraft" type="button" class="danger">Start fresh from latest GitHub page</button>
+        <button id="downloadLastPublishedLiveDraft" type="button" hidden>Download last published edits backup</button>
         <p class="help">This downloads your current page-edit draft as a restorable JSON backup and asks before discarding it. It then reloads verified GitHub main source, without publishing anything. Canvas drafts are separate.</p>
         <p class="help">Save a restorable backup of this page's text, photos and layout changes. To restore, select the same page first, then choose its JSON backup. Restoring requires verified GitHub source and confirmation before replacing this browser's draft.</p>
         <p id="liveEditCount" class="help">No live-page draft edits. Original website unchanged.</p>

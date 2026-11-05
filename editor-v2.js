@@ -31,6 +31,7 @@ let liveSectionHover=null;
 let workspaceMode="live",liveWidth=1160,liveScale=1,liveManualScale=null,liveSelected=null,liveObserver=null,liveSerial=0;
 let liveSuppressClickUntil=0;
 const LIVE_DRAFT_KEY="moon-academic-editor-v2:source:";
+const LIVE_PUBLISHED_BACKUP_KEY="moon-academic-editor-v2:last-published-source:";
 const LIVE_POSITION_LOCK_KEY="moon-academic-editor-v2:position-lock:";
 let livePositionLocks=new Set(); // Local editor preference, never published.
 let livePatches=new Map(),liveEditing=null,liveHistory=[],liveRedo=[],liveGesture=null,liveOverlay=null;
@@ -478,6 +479,8 @@ function inlineViewStatus(){
     " · GitHub source plus local edits, NOT the actual public page. "+
     "Switch to Actual published page to compare at the same width.";
   $("inlineDraftView").textContent="Edit my draft"+(count?" ("+count+")":"");
+  $("startFreshLiveDraftTop").disabled=actual||count===0;
+  $("downloadLastPublishedLiveDraft").hidden=!hasLastPublishedLiveBackup();
   $("workspacePill").textContent=actual?
     "Actual public URL · read only":
     "GitHub source + unpublished edits · not the deployed page";
@@ -1503,13 +1506,12 @@ function editedSourceImageSelector(patch){
 // the portion inside the old card. Only unclip wrappers for an *edited*
 // source photograph, never all gallery figures or their neighbouring photos.
 // One visual editing target for a photograph, its link and caption card.
-// Only a single-image figure with a direct caption qualifies; a standalone
-// image or a complex multi-image figure keeps the existing editing model.
+// Any single-photo gallery figure qualifies, with or without a caption.
+// Standalone images and complex multi-photo figures use independent controls.
 function photoCardFrame(node){
   if(node?.tagName!=="IMG"||!node.closest("main"))return null;
   const figure=node.closest("figure");
-  if(!figure||!figure.querySelector(":scope > figcaption")||
-     figure.querySelectorAll("img").length!==1)return null;
+  if(!figure||figure.querySelectorAll("img").length!==1)return null;
   const direct=figure.querySelector(":scope > img");
   const linked=figure.querySelector(":scope > a > img");
   if(node!==direct&&node!==linked)return null;
@@ -2692,6 +2694,24 @@ function toggleLiveGeometryLock(){
   renderLiveInspector();syncLiveOverlay();renderLiveLayers();syncLiveMultiSelection();
   status(wasLocked?"Position and size unlocked":"Position and size locked · Local to this browser");
 }
+function hasLastPublishedLiveBackup(){
+  try{return !!localStorage.getItem(LIVE_PUBLISHED_BACKUP_KEY+currentPage);}
+  catch{return false;}
+}
+function downloadLastPublishedLiveBackup(){
+  let saved;
+  try{saved=localStorage.getItem(LIVE_PUBLISHED_BACKUP_KEY+currentPage);}
+  catch{status("Cannot read the last published backup from browser storage");return;}
+  if(!saved){status("No archived publication for this page in this browser");return;}
+  try{
+    const backup=JSON.parse(saved);
+    if(backup?.page!==currentPage||!Array.isArray(backup.patches)||
+      backup.format!==LIVE_DRAFT_BACKUP_FORMAT)
+      throw Error("Invalid archived draft");
+    download(currentPage+".last-published.live-draft.json",saved,"application/json");
+    status("Last published edit records downloaded · Website unchanged");
+  }catch{status("Stored publication backup is unreadable · Nothing changed");}
+}
 function loadLiveDraft(page){
   livePatches=new Map();liveHistory=[];liveRedo=[];
   liveDraftRecovery=null;liveDraftConflict=null;liveDraftLoadedRaw=null;
@@ -2913,8 +2933,8 @@ async function startFreshLiveDraft(){
   if(!await confirmFreshLiveDraft(page)){
     status("Fresh start cancelled · Existing browser draft preserved");return;
   }
-  const button=$("startFreshLiveDraft");
-  button.disabled=true;
+  const button=$("startFreshLiveDraft"),topButton=$("startFreshLiveDraftTop");
+  button.disabled=true;topButton.disabled=true;
   try{
     // Verify a reachable, authentic main-branch source *before* deleting
     // anything, never substitute an unverified deployed-page fallback.
@@ -2941,7 +2961,7 @@ async function startFreshLiveDraft(){
     status("Fresh start stopped · "+(error?.message||"Cannot verify source")+
       " · Review the browser draft before retrying");
   }finally{
-    button.disabled=false;
+    button.disabled=false;topButton.disabled=false;
     renderLiveEditCount();
   }
 }
@@ -3031,6 +3051,7 @@ function renderLiveInspector(){
     liveImageInputNode=null;liveImageInputDirty=false;
   }
   const selector=node&&liveSelector(node);
+  $("liveImageOriginNotice").hidden=!(tag==="IMG"&&LIVE_ADDED_ID.test(selector||""));
   $("revertLiveElement").disabled=!selector||!livePatches.has(selector);
   $("deleteLiveElement").disabled=!node||!selector||!!liveEditing;
   refreshUndo();
@@ -6647,6 +6668,15 @@ function showPublishResult(result){
   commit.target="_blank";commit.rel="noopener noreferrer";
   commit.textContent="View GitHub commit";
   panel.append(intro,link,document.createTextNode(" · "),commit);
+  if(result.target==="live"){
+    const state=document.createElement("strong");
+    state.textContent=result.draftArchived?
+      " · Published edits archived. Active page draft cleared.":
+      result.draftArchiveFailed?
+        " · Could not archive/clear browser draft. Your edits remain saved; back them up before starting fresh.":
+        " · Published commit confirmed.";
+    panel.append(state);
+  }
   if(result.target==="live"&&typeof result.publishedHtml==="string"){
     const check=document.createElement("button");
     check.type="button";
@@ -6754,6 +6784,8 @@ function attachEvents(){
   $("focusPage").addEventListener("click",togglePageFocus);
   $("reloadLive").addEventListener("click",()=>loadLivePage(currentPage,{force:true}));
   $("startFreshLiveDraft").addEventListener("click",startFreshLiveDraft);
+  $("startFreshLiveDraftTop").addEventListener("click",startFreshLiveDraft);
+  $("downloadLastPublishedLiveDraft").addEventListener("click",downloadLastPublishedLiveBackup);
   $("copyLiveObject").addEventListener("click",copySelectedLiveElement);
   $("editLiveText").addEventListener("click",editLiveText);
   $("saveLiveText").addEventListener("click",saveLiveText);
@@ -7648,45 +7680,57 @@ function attachEvents(){
       githubTabToken=$("keepGithubToken").checked?token:"";
       $("forgetGithubToken").hidden=!githubTabToken;
       $("publishDialog").close();
-      showPublishResult(result);
+      let clearedPublishedDraft=false,archivingFailed=false;
       if(result.target==="live"&&result.publishedHtml&&currentPage===result.page&&
         JSON.stringify(liveSnapshot())===result.draftSignature){
-        // Rebase draft expectations on the *confirmed* GitHub commit. Future
-        // changes in the same tab then compare with what was just published,
-        // even if GitHub Pages is still serving the previous deployed build.
-        const committed=new DOMParser().parseFromString(result.publishedHtml,"text/html");
-        const rebased=new Map();
-        for(const item of result.publishedNormalized){
-          // A successfully published deletion has no remaining source element
-          // to edit. Retain other patches for later changes, drop deletions.
-          if(item.kind==="delete"||item.kind==="remove-added")continue;
-          if(item.kind==="insert"){
-            if(findAddedNode(committed,item.selector))
-              rebased.set(item.selector,{...item});
-            continue;
+        // Never reapply a successfully committed edit on top of the
+        // committed HTML. Previously this left 13+ "unpublished" edits and
+        // visually duplicated picture geometry after publication.
+        const before=liveSnapshot(),page=result.page;
+        const archived={
+          format:LIVE_DRAFT_BACKUP_FORMAT,version:1,page,
+          commit:result.commit,patches:before
+        };
+        try{
+          assertLiveDraftNotSuperseded(page);
+          // Preserve a restorable copy before clearing active edit records.
+          // If storage is full (common with embedded images), keep the live
+          // draft intact instead of discarding anything.
+          localStorage.setItem(LIVE_PUBLISHED_BACKUP_KEY+page,
+            JSON.stringify(archived));
+          livePatches=new Map();
+          const didSave=storeLiveDraft();
+          if(!didSave){
+            livePatches=new Map(before.map(p=>[p.selector,p]));
+            archivingFailed=true;
+          }else{
+            clearedPublishedDraft=true;
+            liveHistory=[];liveRedo=[];
+            resetGithubWebHandoff();
+            // Re-open the exact HTML confirmed by GitHub, not a possibly
+            // delayed GitHub Pages copy or the old iframe.
+            liveGithubSources.set(page,{
+              html:result.publishedHtml,sha:result.commit,verified:true
+            });
+            refreshUndo();
+            renderLiveEditCount();
+            loadLivePage(page);
           }
-          const patch={...item},node=committed.querySelector(patch.selector);
-          if(!node)continue;
-          patch.expected=patch.kind==="image"?
-            node.getAttribute("src")||"":
-            (node.textContent||"").trim().slice(0,300);
-          rebased.set(patch.selector,patch);
+        }catch{
+          archivingFailed=true;
         }
-        livePatches=rebased;
-        liveHistory=[];liveRedo=[];
-        // Use the exact HTML just confirmed by GitHub. Its Pages deployment
-        // may still be serving an older version while the CDN catches up.
-        liveGithubSources.set(result.page,{
-          html:result.publishedHtml,sha:result.commit,verified:true
-        });
-        storeLiveDraft();refreshUndo();
-        loadLivePage(result.page);
       }
+      result.draftArchived=clearedPublishedDraft;
+      result.draftArchiveFailed=archivingFailed;
+      showPublishResult(result);
       status(result.target==="live"?
-        "GitHub confirmed publication of "+result.page+" · Deployment may be pending":
+        "GitHub confirmed publication of "+result.page+
+          (clearedPublishedDraft?
+            " · Published edits archived; editing view reset to committed GitHub source":
+            archivingFailed?
+              " · Draft retained because a safe archive/clear could not be completed; back up and start fresh manually":
+              " · Deployment may be pending"):
         "GitHub confirmed staging preview of "+result.page+" · Deployment may be pending");
-      // Keep the browser draft available until the user verifies the
-      // deployed page. Never erase their changes merely on a successful PUT.
     }catch(error){
       message.textContent=error.message||"GitHub publication failed.";
       message.hidden=false;
