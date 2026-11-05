@@ -1542,8 +1542,12 @@ function photoCardLayoutForImage(node,layout){
   if(!figure)return null;
   const fr=figure.getBoundingClientRect();
   const img=node.getBoundingClientRect();
+  // The published card may already have been moved. Its source transform
+  // belongs to the figure, not the img, so preserve it on the first edit.
+  // Otherwise entering crop mode can jump the card back to its grid cell.
+  const origin=originalLiveTransform(figure);
   return {...layout,
-    ox:0,oy:0,osx:1,osy:1,sx:1,sy:1,
+    ox:origin.ox,oy:origin.oy,osx:1,osy:1,sx:1,sy:1,
     wrapWidth:Math.round(clamp(fr.width,64,4000)),
     reserveHeight:Math.round(clamp(img.height,24,5000))};
 }
@@ -2226,10 +2230,8 @@ function setLiveCropMode(enabled){
   if(enabled&&liveSectionPickMode)toggleLiveSectionPickMode();
   liveCropMode=!!enabled;
   if(enabled){
-    const existing=selectedImageCrop(livePatchForSelected());
-    // Entering crop mode alone must not alter the picture. The first actual
-    // side trim switches Contain to Cover in cropFrameGeometry below.
-    applySelectedImageCrop(croppedEdges(existing));
+    // Merely entering crop mode should not create a saved edit, change the
+    // image fit, or capture a new box. Capture geometry on the first trim.
   }
   removeLiveOverlay();renderLiveInspector();syncLiveOverlay();
   status(enabled?
@@ -2253,7 +2255,22 @@ function resetSelectedImageCrop(){
   const fullW=frame.width/Math.max(.05,1-(edges.left+edges.right)/100);
   const fullH=frame.height/Math.max(.05,1-(edges.top+edges.bottom)/100);
   const shiftX=Math.round(fullW*edges.left/100),shiftY=Math.round(fullH*edges.top/100);
-  if(patch.frameMode!=="card"&&["left","right","top","bottom"].some(k=>edges[k]>0)){
+  if(patch.frameMode==="card"&&
+     ["left","right","top","bottom"].some(k=>edges[k]>0)){
+    // Undo the frame trims as well as the background crop fractions.
+    // A photograph resized after cropping returns proportionally to its
+    // original uncropped frame; other figures and columns stay unchanged.
+    const old=liveLayoutFor(selector,device);
+    const layout=old.wrapWidth?{...old}:photoCardLayoutForImage(node,old);
+    if(layout){
+      layout.wrapWidth=Math.round(clamp(fullW,64,4000));
+      layout.reserveHeight=Math.round(clamp(fullH,24,5000));
+      layout.dx=clamp(Math.round(layout.dx-shiftX),-4000,4000);
+      layout.dy=clamp(Math.round(layout.dy-shiftY),-4000,4000);
+      patch.layout={...(patch.layout||{}),[device]:layout};
+    }
+  }else if(patch.frameMode!=="card"&&
+     ["left","right","top","bottom"].some(k=>edges[k]>0)){
     if(patch.kind==="insert"){
       const geom=addedDeviceGeometry(patch,device);
       const inFlow=!!patch.flowBaseline?.[device];
@@ -2320,17 +2337,39 @@ function cropFrameGeometry(rect,origin,dir,dx,dy){
   const y=fullH*(next.top-initial.top)/100;
   return {crop:next,x:Math.round(x),y:Math.round(y),w,h};
 }
-function updateCropFrame(node,selector,originalPatch,initialRect,dir,dx,dy){
+function updateCropFrame(node,selector,originalPatch,initialRect,dir,dx,dy,gestureLayout=null){
   const device=liveDevice(),patch=copy(originalPatch);
   const baseline=patch.imageCrop?.[device]||
     {...selectedImageCrop(patch,device),left:0,right:0,top:0,bottom:0};
   const result=cropFrameGeometry(initialRect,baseline,dir,dx,dy);
   patch.imageCrop={...(patch.imageCrop||{}),[device]:result.crop};
   if(patch.frameMode==="card"){
-    // Trim the inner picture while retaining the outer card dimensions and
-    // caption position. One saved image record holds both crop and frame.
+    // Crop a gallery photo like a picture frame. Each edge changes the
+    // visible card boundary, and the caption follows the selected card.
+    // Never modify the gallery tracks or another figure.
+    const source=originalPatch.layout?.[device]||gestureLayout||
+      photoCardLayoutForImage(node,liveLayoutFor(selector,device));
+    if(!source)return result;
+    const layout={...source};
+    layout.wrapWidth=Math.round(clamp(result.w,64,4000));
+    layout.reserveHeight=Math.round(clamp(result.h,24,5000));
+    layout.dx=clamp(Math.round(source.dx+result.x),-4000,4000);
+    layout.dy=clamp(Math.round(source.dy+result.y),-4000,4000);
+    patch.layout={...(patch.layout||{}),[device]:layout};
     livePatches.set(selector,patch);
     refreshLiveLayoutRules(node.ownerDocument);
+    // The figure is still a grid item. Natural row sizing or a published
+    // transform can shift its origin while its frame is reduced. Compensate
+    // against the pointer's initial rectangle, without moving siblings.
+    const actual=node.getBoundingClientRect();
+    const correctionX=Math.round(initialRect.left+result.x-actual.left);
+    const correctionY=Math.round(initialRect.top+result.y-actual.top);
+    if(correctionX||correctionY){
+      layout.dx=clamp(layout.dx+correctionX,-4000,4000);
+      layout.dy=clamp(layout.dy+correctionY,-4000,4000);
+      livePatches.set(selector,patch);
+      refreshLiveLayoutRules(node.ownerDocument);
+    }
   }else if(patch.kind==="insert"){
     const initial=addedDeviceGeometry(originalPatch,device);
     const inFlow=!!patch.flowBaseline?.[device];
@@ -2386,7 +2425,8 @@ function setCropEdge(side,value){
   const dir={left:"w",right:"e",top:"n",bottom:"s"}[side];
   updateCropFrame(node,selector,base,frame,dir,
     side==="left"?delta:side==="right"?-delta:0,
-    side==="top"?delta:side==="bottom"?-delta:0);
+    side==="top"?delta:side==="bottom"?-delta:0,
+    base.layout?.[device]);
   if(recordLiveHistory(before)){
     renderLiveInspector();syncLiveOverlay();
     status("Trimmed "+side+" edge · Other image sides unchanged · Undo available");
@@ -4081,7 +4121,9 @@ function startLiveGesture(event,direction,anchor){
     (direction==="rotate"?node:card||node).getBoundingClientRect();
   if(rect.width<2||rect.height<2)return;
   const current=liveLayoutFor(selector);
-  const layout=card&&!current.wrapWidth?
+  const cropCard=node.tagName==="IMG"&&patch.frameMode==="card"&&
+    liveCropMode&&!sourceGroup&&!group?photoCardFrame(node):null;
+  const layout=(card||cropCard)&&!current.wrapWidth?
     photoCardLayoutForImage(node,current):current;
   liveGesture={pointer:event.pointerId,anchor,dir:direction,
     startX:event.clientX,startY:event.clientY,rect,group,sourceGroup,
@@ -4231,7 +4273,7 @@ function moveLiveGesture(event){
   }
   if(liveCropMode&&g.node.tagName==="IMG"&&
      ["nw","n","ne","e","se","s","sw","w"].includes(g.dir)){
-    updateCropFrame(g.node,g.selector,g.patch,g.rect,g.dir,deltaX,deltaY);
+    updateCropFrame(g.node,g.selector,g.patch,g.rect,g.dir,deltaX,deltaY,g.layout);
     syncLiveOverlay();return;
   }
   if(g.sourceGroup&&g.dir!=="move"){
