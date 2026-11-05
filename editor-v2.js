@@ -1473,9 +1473,11 @@ function liveLayoutFor(selector,device=liveDevice()){
   }
   const current=livePatches.get(selector)?.layout?.[device]||{};
   const selectedNode=liveSelected?.node;
+  const frameSource=selectedNode&&liveSelector(selectedNode)===selector&&
+    added?.frameMode==="card"?photoCardFrame(selectedNode):null;
   const origin=current.ox!==undefined&&current.oy!==undefined?
     {}:selectedNode&&liveSelector(selectedNode)===selector?
-      originalLiveTransform(selectedNode):{ox:0,oy:0,osx:1,osy:1};
+      originalLiveTransform(frameSource||selectedNode):{ox:0,oy:0,osx:1,osy:1};
   return {...defaultLiveLayout(),...origin,...current};
 }
 // Many existing site styles use #main and !important for images. A deliberate
@@ -1493,6 +1495,50 @@ function editedSourceImageSelector(patch){
 // Its own image box can resize/move correctly while visitors still see only
 // the portion inside the old card. Only unclip wrappers for an *edited*
 // source photograph, never all gallery figures or their neighbouring photos.
+// One visual editing target for a photograph, its link and caption card.
+// Only a single-image figure with a direct caption qualifies; a standalone
+// image or a complex multi-image figure keeps the existing editing model.
+function photoCardFrame(node){
+  if(node?.tagName!=="IMG"||!node.closest("main"))return null;
+  const figure=node.closest("figure");
+  if(!figure||!figure.querySelector(":scope > figcaption")||
+     figure.querySelectorAll("img").length!==1)return null;
+  const direct=figure.querySelector(":scope > img");
+  const linked=figure.querySelector(":scope > a > img");
+  if(node!==direct&&node!==linked)return null;
+  // Limit automatic linked edits to actual performance galleries. Hero
+  // photos can still use the normal independent-image controls.
+  const gallery=figure.parentElement;
+  if(!gallery?.matches(".pungmul-gallery,.pungmul-performance-grid"))return null;
+  return figure;
+}
+function photoCardFrameSelectors(patch){
+  if(patch?.kind!=="image")return null;
+  const parts=patch.selector.split(" > ");
+  const final=parts.at(-1)||"";
+  if(!/^img:nth-of-type\(\d+\)$/.test(final))return null;
+  const prior=parts.at(-2)||"";
+  const direct=/^figure:nth-of-type\(\d+\)$/.test(prior);
+  const link=/^a:nth-of-type\(\d+\)$/.test(prior);
+  if(!direct&&!link)return null;
+  if(link&&!/^figure:nth-of-type\(\d+\)$/.test(parts.at(-3)||""))
+    return null;
+  const figure=parts.slice(0,direct?-1:-2).join(" > ");
+  const anchor=link?parts.slice(0,-1).join(" > "):null;
+  const gallery=parts.slice(0,direct?-2:-3).join(" > ");
+  return {figure,anchor,gallery};
+}
+function photoCardLayoutForImage(node,layout){
+  const figure=photoCardFrame(node);
+  if(!figure)return null;
+  const fr=figure.getBoundingClientRect();
+  const img=node.getBoundingClientRect();
+  return {...layout,
+    ox:0,oy:0,osx:1,osy:1,sx:1,sy:1,
+    wrapWidth:Math.round(clamp(fr.width,64,4000)),
+    reserveHeight:Math.round(clamp(img.height,24,5000))};
+}
+
 function editedLinkedFigureFrame(patch){
   const bits=patch.selector.split(" > ");
   if(!/^img:nth-of-type\(\d+\)$/.test(bits.at(-1)||"")||
@@ -1669,7 +1715,9 @@ function livePatchForSelected(){
   if(LIVE_ADDED_ID.test(selector))return addedPatchFromNode(node,selector);
   if(node.tagName==="IMG")
     return {selector,kind:"image",expected:node.getAttribute("src")||"",
-      src:node.getAttribute("src")||"",alt:node.alt||""};
+      src:node.getAttribute("src")||"",alt:node.alt||"",
+      ...(photoCardFrame(node)&&!livePatches.has(liveSelector(photoCardFrame(node)))?
+        {frameMode:"card"}:{})};
   // A geometry or appearance adjustment must never rewrite the source
   // paragraph's links, span attributes or other original child markup.
   // A text patch is created only when the user explicitly edits the text.
@@ -2482,6 +2530,8 @@ function validLivePatch(p){
     (p.pictureEffects===undefined||
       (p.kind==="image"||p.kind==="layout")&&
       validPictureEffects(p.pictureEffects))&&
+    (p.frameMode===undefined||p.kind==="image"&&p.frameMode==="card"&&
+      !!photoCardFrameSelectors(p))&&
     (p.groupId===undefined||validLiveGroupId(p.groupId));
 }
 function liveGeometryIsLocked(selector){
@@ -3295,6 +3345,7 @@ function applyLiveImage(){
     ...(old?.appearance?{appearance:old.appearance}:{}),
     ...(old?.imageCrop?{imageCrop:old.imageCrop}:{}),
     ...(old?.pictureEffects?{pictureEffects:old.pictureEffects}:{}),
+    ...(old?.frameMode?{frameMode:old.frameMode}:{}),
     ...(old?.groupId!==undefined?{groupId:old.groupId}:{})});
   recordLiveHistory(before);liveImageInputDirty=false;
   renderLiveInspector();renderLiveLayers();
