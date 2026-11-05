@@ -4061,7 +4061,13 @@ test('Pungmul prose box resizes numerically and by grip despite high-specificity
         tall,dragged,gripBox,events,draft}));
     }
     expect(dragged.fontSize).toBe(initial.fontSize);
-    expect(await position(other)).toEqual(untouched);
+    // Firefox rounds fractional line boxes to slightly different floating
+    // point values after redraw (observed error under 0.00002 CSS pixels).
+    // Keep exact source, width, computed CSS and font checks, allowing only
+    // subpixel geometry noise in the untouched paragraph's height.
+    const untouchedAfter=await position(other);
+    expect(Math.abs(untouchedAfter.h-untouched.h)).toBeLessThan(.05);
+    expect({...untouchedAfter,h:untouched.h}).toEqual(untouched);
     await page.locator('#preview').click();
     await expect(page.locator('#previewDialog')).toBeVisible();
     const preview=page.frameLocator('#previewFrame')
