@@ -1,12 +1,12 @@
 {
-  "sourceHead": "f66abc18fdc762b0a9d8d4f95a595c7a593e8397",
+  "sourceHead": "b109573b9dcc8ace08d73c90056c08fc7a149beb",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 24,
   "httpErrors": 0,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-f66abc18fdc7",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-b109573b9dcc",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -24,18 +24,16 @@
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "41941193171",
-      "head_sha": "94f3a32d5e1ec816a3305e77856cc11c01e5e0a9",
+      "run": "41945972593",
+      "head_sha": "6f65f237b33309eea8e4545b26665032e41c2772",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "writing-biological-classification.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
-        "issues": 44
+        "issues": 43
       },
       "counts": {
-        "reachable": 71,
-        "unverified": 44
+        "reachable": 72,
+        "unverified": 43
       }
     },
     "metadata": {
@@ -86,8 +84,8 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "41941398130",
-      "head_sha": "cfeb62475b17d93ec1817c4f8a9ce50356cb49cb",
+      "run": "41945972634",
+      "head_sha": "6f65f237b33309eea8e4545b26665032e41c2772",
       "exit": "0",
       "sourceModifiedSinceAudit": [],
       "failureCounts": {
@@ -102,29 +100,11 @@
       "note": "U1 route audit documents successful run 40825886279; legacy utility machine report refers to an early missing-script failure. Do not treat it as latest successful evidence."
     }
   },
-  "sourceDriftSinceAudits": [
-    {
-      "category": "external",
-      "sourceModifiedSinceAudit": [
-        "writing-biological-classification.html"
-      ]
-    }
-  ],
-  "pass": false,
-  "errors": [
-    {
-      "sourceDrift": [
-        {
-          "category": "external",
-          "sourceModifiedSinceAudit": [
-            "writing-biological-classification.html"
-          ]
-        }
-      ]
-    }
-  ],
+  "sourceDriftSinceAudits": [],
+  "pass": true,
+  "errors": [],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41946004252",
-  "run_sha": "f66abc18fdc762b0a9d8d4f95a595c7a593e8397",
-  "exit_code": "1"
+  "workflow_run_id": "41946081118",
+  "run_sha": "b109573b9dcc8ace08d73c90056c08fc7a149beb",
+  "exit_code": "0"
 }
