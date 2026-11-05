@@ -860,27 +860,11 @@
   "doi_registry": {
     "checked": 41,
     "counts": {
-      "not-confirmed": 13,
-      "registered": 28
+      "registered": 30,
+      "not-confirmed": 11
     },
-    "secondary_index_matches": 13,
+    "secondary_index_matches": 11,
     "not_confirmed": [
-      {
-        "url": "https://doi.org/10.1002/sce.20264",
-        "doi": "10.1002/sce.20264",
-        "pages": [
-          "teaching-ap-biology.html"
-        ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.20264",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Recognizing mechanistic reasoning in student scientific inquiry: A framework for discourse analysis developed from philosophy of science",
-        "indexedYear": 2008
-      },
       {
         "url": "https://doi.org/10.1002/sce.21099",
         "doi": "10.1002/sce.21099",
@@ -898,36 +882,20 @@
         "indexedYear": 2014
       },
       {
-        "url": "https://doi.org/10.1002/sce.21588",
-        "doi": "10.1002/sce.21588",
+        "url": "https://doi.org/10.1002/tea.21257",
+        "doi": "10.1002/tea.21257",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21588",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21257",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "“Estoy Explorando Science”: Emergent bilingual students problematizing electrical phenomena through translanguaging",
-        "indexedYear": 2020
-      },
-      {
-        "url": "https://doi.org/10.1002/tea.21459",
-        "doi": "10.1002/tea.21459",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21459",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Addressing the epistemic elephant in the room: Epistemic agency and the next generation science standards",
-        "indexedYear": 2018
+        "indexedTitle": "Epistemologies in practice: Making scientific practices meaningful for students",
+        "indexedYear": 2015
       },
       {
         "url": "https://doi.org/10.1002/tea.21714",
@@ -946,6 +914,22 @@
         "indexedYear": 2021
       },
       {
+        "url": "https://doi.org/10.1073/pnas.0706627104",
+        "doi": "10.1073/pnas.0706627104",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://pnas.org/doi/full/10.1073/pnas.0706627104",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Cultural mosaics and mental models of nature",
+        "indexedYear": 2007
+      },
+      {
         "url": "https://doi.org/10.1080/03626784.2021.1947732",
         "doi": "10.1080/03626784.2021.1947732",
         "pages": [
@@ -962,19 +946,19 @@
         "indexedYear": 2021
       },
       {
-        "url": "https://doi.org/10.1080/03626784.2023.2200810",
-        "doi": "10.1080/03626784.2023.2200810",
+        "url": "https://doi.org/10.1080/07491409.2023.2193543",
+        "doi": "10.1080/07491409.2023.2193543",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/03626784.2023.2200810",
+        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/07491409.2023.2193543",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "You don’t know me: Welcoming gender diversity in schools via an ethic of hospitality",
+        "indexedTitle": "TERF Logics Are Carceral Logics: Toward the Abolition of Gender-Critical Movements or Black Trans Life as Pedagogical Praxis",
         "indexedYear": 2023
       },
       {
@@ -1026,36 +1010,20 @@
         "indexedYear": 1991
       },
       {
-        "url": "https://doi.org/10.1111/jedm.12000",
-        "doi": "10.1111/jedm.12000",
+        "url": "https://doi.org/10.1187/cbe.23-08-0157",
+        "doi": "10.1187/cbe.23-08-0157",
         "pages": [
-          "research-scoping.html"
+          "teaching-ap-biology.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1111/jedm.12000",
+        "publisherLanding": "https://www.lifescied.org/doi/10.1187/cbe.23-08-0157",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Validating the Interpretations and Uses of Test Scores",
-        "indexedYear": 2013
-      },
-      {
-        "url": "https://doi.org/10.1159/000345322",
-        "doi": "10.1159/000345322",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://karger.com/article/doi/10.1159/000345322",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Desettling Expectations in Science Education",
-        "indexedYear": 2012
+        "indexedTitle": "Examining and Supporting Mechanistic Explanations Across Chemistry and Biology Courses",
+        "indexedYear": 2024
       },
       {
         "url": "https://doi.org/10.3390/plants10081501",
@@ -1077,7 +1045,7 @@
     "unresolved": [],
     "limitation": "Crossref/DataCite registration is distinct from publisher access, correct article metadata or article availability. OpenAlex is independent secondary corroboration, not registration proof."
   },
-  "workflow_run_id": "41987133874",
-  "head_sha": "b9873a702c75c060711d4f7f3f7f7499dd8c7ec8",
+  "workflow_run_id": "41987240257",
+  "head_sha": "e9d37c421ba7e628c2441b8aa54a7e51c0df4e5d",
   "audit_exit_code": "0"
 }
