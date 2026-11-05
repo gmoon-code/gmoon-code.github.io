@@ -860,11 +860,27 @@
   "doi_registry": {
     "checked": 41,
     "counts": {
-      "registered": 29,
-      "not-confirmed": 12
+      "not-confirmed": 5,
+      "registered": 36
     },
-    "secondary_index_matches": 12,
+    "secondary_index_matches": 5,
     "not_confirmed": [
+      {
+        "url": "https://doi.org/10.1002/sce.20264",
+        "doi": "10.1002/sce.20264",
+        "pages": [
+          "teaching-ap-biology.html"
+        ],
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.20264",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Recognizing mechanistic reasoning in student scientific inquiry: A framework for discourse analysis developed from philosophy of science",
+        "indexedYear": 2008
+      },
       {
         "url": "https://doi.org/10.1002/sce.21112",
         "doi": "10.1002/sce.21112",
@@ -882,187 +898,59 @@
         "indexedYear": 2014
       },
       {
-        "url": "https://doi.org/10.1002/sce.21588",
-        "doi": "10.1002/sce.21588",
+        "url": "https://doi.org/10.1002/tea.21714",
+        "doi": "10.1002/tea.21714",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21588",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21714",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "“Estoy Explorando Science”: Emergent bilingual students problematizing electrical phenomena through translanguaging",
-        "indexedYear": 2020
-      },
-      {
-        "url": "https://doi.org/10.1002/tea.20311",
-        "doi": "10.1002/tea.20311",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.20311",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Developing a learning progression for scientific modeling: Making scientific modeling accessible and meaningful for learners",
-        "indexedYear": 2009
-      },
-      {
-        "url": "https://doi.org/10.1002/tea.21459",
-        "doi": "10.1002/tea.21459",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21459",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Addressing the epistemic elephant in the room: Epistemic agency and the next generation science standards",
-        "indexedYear": 2018
-      },
-      {
-        "url": "https://doi.org/10.1073/pnas.0706627104",
-        "doi": "10.1073/pnas.0706627104",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://pnas.org/doi/full/10.1073/pnas.0706627104",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Cultural mosaics and mental models of nature",
-        "indexedYear": 2007
-      },
-      {
-        "url": "https://doi.org/10.1080/03626784.2021.1947732",
-        "doi": "10.1080/03626784.2021.1947732",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/03626784.2021.1947732",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Getting dirty and coming clean: Sex education and the problem of expertise",
+        "indexedTitle": "Science engagement as insight into the science identity work nurtured in community‐based science clubs",
         "indexedYear": 2021
       },
       {
-        "url": "https://doi.org/10.1093/biosci/biac013",
-        "doi": "10.1093/biosci/biac013",
+        "url": "https://doi.org/10.1080/03626784.2023.2200810",
+        "doi": "10.1080/03626784.2023.2200810",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://academic.oup.com/bioscience/article/72/5/481/6547662",
+        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/03626784.2023.2200810",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Six Principles for Embracing Gender and Sexual Diversity in Postsecondary Biology Classrooms",
-        "indexedYear": 2022
-      },
-      {
-        "url": "https://doi.org/10.1187/cbe.23-08-0157",
-        "doi": "10.1187/cbe.23-08-0157",
-        "pages": [
-          "teaching-ap-biology.html"
-        ],
-        "publisherLanding": "https://www.lifescied.org/doi/10.1187/cbe.23-08-0157",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Examining and Supporting Mechanistic Explanations Across Chemistry and Biology Courses",
-        "indexedYear": 2024
-      },
-      {
-        "url": "https://doi.org/10.2304/ciec.2011.12.4.362",
-        "doi": "10.2304/ciec.2011.12.4.362",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://journals.sagepub.com/doi/10.2304/ciec.2011.12.4.362",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "On the Human Challenges of Multiliteracies Pedagogy",
-        "indexedYear": 2011
-      },
-      {
-        "url": "https://doi.org/10.3102/0013189X20927363",
-        "doi": "10.3102/0013189X20927363",
-        "pages": [
-          "research.html",
-          "writing-biological-classification.html"
-        ],
-        "publisherLanding": "https://journals.sagepub.com/doi/10.3102/0013189X20927363",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Beyond Equity as Inclusion: A Framework of “Rightful Presence” for Guiding Justice-Oriented Studies in Teaching and Learning",
-        "indexedYear": 2020
-      },
-      {
-        "url": "https://doi.org/10.3138/cmlr-2021-0055",
-        "doi": "10.3138/cmlr-2021-0055",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://utppublishing.com/doi/10.3138/cmlr-2021-0055",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "The Impact of Academic Acculturation and Language Proficiency on International Students’ University Experience and Academic Success: A Longitudinal Study",
+        "indexedTitle": "You don’t know me: Welcoming gender diversity in schools via an ethic of hospitality",
         "indexedYear": 2023
       },
       {
-        "url": "https://doi.org/10.3390/plants10081501",
-        "doi": "10.3390/plants10081501",
+        "url": "https://doi.org/10.1086/430744",
+        "doi": "10.1086/430744",
         "pages": [
-          "teaching-ap-biology.html"
+          "teaching-ap-evolution.html",
+          "writing-biological-classification.html"
         ],
-        "publisherLanding": "https://www.mdpi.com/2223-7747/10/8/1501",
+        "publisherLanding": "https://academic.oup.com/jid/article-lookup/doi/10.1086/430744",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Binding Properties of Photosynthetic Herbicides with the QB Site of the D1 Protein in Plant Photosystem II: A Combined Functional and Molecular Docking Study",
-        "indexedYear": 2021
+        "indexedTitle": "Sickle Cell Trait and the Risk ofPlasmodium falciparumMalaria and Other Childhood Diseases",
+        "indexedYear": 2005
       }
     ],
     "unresolved": [],
     "limitation": "Crossref/DataCite registration is distinct from publisher access, correct article metadata or article availability. OpenAlex is independent secondary corroboration, not registration proof."
   },
-  "workflow_run_id": "41990650332",
-  "head_sha": "0d4c244ac166224bea83e4b02c8dea81f860c0a0",
+  "workflow_run_id": "41994730060",
+  "head_sha": "2acf194a224c17787f08f2d5cbcbbcf458b57bed",
   "audit_exit_code": "0"
 }
