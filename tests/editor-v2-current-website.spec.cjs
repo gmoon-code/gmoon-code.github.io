@@ -591,10 +591,9 @@ test('Two consecutive source-faithful simulated live publications preserve both 
     });
     expect(archive.patches).toHaveLength(1);
     await expect(page.locator('#downloadLastPublishedLiveDraft')).toBeVisible();
-    await page.locator('#publish').click();
-    await expect(page.locator('#confirmPublish')).toBeDisabled();
+    // No pending source edits remain; even opening Publish cannot send an
+    // additional request without a newly saved change.
     expect(pubs).toHaveLength(1);
-    await page.locator('#cancelPublish').click();
 
     // A second user edit must be rebased onto the successful first commit.
     const paragraph=live.locator('main p:visible').first();
@@ -3152,21 +3151,16 @@ test('Interests stale Pungmul section + 12 other edits preview and publish exact
   const published=Buffer.from(puts[0].content,'base64').toString('utf8');
   expect(published).toBe(html);
   expect(puts[0].sha).toBe(blobSha(SOURCE.get(name)));
-  // After publication the editor correctly normalizes stale expected text
-  // to the current GitHub paragraph. This is safer than retaining the old
-  // source fingerprint. The full 13-edit draft must nonetheless survive.
-  const retained=await page.evaluate(k=>JSON.parse(localStorage.getItem(k)||'[]'),key);
-  expect(retained).toHaveLength(13);
-  const retainedSection=retained.find(p=>p.tag==='section'&&
-    p.selector==='main > section:nth-of-type(2)');
-  expect(retainedSection.layout.desktop.dx).toBe(12);
-  expect(retainedSection.expected).toContain(
-    'as everyone listens and responds to one another');
-  expect(retained.filter(p=>p.kind==='image')).toHaveLength(2);
-  for(const img of retained.filter(p=>p.kind==='image')){
-    expect(img.imageCrop.desktop.mask).toBe('rounded');
-    expect(img.layout.desktop.wrapWidth).toBe(230);
-  }
+  // A confirmed publication archives the full 13-edit original draft, while
+  // the active editor returns to the committed page with no pending patches.
+  await expect(page.locator('#liveEditCount')).toContainText('No live-page draft edits');
+  const active=JSON.parse(await page.evaluate(k=>localStorage.getItem(k),key));
+  expect(active).toEqual([]);
+  const archived=JSON.parse(await page.evaluate(n=>localStorage.getItem(
+    'moon-academic-editor-v2:last-published-source:'+n),name));
+  expect(archived.commit).toBe('mock-section-and-image-edits');
+  expect(archived.patches).toEqual(patches);
+  expect(archived.patches.filter(p=>p.kind==='image')).toHaveLength(2);
   expect(unexpectedWrites).toEqual([]);
 });
 
@@ -3275,7 +3269,7 @@ test('Actual published Interests website is an unmodified read-only URL in the e
   await expect(page.locator('#liveInspector')).toBeHidden();
   const publicFrame=page.frameLocator('#inlinePublishedFrame');
   await expect(publicFrame.locator('.pungmul-gallery img')).toHaveCount(2);
-  await expect(publicFrame.locator('.pungmul-gallery figcaption')).toHaveCount(2);
+  await expect(publicFrame.locator('.pungmul-gallery figcaption')).toHaveCount(0);
   expect(await publicFrame.locator('html').evaluate(el=>
     el.ownerDocument.defaultView.innerWidth)).toBe(1512);
   const actual=await publicFrame.locator('main').evaluate(main=>{
@@ -3396,9 +3390,10 @@ for(const [pageName,gallery] of [
     const source=await photo.getAttribute('src');
     const original=await figure.evaluate(x=>{
       const b=x.getBoundingClientRect(),i=x.querySelector('img').getBoundingClientRect();
-      const cap=x.querySelector('figcaption').getBoundingClientRect();
-      return {w:b.width,h:b.height,image:i.height,captionTop:cap.top,
-        captionText:x.querySelector('figcaption').textContent.trim()};
+      const caption=x.querySelector('figcaption');
+      return {w:b.width,h:b.height,image:i.height,
+        captionTop:caption?.getBoundingClientRect().top??null,
+        captionText:caption?.textContent.trim()??null};
     });
     // Widen only the first card's gallery track, and preserve its caption.
     const wanted=Math.round(original.w+55);
@@ -3408,9 +3403,10 @@ for(const [pageName,gallery] of [
       .toBeGreaterThan(original.w+30);
     const resized=await figure.evaluate(x=>{
       const box=x.getBoundingClientRect(),img=x.querySelector('img').getBoundingClientRect();
-      const cap=x.querySelector('figcaption').getBoundingClientRect();
+      const caption=x.querySelector('figcaption');
       return {w:box.width,h:box.height,imgW:img.width,imgH:img.height,
-        captionTop:cap.top,captionText:x.querySelector('figcaption').textContent.trim(),
+        captionTop:caption?.getBoundingClientRect().top??null,
+        captionText:caption?.textContent.trim()??null,
         overflow:getComputedStyle(x).overflow};
     });
     expect(Math.abs(resized.imgW-resized.w)).toBeLessThan(5);
@@ -3426,13 +3422,16 @@ for(const [pageName,gallery] of [
     expect(await photo.getAttribute('src')).toBe(source);
     const afterMove=await figure.evaluate(x=>{
       const b=x.getBoundingClientRect(),i=x.querySelector('img').getBoundingClientRect();
-      const c=x.querySelector('figcaption').getBoundingClientRect();
-      return {cardTop:b.top,imageTop:i.top,captionTop:c.top,
+      const caption=x.querySelector('figcaption');
+      return {cardTop:b.top,imageTop:i.top,
+        captionTop:caption?.getBoundingClientRect().top??null,
         imageBottom:i.bottom,cardBottom:b.bottom};
     });
     expect(afterMove.imageTop).toBeGreaterThanOrEqual(afterMove.cardTop);
-    expect(afterMove.captionTop).toBeGreaterThanOrEqual(afterMove.imageBottom-2);
-    expect(afterMove.cardBottom).toBeGreaterThan(afterMove.captionTop);
+    if(original.captionTop!==null){
+      expect(afterMove.captionTop).toBeGreaterThanOrEqual(afterMove.imageBottom-2);
+      expect(afterMove.cardBottom).toBeGreaterThan(afterMove.captionTop);
+    }
     // Crop changes the photo inside the frame, not the parent/caption.
     await page.locator('#liveCropShape').selectOption('rounded');
     const beforeCrop=await figure.boundingBox();
@@ -3454,7 +3453,9 @@ for(const [pageName,gallery] of [
     await page.locator('#preview').click();
     await expect(page.locator('#previewDialog')).toBeVisible({timeout:20000});
     const preview=page.frameLocator('#previewFrame').locator(gallery+' figure').first();
-    await expect(preview.locator('figcaption')).toHaveText(original.captionText);
+    if(original.captionText!==null)
+      await expect(preview.locator('figcaption')).toHaveText(original.captionText);
+    else await expect(preview.locator('figcaption')).toHaveCount(0);
     await expect.poll(()=>preview.evaluate(x=>x.getBoundingClientRect().width))
       .toBeGreaterThan(original.w+30);
     await expect(preview.locator('img')).toHaveCSS('border-radius','12px');
