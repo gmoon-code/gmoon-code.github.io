@@ -841,90 +841,106 @@
   "doi_registry": {
     "checked": 41,
     "counts": {
-      "registered": 22,
-      "not-confirmed": 19
+      "not-confirmed": 20,
+      "registered": 21
     },
-    "secondary_index_matches": 19,
+    "secondary_index_matches": 20,
     "not_confirmed": [
       {
-        "url": "https://doi.org/10.1002/sce.21099",
-        "doi": "10.1002/sce.21099",
+        "url": "https://doi.org/10.1002/sce.20264",
+        "doi": "10.1002/sce.20264",
         "pages": [
-          "research.html"
+          "teaching-ap-biology.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21099",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.20264",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "An Integrative Framework for the Analysis of Multiple and Multimodal Representations for Meaning‐Making in Science Education",
-        "indexedYear": 2014
+        "indexedTitle": "Recognizing mechanistic reasoning in student scientific inquiry: A framework for discourse analysis developed from philosophy of science",
+        "indexedYear": 2008
       },
       {
-        "url": "https://doi.org/10.1002/sce.21112",
-        "doi": "10.1002/sce.21112",
+        "url": "https://doi.org/10.1002/sce.20392",
+        "doi": "10.1002/sce.20392",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21112",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.20392",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Examining Classroom Science Practice Communities: How Teachers and Students Negotiate Epistemic Agency and Learn Science‐as‐Practice",
-        "indexedYear": 2014
+        "indexedTitle": "Cultural processes in science education: Supporting the navigation of multiple epistemologies",
+        "indexedYear": 2010
       },
       {
-        "url": "https://doi.org/10.1002/sce.21592",
-        "doi": "10.1002/sce.21592",
+        "url": "https://doi.org/10.1002/sce.21622",
+        "doi": "10.1002/sce.21622",
         "pages": [
-          "research.html"
+          "research-scoping.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21592",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21622",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Acting with epistemic agency: Characterizing student critique during argumentation discussions",
-        "indexedYear": 2020
+        "indexedTitle": "Scientific modeling and translanguaging: A multilingual and multimodal approach to support science learning and engagement",
+        "indexedYear": 2021
       },
       {
-        "url": "https://doi.org/10.1002/tea.21257",
-        "doi": "10.1002/tea.21257",
+        "url": "https://doi.org/10.1002/sce.21938",
+        "doi": "10.1002/sce.21938",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21257",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21938",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Epistemologies in practice: Making scientific practices meaningful for students",
-        "indexedYear": 2015
+        "indexedTitle": "“That's Just Gonna Make Them Upset”: Youth Authoring Emerging Epistemic Ideals Through Rightful Presence",
+        "indexedYear": 2025
       },
       {
-        "url": "https://doi.org/10.1002/tea.21459",
-        "doi": "10.1002/tea.21459",
+        "url": "https://doi.org/10.1002/tea.20237",
+        "doi": "10.1002/tea.20237",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21459",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.20237",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Addressing the epistemic elephant in the room: Epistemic agency and the next generation science standards",
-        "indexedYear": 2018
+        "indexedTitle": "Understanding the science experiences of successful women of color: Science identity as an analytic lens",
+        "indexedYear": 2007
+      },
+      {
+        "url": "https://doi.org/10.1002/tea.20311",
+        "doi": "10.1002/tea.20311",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.20311",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Developing a learning progression for scientific modeling: Making scientific modeling accessible and meaningful for learners",
+        "indexedYear": 2009
       },
       {
         "url": "https://doi.org/10.1002/tea.21714",
@@ -975,22 +991,6 @@
         "indexedYear": 2023
       },
       {
-        "url": "https://doi.org/10.1080/07491409.2023.2193543",
-        "doi": "10.1080/07491409.2023.2193543",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/07491409.2023.2193543",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "TERF Logics Are Carceral Logics: Toward the Abolition of Gender-Critical Movements or Black Trans Life as Pedagogical Praxis",
-        "indexedYear": 2023
-      },
-      {
         "url": "https://doi.org/10.1080/09500690903386435",
         "doi": "10.1080/09500690903386435",
         "pages": [
@@ -1007,20 +1007,37 @@
         "indexedYear": 2010
       },
       {
-        "url": "https://doi.org/10.1080/1046560X.2022.2155355",
-        "doi": "10.1080/1046560X.2022.2155355",
+        "url": "https://doi.org/10.1080/10508400903452884",
+        "doi": "10.1080/10508400903452884",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/1046560X.2022.2155355",
+        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/10508400903452884",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Teacher Noticing for Supporting Students’ Epistemic Agency in Science Sensemaking Discussions",
-        "indexedYear": 2023
+        "indexedTitle": "Conducting Video Research in the Learning Sciences: Guidance on Selection, Analysis, Technology, and Ethics",
+        "indexedYear": 2010
+      },
+      {
+        "url": "https://doi.org/10.1086/430744",
+        "doi": "10.1086/430744",
+        "pages": [
+          "teaching-ap-evolution.html",
+          "writing-biological-classification.html"
+        ],
+        "publisherLanding": "https://academic.oup.com/jid/article-lookup/doi/10.1086/430744",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Sickle Cell Trait and the Risk ofPlasmodium falciparumMalaria and Other Childhood Diseases",
+        "indexedYear": 2005
       },
       {
         "url": "https://doi.org/10.1093/applin/amab044",
@@ -1087,37 +1104,36 @@
         "indexedYear": 2012
       },
       {
-        "url": "https://doi.org/10.1207/S1532690XCI2004_1",
-        "doi": "10.1207/S1532690XCI2004_1",
+        "url": "https://doi.org/10.1177/01614681251401633",
+        "doi": "10.1177/01614681251401633",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://www.tandfonline.com/doi/abs/10.1207/S1532690XCI2004_1",
+        "publisherLanding": "https://journals.sagepub.com/doi/10.1177/01614681251401633",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Guiding Principles for Fostering Productive Disciplinary Engagement: Explaining an Emergent Argument in a Community of Learners Classroom",
-        "indexedYear": 2002
+        "indexedTitle": "Queer Joy as Pedagogy",
+        "indexedYear": 2025
       },
       {
-        "url": "https://doi.org/10.3102/0013189X20927363",
-        "doi": "10.3102/0013189X20927363",
+        "url": "https://doi.org/10.1187/cbe.23-08-0157",
+        "doi": "10.1187/cbe.23-08-0157",
         "pages": [
-          "research.html",
-          "writing-biological-classification.html"
+          "teaching-ap-biology.html"
         ],
-        "publisherLanding": "https://journals.sagepub.com/doi/10.3102/0013189X20927363",
+        "publisherLanding": "https://www.lifescied.org/doi/10.1187/cbe.23-08-0157",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Beyond Equity as Inclusion: A Framework of “Rightful Presence” for Guiding Justice-Oriented Studies in Teaching and Learning",
-        "indexedYear": 2020
+        "indexedTitle": "Examining and Supporting Mechanistic Explanations Across Chemistry and Biology Courses",
+        "indexedYear": 2024
       },
       {
         "url": "https://doi.org/10.3138/cmlr-2021-0055",
@@ -1155,7 +1171,7 @@
     "unresolved": [],
     "limitation": "Crossref/DataCite registration is distinct from publisher access, correct article metadata or article availability. OpenAlex is independent secondary corroboration, not registration proof."
   },
-  "workflow_run_id": "42126694478",
-  "head_sha": "498b0bb4ad5f684080498ea7b1c2d72fd4cacf1d",
+  "workflow_run_id": "42127830395",
+  "head_sha": "e448256d85a2d7c55b3e9dca128b4e60a28cb111",
   "audit_exit_code": "0"
 }
