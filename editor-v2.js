@@ -2878,7 +2878,9 @@ function livePatchNodeMatches(node,patch){
 // position/style-only edit cannot replace that element's newer wording.
 // Previously published text edits may rematch only if their FULL replacement
 // markup is already exactly present. Other text conflicts stay blocked.
-function findSafePreviouslyEditedTextNode(doc,patch,tag){
+// Do not use a positional selector as proof that stale wording is still
+// correct. The long opening must identify exactly one node of the same tag.
+function uniqueHistoricalTextAnchor(doc,patch,tag){
   if(!["layout","text"].includes(patch.kind)||
      !/^(?:h[1-6]|p|li|blockquote|figcaption)$/.test(tag))return null;
   const historical=String(patch.expected||"").replace(/\s+/g," ").trim();
@@ -2886,8 +2888,11 @@ function findSafePreviouslyEditedTextNode(doc,patch,tag){
   const opening=historical.slice(0,96);
   const candidates=[...doc.querySelectorAll("main "+tag)].filter(node=>
     (node.textContent||"").replace(/\s+/g," ").trim().startsWith(opening));
-  if(candidates.length!==1)return null;
-  const target=candidates[0];
+  return candidates.length===1?candidates[0]:null;
+}
+function findSafePreviouslyEditedTextNode(doc,patch,tag){
+  const target=uniqueHistoricalTextAnchor(doc,patch,tag);
+  if(!target)return null;
   if(patch.kind==="text"&&cleanRich(patch.html)!==cleanRich(target.innerHTML))
     return null;
   return target;
@@ -5932,6 +5937,105 @@ async function publishGithub(token,target){
     publishedMatches:production?.resolved||[],
     publishedNormalized:production?.normalized||[]};
 }
+// Resolve one stale text replacement explicitly, without discarding that
+// element's saved layout/appearance edits or touching any other page objects.
+// This operation never publishes, and it requires a unique historical anchor,
+// the latest verified GitHub file, an in-page confirmation and a JSON backup.
+async function resolveStaleTextConflict(selector){
+  const patch=livePatches.get(selector),page=currentPage;
+  if(workspaceMode!=="live"||patch?.kind!=="text"||liveEditing||liveGesture)
+    throw Error("Choose a saved text edit while editing the original webpage.");
+  assertLiveDraftNotSuperseded(page);
+  if(liveDraftRecovery?.page===page)
+    throw Error("Resolve the unreadable draft warning before changing saved text.");
+  if(liveSourceProvenance!=="github")
+    throw Error("Reload this page and verify its GitHub source before resolving text.");
+  const signature=JSON.stringify(liveSnapshot());
+  const source=await fetchGithubPageSource(page,{force:true});
+  if(page!==currentPage||workspaceMode!=="live"||
+     JSON.stringify(liveSnapshot())!==signature)
+    throw Error("The page or draft changed during review. Nothing was changed.");
+  if(liveDisplayedSourceHtml!==null&&liveDisplayedSourceHtml!==source.html)
+    throw Error("GitHub changed since this editor loaded. Reload the page before resolving text.");
+  const doc=new DOMParser().parseFromString(source.html,"text/html");
+  const tag=selector.match(/ > ([a-z][a-z0-9-]*):nth-of-type\(\d{1,4}\)$/)?.[1]||"";
+  const node=uniqueHistoricalTextAnchor(doc,patch,tag);
+  if(!node)throw Error("Cannot uniquely identify the historical paragraph in current GitHub source. This edit was not changed. Download the draft JSON for manual review.");
+  if(livePatchNodeMatches(node,patch))
+    throw Error("The saved text's original wording still matches GitHub. No stale-text repair is needed.");
+  if(cleanRich(patch.html)===cleanRich(node.innerHTML))
+    throw Error("The saved replacement already matches the page. This text is not in conflict.");
+  const replacement=patch.html;
+  const saved=new DOMParser().parseFromString("<body>"+cleanRich(replacement)+"</body>","text/html")
+    .body.textContent||"";
+  $("staleTextCurrent").textContent=(node.textContent||"").trim();
+  $("staleTextSaved").textContent=saved.trim();
+  $("staleTextTarget").textContent=page+" · "+livePatchExcerpt(patch);
+  const dialog=$("staleTextResolveDialog");
+  const agreed=await new Promise(resolve=>{
+    let done=false;
+    const cancel=$("staleTextCancel"),accept=$("staleTextKeepCurrent");
+    const finish=yes=>{
+      if(done)return;done=true;
+      dialog.removeEventListener("close",onClose);
+      cancel.removeEventListener("click",onCancel);
+      accept.removeEventListener("click",onAccept);
+      if(dialog.open)dialog.close();
+      resolve(yes);
+    };
+    const onClose=()=>finish(false),onCancel=()=>finish(false),onAccept=()=>finish(true);
+    dialog.addEventListener("close",onClose);
+    cancel.addEventListener("click",onCancel);
+    accept.addEventListener("click",onAccept);
+    dialog.showModal();
+    cancel.focus();
+  });
+  if(!agreed)return false;
+  if(currentPage!==page||workspaceMode!=="live"||
+     JSON.stringify(liveSnapshot())!==signature)
+    throw Error("The page or edits changed while reviewing. Nothing was changed.");
+  assertLiveDraftNotSuperseded(page);
+  const latest=await fetchGithubPageSource(page,{force:true});
+  if(latest.html!==source.html||currentPage!==page||
+     JSON.stringify(liveSnapshot())!==signature)
+    throw Error("The GitHub page or browser draft changed. No text was resolved.");
+  const currentDoc=new DOMParser().parseFromString(latest.html,"text/html");
+  const current=uniqueHistoricalTextAnchor(currentDoc,patch,tag);
+  if(!current)throw Error("The text anchor is no longer unique. Nothing was changed.");
+  const targetSelector=liveSelector(current);
+  if(!targetSelector)throw Error("The paragraph is too deeply nested for safe recovery.");
+  if(targetSelector!==selector&&livePatches.has(targetSelector))
+    throw Error("Another saved edit already targets this paragraph. No edits were changed.");
+  const revised={...patch,kind:"layout",
+    selector:targetSelector,expected:(current.textContent||"").trim().slice(0,300)};
+  delete revised.html;
+  if(!validLivePatch(revised))
+    throw Error("The updated layout/appearance record is invalid. No edits were changed.");
+  // An old text-only patch becomes obsolete; its original proposed wording
+  // is retained in the automatic restorable backup and current undo history.
+  const keep=!!(revised.layout||revised.appearance||revised.groupId!==undefined);
+  const before=liveSnapshot();
+  const backup={format:LIVE_DRAFT_BACKUP_FORMAT,version:1,page,patches:before};
+  download(page+".before-stale-text-resolution.live-draft.json",
+    JSON.stringify(backup,null,2),"application/json");
+  livePatches.delete(selector);
+  if(keep)livePatches.set(targetSelector,revised);
+  if(!recordLiveHistory(before)){
+    livePatches=new Map(before.map(item=>[item.selector,item]));
+    throw Error("No saved change could be recorded. Original draft preserved.");
+  }
+  resetGithubWebHandoff();
+  renderPublishPatchList();
+  listReconnectEdits();
+  $("confirmPublish").disabled=$("publishTarget").value==="live"&&!livePatches.size;
+  $("publishError").hidden=true;
+  loadLivePage(page);
+  status("Kept current website wording · Historical draft backed up · "+
+    (keep?"Picture and paragraph layout edits retained":"Outdated text-only edit removed")+
+    " · Undo available · Nothing published");
+  return true;
+}
+
 function renderPublishPatchList(){
   const list=$("publishPatchList");
   list.replaceChildren();
@@ -5963,7 +6067,16 @@ function renderPublishPatchList(){
     remove.textContent="Remove edit";
     remove.setAttribute("aria-label","Remove saved edit "+livePatchExcerpt(patch));
     remove.dataset.patchSelector=patch.selector;
-    row.append(label,remove);list.append(row);
+    row.append(label);
+    if(patch.kind==="text"){
+      const resolve=document.createElement("button");
+      resolve.type="button";resolve.className="subtle";
+      resolve.dataset.resolveTextSelector=patch.selector;
+      resolve.textContent="Review changed wording";
+      resolve.title="Keep current GitHub wording after a unique source check; preserve this edit's position and formatting, back up the old draft and keep all other edits";
+      row.append(resolve);
+    }
+    row.append(remove);list.append(row);
   }
 }
 function listReconnectEdits(){
@@ -6962,7 +7075,20 @@ function attachEvents(){
   });
   $("reconnectSourceImage").addEventListener("change",updateReconnectPreview);
   $("reconnectImageButton").addEventListener("click",reconnectSavedImage);
-  $("publishPatchList").addEventListener("click",event=>{
+  $("publishPatchList").addEventListener("click",async event=>{
+    const resolver=event.target.closest("button[data-resolve-text-selector]");
+    if(resolver){
+      resolver.disabled=true;
+      try{await resolveStaleTextConflict(resolver.dataset.resolveTextSelector);}
+      catch(error){
+        const message=$("publishError");
+        message.classList.remove("publish-success");
+        message.textContent=error.message||"Could not resolve the saved text edit.";
+        message.hidden=false;
+        status("Text recovery needs review · Draft unchanged · Nothing published");
+      }finally{resolver.disabled=false;}
+      return;
+    }
     const button=event.target.closest("button[data-patch-selector]");
     if(!button)return;
     const selector=button.dataset.patchSelector;
