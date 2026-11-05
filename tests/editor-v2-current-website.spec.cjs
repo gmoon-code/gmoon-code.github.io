@@ -2558,3 +2558,106 @@ for(const name of ['pungmul.html','contact.html']){
       expect(writes).toEqual([]);
     });
 }
+
+
+test('Repeated Pungmul photo resize/crop publications preserve latest preview and verify deployed delivery',
+  async({page})=>{
+    const name='pungmul.html',original=SOURCE.get(name);
+    let github=original,publicHtml=original.toString('utf8');
+    let commits=0;
+    await page.route(/^https:\/\/api\.github\.com\/repos\/gmoon-code\/gmoon-code\.github\.io\//,
+      async route=>{
+        const req=route.request(),url=new URL(req.url());
+        const candidate=url.pathname.split('/contents/')[1];
+        if(candidate!==name){await route.abort();return;}
+        if(req.method()==='GET'){
+          await route.fulfill({status:200,contentType:'application/json',
+            headers:{'access-control-allow-origin':'*'},
+            body:JSON.stringify({name,type:'file',sha:blobSha(github),
+              content:github.toString('base64'),encoding:'base64'})});return;
+        }
+        if(req.method()==='PUT'){
+          const body=JSON.parse(req.postData());
+          expect(body.sha).toBe(blobSha(github));
+          github=Buffer.from(body.content,'base64');
+          commits++;
+          await route.fulfill({status:200,contentType:'application/json',
+            headers:{'access-control-allow-origin':'*'},
+            body:JSON.stringify({commit:{sha:String(commits).padStart(40,'a')}})});
+          return;
+        }
+        throw Error('Unexpected GitHub method '+req.method());
+      });
+    await page.route(BASE+'/'+name,async route=>{
+      await route.fulfill({status:200,contentType:'text/html',body:publicHtml});
+    });
+    await page.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    const photo=page.frameLocator('#livePageFrame').locator('main img:visible').first();
+    await photo.scrollIntoViewIfNeeded();
+    await expect.poll(()=>photo.evaluate(img=>img.naturalWidth)).toBeGreaterThan(0);
+    await photo.click();
+    const originalWidth=Number(await page.locator('#liveOriginalWidth').inputValue());
+    await page.locator('#liveOriginalWidth').fill(String(originalWidth+35));
+    await page.locator('#liveOriginalWidth').dispatchEvent('change');
+    await page.locator('#liveMoveX').fill('28');
+    await page.locator('#liveMoveX').dispatchEvent('change');
+    await page.locator('#cropImageTool').click();
+    await page.locator('#liveCropRight').evaluate(el=>{
+      el.value='15';el.dispatchEvent(new Event('change',{bubbles:true}));
+    });
+    await page.locator('#liveCropZoom').evaluate(el=>{
+      el.value='190';el.dispatchEvent(new Event('input',{bubbles:true}));
+      el.dispatchEvent(new Event('change',{bubbles:true}));
+    });
+    await page.locator('#cropImageTool').click();
+    await page.locator('#preview').click();
+    await expect(page.locator('#previewDialog')).toBeVisible();
+    const firstPreview=await page.locator('#previewFrame').getAttribute('srcdoc');
+    await page.locator('#closePreview').click();
+    await page.locator('#publish').click();
+    await page.locator('#githubToken').fill('synthetic-successive-photo-token');
+    await page.locator('#acknowledgeLive').check();
+    await page.locator('#confirmPublish').click();
+    await expect.poll(()=>commits,{timeout:20000}).toBe(1);
+    expect(github.toString('utf8')).toBe(firstPreview);
+    await expect(page.locator('#publishResult button')).toHaveText('Check public deployment');
+    await page.locator('#publishResult button').click();
+    await expect(page.locator('.publication-delivery-status'))
+      .toContainText('still serving different HTML');
+    publicHtml=github.toString('utf8');
+    await page.locator('#publishResult button').click();
+    await expect(page.locator('.publication-delivery-status'))
+      .toContainText('now serves the exact reviewed HTML');
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified');
+
+    // A later photo edit on the already-published source must retain the first
+    // crop and layout instead of silently restoring the earlier image CSS.
+    await photo.click();
+    const updatedWidth=Number(await page.locator('#liveOriginalWidth').inputValue());
+    await page.locator('#liveOriginalWidth').fill(String(updatedWidth+25));
+    await page.locator('#liveOriginalWidth').dispatchEvent('change');
+    await page.locator('#liveCropShape').selectOption('rounded');
+    await page.locator('#preview').click();
+    await expect(page.locator('#previewDialog')).toBeVisible();
+    const secondPreview=await page.locator('#previewFrame').getAttribute('srcdoc');
+    await page.locator('#closePreview').click();
+    expect(secondPreview).not.toBe(firstPreview);
+    await page.locator('#publish').click();
+    await page.locator('#githubToken').fill('synthetic-successive-photo-token');
+    await page.locator('#acknowledgeLive').check();
+    await page.locator('#confirmPublish').click();
+    await expect.poll(()=>commits,{timeout:20000}).toBe(2);
+    expect(github.toString('utf8')).toBe(secondPreview);
+    expect(secondPreview).toContain('data-moon-v2-image-crop');
+    const visitor=await page.context().newPage();
+    await visitor.setViewportSize({width:1160,height:900});
+    await visitor.route(BASE+'/'+name,route=>route.fulfill({
+      status:200,contentType:'text/html',body:secondPreview}));
+    await visitor.goto(BASE+'/'+name,{waitUntil:'load'});
+    const actual=visitor.locator('main img:visible').first();
+    await expect(actual).toHaveCSS('border-radius','12px');
+    await visitor.close();
+  });
