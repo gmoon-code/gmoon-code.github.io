@@ -1,12 +1,12 @@
 {
-  "sourceHead": "32b2c227df2360b43da5c614a37865159b003984",
+  "sourceHead": "f98d4da8dddc57c36a0c38c2878cb1fb78c5a321",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 24,
   "httpErrors": 0,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-32b2c227df23",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-f98d4da8dddc",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -73,13 +73,10 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "42039116791",
-      "head_sha": "856239bc31f256ba7928f803ab8ff274dd482b87",
+      "run": "42039773825",
+      "head_sha": "dbca6237718acc999a983397d49befa193b68d70",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "index.html",
-        "research-action.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0,
         "combinedStressFailures": 0
@@ -103,31 +100,11 @@
       "note": "U1 route audit documents successful run 40825886279; legacy utility machine report refers to an early missing-script failure. Do not treat it as latest successful evidence."
     }
   },
-  "sourceDriftSinceAudits": [
-    {
-      "category": "typography",
-      "sourceModifiedSinceAudit": [
-        "index.html",
-        "research-action.html"
-      ]
-    }
-  ],
-  "pass": false,
-  "errors": [
-    {
-      "sourceDrift": [
-        {
-          "category": "typography",
-          "sourceModifiedSinceAudit": [
-            "index.html",
-            "research-action.html"
-          ]
-        }
-      ]
-    }
-  ],
+  "sourceDriftSinceAudits": [],
+  "pass": true,
+  "errors": [],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42040944861",
-  "run_sha": "32b2c227df2360b43da5c614a37865159b003984",
-  "exit_code": "1"
+  "workflow_run_id": "42041079416",
+  "run_sha": "f98d4da8dddc57c36a0c38c2878cb1fb78c5a321",
+  "exit_code": "0"
 }
