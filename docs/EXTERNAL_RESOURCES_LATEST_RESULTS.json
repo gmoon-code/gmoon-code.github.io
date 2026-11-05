@@ -860,106 +860,42 @@
   "doi_registry": {
     "checked": 41,
     "counts": {
-      "registered": 31,
-      "not-confirmed": 10
+      "registered": 35,
+      "not-confirmed": 6
     },
-    "secondary_index_matches": 10,
+    "secondary_index_matches": 6,
     "not_confirmed": [
       {
-        "url": "https://doi.org/10.1002/sce.20392",
-        "doi": "10.1002/sce.20392",
+        "url": "https://doi.org/10.1002/sce.21112",
+        "doi": "10.1002/sce.21112",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.20392",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21112",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Cultural processes in science education: Supporting the navigation of multiple epistemologies",
-        "indexedYear": 2010
+        "indexedTitle": "Examining Classroom Science Practice Communities: How Teachers and Students Negotiate Epistemic Agency and Learn Science‐as‐Practice",
+        "indexedYear": 2014
       },
       {
-        "url": "https://doi.org/10.1002/tea.21459",
-        "doi": "10.1002/tea.21459",
+        "url": "https://doi.org/10.1002/sce.21588",
+        "doi": "10.1002/sce.21588",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21459",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21588",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Addressing the epistemic elephant in the room: Epistemic agency and the next generation science standards",
-        "indexedYear": 2018
-      },
-      {
-        "url": "https://doi.org/10.1002/tea.21714",
-        "doi": "10.1002/tea.21714",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21714",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Science engagement as insight into the science identity work nurtured in community‐based science clubs",
-        "indexedYear": 2021
-      },
-      {
-        "url": "https://doi.org/10.1073/pnas.0706627104",
-        "doi": "10.1073/pnas.0706627104",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://pnas.org/doi/full/10.1073/pnas.0706627104",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Cultural mosaics and mental models of nature",
-        "indexedYear": 2007
-      },
-      {
-        "url": "https://doi.org/10.1080/03626784.2021.1947732",
-        "doi": "10.1080/03626784.2021.1947732",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/03626784.2021.1947732",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Getting dirty and coming clean: Sex education and the problem of expertise",
-        "indexedYear": 2021
-      },
-      {
-        "url": "https://doi.org/10.1080/03626784.2023.2200810",
-        "doi": "10.1080/03626784.2023.2200810",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/03626784.2023.2200810",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "You don’t know me: Welcoming gender diversity in schools via an ethic of hospitality",
-        "indexedYear": 2023
+        "indexedTitle": "“Estoy Explorando Science”: Emergent bilingual students problematizing electrical phenomena through translanguaging",
+        "indexedYear": 2020
       },
       {
         "url": "https://doi.org/10.1080/14675986.2015.1109775",
@@ -978,58 +914,58 @@
         "indexedYear": 2015
       },
       {
-        "url": "https://doi.org/10.2304/ciec.2011.12.4.362",
-        "doi": "10.2304/ciec.2011.12.4.362",
+        "url": "https://doi.org/10.1080/15265161.2012.680533",
+        "doi": "10.1080/15265161.2012.680533",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://journals.sagepub.com/doi/10.2304/ciec.2011.12.4.362",
+        "publisherLanding": "https://www.tandfonline.com/doi/abs/10.1080/15265161.2012.680533",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "On the Human Challenges of Multiliteracies Pedagogy",
-        "indexedYear": 2011
+        "indexedTitle": "Out of Bounds? A Critique of the New Policies on Hyperandrogenism in Elite Female Athletes",
+        "indexedYear": 2012
       },
       {
-        "url": "https://doi.org/10.3138/cmlr-2021-0055",
-        "doi": "10.3138/cmlr-2021-0055",
+        "url": "https://doi.org/10.1093/biosci/biac013",
+        "doi": "10.1093/biosci/biac013",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://utppublishing.com/doi/10.3138/cmlr-2021-0055",
+        "publisherLanding": "https://academic.oup.com/bioscience/article/72/5/481/6547662",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "The Impact of Academic Acculturation and Language Proficiency on International Students’ University Experience and Academic Success: A Longitudinal Study",
-        "indexedYear": 2023
+        "indexedTitle": "Six Principles for Embracing Gender and Sexual Diversity in Postsecondary Biology Classrooms",
+        "indexedYear": 2022
       },
       {
-        "url": "https://doi.org/10.3390/plants10081501",
-        "doi": "10.3390/plants10081501",
+        "url": "https://doi.org/10.1207/S1532690XCI2004_1",
+        "doi": "10.1207/S1532690XCI2004_1",
         "pages": [
-          "teaching-ap-biology.html"
+          "research.html"
         ],
-        "publisherLanding": "https://www.mdpi.com/2223-7747/10/8/1501",
+        "publisherLanding": "https://www.tandfonline.com/doi/abs/10.1207/S1532690XCI2004_1",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Binding Properties of Photosynthetic Herbicides with the QB Site of the D1 Protein in Plant Photosystem II: A Combined Functional and Molecular Docking Study",
-        "indexedYear": 2021
+        "indexedTitle": "Guiding Principles for Fostering Productive Disciplinary Engagement: Explaining an Emergent Argument in a Community of Learners Classroom",
+        "indexedYear": 2002
       }
     ],
     "unresolved": [],
     "limitation": "Crossref/DataCite registration is distinct from publisher access, correct article metadata or article availability. OpenAlex is independent secondary corroboration, not registration proof."
   },
-  "workflow_run_id": "42018146301",
-  "head_sha": "8c4d8cb2deb6ab1d7cbf06ec070b03071351894a",
+  "workflow_run_id": "42022704019",
+  "head_sha": "ad4057a59640a8b50831f58700d9ba58d98342d2",
   "audit_exit_code": "0"
 }
