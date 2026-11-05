@@ -4028,6 +4028,21 @@ test('Pungmul prose box resizes numerically and by grip despite high-specificity
     const grip=frame.locator('#moon-v2-live-overlay .moon-v2-grip[data-direction="e"]');
     await paragraph.evaluate(node=>node.scrollIntoView({block:'center'}));
     await expect(grip).toBeVisible();
+    // Record real browser pointer delivery only if the grip test fails.
+    // This keeps the diagnosis focused on Firefox event capture, without
+    // changing the editor or fabricating a resize event in the test.
+    await grip.evaluate(el=>{
+      const win=el.ownerDocument.defaultView;
+      win.__moonGripEvents=[];
+      for(const name of ['pointerdown','pointermove','pointerup','pointercancel','lostpointercapture']){
+        el.ownerDocument.addEventListener(name,event=>{
+          const list=win.__moonGripEvents;
+          if(list.length<60)list.push({type:name,x:event.clientX,y:event.clientY,
+            pointerId:event.pointerId,target:event.target?.className||event.target?.tagName,
+            captured:el.hasPointerCapture?.(event.pointerId)||false});
+        },true);
+      }
+    });
     await grip.hover();
     const gripBox=await grip.boundingBox();
     const x=gripBox.x+gripBox.width/2,y=gripBox.y+gripBox.height/2;
@@ -4036,8 +4051,15 @@ test('Pungmul prose box resizes numerically and by grip despite high-specificity
     await page.mouse.move(x+48,y,{steps:6});
     await page.mouse.up();
     const dragged=await position(paragraph);
-    expect(dragged.w,'the text-box east resize grip must increase its width')
-      .toBeGreaterThan(tall.w+15);
+    if(dragged.w<=tall.w+15){
+      const events=await paragraph.evaluate(node=>node.ownerDocument.defaultView.__moonGripEvents);
+      const draft=await page.evaluate(()=>JSON.parse(localStorage.getItem(
+        'moon-academic-editor-v2:source:pungmul.html')||'[]')
+        .filter(p=>p.selector.endsWith(' > p:nth-of-type(1)'))
+        .map(p=>({layout:p.layout})));
+      throw new Error('text east grip did not resize '+JSON.stringify({
+        tall,dragged,gripBox,events,draft}));
+    }
     expect(dragged.fontSize).toBe(initial.fontSize);
     expect(await position(other)).toEqual(untouched);
     await page.locator('#preview').click();
