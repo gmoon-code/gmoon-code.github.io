@@ -2662,3 +2662,63 @@ test('Repeated Pungmul photo resize/crop publications preserve latest preview an
     await expect(actual).toHaveCSS('border-radius','12px');
     await visitor.close();
   });
+
+
+test('Photo resize and move grips work when the editor iframe is scaled to a laptop window',
+  async({page})=>{
+    const writes=[];
+    await installVerifiedCurrentSource(page,writes);
+    await page.setViewportSize({width:1280,height:900});
+    await page.goto(BASE+'/editor-v2.html?page=pungmul.html',{waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    const iframe=page.locator('#livePageFrame');
+    await expect.poll(()=>iframe.evaluate(node=>{
+      const m=node.ownerDocument.defaultView.getComputedStyle(node).transform;
+      return m!=='none'&&!/^matrix\(1, 0, 0, 1,/.test(m);
+    })).toBe(true);
+    const image=page.frameLocator('#livePageFrame').locator('main img:visible').first();
+    await image.scrollIntoViewIfNeeded();
+    await expect.poll(()=>image.evaluate(img=>img.naturalWidth)).toBeGreaterThan(0);
+    await image.click();
+    const box=()=>image.boundingBox();
+    const drag=async(locator,dx,dy)=>{
+      const target=await locator.boundingBox();
+      expect(target).toBeTruthy();
+      const cx=target.x+target.width/2,cy=target.y+target.height/2;
+      await page.mouse.move(cx,cy);
+      await page.mouse.down();
+      await page.mouse.move(cx+dx,cy+dy,{steps:12});
+      await page.mouse.up();
+    };
+    const before=await box();
+    const grip=page.frameLocator('#livePageFrame')
+      .locator('#moon-v2-live-overlay .moon-v2-grip[data-direction="se"]');
+    await expect(grip).toBeVisible();
+    await drag(grip,35,22);
+    const resized=await box();
+    expect(resized.width).toBeGreaterThan(before.width+4);
+    const move=page.frameLocator('#livePageFrame')
+      .locator('#moon-v2-live-overlay .moon-v2-move');
+    await expect(move).toBeVisible();
+    await drag(move,32,20);
+    const moved=await box();
+    expect(moved.x).toBeGreaterThan(resized.x+4);
+    expect(moved.y).toBeGreaterThan(resized.y+2);
+    await page.locator('#preview').click();
+    await expect(page.locator('#previewDialog')).toBeVisible();
+    const editorGeometry=await image.evaluate(img=>{
+      const m=img.closest('main').getBoundingClientRect(),r=img.getBoundingClientRect();
+      return {x:r.x-m.x,y:r.y-m.y,w:r.width,h:r.height};
+    });
+    const publicGeometry=await page.frameLocator('#previewFrame')
+      .locator('main img:visible').first().evaluate(img=>{
+        const m=img.closest('main').getBoundingClientRect(),r=img.getBoundingClientRect();
+        return {x:r.x-m.x,y:r.y-m.y,w:r.width,h:r.height};
+      });
+    for(const key of ['x','y','w','h'])
+      expect(Math.abs(editorGeometry[key]-publicGeometry[key]),
+        'scaled editor vs exact publication preview '+key).toBeLessThan(7);
+    await page.locator('#closePreview').click();
+    expect(writes).toEqual([]);
+  });
