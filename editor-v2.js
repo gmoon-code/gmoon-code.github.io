@@ -3041,10 +3041,9 @@ async function restoreLiveDraftJson(file){
     status("Draft restore rejected · "+(error.message||error));
   }
 }
-// A live layout refresh can run while a number input is focused. Replacing
-// its value mid-edit can destroy the browser's text selection and append new
-// digits to the old size (for example 103 + 171 => 103171, clamped to 5000).
-// Keep the user's editing buffer intact until they commit or leave the field.
+// A live layout refresh can overwrite the active text-box input as a person
+// types. Preserve the focused field's editing buffer. Other numeric controls,
+// including gallery image dimensions, retain their established behaviour.
 function setLiveInspectorDimension(id,value){
   const field=$(id);
   if(document.activeElement!==field)field.value=String(value);
@@ -3160,8 +3159,8 @@ function renderLiveInspector(){
     const dims=liveLayoutFor(selector),rect=node.getBoundingClientRect();
     const frame=tag==="IMG"&&cardPatch?.frameMode==="card"?cardFigure:null;
     const frameRect=frame?.getBoundingClientRect();
-    setLiveInspectorDimension("liveOriginalWidth",Math.round(dims.wrapWidth??frameRect?.width??rect.width));
-    setLiveInspectorDimension("liveOriginalHeight",Math.round(dims.reserveHeight??rect.height));
+    $("liveOriginalWidth").value=String(Math.round(dims.wrapWidth??frameRect?.width??rect.width));
+    $("liveOriginalHeight").value=String(Math.round(dims.reserveHeight??rect.height));
   }
   $("liveAddedDimensions").hidden=!added;
   $("liveObjectDesign").hidden=!added;
