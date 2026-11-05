@@ -3603,6 +3603,9 @@ test('Pungmul independent draft photos never replace the original gallery when s
       .locator('[data-moon-v2-added-id]');
     await expect(added).toHaveCount(1);
     expect(await added.first().getAttribute('src')).toContain('assets/');
+    await expect(page.locator('#liveImageOriginNotice')).toBeVisible();
+    await expect(page.locator('#liveImageOriginNotice'))
+      .toContainText('does not replace a photograph in the website gallery');
 
     const d=page.waitForEvent('download');
     await page.locator('#startFreshLiveDraftTop').click();
