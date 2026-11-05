@@ -1,12 +1,12 @@
 {
-  "sourceHead": "6f65f237b33309eea8e4545b26665032e41c2772",
+  "sourceHead": "f66abc18fdc762b0a9d8d4f95a595c7a593e8397",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 24,
   "httpErrors": 0,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-6f65f237b333",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-f66abc18fdc7",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -14,8 +14,8 @@
   "auditEvidence": {
     "links": {
       "report": "docs/PUBLIC_LINKGRAPH_LATEST_RESULTS.json",
-      "run": "41941398257",
-      "head_sha": "cfeb62475b17d93ec1817c4f8a9ce50356cb49cb",
+      "run": "41945972684",
+      "head_sha": "6f65f237b33309eea8e4545b26665032e41c2772",
       "exit": "0",
       "sourceModifiedSinceAudit": [],
       "failureCounts": {
@@ -124,7 +124,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41945972897",
-  "run_sha": "6f65f237b33309eea8e4545b26665032e41c2772",
+  "workflow_run_id": "41946004252",
+  "run_sha": "f66abc18fdc762b0a9d8d4f95a595c7a593e8397",
   "exit_code": "1"
 }
