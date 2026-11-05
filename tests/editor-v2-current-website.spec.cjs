@@ -3647,12 +3647,23 @@ test('Visitor Pungmul photos have no rectangular frame borders or clipped photo 
       expect(await link.evaluate(el=>getComputedStyle(el,'::after').content)).toBe('none');
       await expect(link.locator('img')).toBeVisible();
     }
+    // The soft image crop also belongs to the photograph on a narrow screen.
+    await page.setViewportSize({width:375,height:850});
+    for(const link of await links.all()){
+      expect(await link.locator('img').evaluate(el=>
+        parseFloat(getComputedStyle(el).borderTopLeftRadius))).toBeGreaterThan(8);
+    }
 
     await page.goto(BASE+'/pungmul.html',{waitUntil:'domcontentloaded'});
     await expect(page.locator('#main.pungmul-deep-page .pungmul-hero-photo img'))
       .toHaveCSS('border-top-width','0px');
     const deepFigures=page.locator('#main.pungmul-deep-page .pungmul-performance-grid figure');
     await expect(deepFigures).toHaveCount(4);
+    const photoLinks=page.locator('#main.pungmul-deep-page .pungmul-performance-grid a[target="_blank"]');
+    await expect(photoLinks).toHaveCount(4);
+    for(const link of await photoLinks.all()){
+      expect(await link.evaluate(el=>getComputedStyle(el,'::after').content)).toBe('none');
+    }
     for(const figure of await deepFigures.all()){
       await expect(figure).toHaveCSS('border-top-width','0px');
       await expect(figure.locator('img')).toHaveCSS('border-top-left-radius','12px');
