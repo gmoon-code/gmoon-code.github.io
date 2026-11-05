@@ -4372,14 +4372,17 @@ function moveLiveGesture(event){
       next.dy=clamp(Math.round(g.layout.dy+snap.dy),-4000,4000);
       drawLiveSnapGuides(snap.x,snap.y,g.node.ownerDocument);
     }else{
+      const lock=liveLockImageRatio&&!event.altKey;
+      // The aspect ratio belongs to the photograph, NOT the figure plus
+      // its caption. Treat the caption as an extra natural-flow height when
+      // sizing freely, and exclude it from the locked-resize calculation.
+      const pictureHeight=Math.max(24,g.rect.height-g.frameExtra);
       const box=resizableBoxFromDrag(
-        {x:0,y:0,w:g.rect.width,h:g.rect.height},
-        g.dir,deltaX,deltaY,
-        liveLockImageRatio&&!event.altKey,64,48,4000,5000);
+        {x:0,y:0,w:g.rect.width,h:lock?pictureHeight:g.rect.height},
+        g.dir,deltaX,deltaY,lock,64,lock?24:48,4000,5000);
       next.wrapWidth=box.w;
-      // The figure's caption contributes natural height. Only the photo
-      // portion gets a fixed height, so the caption is never squashed.
-      next.reserveHeight=Math.round(clamp(box.h-g.frameExtra,24,5000));
+      next.reserveHeight=Math.round(clamp(
+        lock?box.h:box.h-g.frameExtra,24,5000));
       next.dx=clamp(Math.round(g.layout.dx+box.x),-4000,4000);
       next.dy=clamp(Math.round(g.layout.dy+box.y),-4000,4000);
     }
