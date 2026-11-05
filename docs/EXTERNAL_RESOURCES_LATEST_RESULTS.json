@@ -860,26 +860,26 @@
   "doi_registry": {
     "checked": 41,
     "counts": {
-      "not-confirmed": 5,
-      "registered": 36
+      "registered": 33,
+      "not-confirmed": 8
     },
-    "secondary_index_matches": 5,
+    "secondary_index_matches": 8,
     "not_confirmed": [
       {
-        "url": "https://doi.org/10.1002/sce.20264",
-        "doi": "10.1002/sce.20264",
+        "url": "https://doi.org/10.1002/sce.21099",
+        "doi": "10.1002/sce.21099",
         "pages": [
-          "teaching-ap-biology.html"
+          "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.20264",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21099",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Recognizing mechanistic reasoning in student scientific inquiry: A framework for discourse analysis developed from philosophy of science",
-        "indexedYear": 2008
+        "indexedTitle": "An Integrative Framework for the Analysis of Multiple and Multimodal Representations for Meaning‐Making in Science Education",
+        "indexedYear": 2014
       },
       {
         "url": "https://doi.org/10.1002/sce.21112",
@@ -914,43 +914,90 @@
         "indexedYear": 2021
       },
       {
-        "url": "https://doi.org/10.1080/03626784.2023.2200810",
-        "doi": "10.1080/03626784.2023.2200810",
+        "url": "https://doi.org/10.1002/tea.70072",
+        "doi": "10.1002/tea.70072",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/03626784.2023.2200810",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.70072",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "You don’t know me: Welcoming gender diversity in schools via an ethic of hospitality",
-        "indexedYear": 2023
+        "indexedTitle": "Students' Construction, Evaluation, and Revision of Scientific Models Through Multimodal Representations",
+        "indexedYear": 2026
       },
       {
-        "url": "https://doi.org/10.1086/430744",
-        "doi": "10.1086/430744",
+        "url": "https://doi.org/10.1080/03626784.2021.1947732",
+        "doi": "10.1080/03626784.2021.1947732",
         "pages": [
-          "teaching-ap-evolution.html",
-          "writing-biological-classification.html"
+          "research.html"
         ],
-        "publisherLanding": "https://academic.oup.com/jid/article-lookup/doi/10.1086/430744",
+        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/03626784.2021.1947732",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Sickle Cell Trait and the Risk ofPlasmodium falciparumMalaria and Other Childhood Diseases",
-        "indexedYear": 2005
+        "indexedTitle": "Getting dirty and coming clean: Sex education and the problem of expertise",
+        "indexedYear": 2021
+      },
+      {
+        "url": "https://doi.org/10.1111/j.1365-2729.1991.tb00230.x",
+        "doi": "10.1111/j.1365-2729.1991.tb00230.x",
+        "pages": [
+          "teaching-ap-chemistry.html"
+        ],
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1111/j.1365-2729.1991.tb00230.x",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Why is science difficult to learn? Things are seldom what they seem",
+        "indexedYear": 1991
+      },
+      {
+        "url": "https://doi.org/10.1111/jedm.12000",
+        "doi": "10.1111/jedm.12000",
+        "pages": [
+          "research-scoping.html"
+        ],
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1111/jedm.12000",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Validating the Interpretations and Uses of Test Scores",
+        "indexedYear": 2013
+      },
+      {
+        "url": "https://doi.org/10.1159/000345322",
+        "doi": "10.1159/000345322",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://karger.com/article/doi/10.1159/000345322",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Desettling Expectations in Science Education",
+        "indexedYear": 2012
       }
     ],
     "unresolved": [],
     "limitation": "Crossref/DataCite registration is distinct from publisher access, correct article metadata or article availability. OpenAlex is independent secondary corroboration, not registration proof."
   },
-  "workflow_run_id": "41994730060",
-  "head_sha": "2acf194a224c17787f08f2d5cbcbbcf458b57bed",
+  "workflow_run_id": "42011303273",
+  "head_sha": "047305ec57d7f39eae67211febb9678b8e94fcb7",
   "audit_exit_code": "0"
 }
