@@ -1269,6 +1269,13 @@ function liveEventTarget(event){
   // Alt-click selects a container; on an actual hyperlink it selects the
   // enclosing paragraph so the link's text remains editable.
   const nearestText=event.target.closest?.(LIVE_EDITABLE_TAGS);
+  // Clicking a gallery photo's blank rounded frame targets its image.
+  // A figcaption stays independently editable when clicked directly.
+  if(!liveSectionPickMode&&!event.altKey&&!nearestText){
+    const figure=event.target.closest?.("figure");
+    const photo=figure?.querySelector("img");
+    if(photoCardFrame(photo)===figure)return photo;
+  }
   const nearestContainer=event.target.closest?.(LIVE_CONTAINER_TAGS);
   return event.altKey&&!event.target.closest?.("a[href]")?
     nearestContainer||nearestText:nearestText||nearestContainer;
@@ -2442,8 +2449,12 @@ function setOriginalBoxDimension(key,value){
   if(!node||!patch||patch.kind==="insert"||!["wrapWidth","reserveHeight"].includes(key))return;
   const number=Number(value);
   if(!Number.isFinite(number))return;
-  const previous=liveSnapshot(),layout=normaliseElementBoxLayout(node,
-    liveLayoutFor(patch.selector));
+  const previous=liveSnapshot(),old=liveLayoutFor(patch.selector);
+  const card=patch.frameMode==="card"&&node.tagName==="IMG"?
+    photoCardFrame(node):null;
+  const layout=card?(old.wrapWidth?{...old}:
+    photoCardLayoutForImage(node,old)):
+    normaliseElementBoxLayout(node,old);
   layout[key]=Math.round(clamp(number,key==="wrapWidth"?64:24,
     key==="wrapWidth"?4000:5000));
   if(LIVE_CONTAINER_SET.has(node.tagName)){
@@ -3856,9 +3867,12 @@ function syncLiveOverlay(){
       if(button)startLiveGesture(event,button.dataset.direction,button);
     });
   }
+  const card= !grouped&&node.tagName==="IMG"&&!liveCropMode&&
+    livePatchForSelected()?.frameMode==="card"?photoCardFrame(node):null;
   const rect=groupedAdded?
     liveAddedSelectionBounds(addedGroup):
-    liveSourceSelectionBounds(node,sourceGroup);
+    groupedSource?liveSourceSelectionBounds(node,sourceGroup):
+    (card||node).getBoundingClientRect();
   liveOverlay.style.left=rect.left+"px";
   liveOverlay.style.top=rect.top+"px";
   liveOverlay.style.width=rect.width+"px";
@@ -3968,14 +3982,20 @@ function startLiveGesture(event,direction,anchor){
   const sourceGroup=!LIVE_ADDED_ID.test(selector)&&
     liveSourceMulti.has(selector)&&selectedSourcePatches().length>1?
     selectedSourcePatches().map(item=>({...item,rect:item.node.getBoundingClientRect()})):null;
+  const card=node.tagName==="IMG"&&patch.frameMode==="card"&&
+    !liveCropMode&&!sourceGroup&&!group?photoCardFrame(node):null;
   const rect=sourceGroup?liveSourceSelectionBounds(node,sourceGroup):
-    group?liveAddedSelectionBounds(group):node.getBoundingClientRect();
+    group?liveAddedSelectionBounds(group):(card||node).getBoundingClientRect();
   if(rect.width<2||rect.height<2)return;
+  const current=liveLayoutFor(selector);
+  const layout=card&&!current.wrapWidth?
+    photoCardLayoutForImage(node,current):current;
   liveGesture={pointer:event.pointerId,anchor,dir:direction,
     startX:event.clientX,startY:event.clientY,rect,group,sourceGroup,
-    patch,layout:liveLayoutFor(selector),snapshot:liveSnapshot(),
+    card,frameExtra:card?Math.max(0,rect.height-node.getBoundingClientRect().height):0,
+    patch,layout,snapshot:liveSnapshot(),
     moved:false,selector,node,snapLines:candidateLiveSnapLines(node,
-      (sourceGroup||group)?.map(item=>item.node)||[node])};
+      (sourceGroup||group)?.map(item=>item.node)||card?[node,card]:[node])};
   // A simple click on an existing source image must not capture the pointer.
   // Firefox can otherwise retain iframe focus when the user immediately
   // clicks the image-description field in the parent editor. Start capture
@@ -4210,6 +4230,32 @@ function moveLiveGesture(event){
         refreshAddedObject(g.node.ownerDocument,patch);
       }
     }
+    syncLiveOverlay();return;
+  }
+  if(g.card&&g.patch.frameMode==="card"){
+    const next={...g.layout},device=liveDevice();
+    if(g.dir==="move"){
+      const snap=snapLiveMove(deltaX,deltaY,g,event.altKey);
+      next.dx=clamp(Math.round(g.layout.dx+snap.dx),-4000,4000);
+      next.dy=clamp(Math.round(g.layout.dy+snap.dy),-4000,4000);
+      drawLiveSnapGuides(snap.x,snap.y,g.node.ownerDocument);
+    }else{
+      const box=resizableBoxFromDrag(
+        {x:0,y:0,w:g.rect.width,h:g.rect.height},
+        g.dir,deltaX,deltaY,
+        liveLockImageRatio&&!event.altKey,64,48,4000,5000);
+      next.wrapWidth=box.w;
+      // The figure's caption contributes natural height. Only the photo
+      // portion gets a fixed height, so the caption is never squashed.
+      next.reserveHeight=Math.round(clamp(box.h-g.frameExtra,24,5000));
+      next.dx=clamp(Math.round(g.layout.dx+box.x),-4000,4000);
+      next.dy=clamp(Math.round(g.layout.dy+box.y),-4000,4000);
+    }
+    next.sx=1;next.sy=1;next.osx=1;next.osy=1;
+    const patch=copy(g.patch);
+    patch.layout={...patch.layout,[device]:next};
+    livePatches.set(g.selector,patch);
+    refreshLiveLayoutRules(g.node.ownerDocument);
     syncLiveOverlay();return;
   }
   const next={...g.layout};
@@ -5136,7 +5182,8 @@ function bindLiveDocument(){
     const link=event.target.closest?.("a[href]");
     // A linked picture is still a selectable photo in an editor.
     // Ordinary text links retain their navigation behaviour.
-    const onPicture=!!event.target.closest?.("img");
+    const onPicture=!!event.target.closest?.("img")||
+      !!photoCardFrame(link?.querySelector?.("img"));
     if(link&&!onPicture&&!liveSectionPickMode&&!liveCropMode&&
        !event.altKey&&!event.shiftKey)return;
     const target=liveEventTarget(event);
