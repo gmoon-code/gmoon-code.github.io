@@ -176,15 +176,12 @@
         </label>
         <button type="button" id="focusPage" aria-pressed="false">Focus page</button>
         <button type="button" id="reloadLive">Reload GitHub source</button>
+        <button type="button" id="startFreshLiveDraftTop" title="Download a restorable backup of this page draft, confirm before discarding, then reopen GitHub main source" disabled>Back up &amp; start fresh</button>
         <button type="button" id="viewPublished" title="View the real deployed page at the selected screen width, separate from unsaved edits">View actual published site</button>
         <button type="button" id="copyLiveObject" disabled>Copy selected element to canvas</button>
       </div>
       <div id="workspaceExplanation" class="workspace-explanation" role="status">Edit my draft shows GitHub source with unpublished changes. Actual published page loads the public website URL read only at the same viewport width.</div>
       <div id="inlineViewNotice" class="inline-view-notice" role="status" aria-live="polite">Editable local draft. The actual public website can look different.</div>
-      <div id="freshSourceActionBar" class="inline-actions" hidden>
-        <button id="startFreshLiveDraftTop" type="button" class="danger">Back up and start from current GitHub page</button>
-        <span class="help">Removes this page\u2019s browser edits only after a JSON backup and confirmation. Nothing is published.</span>
-      </div>
 
         <div id="canvasDraftWarning" class="live-draft-recovery" role="alert" hidden>
           <strong>Free Design Canvas draft needs attention</strong>
