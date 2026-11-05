@@ -1,12 +1,12 @@
 {
-  "sourceHead": "faf52231612ff0959f1ce23913cfdc239e6cdb6a",
+  "sourceHead": "73e67c29a94c0c18a595923f02076a80e40c5672",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-faf52231612f",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-73e67c29a94c",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -17,7 +17,9 @@
       "run": "41987896509",
       "head_sha": "2a72df14ab1423e6ab055e93bd0577b98fd77fcb",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "interests.html"
+      ],
       "failureCounts": {
         "problems": 0
       }
@@ -27,7 +29,9 @@
       "run": "41987896350",
       "head_sha": "2a72df14ab1423e6ab055e93bd0577b98fd77fcb",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "interests.html"
+      ],
       "failureCounts": {
         "issues": 43
       },
@@ -53,38 +57,38 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "41987378434",
-      "head_sha": "d7c600ef8dcdc33095f65a6d925493fa6b3172b5",
-      "exit": "0",
+      "run": "41987896331",
+      "head_sha": "2a72df14ab1423e6ab055e93bd0577b98fd77fcb",
+      "exit": "1",
       "sourceModifiedSinceAudit": [
         "interests.html"
       ],
       "failureCounts": {
-        "failures": 0
+        "failures": 1
       }
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "41987378233",
-      "head_sha": "d7c600ef8dcdc33095f65a6d925493fa6b3172b5",
-      "exit": "0",
+      "run": "41987896336",
+      "head_sha": "2a72df14ab1423e6ab055e93bd0577b98fd77fcb",
+      "exit": "1",
       "sourceModifiedSinceAudit": [
         "interests.html"
       ],
       "failureCounts": {
-        "failures": 0
+        "failures": 3
       }
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "41987378293",
-      "head_sha": "d7c600ef8dcdc33095f65a6d925493fa6b3172b5",
-      "exit": "0",
+      "run": "41987896266",
+      "head_sha": "2a72df14ab1423e6ab055e93bd0577b98fd77fcb",
+      "exit": "1",
       "sourceModifiedSinceAudit": [
         "interests.html"
       ],
       "failureCounts": {
-        "failures": 0,
+        "failures": 4,
         "combinedStressFailures": 0
       }
     },
@@ -93,7 +97,9 @@
       "run": "41987896450",
       "head_sha": "2a72df14ab1423e6ab055e93bd0577b98fd77fcb",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "interests.html"
+      ],
       "failureCounts": {
         "failures": 0,
         "axeViolations": 0
@@ -107,6 +113,18 @@
     }
   },
   "sourceDriftSinceAudits": [
+    {
+      "category": "links",
+      "sourceModifiedSinceAudit": [
+        "interests.html"
+      ]
+    },
+    {
+      "category": "external",
+      "sourceModifiedSinceAudit": [
+        "interests.html"
+      ]
+    },
     {
       "category": "reflow",
       "sourceModifiedSinceAudit": [
@@ -124,6 +142,12 @@
       "sourceModifiedSinceAudit": [
         "interests.html"
       ]
+    },
+    {
+      "category": "interactions",
+      "sourceModifiedSinceAudit": [
+        "interests.html"
+      ]
     }
   ],
   "pass": false,
@@ -136,22 +160,28 @@
       "firstDiff": [
         "--- source\n",
         "+++ deployed\n",
-        "@@ -17,3 +17,3 @@\n",
+        "@@ -17,4 +17,3 @@\n",
         "   </style>",
-        "-<style id=\"moon-v2-live-layout\">@media (min-width:1025px){:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3){grid-template-columns:minmax(0,min(383px,calc((100% - 18px) * 0.621753))) minmax(0,min(233px,calc((100% - 18px) * 0.378247)))!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(2){width:100%!important;max-width:100%!important;min-width:0!important;height:auto!important;box-sizing:border-box!important;overflow:hidden!important;translate:-399px -305px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(2) > a:nth-of-type(1){display:block!important;width:100%!important;overflow:hidden!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(2) > a:nth-of-type(1) > img:nth-of-type(1){display:block!important;width:100%!important;max-width:100%!important;height:172px!important;box-sizing:border-box!important;object-fit:cover!important;translate:0 0!important;scale:1 1!important;}main > section:nth-of-type(2) > div:nth-of-type(2) > p:nth-of-type(1){translate:269px 0px!important;scale:1 1!important;transform-origin:top left!important;width:771px!important;height:128px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}main > section:nth-of-type(2) > div:nth-of-type(2) > p:nth-of-type(2){translate:2px 29px!important;scale:1 1!important;transform-origin:top left!important;width:648px!important;height:126px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(1){width:100%!important;max-width:100%!important;min-width:0!important;height:auto!important;box-sizing:border-box!important;overflow:hidden!important;translate:655px -164px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(1) > a:nth-of-type(1){display:block!important;width:100%!important;overflow:hidden!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(1) > a:nth-of-type(1) > img:nth-of-type(1){display:block!important;width:100%!important;max-width:100%!important;height:214px!important;box-sizing:border-box!important;object-fit:cover!important;translate:0 0!important;scale:1 1!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(2) > a:nth-of-type(1) > img:nth-of-type(1){object-fit:none!important;object-position:-100000px -100000px!important;background-image:url(assets/interests-pungmul-dancers.webp)!important;background-size:233px 174.75px!important;background-position:0px -1.375px!important;background-repeat:no-repeat!important;background-origin:border-box!important;border-radius:999px!important;clip-path:none!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(1) > a:nth-of-type(1) > img:nth-of-type(1){object-fit:none!important;object-position:-100000px -100000px!important;background-image:url(assets/interests-pungmul-street.webp)!important;background-size:383px 215.574px!important;background-position:0px -0.787px!important;background-repeat:no-repeat!important;background-origin:border-box!important;border-radius:999px!important;clip-path:none!important;}}</style></head>",
-        "+<style id=\"moon-v2-live-layout\"></style></head>",
-        " <body class=\"theme-yellow\">",
-        "@@ -42,4 +42,4 @@\n",
-        "       <div class=\"pungmul-gallery\" aria-label=\"Pungmul performances and community\">",
-        "-        <figure><a href=\"assets/interests-pungmul-street.webp\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"View the full-size street performance photograph in a new tab\"><img src=\"assets/interests-pungmul-street.webp\" alt=\"Pungmul performers in colourful ribbons and traditional hats playing in a city street while spectators watch\" loading=\"eager\" decoding=\"async\" width=\"1400\" height=\"788\" data-moon-v2-image-crop=\"{&quot;desktop&quot;:{&quot;fit&quot;:&quot;cover&quot;,&quot;x&quot;:50,&quot;y&quot;:50,&quot;mask&quot;:&quot;pill&quot;,&quot;zoom&quot;:100,&quot;ratio&quot;:1.77665,&quot;baseW&quot;:531.984,&quot;left&quot;:0,&quot;right&quot;:0,&quot;top&quot;:0,&quot;bottom&quot;:0,&quot;reset&quot;:false}}\"></a></figure>",
-        "-        <figure><a href=\"assets/interests-pungmul-dancers.webp\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"View the full-size stage performance photograph in a new tab\"><img src=\"assets/interests-pungmul-dancers.webp\" alt=\"Two pungmul performers in white costumes with colourful hats and ribbons dancing while playing drums on stage\" loading=\"eager\" decoding=\"async\" width=\"1400\" height=\"1050\" data-moon-v2-image-crop=\"{&quot;desktop&quot;:{&quot;fit&quot;:&quot;cover&quot;,&quot;x&quot;:50,&quot;y&quot;:50,&quot;mask&quot;:&quot;pill&quot;,&quot;zoom&quot;:100,&quot;ratio&quot;:1.33333,&quot;baseW&quot;:379,&quot;left&quot;:0,&quot;right&quot;:0,&quot;top&quot;:0,&quot;bottom&quot;:0,&quot;reset&quot;:false}}\"></a></figure>",
-        "+        <figure><a href=\"assets/interests-pungmul-street.webp\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"View the full-size street performance photograph in a new tab\"><img src=\"assets/interests-pungmul-street.webp\" alt=\"Pungmul performers in colourful ribbons and traditional hats playing in a city street while spectators watch\" loading=\"eager\" decoding=\"async\" width=\"1400\" height=\"788\"></a></figure>",
-        "+        <figure><a href=\"assets/interests-pungmul-dancers.webp\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"View the full-size stage performance photograph in a new tab\"><img src=\"assets/interests-pungmul-dancers.webp\" alt=\"Two pungmul performers in white costumes with colourful hats and ribbons dancing while playing drums on stage\" loading=\"eager\" decoding=\"async\" width=\"1400\" height=\"1050\"></a></figure>",
-        "       </div>"
+        "-<style id=\"moon-v2-live-layout\">@media (min-width:1025px){:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3){grid-template-columns:minmax(0,min(383px,calc((100% - 18px) * 0.621753))) minmax(0,min(233px,calc((100% - 18px) * 0.378247)))!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(2){width:100%!important;max-width:100%!important;min-width:0!important;height:auto!important;box-sizing:border-box!important;overflow:hidden!important;translate:-399px -305px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(2) > a:nth-of-type(1){display:block!important;width:100%!important;overflow:hidden!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(2) > a:nth-of-type(1) > img:nth-of-type(1){display:block!important;width:100%!important;max-width:100%!important;height:172px!important;box-sizing:border-box!important;object-fit:cover!important;translate:0 0!important;scale:1 1!important;}main > section:nth-of-type(2) > div:nth-of-type(2) > p:nth-of-type(1){translate:269px 0px!important;scale:1 1!important;transform-origin:top left!important;width:771px!important;height:128px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}main > section:nth-of-type(2) > div:nth-of-type(2) > p:nth-of-type(2){translate:2px 29px!important;scale:1 1!important;transform-origin:top left!important;width:648px!important;height:126px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(1){width:100%!important;max-width:100%!important;min-width:0!important;height:auto!important;box-sizing:border-box!important;overflow:hidden!important;translate:655px -164px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(1) > a:nth-of-type(1){display:block!important;width:100%!important;overflow:hidden!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(1) > a:nth-of-type(1) > img:nth-of-type(1){display:block!important;width:100%!important;max-width:100%!important;height:214px!important;box-sizing:border-box!important;object-fit:cover!important;translate:0 0!important;scale:1 1!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(2) > a:nth-of-type(1) > img:nth-of-type(1){object-fit:none!important;object-position:-100000px -100000px!important;background-image:url(assets/interests-pungmul-dancers.webp)!important;background-size:233px 174.75px!important;background-position:0px -1.375px!important;background-repeat:no-repeat!important;background-origin:border-box!important;border-radius:999px!important;clip-path:none!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(1) > a:nth-of-type(1) > img:nth-of-type(1){object-fit:none!important;object-position:-100000px -100000px!important;background-image:url(assets/interests-pungmul-street.webp)!important;background-size:383px 215.574px!important;background-position:0px -0.787px!important;background-repeat:no-repeat!important;background-origin:border-box!important;border-radius:999px!important;clip-path:none!important;}}",
+        "-@media (min-width:1025px){main > section:nth-of-type(2){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:1089px!important;height:487px!important;min-height:0!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}main > section:nth-of-type(2) > p:nth-of-type(1){translate:10px -181px!important;scale:1 1!important;transform-origin:top left!important;}main > section:nth-of-type(3){translate:0px -23px!important;scale:1 1!important;transform-origin:top left!important;width:1089px!important;height:1281px!important;min-height:0!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}}</style></head>",
+        "+<style id=\"moon-v2-live-layout\">@media (min-width:1025px){:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3){grid-template-columns:minmax(0,min(383px,calc((100% - 18px) * 0.621753))) minmax(0,min(233px,calc((100% - 18px) * 0.378247)))!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(2){width:100%!important;max-width:100%!important;min-width:0!important;height:auto!important;box-sizing:border-box!important;overflow:hidden!important;translate:-399px -305px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(2) > a:nth-of-type(1){display:block!important;width:100%!important;overflow:hidden!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(2) > a:nth-of-type(1) > img:nth-of-type(1){display:block!important;width:100%!important;max-width:100%!important;height:172px!important;box-sizing:border-box!important;object-fit:cover!important;translate:0 0!important;scale:1 1!important;}main > section:nth-of-type(2) > div:nth-of-type(2) > p:nth-of-type(1){translate:269px 0px!important;scale:1 1!important;transform-origin:top left!important;width:771px!important;height:128px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}main > section:nth-of-type(2) > div:nth-of-type(2) > p:nth-of-type(2){translate:2px 29px!important;scale:1 1!important;transform-origin:top left!important;width:648px!important;height:126px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(1){width:100%!important;max-width:100%!important;min-width:0!important;height:auto!important;box-sizing:border-box!important;overflow:hidden!important;translate:655px -164px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(1) > a:nth-of-type(1){display:block!important;width:100%!important;overflow:hidden!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(1) > a:nth-of-type(1) > img:nth-of-type(1){display:block!important;width:100%!important;max-width:100%!important;height:214px!important;box-sizing:border-box!important;object-fit:cover!important;translate:0 0!important;scale:1 1!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(2) > a:nth-of-type(1) > img:nth-of-type(1){object-fit:none!important;object-position:-100000px -100000px!important;background-image:url(assets/interests-pungmul-dancers.webp)!important;background-size:233px 174.75px!important;background-position:0px -1.375px!important;background-repeat:no-repeat!important;background-origin:border-box!important;border-radius:999px!important;clip-path:none!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(1) > a:nth-of-type(1) > img:nth-of-type(1){object-fit:none!important;object-position:-100000px -100000px!important;background-image:url(assets/interests-pungmul-street.webp)!important;background-size:383px 215.574px!important;background-position:0px -0.787px!important;background-repeat:no-repeat!important;background-origin:border-box!important;border-radius:999px!important;clip-path:none!important;}}</style></head>",
+        " <body class=\"theme-yellow\">"
       ]
     },
     {
       "sourceDrift": [
+        {
+          "category": "links",
+          "sourceModifiedSinceAudit": [
+            "interests.html"
+          ]
+        },
+        {
+          "category": "external",
+          "sourceModifiedSinceAudit": [
+            "interests.html"
+          ]
+        },
         {
           "category": "reflow",
           "sourceModifiedSinceAudit": [
@@ -169,12 +199,25 @@
           "sourceModifiedSinceAudit": [
             "interests.html"
           ]
+        },
+        {
+          "category": "interactions",
+          "sourceModifiedSinceAudit": [
+            "interests.html"
+          ]
         }
+      ]
+    },
+    {
+      "unresolvedAudits": [
+        "reflow",
+        "engines",
+        "typography"
       ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41988005327",
-  "run_sha": "faf52231612ff0959f1ce23913cfdc239e6cdb6a",
+  "workflow_run_id": "41988720029",
+  "run_sha": "73e67c29a94c0c18a595923f02076a80e40c5672",
   "exit_code": "1"
 }
