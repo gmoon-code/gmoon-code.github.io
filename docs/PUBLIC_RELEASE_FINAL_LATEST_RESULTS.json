@@ -1,12 +1,12 @@
 {
-  "sourceHead": "da3542a670a1dd5abad39b15abc40cb53ff2c8b1",
+  "sourceHead": "cfeb62475b17d93ec1817c4f8a9ce50356cb49cb",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
-  "verifiedExactMatches": 24,
-  "httpErrors": 0,
+  "verifiedExactMatches": 23,
+  "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-da3542a670a1",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-cfeb62475b17",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -17,7 +17,9 @@
       "run": "41941193164",
       "head_sha": "94f3a32d5e1ec816a3305e77856cc11c01e5e0a9",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "writing-biological-classification.html"
+      ],
       "failureCounts": {
         "problems": 0
       }
@@ -27,7 +29,9 @@
       "run": "41941193171",
       "head_sha": "94f3a32d5e1ec816a3305e77856cc11c01e5e0a9",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "writing-biological-classification.html"
+      ],
       "failureCounts": {
         "issues": 44
       },
@@ -41,7 +45,9 @@
       "run": "41941193182",
       "head_sha": "94f3a32d5e1ec816a3305e77856cc11c01e5e0a9",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "writing-biological-classification.html"
+      ],
       "failureCounts": {
         "unverified": 0
       },
@@ -57,7 +63,8 @@
       "head_sha": "bbff64ce2a6e3171817d9c2e380b50aa29a78b60",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-chemistry.html"
+        "teaching-ap-chemistry.html",
+        "writing-biological-classification.html"
       ],
       "failureCounts": {
         "failures": 0
@@ -65,12 +72,12 @@
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "41940926272",
-      "head_sha": "5df2bff98059221e01a9af8d76c97074b875e75f",
+      "run": "41941072109",
+      "head_sha": "bbff64ce2a6e3171817d9c2e380b50aa29a78b60",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "teaching-ap-chemistry.html",
-        "teaching-ap-evolution.html"
+        "writing-biological-classification.html"
       ],
       "failureCounts": {
         "failures": 0
@@ -84,7 +91,8 @@
       "sourceModifiedSinceAudit": [
         "research-scoping.html",
         "teaching-ap-chemistry.html",
-        "teaching-ap-evolution.html"
+        "teaching-ap-evolution.html",
+        "writing-biological-classification.html"
       ],
       "failureCounts": {
         "failures": 0,
@@ -96,7 +104,9 @@
       "run": "41941193342",
       "head_sha": "94f3a32d5e1ec816a3305e77856cc11c01e5e0a9",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "writing-biological-classification.html"
+      ],
       "failureCounts": {
         "failures": 0,
         "axeViolations": 0
@@ -111,16 +121,35 @@
   },
   "sourceDriftSinceAudits": [
     {
+      "category": "links",
+      "sourceModifiedSinceAudit": [
+        "writing-biological-classification.html"
+      ]
+    },
+    {
+      "category": "external",
+      "sourceModifiedSinceAudit": [
+        "writing-biological-classification.html"
+      ]
+    },
+    {
+      "category": "metadata",
+      "sourceModifiedSinceAudit": [
+        "writing-biological-classification.html"
+      ]
+    },
+    {
       "category": "reflow",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-chemistry.html"
+        "teaching-ap-chemistry.html",
+        "writing-biological-classification.html"
       ]
     },
     {
       "category": "engines",
       "sourceModifiedSinceAudit": [
         "teaching-ap-chemistry.html",
-        "teaching-ap-evolution.html"
+        "writing-biological-classification.html"
       ]
     },
     {
@@ -128,25 +157,75 @@
       "sourceModifiedSinceAudit": [
         "research-scoping.html",
         "teaching-ap-chemistry.html",
-        "teaching-ap-evolution.html"
+        "teaching-ap-evolution.html",
+        "writing-biological-classification.html"
+      ]
+    },
+    {
+      "category": "interactions",
+      "sourceModifiedSinceAudit": [
+        "writing-biological-classification.html"
       ]
     }
   ],
   "pass": false,
   "errors": [
     {
+      "path": "writing-biological-classification.html",
+      "errors": [
+        "deployed bytes differ from checked-out production source"
+      ],
+      "firstDiff": [
+        "--- source\n",
+        "+++ deployed\n",
+        "@@ -37,3 +37,3 @@\n",
+        "   </style>",
+        "-<style id=\"moon-v2-live-layout\"></style></head>",
+        "+</head>",
+        " <body class=\"theme-green\">",
+        "@@ -51,3 +51,3 @@\n",
+        "   <div class=\"hero-copy\">",
+        "-    ",
+        "+    <p class=\"research-eyebrow\">Independent scholarly essay · October 2026</p>",
+        "     <h1>What can a biological classification explain?</h1>",
+        "@@ -108,3 +108,3 @@\n",
+        " <section id=\"essay-references\" class=\"section research-essay-section research-reading-section\">",
+        "-  <div class=\"section-head\"><h2>References</h2></div>",
+        "+  <div class=\"section-head\"><h2>References</h2><p>Scholarship discussed in this independent essay.</p></div>"
+      ]
+    },
+    {
       "sourceDrift": [
+        {
+          "category": "links",
+          "sourceModifiedSinceAudit": [
+            "writing-biological-classification.html"
+          ]
+        },
+        {
+          "category": "external",
+          "sourceModifiedSinceAudit": [
+            "writing-biological-classification.html"
+          ]
+        },
+        {
+          "category": "metadata",
+          "sourceModifiedSinceAudit": [
+            "writing-biological-classification.html"
+          ]
+        },
         {
           "category": "reflow",
           "sourceModifiedSinceAudit": [
-            "teaching-ap-chemistry.html"
+            "teaching-ap-chemistry.html",
+            "writing-biological-classification.html"
           ]
         },
         {
           "category": "engines",
           "sourceModifiedSinceAudit": [
             "teaching-ap-chemistry.html",
-            "teaching-ap-evolution.html"
+            "writing-biological-classification.html"
           ]
         },
         {
@@ -154,14 +233,21 @@
           "sourceModifiedSinceAudit": [
             "research-scoping.html",
             "teaching-ap-chemistry.html",
-            "teaching-ap-evolution.html"
+            "teaching-ap-evolution.html",
+            "writing-biological-classification.html"
+          ]
+        },
+        {
+          "category": "interactions",
+          "sourceModifiedSinceAudit": [
+            "writing-biological-classification.html"
           ]
         }
       ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41941373374",
-  "run_sha": "da3542a670a1dd5abad39b15abc40cb53ff2c8b1",
+  "workflow_run_id": "41941398956",
+  "run_sha": "cfeb62475b17d93ec1817c4f8a9ce50356cb49cb",
   "exit_code": "1"
 }
