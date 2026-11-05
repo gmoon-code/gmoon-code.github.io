@@ -1,12 +1,12 @@
 {
-  "sourceHead": "64f35f950d683e62325b4654ba4188a9fe4ba56f",
+  "sourceHead": "5f4144cb31b40938b66de4972efa090935b331c3",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-64f35f950d68",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-5f4144cb31b4",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -17,7 +17,9 @@
       "run": "41987240301",
       "head_sha": "e9d37c421ba7e628c2441b8aa54a7e51c0df4e5d",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "pungmul.html"
+      ],
       "failureCounts": {
         "problems": 0
       }
@@ -27,7 +29,9 @@
       "run": "41987240257",
       "head_sha": "e9d37c421ba7e628c2441b8aa54a7e51c0df4e5d",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "pungmul.html"
+      ],
       "failureCounts": {
         "issues": 43
       },
@@ -53,8 +57,8 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "41987133802",
-      "head_sha": "b9873a702c75c060711d4f7f3f7f7499dd8c7ec8",
+      "run": "41987240316",
+      "head_sha": "e9d37c421ba7e628c2441b8aa54a7e51c0df4e5d",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "pungmul.html"
@@ -77,8 +81,8 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "41987133795",
-      "head_sha": "b9873a702c75c060711d4f7f3f7f7499dd8c7ec8",
+      "run": "41987240677",
+      "head_sha": "e9d37c421ba7e628c2441b8aa54a7e51c0df4e5d",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "pungmul.html"
@@ -93,7 +97,9 @@
       "run": "41987240250",
       "head_sha": "e9d37c421ba7e628c2441b8aa54a7e51c0df4e5d",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "pungmul.html"
+      ],
       "failureCounts": {
         "failures": 0,
         "axeViolations": 0
@@ -107,6 +113,18 @@
     }
   },
   "sourceDriftSinceAudits": [
+    {
+      "category": "links",
+      "sourceModifiedSinceAudit": [
+        "pungmul.html"
+      ]
+    },
+    {
+      "category": "external",
+      "sourceModifiedSinceAudit": [
+        "pungmul.html"
+      ]
+    },
     {
       "category": "reflow",
       "sourceModifiedSinceAudit": [
@@ -124,6 +142,12 @@
       "sourceModifiedSinceAudit": [
         "pungmul.html"
       ]
+    },
+    {
+      "category": "interactions",
+      "sourceModifiedSinceAudit": [
+        "pungmul.html"
+      ]
     }
   ],
   "pass": false,
@@ -136,24 +160,36 @@
       "firstDiff": [
         "--- source\n",
         "+++ deployed\n",
-        "@@ -13,3 +13,3 @@\n",
+        "@@ -13,4 +13,3 @@\n",
         "   <link rel=\"stylesheet\" href=\"personal-photo-20261030.css?v=distinct-selection-1\">",
-        "-<style id=\"moon-v2-live-layout\">@media (min-width:1025px){main > section:nth-of-type(1) > div:nth-of-type(1) > p:nth-of-type(2){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:538px!important;height:116px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}}</style></head>",
+        "-<style id=\"moon-v2-live-layout\">@media (min-width:1025px){main > section:nth-of-type(1) > div:nth-of-type(1) > p:nth-of-type(2){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:538px!important;height:116px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}}",
+        "-@media (min-width:1025px){:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(1) > figure:nth-of-type(1) > img:nth-of-type(1){translate:0px 19px!important;scale:1 1!important;transform-origin:top left!important;width:437px!important;height:218px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;object-fit:contain!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(1) > figure:nth-of-type(1) > img:nth-of-type(1){object-fit:none!important;object-position:-100000px -100000px!important;background-image:url(assets/pungmul-rehearsal-studio.webp)!important;background-size:460px 258.75px!important;background-position:0px -18.382px!important;background-repeat:no-repeat!important;background-origin:border-box!important;border-radius:999px!important;clip-path:none!important;}}</style></head>",
         "+</head>",
         " <body class=\"theme-yellow\">",
-        "@@ -28,3 +28,3 @@\n",
+        "@@ -29,7 +28,7 @@\n",
         "         <h1>Pungmul <span lang=\"ko\">(풍물)</span></h1>",
         "-        <p>I play pungmul with a queer ensemble in South Korea. Learning the rhythms has led me to read about the many settings in which this music has been performed, from village gatherings to theatres and public demonstrations.&nbsp;<br>I find myself paying more attention to the histories behind what we play.</p>",
         "+        <p>I play pungmul with a queer ensemble in South Korea. Learning the rhythms has led me to read about the many settings in which this music has been performed, from village gatherings to theatres and public demonstrations. I find myself paying more attention to the histories behind what we play.</p>",
         "       </div>",
-        "@@ -32,3 +32,3 @@\n",
-        "         <img src=\"assets/pungmul-rehearsal-studio.webp\" alt=\"Five pungmul performers playing drums in white costumes and colourful hats during a rehearsal in a bright studio\" width=\"1280\" height=\"720\" loading=\"eager\" decoding=\"async\">",
-        "-        ",
-        "+        <figcaption>Rehearsing with the ensemble. Photograph from my personal collection.</figcaption>"
+        "       <figure class=\"pungmul-hero-photo\">",
+        "-        <img src=\"assets/pungmul-rehearsal-studio.webp\" alt=\"Five pungmul performers playing drums in white costumes and colourful hats during a rehearsal in a bright studio\" width=\"1280\" height=\"720\" loading=\"eager\" decoding=\"async\" data-moon-v2-image-crop=\"{&quot;desktop&quot;:{&quot;fit&quot;:&quot;contain&quot;,&quot;x&quot;:50,&quot;y&quot;:50,&quot;mask&quot;:&quot;pill&quot;,&quot;zoom&quot;:100,&quot;ratio&quot;:1.77778,&quot;baseW&quot;:461.556,&quot;left&quot;:0,&quot;right&quot;:5,&quot;top&quot;:7.31,&quot;bottom&quot;:8.85,&quot;reset&quot;:false}}\">",
+        "-        "
       ]
     },
     {
       "sourceDrift": [
+        {
+          "category": "links",
+          "sourceModifiedSinceAudit": [
+            "pungmul.html"
+          ]
+        },
+        {
+          "category": "external",
+          "sourceModifiedSinceAudit": [
+            "pungmul.html"
+          ]
+        },
         {
           "category": "reflow",
           "sourceModifiedSinceAudit": [
@@ -171,12 +207,18 @@
           "sourceModifiedSinceAudit": [
             "pungmul.html"
           ]
+        },
+        {
+          "category": "interactions",
+          "sourceModifiedSinceAudit": [
+            "pungmul.html"
+          ]
         }
       ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41987361199",
-  "run_sha": "64f35f950d683e62325b4654ba4188a9fe4ba56f",
+  "workflow_run_id": "41987395256",
+  "run_sha": "5f4144cb31b40938b66de4972efa090935b331c3",
   "exit_code": "1"
 }
