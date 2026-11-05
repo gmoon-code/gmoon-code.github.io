@@ -1506,13 +1506,12 @@ function editedSourceImageSelector(patch){
 // the portion inside the old card. Only unclip wrappers for an *edited*
 // source photograph, never all gallery figures or their neighbouring photos.
 // One visual editing target for a photograph, its link and caption card.
-// Only a single-image figure with a direct caption qualifies; a standalone
-// image or a complex multi-image figure keeps the existing editing model.
+// Any single-photo gallery figure qualifies, with or without a caption.
+// Standalone images and complex multi-photo figures use independent controls.
 function photoCardFrame(node){
   if(node?.tagName!=="IMG"||!node.closest("main"))return null;
   const figure=node.closest("figure");
-  if(!figure||!figure.querySelector(":scope > figcaption")||
-     figure.querySelectorAll("img").length!==1)return null;
+  if(!figure||figure.querySelectorAll("img").length!==1)return null;
   const direct=figure.querySelector(":scope > img");
   const linked=figure.querySelector(":scope > a > img");
   if(node!==direct&&node!==linked)return null;
