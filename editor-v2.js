@@ -3041,6 +3041,14 @@ async function restoreLiveDraftJson(file){
     status("Draft restore rejected · "+(error.message||error));
   }
 }
+// A live layout refresh can run while a number input is focused. Replacing
+// its value mid-edit can destroy the browser's text selection and append new
+// digits to the old size (for example 103 + 171 => 103171, clamped to 5000).
+// Keep the user's editing buffer intact until they commit or leave the field.
+function setLiveInspectorDimension(id,value){
+  const field=$(id);
+  if(document.activeElement!==field)field.value=String(value);
+}
 function renderLiveInspector(){
   const live=workspaceMode==="live",sel=liveSelected;
   $("liveInspector").hidden=!live;
@@ -3152,8 +3160,8 @@ function renderLiveInspector(){
     const dims=liveLayoutFor(selector),rect=node.getBoundingClientRect();
     const frame=tag==="IMG"&&cardPatch?.frameMode==="card"?cardFigure:null;
     const frameRect=frame?.getBoundingClientRect();
-    $("liveOriginalWidth").value=String(Math.round(dims.wrapWidth??frameRect?.width??rect.width));
-    $("liveOriginalHeight").value=String(Math.round(dims.reserveHeight??rect.height));
+    setLiveInspectorDimension("liveOriginalWidth",Math.round(dims.wrapWidth??frameRect?.width??rect.width));
+    setLiveInspectorDimension("liveOriginalHeight",Math.round(dims.reserveHeight??rect.height));
   }
   $("liveAddedDimensions").hidden=!added;
   $("liveObjectDesign").hidden=!added;
@@ -3237,8 +3245,8 @@ function renderLiveInspector(){
     $("liveTextReflow").checked=on;
     $("liveTextBoxWidth").disabled=!on;
     $("liveTextBoxHeight").disabled=!on;
-    $("liveTextBoxWidth").value=String(Math.round(entry.wrapWidth||node.getBoundingClientRect().width));
-    $("liveTextBoxHeight").value=String(Math.round(entry.reserveHeight||node.getBoundingClientRect().height));
+    setLiveInspectorDimension("liveTextBoxWidth",Math.round(entry.wrapWidth||node.getBoundingClientRect().width));
+    setLiveInspectorDimension("liveTextBoxHeight",Math.round(entry.reserveHeight||node.getBoundingClientRect().height));
     $("liveResetTextDimensions").disabled=!canReflow||
       livePatches.get(selector)?.layout?.[liveDevice()]?.wrapWidth===undefined;
     const extra=canReflow&&entry.wrapWidth!==undefined?
