@@ -2416,7 +2416,8 @@ for(const [name,device,expectedPhotos] of [
 
 
 for(const [name,device,width,expectedCount] of [
-  ['index.html','tablet',768,2],['contact.html','desktop',1160,1]
+  ['index.html','tablet',768,2],['contact.html','desktop',1160,1],
+  ['index.html','phone',390,2],['contact.html','phone',390,1]
 ]){
   test('Reparented '+name+' image resize, move and crop match mock-published visitor at '+device,
     async({page})=>{
