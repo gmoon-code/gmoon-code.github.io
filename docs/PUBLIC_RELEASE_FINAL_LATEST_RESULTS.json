@@ -1,12 +1,12 @@
 {
-  "sourceHead": "1e7e9697ea7e67e6e8d171725d86032754f958fb",
+  "sourceHead": "89d0275b15c85092f2c91344f64b0e271bcec563",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-1e7e9697ea7e",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-89d0275b15c8",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -65,8 +65,8 @@
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "41987133812",
-      "head_sha": "b9873a702c75c060711d4f7f3f7f7499dd8c7ec8",
+      "run": "41987240249",
+      "head_sha": "e9d37c421ba7e628c2441b8aa54a7e51c0df4e5d",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "pungmul.html"
@@ -90,12 +90,10 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "41987240250",
-      "head_sha": "e9d37c421ba7e628c2441b8aa54a7e51c0df4e5d",
+      "run": "41987378185",
+      "head_sha": "d7c600ef8dcdc33095f65a6d925493fa6b3172b5",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "pungmul.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0,
         "axeViolations": 0
@@ -123,12 +121,6 @@
     },
     {
       "category": "typography",
-      "sourceModifiedSinceAudit": [
-        "pungmul.html"
-      ]
-    },
-    {
-      "category": "interactions",
       "sourceModifiedSinceAudit": [
         "pungmul.html"
       ]
@@ -179,18 +171,12 @@
           "sourceModifiedSinceAudit": [
             "pungmul.html"
           ]
-        },
-        {
-          "category": "interactions",
-          "sourceModifiedSinceAudit": [
-            "pungmul.html"
-          ]
         }
       ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41987476509",
-  "run_sha": "1e7e9697ea7e67e6e8d171725d86032754f958fb",
+  "workflow_run_id": "41987563598",
+  "run_sha": "89d0275b15c85092f2c91344f64b0e271bcec563",
   "exit_code": "1"
 }
