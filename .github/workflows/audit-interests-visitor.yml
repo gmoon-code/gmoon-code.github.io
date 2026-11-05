@@ -9,6 +9,13 @@ on:
       - "appearance.css"
       - "appearance.js"
       - "scripts/audit-interests-visitor.py"
+      - "personal-photo-20261030.css"
+      - "scripts/audit_personal_gallery_restore.py"
+      - ".github/workflows/audit-interests-visitor.yml"
+  pull_request:
+    paths:
+      - "interests.html"
+      - "personal-photo-20261030.css"
       - "scripts/audit_personal_gallery_restore.py"
       - ".github/workflows/audit-interests-visitor.yml"
   workflow_dispatch:
@@ -45,7 +52,7 @@ jobs:
           path: interests-audit-output/
           retention-days: 7
       - name: Audit status
-        if: always()
+        if: always() && github.event_name == 'push'
         env:
           GH_TOKEN: ${{ github.token }}
           RESULT: ${{ job.status }}
