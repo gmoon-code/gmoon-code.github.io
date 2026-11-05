@@ -467,7 +467,8 @@ function selectedLiveViewportWidth(){
     LIVE_WIDTHS[device]||1160;
 }
 function inlineViewStatus(){
-  const actual=workspaceMode==="live"&&inlineLiveView==="published";
+  if(workspaceMode!=="live")return;
+  const actual=inlineLiveView==="published";
   const count=livePatches.size;
   const label=count+" unpublished draft edit"+(count===1?"":"s");
   $("inlineViewNotice").textContent=actual?
