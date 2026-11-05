@@ -25,6 +25,8 @@
   max-height:none!important;
   aspect-ratio:auto!important;
   object-fit:contain!important;
+  /* Keep the intended soft pill crop at narrow viewports too. */
+  border-radius:999px!important;
 }
 #main.pungmul-deep-page figure.pungmul-hero-photo{
   width:100%;
