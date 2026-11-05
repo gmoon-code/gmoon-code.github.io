@@ -2266,7 +2266,11 @@ function setLiveCropMode(enabled){
   liveCropMode=!!enabled;
   if(enabled){
     const existing=selectedImageCrop(livePatchForSelected());
-    applySelectedImageCrop(croppedEdges(existing));
+    const edges=croppedEdges(existing);
+    // Starting a new crop should fill the window with the surviving pixels.
+    // Preserve a deliberate Contain choice on an already-trimmed crop.
+    const firstTrim=!Object.values(edges).some(value=>value>0);
+    applySelectedImageCrop({...edges,...(firstTrim?{fit:"cover"}:{})});
   }
   removeLiveOverlay();renderLiveInspector();syncLiveOverlay();
   status(enabled?
@@ -2347,6 +2351,10 @@ function cropFrameGeometry(rect,origin,dir,dx,dy){
     const maximum=Math.min(90,95-next[opposite],100*(1-min/source)-next[opposite]);
     next[edge]=Math.round(clamp(initial[edge]+delta/source*100,0,Math.max(0,maximum))*100)/100;
   }
+  // On the first edge trim, use a filled crop window rather than leaving
+  // letterbox gaps from an original object-fit:contain picture.
+  if(crop.fit==="contain"&&!Object.values(initial).some(v=>v>0)&&
+     Object.values(croppedEdges(next)).some(v=>v>0))next.fit="cover";
   const w=Math.round(clamp(fullW*(1-(next.left+next.right)/100),minW,4000));
   const h=Math.round(clamp(fullH*(1-(next.top+next.bottom)/100),minH,5000));
   const x=fullW*(next.left-initial.left)/100;
