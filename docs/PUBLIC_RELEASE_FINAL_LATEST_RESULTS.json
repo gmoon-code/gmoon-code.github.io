@@ -3,8 +3,8 @@
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
-  "verifiedExactMatches": 22,
-  "httpErrors": 2,
+  "verifiedExactMatches": 24,
+  "httpErrors": 0,
   "customNested404": {
     "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-8f98711822ca",
     "status": 404,
@@ -101,43 +101,10 @@
     }
   },
   "sourceDriftSinceAudits": [],
-  "pass": false,
-  "errors": [
-    {
-      "path": "interests.html",
-      "errors": [
-        "deployed bytes differ from checked-out production source"
-      ],
-      "firstDiff": [
-        "--- source\n",
-        "+++ deployed\n",
-        "@@ -11,3 +11,3 @@\n",
-        "   <link rel=\"stylesheet\" href=\"appearance.css?v=20261030-restored-photos\">",
-        "-  <link rel=\"stylesheet\" href=\"personal-photo-20261030.css?v=20261105-borderless-gallery-v2\">",
-        "+  <link rel=\"stylesheet\" href=\"personal-photo-20261030.css?v=20261105-borderless-gallery\">",
-        " <style id=\"interests-media-heading-levels\">"
-      ]
-    },
-    {
-      "path": "pungmul.html",
-      "errors": [
-        "deployed bytes differ from checked-out production source"
-      ],
-      "firstDiff": [
-        "--- source\n",
-        "+++ deployed\n",
-        "@@ -11,4 +11,4 @@\n",
-        "   <link rel=\"stylesheet\" href=\"appearance.css?v=20261028-visible-focus\">",
-        "-  <link rel=\"stylesheet\" href=\"pungmul.css?v=20261105-borderless-photos-v2\">",
-        "-  <link rel=\"stylesheet\" href=\"personal-photo-20261030.css?v=20261105-borderless-gallery-v2\">",
-        "+  <link rel=\"stylesheet\" href=\"pungmul.css?v=20261105-borderless-photos\">",
-        "+  <link rel=\"stylesheet\" href=\"personal-photo-20261030.css?v=20261105-borderless-gallery\">",
-        " <style id=\"moon-v2-live-layout\">@media (min-width:1025px){main > section:nth-of-type(1) > div:nth-of-type(1) > p:nth-of-type(2){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:538px!important;height:116px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}}"
-      ]
-    }
-  ],
+  "pass": true,
+  "errors": [],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
   "workflow_run_id": "41995001097",
   "run_sha": "8f98711822cad28c5c7baeba237eb05f82246fba",
-  "exit_code": "1"
+  "exit_code": "0"
 }
