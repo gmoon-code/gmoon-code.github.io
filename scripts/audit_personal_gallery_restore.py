@@ -22,20 +22,28 @@ const rect=e=>{const r=e.getBoundingClientRect();return {x:+r.x.toFixed(1),y:+(r
  width:+r.width.toFixed(1),height:+r.height.toFixed(1),right:+r.right.toFixed(1)}};
 const info=imgs.map(img=>{
  const s=getComputedStyle(img),f=img.closest('figure'),fs=f&&getComputedStyle(f);
+ const link=img.closest('a[href^="assets/"][href$=".webp"]');
  return {src:img.getAttribute('src'),alt:img.alt,complete:img.complete,naturalWidth:img.naturalWidth,
  naturalHeight:img.naturalHeight,image:rect(img),frame:f?rect(f):null,
  borderRadius:fs?.borderRadius,border:fs?.borderStyle,imageBorderRadius:s.borderRadius,imageBorder:s.borderStyle,objectFit:s.objectFit,
- linksToFull:!!img.closest('a[href^="assets/"][href$=".webp"]')};
+ linksToFull:!!link,linkAfter:link?getComputedStyle(link,'::after').content:null};
 });
 const others=[...main.querySelectorAll('h1,h2,h3,p')].filter(e=>{
  const r=e.getBoundingClientRect(),s=getComputedStyle(e);
  return s.display!=='none' && s.visibility!=='hidden' && r.width>0&&r.height>0
-}).map(rect);
+}).flatMap(e=>{
+ const range=document.createRange();range.selectNodeContents(e);
+ // Paragraph boxes can extend behind a neighbouring photo even when
+ // the actual glyphs wrap or stop before it. Measure the text fragments.
+ return [...range.getClientRects()].filter(r=>r.width>1&&r.height>1)
+  .map(r=>({x:+r.x.toFixed(1),y:+(r.y+scrollY).toFixed(1),width:+r.width.toFixed(1),
+    height:+r.height.toFixed(1),right:+r.right.toFixed(1)}));
+});
 const intersects=(a,b)=>a.x<b.right-.5&&a.right>b.x+.5&&a.y<b.y+b.height-.5&&a.y+a.height>b.y+.5;
 const collisions=info.map((p,i)=>({i,collides:others.some(r=>intersects(p.image,r))})).filter(x=>x.collides);
 return {width:innerWidth,documentWidth:document.documentElement.scrollWidth,mainCount:document.querySelectorAll('main').length,
  h1:main.querySelectorAll('h1').length,imageCount:imgs.length,
- photos:info,collisions,editorStyles:document.querySelectorAll('[data-moon-v2-added-layer],[data-moon-v2-added-id],style[id^="moon-v2-"],style[data-moon-v2-added-style]').length,
+ photos:info,collisions,editorStyles:document.querySelectorAll('[data-moon-v2-added-layer],[data-moon-v2-added-id],style[data-moon-v2-added-style]').length,
  sectionCount:main.querySelectorAll('section').length};
 }"""
 async def test(browser,kind,w):
@@ -65,7 +73,7 @@ async def test(browser,kind,w):
   if state["mainCount"]!=1 or state["h1"]!=1:row["errors"].append("main/H1 structure")
   if state["documentWidth"]>w+2:row["errors"].append("document horizontal overflow")
   if state["imageCount"]!=conf["count"]:row["errors"].append("historical photo count")
-  if state["editorStyles"]:row["errors"].append("old absolute-image editor layer remains")
+  if state["editorStyles"]:row["errors"].append("unpublished image editing overlay found")
   actual=[x["src"] for x in state["photos"]]
   if actual!=["assets/"+x for x in conf["photos"]]:row["errors"].append("original image URLs/order changed")
   if state["collisions"]:row["errors"].append("photo overlaps text")
@@ -75,10 +83,12 @@ async def test(browser,kind,w):
    if not p["image"]["width"] or p["image"]["width"]>w+2:row["errors"].append("image not resized within viewport")
    frameSolid=bool(p["frame"] and "solid" in (p["border"] or ""))
    imageSolid="solid" in (p["imageBorder"] or "")
-   if not frameSolid and not imageSolid:row["errors"].append("photo border missing")
+   if frameSolid or imageSolid:row["errors"].append("unwanted decorative photo border")
+   if p["linksToFull"] and p["linkAfter"] not in (None,"none","normal",'""',"''"):
+    row["errors"].append("photo link has a clipped corner marker")
    frameRadius=float((p["borderRadius"] or "0").split("px")[0])
    imgRadius=float((p["imageBorderRadius"] or "0").split("px")[0])
-   if max(frameRadius,imgRadius)<8:row["errors"].append("rounded photo frame missing")
+   if imgRadius<8:row["errors"].append("rounded photo crop missing")
   if kind=="interests" and not all(p["linksToFull"] for p in state["photos"]):
    row["errors"].append("restored full-size photo links missing")
   if kind=="pungmul" and sum(p["linksToFull"] for p in state["photos"])!=4:
