@@ -1,12 +1,12 @@
 {
-  "sourceHead": "422b286fb8db8dafee65d63e9dd564ebac381d1f",
+  "sourceHead": "1aa2bbdc9aa6012bd115c559098058d87b849de6",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
-  "verifiedExactMatches": 24,
-  "httpErrors": 0,
+  "verifiedExactMatches": 23,
+  "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-422b286fb8db",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-1aa2bbdc9aa6",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -17,7 +17,9 @@
       "run": "42011303338",
       "head_sha": "047305ec57d7f39eae67211febb9678b8e94fcb7",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "pungmul.html"
+      ],
       "failureCounts": {
         "problems": 0
       }
@@ -27,7 +29,9 @@
       "run": "42011303273",
       "head_sha": "047305ec57d7f39eae67211febb9678b8e94fcb7",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "pungmul.html"
+      ],
       "failureCounts": {
         "issues": 43
       },
@@ -56,7 +60,9 @@
       "run": "42011303183",
       "head_sha": "047305ec57d7f39eae67211febb9678b8e94fcb7",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "pungmul.html"
+      ],
       "failureCounts": {
         "failures": 0
       }
@@ -66,7 +72,9 @@
       "run": "42011303322",
       "head_sha": "047305ec57d7f39eae67211febb9678b8e94fcb7",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "pungmul.html"
+      ],
       "failureCounts": {
         "failures": 0
       }
@@ -76,7 +84,9 @@
       "run": "42011303307",
       "head_sha": "047305ec57d7f39eae67211febb9678b8e94fcb7",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "pungmul.html"
+      ],
       "failureCounts": {
         "failures": 0,
         "combinedStressFailures": 0
@@ -87,7 +97,9 @@
       "run": "42011303266",
       "head_sha": "047305ec57d7f39eae67211febb9678b8e94fcb7",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "pungmul.html"
+      ],
       "failureCounts": {
         "failures": 0,
         "axeViolations": 0
@@ -100,11 +112,113 @@
       "note": "U1 route audit documents successful run 40825886279; legacy utility machine report refers to an early missing-script failure. Do not treat it as latest successful evidence."
     }
   },
-  "sourceDriftSinceAudits": [],
-  "pass": true,
-  "errors": [],
+  "sourceDriftSinceAudits": [
+    {
+      "category": "links",
+      "sourceModifiedSinceAudit": [
+        "pungmul.html"
+      ]
+    },
+    {
+      "category": "external",
+      "sourceModifiedSinceAudit": [
+        "pungmul.html"
+      ]
+    },
+    {
+      "category": "reflow",
+      "sourceModifiedSinceAudit": [
+        "pungmul.html"
+      ]
+    },
+    {
+      "category": "engines",
+      "sourceModifiedSinceAudit": [
+        "pungmul.html"
+      ]
+    },
+    {
+      "category": "typography",
+      "sourceModifiedSinceAudit": [
+        "pungmul.html"
+      ]
+    },
+    {
+      "category": "interactions",
+      "sourceModifiedSinceAudit": [
+        "pungmul.html"
+      ]
+    }
+  ],
+  "pass": false,
+  "errors": [
+    {
+      "path": "pungmul.html",
+      "errors": [
+        "deployed bytes differ from checked-out production source"
+      ],
+      "firstDiff": [
+        "--- source\n",
+        "+++ deployed\n",
+        "@@ -14,4 +14,3 @@\n",
+        " <style id=\"moon-v2-live-layout\">@media (min-width:1025px){main > section:nth-of-type(1) > div:nth-of-type(1) > p:nth-of-type(2){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:538px!important;height:116px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}}",
+        "-@media (min-width:1025px){:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(1) > figure:nth-of-type(1) > img:nth-of-type(1){translate:0px 19px!important;scale:1 1!important;transform-origin:top left!important;width:437px!important;height:218px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;object-fit:contain!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(1) > figure:nth-of-type(1) > img:nth-of-type(1){object-fit:none!important;object-position:-100000px -100000px!important;background-image:url(assets/pungmul-rehearsal-studio.webp)!important;background-size:460px 258.75px!important;background-position:0px -18.382px!important;background-repeat:no-repeat!important;background-origin:border-box!important;border-radius:999px!important;clip-path:none!important;}}",
+        "-@media (min-width:1025px){:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3){grid-template-columns:minmax(0,min(431px,calc((100% - 18px) * 0.729272))) minmax(0,1fr)!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(1){width:100%!important;max-width:100%!important;min-width:0!important;height:auto!important;box-sizing:border-box!important;overflow:hidden!important;translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(1) > a:nth-of-type(1){display:block!important;width:100%!important;overflow:hidden!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(1) > a:nth-of-type(1) > img:nth-of-type(1){display:block!important;width:100%!important;max-width:100%!important;height:323px!important;box-sizing:border-box!important;object-fit:cover!important;translate:0 0!important;scale:1 1!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(1) > a:nth-of-type(1) > img:nth-of-type(1){object-fit:none!important;object-position:-100000px -100000px!important;background-image:url(assets/pungmul-ensemble-stage-photo.webp)!important;background-size:430.666px 323px!important;background-position:0.167px 0px!important;background-repeat:no-repeat!important;background-origin:border-box!important;border-radius:12px!important;clip-path:none!important;}}</style></head>",
+        "+@media (min-width:1025px){:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(1) > figure:nth-of-type(1) > img:nth-of-type(1){translate:0px 19px!important;scale:1 1!important;transform-origin:top left!important;width:437px!important;height:218px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;object-fit:contain!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(1) > figure:nth-of-type(1) > img:nth-of-type(1){object-fit:none!important;object-position:-100000px -100000px!important;background-image:url(assets/pungmul-rehearsal-studio.webp)!important;background-size:460px 258.75px!important;background-position:0px -18.382px!important;background-repeat:no-repeat!important;background-origin:border-box!important;border-radius:999px!important;clip-path:none!important;}}</style></head>",
+        " <body class=\"theme-yellow\">",
+        "@@ -54,4 +53,4 @@\n",
+        "         <figure>",
+        "-          <a href=\"assets/pungmul-ensemble-stage-photo.webp\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"Open the full-size stage performance photograph in a new tab\"><img src=\"assets/pungmul-ensemble-stage-photo.webp\" width=\"1400\" height=\"1050\" alt=\"Traditional Korean drummers at the front of a stage with a larger ensemble of musicians behind them\" loading=\"eager\" decoding=\"async\" data-moon-v2-image-crop=\"{&quot;desktop&quot;:{&quot;fit&quot;:&quot;contain&quot;,&quot;x&quot;:50,&quot;y&quot;:50,&quot;mask&quot;:&quot;rounded&quot;,&quot;zoom&quot;:100,&quot;ratio&quot;:1.33333,&quot;baseW&quot;:431,&quot;left&quot;:0,&quot;right&quot;:0,&quot;top&quot;:0,&quot;bottom&quot;:0,&quot;reset&quot;:false}}\"></a>",
+        "-          ",
+        "+          <a href=\"assets/pungmul-ensemble-stage-photo.webp\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"Open the full-size stage performance photograph in a new tab\"><img src=\"assets/pungmul-ensemble-stage-photo.webp\" width=\"1400\" height=\"1050\" alt=\"Traditional Korean drummers at the front of a stage with a larger ensemble of musicians behind them\" loading=\"eager\" decoding=\"async\"></a>",
+        "+          <figcaption>Playing on stage</figcaption>",
+        "         </figure>",
+        "@@ -59,3 +58,3 @@\n"
+      ]
+    },
+    {
+      "sourceDrift": [
+        {
+          "category": "links",
+          "sourceModifiedSinceAudit": [
+            "pungmul.html"
+          ]
+        },
+        {
+          "category": "external",
+          "sourceModifiedSinceAudit": [
+            "pungmul.html"
+          ]
+        },
+        {
+          "category": "reflow",
+          "sourceModifiedSinceAudit": [
+            "pungmul.html"
+          ]
+        },
+        {
+          "category": "engines",
+          "sourceModifiedSinceAudit": [
+            "pungmul.html"
+          ]
+        },
+        {
+          "category": "typography",
+          "sourceModifiedSinceAudit": [
+            "pungmul.html"
+          ]
+        },
+        {
+          "category": "interactions",
+          "sourceModifiedSinceAudit": [
+            "pungmul.html"
+          ]
+        }
+      ]
+    }
+  ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42011627709",
-  "run_sha": "422b286fb8db8dafee65d63e9dd564ebac381d1f",
-  "exit_code": "0"
+  "workflow_run_id": "42012524343",
+  "run_sha": "1aa2bbdc9aa6012bd115c559098058d87b849de6",
+  "exit_code": "1"
 }
