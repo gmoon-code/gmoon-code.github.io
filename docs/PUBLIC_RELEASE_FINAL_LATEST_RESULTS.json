@@ -1,12 +1,12 @@
 {
-  "sourceHead": "ede789b3fb05080b48d4881fc743e558cc42fef4",
+  "sourceHead": "44750202b6eb2bd2e7bc0e9f121292312cb8d23a",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
-  "verifiedExactMatches": 23,
-  "httpErrors": 1,
+  "verifiedExactMatches": 24,
+  "httpErrors": 0,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-ede789b3fb05",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-44750202b6eb",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -90,12 +90,10 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "41931940898",
-      "head_sha": "69e621f73438a38738c6232b803a599ab6052181",
+      "run": "41940926208",
+      "head_sha": "5df2bff98059221e01a9af8d76c97074b875e75f",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research-scoping.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0,
         "axeViolations": 0
@@ -126,40 +124,10 @@
       "sourceModifiedSinceAudit": [
         "research-scoping.html"
       ]
-    },
-    {
-      "category": "interactions",
-      "sourceModifiedSinceAudit": [
-        "research-scoping.html"
-      ]
     }
   ],
   "pass": false,
   "errors": [
-    {
-      "path": "research-scoping.html",
-      "errors": [
-        "deployed bytes differ from checked-out production source"
-      ],
-      "firstDiff": [
-        "--- source\n",
-        "+++ deployed\n",
-        "@@ -56,3 +56,3 @@\n",
-        "   </style>",
-        "-<style id=\"moon-v2-live-layout\"></style></head>",
-        "+</head>",
-        " <body class=\"theme-green\">",
-        "@@ -70,3 +70,3 @@\n",
-        "   <div class=\"hero-copy\">",
-        "-    ",
-        "+    <p class=\"meta\">Initial ERIC-bounded scoping review · 2026 · Preprint available</p>",
-        "     <h1>Evidence of multilingual students' science understanding</h1>",
-        "@@ -221,3 +221,2 @@\n",
-        "   </script>",
-        "-",
-        " </body></html>"
-      ]
-    },
     {
       "sourceDrift": [
         {
@@ -179,18 +147,12 @@
           "sourceModifiedSinceAudit": [
             "research-scoping.html"
           ]
-        },
-        {
-          "category": "interactions",
-          "sourceModifiedSinceAudit": [
-            "research-scoping.html"
-          ]
         }
       ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41941010460",
-  "run_sha": "ede789b3fb05080b48d4881fc743e558cc42fef4",
+  "workflow_run_id": "41941046483",
+  "run_sha": "44750202b6eb2bd2e7bc0e9f121292312cb8d23a",
   "exit_code": "1"
 }
