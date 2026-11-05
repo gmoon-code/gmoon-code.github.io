@@ -3975,3 +3975,123 @@ test('Gallery crop handles shrink the selected frame, preserve sibling photos, a
     expect(await metrics(other)).toEqual(unchanged);
     expect(writes).toEqual([]);
   });
+
+test('Pungmul prose box resizes numerically and by grip despite high-specificity visitor CSS',
+  async({page})=>{
+    const writes=[];
+    await installVerifiedCurrentSource(page,writes);
+    await page.setViewportSize({width:1740,height:1050});
+    await page.goto(BASE+'/editor-v2.html?page=pungmul.html',
+      {waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    const frame=page.frameLocator('#livePageFrame');
+    const paragraph=frame.locator('#performances .pungmul-prose p').first();
+    const other=frame.locator('#music .pungmul-prose p').first();
+    await paragraph.scrollIntoViewIfNeeded();
+    const position=el=>el.evaluate(node=>{
+      const r=node.getBoundingClientRect(),s=getComputedStyle(node);
+      return {w:r.width,h:r.height,width:s.width,height:s.height,
+        fontSize:s.fontSize,transform:s.transform,translate:s.translate};
+    });
+    const initial=await position(paragraph),untouched=await position(other);
+    const originalText=await paragraph.textContent();
+    await paragraph.click();
+    await expect(page.locator('#liveTextReflowControls')).toBeVisible();
+    const widthInput=page.locator('#liveTextBoxWidth');
+    await widthInput.fill('360');
+    await widthInput.dispatchEvent('change');
+    const narrow=await position(paragraph);
+    expect(narrow.w,'the Pungmul prose width must obey the saved text box size')
+      .toBeGreaterThan(355);
+    expect(narrow.w).toBeLessThan(365);
+    expect(narrow.fontSize).toBe(initial.fontSize);
+    expect(await paragraph.textContent()).toBe(originalText);
+    const targetHeight=Math.round(Math.max(narrow.h,initial.h)+70);
+    await page.locator('#liveTextBoxHeight').fill(String(targetHeight));
+    await page.locator('#liveTextBoxHeight').dispatchEvent('change');
+    const tall=await position(paragraph);
+    expect(Math.abs(tall.h-targetHeight),'Pungmul prose height must be resizable')
+      .toBeLessThan(4);
+    const grip=frame.locator('#moon-v2-live-overlay .moon-v2-grip[data-direction="e"]');
+    await paragraph.evaluate(node=>node.scrollIntoView({block:'center'}));
+    await expect(grip).toBeVisible();
+    await grip.hover();
+    const gripBox=await grip.boundingBox();
+    const x=gripBox.x+gripBox.width/2,y=gripBox.y+gripBox.height/2;
+    await page.mouse.down();
+    await page.mouse.move(x+48,y,{steps:6});
+    await page.mouse.up();
+    const dragged=await position(paragraph);
+    expect(dragged.w,'the text-box east resize grip must increase its width')
+      .toBeGreaterThan(tall.w+15);
+    expect(dragged.fontSize).toBe(initial.fontSize);
+    expect(await position(other)).toEqual(untouched);
+    await page.locator('#preview').click();
+    await expect(page.locator('#previewDialog')).toBeVisible();
+    const preview=page.frameLocator('#previewFrame')
+      .locator('#performances .pungmul-prose p').first();
+    const publishedPreview=await position(preview);
+    expect(Math.abs(publishedPreview.w-dragged.w)).toBeLessThan(5);
+    expect(Math.abs(publishedPreview.h-dragged.h)).toBeLessThan(5);
+    expect(await preview.textContent()).toBe(originalText);
+    expect(writes).toEqual([]);
+  });
+
+test('Pungmul section resizing preserves explicit width and height in editor and preview',
+  async({page})=>{
+    const writes=[];
+    await installVerifiedCurrentSource(page,writes);
+    await page.setViewportSize({width:1740,height:1050});
+    await page.goto(BASE+'/editor-v2.html?page=pungmul.html',
+      {waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    const frame=page.frameLocator('#livePageFrame');
+    const section=frame.locator('#music');
+    const next=frame.locator('#history');
+    const dimensions=el=>el.evaluate(node=>{
+      const r=node.getBoundingClientRect(),s=getComputedStyle(node);
+      return {w:r.width,h:r.height,width:s.width,height:s.height,
+        translate:s.translate};
+    });
+    const untouched=await dimensions(next);
+    await page.locator('#liveSectionPickMode').click();
+    await section.locator('.pungmul-prose p').first().click();
+    await expect(page.locator('#liveSectionSizing')).toBeVisible();
+    const initial=await dimensions(section);
+    const targetWidth=Math.round(initial.w-115);
+    await page.locator('#liveOriginalWidth').fill(String(targetWidth));
+    await page.locator('#liveOriginalWidth').dispatchEvent('change');
+    const narrowed=await dimensions(section);
+    expect(Math.abs(narrowed.w-targetWidth),
+      'the selected section must not be reset to width:100% by Pungmul CSS')
+      .toBeLessThan(4);
+    const targetHeight=Math.round(narrowed.h+100);
+    await page.locator('#liveOriginalHeight').fill(String(targetHeight));
+    await page.locator('#liveOriginalHeight').dispatchEvent('change');
+    const fixed=await dimensions(section);
+    expect(Math.abs(fixed.h-targetHeight),
+      'the selected section must not be reset to height:auto by Pungmul CSS')
+      .toBeLessThan(5);
+    await expect(page.locator('#liveSectionHeightMode')).toHaveValue('fixed');
+    await section.evaluate(node=>node.scrollIntoView({block:'center'}));
+    const grip=frame.locator('#moon-v2-live-overlay .moon-v2-grip[data-direction="e"]');
+    await expect(grip).toBeVisible();
+    await grip.hover();
+    const box=await grip.boundingBox(),x=box.x+box.width/2,y=box.y+box.height/2;
+    await page.mouse.down();
+    await page.mouse.move(x+50,y,{steps:7});
+    await page.mouse.up();
+    const dragged=await dimensions(section);
+    expect(dragged.w,'section edge grip must visibly resize its box')
+      .toBeGreaterThan(fixed.w+15);
+    expect((await dimensions(next)).w).toBe(untouched.w);
+    await page.locator('#preview').click();
+    await expect(page.locator('#previewDialog')).toBeVisible();
+    const preview=page.frameLocator('#previewFrame').locator('#music');
+    const same=await dimensions(preview);
+    expect(Math.abs(same.w-dragged.w)).toBeLessThan(5);
+    expect(Math.abs(same.h-dragged.h)).toBeLessThan(5);
+    expect(writes).toEqual([]);
+  });
