@@ -83,9 +83,9 @@
   min-width:0;
   margin:0;
   overflow:hidden;
-  border:1px solid var(--moon-rule);
-  border-radius:12px;
-  background:var(--moon-paper,#fff);
+  border:0;
+  border-radius:0;
+  background:transparent;
 }
 #main.interests-page .pungmul-gallery a{display:block;overflow:visible}
 #main.interests-page .pungmul-gallery img{
@@ -98,6 +98,12 @@
   object-position:center;
 }
 #main.interests-page .pungmul-gallery figcaption{padding:9px 11px;font-size:13px}
+/* The photograph itself is the visual frame. No surrounding border or
+   clipped 'View photo' badge that could be mistaken for a resize handle. */
+#main.interests-page .pungmul-gallery a[target="_blank"]::after{
+  content:none!important;
+  display:none!important;
+}
 @media(max-width:900px){
   #main.interests-page .pungmul-gallery{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
