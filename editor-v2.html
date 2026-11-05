@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex,nofollow">
 <title>Academic Website Editor 2 | Ye Eun Moon</title>
 <link rel="stylesheet" href="editor-v2.css?v=20261105-image-deployment-check-v70">
-<script src="editor-v2.js?v=20261105-inline-published-baseline-v75" defer></script>
+<script src="editor-v2.js?v=20261105-unified-gallery-photo-cards-v76" defer></script>
 </head>
 <body>
 <a class="skip" href="#workspace">Skip to editor canvas</a>
@@ -331,6 +331,13 @@
             <label>Height scale <input type="number" id="liveScaleY" min="20" max="500" step="1" value="100"></label>
           </div>
           <div id="liveImageSizing" hidden>
+            <div id="livePhotoCardControls" hidden>
+              <label class="checkbox-line">
+                <input id="livePhotoCardMode" type="checkbox">
+                Move and resize the photo, rounded frame and caption together
+              </label>
+              <p class="help">Gallery photographs are edited as one card. Drag the blue handles to move or resize the photo with its caption. Use Crop picture to adjust the pixels inside that frame. Your image, link and caption remain intact.</p>
+            </div>
             <label class="checkbox-line">
               <input id="liveLockImageRatio" type="checkbox" checked>
               Keep image proportions when resizing
