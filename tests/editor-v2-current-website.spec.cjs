@@ -3041,3 +3041,188 @@ test('Stale text resolution rejects a changed GitHub source rather than rebasing
   await expect(page.locator('#staleTextResolveDialog')).toBeHidden();
   expect(writes).toEqual([]);
 });
+
+
+test('Interests stale Pungmul section + 12 other edits preview and publish exact safe HTML',async({page})=>{
+  const name='interests.html',unexpectedWrites=[],puts=[];
+  await installVerifiedCurrentSource(page,unexpectedWrites);
+  await page.route('https://api.github.com/repos/gmoon-code/gmoon-code.github.io/contents/'+name,
+    async route=>{
+      if(route.request().method()!=='PUT')return route.fallback();
+      puts.push(JSON.parse(route.request().postData()));
+      await route.fulfill({status:200,contentType:'application/json',
+        headers:{'access-control-allow-origin':'*'},
+        body:JSON.stringify({commit:{sha:'mock-section-and-image-edits'}})});
+    });
+  await page.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+  await expect(page.locator('#liveAssetStatus'))
+    .toContainText('GitHub main source verified',{timeout:35000});
+  const patches=await page.frameLocator('#livePageFrame').locator('main').evaluate(main=>{
+    const selector=node=>{
+      const steps=[];
+      for(let n=node;n&&n.tagName!=='MAIN';n=n.parentElement){
+        const peers=[...n.parentElement.children].filter(e=>e.tagName===n.tagName);
+        steps.unshift(n.tagName.toLowerCase()+':nth-of-type('+
+          (peers.indexOf(n)+1)+')');
+      }
+      return 'main > '+steps.join(' > ');
+    };
+    const section=main.querySelector('section.section');
+    const layoutNodes=[section,...main.querySelectorAll('h1,h2,h3,h4,p,figcaption')].slice(0,11);
+    if(layoutNodes.length!==11)throw Error('Insufficient original-layout elements');
+    const edits=layoutNodes.map((node,i)=>{
+      const expected=(node.textContent||'').trim().slice(0,300);
+      const old=i===0?expected.replace(
+        'as everyone listens and responds to one another',
+        'through everyone listening and responding to one another'):expected;
+      return {selector:selector(node),kind:'layout',tag:node.tagName.toLowerCase(),
+        expected:old,
+        layout:{desktop:{dx:i===0?12:0,dy:0,sx:1,sy:1}}};
+    });
+    if(edits[0].expected===((section.textContent||'').trim().slice(0,300)))
+      throw Error('Historical container text was not changed for regression');
+    for(const img of [...main.querySelectorAll('.pungmul-gallery img')]){
+      const src=img.getAttribute('src');
+      edits.push({selector:selector(img),kind:'image',tag:'img',
+        expected:src,src,alt:img.alt,
+        imageCrop:{desktop:{fit:'cover',x:50,y:50,zoom:100,mask:'rounded'}},
+        layout:{desktop:{dx:0,dy:0,sx:1,sy:1,wrapWidth:230,reserveHeight:168}}});
+    }
+    return edits;
+  });
+  expect(patches).toHaveLength(13);
+  const key='moon-academic-editor-v2:source:'+name;
+  const snapshot=JSON.stringify(patches);
+  await page.evaluate(([k,v])=>localStorage.setItem(k,v),[key,snapshot]);
+  await page.reload({waitUntil:'domcontentloaded'});
+  await expect(page.locator('#liveAssetStatus'))
+    .toContainText('GitHub main source verified',{timeout:35000});
+  await expect(page.locator('#liveEditCount')).toContainText('13 draft edits');
+  const originalText=await page.frameLocator('#livePageFrame').locator('main').evaluate(el=>
+    el.textContent.replace(/\s+/g,' ').trim());
+  await page.locator('#preview').click();
+  await expect(page.locator('#previewDialog')).toBeVisible({timeout:20000});
+  const html=await page.locator('#previewFrame').getAttribute('srcdoc');
+  const inspected=await page.evaluate(value=>{
+    const d=new DOMParser().parseFromString(value,'text/html');
+    const figures=[...d.querySelectorAll('.pungmul-gallery img')];
+    return {text:d.querySelector('main').textContent.replace(/\s+/g,' ').trim(),
+      src:figures.map(x=>x.getAttribute('src')),
+      sheet:d.querySelector('#moon-v2-live-layout')?.textContent||''};
+  },html);
+  expect(inspected.text).toBe(originalText);
+  expect(inspected.src).toEqual([
+    'assets/interests-pungmul-street.webp',
+    'assets/interests-pungmul-dancers.webp']);
+  expect(inspected.sheet).toContain('border-radius:12px!important');
+  await page.locator('#closePreview').click();
+  await page.locator('#publish').click();
+  await page.locator('#checkPublishEdits').click();
+  await expect(page.locator('#publishError'))
+    .toContainText('13 draft edits match the current GitHub source');
+  await page.locator('#githubToken').fill('isolated-browser-test-only');
+  await page.locator('#acknowledgeLive').check();
+  await page.locator('#confirmPublish').click();
+  await expect.poll(()=>puts.length,{timeout:20000}).toBe(1);
+  const published=Buffer.from(puts[0].content,'base64').toString('utf8');
+  expect(published).toBe(html);
+  expect(puts[0].sha).toBe(blobSha(SOURCE.get(name)));
+  // After publication the editor correctly normalizes stale expected text
+  // to the current GitHub paragraph. This is safer than retaining the old
+  // source fingerprint. The full 13-edit draft must nonetheless survive.
+  const retained=await page.evaluate(k=>JSON.parse(localStorage.getItem(k)||'[]'),key);
+  expect(retained).toHaveLength(13);
+  const retainedSection=retained.find(p=>p.tag==='section'&&
+    p.selector==='main > section:nth-of-type(2)');
+  expect(retainedSection.layout.desktop.dx).toBe(12);
+  expect(retainedSection.expected).toContain(
+    'as everyone listens and responds to one another');
+  expect(retained.filter(p=>p.kind==='image')).toHaveLength(2);
+  for(const img of retained.filter(p=>p.kind==='image')){
+    expect(img.imageCrop.desktop.mask).toBe('rounded');
+    expect(img.layout.desktop.wrapWidth).toBe(230);
+  }
+  expect(unexpectedWrites).toEqual([]);
+});
+
+test('A duplicated historical Interests section anchor never remaps an old container edit',async({page})=>{
+  const name='interests.html',writes=[];
+  const original=SOURCE.get(name).toString('utf8');
+  const section=original.match(/<section class="section">[\s\S]*?<\/section>/);
+  expect(section).toBeTruthy();
+  const duplicated=original.replace(section[0],section[0]+section[0]);
+  await page.route(/^https:\/\/api\.github\.com\/repos\/gmoon-code\/gmoon-code\.github\.io\//,
+    async route=>{
+      if(route.request().method()!=='GET'){
+        writes.push(route.request().method());await route.abort();return;
+      }
+      const body=Buffer.from(duplicated);
+      await route.fulfill({status:200,contentType:'application/json',
+        headers:{'access-control-allow-origin':'*'},
+        body:JSON.stringify({type:'file',name,sha:blobSha(body),
+          encoding:'base64',content:body.toString('base64')})});
+    });
+  await page.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+  await expect(page.locator('#liveAssetStatus'))
+    .toContainText('GitHub main source verified',{timeout:35000});
+  const sectionNode=page.frameLocator('#livePageFrame').locator('main section.section').first();
+  const expected=await sectionNode.evaluate(x=>x.textContent.trim().slice(0,300));
+  const old=expected.replace(
+    'as everyone listens and responds to one another',
+    'through everyone listening and responding to one another');
+  expect(old).not.toBe(expected);
+  const patch={selector:'main > section:nth-of-type(2)',kind:'layout',
+    tag:'section',expected:old,layout:{desktop:{dx:25,dy:0,sx:1,sy:1}}};
+  const photo=await page.frameLocator('#livePageFrame')
+    .locator('main section.section').first().locator('img').first().evaluate(img=>{
+      const parts=[];
+      for(let node=img;node&&node.tagName!=='MAIN';node=node.parentElement){
+        const siblings=[...node.parentElement.children].filter(el=>el.tagName===node.tagName);
+        parts.unshift(node.tagName.toLowerCase()+':nth-of-type('+
+          (siblings.indexOf(node)+1)+')');
+      }
+      return {selector:'main > '+parts.join(' > '),
+        src:img.getAttribute('src'),alt:img.alt};
+    });
+  const imagePatch={selector:photo.selector,kind:'image',tag:'img',
+    expected:photo.src,src:photo.src,alt:photo.alt};
+  const key='moon-academic-editor-v2:source:'+name,raw=JSON.stringify([patch,imagePatch]);
+  await page.evaluate(([k,v])=>localStorage.setItem(k,v),[key,raw]);
+  await page.reload({waitUntil:'domcontentloaded'});
+  await expect(page.locator('#liveAssetStatus'))
+    .toContainText('GitHub main source verified',{timeout:35000});
+  await page.locator('#preview').click();
+  await expect(page.locator('#previewDialog')).toBeHidden();
+  await expect(page.locator('#status')).toContainText(
+    'No matching original element for saved section/container positioning edit');
+  await page.locator('#publish').click();
+  await page.locator('#checkPublishEdits').click();
+  await expect(page.locator('#publishError')).toContainText(
+    'saved section/container positioning edit');
+  expect(await page.locator('#imageReconnectPanel').evaluate(el=>el.open)).toBe(false);
+  expect(await page.evaluate(k=>localStorage.getItem(k),key)).toBe(raw);
+  expect(writes).toEqual([]);
+});
+
+test('A stale text-replacement section is not automatically rebased as layout',async({page})=>{
+  const name='interests.html',writes=[];
+  await installVerifiedCurrentSource(page,writes);
+  await page.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+  await expect(page.locator('#liveAssetStatus'))
+    .toContainText('GitHub main source verified',{timeout:35000});
+  const current=await page.frameLocator('#livePageFrame').locator('main section.section').first()
+    .evaluate(x=>x.textContent.trim().slice(0,300));
+  const expected=current.replace('as everyone listens and responds to one another',
+    'through everyone listening and responding to one another');
+  const patch={selector:'main > section:nth-of-type(2)',kind:'delete',
+    expected,tag:'section'};
+  const key='moon-academic-editor-v2:source:'+name,raw=JSON.stringify([patch]);
+  await page.evaluate(([k,v])=>localStorage.setItem(k,v),[key,raw]);
+  await page.reload({waitUntil:'domcontentloaded'});
+  await expect(page.locator('#liveAssetStatus'))
+    .toContainText('GitHub main source verified',{timeout:35000});
+  await page.locator('#preview').click();
+  await expect(page.locator('#previewDialog')).toBeHidden();
+  expect(await page.evaluate(k=>localStorage.getItem(k),key)).toBe(raw);
+  expect(writes).toEqual([]);
+});
