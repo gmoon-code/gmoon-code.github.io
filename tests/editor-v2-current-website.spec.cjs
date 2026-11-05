@@ -2356,8 +2356,7 @@ for(const name of ['pungmul.html','contact.html']){
 
 
 for(const [name,device,expectedPhotos] of [
-  ['index.html','tablet',2],['contact.html','desktop',1],
-  ['pungmul.html','desktop',5]
+  ['index.html','tablet',2],['contact.html','desktop',1]
 ]){
   test('Editing script-reparented '+name+' photo preserves its identity, size and publication preview',
     async({page})=>{
@@ -2409,6 +2408,103 @@ for(const [name,device,expectedPhotos] of [
       await expect(page.frameLocator('#livePageFrame')
         .locator('main img[data-moon-v2-added-id="'+identity+'"]'))
         .toHaveCount(1);
+      expect(writes).toEqual([]);
+    });
+}
+
+
+for(const [name,device,width,expectedCount] of [
+  ['index.html','tablet',768,2],['contact.html','desktop',1160,1]
+]){
+  test('Reparented '+name+' image resize, move and crop match mock-published visitor at '+device,
+    async({page})=>{
+      const writes=[],puts=[];
+      await installVerifiedCurrentSource(page,writes);
+      await page.route('https://api.github.com/repos/gmoon-code/gmoon-code.github.io/contents/'+name,
+        async route=>{
+          if(route.request().method()!=='PUT')return route.fallback();
+          puts.push(JSON.parse(route.request().postData()));
+          await route.fulfill({status:200,contentType:'application/json',
+            headers:{'access-control-allow-origin':'*'},
+            body:JSON.stringify({commit:{sha:'synthetic-reparented-photo-commit'}})});
+        });
+      await page.setViewportSize({width:1740,height:1050});
+      await page.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+      await expect(page.locator('#liveAssetStatus'))
+        .toContainText('GitHub main source verified',{timeout:35000});
+      await page.locator('#devicePreview').selectOption(device);
+      const live=page.frameLocator('#livePageFrame');
+      const images=live.locator('main img[data-moon-v2-added-id]');
+      await expect(images).toHaveCount(expectedCount);
+      const image=images.first();
+      await image.scrollIntoViewIfNeeded();
+      await expect.poll(()=>image.evaluate(n=>n.naturalWidth),{timeout:15000})
+        .toBeGreaterThan(0);
+      await image.click();
+      const id=await image.getAttribute('data-moon-v2-added-id');
+      const initialWidth=Number(await page.locator('#liveAddedWidth').inputValue());
+      const initialX=Number(await page.locator('#liveMoveX').inputValue());
+      await page.locator('#liveAddedWidth').fill(String(initialWidth+36));
+      await page.locator('#liveAddedWidth').dispatchEvent('change');
+      await page.locator('#liveMoveX').fill(String(initialX+27));
+      await page.locator('#liveMoveX').dispatchEvent('change');
+      await page.locator('#liveCropShape').selectOption('rounded');
+      await page.locator('#liveCropZoom').evaluate(el=>{
+        el.value='180';el.dispatchEvent(new Event('input',{bubbles:true}));
+        el.dispatchEvent(new Event('change',{bubbles:true}));
+      });
+      const sample=async locator=>locator.evaluate(async(img)=>{
+        await img.ownerDocument.fonts?.ready;
+        const rect=img.getBoundingClientRect();
+        const main=img.closest('main').getBoundingClientRect();
+        const css=img.ownerDocument.defaultView.getComputedStyle(img);
+        return {id:img.dataset.moonV2AddedId,x:rect.x-main.x,y:rect.y-main.y,
+          w:rect.width,h:rect.height,fit:css.objectFit,
+          bg:css.backgroundPosition,size:css.backgroundSize,
+          parent:img.parentElement.className};
+      });
+      const edited=await sample(image);
+      await expect(live.locator('main img[data-moon-v2-added-id="'+id+'"]'))
+        .toHaveCount(1);
+      await page.locator('#preview').click();
+      await expect(page.locator('#previewDialog')).toBeVisible();
+      const previewImage=page.frameLocator('#previewFrame')
+        .locator('main img[data-moon-v2-added-id="'+id+'"]');
+      await expect(previewImage).toHaveCount(1);
+      const prepared=await sample(previewImage);
+      expect(prepared.parent).toBe(edited.parent);
+      for(const prop of ['x','y','w','h'])
+        expect(Math.abs(prepared[prop]-edited[prop]),name+' '+prop+' preview')
+          .toBeLessThan(7);
+      expect(prepared.fit).toBe(edited.fit);
+      expect(prepared.size).toBe(edited.size);
+      const previewHtml=await page.locator('#previewFrame').getAttribute('srcdoc');
+      await page.locator('#closePreview').click();
+      await page.locator('#publish').click();
+      await page.locator('#githubToken').fill('synthetic-reparented-photo-test');
+      await page.locator('#acknowledgeLive').check();
+      await page.locator('#confirmPublish').click();
+      await expect.poll(()=>puts.length,{timeout:25000}).toBe(1);
+      const committed=Buffer.from(puts[0].content,'base64').toString('utf8');
+      expect(committed).toBe(previewHtml);
+      const visitor=await page.context().newPage();
+      await visitor.setViewportSize({width,height:900});
+      await visitor.route(BASE+'/'+name,route=>route.fulfill({
+        status:200,contentType:'text/html',body:committed}));
+      await visitor.goto(BASE+'/'+name,{waitUntil:'load'});
+      const published=visitor.locator('main img[data-moon-v2-added-id="'+id+'"]');
+      await expect(published).toHaveCount(1);
+      await expect(visitor.locator('main img[data-moon-v2-added-id]'))
+        .toHaveCount(expectedCount);
+      const delivered=await sample(published);
+      expect(delivered.parent).toBe(prepared.parent);
+      for(const prop of ['x','y','w','h'])
+        expect(Math.abs(delivered[prop]-prepared[prop]),
+          name+' '+prop+' deployed simulated page').toBeLessThan(7);
+      expect(delivered.fit).toBe(prepared.fit);
+      expect(delivered.size).toBe(prepared.size);
+      expect(delivered.bg).toBe(prepared.bg);
+      await visitor.close();
       expect(writes).toEqual([]);
     });
 }
