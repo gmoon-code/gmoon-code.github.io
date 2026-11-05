@@ -1,12 +1,12 @@
 {
-  "sourceHead": "3458bdc4a607fa86ea32244f4a5b319d6e67ca52",
+  "sourceHead": "07865065eec2b47dc375bb5b7e8f81de83f059bb",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 22,
   "httpErrors": 2,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-3458bdc4a607",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-07865065eec2",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -79,15 +79,12 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "41988719864",
-      "head_sha": "73e67c29a94c0c18a595923f02076a80e40c5672",
-      "exit": "1",
-      "sourceModifiedSinceAudit": [
-        "interests.html",
-        "pungmul.html"
-      ],
+      "run": "41990650403",
+      "head_sha": "0d4c244ac166224bea83e4b02c8dea81f860c0a0",
+      "exit": "0",
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
-        "failures": 4,
+        "failures": 0,
         "combinedStressFailures": 0
       }
     },
@@ -119,13 +116,6 @@
     },
     {
       "category": "engines",
-      "sourceModifiedSinceAudit": [
-        "interests.html",
-        "pungmul.html"
-      ]
-    },
-    {
-      "category": "typography",
       "sourceModifiedSinceAudit": [
         "interests.html",
         "pungmul.html"
@@ -190,26 +180,18 @@
             "interests.html",
             "pungmul.html"
           ]
-        },
-        {
-          "category": "typography",
-          "sourceModifiedSinceAudit": [
-            "interests.html",
-            "pungmul.html"
-          ]
         }
       ]
     },
     {
       "unresolvedAudits": [
         "reflow",
-        "engines",
-        "typography"
+        "engines"
       ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41990748902",
-  "run_sha": "3458bdc4a607fa86ea32244f4a5b319d6e67ca52",
+  "workflow_run_id": "41990803179",
+  "run_sha": "07865065eec2b47dc375bb5b7e8f81de83f059bb",
   "exit_code": "1"
 }
