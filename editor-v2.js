@@ -703,6 +703,23 @@ function cropShapeCss(shape){
 function croppedEdges(crop){
   return {left:crop.left||0,right:crop.right||0,top:crop.top||0,bottom:crop.bottom||0};
 }
+// Keep the visual crop and image-drag calculations on one mathematical basis.
+// Focal x/y positions must remain effective after edge trimming and resizing.
+function edgeCropPaintMetrics(crop,geometry){
+  const {left,right,top,bottom}=croppedEdges(crop);
+  const fx=1-(left+right)/100,fy=1-(top+bottom)/100;
+  const ratio=crop.ratio||geometry.w/geometry.h;
+  const naturalW=crop.fit==="cover"?
+    Math.max(geometry.w/fx,geometry.h*ratio/fy):
+    Math.min(geometry.w/fx,geometry.h*ratio/fy);
+  const fullW=naturalW*clamp(crop.zoom||100,100,500)/100;
+  const fullH=fullW/ratio;
+  const shiftX=(geometry.w-fullW*fx)*(crop.x??50)/100-fullW*left/100;
+  const shiftY=(geometry.h-fullH*fy)*(crop.y??50)/100-fullH*top/100;
+  return {fullW,fullH,shiftX,shiftY,
+    overflowX:Math.max(0,fullW*fx-geometry.w),
+    overflowY:Math.max(0,fullH*fy-geometry.h)};
+}
 function imageCropCss(crop,src="",geometry=null){
   const shape=cropShapeCss(crop.mask);
   if(crop.reset===true)
@@ -712,16 +729,8 @@ function imageCropCss(crop,src="",geometry=null){
   if(!src||!safeImageSource(src)||!geometry?.w||!geometry?.h)
     return "object-fit:"+crop.fit+"!important;object-position:"+crop.x+"% "+crop.y+"%!important;"+shape;
   if(["left","right","top","bottom"].some(k=>crop[k]!==undefined)){
-    const {left,right,top,bottom}=croppedEdges(crop);
-    const fx=1-(left+right)/100,fy=1-(top+bottom)/100;
-    const ratio=crop.ratio||geometry.w/geometry.h;
-    const naturalW=crop.fit==="cover"?
-      Math.max(geometry.w/fx,geometry.h*ratio/fy):
-      Math.min(geometry.w/fx,geometry.h*ratio/fy);
-    const fullW=naturalW*clamp(crop.zoom||100,100,500)/100,fullH=fullW/ratio;
+    const {fullW,fullH,shiftX,shiftY}=edgeCropPaintMetrics(crop,geometry);
     const px=v=>Math.round(v*1000)/1000+"px";
-    const shiftX=(geometry.w-fullW*fx)/2-fullW*left/100;
-    const shiftY=(geometry.h-fullH*fy)/2-fullH*top/100;
     return "object-fit:none!important;object-position:-100000px -100000px!important;"+
       "background-image:url("+src+")!important;"+
       "background-size:"+px(fullW)+" "+px(fullH)+"!important;"+
@@ -780,6 +789,40 @@ function liveGroupId(node,selector=node&&liveSelector(node)){
   const published=node?.getAttribute("data-moon-v2-editor-group");
   return published&&LIVE_GROUP_ID.test(published)?published:null;
 }
+// A published photograph may be reparented into a reading-order section.
+// Store its original flow box and source geometry so subsequent edits can
+// move/resize it relative to that box without turning it into an absolute
+// element or changing untouched pages.
+function validFlowPhotoBaselines(map){
+  if(!map||typeof map!=="object"||Array.isArray(map))return false;
+  const keys=Object.keys(map);
+  return keys.length>0&&keys.every(device=>{
+    const b=map[device];
+    return !!LIVE_DEVICE_RULES[device]&&b&&typeof b==="object"&&
+      !Array.isArray(b)&&
+      ["w","h","gx","gy","gw","gh"].every(key=>Number.isFinite(b[key]))&&
+      b.w>=24&&b.w<=5000&&b.h>=24&&b.h<=5000&&
+      b.gx>=-4000&&b.gx<=10000&&b.gy>=-4000&&b.gy<=40000&&
+      b.gw>=40&&b.gw<=4000&&b.gh>=24&&b.gh<=5000;
+  });
+}
+function flowPhotoBaseline(node,geometry,existing){
+  let map={};
+  if(validFlowPhotoBaselines(existing))map={...existing};
+  const inFlow=node?.tagName==="IMG"&&node.closest("main")&&
+    !node.parentElement?.hasAttribute("data-moon-v2-added-layer");
+  if(inFlow&&!map[liveDevice()]){
+    const source=addedDeviceGeometry({geometry},liveDevice());
+    const rect=node.getBoundingClientRect();
+    if(source&&Number.isFinite(rect.width)&&Number.isFinite(rect.height)&&
+       rect.width>=24&&rect.height>=24&&rect.width<=5000&&rect.height<=5000){
+      map[liveDevice()]={w:Math.round(rect.width*1000)/1000,
+        h:Math.round(rect.height*1000)/1000,
+        gx:source.x,gy:source.y,gw:source.w,gh:source.h};
+    }
+  }
+  return Object.keys(map).length?map:undefined;
+}
 function validAddedPatch(p){
   return !!p&&isAddedPatch(p)&&typeof p.expected==="string"&&p.expected===""&&
     ["text","image","shape"].includes(p.objectType)&&
@@ -796,6 +839,8 @@ function validAddedPatch(p){
       p.objectType==="image"&&validImageCropMap(p.imageCrop))&&
     (p.pictureEffects===undefined||
       p.objectType==="image"&&validPictureEffects(p.pictureEffects))&&
+    (p.flowBaseline===undefined||
+      p.objectType==="image"&&validFlowPhotoBaselines(p.flowBaseline))&&
     (p.groupId===undefined||validLiveGroupId(p.groupId));
 }
 function addedObjectId(p){return p.selector.slice("added:".length);}
@@ -881,6 +926,27 @@ function addedStyleCss(p){
       "px!important;height:"+g.h+"px!important;"+
       (crop?imageCropCss(crop,p.src,g):"")+
       (fx?pictureEffectsCss(fx):"")+"}}";
+    const flow=p.objectType==="image"?p.flowBaseline?.[device]:null;
+    if(flow){
+      const flowW=Math.round(clamp(flow.w+g.w-flow.gw,40,4000)*1000)/1000;
+      const flowH=Math.round(clamp(flow.h+g.h-flow.gh,24,5000)*1000)/1000;
+      const dx=Math.round((g.x-flow.gx)*1000)/1000;
+      const dy=Math.round((g.y-flow.gy)*1000)/1000;
+      // Higher specificity than visitor flow-layout reset rules, but ONLY
+      // for this image when reparented outside its source added layer.
+      const flowTag='html:not(#__moon_v2_flow_a):not(#__moon_v2_flow_b) '+
+        'main :not([data-moon-v2-added-layer]) > '+tag;
+      result+="@media "+media+"{"+flowTag+"{"+
+        "position:relative!important;left:auto!important;right:auto!important;"+
+        "top:auto!important;bottom:auto!important;"+
+        "width:"+flowW+"px!important;height:"+flowH+"px!important;"+
+        "max-width:none!important;max-height:none!important;"+
+        "min-width:0!important;min-height:0!important;"+
+        "translate:"+dx+"px "+dy+"px!important;"+
+        "scale:1 1!important;transform:none!important;"+
+        (crop?imageCropCss(crop,p.src,{w:flowW,h:flowH}):"")+
+        (fx?pictureEffectsCss(fx):"")+"}}";
+    }
   }
   return result;
 }
@@ -912,8 +978,15 @@ function applyAddedPatch(doc,p){
   if(!validAddedPatch(p))throw Error("Invalid independent webpage object.");
   const layer=ensureAddedLayer(doc),id=addedObjectId(p);
   const wanted=p.objectType==="image"?"img":p.objectType==="text"?"p":"div";
-  let node=[...layer.children].find(el=>
+  // Home, Contact and Pungmul move published image nodes out of the
+  // original added layer for accessible responsive reading order. Always
+  // update the unique existing node wherever the page script placed it.
+  // Creating a replacement in the layer duplicates the photo and makes
+  // edits appear not to affect the displayed image.
+  const matches=[...doc.querySelectorAll("main [data-moon-v2-added-id]")].filter(el=>
     el.getAttribute("data-moon-v2-added-id")===id);
+  if(matches.length>1)throw Error("This webpage has duplicate photo/object IDs. Review the original page before editing.");
+  let node=matches[0]||null;
   if(node&&node.tagName.toLowerCase()!==wanted){
     throw Error("A webpage object ID is already assigned to a different kind of element.");
   }
@@ -933,6 +1006,8 @@ function applyAddedPatch(doc,p){
   if(p.objectType==="image"){
     node.setAttribute("data-moon-v2-added-crop",JSON.stringify(p.imageCrop||{}));
     node.setAttribute("data-moon-v2-picture-effects",JSON.stringify(p.pictureEffects||{}));
+    if(p.flowBaseline)
+      node.setAttribute("data-moon-v2-flow-baseline",JSON.stringify(p.flowBaseline));
   }
   if(p.objectType==="image"){
     node.setAttribute("src",p.src);node.setAttribute("alt",p.alt);
@@ -1430,13 +1505,16 @@ function refreshLiveLayoutRules(doc=$("livePageFrame").contentDocument,patches=[
 }
 function addedPatchFromNode(node,selector=liveSelector(node)){
   if(!node||!LIVE_ADDED_ID.test(selector))return null;
-  let geometry,appearance,design,imageCrop,pictureEffects;
+  let geometry,appearance,design,imageCrop,pictureEffects,flowBaseline;
   try{pictureEffects=JSON.parse(node.getAttribute("data-moon-v2-picture-effects")||"{}");}
   catch{pictureEffects={};}
   try{imageCrop=JSON.parse(node.getAttribute("data-moon-v2-added-crop")||"{}");}
   catch{imageCrop={};}
   try{geometry=JSON.parse(node.getAttribute("data-moon-v2-added-geometry")||"{}");}
   catch{geometry={};}
+  try{flowBaseline=JSON.parse(node.getAttribute("data-moon-v2-flow-baseline")||"{}");}
+  catch{flowBaseline={};}
+  flowBaseline=flowPhotoBaseline(node,geometry,flowBaseline);
   try{appearance=JSON.parse(node.getAttribute("data-moon-v2-added-appearance")||"{}");}
   catch{appearance={};}
   try{design=JSON.parse(node.getAttribute("data-moon-v2-added-design")||"{}");}
@@ -1448,7 +1526,8 @@ function addedPatchFromNode(node,selector=liveSelector(node)){
     ...(liveGroupId(node,selector)?{groupId:liveGroupId(node,selector)}:{}),
     ...(node.tagName==="IMG"?{src:node.getAttribute("src")||"",alt:node.alt||"",
       ...(Object.keys(imageCrop).length?{imageCrop}:{}),
-      ...(Object.keys(pictureEffects).length?{pictureEffects}:{})}:
+      ...(Object.keys(pictureEffects).length?{pictureEffects}:{}),
+      ...(flowBaseline?{flowBaseline}:{})}:
       node.tagName==="P"?{html:cleanRich(node.innerHTML)}:
       {fill:node.getAttribute("data-moon-v2-shape-fill")||"#e1eee4"})};
   return validAddedPatch(patch)?patch:null;
@@ -1457,7 +1536,14 @@ function livePatchForSelected(){
   const node=liveSelected?.node,selector=node&&liveSelector(node);
   if(!selector)return null;
   const existing=livePatches.get(selector);
-  if(existing)return copy(existing);
+  if(existing){
+    const patch=copy(existing);
+    if(patch.kind==="insert"&&patch.objectType==="image"){
+      const baseline=flowPhotoBaseline(node,patch.geometry,patch.flowBaseline);
+      if(baseline)patch.flowBaseline=baseline;
+    }
+    return patch;
+  }
   if(LIVE_ADDED_ID.test(selector))return addedPatchFromNode(node,selector);
   if(node.tagName==="IMG")
     return {selector,kind:"image",expected:node.getAttribute("src")||"",
@@ -1653,7 +1739,7 @@ function applySelectedImageCrop(changes){
   const next={...prepared,...changes,reset:false};
   if(changes.mask!==undefined)Object.assign(next,{
     left:next.left||0,right:next.right||0,
-    top:next.top||0,bottom:next.bottom||0,fit:"contain"
+    top:next.top||0,bottom:next.bottom||0
   });
   if(!["contain","cover"].includes(next.fit)||
      !["rectangle","rounded","round-large","pill","circle","oval","squircle","diamond","hexagon","octagon","triangle","pentagon","star","heart","arch"].includes(next.mask)||
@@ -1883,9 +1969,7 @@ function setLiveCropMode(enabled){
   liveCropMode=!!enabled;
   if(enabled){
     const existing=selectedImageCrop(livePatchForSelected());
-    applySelectedImageCrop({
-      ...croppedEdges(existing),fit:"contain",zoom:100
-    });
+    applySelectedImageCrop(croppedEdges(existing));
   }
   removeLiveOverlay();renderLiveInspector();syncLiveOverlay();
   status(enabled?
@@ -1912,9 +1996,11 @@ function resetSelectedImageCrop(){
   if(["left","right","top","bottom"].some(k=>edges[k]>0)){
     if(patch.kind==="insert"){
       const geom=addedDeviceGeometry(patch,device);
+      const inFlow=!!patch.flowBaseline?.[device];
       patch.geometry={...patch.geometry,[device]:{...geom,
         x:Math.round(geom.x-shiftX),y:Math.round(geom.y-shiftY),
-        w:Math.round(clamp(fullW,40,4000)),h:Math.round(clamp(fullH,24,5000))}};
+        w:Math.round(clamp(inFlow?geom.w+fullW-frame.width:fullW,40,4000)),
+        h:Math.round(clamp(inFlow?geom.h+fullH-frame.height:fullH,24,5000))}};
     }else{
       const dims=normaliseElementBoxLayout(node,liveLayoutFor(selector));
       dims.wrapWidth=Math.round(clamp(fullW,64,4000));
@@ -1948,7 +2034,7 @@ function resetSelectedImageCrop(){
 // Updating the frame geometry keeps the remaining crop rectangle aligned.
 // No drag ever changes focal-position offsets when trimming a crop edge.
 function cropFrameGeometry(rect,origin,dir,dx,dy){
-  const crop={...origin,...croppedEdges(origin),fit:"contain",zoom:100,reset:false};
+  const crop={...origin,...croppedEdges(origin),reset:false};
   const initial=croppedEdges(crop);
   const fullW=rect.width/Math.max(.05,1-(initial.left+initial.right)/100);
   const fullH=rect.height/Math.max(.05,1-(initial.top+initial.bottom)/100);
@@ -1978,9 +2064,14 @@ function updateCropFrame(node,selector,originalPatch,initialRect,dir,dx,dy){
   patch.imageCrop={...(patch.imageCrop||{}),[device]:result.crop};
   if(patch.kind==="insert"){
     const initial=addedDeviceGeometry(originalPatch,device);
+    const inFlow=!!patch.flowBaseline?.[device];
     patch.geometry={...patch.geometry,[device]:{
       ...initial,x:Math.round(initial.x+result.x),
-      y:Math.round(initial.y+result.y),w:result.w,h:result.h
+      y:Math.round(initial.y+result.y),
+      w:Math.round(clamp(inFlow?
+        initial.w+result.w-initialRect.width:result.w,40,4000)),
+      h:Math.round(clamp(inFlow?
+        initial.h+result.h-initialRect.height:result.h,24,5000))
     }};
     livePatches.set(selector,patch);
     refreshAddedObject(node.ownerDocument,patch);
@@ -2043,8 +2134,11 @@ function cropImageToRatio(ratio){
   if(!prepared)return;
   if(patch.kind==="insert"){
     const old=addedDeviceGeometry(patch,device);
+    const rect=node.getBoundingClientRect();
+    const targetHeight=patch.flowBaseline?.[device]?
+      old.h+rect.width/ratio-rect.height:old.w/ratio;
     patch.geometry={...patch.geometry,[device]:
-      {...old,h:Math.round(clamp(old.w/ratio,24,5000))}};
+      {...old,h:Math.round(clamp(targetHeight,24,5000))}};
   }else{
     const layout=normaliseElementBoxLayout(node,liveLayoutFor(selector));
     layout.reserveHeight=Math.round(clamp(layout.wrapWidth/ratio,24,5000));
@@ -3642,11 +3736,13 @@ function moveLiveGesture(event){
     const frame=g.rect,nw=g.node.naturalWidth,nh=g.node.naturalHeight;
     if(!nw||!nh||frame.width<1||frame.height<1)return;
     const origin=selectedImageCrop(g.patch,liveDevice());
-    const imageWidth=Math.max(origin.baseW||0,frame.width,frame.height*nw/nh)*
-      (origin.zoom||100)/100;
-    const imageHeight=imageWidth*nh/nw;
-    const overflowX=Math.max(0,imageWidth-frame.width);
-    const overflowY=Math.max(0,imageHeight-frame.height);
+    const {overflowX,overflowY}=
+      ["left","right","top","bottom"].some(side=>origin[side]!==undefined)?
+        edgeCropPaintMetrics(origin,{w:frame.width,h:frame.height}):
+        (()=>{const imageWidth=Math.max(origin.baseW||0,frame.width,
+          frame.height*nw/nh)*(origin.zoom||100)/100;
+          return {overflowX:Math.max(0,imageWidth-frame.width),
+            overflowY:Math.max(0,imageWidth*nh/nw-frame.height)};})();
     const crop={...origin,fit:"cover",
       x:overflowX?Math.round(clamp(origin.x-deltaX/overflowX*100,0,100)):50,
       y:overflowY?Math.round(clamp(origin.y-deltaY/overflowY*100,0,100)):50};
@@ -4697,7 +4793,12 @@ function bindLiveDocument(){
     }
     // A touch tap selects without capturing the pointer, so users can still
     // scroll the responsive webpage. Mouse/pen can drag immediately.
-    if(liveCropMode&&target.tagName==="IMG")return; // Cut with pink edge handles.
+    if(liveCropMode&&target.tagName==="IMG"){
+      // In crop mode, drag the image to change its focal position while the
+      // pink frame handles independently trim the visible edges.
+      startLiveGesture(event,"crop",target);
+      return;
+    }
     if(event.pointerType!=="touch")startLiveGesture(event,"move",target);
   },true);
   doc.addEventListener("pointermove",event=>{
