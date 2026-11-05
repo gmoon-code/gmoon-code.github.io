@@ -1501,6 +1501,18 @@ function editedSourceImageSelector(patch){
     ":root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) ":"")+
     patch.selector;
 }
+// The Pungmul page (and some other published pages) use #main selectors
+// with !important to preserve their natural visitor layout. Without a
+// deliberate specificity boost those existing rules silently cancel text
+// box and section width/height/translate changes made in Editor V2.
+// Apply priority only when a saved layout patch exists for this exact
+// element. No rule is added to unedited text, sections or siblings.
+function editedSourceLayoutSelector(patch){
+  const selector=editedSourceImageSelector(patch);
+  return selector===patch.selector?
+    ":root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) "+selector:
+    selector;
+}
 // A linked gallery picture has two clipping ancestors: the link and figure.
 // Its own image box can resize/move correctly while visitors still see only
 // the portion inside the old card. Only unclip wrappers for an *edited*
@@ -1648,7 +1660,7 @@ function liveLayoutRules(patches=[...livePatches.values()],doc=null){
         selectors.push(priority+linkedFrame.link+"{overflow:visible!important;}");
         selectors.push(editedSourceImageSelector(patch)+"{border-radius:14px!important;}");
       }
-      selectors.push(editedSourceImageSelector(patch)+"{translate:"+
+      selectors.push(editedSourceLayoutSelector(patch)+"{translate:"+
         (Math.round(((entry.ox||0)+entry.dx)*1000)/1000)+"px "+
         (Math.round(((entry.oy||0)+entry.dy)*1000)/1000)+"px!important;scale:"+
         (Math.round(((entry.osx||1)*entry.sx)*1000)/1000)+" "+
@@ -3029,6 +3041,13 @@ async function restoreLiveDraftJson(file){
     status("Draft restore rejected · "+(error.message||error));
   }
 }
+// A live layout refresh can overwrite the active text-box input as a person
+// types. Preserve the focused field's editing buffer. Other numeric controls,
+// including gallery image dimensions, retain their established behaviour.
+function setLiveInspectorDimension(id,value){
+  const field=$(id);
+  if(document.activeElement!==field)field.value=String(value);
+}
 function renderLiveInspector(){
   const live=workspaceMode==="live",sel=liveSelected;
   $("liveInspector").hidden=!live;
@@ -3225,8 +3244,8 @@ function renderLiveInspector(){
     $("liveTextReflow").checked=on;
     $("liveTextBoxWidth").disabled=!on;
     $("liveTextBoxHeight").disabled=!on;
-    $("liveTextBoxWidth").value=String(Math.round(entry.wrapWidth||node.getBoundingClientRect().width));
-    $("liveTextBoxHeight").value=String(Math.round(entry.reserveHeight||node.getBoundingClientRect().height));
+    setLiveInspectorDimension("liveTextBoxWidth",Math.round(entry.wrapWidth||node.getBoundingClientRect().width));
+    setLiveInspectorDimension("liveTextBoxHeight",Math.round(entry.reserveHeight||node.getBoundingClientRect().height));
     $("liveResetTextDimensions").disabled=!canReflow||
       livePatches.get(selector)?.layout?.[liveDevice()]?.wrapWidth===undefined;
     const extra=canReflow&&entry.wrapWidth!==undefined?
@@ -4504,6 +4523,14 @@ function cancelLiveGesture(){
 function finishLiveGesture(event){
   const g=liveGesture;
   if(!g||event.pointerId!==g.pointer)return;
+  // Firefox can deliver a resize grip's pointerup without the final move
+  // reaching the source iframe. Complete original text-box grip resizing at
+  // the release coordinates, even if all intermediate moves were missed.
+  // Do not modify image, section, group or ordinary-click behaviour.
+  if(event.type==="pointerup"&&g.dir!=="move"&&
+     g.node.matches(LIVE_REFLOW_TEXT)&&
+     Math.hypot(event.clientX-g.startX,event.clientY-g.startY)>=3)
+    moveLiveGesture(event);
   liveGesture=null;
   // Release pointer capture explicitly when clicking an image or finishing a
   // drag. Firefox can otherwise leave the iframe owning the next pointer
