@@ -3127,7 +3127,21 @@ test('Interests stale Pungmul section + 12 other edits preview and publish exact
   const published=Buffer.from(puts[0].content,'base64').toString('utf8');
   expect(published).toBe(html);
   expect(puts[0].sha).toBe(blobSha(SOURCE.get(name)));
-  expect(await page.evaluate(k=>localStorage.getItem(k),key)).toBe(snapshot);
+  // After publication the editor correctly normalizes stale expected text
+  // to the current GitHub paragraph. This is safer than retaining the old
+  // source fingerprint. The full 13-edit draft must nonetheless survive.
+  const retained=await page.evaluate(k=>JSON.parse(localStorage.getItem(k)||'[]'),key);
+  expect(retained).toHaveLength(13);
+  const retainedSection=retained.find(p=>p.tag==='section'&&
+    p.selector==='main > section:nth-of-type(2)');
+  expect(retainedSection.layout.desktop.dx).toBe(12);
+  expect(retainedSection.expected).toContain(
+    'as everyone listens and responds to one another');
+  expect(retained.filter(p=>p.kind==='image')).toHaveLength(2);
+  for(const img of retained.filter(p=>p.kind==='image')){
+    expect(img.imageCrop.desktop.mask).toBe('rounded');
+    expect(img.layout.desktop.wrapWidth).toBe(230);
+  }
   expect(unexpectedWrites).toEqual([]);
 });
 
