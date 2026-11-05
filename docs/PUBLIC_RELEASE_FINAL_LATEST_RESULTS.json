@@ -1,12 +1,12 @@
 {
-  "sourceHead": "3c13f0be3a49f34967f84ddc823090aebeb49f51",
+  "sourceHead": "3c28f764cede5d3855b2ca47451fe46c6c4bd01f",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 24,
   "httpErrors": 0,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-3c13f0be3a49",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-3c28f764cede",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -24,18 +24,16 @@
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "41982717855",
-      "head_sha": "61c04acadae1e8a76d4f9c06f46778ab2ecd6323",
+      "run": "41986265149",
+      "head_sha": "3c13f0be3a49f34967f84ddc823090aebeb49f51",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "interests.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
-        "issues": 44
+        "issues": 43
       },
       "counts": {
-        "reachable": 71,
-        "unverified": 44
+        "reachable": 72,
+        "unverified": 43
       }
     },
     "metadata": {
@@ -102,29 +100,11 @@
       "note": "U1 route audit documents successful run 40825886279; legacy utility machine report refers to an early missing-script failure. Do not treat it as latest successful evidence."
     }
   },
-  "sourceDriftSinceAudits": [
-    {
-      "category": "external",
-      "sourceModifiedSinceAudit": [
-        "interests.html"
-      ]
-    }
-  ],
-  "pass": false,
-  "errors": [
-    {
-      "sourceDrift": [
-        {
-          "category": "external",
-          "sourceModifiedSinceAudit": [
-            "interests.html"
-          ]
-        }
-      ]
-    }
-  ],
+  "sourceDriftSinceAudits": [],
+  "pass": true,
+  "errors": [],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41986265176",
-  "run_sha": "3c13f0be3a49f34967f84ddc823090aebeb49f51",
-  "exit_code": "1"
+  "workflow_run_id": "41986335989",
+  "run_sha": "3c28f764cede5d3855b2ca47451fe46c6c4bd01f",
+  "exit_code": "0"
 }
