@@ -7149,8 +7149,9 @@ function attachEvents(){
       // A page can contain both photo and text edits. Do not send the author
       // to image reconnection when the actual failed patch is a paragraph.
       // The word "image" appears even in "not an image-mapping problem".
-      const textConflict=/saved (?:text|position\/style) edit|text-source conflict/i.test(issue);
-      if(!textConflict&&[...livePatches.values()].some(p=>p.kind==="image")&&
+      const nonImageSourceConflict=
+        /saved (?:text|position\/style|section\/container positioning) edit|text-source conflict/i.test(issue);
+      if(!nonImageSourceConflict&&[...livePatches.values()].some(p=>p.kind==="image")&&
          /matching original element|match saved edit|source was updated|image/i.test(issue)){
         // Offer a repair immediately, without deleting the draft or
         // automatically selecting a different original image.
