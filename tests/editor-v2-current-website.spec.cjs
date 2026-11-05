@@ -3501,3 +3501,80 @@ test('Existing saved independent image edit remains unchanged until the author o
   expect(undone).toEqual([legacy]);
   expect(writes).toEqual([]);
 });
+
+
+
+test('Fresh-source reset downloads page-edit backup, supports cancel, and restores the exact GitHub page',
+  async({page})=>{
+    const name='interests.html',key='moon-academic-editor-v2:source:'+name,writes=[];
+    await installVerifiedCurrentSource(page,writes);
+    await page.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    const paragraph=page.frameLocator('#livePageFrame').locator('main p')
+      .filter({hasText:'Our ensemble gave a formal concert in 2024'}).first();
+    await paragraph.click();
+    const former=await page.locator('#liveTextAlign').inputValue();
+    const changed=former==='right'?'center':'right';
+    await page.locator('#liveTextAlign').selectOption(changed);
+    const draft=JSON.parse(await page.evaluate(k=>localStorage.getItem(k),key));
+    expect(draft).toHaveLength(1);
+    await expect(paragraph).toHaveCSS('text-align',changed);
+    const button=page.locator('#startFreshLiveDraft');
+    const firstDownload=page.waitForEvent('download');
+    await button.click();
+    const firstBackup=await firstDownload;
+    expect(firstBackup.suggestedFilename()).toBe(
+      name+'.before-fresh-source.live-draft.json');
+    expect(JSON.parse(readFileSync(await firstBackup.path(),'utf8')).patches)
+      .toEqual(draft);
+    await expect(page.locator('#freshLiveDraftDialog')).toBeVisible();
+    await page.locator('#cancelFreshLiveDraft').click();
+    expect(JSON.parse(await page.evaluate(k=>localStorage.getItem(k),key)))
+      .toEqual(draft);
+    await expect(paragraph).toHaveCSS('text-align',changed);
+
+    const secondDownload=page.waitForEvent('download');
+    await button.click();
+    const restorable=JSON.parse(readFileSync(await (await secondDownload).path(),'utf8'));
+    await page.locator('#confirmFreshLiveDraft').click();
+    await expect(page.locator('#liveEditCount')).toContainText(
+      'No live-page draft edits',{timeout:12000});
+    expect(await page.evaluate(k=>localStorage.getItem(k),key)).toBeNull();
+    await expect(paragraph).not.toHaveCSS('text-align',changed);
+    await expect(page.locator('#status')).toContainText('Fresh GitHub main source opened');
+
+    await page.locator('#liveDraftFile').setInputFiles({
+      name:name+'.live-draft.json',mimeType:'application/json',
+      buffer:Buffer.from(JSON.stringify(restorable))
+    });
+    await expect(page.locator('#liveDraftRestoreDialog')).toBeVisible();
+    await page.locator('#confirmLiveDraftRestore').click();
+    await expect(page.locator('#liveEditCount')).toContainText('1 draft edit');
+    await expect(paragraph).toHaveCSS('text-align',changed);
+    expect(writes).toEqual([]);
+  });
+
+test('Fresh-source reset refuses unverifiable GitHub main and retains the draft',
+  async({page})=>{
+    const name='contact.html',key='moon-academic-editor-v2:source:'+name,writes=[];
+    await installVerifiedCurrentSource(page,writes);
+    await page.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    await page.frameLocator('#livePageFrame').locator('main h1, main h2').first().click();
+    const prev=await page.locator('#liveTextAlign').inputValue();
+    await page.locator('#liveTextAlign').selectOption(prev==='right'?'center':'right');
+    const raw=await page.evaluate(k=>localStorage.getItem(k),key);
+    await page.route(/^https:\/\/api\.github\.com\/repos\/gmoon-code\/gmoon-code\.github\.io\/contents\//,
+      async route=>route.fulfill({status:503,contentType:'application/json',
+        headers:{'access-control-allow-origin':'*'},body:'{}'}));
+    const download=page.waitForEvent('download');
+    await page.locator('#startFreshLiveDraft').click();
+    await download;
+    await page.locator('#confirmFreshLiveDraft').click();
+    await expect(page.locator('#status')).toContainText('Fresh start stopped');
+    expect(await page.evaluate(k=>localStorage.getItem(k),key)).toBe(raw);
+    await expect(page.locator('#liveEditCount')).toContainText('1 draft edit');
+    expect(writes).toEqual([]);
+  });
