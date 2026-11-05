@@ -1,12 +1,12 @@
 {
-  "sourceHead": "e9d37c421ba7e628c2441b8aa54a7e51c0df4e5d",
+  "sourceHead": "7fd27c322c721da8d53520182289647ed200f53e",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-e9d37c421ba7",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-7fd27c322c72",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -14,24 +14,20 @@
   "auditEvidence": {
     "links": {
       "report": "docs/PUBLIC_LINKGRAPH_LATEST_RESULTS.json",
-      "run": "41987133840",
-      "head_sha": "b9873a702c75c060711d4f7f3f7f7499dd8c7ec8",
+      "run": "41987240301",
+      "head_sha": "e9d37c421ba7e628c2441b8aa54a7e51c0df4e5d",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "pungmul.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "problems": 0
       }
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "41987133874",
-      "head_sha": "b9873a702c75c060711d4f7f3f7f7499dd8c7ec8",
+      "run": "41987240257",
+      "head_sha": "e9d37c421ba7e628c2441b8aa54a7e51c0df4e5d",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "pungmul.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "issues": 43
       },
@@ -57,8 +53,8 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "41986265019",
-      "head_sha": "3c13f0be3a49f34967f84ddc823090aebeb49f51",
+      "run": "41987133802",
+      "head_sha": "b9873a702c75c060711d4f7f3f7f7499dd8c7ec8",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "pungmul.html"
@@ -94,12 +90,10 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "41987133964",
-      "head_sha": "b9873a702c75c060711d4f7f3f7f7499dd8c7ec8",
+      "run": "41987240250",
+      "head_sha": "e9d37c421ba7e628c2441b8aa54a7e51c0df4e5d",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "pungmul.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0,
         "axeViolations": 0
@@ -114,18 +108,6 @@
   },
   "sourceDriftSinceAudits": [
     {
-      "category": "links",
-      "sourceModifiedSinceAudit": [
-        "pungmul.html"
-      ]
-    },
-    {
-      "category": "external",
-      "sourceModifiedSinceAudit": [
-        "pungmul.html"
-      ]
-    },
-    {
       "category": "reflow",
       "sourceModifiedSinceAudit": [
         "pungmul.html"
@@ -139,12 +121,6 @@
     },
     {
       "category": "typography",
-      "sourceModifiedSinceAudit": [
-        "pungmul.html"
-      ]
-    },
-    {
-      "category": "interactions",
       "sourceModifiedSinceAudit": [
         "pungmul.html"
       ]
@@ -179,18 +155,6 @@
     {
       "sourceDrift": [
         {
-          "category": "links",
-          "sourceModifiedSinceAudit": [
-            "pungmul.html"
-          ]
-        },
-        {
-          "category": "external",
-          "sourceModifiedSinceAudit": [
-            "pungmul.html"
-          ]
-        },
-        {
           "category": "reflow",
           "sourceModifiedSinceAudit": [
             "pungmul.html"
@@ -207,18 +171,12 @@
           "sourceModifiedSinceAudit": [
             "pungmul.html"
           ]
-        },
-        {
-          "category": "interactions",
-          "sourceModifiedSinceAudit": [
-            "pungmul.html"
-          ]
         }
       ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41987240247",
-  "run_sha": "e9d37c421ba7e628c2441b8aa54a7e51c0df4e5d",
+  "workflow_run_id": "41987343297",
+  "run_sha": "7fd27c322c721da8d53520182289647ed200f53e",
   "exit_code": "1"
 }
