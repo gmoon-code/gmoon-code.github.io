@@ -789,6 +789,40 @@ function liveGroupId(node,selector=node&&liveSelector(node)){
   const published=node?.getAttribute("data-moon-v2-editor-group");
   return published&&LIVE_GROUP_ID.test(published)?published:null;
 }
+// A published photograph may be reparented into a reading-order section.
+// Store its original flow box and source geometry so subsequent edits can
+// move/resize it relative to that box without turning it into an absolute
+// element or changing untouched pages.
+function validFlowPhotoBaselines(map){
+  if(!map||typeof map!=="object"||Array.isArray(map))return false;
+  const keys=Object.keys(map);
+  return keys.length>0&&keys.every(device=>{
+    const b=map[device];
+    return !!LIVE_DEVICE_RULES[device]&&b&&typeof b==="object"&&
+      !Array.isArray(b)&&
+      ["w","h","gx","gy","gw","gh"].every(key=>Number.isFinite(b[key]))&&
+      b.w>=24&&b.w<=5000&&b.h>=24&&b.h<=5000&&
+      b.gx>=-4000&&b.gx<=10000&&b.gy>=-4000&&b.gy<=40000&&
+      b.gw>=40&&b.gw<=4000&&b.gh>=24&&b.gh<=5000;
+  });
+}
+function flowPhotoBaseline(node,geometry,existing){
+  let map={};
+  if(validFlowPhotoBaselines(existing))map={...existing};
+  const inFlow=node?.tagName==="IMG"&&node.closest("main")&&
+    !node.parentElement?.hasAttribute("data-moon-v2-added-layer");
+  if(inFlow&&!map[liveDevice()]){
+    const source=addedDeviceGeometry({geometry},liveDevice());
+    const rect=node.getBoundingClientRect();
+    if(source&&Number.isFinite(rect.width)&&Number.isFinite(rect.height)&&
+       rect.width>=24&&rect.height>=24&&rect.width<=5000&&rect.height<=5000){
+      map[liveDevice()]={w:Math.round(rect.width*1000)/1000,
+        h:Math.round(rect.height*1000)/1000,
+        gx:source.x,gy:source.y,gw:source.w,gh:source.h};
+    }
+  }
+  return Object.keys(map).length?map:undefined;
+}
 function validAddedPatch(p){
   return !!p&&isAddedPatch(p)&&typeof p.expected==="string"&&p.expected===""&&
     ["text","image","shape"].includes(p.objectType)&&
@@ -805,6 +839,8 @@ function validAddedPatch(p){
       p.objectType==="image"&&validImageCropMap(p.imageCrop))&&
     (p.pictureEffects===undefined||
       p.objectType==="image"&&validPictureEffects(p.pictureEffects))&&
+    (p.flowBaseline===undefined||
+      p.objectType==="image"&&validFlowPhotoBaselines(p.flowBaseline))&&
     (p.groupId===undefined||validLiveGroupId(p.groupId));
 }
 function addedObjectId(p){return p.selector.slice("added:".length);}
@@ -890,6 +926,27 @@ function addedStyleCss(p){
       "px!important;height:"+g.h+"px!important;"+
       (crop?imageCropCss(crop,p.src,g):"")+
       (fx?pictureEffectsCss(fx):"")+"}}";
+    const flow=p.objectType==="image"?p.flowBaseline?.[device]:null;
+    if(flow){
+      const flowW=Math.round(clamp(flow.w+g.w-flow.gw,40,4000)*1000)/1000;
+      const flowH=Math.round(clamp(flow.h+g.h-flow.gh,24,5000)*1000)/1000;
+      const dx=Math.round((g.x-flow.gx)*1000)/1000;
+      const dy=Math.round((g.y-flow.gy)*1000)/1000;
+      // Higher specificity than visitor flow-layout reset rules, but ONLY
+      // for this image when reparented outside its source added layer.
+      const flowTag='html:not(#__moon_v2_flow_a):not(#__moon_v2_flow_b) '+
+        'main :not([data-moon-v2-added-layer]) > '+tag;
+      result+="@media "+media+"{"+flowTag+"{"+
+        "position:relative!important;left:auto!important;right:auto!important;"+
+        "top:auto!important;bottom:auto!important;"+
+        "width:"+flowW+"px!important;height:"+flowH+"px!important;"+
+        "max-width:none!important;max-height:none!important;"+
+        "min-width:0!important;min-height:0!important;"+
+        "translate:"+dx+"px "+dy+"px!important;"+
+        "scale:1 1!important;transform:none!important;"+
+        (crop?imageCropCss(crop,p.src,{w:flowW,h:flowH}):"")+
+        (fx?pictureEffectsCss(fx):"")+"}}";
+    }
   }
   return result;
 }
@@ -949,6 +1006,8 @@ function applyAddedPatch(doc,p){
   if(p.objectType==="image"){
     node.setAttribute("data-moon-v2-added-crop",JSON.stringify(p.imageCrop||{}));
     node.setAttribute("data-moon-v2-picture-effects",JSON.stringify(p.pictureEffects||{}));
+    if(p.flowBaseline)
+      node.setAttribute("data-moon-v2-flow-baseline",JSON.stringify(p.flowBaseline));
   }
   if(p.objectType==="image"){
     node.setAttribute("src",p.src);node.setAttribute("alt",p.alt);
@@ -1446,13 +1505,16 @@ function refreshLiveLayoutRules(doc=$("livePageFrame").contentDocument,patches=[
 }
 function addedPatchFromNode(node,selector=liveSelector(node)){
   if(!node||!LIVE_ADDED_ID.test(selector))return null;
-  let geometry,appearance,design,imageCrop,pictureEffects;
+  let geometry,appearance,design,imageCrop,pictureEffects,flowBaseline;
   try{pictureEffects=JSON.parse(node.getAttribute("data-moon-v2-picture-effects")||"{}");}
   catch{pictureEffects={};}
   try{imageCrop=JSON.parse(node.getAttribute("data-moon-v2-added-crop")||"{}");}
   catch{imageCrop={};}
   try{geometry=JSON.parse(node.getAttribute("data-moon-v2-added-geometry")||"{}");}
   catch{geometry={};}
+  try{flowBaseline=JSON.parse(node.getAttribute("data-moon-v2-flow-baseline")||"{}");}
+  catch{flowBaseline={};}
+  flowBaseline=flowPhotoBaseline(node,geometry,flowBaseline);
   try{appearance=JSON.parse(node.getAttribute("data-moon-v2-added-appearance")||"{}");}
   catch{appearance={};}
   try{design=JSON.parse(node.getAttribute("data-moon-v2-added-design")||"{}");}
@@ -1464,7 +1526,8 @@ function addedPatchFromNode(node,selector=liveSelector(node)){
     ...(liveGroupId(node,selector)?{groupId:liveGroupId(node,selector)}:{}),
     ...(node.tagName==="IMG"?{src:node.getAttribute("src")||"",alt:node.alt||"",
       ...(Object.keys(imageCrop).length?{imageCrop}:{}),
-      ...(Object.keys(pictureEffects).length?{pictureEffects}:{})}:
+      ...(Object.keys(pictureEffects).length?{pictureEffects}:{}),
+      ...(flowBaseline?{flowBaseline}:{})}:
       node.tagName==="P"?{html:cleanRich(node.innerHTML)}:
       {fill:node.getAttribute("data-moon-v2-shape-fill")||"#e1eee4"})};
   return validAddedPatch(patch)?patch:null;
@@ -1473,7 +1536,14 @@ function livePatchForSelected(){
   const node=liveSelected?.node,selector=node&&liveSelector(node);
   if(!selector)return null;
   const existing=livePatches.get(selector);
-  if(existing)return copy(existing);
+  if(existing){
+    const patch=copy(existing);
+    if(patch.kind==="insert"&&patch.objectType==="image"){
+      const baseline=flowPhotoBaseline(node,patch.geometry,patch.flowBaseline);
+      if(baseline)patch.flowBaseline=baseline;
+    }
+    return patch;
+  }
   if(LIVE_ADDED_ID.test(selector))return addedPatchFromNode(node,selector);
   if(node.tagName==="IMG")
     return {selector,kind:"image",expected:node.getAttribute("src")||"",
