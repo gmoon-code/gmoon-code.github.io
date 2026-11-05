@@ -1,12 +1,12 @@
 {
-  "sourceHead": "a998c8a5d10cd1c350e01c2915751e95fb15ffe2",
+  "sourceHead": "ecbccb6fd1608a317b801c2c2063b93ce537b77e",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 24,
   "httpErrors": 0,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-a998c8a5d10c",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-ecbccb6fd160",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -77,14 +77,10 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "41940926281",
-      "head_sha": "5df2bff98059221e01a9af8d76c97074b875e75f",
+      "run": "41941398146",
+      "head_sha": "cfeb62475b17d93ec1817c4f8a9ce50356cb49cb",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "teaching-ap-chemistry.html",
-        "teaching-ap-evolution.html",
-        "writing-biological-classification.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0,
         "combinedStressFailures": 0
@@ -124,14 +120,6 @@
       ]
     },
     {
-      "category": "typography",
-      "sourceModifiedSinceAudit": [
-        "teaching-ap-chemistry.html",
-        "teaching-ap-evolution.html",
-        "writing-biological-classification.html"
-      ]
-    },
-    {
       "category": "interactions",
       "sourceModifiedSinceAudit": [
         "writing-biological-classification.html"
@@ -155,14 +143,6 @@
           ]
         },
         {
-          "category": "typography",
-          "sourceModifiedSinceAudit": [
-            "teaching-ap-chemistry.html",
-            "teaching-ap-evolution.html",
-            "writing-biological-classification.html"
-          ]
-        },
-        {
           "category": "interactions",
           "sourceModifiedSinceAudit": [
             "writing-biological-classification.html"
@@ -172,7 +152,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41941640520",
-  "run_sha": "a998c8a5d10cd1c350e01c2915751e95fb15ffe2",
+  "workflow_run_id": "41941738373",
+  "run_sha": "ecbccb6fd1608a317b801c2c2063b93ce537b77e",
   "exit_code": "1"
 }
