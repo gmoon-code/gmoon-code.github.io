@@ -1575,15 +1575,16 @@ function photoCardGalleryRules(patches,doc,device){
     if(!img||!photoCardFrame(img)||!gallery||
        !gallery.matches(".pungmul-gallery,.pungmul-performance-grid"))
       continue;
-    const n=gallery.matches(".pungmul-performance-grid")?
-      (device==="desktop"?3:device==="tablet"?2:1):
-      (device==="phone"?1:2);
+    // Both restored personal galleries use two columns above phone width.
+    // The old three-column assumption made the entire Pungmul gallery jump
+    // into a new grid when the first photograph was resized.
+    const n=device==="phone"?1:2;
     const figures=[...gallery.children].filter(el=>el.tagName==="FIGURE");
     const index=figures.indexOf(figure);
     if(index<0)continue;
     const key=paths.gallery;
     if(!group.has(key))group.set(key,{n,weights:Array(n).fill(null),
-      gap:gallery.matches(".pungmul-performance-grid")?16:18});
+      gap:18});
     const entry=group.get(key),column=index%n;
     entry.weights[column]=Math.max(entry.weights[column]||0,g.wrapWidth);
   }
@@ -2012,7 +2013,12 @@ function prepareImageCrop(node,patch,device=liveDevice()){
     crop.baseW=Math.round(clamp(fitWidth,24,15000)*1000)/1000;
   }
   if(patch.kind!=="insert"){
-    const layout=normaliseElementBoxLayout(node,liveLayoutFor(patch.selector));
+    const current=liveLayoutFor(patch.selector);
+    // The gallery column owns the image width. On the first crop capture the
+    // card's displayed frame, not an unrelated inner-image baseline.
+    const layout=patch.frameMode==="card"&&!current.wrapWidth?
+      photoCardLayoutForImage(node,current):
+      normaliseElementBoxLayout(node,current);
     if(!layout.wrapWidth||!layout.reserveHeight)return null;
     patch.layout={...patch.layout,[device]:layout};
   }
@@ -2474,12 +2480,12 @@ function setOriginalBoxDimension(key,value){
     else if(layout.sectionHeightMode!=="fixed")layout.sectionHeightMode="auto";
   }
   if(node.tagName==="IMG"&&liveLockImageRatio){
-    const rect=node.getBoundingClientRect(),ratio=
-      (card?rect.width/Math.max(1,rect.height):
-        node.naturalWidth&&node.naturalHeight?
-          node.naturalWidth/node.naturalHeight:rect.width/Math.max(1,rect.height))*
-      (1-((selectedImageCrop(patch).left||0)+(selectedImageCrop(patch).right||0))/100)/
-      (1-((selectedImageCrop(patch).top||0)+(selectedImageCrop(patch).bottom||0))/100);
+    // Preserve the on-screen frame aspect ratio after any previous trim or
+    // free resize. Applying edge-crop fractions to it a second time would
+    // distort the next numeric width/height adjustment.
+    const rect=node.getBoundingClientRect();
+    const cardRect=card?.getBoundingClientRect();
+    const ratio=(cardRect?.width||rect.width)/Math.max(1,rect.height);
     if(key==="wrapWidth")layout.reserveHeight=Math.round(clamp(layout.wrapWidth/ratio,24,5000));
     else layout.wrapWidth=Math.round(clamp(layout.reserveHeight*ratio,64,4000));
   }
