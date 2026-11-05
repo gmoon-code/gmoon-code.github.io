@@ -3706,9 +3706,11 @@ test('Pungmul gallery trims four independent edges then resizes without changing
       await expect(grip).toBeVisible();
       await expect.poll(()=>grip.boundingBox().then(box=>box!==null&&box.y>=0&&
         box.y+box.height<=1050)).toBe(true);
+      // Playwright's hover validates the actual topmost pointer target,
+      // important for small overlay handles inside a transformed iframe.
+      await grip.hover();
       const box=await grip.boundingBox();
       const x=box.x+box.width/2,y=box.y+box.height/2;
-      await page.mouse.move(x,y);
       await page.mouse.down();
       await page.mouse.move(x+dx,y+dy,{steps:6});
       await page.mouse.up();
