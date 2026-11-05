@@ -921,8 +921,15 @@ function applyAddedPatch(doc,p){
   if(!validAddedPatch(p))throw Error("Invalid independent webpage object.");
   const layer=ensureAddedLayer(doc),id=addedObjectId(p);
   const wanted=p.objectType==="image"?"img":p.objectType==="text"?"p":"div";
-  let node=[...layer.children].find(el=>
+  // Home, Contact and Pungmul move published image nodes out of the
+  // original added layer for accessible responsive reading order. Always
+  // update the unique existing node wherever the page script placed it.
+  // Creating a replacement in the layer duplicates the photo and makes
+  // edits appear not to affect the displayed image.
+  const matches=[...doc.querySelectorAll("main [data-moon-v2-added-id]")].filter(el=>
     el.getAttribute("data-moon-v2-added-id")===id);
+  if(matches.length>1)throw Error("This webpage has duplicate photo/object IDs. Review the original page before editing.");
+  let node=matches[0]||null;
   if(node&&node.tagName.toLowerCase()!==wanted){
     throw Error("A webpage object ID is already assigned to a different kind of element.");
   }
