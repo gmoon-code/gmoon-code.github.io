@@ -1996,9 +1996,11 @@ function resetSelectedImageCrop(){
   if(["left","right","top","bottom"].some(k=>edges[k]>0)){
     if(patch.kind==="insert"){
       const geom=addedDeviceGeometry(patch,device);
+      const inFlow=!!patch.flowBaseline?.[device];
       patch.geometry={...patch.geometry,[device]:{...geom,
         x:Math.round(geom.x-shiftX),y:Math.round(geom.y-shiftY),
-        w:Math.round(clamp(fullW,40,4000)),h:Math.round(clamp(fullH,24,5000))}};
+        w:Math.round(clamp(inFlow?geom.w+fullW-frame.width:fullW,40,4000)),
+        h:Math.round(clamp(inFlow?geom.h+fullH-frame.height:fullH,24,5000))}};
     }else{
       const dims=normaliseElementBoxLayout(node,liveLayoutFor(selector));
       dims.wrapWidth=Math.round(clamp(fullW,64,4000));
@@ -2062,9 +2064,14 @@ function updateCropFrame(node,selector,originalPatch,initialRect,dir,dx,dy){
   patch.imageCrop={...(patch.imageCrop||{}),[device]:result.crop};
   if(patch.kind==="insert"){
     const initial=addedDeviceGeometry(originalPatch,device);
+    const inFlow=!!patch.flowBaseline?.[device];
     patch.geometry={...patch.geometry,[device]:{
       ...initial,x:Math.round(initial.x+result.x),
-      y:Math.round(initial.y+result.y),w:result.w,h:result.h
+      y:Math.round(initial.y+result.y),
+      w:Math.round(clamp(inFlow?
+        initial.w+result.w-initialRect.width:result.w,40,4000)),
+      h:Math.round(clamp(inFlow?
+        initial.h+result.h-initialRect.height:result.h,24,5000))
     }};
     livePatches.set(selector,patch);
     refreshAddedObject(node.ownerDocument,patch);
@@ -2127,8 +2134,11 @@ function cropImageToRatio(ratio){
   if(!prepared)return;
   if(patch.kind==="insert"){
     const old=addedDeviceGeometry(patch,device);
+    const rect=node.getBoundingClientRect();
+    const targetHeight=patch.flowBaseline?.[device]?
+      old.h+rect.width/ratio-rect.height:old.w/ratio;
     patch.geometry={...patch.geometry,[device]:
-      {...old,h:Math.round(clamp(old.w/ratio,24,5000))}};
+      {...old,h:Math.round(clamp(targetHeight,24,5000))}};
   }else{
     const layout=normaliseElementBoxLayout(node,liveLayoutFor(selector));
     layout.reserveHeight=Math.round(clamp(layout.wrapWidth/ratio,24,5000));
