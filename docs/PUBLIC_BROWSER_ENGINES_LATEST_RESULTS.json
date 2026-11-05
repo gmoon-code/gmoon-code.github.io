@@ -162,10 +162,299 @@
       "conclusion": "No observable zoom change from headless keyboard shortcut; actual page zoom not verified"
     }
   ],
-  "failedCount": 0,
-  "failures": [],
+  "failedCount": 3,
+  "failures": [
+    {
+      "engine": "chromium",
+      "page": "interests.html",
+      "width": 1280,
+      "forcedRequested": false,
+      "errors": [
+        "reader text clipped"
+      ],
+      "http": 200,
+      "metrics": {
+        "innerWidth": 1280,
+        "outerWidth": 1280,
+        "devicePixelRatio": 1,
+        "visualScale": 1,
+        "scrollWidth": 1280,
+        "mainCount": 1,
+        "h1Count": 1,
+        "navCount": 7,
+        "forced": false,
+        "outOfBounds": [],
+        "clipped": [
+          {
+            "tag": "A",
+            "text": "",
+            "x": 736,
+            "right": 1117
+          },
+          {
+            "tag": "A",
+            "text": "",
+            "x": 83,
+            "right": 314
+          }
+        ]
+      },
+      "tabs": [
+        {
+          "href": "#main",
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "2px"
+        },
+        {
+          "href": "index.html",
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "2px"
+        },
+        {
+          "href": "index.html",
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "2px"
+        },
+        {
+          "href": "research.html",
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "2px"
+        },
+        {
+          "href": "projects.html",
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "2px"
+        },
+        {
+          "href": "teaching.html",
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "2px"
+        },
+        {
+          "href": "interests.html",
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "2px"
+        },
+        {
+          "href": "contact.html",
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "2px"
+        },
+        {
+          "href": "cv.html",
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "2px"
+        }
+      ],
+      "skip": {
+        "hash": "#main",
+        "onMain": true
+      }
+    },
+    {
+      "engine": "firefox",
+      "page": "interests.html",
+      "width": 1280,
+      "forcedRequested": false,
+      "errors": [
+        "reader text clipped"
+      ],
+      "http": 200,
+      "metrics": {
+        "innerWidth": 1280,
+        "outerWidth": 1280,
+        "devicePixelRatio": 1,
+        "visualScale": 1,
+        "scrollWidth": 1280,
+        "mainCount": 1,
+        "h1Count": 1,
+        "navCount": 7,
+        "forced": false,
+        "outOfBounds": [],
+        "clipped": [
+          {
+            "tag": "A",
+            "text": "",
+            "x": 736,
+            "right": 1117
+          },
+          {
+            "tag": "A",
+            "text": "",
+            "x": 83,
+            "right": 314
+          }
+        ]
+      },
+      "tabs": [
+        {
+          "href": "#main",
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "2px"
+        },
+        {
+          "href": "index.html",
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "2px"
+        },
+        {
+          "href": "index.html",
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "2px"
+        },
+        {
+          "href": "research.html",
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "2px"
+        },
+        {
+          "href": "projects.html",
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "2px"
+        },
+        {
+          "href": "teaching.html",
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "2px"
+        },
+        {
+          "href": "interests.html",
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "2px"
+        },
+        {
+          "href": "contact.html",
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "2px"
+        },
+        {
+          "href": "cv.html",
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "2px"
+        }
+      ],
+      "skip": {
+        "hash": "#main",
+        "onMain": true
+      }
+    },
+    {
+      "engine": "webkit",
+      "page": "interests.html",
+      "width": 1280,
+      "forcedRequested": false,
+      "errors": [
+        "reader text clipped"
+      ],
+      "http": 200,
+      "metrics": {
+        "innerWidth": 1280,
+        "outerWidth": 1280,
+        "devicePixelRatio": 1,
+        "visualScale": 1,
+        "scrollWidth": 1280,
+        "mainCount": 1,
+        "h1Count": 1,
+        "navCount": 7,
+        "forced": false,
+        "outOfBounds": [],
+        "clipped": [
+          {
+            "tag": "A",
+            "text": "",
+            "x": 736,
+            "right": 1117
+          },
+          {
+            "tag": "A",
+            "text": "",
+            "x": 83,
+            "right": 314
+          }
+        ]
+      },
+      "tabs": [
+        {
+          "href": "#main",
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "2px"
+        },
+        {
+          "href": "index.html",
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "2px"
+        },
+        {
+          "href": "index.html",
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "2px"
+        },
+        {
+          "href": "research.html",
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "2px"
+        },
+        {
+          "href": "projects.html",
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "2px"
+        },
+        {
+          "href": "teaching.html",
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "2px"
+        },
+        {
+          "href": "interests.html",
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "2px"
+        },
+        {
+          "href": "contact.html",
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "2px"
+        },
+        {
+          "href": "cv.html",
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "2px"
+        }
+      ],
+      "skip": {
+        "hash": "#main",
+        "onMain": true
+      }
+    }
+  ],
   "limitations": "Playwright Linux Chromium Firefox WebKit are not physical Safari/Firefox devices. Keyboard zoom shortcuts without a measured viewport/scale change do not verify real browser Ctrl-plus. Forced-colour emulation and automatic focus checks do not constitute WCAG certification or screen-reader testing.",
-  "workflow_run_id": "41987378233",
-  "head_sha": "d7c600ef8dcdc33095f65a6d925493fa6b3172b5",
-  "exit_code": "0"
+  "workflow_run_id": "41987896336",
+  "head_sha": "2a72df14ab1423e6ab055e93bd0577b98fd77fcb",
+  "exit_code": "1"
 }
