@@ -3669,3 +3669,76 @@ test('Visitor Pungmul photos have no rectangular frame borders or clipped photo 
       await expect(figure.locator('img')).toHaveCSS('border-top-left-radius','12px');
     }
   });
+
+
+test('Pungmul gallery trims four independent edges then resizes without changing columns or crop proportions',
+  async({page})=>{
+    const writes=[];
+    await installVerifiedCurrentSource(page,writes);
+    await page.setViewportSize({width:1740,height:1050});
+    await page.goto(BASE+'/editor-v2.html?page=pungmul.html',{waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    const frame=page.frameLocator('#livePageFrame');
+    const gallery=frame.locator('.pungmul-performance-grid');
+    const image=gallery.locator('figure img').first();
+    await image.scrollIntoViewIfNeeded();
+    await expect.poll(()=>image.evaluate(img=>img.naturalWidth)).toBeGreaterThan(0);
+    const columns=()=>gallery.evaluate(g=>getComputedStyle(g).gridTemplateColumns.trim().split(/\\s+/).length);
+    expect(await columns(),'published Pungmul grid starts with two tracks').toBe(2);
+    await image.click();
+    await expect(page.locator('#livePhotoCardMode')).toBeChecked();
+    await page.locator('#cropImageTool').click();
+    // Exercise all independently trimmed sides, not only a shape preset.
+    const edges={Left:12,Right:9,Top:7,Bottom:11};
+    for(const [side,amount] of Object.entries(edges)){
+      await page.locator('#liveCrop'+side).evaluate((input,value)=>{
+        input.value=String(value);
+        input.dispatchEvent(new Event('input',{bubbles:true}));
+        input.dispatchEvent(new Event('change',{bubbles:true}));
+      },amount);
+      await expect(page.locator('#liveCrop'+side+'Value')).toHaveText(amount+'%');
+    }
+    await expect(image).toHaveCSS('object-fit','none');
+    await page.locator('#cropImageTool').click();
+    const before=await image.evaluate(img=>{
+      const r=img.getBoundingClientRect();return {w:r.width,h:r.height};
+    });
+    const requested=Math.round(before.w+48);
+    await page.locator('#liveOriginalWidth').fill(String(requested));
+    await page.locator('#liveOriginalWidth').dispatchEvent('change');
+    expect(await columns(),'resizing must not switch the gallery from two to three columns').toBe(2);
+    const after=await image.evaluate(img=>{
+      const r=img.getBoundingClientRect(),s=getComputedStyle(img);
+      const [paintW,paintH]=s.backgroundSize.split(' ').map(parseFloat);
+      return {w:r.width,h:r.height,paintW,paintH,objectFit:s.objectFit,
+        bg:s.backgroundImage,src:img.getAttribute('src'),ratio:img.naturalWidth/img.naturalHeight};
+    });
+    expect(after.w).toBeGreaterThan(before.w+20);
+    expect(Math.abs(after.h-before.h*after.w/before.w),
+      'locked numeric resize must preserve the visible cropped-frame ratio').toBeLessThan(5);
+    expect(after.objectFit).toBe('none');
+    expect(after.bg).toContain('pungmul-ensemble-stage-photo.webp');
+    const fx=1-(edges.Left+edges.Right)/100,fy=1-(edges.Top+edges.Bottom)/100;
+    const expectedPaintW=Math.max(after.w/fx,after.h*after.ratio/fy);
+    expect(Math.abs(after.paintW-expectedPaintW),
+      'background paint uses the real resized frame width').toBeLessThan(5);
+    expect(Math.abs(after.paintH-after.paintW/after.ratio)).toBeLessThan(2);
+    const key='moon-academic-editor-v2:source:pungmul.html';
+    const saved=await page.evaluate(k=>JSON.parse(localStorage.getItem(k)),key);
+    const crop=saved.find(x=>x.kind==='image'&&x.imageCrop?.desktop)?.imageCrop.desktop;
+    expect(crop).toMatchObject({left:12,right:9,top:7,bottom:11});
+    await page.locator('#preview').click();
+    await expect(page.locator('#previewDialog')).toBeVisible();
+    const preview=page.frameLocator('#previewFrame')
+      .locator('.pungmul-performance-grid figure img').first();
+    const previewMetrics=await preview.evaluate(img=>{
+      const r=img.getBoundingClientRect(),s=getComputedStyle(img);
+      return {w:r.width,h:r.height,backgroundSize:s.backgroundSize};
+    });
+    expect(Math.abs(previewMetrics.w-after.w)).toBeLessThan(5);
+    expect(Math.abs(previewMetrics.h-after.h)).toBeLessThan(5);
+    expect(previewMetrics.backgroundSize).toBe(
+      after.paintW+'px '+after.paintH+'px');
+    expect(writes).toEqual([]);
+  });
