@@ -3416,8 +3416,8 @@ for(const [pageName,gallery] of [
     const siblingBeforeMove=await sibling.getAttribute('class');
     await page.locator('#liveMoveY').fill('24');
     await page.locator('#liveMoveY').dispatchEvent('change');
-    await expect.poll(()=>figure.evaluate(x=>parseFloat(getComputedStyle(x).translate)))
-      .toBeGreaterThanOrEqual(23);
+    await expect.poll(()=>figure.evaluate(x=>getComputedStyle(x).translate))
+      .toContain('24px');
     expect(await sibling.getAttribute('class')).toBe(siblingBeforeMove);
     expect(await photo.getAttribute('src')).toBe(source);
     const afterMove=await figure.evaluate(x=>{
