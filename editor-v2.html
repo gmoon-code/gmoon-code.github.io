@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex,nofollow">
 <title>Academic Website Editor 2 | Ye Eun Moon</title>
 <link rel="stylesheet" href="editor-v2.css?v=20261105-image-deployment-check-v70">
-<script src="editor-v2.js?v=20261105-safe-text-draft-rebase-v72" defer></script>
+<script src="editor-v2.js?v=20261105-guided-text-recovery-v73" defer></script>
 </head>
 <body>
 <a class="skip" href="#workspace">Skip to editor canvas</a>
@@ -605,6 +605,19 @@
     <button id="confirmLiveDraftRestore" type="button" class="primary">Restore backup to this page</button>
   </div>
 </dialog>
+<dialog id="staleTextResolveDialog" class="live-restore-dialog" aria-labelledby="staleTextResolveTitle">
+  <h2 id="staleTextResolveTitle">Review outdated paragraph wording</h2>
+  <p id="staleTextTarget" class="help"></p>
+  <p class="help">These are two different versions of the same uniquely identified paragraph. Keeping the current website wording discards only this draft's old text replacement. Its positioning and styling, and all other saved edits, remain. A restorable backup is downloaded first. Nothing will be published.</p>
+  <h3>Current GitHub page wording</h3>
+  <p id="staleTextCurrent" class="stale-text-compare"></p>
+  <h3>Older draft replacement</h3>
+  <p id="staleTextSaved" class="stale-text-compare"></p>
+  <div class="dialog-actions">
+    <button id="staleTextCancel" type="button">Cancel and keep draft</button>
+    <button id="staleTextKeepCurrent" type="button" class="primary">Keep current wording and preserve layout</button>
+  </div>
+</dialog>
 <dialog id="publishDialog">
   <form method="dialog" id="publishForm">
     <h2 id="publishTitle">Publish website changes</h2>
@@ -618,6 +631,7 @@
     <p>GitHub file to update: <code id="stagePath">index.html</code></p>
     <div id="publishPatchList" class="publish-patches" aria-label="Saved edits that will be published"></div>
     <button type="button" id="checkPublishEdits">Check draft edits before publishing</button>
+    <p class="help">When an old text edit conflicts with updated page wording, select <strong>Review changed wording</strong> beside it. You can keep GitHub's current words without losing its saved positioning or other image edits.</p>
     <details id="imageReconnectPanel" class="image-reconnect" hidden>
       <summary>Reconnect an image edit to a page image</summary>
       <p class="help">If an image moved or its reference changed, choose the intended image from the currently deployed page. That version may lag behind GitHub's latest source. Your replacement, size and styling remain in the draft; check the edits against GitHub again before publishing.</p>

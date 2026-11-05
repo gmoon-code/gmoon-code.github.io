@@ -2917,3 +2917,127 @@ test('Ambiguous outdated Interests paragraph anchor blocks publication without c
     expect(await page.evaluate(k=>localStorage.getItem(k),key)).toBe(saved);
     expect(writes).toEqual([]);
   });
+
+
+test('Interests stale text can be explicitly kept current while image edits and text layout survive',async({page})=>{
+  const name='interests.html',writes=[],key='moon-academic-editor-v2:source:'+name;
+  await installVerifiedCurrentSource(page,writes);
+  await page.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+  await expect(page.locator('#liveAssetStatus'))
+    .toContainText('GitHub main source verified',{timeout:35000});
+  const frame=page.frameLocator('#livePageFrame');
+  const image=frame.locator('.pungmul-gallery img').first();
+  await image.click();
+  const initialSrc=await image.getAttribute('src');
+  await page.locator('#liveCropShape').selectOption('rounded');
+  const currentImagePatch=(await page.evaluate(k=>JSON.parse(localStorage.getItem(k)),key))
+    .find(p=>p.kind==='image'&&p.expected===initialSrc);
+  expect(currentImagePatch?.imageCrop?.desktop?.mask).toBe('rounded');
+  const para=frame.locator('main p').filter({
+    hasText:'Our ensemble gave a formal concert in 2024'
+  }).first();
+  const selector=await para.evaluate(node=>{
+    const parts=[];
+    for(let el=node;el&&el.tagName!=='MAIN';el=el.parentElement){
+      const peers=[...el.parentElement.children].filter(n=>n.tagName===el.tagName);
+      parts.unshift(el.tagName.toLowerCase()+':nth-of-type('+
+        (peers.indexOf(el)+1)+')');
+    }
+    return 'main > '+parts.join(' > ');
+  });
+  const original=await para.textContent();
+  const old='Our ensemble gave a formal concert in 2024, and we participate in the Seoul Pride parade every year. We also give seasonal busking and smaller performances in support of queer rights. Playing together in public has given me a way to take part in Korean cultural traditions alongside people with whom ';
+  expect(old.slice(0,96)).toBe(original.trim().slice(0,96));
+  const textPatch={selector,kind:'text',expected:old,
+    html:'<strong>Old paragraph replacement that must never overwrite current words</strong>',
+    layout:{desktop:{dx:29,dy:0,sx:1,sy:1}},
+    appearance:{align:'center'}};
+  const both=JSON.stringify([currentImagePatch,textPatch]);
+  await page.evaluate(([k,v])=>localStorage.setItem(k,v),[key,both]);
+  await page.reload({waitUntil:'domcontentloaded'});
+  await expect(page.locator('#liveAssetStatus'))
+    .toContainText('GitHub main source verified',{timeout:35000});
+  await page.locator('#preview').click();
+  await expect(page.locator('#previewDialog')).toBeHidden();
+  await expect(page.locator('#status')).toContainText('text-source conflict');
+  await page.locator('#publish').click();
+  await page.locator('#checkPublishEdits').click();
+  await expect(page.locator('#publishError')).toContainText('text-source conflict');
+  expect(await page.locator('#imageReconnectPanel').evaluate(el=>el.open)).toBe(false);
+  const resolve=page.locator('[data-resolve-text-selector]').first();
+  await expect(resolve).toBeVisible();
+  await resolve.click();
+  await expect(page.locator('#staleTextResolveDialog')).toBeVisible();
+  await expect(page.locator('#staleTextCurrent')).toContainText(
+    'Our ensemble gave a formal concert in 2024');
+  await expect(page.locator('#staleTextSaved')).toContainText(
+    'Old paragraph replacement');
+  await page.locator('#staleTextCancel').click();
+  await expect(page.locator('#staleTextResolveDialog')).toBeHidden();
+  expect(await page.evaluate(k=>localStorage.getItem(k),key)).toBe(both);
+  await resolve.click();
+  await expect(page.locator('#staleTextResolveDialog')).toBeVisible();
+  const downloading=page.waitForEvent('download');
+  await page.locator('#staleTextKeepCurrent').click();
+  const backup=await downloading;
+  expect(backup.suggestedFilename()).toBe(
+    'interests.html.before-stale-text-resolution.live-draft.json');
+  await expect(page.locator('#staleTextResolveDialog')).toBeHidden();
+  const revised=await page.evaluate(k=>JSON.parse(localStorage.getItem(k)),key);
+  expect(revised).toHaveLength(2);
+  expect(revised.find(p=>p.kind==='image')).toEqual(currentImagePatch);
+  const layout=revised.find(p=>p.kind==='layout'&&p.selector===selector);
+  expect(layout).toBeTruthy();
+  expect(layout.layout.desktop.dx).toBe(29);
+  expect(layout.appearance.align).toBe('center');
+  expect(layout.expected).toBe(original.trim().slice(0,300));
+  expect(layout).not.toHaveProperty('html');
+  await page.locator('#checkPublishEdits').click();
+  await expect(page.locator('#publishError'))
+    .toContainText('draft edits match the current GitHub source',{timeout:20000});
+  await page.locator('#cancelPublish').click();
+  await page.locator('#preview').click();
+  await expect(page.locator('#previewDialog')).toBeVisible({timeout:20000});
+  const published=page.frameLocator('#previewFrame');
+  await expect(published.locator('main p').filter({
+    hasText:'Our ensemble gave a formal concert in 2024'
+  }).first()).toHaveText(original.trim());
+  await expect(published.locator('.pungmul-gallery img').first())
+    .toHaveCSS('border-radius','12px');
+  expect(writes).toEqual([]);
+});
+
+test('Stale text resolution rejects a changed GitHub source rather than rebasing into it',async({page})=>{
+  const name='interests.html',writes=[],key='moon-academic-editor-v2:source:'+name;
+  await installVerifiedCurrentSource(page,writes);
+  await page.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+  await expect(page.locator('#liveAssetStatus'))
+    .toContainText('GitHub main source verified',{timeout:35000});
+  const p=page.frameLocator('#livePageFrame').locator('main p')
+    .filter({hasText:'Our ensemble gave a formal concert in 2024'}).first();
+  const selector=await p.evaluate(node=>{
+    const bits=[];
+    for(let el=node;el&&el.tagName!=='MAIN';el=el.parentElement){
+      const peers=[...el.parentElement.children].filter(n=>n.tagName===el.tagName);
+      bits.unshift(el.tagName.toLowerCase()+':nth-of-type('+(peers.indexOf(el)+1)+')');
+    }
+    return 'main > '+bits.join(' > ');
+  });
+  const old='Our ensemble gave a formal concert in 2024, and we participate in the Seoul Pride parade every year. We also give seasonal busking and smaller performances in support of queer rights. Playing together in public has given me a way to take part in Korean cultural traditions alongside people with whom ';
+  const value=JSON.stringify([{selector,kind:'text',expected:old,
+    html:'Old wording that should not replace current text'}]);
+  await page.evaluate(([k,v])=>localStorage.setItem(k,v),[key,value]);
+  await page.reload({waitUntil:'domcontentloaded'});
+  await expect(page.locator('#liveAssetStatus'))
+    .toContainText('GitHub main source verified',{timeout:35000});
+  await page.locator('#publish').click();
+  await page.locator('[data-resolve-text-selector]').first().click();
+  await expect(page.locator('#staleTextResolveDialog')).toBeVisible();
+  // Simulate a second tab changing this draft after review.
+  await page.evaluate(k=>localStorage.setItem(k,JSON.stringify([])),key);
+  await page.locator('#staleTextKeepCurrent').click();
+  await expect(page.locator('#publishError'))
+    .toContainText('Another editor tab changed this page');
+  await expect(page.locator('#staleTextResolveDialog')).toBeHidden();
+  expect(writes).toEqual([]);
+});
