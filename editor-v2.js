@@ -1575,15 +1575,16 @@ function photoCardGalleryRules(patches,doc,device){
     if(!img||!photoCardFrame(img)||!gallery||
        !gallery.matches(".pungmul-gallery,.pungmul-performance-grid"))
       continue;
-    const n=gallery.matches(".pungmul-performance-grid")?
-      (device==="desktop"?3:device==="tablet"?2:1):
-      (device==="phone"?1:2);
+    // Both restored personal galleries use two columns above phone width.
+    // The old three-column assumption made the entire Pungmul gallery jump
+    // into a new grid when the first photograph was resized.
+    const n=device==="phone"?1:2;
     const figures=[...gallery.children].filter(el=>el.tagName==="FIGURE");
     const index=figures.indexOf(figure);
     if(index<0)continue;
     const key=paths.gallery;
     if(!group.has(key))group.set(key,{n,weights:Array(n).fill(null),
-      gap:gallery.matches(".pungmul-performance-grid")?16:18});
+      gap:18});
     const entry=group.get(key),column=index%n;
     entry.weights[column]=Math.max(entry.weights[column]||0,g.wrapWidth);
   }
@@ -2012,7 +2013,12 @@ function prepareImageCrop(node,patch,device=liveDevice()){
     crop.baseW=Math.round(clamp(fitWidth,24,15000)*1000)/1000;
   }
   if(patch.kind!=="insert"){
-    const layout=normaliseElementBoxLayout(node,liveLayoutFor(patch.selector));
+    const current=liveLayoutFor(patch.selector);
+    // The gallery column owns the image width. On the first crop capture the
+    // card's displayed frame, not an unrelated inner-image baseline.
+    const layout=patch.frameMode==="card"&&!current.wrapWidth?
+      photoCardLayoutForImage(node,current):
+      normaliseElementBoxLayout(node,current);
     if(!layout.wrapWidth||!layout.reserveHeight)return null;
     patch.layout={...patch.layout,[device]:layout};
   }
@@ -2260,6 +2266,8 @@ function setLiveCropMode(enabled){
   liveCropMode=!!enabled;
   if(enabled){
     const existing=selectedImageCrop(livePatchForSelected());
+    // Entering crop mode alone must not alter the picture. The first actual
+    // side trim switches Contain to Cover in cropFrameGeometry below.
     applySelectedImageCrop(croppedEdges(existing));
   }
   removeLiveOverlay();renderLiveInspector();syncLiveOverlay();
@@ -2341,6 +2349,10 @@ function cropFrameGeometry(rect,origin,dir,dx,dy){
     const maximum=Math.min(90,95-next[opposite],100*(1-min/source)-next[opposite]);
     next[edge]=Math.round(clamp(initial[edge]+delta/source*100,0,Math.max(0,maximum))*100)/100;
   }
+  // On the first edge trim, use a filled crop window rather than leaving
+  // letterbox gaps from an original object-fit:contain picture.
+  if(crop.fit==="contain"&&!Object.values(initial).some(v=>v>0)&&
+     Object.values(croppedEdges(next)).some(v=>v>0))next.fit="cover";
   const w=Math.round(clamp(fullW*(1-(next.left+next.right)/100),minW,4000));
   const h=Math.round(clamp(fullH*(1-(next.top+next.bottom)/100),minH,5000));
   const x=fullW*(next.left-initial.left)/100;
@@ -2474,12 +2486,12 @@ function setOriginalBoxDimension(key,value){
     else if(layout.sectionHeightMode!=="fixed")layout.sectionHeightMode="auto";
   }
   if(node.tagName==="IMG"&&liveLockImageRatio){
-    const rect=node.getBoundingClientRect(),ratio=
-      (card?rect.width/Math.max(1,rect.height):
-        node.naturalWidth&&node.naturalHeight?
-          node.naturalWidth/node.naturalHeight:rect.width/Math.max(1,rect.height))*
-      (1-((selectedImageCrop(patch).left||0)+(selectedImageCrop(patch).right||0))/100)/
-      (1-((selectedImageCrop(patch).top||0)+(selectedImageCrop(patch).bottom||0))/100);
+    // Preserve the on-screen frame aspect ratio after any previous trim or
+    // free resize. Applying edge-crop fractions to it a second time would
+    // distort the next numeric width/height adjustment.
+    const rect=node.getBoundingClientRect();
+    const cardRect=card?.getBoundingClientRect();
+    const ratio=(cardRect?.width||rect.width)/Math.max(1,rect.height);
     if(key==="wrapWidth")layout.reserveHeight=Math.round(clamp(layout.wrapWidth/ratio,24,5000));
     else layout.wrapWidth=Math.round(clamp(layout.reserveHeight*ratio,64,4000));
   }
@@ -4360,14 +4372,17 @@ function moveLiveGesture(event){
       next.dy=clamp(Math.round(g.layout.dy+snap.dy),-4000,4000);
       drawLiveSnapGuides(snap.x,snap.y,g.node.ownerDocument);
     }else{
+      const lock=liveLockImageRatio&&!event.altKey;
+      // The aspect ratio belongs to the photograph, NOT the figure plus
+      // its caption. Treat the caption as an extra natural-flow height when
+      // sizing freely, and exclude it from the locked-resize calculation.
+      const pictureHeight=Math.max(24,g.rect.height-g.frameExtra);
       const box=resizableBoxFromDrag(
-        {x:0,y:0,w:g.rect.width,h:g.rect.height},
-        g.dir,deltaX,deltaY,
-        liveLockImageRatio&&!event.altKey,64,48,4000,5000);
+        {x:0,y:0,w:g.rect.width,h:lock?pictureHeight:g.rect.height},
+        g.dir,deltaX,deltaY,lock,64,lock?24:48,4000,5000);
       next.wrapWidth=box.w;
-      // The figure's caption contributes natural height. Only the photo
-      // portion gets a fixed height, so the caption is never squashed.
-      next.reserveHeight=Math.round(clamp(box.h-g.frameExtra,24,5000));
+      next.reserveHeight=Math.round(clamp(
+        lock?box.h:box.h-g.frameExtra,24,5000));
       next.dx=clamp(Math.round(g.layout.dx+box.x),-4000,4000);
       next.dy=clamp(Math.round(g.layout.dy+box.y),-4000,4000);
     }
