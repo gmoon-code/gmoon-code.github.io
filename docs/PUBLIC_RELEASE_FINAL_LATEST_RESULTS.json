@@ -1,12 +1,12 @@
 {
-  "sourceHead": "f7a570d6e67901f0fd50ff5b0e01b9ded1e0e1a9",
+  "sourceHead": "82f314ec725746a02938d825eee7d5be21f12c13",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
-  "verifiedExactMatches": 23,
-  "httpErrors": 1,
+  "verifiedExactMatches": 22,
+  "httpErrors": 2,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-f7a570d6e679",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-82f314ec7257",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -14,8 +14,8 @@
   "auditEvidence": {
     "links": {
       "report": "docs/PUBLIC_LINKGRAPH_LATEST_RESULTS.json",
-      "run": "41941072139",
-      "head_sha": "bbff64ce2a6e3171817d9c2e380b50aa29a78b60",
+      "run": "41941193164",
+      "head_sha": "94f3a32d5e1ec816a3305e77856cc11c01e5e0a9",
       "exit": "0",
       "sourceModifiedSinceAudit": [],
       "failureCounts": {
@@ -27,7 +27,9 @@
       "run": "41941072238",
       "head_sha": "bbff64ce2a6e3171817d9c2e380b50aa29a78b60",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "teaching-ap-chemistry.html"
+      ],
       "failureCounts": {
         "issues": 43
       },
@@ -38,8 +40,8 @@
     },
     "metadata": {
       "report": "docs/RESEARCH_METADATA_LATEST_RESULTS.json",
-      "run": "41941072014",
-      "head_sha": "bbff64ce2a6e3171817d9c2e380b50aa29a78b60",
+      "run": "41941193182",
+      "head_sha": "94f3a32d5e1ec816a3305e77856cc11c01e5e0a9",
       "exit": "0",
       "sourceModifiedSinceAudit": [],
       "failureCounts": {
@@ -57,6 +59,7 @@
       "head_sha": "5df2bff98059221e01a9af8d76c97074b875e75f",
       "exit": "0",
       "sourceModifiedSinceAudit": [
+        "teaching-ap-chemistry.html",
         "teaching-ap-evolution.html"
       ],
       "failureCounts": {
@@ -69,6 +72,7 @@
       "head_sha": "5df2bff98059221e01a9af8d76c97074b875e75f",
       "exit": "0",
       "sourceModifiedSinceAudit": [
+        "teaching-ap-chemistry.html",
         "teaching-ap-evolution.html"
       ],
       "failureCounts": {
@@ -82,6 +86,7 @@
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research-scoping.html",
+        "teaching-ap-chemistry.html",
         "teaching-ap-evolution.html"
       ],
       "failureCounts": {
@@ -94,7 +99,9 @@
       "run": "41941071990",
       "head_sha": "bbff64ce2a6e3171817d9c2e380b50aa29a78b60",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "teaching-ap-chemistry.html"
+      ],
       "failureCounts": {
         "failures": 0,
         "axeViolations": 0
@@ -109,14 +116,22 @@
   },
   "sourceDriftSinceAudits": [
     {
+      "category": "external",
+      "sourceModifiedSinceAudit": [
+        "teaching-ap-chemistry.html"
+      ]
+    },
+    {
       "category": "reflow",
       "sourceModifiedSinceAudit": [
+        "teaching-ap-chemistry.html",
         "teaching-ap-evolution.html"
       ]
     },
     {
       "category": "engines",
       "sourceModifiedSinceAudit": [
+        "teaching-ap-chemistry.html",
         "teaching-ap-evolution.html"
       ]
     },
@@ -124,12 +139,43 @@
       "category": "typography",
       "sourceModifiedSinceAudit": [
         "research-scoping.html",
+        "teaching-ap-chemistry.html",
         "teaching-ap-evolution.html"
+      ]
+    },
+    {
+      "category": "interactions",
+      "sourceModifiedSinceAudit": [
+        "teaching-ap-chemistry.html"
       ]
     }
   ],
   "pass": false,
   "errors": [
+    {
+      "path": "teaching-ap-chemistry.html",
+      "errors": [
+        "deployed bytes differ from checked-out production source"
+      ],
+      "firstDiff": [
+        "--- source\n",
+        "+++ deployed\n",
+        "@@ -11,3 +11,3 @@\n",
+        "   <link rel=\"stylesheet\" href=\"appearance.css?v=20261028-visible-focus\">",
+        "-<style id=\"moon-v2-live-layout\"></style></head>",
+        "+</head>",
+        " <body class=\"theme-magenta\">",
+        "@@ -24,3 +24,3 @@\n",
+        "   <div class=\"hero-copy\">",
+        "-    ",
+        "+    <p class=\"meta\">AP Chemistry Unit 7 · Original instructional design, prepared for this website</p>",
+        "     <h1>Chemical equilibrium and molecular explanations</h1>",
+        "@@ -117,3 +117,3 @@\n",
+        "   <div class=\"teaching-original-prompt\">",
+        "-    <p class=\"meta\">Student-facing task: Constant temperature, ideal-gas approximation</p>",
+        "+    <p class=\"meta\">Student-facing task · Constant temperature, ideal-gas approximation</p>"
+      ]
+    },
     {
       "path": "teaching-ap-evolution.html",
       "errors": [
@@ -157,14 +203,22 @@
     {
       "sourceDrift": [
         {
+          "category": "external",
+          "sourceModifiedSinceAudit": [
+            "teaching-ap-chemistry.html"
+          ]
+        },
+        {
           "category": "reflow",
           "sourceModifiedSinceAudit": [
+            "teaching-ap-chemistry.html",
             "teaching-ap-evolution.html"
           ]
         },
         {
           "category": "engines",
           "sourceModifiedSinceAudit": [
+            "teaching-ap-chemistry.html",
             "teaching-ap-evolution.html"
           ]
         },
@@ -172,14 +226,21 @@
           "category": "typography",
           "sourceModifiedSinceAudit": [
             "research-scoping.html",
+            "teaching-ap-chemistry.html",
             "teaching-ap-evolution.html"
+          ]
+        },
+        {
+          "category": "interactions",
+          "sourceModifiedSinceAudit": [
+            "teaching-ap-chemistry.html"
           ]
         }
       ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41941172443",
-  "run_sha": "f7a570d6e67901f0fd50ff5b0e01b9ded1e0e1a9",
+  "workflow_run_id": "41941229384",
+  "run_sha": "82f314ec725746a02938d825eee7d5be21f12c13",
   "exit_code": "1"
 }
