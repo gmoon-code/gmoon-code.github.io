@@ -582,11 +582,21 @@ function setWorkspaceMode(mode){
   $("workspaceTitle").textContent=isLive?"GitHub source editor":"Free design canvas";
   $("workspacePill").textContent=isLive?"Editable GitHub source · not the deployed page":"Independent objects · staging only";
   $("workspaceExplanation").textContent=isLive?
-    "This editable pane renders GitHub main HTML inside a simulated "+(LIVE_WIDTHS[$("devicePreview").value]||1160)+"px frame. It does not directly display the published page. Choose View actual published site to load the visitor URL, or Verified live preview to inspect changes prepared for publication. Page scripts in same-origin frames can access an open GitHub token form; use the token option only with trusted code. GitHub Pages deployment and browser viewport width can affect appearances.":
+    "This editable pane renders GitHub main HTML inside a simulated "+(selectedLiveViewportWidth())+"px frame. It does not directly display the published page. Choose View actual published site to load the visitor URL, or Verified live preview to inspect changes prepared for publication. Page scripts in same-origin frames can access an open GitHub token form; use the token option only with trusted code. GitHub Pages deployment and browser viewport width can affect appearances.":
     "This canvas is a simplified, independent reconstruction. It does not yet reproduce every original section or responsive rule. Use Live website to verify the real page; only the staging preview can be published.";
   $("workspaceFooter").textContent=isLive?
     "GitHub source · Drag elements · Resize handles · Double-click text · Search website elements · Stack forward/back · Undo and verified preview":
     "Drag to move · Eight resize handles · Double-click text to edit · Double-click empty canvas to add text · Drop images · Shift-click for multiple selection";
+  if(isLive){
+    $("inlinePublishedView").hidden=false;
+    $("inlineDraftView").hidden=false;
+    setInlineLiveView(inlineLiveView);
+  }else{
+    $("inlinePublishedView").hidden=true;
+    $("inlineDraftView").hidden=true;
+    $("inlineReadOnlyTip").hidden=true;
+    document.body.classList.remove("inline-published-view");
+  }
   renderLiveInspector();refreshUndo();renderCanvasDraftWarning();
   if(isLive){fitLivePage();syncLiveOverlay();}
   else{
@@ -595,9 +605,9 @@ function setWorkspaceMode(mode){
     fitCanvas();
   }
 }
-const LIVE_HEIGHTS={desktop:900,tablet:1024,phone:844};
+const LIVE_HEIGHTS={desktop:900,browser:900,tablet:1024,phone:844};
 function fitVerifiedPreviewFrames(){
-  const pageWidth=workspaceMode==="live"?LIVE_WIDTHS[$("devicePreview").value]||1160:scene.width;
+  const pageWidth=workspaceMode==="live"?selectedLiveViewportWidth():scene.width;
   const pageHeight=workspaceMode==="live"?LIVE_HEIGHTS[$("devicePreview").value]||900:Math.max(900,Math.min(scene.height,1400));
   for(const [dialogId,viewportId,shellId,frameId] of [
     ["previewDialog","previewViewport","previewShell","previewFrame"],
@@ -608,7 +618,7 @@ function fitVerifiedPreviewFrames(){
     if(!$(dialogId).open)continue;
     const viewport=$(viewportId),shell=$(shellId),frame=$(frameId);
     const width=dialogId==="publishedDialog"?
-      LIVE_WIDTHS[$("devicePreview").value]||1160:pageWidth;
+      selectedLiveViewportWidth():pageWidth;
     const height=dialogId==="publishedDialog"?
       LIVE_HEIGHTS[$("devicePreview").value]||900:pageHeight;
     const available=Math.max(180,viewport.clientWidth-24);
@@ -635,7 +645,7 @@ function fitLivePage(){
   const area=$("liveViewport"),frame=$("livePageFrame"),shell=$("livePageShell");
   if(!area?.clientWidth)return;
   const device=$("devicePreview").value;
-  const width=LIVE_WIDTHS[device]||1160;
+  const width=selectedLiveViewportWidth();
   const height=LIVE_HEIGHTS[device]||900;
   liveWidth=width;
   // A real browser has a fixed viewport and scrollable document. Expanding
@@ -645,6 +655,10 @@ function fitLivePage(){
   frame.style.width=width+"px";
   frame.style.height=height+"px";
   frame.style.transform="scale("+liveScale+")";
+  const actual=$("inlinePublishedFrame");
+  actual.style.width=width+"px";
+  actual.style.height=height+"px";
+  actual.style.transform="scale("+liveScale+")";
   shell.style.width=Math.ceil(width*liveScale)+"px";
   shell.style.height=Math.ceil(height*liveScale)+"px";
   $("zoom").value=String(Math.round(liveScale*100));
@@ -1420,7 +1434,7 @@ function validLiveLayout(layout){
   }
   return true;
 }
-function liveDevice(){return $("devicePreview").value;}
+function liveDevice(){return $("devicePreview").value==="browser"?"desktop":$("devicePreview").value;}
 function originalLiveTransform(node){
   if(!node?.isConnected)return {ox:0,oy:0,osx:1,osy:1};
   const doc=node.ownerDocument;
@@ -2543,6 +2557,7 @@ function renderLiveEditCount(){
   $("liveDraftRecovery").hidden=!blocked||workspaceMode!=="live";
   $("liveDraftConflict").hidden=!conflicted||workspaceMode!=="live";
   $("liveDraftStorageFailure").hidden=!notSaved||workspaceMode!=="live";
+  inlineViewStatus();
   $("liveEditCount").textContent=blocked?
     "Stored live-page draft needs recovery · New edits cannot be saved or published until resolved.":
     conflicted?
@@ -5771,6 +5786,7 @@ function changePage(page){
   ++loadSerial;clearTimeout(saveTimer);saveTimer=null;lastTap=null;pageImages=[];
   renderImageLibrary();
   currentPage=page;
+  if(inlineLiveView==="published")$("inlinePublishedFrame").removeAttribute("src");
   loadLiveDraft(page);
   history=[];redo=[];selected.clear();activeId=null;editingId=null;
   loadCanvasDraft(page);
@@ -6407,6 +6423,9 @@ function attachEvents(){
   $("liveSectionPickMode").addEventListener("click",toggleLiveSectionPickMode);
   $("liveMode").addEventListener("click",()=>setWorkspaceMode("live"));
   $("designMode").addEventListener("click",()=>setWorkspaceMode("design"));
+  $("inlinePublishedView").addEventListener("click",()=>setInlineLiveView("published"));
+  $("inlineDraftView").addEventListener("click",()=>setInlineLiveView("draft"));
+  $("editDraftFromTip").addEventListener("click",()=>setInlineLiveView("draft"));
   $("devicePreview").addEventListener("change",()=>{
     liveManualScale=null;fitLivePage();
     renderLiveInspector();syncLiveOverlay();
@@ -7057,7 +7076,7 @@ function attachEvents(){
     $("publishedDialogTitle").textContent="Actual published website · "+selectedPage+" · read only";
     $("publishedSourceStatus").textContent=
       "Loading the deployed URL · "+selectedPage+
-      " · "+(LIVE_WIDTHS[$("devicePreview").value]||1160)+"px simulated viewport";
+      " · "+(selectedLiveViewportWidth())+"px simulated viewport";
     dialog.showModal();
     fitVerifiedPreviewFrames();
     frame.src=url.href;
