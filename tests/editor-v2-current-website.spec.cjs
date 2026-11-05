@@ -2754,6 +2754,9 @@ for(const [name,gallery] of [
           getComputedStyle(el).gridTemplateColumns.split(/\s+/).length)).toBe(2);
       }
       const original=await photo.evaluate(img=>img.getBoundingClientRect().width);
+      // The live site may already have published overflow rules on untouched
+      // siblings. Preserve that exact baseline rather than forcing "hidden".
+      const siblingOverflow=await second.evaluate(el=>getComputedStyle(el).overflow);
       // Existing browser drafts made before photo-card mode remain in their
       // original independent-image model. Verify the legacy unclipping
       // contract explicitly, rather than applying it to new linked cards.
@@ -2799,7 +2802,7 @@ for(const [name,gallery] of [
       expect(current.figureOverflow).toBe('visible');
       expect(parseFloat(current.imageRadius)).toBeGreaterThan(0);
       expect(current.visibleOutsideFrame).toBe(true);
-      await expect(second).toHaveCSS('overflow','hidden');
+      await expect(second).toHaveCSS('overflow',siblingOverflow);
       // Crop/rounded choices must remain visually coherent after the
       // enclosing card has been unclipped.
       await page.locator('#liveCropShape').selectOption('rounded');
