@@ -1,12 +1,12 @@
 {
-  "sourceHead": "243b36ac626cbe05a3829524dd902692dee8eff1",
+  "sourceHead": "541b1018d90509bea4c5bdc32439392c01f49d29",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
-  "verifiedExactMatches": 23,
-  "httpErrors": 1,
+  "verifiedExactMatches": 24,
+  "httpErrors": 0,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-243b36ac626c",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-541b1018d905",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -101,35 +101,10 @@
     }
   },
   "sourceDriftSinceAudits": [],
-  "pass": false,
-  "errors": [
-    {
-      "path": "interests.html",
-      "errors": [
-        "deployed bytes differ from checked-out production source"
-      ],
-      "firstDiff": [
-        "--- source\n",
-        "+++ deployed\n",
-        "@@ -69,3 +69,3 @@\n",
-        " <style id=\"interests-visitor-photo-flow\">",
-        "-/* The two selected Pungmul photographs are naturally sized gallery items. */",
-        "+/* The four historical Pungmul photographs are naturally sized gallery items. */",
-        " #main.interests-page{padding-bottom:64px}",
-        "@@ -74,6 +74,6 @@\n",
-        "   display:grid;",
-        "-  grid-template-columns:repeat(2,minmax(0,1fr));",
-        "-  gap:18px;",
-        "+  grid-template-columns:repeat(4,minmax(0,1fr));",
-        "+  gap:14px;",
-        "   width:100%;",
-        "-  max-width:780px;",
-        "+  max-width:100%;"
-      ]
-    }
-  ],
+  "pass": true,
+  "errors": [],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41955987607",
-  "run_sha": "243b36ac626cbe05a3829524dd902692dee8eff1",
-  "exit_code": "1"
+  "workflow_run_id": "41958815586",
+  "run_sha": "541b1018d90509bea4c5bdc32439392c01f49d29",
+  "exit_code": "0"
 }
