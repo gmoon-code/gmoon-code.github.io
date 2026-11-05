@@ -2134,3 +2134,153 @@ for(const name of ['index.html','contact.html']){
       expect(writes).toEqual([]);
     });
 }
+
+
+test('Real Pungmul photo crop preserves zoom and focal position through edge trim and crop activation',
+  async({page})=>{
+    const name='pungmul.html',writes=[];
+    await installVerifiedCurrentSource(page,writes);
+    await page.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    const image=page.frameLocator('#livePageFrame').locator('main img:visible').first();
+    await image.scrollIntoViewIfNeeded();
+    await expect.poll(()=>image.evaluate(img=>img.naturalWidth),{timeout:15000})
+      .toBeGreaterThan(0);
+    await image.click();
+    const adjust=async(id,value)=>{
+      await page.locator(id).evaluate((el,v)=>{
+        el.value=String(v);
+        el.dispatchEvent(new Event('input',{bubbles:true}));
+        el.dispatchEvent(new Event('change',{bubbles:true}));
+      },value);
+    };
+    await adjust('#liveCropZoom',260);
+    await expect(page.locator('#liveCropZoomValue')).toHaveText('260%');
+    await page.locator('#cropImageTool').click();
+    await expect(page.locator('#liveCropZoomValue')).toHaveText('260%');
+    await adjust('#liveCropRight',20);
+    await expect(page.locator('#liveCropZoomValue')).toHaveText('260%');
+    const state=()=>image.evaluate(img=>{
+      const style=img.ownerDocument.defaultView.getComputedStyle(img);
+      return {backgroundPosition:style.backgroundPosition,
+        backgroundSize:style.backgroundSize,fit:style.objectFit};
+    });
+    const initial=await state();
+    expect(initial.fit).toBe('none');
+    await adjust('#liveCropX',5);
+    const shifted=await state();
+    expect(shifted.backgroundPosition).not.toBe(initial.backgroundPosition);
+    await adjust('#liveCropY',10);
+    const shiftedY=await state();
+    expect(shiftedY.backgroundPosition).not.toBe(shifted.backgroundPosition);
+    await page.locator('#cropImageTool').click();
+    await page.locator('#cropImageTool').click();
+    await expect(page.locator('#liveCropZoomValue')).toHaveText('260%');
+    const saved=await page.evaluate(name=>
+      JSON.parse(localStorage.getItem('moon-academic-editor-v2:source:'+name)||'[]'),name);
+    const patch=saved.find(p=>p.kind==='image'&&p.imageCrop?.desktop);
+    expect(patch).toBeTruthy();
+    expect(patch.imageCrop.desktop.zoom).toBe(260);
+    expect(patch.imageCrop.desktop.right).toBe(20);
+    expect(patch.imageCrop.desktop.x).toBe(5);
+    expect(patch.imageCrop.desktop.y).toBe(10);
+    await page.locator('#preview').click();
+    await expect(page.locator('#previewDialog')).toBeVisible();
+    const preview=page.frameLocator('#previewFrame').locator('main img:visible').first();
+    await expect(preview).toHaveCSS('object-fit','none');
+    const previewStyle=await preview.evaluate(img=>{
+      const style=img.ownerDocument.defaultView.getComputedStyle(img);
+      return {backgroundPosition:style.backgroundPosition,backgroundSize:style.backgroundSize};
+    });
+    expect(previewStyle).toEqual({backgroundPosition:(await state()).backgroundPosition,
+      backgroundSize:(await state()).backgroundSize});
+    await page.locator('#closePreview').click();
+    expect(writes).toEqual([]);
+  });
+
+test('Real photo resize, move and crop round-trip through exact verified preview and mocked GitHub commit',
+  async({page})=>{
+    const name='pungmul.html',writes=[],puts=[];
+    await installVerifiedCurrentSource(page,writes);
+    await page.route('https://api.github.com/repos/gmoon-code/gmoon-code.github.io/contents/'+name,
+      async route=>{
+        if(route.request().method()!=='PUT')return route.fallback();
+        puts.push(JSON.parse(route.request().postData()));
+        await route.fulfill({status:200,contentType:'application/json',
+          headers:{'access-control-allow-origin':'*'},
+          body:JSON.stringify({commit:{sha:'synthetic-photo-geometry-commit'}})});
+      });
+    await page.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    const image=page.frameLocator('#livePageFrame').locator('main img:visible').first();
+    await image.scrollIntoViewIfNeeded();
+    await expect.poll(()=>image.evaluate(img=>img.naturalWidth),{timeout:15000})
+      .toBeGreaterThan(0);
+    await image.click();
+    const originalSource=await image.getAttribute('src');
+    const width=Number(await page.locator('#liveOriginalWidth').inputValue());
+    expect(width).toBeGreaterThan(100);
+    await page.locator('#liveOriginalWidth').fill(String(Math.round(width+45)));
+    await page.locator('#liveOriginalWidth').dispatchEvent('change');
+    await page.locator('#liveMoveX').fill('38');
+    await page.locator('#liveMoveX').dispatchEvent('change');
+    await page.locator('#cropImageTool').click();
+    await page.locator('#liveCropRight').evaluate(el=>{
+      el.value='15';el.dispatchEvent(new Event('change',{bubbles:true}));
+    });
+    await page.locator('#liveCropZoom').evaluate(el=>{
+      el.value='180';el.dispatchEvent(new Event('input',{bubbles:true}));
+      el.dispatchEvent(new Event('change',{bubbles:true}));
+    });
+    await page.locator('#liveCropX').evaluate(el=>{
+      el.value='25';el.dispatchEvent(new Event('input',{bubbles:true}));
+      el.dispatchEvent(new Event('change',{bubbles:true}));
+    });
+    const snapshot=async(locator)=>locator.evaluate(async img=>{
+      await img.ownerDocument.fonts?.ready;
+      const rect=img.getBoundingClientRect();
+      const main=img.ownerDocument.querySelector('main').getBoundingClientRect();
+      const s=img.ownerDocument.defaultView.getComputedStyle(img);
+      return {x:rect.x-main.x,y:rect.y-main.y,w:rect.width,h:rect.height,
+        objectFit:s.objectFit,backgroundSize:s.backgroundSize,
+        backgroundPosition:s.backgroundPosition,src:img.getAttribute('src')};
+    });
+    const edited=await snapshot(image);
+    await page.locator('#preview').click();
+    await expect(page.locator('#previewDialog')).toBeVisible();
+    const previewImage=page.frameLocator('#previewFrame').locator('main img:visible').first();
+    const prepared=await snapshot(previewImage);
+    for(const key of ['x','y','w','h'])
+      expect(Math.abs(prepared[key]-edited[key]),key+' editor vs preview')
+        .toBeLessThan(6);
+    expect(prepared.backgroundPosition).toBe(edited.backgroundPosition);
+    expect(prepared.backgroundSize).toBe(edited.backgroundSize);
+    const html=await page.locator('#previewFrame').getAttribute('srcdoc');
+    await page.locator('#closePreview').click();
+    await page.locator('#publish').click();
+    await page.locator('#githubToken').fill('synthetic-photo-geometry-token');
+    await page.locator('#acknowledgeLive').check();
+    await page.locator('#confirmPublish').click();
+    await expect.poll(()=>puts.length,{timeout:25000}).toBe(1);
+    const committed=Buffer.from(puts[0].content,'base64').toString('utf8');
+    expect(committed).toBe(html);
+    expect(puts[0].sha).toBe(blobSha(SOURCE.get(name)));
+    const visitor=await page.context().newPage();
+    await visitor.setViewportSize({width:1160,height:900});
+    await visitor.route(BASE+'/'+name,route=>route.fulfill({
+      status:200,contentType:'text/html',body:committed}));
+    await visitor.goto(BASE+'/'+name,{waitUntil:'load'});
+    const publicPhoto=visitor.locator('main img:visible').first();
+    await expect(publicPhoto).toHaveAttribute('src',originalSource);
+    const publicState=await snapshot(publicPhoto);
+    for(const key of ['x','y','w','h'])
+      expect(Math.abs(publicState[key]-prepared[key]),key+' preview vs published visitor')
+        .toBeLessThan(6);
+    expect(publicState.objectFit).toBe(prepared.objectFit);
+    expect(publicState.backgroundSize).toBe(prepared.backgroundSize);
+    expect(publicState.backgroundPosition).toBe(prepared.backgroundPosition);
+    await visitor.close();
+    expect(writes).toEqual([]);
+  });
