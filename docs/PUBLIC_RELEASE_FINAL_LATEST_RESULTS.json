@@ -1,12 +1,12 @@
 {
-  "sourceHead": "6fa15009a447353e422bac2c3382f3aa70631e8c",
+  "sourceHead": "da3542a670a1dd5abad39b15abc40cb53ff2c8b1",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
-  "verifiedExactMatches": 22,
-  "httpErrors": 2,
+  "verifiedExactMatches": 24,
+  "httpErrors": 0,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-6fa15009a447",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-da3542a670a1",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -93,12 +93,10 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "41941071990",
-      "head_sha": "bbff64ce2a6e3171817d9c2e380b50aa29a78b60",
+      "run": "41941193342",
+      "head_sha": "94f3a32d5e1ec816a3305e77856cc11c01e5e0a9",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "teaching-ap-chemistry.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0,
         "axeViolations": 0
@@ -132,64 +130,10 @@
         "teaching-ap-chemistry.html",
         "teaching-ap-evolution.html"
       ]
-    },
-    {
-      "category": "interactions",
-      "sourceModifiedSinceAudit": [
-        "teaching-ap-chemistry.html"
-      ]
     }
   ],
   "pass": false,
   "errors": [
-    {
-      "path": "teaching-ap-chemistry.html",
-      "errors": [
-        "deployed bytes differ from checked-out production source"
-      ],
-      "firstDiff": [
-        "--- source\n",
-        "+++ deployed\n",
-        "@@ -11,3 +11,3 @@\n",
-        "   <link rel=\"stylesheet\" href=\"appearance.css?v=20261028-visible-focus\">",
-        "-<style id=\"moon-v2-live-layout\"></style></head>",
-        "+</head>",
-        " <body class=\"theme-magenta\">",
-        "@@ -24,3 +24,3 @@\n",
-        "   <div class=\"hero-copy\">",
-        "-    ",
-        "+    <p class=\"meta\">AP Chemistry Unit 7 · Original instructional design, prepared for this website</p>",
-        "     <h1>Chemical equilibrium and molecular explanations</h1>",
-        "@@ -117,3 +117,3 @@\n",
-        "   <div class=\"teaching-original-prompt\">",
-        "-    <p class=\"meta\">Student-facing task: Constant temperature, ideal-gas approximation</p>",
-        "+    <p class=\"meta\">Student-facing task · Constant temperature, ideal-gas approximation</p>"
-      ]
-    },
-    {
-      "path": "teaching-ap-evolution.html",
-      "errors": [
-        "deployed bytes differ from checked-out production source"
-      ],
-      "firstDiff": [
-        "--- source\n",
-        "+++ deployed\n",
-        "@@ -11,3 +11,3 @@\n",
-        "   <link rel=\"stylesheet\" href=\"appearance.css?v=20261028-visible-focus\">",
-        "-<style id=\"moon-v2-live-layout\"></style></head>",
-        "+</head>",
-        " <body class=\"theme-magenta\">",
-        "@@ -23,3 +23,3 @@\n",
-        " <section class=\"page-hero single teaching-case-hero\"><div class=\"hero-copy\">",
-        "-",
-        "+<p class=\"meta\">AP Biology · Unit 7 natural selection, with Units 5 and 6 connections · Developed curriculum proposal</p>",
-        " <h1>Haemoglobin S, malaria, and natural selection</h1>",
-        "@@ -35,3 +35,3 @@\n",
-        " <figure class=\"editorial-figure editorial-source-image\" aria-labelledby=\"hbs-micrograph-caption\">",
-        "-  <img src=\"https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ae/Sickle_cells_in_blood.jpg/960px-Sickle_cells_in_blood.jpg\" srcset=\"https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ae/Sickle_cells_in_blood.jpg/330px-Sickle_cells_in_blood.jpg 330w, https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ae/Sickle_cells_in_blood.jpg/960px-Sickle_cells_in_blood.jpg 960w, https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ae/Sickle_cells_in_blood.jpg/1280px-Sickle_cells_in_blood.jpg 1280w\" sizes=\"(max-width: 760px) 100vw, 700px\" width=\"960\" height=\"543\" loading=\"lazy\" decoding=\"async\" alt=\"Photomicrograph of a stained blood film containing many red cells, including several elongated, curved sickle-shaped cells.\">",
-        "+  <img src=\"https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ae/Sickle_cells_in_blood.jpg/960px-Sickle_cells_in_blood.jpg\" srcset=\"https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ae/Sickle_cells_in_blood.jpg/330px-Sickle_cells_in_blood.jpg 330w, https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ae/Sickle_cells_in_blood.jpg/960px-Sickle_cells_in_blood.jpg 960w, https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ae/Sickle_cells_in_blood.jpg/1280px-Sickle_cells_in_blood.jpg 1280w\" sizes=\"(max-width: 760px) 100vw, 700px\" width=\"960\" height=\"543\" loading=\"lazy\" decoding=\"async\" alt=\"Photomicrograph of a stained blood film containing many red cells, including several elongated, curved sickle-shaped cells.\" />"
-      ]
-    },
     {
       "sourceDrift": [
         {
@@ -212,18 +156,12 @@
             "teaching-ap-chemistry.html",
             "teaching-ap-evolution.html"
           ]
-        },
-        {
-          "category": "interactions",
-          "sourceModifiedSinceAudit": [
-            "teaching-ap-chemistry.html"
-          ]
         }
       ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41941269247",
-  "run_sha": "6fa15009a447353e422bac2c3382f3aa70631e8c",
+  "workflow_run_id": "41941373374",
+  "run_sha": "da3542a670a1dd5abad39b15abc40cb53ff2c8b1",
   "exit_code": "1"
 }
