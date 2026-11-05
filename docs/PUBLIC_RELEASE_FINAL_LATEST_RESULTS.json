@@ -1,12 +1,12 @@
 {
-  "sourceHead": "077abc58eda0929b4af7bdd302bed36084bc7927",
+  "sourceHead": "b1e1ad28cdd634bbb469a6e81a35cabf11021d24",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-077abc58eda0",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-b1e1ad28cdd6",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -90,12 +90,10 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "41987896450",
-      "head_sha": "2a72df14ab1423e6ab055e93bd0577b98fd77fcb",
+      "run": "41988719922",
+      "head_sha": "73e67c29a94c0c18a595923f02076a80e40c5672",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "interests.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0,
         "axeViolations": 0
@@ -123,12 +121,6 @@
     },
     {
       "category": "typography",
-      "sourceModifiedSinceAudit": [
-        "interests.html"
-      ]
-    },
-    {
-      "category": "interactions",
       "sourceModifiedSinceAudit": [
         "interests.html"
       ]
@@ -171,12 +163,6 @@
           "sourceModifiedSinceAudit": [
             "interests.html"
           ]
-        },
-        {
-          "category": "interactions",
-          "sourceModifiedSinceAudit": [
-            "interests.html"
-          ]
         }
       ]
     },
@@ -189,7 +175,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41988781513",
-  "run_sha": "077abc58eda0929b4af7bdd302bed36084bc7927",
+  "workflow_run_id": "41988815377",
+  "run_sha": "b1e1ad28cdd634bbb469a6e81a35cabf11021d24",
   "exit_code": "1"
 }
