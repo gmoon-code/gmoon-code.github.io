@@ -3398,7 +3398,7 @@ for(const [pageName,gallery] of [
         captionTop:caption?.getBoundingClientRect().top??null,
         captionText:caption?.textContent.trim()??null};
     });
-    // Widen only the first card's gallery track, and preserve its caption.
+    // Widen only the first photograph's card, leaving gallery tracks unchanged.
     const wanted=Math.round(original.w+55);
     await page.locator('#liveOriginalWidth').fill(String(wanted));
     await page.locator('#liveOriginalWidth').dispatchEvent('change');
@@ -3417,10 +3417,18 @@ for(const [pageName,gallery] of [
     expect(resized.overflow).toBe('hidden');
     const sibling=frame.locator(gallery+' figure').nth(1);
     const siblingBeforeMove=await sibling.getAttribute('class');
+    const startingY=await figure.evaluate(x=>{
+      const value=getComputedStyle(x).translate;
+      return value==='none'?0:(Number.parseFloat(value.split(/\\s+/)[1]||'0')||0);
+    });
     await page.locator('#liveMoveY').fill('24');
     await page.locator('#liveMoveY').dispatchEvent('change');
-    await expect.poll(()=>figure.evaluate(x=>getComputedStyle(x).translate))
-      .toContain('24px');
+    // The existing published card may already have a nonzero translation.
+    // Moving it 24px retains that starting position rather than resetting it.
+    await expect.poll(()=>figure.evaluate(x=>{
+      const value=getComputedStyle(x).translate;
+      return value==='none'?0:(Number.parseFloat(value.split(/\\s+/)[1]||'0')||0);
+    })).toBe(startingY+24);
     expect(await sibling.getAttribute('class')).toBe(siblingBeforeMove);
     expect(await photo.getAttribute('src')).toBe(source);
     const afterMove=await figure.evaluate(x=>{
@@ -3435,7 +3443,7 @@ for(const [pageName,gallery] of [
       expect(afterMove.captionTop).toBeGreaterThanOrEqual(afterMove.imageBottom-2);
       expect(afterMove.cardBottom).toBeGreaterThan(afterMove.captionTop);
     }
-    // Crop changes the photo inside the frame, not the parent/caption.
+    // Cropping trims the selected card frame and the caption stays attached.
     await page.locator('#liveCropShape').selectOption('rounded');
     const beforeCrop=await figure.boundingBox();
     await page.locator('#liveCropLeft').evaluate(input=>{
@@ -3444,14 +3452,16 @@ for(const [pageName,gallery] of [
       input.dispatchEvent(new Event("change",{bubbles:true}));
     });
     const afterCrop=await figure.boundingBox();
-    expect(Math.abs(afterCrop.width-beforeCrop.width)).toBeLessThan(2);
+    expect(afterCrop.width,'crop should reduce visible photo-card width')
+      .toBeLessThan(beforeCrop.width-10);
     await expect(photo).toHaveCSS('border-radius','12px');
     const key='moon-academic-editor-v2:source:'+pageName;
     const stored=await page.evaluate(k=>JSON.parse(localStorage.getItem(k)),key);
     expect(stored).toHaveLength(1);
     expect(stored[0].kind).toBe('image');
     expect(stored[0].frameMode).toBe('card');
-    expect(stored[0].layout.desktop.wrapWidth).toBeGreaterThan(original.w+30);
+    expect(stored[0].layout.desktop.wrapWidth)
+      .toBeCloseTo(afterCrop.width,0);
     expect(stored[0].imageCrop.desktop.left).toBe(12);
     await page.locator('#preview').click();
     await expect(page.locator('#previewDialog')).toBeVisible({timeout:20000});
@@ -3460,7 +3470,7 @@ for(const [pageName,gallery] of [
       await expect(preview.locator('figcaption')).toHaveText(original.captionText);
     else await expect(preview.locator('figcaption')).toHaveCount(0);
     await expect.poll(()=>preview.evaluate(x=>x.getBoundingClientRect().width))
-      .toBeGreaterThan(original.w+30);
+      .toBeCloseTo(afterCrop.width,0);
     await expect(preview.locator('img')).toHaveCSS('border-radius','12px');
     const markup=await page.locator('#previewFrame').getAttribute('srcdoc');
     expect(markup).toContain('grid-template-columns:');
