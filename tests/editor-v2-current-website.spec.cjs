@@ -2511,3 +2511,50 @@ for(const [name,device,width,expectedCount] of [
       expect(writes).toEqual([]);
     });
 }
+
+
+for(const name of ['pungmul.html','contact.html']){
+  test('Dragging a pink crop edge trims the actual '+name+' photo and matches verified preview',
+    async({page})=>{
+      const writes=[];
+      await installVerifiedCurrentSource(page,writes);
+      await page.setViewportSize({width:1740,height:1050});
+      await page.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+      await expect(page.locator('#liveAssetStatus'))
+        .toContainText('GitHub main source verified',{timeout:35000});
+      const image=page.frameLocator('#livePageFrame').locator('main img:visible').first();
+      await image.scrollIntoViewIfNeeded();
+      await expect.poll(()=>image.evaluate(img=>img.naturalWidth),{timeout:15000})
+        .toBeGreaterThan(0);
+      const src=await image.getAttribute('src');
+      await image.click();
+      await page.locator('#cropImageTool').click();
+      const before=await image.boundingBox();
+      const grip=page.frameLocator('#livePageFrame')
+        .locator('#moon-v2-live-overlay .moon-v2-grip[data-direction="e"]');
+      await expect(grip).toBeVisible();
+      const b=await grip.boundingBox();
+      await page.mouse.move(b.x+b.width/2,b.y+b.height/2);
+      await page.mouse.down();
+      await page.mouse.move(b.x+b.width/2-32,b.y+b.height/2,{steps:10});
+      await page.mouse.up();
+      const after=await image.boundingBox();
+      expect(after.width,name+' crop drag must trim picture frame')
+        .toBeLessThan(before.width-5);
+      const right=Number((await page.locator('#liveCropRightValue').textContent()).replace('%',''));
+      expect(right,name+' right crop percentage').toBeGreaterThan(0);
+      await expect(image).toHaveAttribute('src',src);
+      await page.locator('#preview').click();
+      await expect(page.locator('#previewDialog')).toBeVisible();
+      const previewImage=page.frameLocator('#previewFrame').locator('main img:visible').first();
+      await expect(previewImage).toHaveCSS('object-fit','none');
+      const px=await previewImage.boundingBox();
+      // Both frames are scaled by the editor workspace; measure CSS geometry.
+      const editorW=await image.evaluate(img=>img.getBoundingClientRect().width);
+      const previewW=await previewImage.evaluate(img=>img.getBoundingClientRect().width);
+      expect(Math.abs(previewW-editorW),name+' preview crop width parity')
+        .toBeLessThan(7);
+      await page.locator('#closePreview').click();
+      expect(writes).toEqual([]);
+    });
+}
