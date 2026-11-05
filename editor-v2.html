@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex,nofollow">
 <title>Academic Website Editor 2 | Ye Eun Moon</title>
 <link rel="stylesheet" href="editor-v2.css?v=20261105-image-deployment-check-v70">
-<script src="editor-v2.js?v=20261105-fresh-github-draft-reset-v77" defer></script>
+<script src="editor-v2.js?v=20261105-clean-publish-and-fresh-draft-v78" defer></script>
 </head>
 <body>
 <a class="skip" href="#workspace">Skip to editor canvas</a>
@@ -181,6 +181,10 @@
       </div>
       <div id="workspaceExplanation" class="workspace-explanation" role="status">Edit my draft shows GitHub source with unpublished changes. Actual published page loads the public website URL read only at the same viewport width.</div>
       <div id="inlineViewNotice" class="inline-view-notice" role="status" aria-live="polite">Editable local draft. The actual public website can look different.</div>
+      <div id="freshSourceActionBar" class="inline-actions" hidden>
+        <button id="startFreshLiveDraftTop" type="button" class="danger">Back up and start from current GitHub page</button>
+        <span class="help">Removes this page\u2019s browser edits only after a JSON backup and confirmation. Nothing is published.</span>
+      </div>
 
         <div id="canvasDraftWarning" class="live-draft-recovery" role="alert" hidden>
           <strong>Free Design Canvas draft needs attention</strong>
@@ -552,6 +556,7 @@
           <button id="importLiveDraftJson" type="button">Restore editable draft JSON</button>
         </div>
         <button id="startFreshLiveDraft" type="button" class="danger">Start fresh from latest GitHub page</button>
+        <button id="downloadLastPublishedLiveDraft" type="button" hidden>Download last published edits backup</button>
         <p class="help">This downloads your current page-edit draft as a restorable JSON backup and asks before discarding it. It then reloads verified GitHub main source, without publishing anything. Canvas drafts are separate.</p>
         <p class="help">Save a restorable backup of this page's text, photos and layout changes. To restore, select the same page first, then choose its JSON backup. Restoring requires verified GitHub source and confirmation before replacing this browser's draft.</p>
         <p id="liveEditCount" class="help">No live-page draft edits. Original website unchanged.</p>
