@@ -1,12 +1,12 @@
 {
-  "sourceHead": "61c04acadae1e8a76d4f9c06f46778ab2ecd6323",
+  "sourceHead": "86c0d87b24911487bc20dff9396227a9270c165d",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-61c04acadae1",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-86c0d87b2491",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -26,18 +26,18 @@
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "41981739107",
-      "head_sha": "308d757bef72e03f96d8b79544bc7e79dc95135c",
+      "run": "41982717855",
+      "head_sha": "61c04acadae1e8a76d4f9c06f46778ab2ecd6323",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "interests.html"
       ],
       "failureCounts": {
-        "issues": 43
+        "issues": 44
       },
       "counts": {
-        "reachable": 72,
-        "unverified": 43
+        "reachable": 71,
+        "unverified": 44
       }
     },
     "metadata": {
@@ -165,13 +165,15 @@
         "-<style id=\"moon-v2-live-layout\"></style></head>",
         "+</head>",
         " <body class=\"theme-yellow\">",
-        "@@ -42,4 +42,4 @@\n",
+        "@@ -42,6 +42,6 @@\n",
         "       <div class=\"pungmul-gallery\" aria-label=\"Pungmul performances and community\">",
         "-        <figure><a href=\"assets/interests-pungmul-street.webp\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"View the full-size street performance photograph in a new tab\"><img src=\"assets/interests-pungmul-street.webp\" alt=\"Pungmul performers in colourful ribbons and traditional hats playing in a city street while spectators watch\" loading=\"eager\" decoding=\"async\" width=\"1400\" height=\"788\"></a></figure>",
         "-        <figure><a href=\"assets/interests-pungmul-dancers.webp\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"View the full-size stage performance photograph in a new tab\"><img src=\"assets/interests-pungmul-dancers.webp\" alt=\"Two pungmul performers in white costumes with colourful hats and ribbons dancing while playing drums on stage\" loading=\"eager\" decoding=\"async\" width=\"1400\" height=\"1050\"></a></figure>",
         "+        <figure><a href=\"assets/interests-pungmul-street.webp\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"View the full-size street performance photograph in a new tab\"><img src=\"assets/interests-pungmul-street.webp\" alt=\"Pungmul performers in colourful ribbons and traditional hats playing in a city street while spectators watch\" loading=\"eager\" decoding=\"async\" width=\"1400\" height=\"788\"></a><figcaption>Playing in the street</figcaption></figure>",
         "+        <figure><a href=\"assets/interests-pungmul-dancers.webp\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"View the full-size stage performance photograph in a new tab\"><img src=\"assets/interests-pungmul-dancers.webp\" alt=\"Two pungmul performers in white costumes with colourful hats and ribbons dancing while playing drums on stage\" loading=\"eager\" decoding=\"async\" width=\"1400\" height=\"1050\"></a><figcaption>On stage together</figcaption></figure>",
-        "       </div>"
+        "       </div>",
+        "-      ",
+        "+      <p class=\"media-cover-source\">Pungmul photographs from my personal collection.</p>"
       ]
     },
     {
@@ -216,7 +218,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41982717810",
-  "run_sha": "61c04acadae1e8a76d4f9c06f46778ab2ecd6323",
+  "workflow_run_id": "41982776683",
+  "run_sha": "86c0d87b24911487bc20dff9396227a9270c165d",
   "exit_code": "1"
 }
