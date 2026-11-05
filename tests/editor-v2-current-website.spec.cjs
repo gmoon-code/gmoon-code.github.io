@@ -3758,9 +3758,12 @@ test('Pungmul gallery trims four independent edges then resizes without changing
     await image.evaluate(img=>img.scrollIntoView({block:'center'}));
     const corner=frame.locator('#moon-v2-live-overlay .moon-v2-grip[data-direction="se"]');
     await expect(corner).toBeVisible();
+    // Verify the actual resize grip receives the pointer even in WebKit,
+    // where the source iframe is scaled inside the editor workspace.
+    await corner.hover();
     const handle=await corner.boundingBox();
     const hx=handle.x+handle.width/2,hy=handle.y+handle.height/2;
-    await page.mouse.move(hx,hy);await page.mouse.down();
+    await page.mouse.down();
     await page.mouse.move(hx+28,hy+28,{steps:8});await page.mouse.up();
     const final=await image.evaluate(img=>{
       const r=img.getBoundingClientRect(),s=getComputedStyle(img);
