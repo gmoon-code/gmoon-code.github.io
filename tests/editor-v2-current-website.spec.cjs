@@ -2588,7 +2588,7 @@ test('Repeated Pungmul photo resize/crop publications preserve latest preview an
         }
         throw Error('Unexpected GitHub method '+req.method());
       });
-    await page.route(BASE+'/'+name,async route=>{
+    await page.route(/^http:\/\/127\.0\.0\.1:8765\/pungmul\.html(?:\?.*)?$/,async route=>{
       await route.fulfill({status:200,contentType:'text/html',body:publicHtml});
     });
     await page.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
