@@ -1548,7 +1548,52 @@ function editedLinkedFigureFrame(patch){
   return {figure:bits.slice(0,-2).join(" > "),
     link:bits.slice(0,-1).join(" > ")};
 }
-function liveLayoutRules(patches=[...livePatches.values()]){
+// The gallery itself owns column widths. Resizing a picture must never
+// stretch the <img> beyond its old grid column while the parent frame and
+// caption stay behind. Assign the edited card a column width and let
+// siblings reflow. Multiple edited cards share the available gallery width.
+function photoCardGalleryRules(patches,doc,device){
+  if(!doc?.querySelector)return [];
+  const group=new Map();
+  const prefix=":root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) ";
+  for(const patch of patches){
+    if(patch.frameMode!=="card")continue;
+    const g=patch.layout?.[device],paths=photoCardFrameSelectors(patch);
+    if(!g?.wrapWidth||!paths)continue;
+    const img=doc.querySelector(patch.selector);
+    const figure=doc.querySelector(paths.figure);
+    const gallery=figure?.parentElement;
+    if(!img||!photoCardFrame(img)||!gallery||
+       !gallery.matches(".pungmul-gallery,.pungmul-performance-grid"))
+      continue;
+    const n=gallery.matches(".pungmul-performance-grid")?
+      (device==="desktop"?3:device==="tablet"?2:1):
+      (device==="phone"?1:2);
+    const figures=[...gallery.children].filter(el=>el.tagName==="FIGURE");
+    const index=figures.indexOf(figure);
+    if(index<0)continue;
+    const key=paths.gallery;
+    if(!group.has(key))group.set(key,{n,weights:Array(n).fill(null),
+      gap:gallery.matches(".pungmul-performance-grid")?16:18});
+    const entry=group.get(key),column=index%n;
+    entry.weights[column]=Math.max(entry.weights[column]||0,g.wrapWidth);
+  }
+  const result=[];
+  for(const [gallery,{n,weights,gap}] of group){
+    if(n===1)continue;
+    const chosen=weights.map(w=>w||160);
+    const total=chosen.reduce((a,b)=>a+b,0);
+    const available="(100% - "+((n-1)*gap)+"px)";
+    const tracks=weights.map((w,i)=>w?
+      "minmax(0,min("+w+"px,calc("+available+" * "+
+      (Math.round(chosen[i]/total*1000000)/1000000)+")))":"minmax(0,1fr)");
+    result.push(prefix+gallery+"{grid-template-columns:"+
+      tracks.join(" ")+"!important;}");
+  }
+  return result;
+}
+
+function liveLayoutRules(patches=[...livePatches.values()],doc=null){
   const result=[];
   for(const patch of patches){
     if(patch.kind==="delete"||patch.kind==="insert")continue;
@@ -1602,6 +1647,25 @@ function liveLayoutRules(patches=[...livePatches.values()]){
       // figure/link clipping, and keep this scoped to the edited breakpoint.
       const linkedFrame=(tag==="img"||patch.kind==="image")?
         editedLinkedFigureFrame(patch):null;
+      const card=patch.frameMode==="card"?
+        photoCardFrameSelectors(patch):null;
+      const sourcePhoto=card&&doc?.querySelector(patch.selector);
+      if(card&&sourcePhoto&&photoCardFrame(sourcePhoto)){
+        const priority=":root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) ";
+        const figure=priority+card.figure,photo=editedSourceImageSelector(patch);
+        const dx=Math.round(((entry.ox||0)+entry.dx)*1000)/1000;
+        const dy=Math.round(((entry.oy||0)+entry.dy)*1000)/1000;
+        selectors.push(figure+"{width:100%!important;max-width:100%!important;"+
+          "min-width:0!important;height:auto!important;box-sizing:border-box!important;"+
+          "overflow:hidden!important;translate:"+dx+"px "+dy+
+          "px!important;scale:1 1!important;transform-origin:top left!important;}");
+        if(card.anchor)selectors.push(priority+card.anchor+
+          "{display:block!important;width:100%!important;overflow:hidden!important;}");
+        selectors.push(photo+"{display:block!important;width:100%!important;max-width:100%!important;"+
+          "height:"+entry.reserveHeight+"px!important;box-sizing:border-box!important;"+
+          "object-fit:cover!important;translate:0 0!important;scale:1 1!important;}");
+        continue;
+      }
       if(linkedFrame){
         const priority=":root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) ";
         selectors.push(priority+linkedFrame.figure+"{overflow:visible!important;}");
@@ -1645,8 +1709,10 @@ function liveLayoutRules(patches=[...livePatches.values()]){
       const radius=frame&&crop.mask==="rectangle"?"border-radius:14px!important;":"";
       selectors.push(editedSourceImageSelector(patch)+"{"+imageCropCss(crop,patch.src,dims)+radius+"}");
     }
-    if(selectors.length||unclipped.length)
-      result.push("@media "+media+"{"+unclipped.join("")+selectors.join("")+"}");
+    const galleryRules=photoCardGalleryRules(patches,doc,device);
+    if(selectors.length||unclipped.length||galleryRules.length)
+      result.push("@media "+media+"{"+galleryRules.join("")+
+        unclipped.join("")+selectors.join("")+"}");
   }
   return result.join("\n");
 }
@@ -1663,7 +1729,7 @@ function refreshLiveLayoutRules(doc=$("livePageFrame").contentDocument,patches=[
     sheet=doc.createElement("style");sheet.id="moon-v2-live-layout";
     doc.head.append(sheet);
   }
-  const existing=liveSourceCss.get(doc)||"",next=liveLayoutRules(patches);
+  const existing=liveSourceCss.get(doc)||"",next=liveLayoutRules(patches,doc);
   // The editor deliberately retains a published draft so it can be recovered
   // while GitHub Pages deploys. Applying the same draft a second time must
   // not append its identical final CSS rules to the already committed sheet.
