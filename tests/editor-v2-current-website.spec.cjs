@@ -2284,3 +2284,72 @@ test('Real photo resize, move and crop round-trip through exact verified preview
     await visitor.close();
     expect(writes).toEqual([]);
   });
+
+
+for(const name of ['pungmul.html','contact.html']){
+  test('Photo frame mouse move, resize grips, and crop pan work on '+name,
+    async({page})=>{
+      const writes=[];
+      await installVerifiedCurrentSource(page,writes);
+      await page.setViewportSize({width:1740,height:1050});
+      await page.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+      await expect(page.locator('#liveAssetStatus'))
+        .toContainText('GitHub main source verified',{timeout:35000});
+      const image=page.frameLocator('#livePageFrame').locator('main img:visible').first();
+      await image.scrollIntoViewIfNeeded();
+      await expect.poll(()=>image.evaluate(img=>img.naturalWidth),{timeout:15000})
+        .toBeGreaterThan(0);
+      await image.click();
+      const box=()=>image.boundingBox();
+      const drag=async(locator,x,y)=>{
+        const b=await locator.boundingBox();
+        expect(b,'drag target should be visible').toBeTruthy();
+        await page.mouse.move(b.x+b.width/2,b.y+b.height/2);
+        await page.mouse.down();
+        await page.mouse.move(b.x+b.width/2+x,b.y+b.height/2+y,{steps:10});
+        await page.mouse.up();
+      };
+      const before=await box();
+      const grip=page.frameLocator('#livePageFrame')
+        .locator('#moon-v2-live-overlay .moon-v2-grip[data-direction="se"]');
+      await expect(grip).toBeVisible();
+      await drag(grip,42,24);
+      const resized=await box();
+      expect(resized.width,name+' resize handle should change width')
+        .toBeGreaterThan(before.width+5);
+      const moveGrip=page.frameLocator('#livePageFrame')
+        .locator('#moon-v2-live-overlay .moon-v2-move');
+      await expect(moveGrip).toBeVisible();
+      await drag(moveGrip,35,20);
+      const moved=await box();
+      expect(moved.x,name+' moving should change x')
+        .toBeGreaterThan(resized.x+5);
+      expect(moved.y,name+' moving should change y')
+        .toBeGreaterThan(resized.y+3);
+      await page.locator('#cropImageTool').click();
+      await page.locator('#liveCropZoom').evaluate(el=>{
+        el.value='250';el.dispatchEvent(new Event('input',{bubbles:true}));
+        el.dispatchEvent(new Event('change',{bubbles:true}));
+      });
+      const cropBefore=await page.locator('#liveCropX').inputValue();
+      const rect=await box();
+      const inside={x:rect.x+Math.min(70,rect.width/2),
+        y:rect.y+Math.min(70,rect.height/2)};
+      await page.mouse.move(inside.x,inside.y);
+      await page.mouse.down();
+      await page.mouse.move(inside.x+30,inside.y+12,{steps:9});
+      await page.mouse.up();
+      await expect.poll(()=>page.locator('#liveCropX').inputValue())
+        .not.toBe(cropBefore);
+      const stored=await page.evaluate(name=>
+        JSON.parse(localStorage.getItem('moon-academic-editor-v2:source:'+name)||'[]'),name);
+      expect(stored.some(p=>p.kind==='image'&&p.layout?.desktop&&p.imageCrop?.desktop))
+        .toBe(true);
+      await page.locator('#preview').click();
+      await expect(page.locator('#previewDialog')).toBeVisible();
+      await expect(page.frameLocator('#previewFrame').locator('main img:visible').first())
+        .toHaveCSS('object-fit','none');
+      await page.locator('#closePreview').click();
+      expect(writes).toEqual([]);
+    });
+}
