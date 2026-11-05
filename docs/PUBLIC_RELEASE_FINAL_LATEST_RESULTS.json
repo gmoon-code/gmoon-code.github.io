@@ -1,12 +1,12 @@
 {
-  "sourceHead": "bbff64ce2a6e3171817d9c2e380b50aa29a78b60",
+  "sourceHead": "04e2ae94185477740d718a9cebda3ab9a5b6daaa",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-bbff64ce2a6e",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-04e2ae941854",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -26,28 +26,24 @@
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "41940926190",
-      "head_sha": "5df2bff98059221e01a9af8d76c97074b875e75f",
+      "run": "41941072238",
+      "head_sha": "bbff64ce2a6e3171817d9c2e380b50aa29a78b60",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "teaching-ap-evolution.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
-        "issues": 44
+        "issues": 43
       },
       "counts": {
-        "reachable": 71,
-        "unverified": 44
+        "reachable": 72,
+        "unverified": 43
       }
     },
     "metadata": {
       "report": "docs/RESEARCH_METADATA_LATEST_RESULTS.json",
-      "run": "41940926182",
-      "head_sha": "5df2bff98059221e01a9af8d76c97074b875e75f",
+      "run": "41941072014",
+      "head_sha": "bbff64ce2a6e3171817d9c2e380b50aa29a78b60",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "teaching-ap-evolution.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "unverified": 0
       },
@@ -124,18 +120,6 @@
       ]
     },
     {
-      "category": "external",
-      "sourceModifiedSinceAudit": [
-        "teaching-ap-evolution.html"
-      ]
-    },
-    {
-      "category": "metadata",
-      "sourceModifiedSinceAudit": [
-        "teaching-ap-evolution.html"
-      ]
-    },
-    {
       "category": "reflow",
       "sourceModifiedSinceAudit": [
         "teaching-ap-evolution.html"
@@ -197,18 +181,6 @@
           ]
         },
         {
-          "category": "external",
-          "sourceModifiedSinceAudit": [
-            "teaching-ap-evolution.html"
-          ]
-        },
-        {
-          "category": "metadata",
-          "sourceModifiedSinceAudit": [
-            "teaching-ap-evolution.html"
-          ]
-        },
-        {
           "category": "reflow",
           "sourceModifiedSinceAudit": [
             "teaching-ap-evolution.html"
@@ -238,7 +210,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41941072339",
-  "run_sha": "bbff64ce2a6e3171817d9c2e380b50aa29a78b60",
+  "workflow_run_id": "41941137793",
+  "run_sha": "04e2ae94185477740d718a9cebda3ab9a5b6daaa",
   "exit_code": "1"
 }
