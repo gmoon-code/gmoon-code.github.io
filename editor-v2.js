@@ -4005,7 +4005,7 @@ function startLiveGesture(event,direction,anchor){
     card,frameExtra:card?Math.max(0,rect.height-node.getBoundingClientRect().height):0,
     patch,layout,snapshot:liveSnapshot(),
     moved:false,selector,node,snapLines:candidateLiveSnapLines(node,
-      (sourceGroup||group)?.map(item=>item.node)||card?[node,card]:[node])};
+      (sourceGroup||group)?.map(item=>item.node)||(card?[node,card]:[node]))};
   // A simple click on an existing source image must not capture the pointer.
   // Firefox can otherwise retain iframe focus when the user immediately
   // clicks the image-description field in the parent editor. Start capture
