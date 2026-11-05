@@ -1,12 +1,12 @@
 {
-  "sourceHead": "d84f054142ff46d7a874a679da43978499004e3f",
+  "sourceHead": "f678debfe1d6458518905a9a00ffc560f09a1338",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 24,
   "httpErrors": 0,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-d84f054142ff",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-f678debfe1d6",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -63,15 +63,12 @@
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "41988720025",
-      "head_sha": "73e67c29a94c0c18a595923f02076a80e40c5672",
-      "exit": "1",
-      "sourceModifiedSinceAudit": [
-        "interests.html",
-        "pungmul.html"
-      ],
+      "run": "41990650559",
+      "head_sha": "0d4c244ac166224bea83e4b02c8dea81f860c0a0",
+      "exit": "0",
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
-        "failures": 3
+        "failures": 0
       }
     },
     "typography": {
@@ -103,36 +100,11 @@
       "note": "U1 route audit documents successful run 40825886279; legacy utility machine report refers to an early missing-script failure. Do not treat it as latest successful evidence."
     }
   },
-  "sourceDriftSinceAudits": [
-    {
-      "category": "engines",
-      "sourceModifiedSinceAudit": [
-        "interests.html",
-        "pungmul.html"
-      ]
-    }
-  ],
-  "pass": false,
-  "errors": [
-    {
-      "sourceDrift": [
-        {
-          "category": "engines",
-          "sourceModifiedSinceAudit": [
-            "interests.html",
-            "pungmul.html"
-          ]
-        }
-      ]
-    },
-    {
-      "unresolvedAudits": [
-        "engines"
-      ]
-    }
-  ],
+  "sourceDriftSinceAudits": [],
+  "pass": true,
+  "errors": [],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41990845488",
-  "run_sha": "d84f054142ff46d7a874a679da43978499004e3f",
-  "exit_code": "1"
+  "workflow_run_id": "41990869793",
+  "run_sha": "f678debfe1d6458518905a9a00ffc560f09a1338",
+  "exit_code": "0"
 }
