@@ -2795,7 +2795,7 @@ for(const [name,gallery] of [
         await page.setViewportSize({width:550,height:900});
         await page.goto(BASE+'/'+name,{waitUntil:'domcontentloaded'});
         const smallColumns=await page.locator(gallery).evaluate(el=>
-          getComputedStyle(el).gridTemplateColumns.split(/\\s+/).length);
+          getComputedStyle(el).gridTemplateColumns.split(/\s+/).length);
         expect(smallColumns).toBe(1);
       }
     });
