@@ -1,12 +1,12 @@
 {
-  "sourceHead": "e5aa0d6b70657740c25d22f5fe570ae033080aa2",
+  "sourceHead": "a5c63b4323098d01545fede26edc44ec9a04052b",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 24,
   "httpErrors": 0,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-e5aa0d6b7065",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-a5c63b432309",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -86,12 +86,10 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "41941193342",
-      "head_sha": "94f3a32d5e1ec816a3305e77856cc11c01e5e0a9",
+      "run": "41941398130",
+      "head_sha": "cfeb62475b17d93ec1817c4f8a9ce50356cb49cb",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "writing-biological-classification.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0,
         "axeViolations": 0
@@ -110,12 +108,6 @@
       "sourceModifiedSinceAudit": [
         "writing-biological-classification.html"
       ]
-    },
-    {
-      "category": "interactions",
-      "sourceModifiedSinceAudit": [
-        "writing-biological-classification.html"
-      ]
     }
   ],
   "pass": false,
@@ -127,18 +119,12 @@
           "sourceModifiedSinceAudit": [
             "writing-biological-classification.html"
           ]
-        },
-        {
-          "category": "interactions",
-          "sourceModifiedSinceAudit": [
-            "writing-biological-classification.html"
-          ]
         }
       ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41941859143",
-  "run_sha": "e5aa0d6b70657740c25d22f5fe570ae033080aa2",
+  "workflow_run_id": "41942112561",
+  "run_sha": "a5c63b4323098d01545fede26edc44ec9a04052b",
   "exit_code": "1"
 }
