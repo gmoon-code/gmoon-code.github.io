@@ -1,12 +1,12 @@
 {
-  "sourceHead": "717ef811406050e8bb02c096d81f1baeb15f322a",
+  "sourceHead": "651b5776ad66817b688378376c9bc938bf874f48",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
-  "verifiedExactMatches": 22,
-  "httpErrors": 2,
+  "verifiedExactMatches": 21,
+  "httpErrors": 3,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-717ef8114060",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-651b5776ad66",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -19,7 +19,8 @@
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "interests.html",
-        "pungmul.html"
+        "pungmul.html",
+        "research-action.html"
       ],
       "failureCounts": {
         "problems": 0
@@ -30,7 +31,9 @@
       "run": "42039116704",
       "head_sha": "856239bc31f256ba7928f803ab8ff274dd482b87",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research-action.html"
+      ],
       "failureCounts": {
         "issues": 43
       },
@@ -44,7 +47,9 @@
       "run": "41941398334",
       "head_sha": "cfeb62475b17d93ec1817c4f8a9ce50356cb49cb",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research-action.html"
+      ],
       "failureCounts": {
         "unverified": 0
       },
@@ -59,7 +64,9 @@
       "run": "42039116530",
       "head_sha": "856239bc31f256ba7928f803ab8ff274dd482b87",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research-action.html"
+      ],
       "failureCounts": {
         "failures": 0
       }
@@ -70,7 +77,8 @@
       "head_sha": "583dc03f8d9f3e3b5bb519f248a44616c71869d7",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "interests.html"
+        "interests.html",
+        "research-action.html"
       ],
       "failureCounts": {
         "failures": 0
@@ -82,7 +90,8 @@
       "head_sha": "583dc03f8d9f3e3b5bb519f248a44616c71869d7",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "interests.html"
+        "interests.html",
+        "research-action.html"
       ],
       "failureCounts": {
         "failures": 0,
@@ -94,7 +103,9 @@
       "run": "42039116966",
       "head_sha": "856239bc31f256ba7928f803ab8ff274dd482b87",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research-action.html"
+      ],
       "failureCounts": {
         "failures": 0,
         "axeViolations": 0
@@ -112,24 +123,75 @@
       "category": "links",
       "sourceModifiedSinceAudit": [
         "interests.html",
-        "pungmul.html"
+        "pungmul.html",
+        "research-action.html"
+      ]
+    },
+    {
+      "category": "external",
+      "sourceModifiedSinceAudit": [
+        "research-action.html"
+      ]
+    },
+    {
+      "category": "metadata",
+      "sourceModifiedSinceAudit": [
+        "research-action.html"
+      ]
+    },
+    {
+      "category": "reflow",
+      "sourceModifiedSinceAudit": [
+        "research-action.html"
       ]
     },
     {
       "category": "engines",
       "sourceModifiedSinceAudit": [
-        "interests.html"
+        "interests.html",
+        "research-action.html"
       ]
     },
     {
       "category": "typography",
       "sourceModifiedSinceAudit": [
-        "interests.html"
+        "interests.html",
+        "research-action.html"
+      ]
+    },
+    {
+      "category": "interactions",
+      "sourceModifiedSinceAudit": [
+        "research-action.html"
       ]
     }
   ],
   "pass": false,
   "errors": [
+    {
+      "path": "research-action.html",
+      "errors": [
+        "deployed bytes differ from checked-out production source"
+      ],
+      "firstDiff": [
+        "--- source\n",
+        "+++ deployed\n",
+        "@@ -11,3 +11,3 @@\n",
+        "   <link rel=\"stylesheet\" href=\"appearance.css?v=20261029-s6b-count-bars-v2\">",
+        "-<style id=\"moon-v2-live-layout\">@media (min-width:1025px){:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(5) > p:nth-of-type(2){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:954px!important;height:51px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}}</style></head>",
+        "+</head>",
+        " <body class=\"theme-green\">",
+        "@@ -24,3 +24,3 @@\n",
+        "   <div class=\"hero-copy\">",
+        "-    ",
+        "+    <p class=\"meta\">Classroom action research · 2026 · Unpublished manuscript</p>",
+        "     <h1>Reconsidering assessment evidence</h1>",
+        "@@ -125,3 +125,3 @@\n",
+        "     <article class=\"research-case\">",
+        "-      ",
+        "+      <p class=\"meta\">De-identified record · S01</p>"
+      ]
+    },
     {
       "path": "interests.html",
       "errors": [
@@ -170,26 +232,53 @@
           "category": "links",
           "sourceModifiedSinceAudit": [
             "interests.html",
-            "pungmul.html"
+            "pungmul.html",
+            "research-action.html"
+          ]
+        },
+        {
+          "category": "external",
+          "sourceModifiedSinceAudit": [
+            "research-action.html"
+          ]
+        },
+        {
+          "category": "metadata",
+          "sourceModifiedSinceAudit": [
+            "research-action.html"
+          ]
+        },
+        {
+          "category": "reflow",
+          "sourceModifiedSinceAudit": [
+            "research-action.html"
           ]
         },
         {
           "category": "engines",
           "sourceModifiedSinceAudit": [
-            "interests.html"
+            "interests.html",
+            "research-action.html"
           ]
         },
         {
           "category": "typography",
           "sourceModifiedSinceAudit": [
-            "interests.html"
+            "interests.html",
+            "research-action.html"
+          ]
+        },
+        {
+          "category": "interactions",
+          "sourceModifiedSinceAudit": [
+            "research-action.html"
           ]
         }
       ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42039381426",
-  "run_sha": "717ef811406050e8bb02c096d81f1baeb15f322a",
+  "workflow_run_id": "42039422935",
+  "run_sha": "651b5776ad66817b688378376c9bc938bf874f48",
   "exit_code": "1"
 }
