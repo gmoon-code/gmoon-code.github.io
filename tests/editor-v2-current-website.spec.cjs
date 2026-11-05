@@ -3598,7 +3598,7 @@ test('Pungmul independent draft photos never replace the original gallery when s
     // visible in the user's old Pungmul browser draft.
     await page.locator('#duplicate').click();
     await expect(page.locator('#liveEditCount')).toContainText('1 draft edit');
-    await expect(page.locator('#freshSourceActionBar')).toBeVisible();
+    await expect(page.locator('#startFreshLiveDraftTop')).toBeEnabled();
     const added=page.frameLocator('#livePageFrame')
       .locator('[data-moon-v2-added-id]');
     await expect(added).toHaveCount(1);
