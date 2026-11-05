@@ -1,12 +1,12 @@
 {
-  "sourceHead": "a6f6cc39c8d349ac2d75dbed396910df0bb634b0",
+  "sourceHead": "e84835492a8aa8cc4f9ff9bb6ac1d118b35c0560",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 24,
   "httpErrors": 0,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-a6f6cc39c8d3",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-e84835492a8a",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -53,24 +53,20 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "42011303183",
-      "head_sha": "047305ec57d7f39eae67211febb9678b8e94fcb7",
+      "run": "42012524320",
+      "head_sha": "1aa2bbdc9aa6012bd115c559098058d87b849de6",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "pungmul.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0
       }
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "42011303322",
-      "head_sha": "047305ec57d7f39eae67211febb9678b8e94fcb7",
+      "run": "42012524415",
+      "head_sha": "1aa2bbdc9aa6012bd115c559098058d87b849de6",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "pungmul.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0
       }
@@ -104,41 +100,11 @@
       "note": "U1 route audit documents successful run 40825886279; legacy utility machine report refers to an early missing-script failure. Do not treat it as latest successful evidence."
     }
   },
-  "sourceDriftSinceAudits": [
-    {
-      "category": "reflow",
-      "sourceModifiedSinceAudit": [
-        "pungmul.html"
-      ]
-    },
-    {
-      "category": "engines",
-      "sourceModifiedSinceAudit": [
-        "pungmul.html"
-      ]
-    }
-  ],
-  "pass": false,
-  "errors": [
-    {
-      "sourceDrift": [
-        {
-          "category": "reflow",
-          "sourceModifiedSinceAudit": [
-            "pungmul.html"
-          ]
-        },
-        {
-          "category": "engines",
-          "sourceModifiedSinceAudit": [
-            "pungmul.html"
-          ]
-        }
-      ]
-    }
-  ],
+  "sourceDriftSinceAudits": [],
+  "pass": true,
+  "errors": [],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42012691892",
-  "run_sha": "a6f6cc39c8d349ac2d75dbed396910df0bb634b0",
-  "exit_code": "1"
+  "workflow_run_id": "42012756701",
+  "run_sha": "e84835492a8aa8cc4f9ff9bb6ac1d118b35c0560",
+  "exit_code": "0"
 }
