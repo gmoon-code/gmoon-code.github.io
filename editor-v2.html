@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex,nofollow">
 <title>Academic Website Editor 2 | Ye Eun Moon</title>
 <link rel="stylesheet" href="editor-v2.css?v=20261105-image-deployment-check-v70">
-<script src="editor-v2.js?v=20261105-unified-gallery-photo-cards-v76" defer></script>
+<script src="editor-v2.js?v=20261105-fresh-github-draft-reset-v77" defer></script>
 </head>
 <body>
 <a class="skip" href="#workspace">Skip to editor canvas</a>
@@ -551,6 +551,8 @@
           <button id="exportLiveDraftJson" type="button">Download editable draft JSON</button>
           <button id="importLiveDraftJson" type="button">Restore editable draft JSON</button>
         </div>
+        <button id="startFreshLiveDraft" type="button" class="danger">Start fresh from latest GitHub page</button>
+        <p class="help">This downloads your current page-edit draft as a restorable JSON backup and asks before discarding it. It then reloads verified GitHub main source, without publishing anything. Canvas drafts are separate.</p>
         <p class="help">Save a restorable backup of this page's text, photos and layout changes. To restore, select the same page first, then choose its JSON backup. Restoring requires verified GitHub source and confirmation before replacing this browser's draft.</p>
         <p id="liveEditCount" class="help">No live-page draft edits. Original website unchanged.</p>
       </section>
@@ -622,6 +624,15 @@
   <div class="dialog-actions">
     <button id="cancelLiveDraftRestore" type="button">Keep existing draft</button>
     <button id="confirmLiveDraftRestore" type="button" class="primary">Restore backup to this page</button>
+  </div>
+</dialog>
+<dialog id="freshLiveDraftDialog" class="live-restore-dialog" aria-labelledby="freshLiveDraftTitle">
+  <h2 id="freshLiveDraftTitle">Start from the latest GitHub page</h2>
+  <p>A restorable JSON backup of your current page edits has been downloaded. Check your browser downloads before proceeding.</p>
+  <p>Discard the browser draft for <strong id="freshLiveDraftPage"></strong> and reopen the current verified GitHub main source? This affects only original-layout edits on this page. The public site and separate design-canvas drafts are not changed.</p>
+  <div class="dialog-actions">
+    <button type="button" id="cancelFreshLiveDraft">Keep my draft</button>
+    <button type="button" id="confirmFreshLiveDraft" class="danger">Discard edits and start fresh</button>
   </div>
 </dialog>
 <dialog id="staleTextResolveDialog" class="live-restore-dialog" aria-labelledby="staleTextResolveTitle">

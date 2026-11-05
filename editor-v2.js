@@ -2857,6 +2857,95 @@ function confirmLiveDraftRestore(message){
     reject.focus();
   });
 }
+
+function confirmFreshLiveDraft(page){
+  return new Promise(resolve=>{
+    const dialog=$("freshLiveDraftDialog");
+    $("freshLiveDraftPage").textContent=page;
+    const accept=$("confirmFreshLiveDraft"),reject=$("cancelFreshLiveDraft");
+    let settled=false;
+    const finish=approved=>{
+      if(settled)return;
+      settled=true;
+      dialog.removeEventListener("close",onClose);
+      accept.removeEventListener("click",onAccept);
+      reject.removeEventListener("click",onReject);
+      if(dialog.open)dialog.close();
+      resolve(approved);
+    };
+    const onClose=()=>finish(false);
+    const onAccept=()=>finish(true);
+    const onReject=()=>finish(false);
+    dialog.addEventListener("close",onClose);
+    accept.addEventListener("click",onAccept);
+    reject.addEventListener("click",onReject);
+    dialog.showModal();
+    reject.focus();
+  });
+}
+async function startFreshLiveDraft(){
+  const page=currentPage;
+  if(workspaceMode!=="live"||liveEditing||liveGesture){
+    status("Finish the current live-page edit before starting fresh");return;
+  }
+  if(liveDraftRecovery||liveDraftConflict||liveDraftSaveFailure){
+    status("Resolve the browser draft recovery warning before starting fresh · Nothing discarded");
+    return;
+  }
+  if(!livePatches.size){
+    status("This page has no saved source edits to discard");return;
+  }
+  const original=JSON.stringify(liveSnapshot()),key=LIVE_DRAFT_KEY+page;
+  let stored;
+  try{
+    stored=localStorage.getItem(key);
+    if(stored!==liveDraftLoadedRaw)
+      throw Error("Another editor tab changed this page's draft");
+  }catch(error){
+    status((error?.message||"Browser storage is unavailable")+
+      " · No draft discarded");return;
+  }
+  // Download before asking for confirmation, while the user-activated
+  // click can still initiate the browser's file download.
+  download(page+".before-fresh-source.live-draft.json",
+    JSON.stringify({format:LIVE_DRAFT_BACKUP_FORMAT,version:1,
+      page,patches:liveSnapshot()},null,2),"application/json");
+  if(!await confirmFreshLiveDraft(page)){
+    status("Fresh start cancelled · Existing browser draft preserved");return;
+  }
+  const button=$("startFreshLiveDraft");
+  button.disabled=true;
+  try{
+    // Verify a reachable, authentic main-branch source *before* deleting
+    // anything, never substitute an unverified deployed-page fallback.
+    const verified=await fetchGithubPageSource(page,{force:true});
+    if(!verified.verified||!/<main\b/i.test(verified.html))
+      throw Error("The latest GitHub page could not be verified");
+    if(page!==currentPage||workspaceMode!=="live"||
+       JSON.stringify(liveSnapshot())!==original)
+      throw Error("The selected page or draft changed during the reset");
+    const latest=localStorage.getItem(key);
+    if(latest!==stored||liveDraftLoadedRaw!==stored){
+      liveDraftConflict={page,stored:latest};
+      renderLiveEditCount();
+      throw Error("Another tab saved a newer draft");
+    }
+    // The read-and-delete operation is synchronous, with a final lease
+    // check, so another tab's newer edits cannot be silently overwritten.
+    localStorage.removeItem(key);
+    loadLiveDraft(page);
+    if(inlineLiveView==="published")setInlineLiveView("draft");
+    await loadLivePage(page);
+    status("Fresh GitHub main source opened · Previous page-edit draft downloaded · Website unchanged");
+  }catch(error){
+    status("Fresh start stopped · "+(error?.message||"Cannot verify source")+
+      " · Review the browser draft before retrying");
+  }finally{
+    button.disabled=false;
+    renderLiveEditCount();
+  }
+}
+
 async function restoreLiveDraftJson(file){
   const page=currentPage;
   const source=liveDisplayedSourceHtml;
@@ -6664,6 +6753,7 @@ function attachEvents(){
   });
   $("focusPage").addEventListener("click",togglePageFocus);
   $("reloadLive").addEventListener("click",()=>loadLivePage(currentPage,{force:true}));
+  $("startFreshLiveDraft").addEventListener("click",startFreshLiveDraft);
   $("copyLiveObject").addEventListener("click",copySelectedLiveElement);
   $("editLiveText").addEventListener("click",editLiveText);
   $("saveLiveText").addEventListener("click",saveLiveText);
