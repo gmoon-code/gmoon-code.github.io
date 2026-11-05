@@ -531,6 +531,7 @@ function setInlineLiveView(view){
 }
 function setWorkspaceMode(mode){
   if(mode!=="live"&&mode!=="design")return;
+  if(mode!=="live"&&inlineLiveView==="published")setInlineLiveView("draft");
   if(mode!=="live"&&liveEditing)saveLiveText();
   if(mode!=="live"){
     if(liveGesture)cancelLiveGesture();
