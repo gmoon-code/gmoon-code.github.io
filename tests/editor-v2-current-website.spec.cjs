@@ -4009,25 +4009,19 @@ test('Pungmul prose box resizes numerically and by grip despite high-specificity
     expect(await paragraph.textContent()).toBe(originalText);
     const targetHeight=Math.round(Math.max(narrow.h,initial.h)+70);
     const heightInput=page.locator('#liveTextBoxHeight');
-    await heightInput.fill(String(targetHeight));
-    const afterFill={value:await heightInput.inputValue(),metrics:await position(paragraph),
-      draft:await page.evaluate(()=>JSON.parse(localStorage.getItem(
-        'moon-academic-editor-v2:source:pungmul.html')||'[]')
-          .filter(p=>p.selector.endsWith(' > p:nth-of-type(1)'))
-          .map(p=>p.layout?.desktop))};
-    expect(afterFill.value,'typing a new size must replace rather than append old digits')
-      .toBe(String(targetHeight));
-    await heightInput.dispatchEvent('change');
+    // A real keyboard replacement is more representative for a number
+    // input than Playwright's programmatic fill, which can append digits in
+    // Chromium when the editing inspector redraws.
+    await heightInput.focus();
+    await heightInput.press('ControlOrMeta+A');
+    await heightInput.press('Backspace');
+    await heightInput.pressSequentially(String(targetHeight));
+    expect(await heightInput.inputValue(),
+      'the typed box height must replace the previous number').toBe(String(targetHeight));
+    await heightInput.press('Tab');
     const tall=await position(paragraph);
-    if(Math.abs(tall.h-targetHeight)>=4){
-      const field=await page.locator('#liveTextBoxHeight').inputValue();
-      const draft=await page.evaluate(()=>
-        JSON.parse(localStorage.getItem('moon-academic-editor-v2:source:pungmul.html')||'[]')
-          .filter(p=>p.selector.endsWith(' > p:nth-of-type(1)'))
-          .map(p=>({selector:p.selector,layout:p.layout})));
-      throw new Error('Pungmul text box height mismatch '+JSON.stringify({
-        initial,narrow,targetHeight,afterFill,tall,field,draft}));
-    }
+    expect(Math.abs(tall.h-targetHeight),'Pungmul prose height must be resizable')
+      .toBeLessThan(4);
     const grip=frame.locator('#moon-v2-live-overlay .moon-v2-grip[data-direction="e"]');
     await paragraph.evaluate(node=>node.scrollIntoView({block:'center'}));
     await expect(grip).toBeVisible();
