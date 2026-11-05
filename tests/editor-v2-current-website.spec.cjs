@@ -2751,7 +2751,28 @@ for(const [name,gallery] of [
           getComputedStyle(el).gridTemplateColumns.split(/\s+/).length)).toBe(2);
       }
       const original=await photo.evaluate(img=>img.getBoundingClientRect().width);
+      // Existing browser drafts made before photo-card mode remain in their
+      // original independent-image model. Verify the legacy unclipping
+      // contract explicitly, rather than applying it to new linked cards.
+      const legacy=await photo.evaluate(img=>{
+        const steps=[];
+        for(let n=img;n&&n.tagName!=="MAIN";n=n.parentElement){
+          const siblings=[...n.parentElement.children].filter(el=>el.tagName===n.tagName);
+          steps.unshift(n.tagName.toLowerCase()+':nth-of-type('+
+            (siblings.indexOf(n)+1)+')');
+        }
+        const src=img.getAttribute('src');
+        return {selector:'main > '+steps.join(' > '),kind:'image',
+          expected:src,src,alt:img.alt,
+          layout:{desktop:{dx:0,dy:0,sx:1,sy:1}}};
+      });
+      await page.evaluate(([key,value])=>localStorage.setItem(key,value),
+        ['moon-academic-editor-v2:source:'+name,JSON.stringify([legacy])]);
+      await page.reload({waitUntil:'domcontentloaded'});
+      await expect(page.locator('#liveAssetStatus'))
+        .toContainText('GitHub main source verified',{timeout:35000});
       await photo.click();
+      await expect(page.locator('#livePhotoCardMode')).not.toBeChecked();
       await page.locator('#liveOriginalWidth').fill(String(Math.round(original+65)));
       await page.locator('#liveOriginalWidth').dispatchEvent('change');
       await page.locator('#liveMoveX').fill('36');
