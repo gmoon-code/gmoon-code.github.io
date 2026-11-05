@@ -581,14 +581,18 @@ test('Two consecutive source-faithful simulated live publications preserve both 
     await expect(live.locator('main h1:visible,main h2:visible').first())
       .toHaveCSS('text-align',selectedAlignment);
 
-    // The editor retains a recoverable draft after a confirmed GitHub PUT,
-    // but a second click must not commit the already published HTML again.
+    // Committed changes must become the editable GitHub baseline, rather
+    // than remain "unpublished" and reapply transforms a second time.
+    await expect(page.locator('#liveEditCount')).toContainText('No live-page draft edits');
+    const archive=JSON.parse(await page.evaluate(name=>localStorage.getItem(
+      'moon-academic-editor-v2:last-published-source:'+name),name));
+    expect(archive).toMatchObject({
+      format:'moon-editor-v2-live-draft',version:1,page:name,commit:'mock-consecutive-1'
+    });
+    expect(archive.patches).toHaveLength(1);
+    await expect(page.locator('#downloadLastPublishedLiveDraft')).toBeVisible();
     await page.locator('#publish').click();
-    await page.locator('#githubToken').fill('synthetic-two-publish-token');
-    await page.locator('#acknowledgeLive').check();
-    await page.locator('#confirmPublish').click();
-    await expect(page.locator('#publishError'))
-      .toContainText('already matches the latest GitHub page',{timeout:20000});
+    await expect(page.locator('#confirmPublish')).toBeDisabled();
     expect(pubs).toHaveLength(1);
     await page.locator('#cancelPublish').click();
 
@@ -3576,5 +3580,49 @@ test('Fresh-source reset refuses unverifiable GitHub main and retains the draft'
     await expect(page.locator('#status')).toContainText('Fresh start stopped');
     expect(await page.evaluate(k=>localStorage.getItem(k),key)).toBe(raw);
     await expect(page.locator('#liveEditCount')).toContainText('1 draft edit');
+    expect(writes).toEqual([]);
+  });
+
+
+test('Pungmul independent draft photos never replace the original gallery when starting fresh',
+  async({page})=>{
+    const name='pungmul.html',key='moon-academic-editor-v2:source:'+name,writes=[];
+    await installVerifiedCurrentSource(page,writes);
+    await page.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    const photo=page.frameLocator('#livePageFrame').locator(
+      '.pungmul-performance-grid img').first();
+    await photo.click();
+    // A newly added independent photo reproduces the duplicated layout
+    // visible in the user's old Pungmul browser draft.
+    await page.locator('#duplicate').click();
+    await expect(page.locator('#liveEditCount')).toContainText('1 draft edit');
+    await expect(page.locator('#freshSourceActionBar')).toBeVisible();
+    const added=page.frameLocator('#livePageFrame')
+      .locator('[data-moon-v2-added-id]');
+    await expect(added).toHaveCount(1);
+    expect(await added.first().getAttribute('src')).toContain('assets/');
+
+    const d=page.waitForEvent('download');
+    await page.locator('#startFreshLiveDraftTop').click();
+    const backup=JSON.parse(readFileSync(await (await d).path(),'utf8'));
+    expect(backup.patches).toHaveLength(1);
+    expect(backup.patches[0].kind).toBe('insert');
+    await expect(page.locator('#freshLiveDraftDialog')).toBeVisible();
+    await page.locator('#cancelFreshLiveDraft').click();
+    await expect(added).toHaveCount(1);
+    await expect(page.locator('#liveEditCount')).toContainText('1 draft edit');
+
+    const anotherDownload=page.waitForEvent('download');
+    await page.locator('#startFreshLiveDraftTop').click();
+    await anotherDownload;
+    await page.locator('#confirmFreshLiveDraft').click();
+    await expect(page.locator('#liveEditCount')).toContainText('No live-page draft edits');
+    await expect(added).toHaveCount(0);
+    await expect(page.frameLocator('#livePageFrame')
+      .locator('main .pungmul-performance-grid figure')).toHaveCount(4);
+    await expect(page.frameLocator('#livePageFrame').locator('main img')).toHaveCount(5);
+    expect(await page.evaluate(k=>localStorage.getItem(k),key)).toBeNull();
     expect(writes).toEqual([]);
   });
