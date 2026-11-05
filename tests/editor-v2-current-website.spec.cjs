@@ -3720,6 +3720,22 @@ test('Pungmul gallery trims four independent edges then resizes without changing
     // Entering crop mode does not modify an untouched photograph.
     const initialFit=await page.locator('#liveCropFit').inputValue();
     expect(['contain','cover']).toContain(initialFit);
+    // Keep a bounded capture-phase record for diagnosing Firefox capture loss.
+    // Pure test instrumentation, never injected into visitor or editor source.
+    await image.evaluate(img=>{
+      const doc=img.ownerDocument,win=doc.defaultView;
+      win.__moonCropPointerEvents=[];
+      for(const type of ['pointerdown','pointermove','pointerup','pointercancel','lostpointercapture']){
+        doc.addEventListener(type,event=>{
+          const events=win.__moonCropPointerEvents;
+          if(events.length>=250)events.shift();
+          events.push({type,x:Math.round(event.clientX),y:Math.round(event.clientY),
+            pointer:event.pointerId,button:event.button,
+            dir:event.target?.dataset?.direction||null,
+            target:event.target?.tagName||null});
+        },true);
+      }
+    });
     // Drag each individual pink side handle, then refine each edge using
     // the numeric controls. This covers the two distinct crop workflows.
     for(const [side,dx,dy,field] of [
@@ -3742,8 +3758,28 @@ test('Pungmul gallery trims four independent edges then resizes without changing
       await page.mouse.down();
       await page.mouse.move(x+dx,y+dy,{steps:6});
       await page.mouse.up();
-      expect(parseInt(await page.locator('#liveCrop'+field+'Value').textContent(),10),
-        'pointer trimming '+field).toBeGreaterThan(0);
+      const value=parseInt(await page.locator('#liveCrop'+field+'Value').textContent(),10);
+      if(!(value>0)){
+        const events=await image.evaluate(img=>
+          img.ownerDocument.defaultView.__moonCropPointerEvents?.slice(-45)||[]);
+        const editorState=await page.evaluate(()=>({
+          activeElement:document.activeElement?.id||null,
+          selected:liveSelected?.node?.getAttribute?.('src')||null,
+          cropMode:liveCropMode,gesture:liveGesture?{
+            dir:liveGesture.dir,moved:liveGesture.moved,
+            startX:liveGesture.startX,startY:liveGesture.startY
+          }:null,
+          pending:liveDragPending?{
+            x:liveDragPending.clientX,y:liveDragPending.clientY
+          }:null,
+          patch:[...livePatches.values()].filter(p=>p.kind==='image').map(p=>({
+            frameMode:p.frameMode,imageCrop:p.imageCrop?.desktop,
+            width:p.layout?.desktop?.wrapWidth
+          }))
+        }));
+        throw new Error('pointer trimming '+field+' did not apply: '+
+          JSON.stringify({side,value,events,editorState}));
+      }
     }
     await expect(page.locator('#liveCropFit')).toHaveValue('cover');
     // Exercise all independently trimmed sides, not only a shape preset.
