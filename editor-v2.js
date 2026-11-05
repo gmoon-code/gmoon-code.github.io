@@ -2897,6 +2897,23 @@ function findSafePreviouslyEditedTextNode(doc,patch,tag){
     return null;
   return target;
 }
+// Container layout edits record the first 300 characters of a whole section,
+// including nested paragraphs and captions. Later independent text edits may
+// change those characters without removing the section itself. A positioning
+// or styling edit can safely follow the *same unique container* if the first
+// 96 normalized characters still identify it. This never relocates deletion,
+// text replacement, or image replacement edits.
+function uniqueHistoricalLayoutContainer(doc,patch,tag){
+  if(patch.kind!=="layout"||
+     !/^(?:section|article|aside|figure|div|nav|ul|ol)$/.test(tag)||
+     patch.tag&&patch.tag!==tag)return null;
+  const historical=String(patch.expected||"").replace(/\s+/g," ").trim();
+  if(historical.length<96)return null;
+  const opening=historical.slice(0,96);
+  const matches=[...doc.querySelectorAll("main "+tag)].filter(node=>
+    (node.textContent||"").replace(/\s+/g," ").trim().startsWith(opening));
+  return matches.length===1?matches[0]:null;
+}
 function resolveLivePatchTarget(doc,patch){
   const direct=doc.querySelector(patch.selector);
   if(direct&&livePatchNodeMatches(direct,patch))return direct;
@@ -2911,7 +2928,8 @@ function resolveLivePatchTarget(doc,patch){
     livePatchNodeMatches(node,patch));
   if(matches.length===1)return matches[0];
   if(matches.length===0){
-    const historical=findSafePreviouslyEditedTextNode(doc,patch,tag);
+    const historical=findSafePreviouslyEditedTextNode(doc,patch,tag)||
+      uniqueHistoricalLayoutContainer(doc,patch,tag);
     if(historical)return historical;
   }
   const reason=matches.length?"Multiple matching elements":"No matching original element";
@@ -2925,6 +2943,15 @@ function resolveLivePatchTarget(doc,patch){
       "review this edit under Draft edits and choose Remove edit only if it "+
       "is obsolete; otherwise restore or recreate it against the current paragraph. "+
       "This is a text-source conflict, not an image-mapping problem.");
+  }
+  if(patch.kind==="layout"&&
+     /^(?:section|article|aside|figure|div|nav|ul|ol)$/.test(tag)){
+    throw Error(reason+" for saved section/container positioning edit \""+
+      livePatchExcerpt(patch)+"\" on "+currentPage+
+      ". The source structure or wording changed beyond a safely unique anchor. "+
+      "Your original draft, its photos and other edits remain saved. "+
+      "Download the editable draft JSON before removing or reconnecting this "+
+      "specific layout edit. Nothing was published.");
   }
   const images=patch.kind==="image"?
     [...doc.querySelectorAll("main img[src]")].slice(0,8)
