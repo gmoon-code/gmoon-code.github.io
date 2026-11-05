@@ -588,6 +588,8 @@ function setWorkspaceMode(mode){
   $("workspaceFooter").textContent=isLive?
     "GitHub source · Drag elements · Resize handles · Double-click text · Search website elements · Stack forward/back · Undo and verified preview":
     "Drag to move · Eight resize handles · Double-click text to edit · Double-click empty canvas to add text · Drop images · Shift-click for multiple selection";
+  $("inlineViewNotice").hidden=!isLive;
+  $("inlineViewSwitch").hidden=!isLive;
   if(isLive){
     $("inlinePublishedView").hidden=false;
     $("inlineDraftView").hidden=false;
