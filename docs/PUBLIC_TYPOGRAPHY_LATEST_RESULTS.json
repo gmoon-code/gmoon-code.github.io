@@ -8,25 +8,286 @@
   "cases": 111,
   "individualRequirementCases": 92,
   "combinedStressCases": 19,
-  "failedCount": 0,
-  "failures": [],
+  "failedCount": 4,
+  "failures": [
+    {
+      "engine": "chromium",
+      "page": "interests.html",
+      "width": 1280,
+      "mode": "spacing",
+      "errors": [
+        "text element clipped"
+      ],
+      "metrics": {
+        "viewport": 1280,
+        "documentWidth": 1280,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 51,
+        "outside": [],
+        "clipped": [
+          {
+            "tag": "A",
+            "css": "",
+            "sample": "",
+            "x": 736,
+            "right": 1117,
+            "width": 381,
+            "scrollWidth": 396,
+            "clientWidth": 381,
+            "scrollHeight": 241,
+            "clientHeight": 214
+          },
+          {
+            "tag": "A",
+            "css": "",
+            "sample": "",
+            "x": 83,
+            "right": 314,
+            "width": 231,
+            "scrollWidth": 246,
+            "clientWidth": 231,
+            "scrollHeight": 199,
+            "clientHeight": 172
+          }
+        ],
+        "parentClips": [],
+        "culprits": [
+          {
+            "tag": "A",
+            "css": "skip-link",
+            "sample": "Skip to content",
+            "x": -9999,
+            "right": -9868,
+            "width": 131,
+            "scrollWidth": 131,
+            "clientWidth": 131,
+            "scrollHeight": 24,
+            "clientHeight": 24
+          }
+        ],
+        "paragraphStyle": {
+          "fontSize": "16px",
+          "lineHeight": "24px",
+          "letterSpacing": "1.92px",
+          "wordSpacing": "2.56px",
+          "marginBottom": "32px"
+        }
+      }
+    },
+    {
+      "engine": "chromium",
+      "page": "interests.html",
+      "width": 1280,
+      "mode": "text200",
+      "errors": [
+        "text element clipped"
+      ],
+      "metrics": {
+        "viewport": 1280,
+        "documentWidth": 1280,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 51,
+        "outside": [],
+        "clipped": [
+          {
+            "tag": "A",
+            "css": "",
+            "sample": "",
+            "x": 736,
+            "right": 1117,
+            "width": 381,
+            "scrollWidth": 386,
+            "clientWidth": 381,
+            "scrollHeight": 241,
+            "clientHeight": 214
+          },
+          {
+            "tag": "A",
+            "css": "",
+            "sample": "",
+            "x": 83,
+            "right": 314,
+            "width": 231,
+            "scrollWidth": 236,
+            "clientWidth": 231,
+            "scrollHeight": 199,
+            "clientHeight": 172
+          }
+        ],
+        "parentClips": [],
+        "culprits": [
+          {
+            "tag": "A",
+            "css": "skip-link",
+            "sample": "Skip to content",
+            "x": -9999,
+            "right": -9805,
+            "width": 194,
+            "scrollWidth": 194,
+            "clientWidth": 194,
+            "scrollHeight": 50,
+            "clientHeight": 50
+          }
+        ],
+        "paragraphStyle": {
+          "fontSize": "32px",
+          "lineHeight": "49.6px",
+          "letterSpacing": "normal",
+          "wordSpacing": "0px",
+          "marginBottom": "16px"
+        }
+      }
+    },
+    {
+      "engine": "firefox",
+      "page": "interests.html",
+      "width": 1280,
+      "mode": "spacing",
+      "errors": [
+        "text element clipped"
+      ],
+      "metrics": {
+        "viewport": 1280,
+        "documentWidth": 1280,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 51,
+        "outside": [],
+        "clipped": [
+          {
+            "tag": "A",
+            "css": "",
+            "sample": "",
+            "x": 736,
+            "right": 1117,
+            "width": 381,
+            "scrollWidth": 396,
+            "clientWidth": 381,
+            "scrollHeight": 241,
+            "clientHeight": 214
+          },
+          {
+            "tag": "A",
+            "css": "",
+            "sample": "",
+            "x": 83,
+            "right": 314,
+            "width": 231,
+            "scrollWidth": 246,
+            "clientWidth": 231,
+            "scrollHeight": 199,
+            "clientHeight": 172
+          }
+        ],
+        "parentClips": [],
+        "culprits": [
+          {
+            "tag": "A",
+            "css": "skip-link",
+            "sample": "Skip to content",
+            "x": -9999,
+            "right": -9868,
+            "width": 131,
+            "scrollWidth": 131,
+            "clientWidth": 131,
+            "scrollHeight": 24,
+            "clientHeight": 24
+          }
+        ],
+        "paragraphStyle": {
+          "fontSize": "16px",
+          "lineHeight": "24px",
+          "letterSpacing": "1.92px",
+          "wordSpacing": "2.56px",
+          "marginBottom": "32px"
+        }
+      }
+    },
+    {
+      "engine": "firefox",
+      "page": "interests.html",
+      "width": 1280,
+      "mode": "text200",
+      "errors": [
+        "text element clipped"
+      ],
+      "metrics": {
+        "viewport": 1280,
+        "documentWidth": 1280,
+        "mainCount": 1,
+        "h1Count": 1,
+        "textElements": 51,
+        "outside": [],
+        "clipped": [
+          {
+            "tag": "A",
+            "css": "",
+            "sample": "",
+            "x": 736,
+            "right": 1117,
+            "width": 381,
+            "scrollWidth": 386,
+            "clientWidth": 381,
+            "scrollHeight": 241,
+            "clientHeight": 214
+          },
+          {
+            "tag": "A",
+            "css": "",
+            "sample": "",
+            "x": 83,
+            "right": 314,
+            "width": 231,
+            "scrollWidth": 236,
+            "clientWidth": 231,
+            "scrollHeight": 199,
+            "clientHeight": 172
+          }
+        ],
+        "parentClips": [],
+        "culprits": [
+          {
+            "tag": "A",
+            "css": "skip-link",
+            "sample": "Skip to content",
+            "x": -9999,
+            "right": -9805,
+            "width": 194,
+            "scrollWidth": 194,
+            "clientWidth": 194,
+            "scrollHeight": 50,
+            "clientHeight": 50
+          }
+        ],
+        "paragraphStyle": {
+          "fontSize": "32px",
+          "lineHeight": "49.6px",
+          "letterSpacing": "normal",
+          "wordSpacing": "0px",
+          "marginBottom": "16px"
+        }
+      }
+    }
+  ],
   "combinedStressFailedCount": 0,
   "combinedStressFailures": [],
   "advisories": [],
   "byEngine": {
     "chromium": {
       "cases": 81,
-      "individualFailures": 0,
+      "individualFailures": 2,
       "combinedStressFailures": 0
     },
     "firefox": {
       "cases": 30,
-      "individualFailures": 0,
+      "individualFailures": 2,
       "combinedStressFailures": 0
     }
   },
   "caveats": "The two reading preference tests apply independently. Combined maximum-spacing plus 200% text at 320 CSS pixels is explicitly a supplementary stress case, and any such overflow remains open even when the independent-test exit code is zero. Inline spacing overrides model the priority of a user-origin accessibility stylesheet over author-important declarations, but are not an actual browser user-stylesheet installation. Computed font-size doubling is not native browser text-only zoom. Automated results do not certify WCAG.",
-  "workflow_run_id": "41987378293",
-  "head_sha": "d7c600ef8dcdc33095f65a6d925493fa6b3172b5",
-  "exit_code": "0"
+  "workflow_run_id": "41987896266",
+  "head_sha": "2a72df14ab1423e6ab055e93bd0577b98fd77fcb",
+  "exit_code": "1"
 }
