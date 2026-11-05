@@ -1,12 +1,12 @@
 {
-  "sourceHead": "2826e6f6459b32edaa84f0ee27588b8a3be45110",
+  "sourceHead": "7d7318b687703272b49a9402e140bc6f9177e62c",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 21,
   "httpErrors": 3,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-2826e6f6459b",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-7d7318b68770",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -14,14 +14,10 @@
   "auditEvidence": {
     "links": {
       "report": "docs/PUBLIC_LINKGRAPH_LATEST_RESULTS.json",
-      "run": "42038509954",
-      "head_sha": "c65d0538c15fcc1b3f876d542336e91a6d815056",
+      "run": "42039423043",
+      "head_sha": "651b5776ad66817b688378376c9bc938bf874f48",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "interests.html",
-        "pungmul.html",
-        "research-action.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "problems": 0
       }
@@ -69,11 +65,10 @@
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "42039027984",
-      "head_sha": "583dc03f8d9f3e3b5bb519f248a44616c71869d7",
+      "run": "42039116806",
+      "head_sha": "856239bc31f256ba7928f803ab8ff274dd482b87",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "interests.html",
         "research-action.html"
       ],
       "failureCounts": {
@@ -96,12 +91,10 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "42039116966",
-      "head_sha": "856239bc31f256ba7928f803ab8ff274dd482b87",
+      "run": "42039422459",
+      "head_sha": "651b5776ad66817b688378376c9bc938bf874f48",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research-action.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0,
         "axeViolations": 0
@@ -116,14 +109,6 @@
   },
   "sourceDriftSinceAudits": [
     {
-      "category": "links",
-      "sourceModifiedSinceAudit": [
-        "interests.html",
-        "pungmul.html",
-        "research-action.html"
-      ]
-    },
-    {
       "category": "reflow",
       "sourceModifiedSinceAudit": [
         "research-action.html"
@@ -132,7 +117,6 @@
     {
       "category": "engines",
       "sourceModifiedSinceAudit": [
-        "interests.html",
         "research-action.html"
       ]
     },
@@ -140,12 +124,6 @@
       "category": "typography",
       "sourceModifiedSinceAudit": [
         "interests.html",
-        "research-action.html"
-      ]
-    },
-    {
-      "category": "interactions",
-      "sourceModifiedSinceAudit": [
         "research-action.html"
       ]
     }
@@ -213,14 +191,6 @@
     {
       "sourceDrift": [
         {
-          "category": "links",
-          "sourceModifiedSinceAudit": [
-            "interests.html",
-            "pungmul.html",
-            "research-action.html"
-          ]
-        },
-        {
           "category": "reflow",
           "sourceModifiedSinceAudit": [
             "research-action.html"
@@ -229,7 +199,6 @@
         {
           "category": "engines",
           "sourceModifiedSinceAudit": [
-            "interests.html",
             "research-action.html"
           ]
         },
@@ -239,18 +208,12 @@
             "interests.html",
             "research-action.html"
           ]
-        },
-        {
-          "category": "interactions",
-          "sourceModifiedSinceAudit": [
-            "research-action.html"
-          ]
         }
       ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42039546027",
-  "run_sha": "2826e6f6459b32edaa84f0ee27588b8a3be45110",
+  "workflow_run_id": "42039620352",
+  "run_sha": "7d7318b687703272b49a9402e140bc6f9177e62c",
   "exit_code": "1"
 }
