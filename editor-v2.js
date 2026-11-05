@@ -703,6 +703,23 @@ function cropShapeCss(shape){
 function croppedEdges(crop){
   return {left:crop.left||0,right:crop.right||0,top:crop.top||0,bottom:crop.bottom||0};
 }
+// Keep the visual crop and image-drag calculations on one mathematical basis.
+// Focal x/y positions must remain effective after edge trimming and resizing.
+function edgeCropPaintMetrics(crop,geometry){
+  const {left,right,top,bottom}=croppedEdges(crop);
+  const fx=1-(left+right)/100,fy=1-(top+bottom)/100;
+  const ratio=crop.ratio||geometry.w/geometry.h;
+  const naturalW=crop.fit==="cover"?
+    Math.max(geometry.w/fx,geometry.h*ratio/fy):
+    Math.min(geometry.w/fx,geometry.h*ratio/fy);
+  const fullW=naturalW*clamp(crop.zoom||100,100,500)/100;
+  const fullH=fullW/ratio;
+  const shiftX=(geometry.w-fullW*fx)*(crop.x??50)/100-fullW*left/100;
+  const shiftY=(geometry.h-fullH*fy)*(crop.y??50)/100-fullH*top/100;
+  return {fullW,fullH,shiftX,shiftY,
+    overflowX:Math.max(0,fullW*fx-geometry.w),
+    overflowY:Math.max(0,fullH*fy-geometry.h)};
+}
 function imageCropCss(crop,src="",geometry=null){
   const shape=cropShapeCss(crop.mask);
   if(crop.reset===true)
@@ -712,16 +729,8 @@ function imageCropCss(crop,src="",geometry=null){
   if(!src||!safeImageSource(src)||!geometry?.w||!geometry?.h)
     return "object-fit:"+crop.fit+"!important;object-position:"+crop.x+"% "+crop.y+"%!important;"+shape;
   if(["left","right","top","bottom"].some(k=>crop[k]!==undefined)){
-    const {left,right,top,bottom}=croppedEdges(crop);
-    const fx=1-(left+right)/100,fy=1-(top+bottom)/100;
-    const ratio=crop.ratio||geometry.w/geometry.h;
-    const naturalW=crop.fit==="cover"?
-      Math.max(geometry.w/fx,geometry.h*ratio/fy):
-      Math.min(geometry.w/fx,geometry.h*ratio/fy);
-    const fullW=naturalW*clamp(crop.zoom||100,100,500)/100,fullH=fullW/ratio;
+    const {fullW,fullH,shiftX,shiftY}=edgeCropPaintMetrics(crop,geometry);
     const px=v=>Math.round(v*1000)/1000+"px";
-    const shiftX=(geometry.w-fullW*fx)/2-fullW*left/100;
-    const shiftY=(geometry.h-fullH*fy)/2-fullH*top/100;
     return "object-fit:none!important;object-position:-100000px -100000px!important;"+
       "background-image:url("+src+")!important;"+
       "background-size:"+px(fullW)+" "+px(fullH)+"!important;"+
@@ -1653,7 +1662,7 @@ function applySelectedImageCrop(changes){
   const next={...prepared,...changes,reset:false};
   if(changes.mask!==undefined)Object.assign(next,{
     left:next.left||0,right:next.right||0,
-    top:next.top||0,bottom:next.bottom||0,fit:"contain"
+    top:next.top||0,bottom:next.bottom||0
   });
   if(!["contain","cover"].includes(next.fit)||
      !["rectangle","rounded","round-large","pill","circle","oval","squircle","diamond","hexagon","octagon","triangle","pentagon","star","heart","arch"].includes(next.mask)||
@@ -1883,9 +1892,7 @@ function setLiveCropMode(enabled){
   liveCropMode=!!enabled;
   if(enabled){
     const existing=selectedImageCrop(livePatchForSelected());
-    applySelectedImageCrop({
-      ...croppedEdges(existing),fit:"contain",zoom:100
-    });
+    applySelectedImageCrop(croppedEdges(existing));
   }
   removeLiveOverlay();renderLiveInspector();syncLiveOverlay();
   status(enabled?
@@ -1948,7 +1955,7 @@ function resetSelectedImageCrop(){
 // Updating the frame geometry keeps the remaining crop rectangle aligned.
 // No drag ever changes focal-position offsets when trimming a crop edge.
 function cropFrameGeometry(rect,origin,dir,dx,dy){
-  const crop={...origin,...croppedEdges(origin),fit:"contain",zoom:100,reset:false};
+  const crop={...origin,...croppedEdges(origin),reset:false};
   const initial=croppedEdges(crop);
   const fullW=rect.width/Math.max(.05,1-(initial.left+initial.right)/100);
   const fullH=rect.height/Math.max(.05,1-(initial.top+initial.bottom)/100);
@@ -3642,11 +3649,13 @@ function moveLiveGesture(event){
     const frame=g.rect,nw=g.node.naturalWidth,nh=g.node.naturalHeight;
     if(!nw||!nh||frame.width<1||frame.height<1)return;
     const origin=selectedImageCrop(g.patch,liveDevice());
-    const imageWidth=Math.max(origin.baseW||0,frame.width,frame.height*nw/nh)*
-      (origin.zoom||100)/100;
-    const imageHeight=imageWidth*nh/nw;
-    const overflowX=Math.max(0,imageWidth-frame.width);
-    const overflowY=Math.max(0,imageHeight-frame.height);
+    const {overflowX,overflowY}=
+      ["left","right","top","bottom"].some(side=>origin[side]!==undefined)?
+        edgeCropPaintMetrics(origin,{w:frame.width,h:frame.height}):
+        (()=>{const imageWidth=Math.max(origin.baseW||0,frame.width,
+          frame.height*nw/nh)*(origin.zoom||100)/100;
+          return {overflowX:Math.max(0,imageWidth-frame.width),
+            overflowY:Math.max(0,imageWidth*nh/nw-frame.height)};})();
     const crop={...origin,fit:"cover",
       x:overflowX?Math.round(clamp(origin.x-deltaX/overflowX*100,0,100)):50,
       y:overflowY?Math.round(clamp(origin.y-deltaY/overflowY*100,0,100)):50};
@@ -4697,7 +4706,12 @@ function bindLiveDocument(){
     }
     // A touch tap selects without capturing the pointer, so users can still
     // scroll the responsive webpage. Mouse/pen can drag immediately.
-    if(liveCropMode&&target.tagName==="IMG")return; // Cut with pink edge handles.
+    if(liveCropMode&&target.tagName==="IMG"){
+      // In crop mode, drag the image to change its focal position while the
+      // pink frame handles independently trim the visible edges.
+      startLiveGesture(event,"crop",target);
+      return;
+    }
     if(event.pointerType!=="touch")startLiveGesture(event,"move",target);
   },true);
   doc.addEventListener("pointermove",event=>{
