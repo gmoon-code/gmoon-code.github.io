@@ -3975,3 +3975,72 @@ test('Gallery crop handles shrink the selected frame, preserve sibling photos, a
     expect(await metrics(other)).toEqual(unchanged);
     expect(writes).toEqual([]);
   });
+
+test('Rapid pointer events finish the final crop and resize before mouse release, with one undo per gesture',
+  async({page})=>{
+    const writes=[];
+    await installVerifiedCurrentSource(page,writes);
+    await page.setViewportSize({width:1740,height:1050});
+    await page.goto(BASE+'/editor-v2.html?page=pungmul.html',{waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    const frame=page.frameLocator('#livePageFrame');
+    const image=frame.locator('.pungmul-performance-grid figure img').first();
+    const sibling=frame.locator('.pungmul-performance-grid figure img').nth(1);
+    await image.scrollIntoViewIfNeeded();
+    await expect.poll(()=>image.evaluate(img=>img.naturalWidth)).toBeGreaterThan(0);
+    const rect=img=>img.evaluate(el=>{
+      const r=el.getBoundingClientRect(),s=getComputedStyle(el);
+      return {x:r.left,y:r.top,w:r.width,h:r.height,src:el.getAttribute('src'),
+        bg:s.backgroundImage};
+    });
+    const initial=await rect(image),other=await rect(sibling);
+    await image.click();
+    await expect(page.locator('#livePhotoCardMode')).toBeChecked();
+    await page.locator('#cropImageTool').click();
+    const rapidDrag=async(direction,deltaX,deltaY)=>{
+      const grip=frame.locator('#moon-v2-live-overlay .moon-v2-grip[data-direction="'+direction+'"]');
+      await expect(grip).toBeVisible();
+      // Deliver multiple pointer events and mouseup in ONE browser task,
+      // before any animation frame can run. The last coordinates must still
+      // be committed. Synthetic capture is stubbed only for this test.
+      await grip.evaluate((el,{dx,dy})=>{
+        const box=el.getBoundingClientRect();
+        const x=box.left+box.width/2,y=box.top+box.height/2;
+        Object.defineProperty(el,'setPointerCapture',{configurable:true,value:()=>{}});
+        Object.defineProperty(el,'hasPointerCapture',{configurable:true,value:()=>false});
+        Object.defineProperty(el,'releasePointerCapture',{configurable:true,value:()=>{}});
+        const emit=(type,amount)=>el.dispatchEvent(new PointerEvent(type,{
+          bubbles:true,cancelable:true,pointerId:173,pointerType:'mouse',
+          button:0,buttons:type==='pointerup'?0:1,
+          clientX:x+dx*amount,clientY:y+dy*amount
+        }));
+        emit('pointerdown',0);
+        for(let n=1;n<=32;n++)emit('pointermove',n/32);
+        emit('pointerup',1);
+      },{dx:deltaX,dy:deltaY});
+    };
+    await rapidDrag('w',55,0);
+    const cropped=await rect(image);
+    expect(cropped.w,'final crop event must not be dropped').toBeLessThan(initial.w-40);
+    expect(cropped.x).toBeGreaterThan(initial.x+40);
+    expect(await rect(sibling)).toEqual(other);
+    const key='moon-academic-editor-v2:source:pungmul.html';
+    const draft=await page.evaluate(k=>JSON.parse(localStorage.getItem(k)),key);
+    expect(draft.filter(p=>p.kind==='image')).toHaveLength(1);
+    expect(draft.find(p=>p.kind==='image').imageCrop.desktop.left).toBeGreaterThan(8);
+    await page.locator('#undo').click();
+    const undone=await rect(image);
+    expect(Math.abs(undone.w-initial.w)).toBeLessThan(3);
+    expect(Math.abs(undone.x-initial.x)).toBeLessThan(3);
+    await page.locator('#cropImageTool').click();
+    await rapidDrag('se',45,45);
+    const resized=await rect(image);
+    expect(resized.w,'final resize event must not be dropped').toBeGreaterThan(initial.w+25);
+    expect(await rect(sibling)).toEqual(other);
+    await page.locator('#undo').click();
+    const reset=await rect(image);
+    expect(Math.abs(reset.w-initial.w)).toBeLessThan(3);
+    expect(await rect(sibling)).toEqual(other);
+    expect(writes).toEqual([]);
+  });
