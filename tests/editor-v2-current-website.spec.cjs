@@ -3445,13 +3445,15 @@ for(const [pageName,gallery] of [
     }
     // Cropping trims the selected card frame and the caption stays attached.
     await page.locator('#liveCropShape').selectOption('rounded');
-    const beforeCrop=await figure.boundingBox();
+    // Use iframe-local CSS pixels for both frame and saved-layout checks.
+    // Playwright boundingBox includes the editor's fit-to-page iframe scale.
+    const beforeCrop=await figure.evaluate(x=>({width:x.getBoundingClientRect().width}));
     await page.locator('#liveCropLeft').evaluate(input=>{
       input.value="12";
       input.dispatchEvent(new Event("input",{bubbles:true}));
       input.dispatchEvent(new Event("change",{bubbles:true}));
     });
-    const afterCrop=await figure.boundingBox();
+    const afterCrop=await figure.evaluate(x=>({width:x.getBoundingClientRect().width}));
     expect(afterCrop.width,'crop should reduce visible photo-card width')
       .toBeLessThan(beforeCrop.width-10);
     await expect(photo).toHaveCSS('border-radius','12px');
