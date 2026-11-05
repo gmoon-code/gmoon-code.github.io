@@ -2282,7 +2282,7 @@ function resetSelectedImageCrop(){
   const fullW=frame.width/Math.max(.05,1-(edges.left+edges.right)/100);
   const fullH=frame.height/Math.max(.05,1-(edges.top+edges.bottom)/100);
   const shiftX=Math.round(fullW*edges.left/100),shiftY=Math.round(fullH*edges.top/100);
-  if(["left","right","top","bottom"].some(k=>edges[k]>0)){
+  if(patch.frameMode!=="card"&&["left","right","top","bottom"].some(k=>edges[k]>0)){
     if(patch.kind==="insert"){
       const geom=addedDeviceGeometry(patch,device);
       const inFlow=!!patch.flowBaseline?.[device];
@@ -2351,7 +2351,12 @@ function updateCropFrame(node,selector,originalPatch,initialRect,dir,dx,dy){
     {...selectedImageCrop(patch,device),left:0,right:0,top:0,bottom:0};
   const result=cropFrameGeometry(initialRect,baseline,dir,dx,dy);
   patch.imageCrop={...(patch.imageCrop||{}),[device]:result.crop};
-  if(patch.kind==="insert"){
+  if(patch.frameMode==="card"){
+    // Trim the inner picture while retaining the outer card dimensions and
+    // caption position. One saved image record holds both crop and frame.
+    livePatches.set(selector,patch);
+    refreshLiveLayoutRules(node.ownerDocument);
+  }else if(patch.kind==="insert"){
     const initial=addedDeviceGeometry(originalPatch,device);
     const inFlow=!!patch.flowBaseline?.[device];
     patch.geometry={...patch.geometry,[device]:{
@@ -2429,7 +2434,10 @@ function cropImageToRatio(ratio){
     patch.geometry={...patch.geometry,[device]:
       {...old,h:Math.round(clamp(targetHeight,24,5000))}};
   }else{
-    const layout=normaliseElementBoxLayout(node,liveLayoutFor(selector));
+    const current=liveLayoutFor(selector);
+    const layout=patch.frameMode==="card"?(current.wrapWidth?{...current}:
+      photoCardLayoutForImage(node,current)):
+      normaliseElementBoxLayout(node,current);
     layout.reserveHeight=Math.round(clamp(layout.wrapWidth/ratio,24,5000));
     patch.layout={...patch.layout,[device]:layout};
   }
@@ -2465,8 +2473,9 @@ function setOriginalBoxDimension(key,value){
   }
   if(node.tagName==="IMG"&&liveLockImageRatio){
     const rect=node.getBoundingClientRect(),ratio=
-      (node.naturalWidth&&node.naturalHeight?
-        node.naturalWidth/node.naturalHeight:rect.width/Math.max(1,rect.height))*
+      (card?rect.width/Math.max(1,rect.height):
+        node.naturalWidth&&node.naturalHeight?
+          node.naturalWidth/node.naturalHeight:rect.width/Math.max(1,rect.height))*
       (1-((selectedImageCrop(patch).left||0)+(selectedImageCrop(patch).right||0))/100)/
       (1-((selectedImageCrop(patch).top||0)+(selectedImageCrop(patch).bottom||0))/100);
     if(key==="wrapWidth")layout.reserveHeight=Math.round(clamp(layout.wrapWidth/ratio,24,5000));
@@ -3985,7 +3994,8 @@ function startLiveGesture(event,direction,anchor){
   const card=node.tagName==="IMG"&&patch.frameMode==="card"&&
     !liveCropMode&&!sourceGroup&&!group?photoCardFrame(node):null;
   const rect=sourceGroup?liveSourceSelectionBounds(node,sourceGroup):
-    group?liveAddedSelectionBounds(group):(card||node).getBoundingClientRect();
+    group?liveAddedSelectionBounds(group):
+    (direction==="rotate"?node:card||node).getBoundingClientRect();
   if(rect.width<2||rect.height<2)return;
   const current=liveLayoutFor(selector);
   const layout=card&&!current.wrapWidth?
