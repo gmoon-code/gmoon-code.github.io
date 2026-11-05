@@ -2558,3 +2558,167 @@ for(const name of ['pungmul.html','contact.html']){
       expect(writes).toEqual([]);
     });
 }
+
+
+test('Repeated Pungmul photo resize/crop publications preserve latest preview and verify deployed delivery',
+  async({page})=>{
+    const name='pungmul.html',original=SOURCE.get(name);
+    let github=original,publicHtml=original.toString('utf8');
+    let commits=0;
+    await page.route(/^https:\/\/api\.github\.com\/repos\/gmoon-code\/gmoon-code\.github\.io\//,
+      async route=>{
+        const req=route.request(),url=new URL(req.url());
+        const candidate=url.pathname.split('/contents/')[1];
+        if(candidate!==name){await route.abort();return;}
+        if(req.method()==='GET'){
+          await route.fulfill({status:200,contentType:'application/json',
+            headers:{'access-control-allow-origin':'*'},
+            body:JSON.stringify({name,type:'file',sha:blobSha(github),
+              content:github.toString('base64'),encoding:'base64'})});return;
+        }
+        if(req.method()==='PUT'){
+          const body=JSON.parse(req.postData());
+          expect(body.sha).toBe(blobSha(github));
+          github=Buffer.from(body.content,'base64');
+          commits++;
+          await route.fulfill({status:200,contentType:'application/json',
+            headers:{'access-control-allow-origin':'*'},
+            body:JSON.stringify({commit:{sha:String(commits).padStart(40,'a')}})});
+          return;
+        }
+        throw Error('Unexpected GitHub method '+req.method());
+      });
+    await page.route(/^https:\/\/gmoon-code\.github\.io\/pungmul\.html(?:\?.*)?$/,async route=>{
+      await route.fulfill({status:200,contentType:'text/html',
+        headers:{'access-control-allow-origin':'*'},body:publicHtml});
+    });
+    await page.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    const photo=page.frameLocator('#livePageFrame').locator('main img:visible').first();
+    await photo.scrollIntoViewIfNeeded();
+    await expect.poll(()=>photo.evaluate(img=>img.naturalWidth)).toBeGreaterThan(0);
+    await photo.click();
+    const originalWidth=Number(await page.locator('#liveOriginalWidth').inputValue());
+    await page.locator('#liveOriginalWidth').fill(String(originalWidth+35));
+    await page.locator('#liveOriginalWidth').dispatchEvent('change');
+    await page.locator('#liveMoveX').fill('28');
+    await page.locator('#liveMoveX').dispatchEvent('change');
+    await page.locator('#cropImageTool').click();
+    await page.locator('#liveCropRight').evaluate(el=>{
+      el.value='15';el.dispatchEvent(new Event('change',{bubbles:true}));
+    });
+    await page.locator('#liveCropZoom').evaluate(el=>{
+      el.value='190';el.dispatchEvent(new Event('input',{bubbles:true}));
+      el.dispatchEvent(new Event('change',{bubbles:true}));
+    });
+    await page.locator('#cropImageTool').click();
+    await page.locator('#preview').click();
+    await expect(page.locator('#previewDialog')).toBeVisible();
+    const firstPreview=await page.locator('#previewFrame').getAttribute('srcdoc');
+    await page.locator('#closePreview').click();
+    await page.locator('#publish').click();
+    await page.locator('#githubToken').fill('synthetic-successive-photo-token');
+    await page.locator('#acknowledgeLive').check();
+    await page.locator('#confirmPublish').click();
+    await expect.poll(()=>commits,{timeout:20000}).toBe(1);
+    expect(github.toString('utf8')).toBe(firstPreview);
+    await expect(page.locator('#publishResult button')).toHaveText('Check public deployment');
+    await page.locator('#publishResult button').click();
+    await expect(page.locator('.publication-delivery-status'))
+      .toContainText('still serving different HTML');
+    publicHtml=github.toString('utf8');
+    await page.locator('#publishResult button').click();
+    await expect(page.locator('.publication-delivery-status'))
+      .toContainText('now serves the exact reviewed HTML');
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified');
+
+    // A later photo edit on the already-published source must retain the first
+    // crop and layout instead of silently restoring the earlier image CSS.
+    await photo.click();
+    const updatedWidth=Number(await page.locator('#liveOriginalWidth').inputValue());
+    await page.locator('#liveOriginalWidth').fill(String(updatedWidth+25));
+    await page.locator('#liveOriginalWidth').dispatchEvent('change');
+    await page.locator('#liveCropShape').selectOption('rounded');
+    await page.locator('#preview').click();
+    await expect(page.locator('#previewDialog')).toBeVisible();
+    const secondPreview=await page.locator('#previewFrame').getAttribute('srcdoc');
+    await page.locator('#closePreview').click();
+    expect(secondPreview).not.toBe(firstPreview);
+    await page.locator('#publish').click();
+    await page.locator('#githubToken').fill('synthetic-successive-photo-token');
+    await page.locator('#acknowledgeLive').check();
+    await page.locator('#confirmPublish').click();
+    await expect.poll(()=>commits,{timeout:20000}).toBe(2);
+    expect(github.toString('utf8')).toBe(secondPreview);
+    expect(secondPreview).toContain('data-moon-v2-image-crop');
+    const visitor=await page.context().newPage();
+    await visitor.setViewportSize({width:1160,height:900});
+    await visitor.route(BASE+'/'+name,route=>route.fulfill({
+      status:200,contentType:'text/html',body:secondPreview}));
+    await visitor.goto(BASE+'/'+name,{waitUntil:'load'});
+    const actual=visitor.locator('main img:visible').first();
+    await expect(actual).toHaveCSS('border-radius','12px');
+    await visitor.close();
+  });
+
+
+test('Photo resize and move grips work when the editor iframe is scaled to a laptop window',
+  async({page})=>{
+    const writes=[];
+    await installVerifiedCurrentSource(page,writes);
+    await page.setViewportSize({width:1280,height:900});
+    await page.goto(BASE+'/editor-v2.html?page=pungmul.html',{waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    const iframe=page.locator('#livePageFrame');
+    await expect.poll(()=>iframe.evaluate(node=>{
+      const m=node.ownerDocument.defaultView.getComputedStyle(node).transform;
+      return m!=='none'&&!/^matrix\(1, 0, 0, 1,/.test(m);
+    })).toBe(true);
+    const image=page.frameLocator('#livePageFrame').locator('main img:visible').first();
+    await image.scrollIntoViewIfNeeded();
+    await expect.poll(()=>image.evaluate(img=>img.naturalWidth)).toBeGreaterThan(0);
+    await image.click();
+    const box=()=>image.boundingBox();
+    const drag=async(locator,dx,dy)=>{
+      const target=await locator.boundingBox();
+      expect(target).toBeTruthy();
+      const cx=target.x+target.width/2,cy=target.y+target.height/2;
+      await page.mouse.move(cx,cy);
+      await page.mouse.down();
+      await page.mouse.move(cx+dx,cy+dy,{steps:12});
+      await page.mouse.up();
+    };
+    const before=await box();
+    const grip=page.frameLocator('#livePageFrame')
+      .locator('#moon-v2-live-overlay .moon-v2-grip[data-direction="se"]');
+    await expect(grip).toBeVisible();
+    await drag(grip,35,22);
+    const resized=await box();
+    expect(resized.width).toBeGreaterThan(before.width+4);
+    const move=page.frameLocator('#livePageFrame')
+      .locator('#moon-v2-live-overlay .moon-v2-move');
+    await expect(move).toBeVisible();
+    await drag(move,32,20);
+    const moved=await box();
+    expect(moved.x).toBeGreaterThan(resized.x+4);
+    expect(moved.y).toBeGreaterThan(resized.y+2);
+    await page.locator('#preview').click();
+    await expect(page.locator('#previewDialog')).toBeVisible();
+    const editorGeometry=await image.evaluate(img=>{
+      const m=img.closest('main').getBoundingClientRect(),r=img.getBoundingClientRect();
+      return {x:r.x-m.x,y:r.y-m.y,w:r.width,h:r.height};
+    });
+    const publicGeometry=await page.frameLocator('#previewFrame')
+      .locator('main img:visible').first().evaluate(img=>{
+        const m=img.closest('main').getBoundingClientRect(),r=img.getBoundingClientRect();
+        return {x:r.x-m.x,y:r.y-m.y,w:r.width,h:r.height};
+      });
+    for(const key of ['x','y','w','h'])
+      expect(Math.abs(editorGeometry[key]-publicGeometry[key]),
+        'scaled editor vs exact publication preview '+key).toBeLessThan(7);
+    await page.locator('#closePreview').click();
+    expect(writes).toEqual([]);
+  });

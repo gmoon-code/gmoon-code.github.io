@@ -206,3 +206,7 @@
 #publishedDialog .verified-frame-viewport{min-height:0;min-width:0;overflow:auto;padding:12px;box-sizing:border-box;background:#edf2ed}
 #publishedDialog .published-source-note{font-size:11px;line-height:1.5;color:var(--muted);margin:0;padding:8px 14px;border-top:1px solid var(--rule)}
 #publishedDialog .verification-note{overflow-wrap:anywhere}
+
+/* C-RV29ex: explicitly distinguish GitHub's commit from deployed photo-page HTML. */
+.publish-result .publication-delivery-status{display:block;margin-top:7px;font-size:12px;line-height:1.5;color:var(--muted)}
+.publish-result button{margin:5px 7px 0 0;font-size:12px;white-space:normal}

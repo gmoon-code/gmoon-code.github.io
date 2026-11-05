@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>Academic Website Editor 2 | Ye Eun Moon</title>
-<link rel="stylesheet" href="editor-v2.css?v=20261105-actual-public-preview-v68">
-<script src="editor-v2.js?v=20261105-photo-geometry-fix-v69" defer></script>
+<link rel="stylesheet" href="editor-v2.css?v=20261105-image-deployment-check-v70">
+<script src="editor-v2.js?v=20261105-image-deployment-check-v70" defer></script>
 </head>
 <body>
 <a class="skip" href="#workspace">Skip to editor canvas</a>
@@ -310,6 +310,7 @@
         </div>
         <div id="liveLayoutControls" class="live-layout-controls" hidden>
           <h3>Free placement on this screen</h3>
+          <p class="help"><strong>Check each screen width.</strong> Photo placement and dimensions are stored separately for Desktop, Tablet and Phone. Editing one width does not automatically update the others.</p>
           <p class="help">Click or drag any text or image to select and move it. Double-click text to edit. Alt-click a container, or click Select section beside the layer list to select its enclosing section. Text and images inside do not stretch when the section changes size. Drag resize handles, using Alt while dragging to disable snapping.</p>
           <div class="property-grid">
             <label>Horizontal offset <input type="number" id="liveMoveX" step="1" value="0"></label>
@@ -326,7 +327,7 @@
             <div id="liveCropControls" class="live-crop-controls" hidden>
               <h3>Picture cropping &amp; framing</h3>
               <p class="help"><strong>Trim and reposition the picture.</strong> Click Crop picture, drag the pink handles to trim each edge, or drag inside the photograph to move its focal position without moving the frame. Picture zoom is retained. Click Finish crop before moving or resizing the whole frame. Cropping never stretches the photo.</p>
-              <p class="help">The original image is preserved. Crop settings can differ for desktop, tablet, and phone.</p>
+              <p class="help"><strong>Screen-specific photo edits.</strong> Moving, resizing or cropping on Desktop changes the desktop layout only. Switch to Tablet and Phone to check and adjust those layouts separately before publishing. The original image is preserved.</p>
               <div class="inline-actions">
                 <button type="button" id="liveCropToggle" aria-pressed="false">Crop picture · drag to reframe</button>
                 <button type="button" id="liveCropReset">Reset crop</button>
