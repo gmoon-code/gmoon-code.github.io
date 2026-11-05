@@ -221,3 +221,5 @@
 .inline-published-view #liveInspector,.inline-published-view #liveLayersPanel{display:none!important}
 .inline-published-view #inlineReadOnlyTip{display:block!important}
 .inline-published-view #imageLibrary{pointer-events:none;opacity:.5}
+
+.workspace-inline-switch[hidden],.inline-view-notice[hidden]{display:none!important}
