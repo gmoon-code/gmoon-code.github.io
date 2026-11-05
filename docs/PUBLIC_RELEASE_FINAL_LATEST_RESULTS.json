@@ -1,12 +1,12 @@
 {
-  "sourceHead": "f048db8683d66366c3df678b5af76004f771d4b3",
+  "sourceHead": "faf52231612ff0959f1ce23913cfdc239e6cdb6a",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-f048db8683d6",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-faf52231612f",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -90,12 +90,10 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "41987378185",
-      "head_sha": "d7c600ef8dcdc33095f65a6d925493fa6b3172b5",
+      "run": "41987896450",
+      "head_sha": "2a72df14ab1423e6ab055e93bd0577b98fd77fcb",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "interests.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0,
         "axeViolations": 0
@@ -123,12 +121,6 @@
     },
     {
       "category": "typography",
-      "sourceModifiedSinceAudit": [
-        "interests.html"
-      ]
-    },
-    {
-      "category": "interactions",
       "sourceModifiedSinceAudit": [
         "interests.html"
       ]
@@ -177,18 +169,12 @@
           "sourceModifiedSinceAudit": [
             "interests.html"
           ]
-        },
-        {
-          "category": "interactions",
-          "sourceModifiedSinceAudit": [
-            "interests.html"
-          ]
         }
       ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41987971211",
-  "run_sha": "f048db8683d66366c3df678b5af76004f771d4b3",
+  "workflow_run_id": "41988005327",
+  "run_sha": "faf52231612ff0959f1ce23913cfdc239e6cdb6a",
   "exit_code": "1"
 }
