@@ -2266,11 +2266,9 @@ function setLiveCropMode(enabled){
   liveCropMode=!!enabled;
   if(enabled){
     const existing=selectedImageCrop(livePatchForSelected());
-    const edges=croppedEdges(existing);
-    // Starting a new crop should fill the window with the surviving pixels.
-    // Preserve a deliberate Contain choice on an already-trimmed crop.
-    const firstTrim=!Object.values(edges).some(value=>value>0);
-    applySelectedImageCrop({...edges,...(firstTrim?{fit:"cover"}:{})});
+    // Entering crop mode alone must not alter the picture. The first actual
+    // side trim switches Contain to Cover in cropFrameGeometry below.
+    applySelectedImageCrop(croppedEdges(existing));
   }
   removeLiveOverlay();renderLiveInspector();syncLiveOverlay();
   status(enabled?
