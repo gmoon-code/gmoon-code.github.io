@@ -7,12 +7,12 @@
   },
   "by_category": {
     "external": {
-      "reachable": 49,
-      "unverified": 2
+      "reachable": 48,
+      "unverified": 3
     },
     "scholarly-identifier": {
-      "unverified": 42,
-      "reachable": 19
+      "unverified": 41,
+      "reachable": 20
     },
     "separate-site-application": {
       "reachable": 3
@@ -686,25 +686,6 @@
       "warnings": []
     },
     {
-      "url": "https://doi.org/10.22318/icls2023.243024",
-      "status": "unverified",
-      "category": "scholarly-identifier",
-      "pages": [
-        "research.html"
-      ],
-      "head": {
-        "code": 500,
-        "finalUrl": "https://repository.isls.org/handle/1/9855",
-        "error": "Internal Server Error"
-      },
-      "get": {
-        "code": 500,
-        "finalUrl": "https://repository.isls.org/handle/1/9855",
-        "error": "Internal Server Error"
-      },
-      "warnings": []
-    },
-    {
       "url": "https://doi.org/10.2304/ciec.2011.12.4.362",
       "status": "unverified",
       "category": "scholarly-identifier",
@@ -856,6 +837,25 @@
         "error": "Forbidden"
       },
       "warnings": []
+    },
+    {
+      "url": "https://www.biointeractive.org/professional-learning/educator-voices/using-storylines-and-sickle-cell-phenomenon-enhance-learning",
+      "status": "unverified",
+      "category": "external",
+      "pages": [
+        "teaching-ap-evolution.html"
+      ],
+      "head": {
+        "code": 403,
+        "finalUrl": "https://www.biointeractive.org/professional-learning/educator-voices/using-storylines-and-sickle-cell-phenomenon-enhance-learning",
+        "error": "Forbidden"
+      },
+      "get": {
+        "code": 403,
+        "finalUrl": "https://www.biointeractive.org/professional-learning/educator-voices/using-storylines-and-sickle-cell-phenomenon-enhance-learning",
+        "error": "Forbidden"
+      },
+      "warnings": []
     }
   ],
   "important_apps": [
@@ -877,12 +877,12 @@
   ],
   "limits": "HTTP availability is not content authenticity or DOI landing-page accuracy. 403, 429, DNS, SSL, and timeout results remain unverified.",
   "doi_registry": {
-    "checked": 42,
+    "checked": 41,
     "counts": {
-      "not-confirmed": 8,
-      "registered": 34
+      "not-confirmed": 3,
+      "registered": 38
     },
-    "secondary_index_matches": 8,
+    "secondary_index_matches": 3,
     "not_confirmed": [
       {
         "url": "https://doi.org/10.1002/sce.20264",
@@ -917,106 +917,26 @@
         "indexedYear": 2014
       },
       {
-        "url": "https://doi.org/10.1002/sce.21112",
-        "doi": "10.1002/sce.21112",
+        "url": "https://doi.org/10.1002/tea.70072",
+        "doi": "10.1002/tea.70072",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21112",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.70072",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Examining Classroom Science Practice Communities: How Teachers and Students Negotiate Epistemic Agency and Learn Science‐as‐Practice",
-        "indexedYear": 2014
-      },
-      {
-        "url": "https://doi.org/10.1080/03626784.2023.2200810",
-        "doi": "10.1080/03626784.2023.2200810",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/03626784.2023.2200810",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "You don’t know me: Welcoming gender diversity in schools via an ethic of hospitality",
-        "indexedYear": 2023
-      },
-      {
-        "url": "https://doi.org/10.1080/07491409.2023.2193543",
-        "doi": "10.1080/07491409.2023.2193543",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/07491409.2023.2193543",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "TERF Logics Are Carceral Logics: Toward the Abolition of Gender-Critical Movements or Black Trans Life as Pedagogical Praxis",
-        "indexedYear": 2023
-      },
-      {
-        "url": "https://doi.org/10.1080/1046560X.2022.2155355",
-        "doi": "10.1080/1046560X.2022.2155355",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/1046560X.2022.2155355",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Teacher Noticing for Supporting Students’ Epistemic Agency in Science Sensemaking Discussions",
-        "indexedYear": 2023
-      },
-      {
-        "url": "https://doi.org/10.1207/S1532690XCI2004_1",
-        "doi": "10.1207/S1532690XCI2004_1",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://www.tandfonline.com/doi/abs/10.1207/S1532690XCI2004_1",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Guiding Principles for Fostering Productive Disciplinary Engagement: Explaining an Emergent Argument in a Community of Learners Classroom",
-        "indexedYear": 2002
-      },
-      {
-        "url": "https://doi.org/10.3102/0034654314558490",
-        "doi": "10.3102/0034654314558490",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://journals.sagepub.com/doi/10.3102/0034654314558490",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Representing Student Argumentation as Functionally Emergent From Scientific Activity",
-        "indexedYear": 2014
+        "indexedTitle": "Students' Construction, Evaluation, and Revision of Scientific Models Through Multimodal Representations",
+        "indexedYear": 2026
       }
     ],
     "unresolved": [],
     "limitation": "Crossref/DataCite registration is distinct from publisher access, correct article metadata or article availability. OpenAlex is independent secondary corroboration, not registration proof."
   },
-  "workflow_run_id": "41931940910",
-  "head_sha": "69e621f73438a38738c6232b803a599ab6052181",
+  "workflow_run_id": "41940926190",
+  "head_sha": "5df2bff98059221e01a9af8d76c97074b875e75f",
   "audit_exit_code": "0"
 }
