@@ -2722,3 +2722,72 @@ test('Photo resize and move grips work when the editor iframe is scaled to a lap
     await page.locator('#closePreview').click();
     expect(writes).toEqual([]);
   });
+
+
+// Regression for the gallery bug seen on Interests and Pungmul. Testing the
+// <img> bounding box alone is insufficient: an enclosing rounded <figure> and
+// linked <a> can clip the changed pixels even when the element resized.
+for(const [name,gallery] of [
+  ['interests.html','.pungmul-gallery'],
+  ['pungmul.html','.pungmul-performance-grid']
+]){
+  test('Edited linked gallery photo is visibly resized, movable, rounded and preview-faithful on '+name,
+    async({page})=>{
+      const writes=[];
+      await installVerifiedCurrentSource(page,writes);
+      await page.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+      await expect(page.locator('#liveAssetStatus'))
+        .toContainText('GitHub main source verified',{timeout:35000});
+      const frame=page.frameLocator('#livePageFrame');
+      const figures=frame.locator(gallery+' figure');
+      const first=figures.first(),second=figures.nth(1);
+      const photo=first.locator('img');
+      await photo.scrollIntoViewIfNeeded();
+      await expect.poll(()=>photo.evaluate(img=>img.naturalWidth),{timeout:15000})
+        .toBeGreaterThan(0);
+      await expect(figures).toHaveCount(name==='interests.html'?2:4);
+      if(name==='interests.html'){
+        expect(await frame.locator(gallery).evaluate(el=>
+          getComputedStyle(el).gridTemplateColumns.split(/\s+/).length)).toBe(2);
+      }
+      const original=await photo.evaluate(img=>img.getBoundingClientRect().width);
+      await photo.click();
+      await page.locator('#liveOriginalWidth').fill(String(Math.round(original+65)));
+      await page.locator('#liveOriginalWidth').dispatchEvent('change');
+      await page.locator('#liveMoveX').fill('36');
+      await page.locator('#liveMoveX').dispatchEvent('change');
+      await expect.poll(()=>photo.evaluate(img=>img.getBoundingClientRect().width))
+        .toBeGreaterThan(original+30);
+      const current=await photo.evaluate(img=>{
+        const a=img.parentElement,figure=img.closest('figure'),doc=img.ownerDocument;
+        const im=img.getBoundingClientRect(),card=figure.getBoundingClientRect();
+        const x=card.right+8,y=im.top+im.height/2;
+        return {
+          imageWidth:im.width,figureRight:card.right,imageRight:im.right,
+          imageRadius:getComputedStyle(img).borderTopLeftRadius,
+          anchorOverflow:getComputedStyle(a).overflow,
+          figureOverflow:getComputedStyle(figure).overflow,
+          visibleOutsideFrame:doc.elementFromPoint(x,y)===img
+        };
+      });
+      expect(current.imageRight).toBeGreaterThan(current.figureRight+15);
+      expect(current.anchorOverflow).toBe('visible');
+      expect(current.figureOverflow).toBe('visible');
+      expect(parseFloat(current.imageRadius)).toBeGreaterThan(0);
+      expect(current.visibleOutsideFrame).toBe(true);
+      await expect(second).toHaveCSS('overflow','hidden');
+      // Crop/rounded choices must remain visually coherent after the
+      // enclosing card has been unclipped.
+      await page.locator('#liveCropShape').selectOption('rounded');
+      await expect(photo).toHaveCSS('border-radius','12px');
+      await page.locator('#preview').click();
+      await expect(page.locator('#previewDialog')).toBeVisible();
+      const preview=page.frameLocator('#previewFrame').locator(gallery+' figure').first();
+      await expect(preview).toHaveCSS('overflow','visible');
+      await expect(preview.locator('a')).toHaveCSS('overflow','visible');
+      await expect(preview.locator('img')).toHaveCSS('border-radius','12px');
+      expect(await preview.locator('img').evaluate(el=>
+        el.getBoundingClientRect().width)).toBeGreaterThan(original+30);
+      expect(writes).toEqual([]);
+    });
+}
