@@ -1,12 +1,12 @@
 {
-  "sourceHead": "7d5d0605266bf0883c67b845fc836965fd709e5a",
+  "sourceHead": "33ee680cca9227b1cecd83f8f53f4ee8561cfff9",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-7d5d0605266b",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-33ee680cca92",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -79,12 +79,10 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "41982717857",
-      "head_sha": "61c04acadae1e8a76d4f9c06f46778ab2ecd6323",
+      "run": "41982737562",
+      "head_sha": "258b2cf810f11e786b83f7f752cb99dd17f47fb0",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "interests.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0,
         "combinedStressFailures": 0
@@ -123,12 +121,6 @@
     },
     {
       "category": "engines",
-      "sourceModifiedSinceAudit": [
-        "interests.html"
-      ]
-    },
-    {
-      "category": "typography",
       "sourceModifiedSinceAudit": [
         "interests.html"
       ]
@@ -179,18 +171,12 @@
           "sourceModifiedSinceAudit": [
             "interests.html"
           ]
-        },
-        {
-          "category": "typography",
-          "sourceModifiedSinceAudit": [
-            "interests.html"
-          ]
         }
       ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41982923703",
-  "run_sha": "7d5d0605266bf0883c67b845fc836965fd709e5a",
+  "workflow_run_id": "41982945057",
+  "run_sha": "33ee680cca9227b1cecd83f8f53f4ee8561cfff9",
   "exit_code": "1"
 }
