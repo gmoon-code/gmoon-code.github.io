@@ -1,12 +1,12 @@
 {
-  "sourceHead": "cfeb62475b17d93ec1817c4f8a9ce50356cb49cb",
+  "sourceHead": "eb2bd66429824112ca45b97187dd9b63fb50c82b",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
-  "verifiedExactMatches": 23,
-  "httpErrors": 1,
+  "verifiedExactMatches": 24,
+  "httpErrors": 0,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-cfeb62475b17",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-eb2bd6642982",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -14,12 +14,10 @@
   "auditEvidence": {
     "links": {
       "report": "docs/PUBLIC_LINKGRAPH_LATEST_RESULTS.json",
-      "run": "41941193164",
-      "head_sha": "94f3a32d5e1ec816a3305e77856cc11c01e5e0a9",
+      "run": "41941398257",
+      "head_sha": "cfeb62475b17d93ec1817c4f8a9ce50356cb49cb",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "writing-biological-classification.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "problems": 0
       }
@@ -42,12 +40,10 @@
     },
     "metadata": {
       "report": "docs/RESEARCH_METADATA_LATEST_RESULTS.json",
-      "run": "41941193182",
-      "head_sha": "94f3a32d5e1ec816a3305e77856cc11c01e5e0a9",
+      "run": "41941398334",
+      "head_sha": "cfeb62475b17d93ec1817c4f8a9ce50356cb49cb",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "writing-biological-classification.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "unverified": 0
       },
@@ -59,13 +55,10 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "41941071917",
-      "head_sha": "bbff64ce2a6e3171817d9c2e380b50aa29a78b60",
+      "run": "41941398185",
+      "head_sha": "cfeb62475b17d93ec1817c4f8a9ce50356cb49cb",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "teaching-ap-chemistry.html",
-        "writing-biological-classification.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0
       }
@@ -85,11 +78,10 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "41931940760",
-      "head_sha": "69e621f73438a38738c6232b803a599ab6052181",
+      "run": "41940926281",
+      "head_sha": "5df2bff98059221e01a9af8d76c97074b875e75f",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "research-scoping.html",
         "teaching-ap-chemistry.html",
         "teaching-ap-evolution.html",
         "writing-biological-classification.html"
@@ -121,27 +113,8 @@
   },
   "sourceDriftSinceAudits": [
     {
-      "category": "links",
-      "sourceModifiedSinceAudit": [
-        "writing-biological-classification.html"
-      ]
-    },
-    {
       "category": "external",
       "sourceModifiedSinceAudit": [
-        "writing-biological-classification.html"
-      ]
-    },
-    {
-      "category": "metadata",
-      "sourceModifiedSinceAudit": [
-        "writing-biological-classification.html"
-      ]
-    },
-    {
-      "category": "reflow",
-      "sourceModifiedSinceAudit": [
-        "teaching-ap-chemistry.html",
         "writing-biological-classification.html"
       ]
     },
@@ -155,7 +128,6 @@
     {
       "category": "typography",
       "sourceModifiedSinceAudit": [
-        "research-scoping.html",
         "teaching-ap-chemistry.html",
         "teaching-ap-evolution.html",
         "writing-biological-classification.html"
@@ -171,53 +143,10 @@
   "pass": false,
   "errors": [
     {
-      "path": "writing-biological-classification.html",
-      "errors": [
-        "deployed bytes differ from checked-out production source"
-      ],
-      "firstDiff": [
-        "--- source\n",
-        "+++ deployed\n",
-        "@@ -37,3 +37,3 @@\n",
-        "   </style>",
-        "-<style id=\"moon-v2-live-layout\"></style></head>",
-        "+</head>",
-        " <body class=\"theme-green\">",
-        "@@ -51,3 +51,3 @@\n",
-        "   <div class=\"hero-copy\">",
-        "-    ",
-        "+    <p class=\"research-eyebrow\">Independent scholarly essay · October 2026</p>",
-        "     <h1>What can a biological classification explain?</h1>",
-        "@@ -108,3 +108,3 @@\n",
-        " <section id=\"essay-references\" class=\"section research-essay-section research-reading-section\">",
-        "-  <div class=\"section-head\"><h2>References</h2></div>",
-        "+  <div class=\"section-head\"><h2>References</h2><p>Scholarship discussed in this independent essay.</p></div>"
-      ]
-    },
-    {
       "sourceDrift": [
-        {
-          "category": "links",
-          "sourceModifiedSinceAudit": [
-            "writing-biological-classification.html"
-          ]
-        },
         {
           "category": "external",
           "sourceModifiedSinceAudit": [
-            "writing-biological-classification.html"
-          ]
-        },
-        {
-          "category": "metadata",
-          "sourceModifiedSinceAudit": [
-            "writing-biological-classification.html"
-          ]
-        },
-        {
-          "category": "reflow",
-          "sourceModifiedSinceAudit": [
-            "teaching-ap-chemistry.html",
             "writing-biological-classification.html"
           ]
         },
@@ -231,7 +160,6 @@
         {
           "category": "typography",
           "sourceModifiedSinceAudit": [
-            "research-scoping.html",
             "teaching-ap-chemistry.html",
             "teaching-ap-evolution.html",
             "writing-biological-classification.html"
@@ -247,7 +175,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41941398956",
-  "run_sha": "cfeb62475b17d93ec1817c4f8a9ce50356cb49cb",
+  "workflow_run_id": "41941597394",
+  "run_sha": "eb2bd66429824112ca45b97187dd9b63fb50c82b",
   "exit_code": "1"
 }
