@@ -1557,51 +1557,9 @@ function editedLinkedFigureFrame(patch){
   return {figure:bits.slice(0,-2).join(" > "),
     link:bits.slice(0,-1).join(" > ")};
 }
-// The gallery itself owns column widths. Resizing a picture must never
-// stretch the <img> beyond its old grid column while the parent frame and
-// caption stay behind. Assign the edited card a column width and let
-// siblings reflow. Multiple edited cards share the available gallery width.
-function photoCardGalleryRules(patches,doc,device){
-  if(!doc?.querySelector)return [];
-  const group=new Map();
-  const prefix=":root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) ";
-  for(const patch of patches){
-    if(patch.frameMode!=="card")continue;
-    const g=patch.layout?.[device],paths=photoCardFrameSelectors(patch);
-    if(!g?.wrapWidth||!paths)continue;
-    const img=doc.querySelector(patch.selector);
-    const figure=doc.querySelector(paths.figure);
-    const gallery=figure?.parentElement;
-    if(!img||!photoCardFrame(img)||!gallery||
-       !gallery.matches(".pungmul-gallery,.pungmul-performance-grid"))
-      continue;
-    // Both restored personal galleries use two columns above phone width.
-    // The old three-column assumption made the entire Pungmul gallery jump
-    // into a new grid when the first photograph was resized.
-    const n=device==="phone"?1:2;
-    const figures=[...gallery.children].filter(el=>el.tagName==="FIGURE");
-    const index=figures.indexOf(figure);
-    if(index<0)continue;
-    const key=paths.gallery;
-    if(!group.has(key))group.set(key,{n,weights:Array(n).fill(null),
-      gap:18});
-    const entry=group.get(key),column=index%n;
-    entry.weights[column]=Math.max(entry.weights[column]||0,g.wrapWidth);
-  }
-  const result=[];
-  for(const [gallery,{n,weights,gap}] of group){
-    if(n===1)continue;
-    const chosen=weights.map(w=>w||160);
-    const total=chosen.reduce((a,b)=>a+b,0);
-    const available="(100% - "+((n-1)*gap)+"px)";
-    const tracks=weights.map((w,i)=>w?
-      "minmax(0,min("+w+"px,calc("+available+" * "+
-      (Math.round(chosen[i]/total*1000000)/1000000)+")))":"minmax(0,1fr)");
-    result.push(prefix+gallery+"{grid-template-columns:"+
-      tracks.join(" ")+"!important;}");
-  }
-  return result;
-}
+// Keep each gallery photograph independent. A resize changes only its figure
+// and image, never the shared grid tracks or a neighbouring photograph.
+// Existing published gallery CSS is retained verbatim.
 
 function liveLayoutRules(patches=[...livePatches.values()],doc=null){
   const result=[];
@@ -1665,7 +1623,7 @@ function liveLayoutRules(patches=[...livePatches.values()],doc=null){
         const figure=priority+card.figure,photo=editedSourceImageSelector(patch);
         const dx=Math.round(((entry.ox||0)+entry.dx)*1000)/1000;
         const dy=Math.round(((entry.oy||0)+entry.dy)*1000)/1000;
-        selectors.push(figure+"{width:100%!important;max-width:100%!important;"+
+        selectors.push(figure+"{width:"+entry.wrapWidth+"px!important;max-width:none!important;"+
           "min-width:0!important;height:auto!important;box-sizing:border-box!important;"+
           "overflow:hidden!important;translate:"+dx+"px "+dy+
           "px!important;scale:1 1!important;transform-origin:top left!important;}");
@@ -1719,9 +1677,8 @@ function liveLayoutRules(patches=[...livePatches.values()],doc=null){
       const radius=frame&&crop.mask==="rectangle"?"border-radius:14px!important;":"";
       selectors.push(editedSourceImageSelector(patch)+"{"+imageCropCss(crop,patch.src,dims)+radius+"}");
     }
-    const galleryRules=photoCardGalleryRules(patches,doc,device);
-    if(selectors.length||unclipped.length||galleryRules.length)
-      result.push("@media "+media+"{"+galleryRules.join("")+
+    if(selectors.length||unclipped.length)
+      result.push("@media "+media+"{"+
         unclipped.join("")+selectors.join("")+"}");
   }
   return result.join("\n");
