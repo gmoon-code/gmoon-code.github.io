@@ -1,12 +1,12 @@
 {
-  "sourceHead": "3254a22322503e63bea0016257a7cef83a163736",
+  "sourceHead": "ab464ba5bc39d42f3cd90e09a4c69e84dc7a0c43",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-3254a2232250",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-ab464ba5bc39",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -14,8 +14,8 @@
   "auditEvidence": {
     "links": {
       "report": "docs/PUBLIC_LINKGRAPH_LATEST_RESULTS.json",
-      "run": "41955490384",
-      "head_sha": "dfc8ab0988d481bf7143a84f5bc0436f0a3e48a9",
+      "run": "41955610248",
+      "head_sha": "3254a22322503e63bea0016257a7cef83a163736",
       "exit": "0",
       "sourceModifiedSinceAudit": [],
       "failureCounts": {
@@ -24,8 +24,8 @@
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "41955490348",
-      "head_sha": "dfc8ab0988d481bf7143a84f5bc0436f0a3e48a9",
+      "run": "41955610261",
+      "head_sha": "3254a22322503e63bea0016257a7cef83a163736",
       "exit": "0",
       "sourceModifiedSinceAudit": [],
       "failureCounts": {
@@ -53,12 +53,10 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "41951637378",
-      "head_sha": "40e710c0913e020a5f105fa5153535c955933155",
+      "run": "41955490354",
+      "head_sha": "dfc8ab0988d481bf7143a84f5bc0436f0a3e48a9",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "interests.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0
       }
@@ -77,12 +75,10 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "41951637442",
-      "head_sha": "40e710c0913e020a5f105fa5153535c955933155",
+      "run": "41955490424",
+      "head_sha": "dfc8ab0988d481bf7143a84f5bc0436f0a3e48a9",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "interests.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0,
         "combinedStressFailures": 0
@@ -90,12 +86,10 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "41951637373",
-      "head_sha": "40e710c0913e020a5f105fa5153535c955933155",
+      "run": "41955490355",
+      "head_sha": "dfc8ab0988d481bf7143a84f5bc0436f0a3e48a9",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "interests.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0,
         "axeViolations": 0
@@ -110,25 +104,7 @@
   },
   "sourceDriftSinceAudits": [
     {
-      "category": "reflow",
-      "sourceModifiedSinceAudit": [
-        "interests.html"
-      ]
-    },
-    {
       "category": "engines",
-      "sourceModifiedSinceAudit": [
-        "interests.html"
-      ]
-    },
-    {
-      "category": "typography",
-      "sourceModifiedSinceAudit": [
-        "interests.html"
-      ]
-    },
-    {
-      "category": "interactions",
       "sourceModifiedSinceAudit": [
         "interests.html"
       ]
@@ -163,25 +139,7 @@
     {
       "sourceDrift": [
         {
-          "category": "reflow",
-          "sourceModifiedSinceAudit": [
-            "interests.html"
-          ]
-        },
-        {
           "category": "engines",
-          "sourceModifiedSinceAudit": [
-            "interests.html"
-          ]
-        },
-        {
-          "category": "typography",
-          "sourceModifiedSinceAudit": [
-            "interests.html"
-          ]
-        },
-        {
-          "category": "interactions",
           "sourceModifiedSinceAudit": [
             "interests.html"
           ]
@@ -190,7 +148,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41955610344",
-  "run_sha": "3254a22322503e63bea0016257a7cef83a163736",
+  "workflow_run_id": "41955709919",
+  "run_sha": "ab464ba5bc39d42f3cd90e09a4c69e84dc7a0c43",
   "exit_code": "1"
 }
