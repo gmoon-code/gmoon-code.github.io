@@ -2754,6 +2754,9 @@ for(const [name,gallery] of [
           getComputedStyle(el).gridTemplateColumns.split(/\s+/).length)).toBe(2);
       }
       const original=await photo.evaluate(img=>img.getBoundingClientRect().width);
+      // The live site may already have published overflow rules on untouched
+      // siblings. Preserve that exact baseline rather than forcing "hidden".
+      const siblingOverflow=await second.evaluate(el=>getComputedStyle(el).overflow);
       // Existing browser drafts made before photo-card mode remain in their
       // original independent-image model. Verify the legacy unclipping
       // contract explicitly, rather than applying it to new linked cards.
@@ -2799,7 +2802,7 @@ for(const [name,gallery] of [
       expect(current.figureOverflow).toBe('visible');
       expect(parseFloat(current.imageRadius)).toBeGreaterThan(0);
       expect(current.visibleOutsideFrame).toBe(true);
-      await expect(second).toHaveCSS('overflow','hidden');
+      await expect(second).toHaveCSS('overflow',siblingOverflow);
       // Crop/rounded choices must remain visually coherent after the
       // enclosing card has been unclipped.
       await page.locator('#liveCropShape').selectOption('rounded');
@@ -3686,6 +3689,19 @@ test('Pungmul gallery trims four independent edges then resizes without changing
     await expect.poll(()=>image.evaluate(img=>img.naturalWidth)).toBeGreaterThan(0);
     const columns=()=>gallery.evaluate(g=>getComputedStyle(g).gridTemplateColumns.trim().split(/\s+/).length);
     expect(await columns(),'published Pungmul grid starts with two tracks').toBe(2);
+    // Resizing one card must not mutate the size, crop, content or responsive
+    // layout of the next card. A shared grid-track override caused this bug.
+    const untouched=gallery.locator('figure img').nth(1);
+    const untouchedSnapshot=()=>untouched.evaluate(img=>{
+      const r=img.getBoundingClientRect(),css=getComputedStyle(img);
+      const card=img.closest('figure').getBoundingClientRect();
+      return {w:r.width,h:r.height,cardWidth:card.width,
+        src:img.getAttribute('src'),alt:img.alt,
+        bg:css.backgroundImage,backgroundSize:css.backgroundSize,
+        objectFit:css.objectFit,objectPosition:css.objectPosition};
+    });
+    const originalSibling=await untouchedSnapshot();
+    const originalGrid=await gallery.evaluate(el=>getComputedStyle(el).gridTemplateColumns);
     await image.click();
     await expect(page.locator('#livePhotoCardMode')).toBeChecked();
     await page.locator('#cropImageTool').click();
@@ -3744,6 +3760,10 @@ test('Pungmul gallery trims four independent edges then resizes without changing
         bg:s.backgroundImage,src:img.getAttribute('src'),ratio:img.naturalWidth/img.naturalHeight};
     });
     expect(after.w).toBeGreaterThan(before.w+20);
+    expect(await untouchedSnapshot(),'cropping and numeric resize must not modify another photo')
+      .toEqual(originalSibling);
+    expect(await gallery.evaluate(el=>getComputedStyle(el).gridTemplateColumns),
+      'the editor must not rewrite shared gallery track widths').toBe(originalGrid);
     expect(Math.abs(after.h-before.h*after.w/before.w),
       'locked numeric resize must preserve the visible cropped-frame ratio').toBeLessThan(5);
     expect(after.objectFit).toBe('none');
@@ -3771,6 +3791,8 @@ test('Pungmul gallery trims four independent edges then resizes without changing
       return {w:r.width,h:r.height,paintW,paintH};
     });
     expect(final.w,'pointer resize changes cropped image width').toBeGreaterThan(after.w+10);
+    expect(await untouchedSnapshot(),'pointer resize must not modify another photo')
+      .toEqual(originalSibling);
     expect(Math.abs(final.h-after.h*final.w/after.w),
       'pointer resize keeps the cropped photo ratio, excluding its caption').toBeLessThan(5);
     const finalPaintW=Math.max(final.w/fx,final.h*after.ratio/fy);
@@ -3792,5 +3814,64 @@ test('Pungmul gallery trims four independent edges then resizes without changing
     expect(Math.abs(previewMetrics.h-final.h)).toBeLessThan(5);
     expect(previewMetrics.backgroundSize).toBe(
       final.paintW+'px '+final.paintH+'px');
+    const previewSibling=page.frameLocator('#previewFrame')
+      .locator('.pungmul-performance-grid figure img').nth(1);
+    const unchangedPreview=await previewSibling.evaluate(img=>{
+      const r=img.getBoundingClientRect(),css=getComputedStyle(img);
+      const card=img.closest('figure').getBoundingClientRect();
+      return {w:r.width,h:r.height,cardWidth:card.width,
+        src:img.getAttribute('src'),alt:img.alt,
+        bg:css.backgroundImage,backgroundSize:css.backgroundSize,
+        objectFit:css.objectFit,objectPosition:css.objectPosition};
+    });
+    expect(unchangedPreview,'Verified preview must preserve the untouched photograph')
+      .toEqual(originalSibling);
+    expect(writes).toEqual([]);
+  });
+
+test('Interests gallery numeric resizing changes only the selected photo and its caption card',
+  async({page})=>{
+    const writes=[];
+    await installVerifiedCurrentSource(page,writes);
+    await page.setViewportSize({width:1740,height:1050});
+    await page.goto(BASE+'/editor-v2.html?page=interests.html',
+      {waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    const frame=page.frameLocator('#livePageFrame');
+    const gallery=frame.locator('.pungmul-gallery');
+    const selected=gallery.locator('figure img').first();
+    const sibling=gallery.locator('figure img').nth(1);
+    await selected.scrollIntoViewIfNeeded();
+    await expect.poll(()=>selected.evaluate(img=>img.naturalWidth)).toBeGreaterThan(0);
+    const metrics=img=>img.evaluate(el=>{
+      const r=el.getBoundingClientRect(),css=getComputedStyle(el);
+      const figure=el.closest('figure').getBoundingClientRect();
+      return {width:r.width,height:r.height,cardWidth:figure.width,
+        src:el.getAttribute('src'),alt:el.alt,
+        objectFit:css.objectFit,objectPosition:css.objectPosition,
+        backgroundSize:css.backgroundSize,backgroundImage:css.backgroundImage};
+    });
+    const untouched=await metrics(sibling);
+    const initialColumns=await gallery.evaluate(g=>getComputedStyle(g).gridTemplateColumns);
+    await selected.click();
+    await expect(page.locator('#livePhotoCardMode')).toBeChecked();
+    await page.locator('#liveOriginalWidth').fill(
+      String(Math.round((await metrics(selected)).width+42)));
+    await page.locator('#liveOriginalWidth').dispatchEvent('change');
+    expect(await metrics(sibling)).toEqual(untouched);
+    expect(await gallery.evaluate(g=>getComputedStyle(g).gridTemplateColumns))
+      .toBe(initialColumns);
+    await page.locator('#liveCropLeft').evaluate(el=>{
+      el.value='10';
+      el.dispatchEvent(new Event('input',{bubbles:true}));
+      el.dispatchEvent(new Event('change',{bubbles:true}));
+    });
+    expect(await metrics(sibling)).toEqual(untouched);
+    await page.locator('#preview').click();
+    await expect(page.locator('#previewDialog')).toBeVisible();
+    const other=page.frameLocator('#previewFrame')
+      .locator('.pungmul-gallery figure img').nth(1);
+    expect(await metrics(other)).toEqual(untouched);
     expect(writes).toEqual([]);
   });
