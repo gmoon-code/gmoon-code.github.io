@@ -3684,7 +3684,7 @@ test('Pungmul gallery trims four independent edges then resizes without changing
     const image=gallery.locator('figure img').first();
     await image.scrollIntoViewIfNeeded();
     await expect.poll(()=>image.evaluate(img=>img.naturalWidth)).toBeGreaterThan(0);
-    const columns=()=>gallery.evaluate(g=>getComputedStyle(g).gridTemplateColumns.trim().split(/\\s+/).length);
+    const columns=()=>gallery.evaluate(g=>getComputedStyle(g).gridTemplateColumns.trim().split(/\s+/).length);
     expect(await columns(),'published Pungmul grid starts with two tracks').toBe(2);
     await image.click();
     await expect(page.locator('#livePhotoCardMode')).toBeChecked();
