@@ -1396,6 +1396,19 @@ function editedSourceImageSelector(patch){
     ":root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) ":"")+
     patch.selector;
 }
+// A linked gallery picture has two clipping ancestors: the link and figure.
+// Its own image box can resize/move correctly while visitors still see only
+// the portion inside the old card. Only unclip wrappers for an *edited*
+// source photograph, never all gallery figures or their neighbouring photos.
+function editedLinkedFigureFrame(patch){
+  const bits=patch.selector.split(" > ");
+  if(!/^img:nth-of-type\(\d+\)$/.test(bits.at(-1)||"")||
+     !/^a:nth-of-type\(\d+\)$/.test(bits.at(-2)||"")||
+     !/^figure:nth-of-type\(\d+\)$/.test(bits.at(-3)||""))
+    return null;
+  return {figure:bits.slice(0,-2).join(" > "),
+    link:bits.slice(0,-1).join(" > ")};
+}
 function liveLayoutRules(patches=[...livePatches.values()]){
   const result=[];
   for(const patch of patches){
@@ -1444,6 +1457,18 @@ function liveLayoutRules(patches=[...livePatches.values()]){
         "max-width:none!important;max-height:none!important;overflow:visible!important;"+
         (patch.kind==="image"||tag==="img"?
           "object-fit:contain!important;":""):"";
+      // Moving or resizing a linked gallery photograph must reveal the
+      // enlarged pixels rather than leave them clipped by its previous card.
+      // Keep the photographic corner treatment even after releasing the
+      // figure/link clipping, and keep this scoped to the edited breakpoint.
+      const linkedFrame=(tag==="img"||patch.kind==="image")?
+        editedLinkedFigureFrame(patch):null;
+      if(linkedFrame){
+        const priority=":root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) ";
+        selectors.push(priority+linkedFrame.figure+"{overflow:visible!important;}");
+        selectors.push(priority+linkedFrame.link+"{overflow:visible!important;}");
+        selectors.push(editedSourceImageSelector(patch)+"{border-radius:14px!important;}");
+      }
       selectors.push(editedSourceImageSelector(patch)+"{translate:"+
         (Math.round(((entry.ox||0)+entry.dx)*1000)/1000)+"px "+
         (Math.round(((entry.oy||0)+entry.dy)*1000)/1000)+"px!important;scale:"+
@@ -1475,7 +1500,11 @@ function liveLayoutRules(patches=[...livePatches.values()]){
       if(tail!=="img")continue;
       const crop=patch.imageCrop[device],layout=patch.layout?.[device];
       const dims=layout?.wrapWidth?{w:layout.wrapWidth,h:layout.reserveHeight}:null;
-      selectors.push(editedSourceImageSelector(patch)+"{"+imageCropCss(crop,patch.src,dims)+"}");
+      // Default rectangular crop retains the gallery's previously rounded
+      // visual frame when the linked wrapper has to expose resized pixels.
+      const frame=editedLinkedFigureFrame(patch);
+      const radius=frame&&crop.mask==="rectangle"?"border-radius:14px!important;":"";
+      selectors.push(editedSourceImageSelector(patch)+"{"+imageCropCss(crop,patch.src,dims)+radius+"}");
     }
     if(selectors.length||unclipped.length)
       result.push("@media "+media+"{"+unclipped.join("")+selectors.join("")+"}");
