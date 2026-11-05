@@ -2751,7 +2751,28 @@ for(const [name,gallery] of [
           getComputedStyle(el).gridTemplateColumns.split(/\s+/).length)).toBe(2);
       }
       const original=await photo.evaluate(img=>img.getBoundingClientRect().width);
+      // Existing browser drafts made before photo-card mode remain in their
+      // original independent-image model. Verify the legacy unclipping
+      // contract explicitly, rather than applying it to new linked cards.
+      const legacy=await photo.evaluate(img=>{
+        const steps=[];
+        for(let n=img;n&&n.tagName!=="MAIN";n=n.parentElement){
+          const siblings=[...n.parentElement.children].filter(el=>el.tagName===n.tagName);
+          steps.unshift(n.tagName.toLowerCase()+':nth-of-type('+
+            (siblings.indexOf(n)+1)+')');
+        }
+        const src=img.getAttribute('src');
+        return {selector:'main > '+steps.join(' > '),kind:'image',
+          expected:src,src,alt:img.alt,
+          layout:{desktop:{dx:0,dy:0,sx:1,sy:1}}};
+      });
+      await page.evaluate(([key,value])=>localStorage.setItem(key,value),
+        ['moon-academic-editor-v2:source:'+name,JSON.stringify([legacy])]);
+      await page.reload({waitUntil:'domcontentloaded'});
+      await expect(page.locator('#liveAssetStatus'))
+        .toContainText('GitHub main source verified',{timeout:35000});
       await photo.click();
+      await expect(page.locator('#livePhotoCardMode')).not.toBeChecked();
       await page.locator('#liveOriginalWidth').fill(String(Math.round(original+65)));
       await page.locator('#liveOriginalWidth').dispatchEvent('change');
       await page.locator('#liveMoveX').fill('36');
@@ -3345,4 +3366,138 @@ test('Switching to design canvas from published view restores editing controls',
   await page.locator('#liveMode').click();
   await expect(page.locator('#livePageFrame')).toBeVisible();
   await expect(page.locator('#addText')).toBeEnabled();
+});
+
+
+// Real HTML regression. The old editor resized <img> while the linked
+// <figure> and caption stayed behind, producing detached oval images.
+// One composite image patch now owns the photo-frame geometry.
+for(const [pageName,gallery] of [
+  ['interests.html','.pungmul-gallery'],
+  ['pungmul.html','.pungmul-performance-grid']
+]){
+  test('Linked gallery card moves/resizes photo AND caption without separate parent patch on '+pageName,async({page})=>{
+    const writes=[];
+    await installVerifiedCurrentSource(page,writes);
+    await page.goto(BASE+'/editor-v2.html?page='+pageName,{waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    const frame=page.frameLocator('#livePageFrame');
+    const figure=frame.locator(gallery+' figure').first(),photo=figure.locator('img');
+    await figure.scrollIntoViewIfNeeded();
+    await photo.click();
+    const control=page.locator('#livePhotoCardMode');
+    await expect(control).toBeVisible();
+    await expect(control).toBeChecked();
+    const source=await photo.getAttribute('src');
+    const original=await figure.evaluate(x=>{
+      const b=x.getBoundingClientRect(),i=x.querySelector('img').getBoundingClientRect();
+      const cap=x.querySelector('figcaption').getBoundingClientRect();
+      return {w:b.width,h:b.height,image:i.height,captionTop:cap.top,
+        captionText:x.querySelector('figcaption').textContent.trim()};
+    });
+    // Widen only the first card's gallery track, and preserve its caption.
+    const wanted=Math.round(original.w+55);
+    await page.locator('#liveOriginalWidth').fill(String(wanted));
+    await page.locator('#liveOriginalWidth').dispatchEvent('change');
+    await expect.poll(()=>figure.evaluate(x=>x.getBoundingClientRect().width))
+      .toBeGreaterThan(original.w+30);
+    const resized=await figure.evaluate(x=>{
+      const box=x.getBoundingClientRect(),img=x.querySelector('img').getBoundingClientRect();
+      const cap=x.querySelector('figcaption').getBoundingClientRect();
+      return {w:box.width,h:box.height,imgW:img.width,imgH:img.height,
+        captionTop:cap.top,captionText:x.querySelector('figcaption').textContent.trim(),
+        overflow:getComputedStyle(x).overflow};
+    });
+    expect(Math.abs(resized.imgW-resized.w)).toBeLessThan(5);
+    expect(resized.captionText).toBe(original.captionText);
+    expect(resized.overflow).toBe('hidden');
+    const sibling=frame.locator(gallery+' figure').nth(1);
+    const siblingBeforeMove=await sibling.getAttribute('class');
+    await page.locator('#liveMoveY').fill('24');
+    await page.locator('#liveMoveY').dispatchEvent('change');
+    await expect.poll(()=>figure.evaluate(x=>getComputedStyle(x).translate))
+      .toContain('24px');
+    expect(await sibling.getAttribute('class')).toBe(siblingBeforeMove);
+    expect(await photo.getAttribute('src')).toBe(source);
+    const afterMove=await figure.evaluate(x=>{
+      const b=x.getBoundingClientRect(),i=x.querySelector('img').getBoundingClientRect();
+      const c=x.querySelector('figcaption').getBoundingClientRect();
+      return {cardTop:b.top,imageTop:i.top,captionTop:c.top,
+        imageBottom:i.bottom,cardBottom:b.bottom};
+    });
+    expect(afterMove.imageTop).toBeGreaterThanOrEqual(afterMove.cardTop);
+    expect(afterMove.captionTop).toBeGreaterThanOrEqual(afterMove.imageBottom-2);
+    expect(afterMove.cardBottom).toBeGreaterThan(afterMove.captionTop);
+    // Crop changes the photo inside the frame, not the parent/caption.
+    await page.locator('#liveCropShape').selectOption('rounded');
+    const beforeCrop=await figure.boundingBox();
+    await page.locator('#liveCropLeft').evaluate(input=>{
+      input.value="12";
+      input.dispatchEvent(new Event("input",{bubbles:true}));
+      input.dispatchEvent(new Event("change",{bubbles:true}));
+    });
+    const afterCrop=await figure.boundingBox();
+    expect(Math.abs(afterCrop.width-beforeCrop.width)).toBeLessThan(2);
+    await expect(photo).toHaveCSS('border-radius','12px');
+    const key='moon-academic-editor-v2:source:'+pageName;
+    const stored=await page.evaluate(k=>JSON.parse(localStorage.getItem(k)),key);
+    expect(stored).toHaveLength(1);
+    expect(stored[0].kind).toBe('image');
+    expect(stored[0].frameMode).toBe('card');
+    expect(stored[0].layout.desktop.wrapWidth).toBeGreaterThan(original.w+30);
+    expect(stored[0].imageCrop.desktop.left).toBe(12);
+    await page.locator('#preview').click();
+    await expect(page.locator('#previewDialog')).toBeVisible({timeout:20000});
+    const preview=page.frameLocator('#previewFrame').locator(gallery+' figure').first();
+    await expect(preview.locator('figcaption')).toHaveText(original.captionText);
+    await expect.poll(()=>preview.evaluate(x=>x.getBoundingClientRect().width))
+      .toBeGreaterThan(original.w+30);
+    await expect(preview.locator('img')).toHaveCSS('border-radius','12px');
+    const markup=await page.locator('#previewFrame').getAttribute('srcdoc');
+    expect(markup).toContain('grid-template-columns:');
+    expect(markup).toContain('overflow:hidden!important');
+    expect(writes).toEqual([]);
+  });
+}
+test('Existing saved independent image edit remains unchanged until the author opts into card mode',async({page})=>{
+  const name='interests.html',writes=[];
+  await installVerifiedCurrentSource(page,writes);
+  await page.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+  await expect(page.locator('#liveAssetStatus'))
+    .toContainText('GitHub main source verified',{timeout:35000});
+  const img=page.frameLocator('#livePageFrame').locator('.pungmul-gallery img').first();
+  await img.click();
+  const selector=await img.evaluate(node=>{
+    const bits=[];
+    for(let el=node;el&&el.tagName!=='MAIN';el=el.parentElement){
+      const peers=[...el.parentElement.children].filter(n=>n.tagName===el.tagName);
+      bits.unshift(el.tagName.toLowerCase()+':nth-of-type('+(peers.indexOf(el)+1)+')');
+    }
+    return 'main > '+bits.join(' > ');
+  });
+  const src=await img.getAttribute('src');
+  const legacy={selector,kind:'image',expected:src,src,
+    alt:await img.getAttribute('alt'),
+    layout:{desktop:{dx:37,dy:0,sx:1,sy:1,wrapWidth:310,reserveHeight:170}}};
+  const key='moon-academic-editor-v2:source:'+name,original=JSON.stringify([legacy]);
+  await page.evaluate(([k,v])=>localStorage.setItem(k,v),[key,original]);
+  await page.reload({waitUntil:'domcontentloaded'});
+  await expect(page.locator('#liveAssetStatus'))
+    .toContainText('GitHub main source verified',{timeout:35000});
+  await page.frameLocator('#livePageFrame').locator('.pungmul-gallery img').first().click();
+  await expect(page.locator('#livePhotoCardMode')).not.toBeChecked();
+  expect(await page.evaluate(k=>localStorage.getItem(k),key)).toBe(original);
+  page.once('dialog',d=>d.accept());
+  await page.locator('#livePhotoCardMode').check();
+  await expect(page.locator('#livePhotoCardMode')).toBeChecked();
+  const after=await page.evaluate(k=>JSON.parse(localStorage.getItem(k)),key);
+  expect(after).toHaveLength(1);
+  expect(after[0].frameMode).toBe('card');
+  expect(after[0].src).toBe(src);
+  expect(after[0].layout.desktop.dx).toBe(0);
+  await page.locator('#undo').click();
+  const undone=await page.evaluate(k=>JSON.parse(localStorage.getItem(k)),key);
+  expect(undone).toEqual([legacy]);
+  expect(writes).toEqual([]);
 });

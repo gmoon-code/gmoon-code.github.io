@@ -1269,6 +1269,13 @@ function liveEventTarget(event){
   // Alt-click selects a container; on an actual hyperlink it selects the
   // enclosing paragraph so the link's text remains editable.
   const nearestText=event.target.closest?.(LIVE_EDITABLE_TAGS);
+  // Clicking a gallery photo's blank rounded frame targets its image.
+  // A figcaption stays independently editable when clicked directly.
+  if(!liveSectionPickMode&&!event.altKey&&!nearestText){
+    const figure=event.target.closest?.("figure");
+    const photo=figure?.querySelector("img");
+    if(photoCardFrame(photo)===figure)return photo;
+  }
   const nearestContainer=event.target.closest?.(LIVE_CONTAINER_TAGS);
   return event.altKey&&!event.target.closest?.("a[href]")?
     nearestContainer||nearestText:nearestText||nearestContainer;
@@ -1473,9 +1480,11 @@ function liveLayoutFor(selector,device=liveDevice()){
   }
   const current=livePatches.get(selector)?.layout?.[device]||{};
   const selectedNode=liveSelected?.node;
+  const frameSource=selectedNode&&liveSelector(selectedNode)===selector&&
+    added?.frameMode==="card"?photoCardFrame(selectedNode):null;
   const origin=current.ox!==undefined&&current.oy!==undefined?
     {}:selectedNode&&liveSelector(selectedNode)===selector?
-      originalLiveTransform(selectedNode):{ox:0,oy:0,osx:1,osy:1};
+      originalLiveTransform(frameSource||selectedNode):{ox:0,oy:0,osx:1,osy:1};
   return {...defaultLiveLayout(),...origin,...current};
 }
 // Many existing site styles use #main and !important for images. A deliberate
@@ -1493,6 +1502,50 @@ function editedSourceImageSelector(patch){
 // Its own image box can resize/move correctly while visitors still see only
 // the portion inside the old card. Only unclip wrappers for an *edited*
 // source photograph, never all gallery figures or their neighbouring photos.
+// One visual editing target for a photograph, its link and caption card.
+// Only a single-image figure with a direct caption qualifies; a standalone
+// image or a complex multi-image figure keeps the existing editing model.
+function photoCardFrame(node){
+  if(node?.tagName!=="IMG"||!node.closest("main"))return null;
+  const figure=node.closest("figure");
+  if(!figure||!figure.querySelector(":scope > figcaption")||
+     figure.querySelectorAll("img").length!==1)return null;
+  const direct=figure.querySelector(":scope > img");
+  const linked=figure.querySelector(":scope > a > img");
+  if(node!==direct&&node!==linked)return null;
+  // Limit automatic linked edits to actual performance galleries. Hero
+  // photos can still use the normal independent-image controls.
+  const gallery=figure.parentElement;
+  if(!gallery?.matches(".pungmul-gallery,.pungmul-performance-grid"))return null;
+  return figure;
+}
+function photoCardFrameSelectors(patch){
+  if(patch?.kind!=="image")return null;
+  const parts=patch.selector.split(" > ");
+  const final=parts.at(-1)||"";
+  if(!/^img:nth-of-type\(\d+\)$/.test(final))return null;
+  const prior=parts.at(-2)||"";
+  const direct=/^figure:nth-of-type\(\d+\)$/.test(prior);
+  const link=/^a:nth-of-type\(\d+\)$/.test(prior);
+  if(!direct&&!link)return null;
+  if(link&&!/^figure:nth-of-type\(\d+\)$/.test(parts.at(-3)||""))
+    return null;
+  const figure=parts.slice(0,direct?-1:-2).join(" > ");
+  const anchor=link?parts.slice(0,-1).join(" > "):null;
+  const gallery=parts.slice(0,direct?-2:-3).join(" > ");
+  return {figure,anchor,gallery};
+}
+function photoCardLayoutForImage(node,layout){
+  const figure=photoCardFrame(node);
+  if(!figure)return null;
+  const fr=figure.getBoundingClientRect();
+  const img=node.getBoundingClientRect();
+  return {...layout,
+    ox:0,oy:0,osx:1,osy:1,sx:1,sy:1,
+    wrapWidth:Math.round(clamp(fr.width,64,4000)),
+    reserveHeight:Math.round(clamp(img.height,24,5000))};
+}
+
 function editedLinkedFigureFrame(patch){
   const bits=patch.selector.split(" > ");
   if(!/^img:nth-of-type\(\d+\)$/.test(bits.at(-1)||"")||
@@ -1502,7 +1555,52 @@ function editedLinkedFigureFrame(patch){
   return {figure:bits.slice(0,-2).join(" > "),
     link:bits.slice(0,-1).join(" > ")};
 }
-function liveLayoutRules(patches=[...livePatches.values()]){
+// The gallery itself owns column widths. Resizing a picture must never
+// stretch the <img> beyond its old grid column while the parent frame and
+// caption stay behind. Assign the edited card a column width and let
+// siblings reflow. Multiple edited cards share the available gallery width.
+function photoCardGalleryRules(patches,doc,device){
+  if(!doc?.querySelector)return [];
+  const group=new Map();
+  const prefix=":root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) ";
+  for(const patch of patches){
+    if(patch.frameMode!=="card")continue;
+    const g=patch.layout?.[device],paths=photoCardFrameSelectors(patch);
+    if(!g?.wrapWidth||!paths)continue;
+    const img=doc.querySelector(patch.selector);
+    const figure=doc.querySelector(paths.figure);
+    const gallery=figure?.parentElement;
+    if(!img||!photoCardFrame(img)||!gallery||
+       !gallery.matches(".pungmul-gallery,.pungmul-performance-grid"))
+      continue;
+    const n=gallery.matches(".pungmul-performance-grid")?
+      (device==="desktop"?3:device==="tablet"?2:1):
+      (device==="phone"?1:2);
+    const figures=[...gallery.children].filter(el=>el.tagName==="FIGURE");
+    const index=figures.indexOf(figure);
+    if(index<0)continue;
+    const key=paths.gallery;
+    if(!group.has(key))group.set(key,{n,weights:Array(n).fill(null),
+      gap:gallery.matches(".pungmul-performance-grid")?16:18});
+    const entry=group.get(key),column=index%n;
+    entry.weights[column]=Math.max(entry.weights[column]||0,g.wrapWidth);
+  }
+  const result=[];
+  for(const [gallery,{n,weights,gap}] of group){
+    if(n===1)continue;
+    const chosen=weights.map(w=>w||160);
+    const total=chosen.reduce((a,b)=>a+b,0);
+    const available="(100% - "+((n-1)*gap)+"px)";
+    const tracks=weights.map((w,i)=>w?
+      "minmax(0,min("+w+"px,calc("+available+" * "+
+      (Math.round(chosen[i]/total*1000000)/1000000)+")))":"minmax(0,1fr)");
+    result.push(prefix+gallery+"{grid-template-columns:"+
+      tracks.join(" ")+"!important;}");
+  }
+  return result;
+}
+
+function liveLayoutRules(patches=[...livePatches.values()],doc=null){
   const result=[];
   for(const patch of patches){
     if(patch.kind==="delete"||patch.kind==="insert")continue;
@@ -1556,6 +1654,25 @@ function liveLayoutRules(patches=[...livePatches.values()]){
       // figure/link clipping, and keep this scoped to the edited breakpoint.
       const linkedFrame=(tag==="img"||patch.kind==="image")?
         editedLinkedFigureFrame(patch):null;
+      const card=patch.frameMode==="card"?
+        photoCardFrameSelectors(patch):null;
+      const sourcePhoto=card&&doc?.querySelector(patch.selector);
+      if(card&&sourcePhoto&&photoCardFrame(sourcePhoto)){
+        const priority=":root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) ";
+        const figure=priority+card.figure,photo=editedSourceImageSelector(patch);
+        const dx=Math.round(((entry.ox||0)+entry.dx)*1000)/1000;
+        const dy=Math.round(((entry.oy||0)+entry.dy)*1000)/1000;
+        selectors.push(figure+"{width:100%!important;max-width:100%!important;"+
+          "min-width:0!important;height:auto!important;box-sizing:border-box!important;"+
+          "overflow:hidden!important;translate:"+dx+"px "+dy+
+          "px!important;scale:1 1!important;transform-origin:top left!important;}");
+        if(card.anchor)selectors.push(priority+card.anchor+
+          "{display:block!important;width:100%!important;overflow:hidden!important;}");
+        selectors.push(photo+"{display:block!important;width:100%!important;max-width:100%!important;"+
+          "height:"+entry.reserveHeight+"px!important;box-sizing:border-box!important;"+
+          "object-fit:cover!important;translate:0 0!important;scale:1 1!important;}");
+        continue;
+      }
       if(linkedFrame){
         const priority=":root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) ";
         selectors.push(priority+linkedFrame.figure+"{overflow:visible!important;}");
@@ -1599,8 +1716,10 @@ function liveLayoutRules(patches=[...livePatches.values()]){
       const radius=frame&&crop.mask==="rectangle"?"border-radius:14px!important;":"";
       selectors.push(editedSourceImageSelector(patch)+"{"+imageCropCss(crop,patch.src,dims)+radius+"}");
     }
-    if(selectors.length||unclipped.length)
-      result.push("@media "+media+"{"+unclipped.join("")+selectors.join("")+"}");
+    const galleryRules=photoCardGalleryRules(patches,doc,device);
+    if(selectors.length||unclipped.length||galleryRules.length)
+      result.push("@media "+media+"{"+galleryRules.join("")+
+        unclipped.join("")+selectors.join("")+"}");
   }
   return result.join("\n");
 }
@@ -1617,7 +1736,7 @@ function refreshLiveLayoutRules(doc=$("livePageFrame").contentDocument,patches=[
     sheet=doc.createElement("style");sheet.id="moon-v2-live-layout";
     doc.head.append(sheet);
   }
-  const existing=liveSourceCss.get(doc)||"",next=liveLayoutRules(patches);
+  const existing=liveSourceCss.get(doc)||"",next=liveLayoutRules(patches,doc);
   // The editor deliberately retains a published draft so it can be recovered
   // while GitHub Pages deploys. Applying the same draft a second time must
   // not append its identical final CSS rules to the already committed sheet.
@@ -1669,11 +1788,56 @@ function livePatchForSelected(){
   if(LIVE_ADDED_ID.test(selector))return addedPatchFromNode(node,selector);
   if(node.tagName==="IMG")
     return {selector,kind:"image",expected:node.getAttribute("src")||"",
-      src:node.getAttribute("src")||"",alt:node.alt||""};
+      src:node.getAttribute("src")||"",alt:node.alt||"",
+      ...(photoCardFrame(node)&&!livePatches.has(liveSelector(photoCardFrame(node)))?
+        {frameMode:"card"}:{})};
   // A geometry or appearance adjustment must never rewrite the source
   // paragraph's links, span attributes or other original child markup.
   // A text patch is created only when the user explicitly edits the text.
   return {selector,kind:"layout",expected:(node.textContent||"").trim().slice(0,300)};
+}
+// Convert a legacy independent-image draft explicitly, never silently.
+// One image patch then owns the figure geometry while all crop/effects/alt
+// data remain on that same patch. Removing the flag restores legacy controls.
+function setPhotoCardMode(enabled){
+  const node=liveSelected?.node,selector=node&&liveSelector(node);
+  const frame=photoCardFrame(node);
+  if(!frame||!selector||workspaceMode!=="live"||liveEditing||liveGesture)return;
+  if(preventLockedLiveGeometry())return;
+  const patch=livePatchForSelected(),old=patch.frameMode==="card";
+  if(old===enabled)return;
+  const frameSelector=liveSelector(frame);
+  if(enabled&&frameSelector&&livePatches.has(frameSelector)){
+    status("This gallery frame has its own saved layout edit. Back up the draft "+
+      "and remove that frame edit before linking the photograph. No changes made.");
+    renderLiveInspector();return;
+  }
+  if(patch.layout?.[liveDevice()]&&
+     !confirm("Change this photo's editing target to "+
+       (enabled?"the complete rounded photo card":"the inner picture only")+
+       "? This replaces the previous size and offset for this screen. "+
+       "The image crop, text, link, caption and other edits are preserved. "+
+       "You can Undo afterwards.")){
+    renderLiveInspector();return;
+  }
+  const before=liveSnapshot(),layout=enabled?
+    photoCardLayoutForImage(node,liveLayoutFor(selector)):
+    normaliseElementBoxLayout(node,{...defaultLiveLayout()});
+  if(enabled)patch.frameMode="card";
+  else delete patch.frameMode;
+  // The visible element becomes the new origin. This avoids applying an
+  // old inner-image translation a second time to the outer photo card.
+  layout.dx=0;layout.dy=0;layout.ox=0;layout.oy=0;
+  layout.sx=1;layout.sy=1;layout.osx=1;layout.osy=1;
+  patch.layout={...patch.layout,[liveDevice()]:layout};
+  livePatches.set(selector,patch);
+  if(recordLiveHistory(before)){
+    refreshLiveLayoutRules(node.ownerDocument);
+    renderLiveInspector();syncLiveOverlay();
+    status(enabled?"Photo, rounded frame and caption now resize together · "+
+      "Crop remains separate · Undo available":
+      "Inner picture can now be positioned separately · Undo available");
+  }
 }
 function liveSnapshot(){return copy([...livePatches.values()]);}
 function recordLiveHistory(before){
@@ -1733,7 +1897,10 @@ function applyLiveLayoutInput(key,value){
   if(!Number.isFinite(Number(value)))return;
   const before=liveSnapshot();
   const device=liveDevice();
-  patch.layout={...patch.layout,[device]:{...liveLayoutFor(patch.selector),[key]:next}};
+  const current=liveLayoutFor(patch.selector);
+  const base=patch.frameMode==="card"&&liveSelected?.node?.tagName==="IMG"&&
+    !current.wrapWidth?photoCardLayoutForImage(liveSelected.node,current):current;
+  patch.layout={...patch.layout,[device]:{...base,[key]:next}};
   livePatches.set(patch.selector,patch);
   if(recordLiveHistory(before)){refreshLiveLayoutRules();renderLiveInspector();syncLiveOverlay();}
 }
@@ -2115,7 +2282,7 @@ function resetSelectedImageCrop(){
   const fullW=frame.width/Math.max(.05,1-(edges.left+edges.right)/100);
   const fullH=frame.height/Math.max(.05,1-(edges.top+edges.bottom)/100);
   const shiftX=Math.round(fullW*edges.left/100),shiftY=Math.round(fullH*edges.top/100);
-  if(["left","right","top","bottom"].some(k=>edges[k]>0)){
+  if(patch.frameMode!=="card"&&["left","right","top","bottom"].some(k=>edges[k]>0)){
     if(patch.kind==="insert"){
       const geom=addedDeviceGeometry(patch,device);
       const inFlow=!!patch.flowBaseline?.[device];
@@ -2184,7 +2351,12 @@ function updateCropFrame(node,selector,originalPatch,initialRect,dir,dx,dy){
     {...selectedImageCrop(patch,device),left:0,right:0,top:0,bottom:0};
   const result=cropFrameGeometry(initialRect,baseline,dir,dx,dy);
   patch.imageCrop={...(patch.imageCrop||{}),[device]:result.crop};
-  if(patch.kind==="insert"){
+  if(patch.frameMode==="card"){
+    // Trim the inner picture while retaining the outer card dimensions and
+    // caption position. One saved image record holds both crop and frame.
+    livePatches.set(selector,patch);
+    refreshLiveLayoutRules(node.ownerDocument);
+  }else if(patch.kind==="insert"){
     const initial=addedDeviceGeometry(originalPatch,device);
     const inFlow=!!patch.flowBaseline?.[device];
     patch.geometry={...patch.geometry,[device]:{
@@ -2262,7 +2434,10 @@ function cropImageToRatio(ratio){
     patch.geometry={...patch.geometry,[device]:
       {...old,h:Math.round(clamp(targetHeight,24,5000))}};
   }else{
-    const layout=normaliseElementBoxLayout(node,liveLayoutFor(selector));
+    const current=liveLayoutFor(selector);
+    const layout=patch.frameMode==="card"?(current.wrapWidth?{...current}:
+      photoCardLayoutForImage(node,current)):
+      normaliseElementBoxLayout(node,current);
     layout.reserveHeight=Math.round(clamp(layout.wrapWidth/ratio,24,5000));
     patch.layout={...patch.layout,[device]:layout};
   }
@@ -2282,8 +2457,12 @@ function setOriginalBoxDimension(key,value){
   if(!node||!patch||patch.kind==="insert"||!["wrapWidth","reserveHeight"].includes(key))return;
   const number=Number(value);
   if(!Number.isFinite(number))return;
-  const previous=liveSnapshot(),layout=normaliseElementBoxLayout(node,
-    liveLayoutFor(patch.selector));
+  const previous=liveSnapshot(),old=liveLayoutFor(patch.selector);
+  const card=patch.frameMode==="card"&&node.tagName==="IMG"?
+    photoCardFrame(node):null;
+  const layout=card?(old.wrapWidth?{...old}:
+    photoCardLayoutForImage(node,old)):
+    normaliseElementBoxLayout(node,old);
   layout[key]=Math.round(clamp(number,key==="wrapWidth"?64:24,
     key==="wrapWidth"?4000:5000));
   if(LIVE_CONTAINER_SET.has(node.tagName)){
@@ -2294,8 +2473,9 @@ function setOriginalBoxDimension(key,value){
   }
   if(node.tagName==="IMG"&&liveLockImageRatio){
     const rect=node.getBoundingClientRect(),ratio=
-      (node.naturalWidth&&node.naturalHeight?
-        node.naturalWidth/node.naturalHeight:rect.width/Math.max(1,rect.height))*
+      (card?rect.width/Math.max(1,rect.height):
+        node.naturalWidth&&node.naturalHeight?
+          node.naturalWidth/node.naturalHeight:rect.width/Math.max(1,rect.height))*
       (1-((selectedImageCrop(patch).left||0)+(selectedImageCrop(patch).right||0))/100)/
       (1-((selectedImageCrop(patch).top||0)+(selectedImageCrop(patch).bottom||0))/100);
     if(key==="wrapWidth")layout.reserveHeight=Math.round(clamp(layout.wrapWidth/ratio,24,5000));
@@ -2482,6 +2662,8 @@ function validLivePatch(p){
     (p.pictureEffects===undefined||
       (p.kind==="image"||p.kind==="layout")&&
       validPictureEffects(p.pictureEffects))&&
+    (p.frameMode===undefined||p.kind==="image"&&p.frameMode==="card"&&
+      !!photoCardFrameSelectors(p))&&
     (p.groupId===undefined||validLiveGroupId(p.groupId));
 }
 function liveGeometryIsLocked(selector){
@@ -2765,6 +2947,12 @@ function renderLiveInspector(){
   refreshUndo();
   $("liveLayoutControls").hidden=!node;
   $("liveImageSizing").hidden=tag!=="IMG";
+  const cardFigure=photoCardFrame(node);
+  const cardPatch=tag==="IMG"?livePatchForSelected():null;
+  $("livePhotoCardControls").hidden=!cardFigure;
+  $("livePhotoCardMode").checked=!!cardFigure&&cardPatch?.frameMode==="card";
+  $("livePhotoCardMode").disabled=!!liveEditing||!!liveGesture||
+    (!!cardFigure&&liveGeometryIsLocked(selector));
   $("liveCropControls").hidden=tag!=="IMG";
   $("livePictureFormat").hidden=tag!=="IMG";
   if(tag==="IMG"){
@@ -2827,7 +3015,9 @@ function renderLiveInspector(){
   $("liveOriginalDimensions").hidden=!originalBox;
   if(originalBox){
     const dims=liveLayoutFor(selector),rect=node.getBoundingClientRect();
-    $("liveOriginalWidth").value=String(Math.round(dims.wrapWidth??rect.width));
+    const frame=tag==="IMG"&&cardPatch?.frameMode==="card"?cardFigure:null;
+    const frameRect=frame?.getBoundingClientRect();
+    $("liveOriginalWidth").value=String(Math.round(dims.wrapWidth??frameRect?.width??rect.width));
     $("liveOriginalHeight").value=String(Math.round(dims.reserveHeight??rect.height));
   }
   $("liveAddedDimensions").hidden=!added;
@@ -3295,6 +3485,7 @@ function applyLiveImage(){
     ...(old?.appearance?{appearance:old.appearance}:{}),
     ...(old?.imageCrop?{imageCrop:old.imageCrop}:{}),
     ...(old?.pictureEffects?{pictureEffects:old.pictureEffects}:{}),
+    ...(old?.frameMode?{frameMode:old.frameMode}:{}),
     ...(old?.groupId!==undefined?{groupId:old.groupId}:{})});
   recordLiveHistory(before);liveImageInputDirty=false;
   renderLiveInspector();renderLiveLayers();
@@ -3685,9 +3876,12 @@ function syncLiveOverlay(){
       if(button)startLiveGesture(event,button.dataset.direction,button);
     });
   }
+  const card= !grouped&&node.tagName==="IMG"&&!liveCropMode&&
+    livePatchForSelected()?.frameMode==="card"?photoCardFrame(node):null;
   const rect=groupedAdded?
     liveAddedSelectionBounds(addedGroup):
-    liveSourceSelectionBounds(node,sourceGroup);
+    groupedSource?liveSourceSelectionBounds(node,sourceGroup):
+    (card||node).getBoundingClientRect();
   liveOverlay.style.left=rect.left+"px";
   liveOverlay.style.top=rect.top+"px";
   liveOverlay.style.width=rect.width+"px";
@@ -3797,14 +3991,21 @@ function startLiveGesture(event,direction,anchor){
   const sourceGroup=!LIVE_ADDED_ID.test(selector)&&
     liveSourceMulti.has(selector)&&selectedSourcePatches().length>1?
     selectedSourcePatches().map(item=>({...item,rect:item.node.getBoundingClientRect()})):null;
+  const card=node.tagName==="IMG"&&patch.frameMode==="card"&&
+    !liveCropMode&&!sourceGroup&&!group?photoCardFrame(node):null;
   const rect=sourceGroup?liveSourceSelectionBounds(node,sourceGroup):
-    group?liveAddedSelectionBounds(group):node.getBoundingClientRect();
+    group?liveAddedSelectionBounds(group):
+    (direction==="rotate"?node:card||node).getBoundingClientRect();
   if(rect.width<2||rect.height<2)return;
+  const current=liveLayoutFor(selector);
+  const layout=card&&!current.wrapWidth?
+    photoCardLayoutForImage(node,current):current;
   liveGesture={pointer:event.pointerId,anchor,dir:direction,
     startX:event.clientX,startY:event.clientY,rect,group,sourceGroup,
-    patch,layout:liveLayoutFor(selector),snapshot:liveSnapshot(),
+    card,frameExtra:card?Math.max(0,rect.height-node.getBoundingClientRect().height):0,
+    patch,layout,snapshot:liveSnapshot(),
     moved:false,selector,node,snapLines:candidateLiveSnapLines(node,
-      (sourceGroup||group)?.map(item=>item.node)||[node])};
+      (sourceGroup||group)?.map(item=>item.node)||(card?[node,card]:[node]))};
   // A simple click on an existing source image must not capture the pointer.
   // Firefox can otherwise retain iframe focus when the user immediately
   // clicks the image-description field in the parent editor. Start capture
@@ -4039,6 +4240,32 @@ function moveLiveGesture(event){
         refreshAddedObject(g.node.ownerDocument,patch);
       }
     }
+    syncLiveOverlay();return;
+  }
+  if(g.card&&g.patch.frameMode==="card"){
+    const next={...g.layout},device=liveDevice();
+    if(g.dir==="move"){
+      const snap=snapLiveMove(deltaX,deltaY,g,event.altKey);
+      next.dx=clamp(Math.round(g.layout.dx+snap.dx),-4000,4000);
+      next.dy=clamp(Math.round(g.layout.dy+snap.dy),-4000,4000);
+      drawLiveSnapGuides(snap.x,snap.y,g.node.ownerDocument);
+    }else{
+      const box=resizableBoxFromDrag(
+        {x:0,y:0,w:g.rect.width,h:g.rect.height},
+        g.dir,deltaX,deltaY,
+        liveLockImageRatio&&!event.altKey,64,48,4000,5000);
+      next.wrapWidth=box.w;
+      // The figure's caption contributes natural height. Only the photo
+      // portion gets a fixed height, so the caption is never squashed.
+      next.reserveHeight=Math.round(clamp(box.h-g.frameExtra,24,5000));
+      next.dx=clamp(Math.round(g.layout.dx+box.x),-4000,4000);
+      next.dy=clamp(Math.round(g.layout.dy+box.y),-4000,4000);
+    }
+    next.sx=1;next.sy=1;next.osx=1;next.osy=1;
+    const patch=copy(g.patch);
+    patch.layout={...patch.layout,[device]:next};
+    livePatches.set(g.selector,patch);
+    refreshLiveLayoutRules(g.node.ownerDocument);
     syncLiveOverlay();return;
   }
   const next={...g.layout};
@@ -4965,7 +5192,8 @@ function bindLiveDocument(){
     const link=event.target.closest?.("a[href]");
     // A linked picture is still a selectable photo in an editor.
     // Ordinary text links retain their navigation behaviour.
-    const onPicture=!!event.target.closest?.("img");
+    const onPicture=!!event.target.closest?.("img")||
+      !!photoCardFrame(link?.querySelector?.("img"));
     if(link&&!onPicture&&!liveSectionPickMode&&!liveCropMode&&
        !event.altKey&&!event.shiftKey)return;
     const target=liveEventTarget(event);
@@ -6542,6 +6770,8 @@ function attachEvents(){
   for(const [id,key] of Object.entries(liveDesignFields))
     $(id).addEventListener("change",event=>setLiveObjectDesign(key,event.target.value));
   $("resetLiveObjectDesign").addEventListener("click",resetLiveObjectDesign);
+  $("livePhotoCardMode").addEventListener("change",event=>
+    setPhotoCardMode(event.target.checked));
   $("liveLockImageRatio").addEventListener("change",event=>{
     liveLockImageRatio=event.target.checked;
     status(liveLockImageRatio?"Image frame proportions locked":"Image frame proportions unlocked · Image content still keeps its natural aspect ratio");
