@@ -1,12 +1,12 @@
 {
-  "sourceHead": "4fe79073255ecdb8bd58f6ace52f7311c5e829b5",
+  "sourceHead": "24dbdd978da944ad3f97f9d51ee0dc496df38417",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 24,
   "httpErrors": 0,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-4fe79073255e",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-24dbdd978da9",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -75,12 +75,10 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "42013624271",
-      "head_sha": "9d4f1ae6e16e7dff14858ac338dbe1e852f605cc",
+      "run": "42013732057",
+      "head_sha": "909b63988ade59cacbd5d6b568131c59a5637e0f",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "pungmul.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0,
         "combinedStressFailures": 0
@@ -110,12 +108,6 @@
       "sourceModifiedSinceAudit": [
         "pungmul.html"
       ]
-    },
-    {
-      "category": "typography",
-      "sourceModifiedSinceAudit": [
-        "pungmul.html"
-      ]
     }
   ],
   "pass": false,
@@ -127,18 +119,12 @@
           "sourceModifiedSinceAudit": [
             "pungmul.html"
           ]
-        },
-        {
-          "category": "typography",
-          "sourceModifiedSinceAudit": [
-            "pungmul.html"
-          ]
         }
       ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42014345468",
-  "run_sha": "4fe79073255ecdb8bd58f6ace52f7311c5e829b5",
+  "workflow_run_id": "42014463415",
+  "run_sha": "24dbdd978da944ad3f97f9d51ee0dc496df38417",
   "exit_code": "1"
 }
