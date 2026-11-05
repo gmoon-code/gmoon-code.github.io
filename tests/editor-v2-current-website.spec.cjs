@@ -4030,10 +4030,17 @@ test('Rapid pointer events finish the final crop and resize before mouse release
     expect(draft.filter(p=>p.kind==='image')).toHaveLength(1);
     expect(draft.find(p=>p.kind==='image').imageCrop.desktop.left).toBeGreaterThan(8);
     await page.locator('#undo').click();
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
     const undone=await rect(image);
     expect(Math.abs(undone.w-initial.w)).toBeLessThan(3);
     expect(Math.abs(undone.x-initial.x)).toBeLessThan(3);
-    await page.locator('#cropImageTool').click();
+    // Undo may reload the iframe and reset crop mode. Do not blindly toggle
+    // it, which would turn the subsequent resize into an outward crop.
+    await image.click();
+    const cropTool=page.locator('#cropImageTool');
+    if(await cropTool.getAttribute('aria-pressed')==='true')await cropTool.click();
+    await expect(cropTool).toHaveAttribute('aria-pressed','false');
     await rapidDrag('se',45,45);
     const resized=await rect(image);
     expect(resized.w,'final resize event must not be dropped').toBeGreaterThan(initial.w+25);
