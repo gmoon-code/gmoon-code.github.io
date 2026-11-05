@@ -1,12 +1,12 @@
 {
-  "sourceHead": "770b688b3fd56b18be171e146be597a585d11a14",
+  "sourceHead": "5df2bff98059221e01a9af8d76c97074b875e75f",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
-  "verifiedExactMatches": 24,
-  "httpErrors": 0,
+  "verifiedExactMatches": 23,
+  "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-770b688b3fd5",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-5df2bff98059",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -17,7 +17,9 @@
       "run": "41931940792",
       "head_sha": "69e621f73438a38738c6232b803a599ab6052181",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research-scoping.html"
+      ],
       "failureCounts": {
         "problems": 0
       }
@@ -27,7 +29,9 @@
       "run": "41931940910",
       "head_sha": "69e621f73438a38738c6232b803a599ab6052181",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research-scoping.html"
+      ],
       "failureCounts": {
         "issues": 44
       },
@@ -41,7 +45,9 @@
       "run": "41646697877",
       "head_sha": "7f147beca823e70fae2b20ddd1d5881034402f13",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research-scoping.html"
+      ],
       "failureCounts": {
         "unverified": 0
       },
@@ -56,7 +62,9 @@
       "run": "41931940703",
       "head_sha": "69e621f73438a38738c6232b803a599ab6052181",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research-scoping.html"
+      ],
       "failureCounts": {
         "failures": 0
       }
@@ -66,7 +74,9 @@
       "run": "41931940949",
       "head_sha": "69e621f73438a38738c6232b803a599ab6052181",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research-scoping.html"
+      ],
       "failureCounts": {
         "failures": 0
       }
@@ -76,7 +86,9 @@
       "run": "41931940760",
       "head_sha": "69e621f73438a38738c6232b803a599ab6052181",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research-scoping.html"
+      ],
       "failureCounts": {
         "failures": 0,
         "combinedStressFailures": 0
@@ -87,7 +99,9 @@
       "run": "41931940898",
       "head_sha": "69e621f73438a38738c6232b803a599ab6052181",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research-scoping.html"
+      ],
       "failureCounts": {
         "failures": 0,
         "axeViolations": 0
@@ -100,11 +114,125 @@
       "note": "U1 route audit documents successful run 40825886279; legacy utility machine report refers to an early missing-script failure. Do not treat it as latest successful evidence."
     }
   },
-  "sourceDriftSinceAudits": [],
-  "pass": true,
-  "errors": [],
+  "sourceDriftSinceAudits": [
+    {
+      "category": "links",
+      "sourceModifiedSinceAudit": [
+        "research-scoping.html"
+      ]
+    },
+    {
+      "category": "external",
+      "sourceModifiedSinceAudit": [
+        "research-scoping.html"
+      ]
+    },
+    {
+      "category": "metadata",
+      "sourceModifiedSinceAudit": [
+        "research-scoping.html"
+      ]
+    },
+    {
+      "category": "reflow",
+      "sourceModifiedSinceAudit": [
+        "research-scoping.html"
+      ]
+    },
+    {
+      "category": "engines",
+      "sourceModifiedSinceAudit": [
+        "research-scoping.html"
+      ]
+    },
+    {
+      "category": "typography",
+      "sourceModifiedSinceAudit": [
+        "research-scoping.html"
+      ]
+    },
+    {
+      "category": "interactions",
+      "sourceModifiedSinceAudit": [
+        "research-scoping.html"
+      ]
+    }
+  ],
+  "pass": false,
+  "errors": [
+    {
+      "path": "research-scoping.html",
+      "errors": [
+        "deployed bytes differ from checked-out production source"
+      ],
+      "firstDiff": [
+        "--- source\n",
+        "+++ deployed\n",
+        "@@ -56,3 +56,3 @@\n",
+        "   </style>",
+        "-<style id=\"moon-v2-live-layout\"></style></head>",
+        "+</head>",
+        " <body class=\"theme-green\">",
+        "@@ -70,3 +70,3 @@\n",
+        "   <div class=\"hero-copy\">",
+        "-    ",
+        "+    <p class=\"meta\">Initial ERIC-bounded scoping review · 2026 · Preprint available</p>",
+        "     <h1>Evidence of multilingual students' science understanding</h1>",
+        "@@ -221,3 +221,2 @@\n",
+        "   </script>",
+        "-",
+        " </body></html>"
+      ]
+    },
+    {
+      "sourceDrift": [
+        {
+          "category": "links",
+          "sourceModifiedSinceAudit": [
+            "research-scoping.html"
+          ]
+        },
+        {
+          "category": "external",
+          "sourceModifiedSinceAudit": [
+            "research-scoping.html"
+          ]
+        },
+        {
+          "category": "metadata",
+          "sourceModifiedSinceAudit": [
+            "research-scoping.html"
+          ]
+        },
+        {
+          "category": "reflow",
+          "sourceModifiedSinceAudit": [
+            "research-scoping.html"
+          ]
+        },
+        {
+          "category": "engines",
+          "sourceModifiedSinceAudit": [
+            "research-scoping.html"
+          ]
+        },
+        {
+          "category": "typography",
+          "sourceModifiedSinceAudit": [
+            "research-scoping.html"
+          ]
+        },
+        {
+          "category": "interactions",
+          "sourceModifiedSinceAudit": [
+            "research-scoping.html"
+          ]
+        }
+      ]
+    }
+  ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41932676437",
-  "run_sha": "770b688b3fd56b18be171e146be597a585d11a14",
-  "exit_code": "0"
+  "workflow_run_id": "41940926269",
+  "run_sha": "5df2bff98059221e01a9af8d76c97074b875e75f",
+  "exit_code": "1"
 }
