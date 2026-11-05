@@ -3226,3 +3226,123 @@ test('A stale text-replacement section is not automatically rebased as layout',a
   expect(await page.evaluate(k=>localStorage.getItem(k),key)).toBe(raw);
   expect(writes).toEqual([]);
 });
+
+
+test('Actual published Interests website is an unmodified read-only URL in the editor workspace',async({page})=>{
+  const writes=[];
+  await installVerifiedCurrentSource(page,writes);
+  await page.setViewportSize({width:1512,height:980});
+  await page.goto(BASE+'/editor-v2.html?page=interests.html',{waitUntil:'domcontentloaded'});
+  await expect(page.locator('#liveAssetStatus'))
+    .toContainText('GitHub main source verified',{timeout:35000});
+  await page.locator('#devicePreview').selectOption('browser');
+  const draft=page.frameLocator('#livePageFrame');
+  const draftWidth=await draft.locator('html').evaluate(el=>el.ownerDocument.defaultView.innerWidth);
+  expect(draftWidth).toBe(1512);
+  await page.locator('#inlinePublishedView').click();
+  await expect(page.locator('#inlinePublishedFrame')).toBeVisible();
+  await expect(page.locator('#livePageFrame')).toBeHidden();
+  await expect(page.locator('#inlineViewNotice')).toContainText('ACTUAL PUBLISHED WEBSITE');
+  await expect(page.locator('#inlinePublishedFrame')).toHaveAttribute('src',
+    BASE+'/interests.html');
+  expect(await page.locator('#inlinePublishedFrame').getAttribute('srcdoc')).toBeNull();
+  await expect(page.locator('#addText')).toBeDisabled();
+  await expect(page.locator('#liveInspector')).toBeHidden();
+  const publicFrame=page.frameLocator('#inlinePublishedFrame');
+  await expect(publicFrame.locator('.pungmul-gallery img')).toHaveCount(2);
+  await expect(publicFrame.locator('.pungmul-gallery figcaption')).toHaveCount(2);
+  expect(await publicFrame.locator('html').evaluate(el=>
+    el.ownerDocument.defaultView.innerWidth)).toBe(1512);
+  const actual=await publicFrame.locator('main').evaluate(main=>{
+    const gallery=main.querySelector('.pungmul-gallery');
+    const img=[...gallery.querySelectorAll('img')];
+    return {
+      text:main.textContent.replace(/\s+/g,' ').trim(),
+      grid: getComputedStyle(gallery).gridTemplateColumns,
+      boxes:img.map(node=>({
+        width:Math.round(node.getBoundingClientRect().width),
+        height:Math.round(node.getBoundingClientRect().height),
+        radius:getComputedStyle(node).borderTopLeftRadius,
+        src:node.getAttribute('src')
+      }))
+    };
+  });
+  await page.locator('#inlineDraftView').click();
+  await expect(page.locator('#inlinePublishedFrame')).toBeHidden();
+  await expect(page.locator('#livePageFrame')).toBeVisible();
+  await expect(page.locator('#addText')).toBeEnabled();
+  const srcDraft=await draft.locator('main').evaluate(main=>{
+    const gallery=main.querySelector('.pungmul-gallery');
+    return {text:main.textContent.replace(/\s+/g,' ').trim(),
+      grid:getComputedStyle(gallery).gridTemplateColumns,
+      boxes:[...gallery.querySelectorAll('img')].map(node=>({
+        width:Math.round(node.getBoundingClientRect().width),
+        height:Math.round(node.getBoundingClientRect().height),
+        radius:getComputedStyle(node).borderTopLeftRadius,
+        src:node.getAttribute('src')
+      }))};
+  });
+  expect(srcDraft).toEqual(actual);
+  expect(writes).toEqual([]);
+});
+
+test('Published Interests photo keeps visitor framing while draft oval crop stays editable',async({page})=>{
+  const writes=[],name='interests.html',key='moon-academic-editor-v2:source:'+name;
+  await installVerifiedCurrentSource(page,writes);
+  await page.goto(BASE+'/editor-v2.html?page='+name,{waitUntil:'domcontentloaded'});
+  await expect(page.locator('#liveAssetStatus'))
+    .toContainText('GitHub main source verified',{timeout:35000});
+  const img=page.frameLocator('#livePageFrame').locator('.pungmul-gallery img').first();
+  const patch=await img.evaluate(node=>{
+    const parts=[];
+    for(let n=node;n&&n.tagName!=='MAIN';n=n.parentElement){
+      const peers=[...n.parentElement.children].filter(e=>e.tagName===n.tagName);
+      parts.unshift(n.tagName.toLowerCase()+':nth-of-type('+
+        (peers.indexOf(n)+1)+')');
+    }
+    const src=node.getAttribute('src');
+    return {kind:'image',selector:'main > '+parts.join(' > '),tag:'img',
+      expected:src,src,alt:node.alt,
+      layout:{desktop:{dx:0,dy:0,sx:1,sy:1}},
+      imageCrop:{desktop:{fit:'cover',x:50,y:50,zoom:100,mask:'oval'}}};
+  });
+  const originalSaved=JSON.stringify([patch]);
+  await page.evaluate(([k,v])=>localStorage.setItem(k,v),[key,originalSaved]);
+  await page.reload({waitUntil:'domcontentloaded'});
+  await expect(page.locator('#liveAssetStatus'))
+    .toContainText('GitHub main source verified',{timeout:35000});
+  const local=page.frameLocator('#livePageFrame').locator('.pungmul-gallery img').first();
+  await expect(local).toHaveCSS('border-radius','50%');
+  await page.locator('#inlinePublishedView').click();
+  const publicImage=page.frameLocator('#inlinePublishedFrame')
+    .locator('.pungmul-gallery img').first();
+  await expect(publicImage).toBeVisible();
+  expect(await publicImage.evaluate(node=>
+    getComputedStyle(node).borderTopLeftRadius)).not.toBe('50%');
+  expect(await publicImage.getAttribute('src')).toBe(patch.src);
+  await expect(page.locator('#inlineViewNotice')).toContainText('1 unpublished draft edit');
+  await expect(page.locator('#inlineViewNotice')).toContainText('NOT shown');
+  await page.locator('#inlineDraftView').click();
+  await expect(local).toHaveCSS('border-radius','50%');
+  expect(await page.evaluate(k=>localStorage.getItem(k),key)).toBe(originalSaved);
+  await page.locator('#preview').click();
+  await expect(page.locator('#previewDialog')).toBeVisible();
+  await expect(page.frameLocator('#previewFrame').locator('.pungmul-gallery img').first())
+    .toHaveCSS('border-radius','50%');
+  expect(writes).toEqual([]);
+});
+
+test('Switching to design canvas from published view restores editing controls',async({page})=>{
+  await installVerifiedCurrentSource(page,[]);
+  await page.goto(BASE+'/editor-v2.html?page=interests.html',{waitUntil:'domcontentloaded'});
+  await expect(page.locator('#liveAssetStatus'))
+    .toContainText('GitHub main source verified',{timeout:35000});
+  await page.locator('#inlinePublishedView').click();
+  await expect(page.locator('#addText')).toBeDisabled();
+  await page.locator('#designMode').click();
+  await expect(page.locator('#addText')).toBeEnabled();
+  await expect(page.locator('#inlinePublishedView')).toBeHidden();
+  await page.locator('#liveMode').click();
+  await expect(page.locator('#livePageFrame')).toBeVisible();
+  await expect(page.locator('#addText')).toBeEnabled();
+});
