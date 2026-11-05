@@ -2789,5 +2789,14 @@ for(const [name,gallery] of [
       expect(await preview.locator('img').evaluate(el=>
         el.getBoundingClientRect().width)).toBeGreaterThan(original+30);
       expect(writes).toEqual([]);
+      if(name==='interests.html'){
+        // The separate restore stylesheet uses a 600px breakpoint.
+        // The later inline rules must not override it with narrow columns.
+        await page.setViewportSize({width:550,height:900});
+        await page.goto(BASE+'/'+name,{waitUntil:'domcontentloaded'});
+        const smallColumns=await page.locator(gallery).evaluate(el=>
+          getComputedStyle(el).gridTemplateColumns.split(/\\s+/).length);
+        expect(smallColumns).toBe(1);
+      }
     });
 }
