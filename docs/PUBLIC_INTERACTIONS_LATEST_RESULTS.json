@@ -12,7 +12,7 @@
   "failures": [],
   "axeViolations": [],
   "notes": "Live previews test the parent portfolio interaction and iframe semantics, not the separately deployed applications' internal UI. Headless Chromium/axe does not measure spoken screen-reader output or certify full WCAG conformance.",
-  "workflow_run_id": "42027113303",
-  "head_sha": "b3e81df9a3cbea6056c34deb69fc7318d61d9738",
+  "workflow_run_id": "42037034680",
+  "head_sha": "d9404f7f3eb136747200e5efc64388f17ae2677d",
   "exit_code": "0"
 }
