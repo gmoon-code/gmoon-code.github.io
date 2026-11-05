@@ -1,6 +1,6 @@
 {
-  "workflow_run_id": "41579179955",
-  "head_sha": "33dba48e0cf1830bca6742c994c2735619dd8bdc",
+  "workflow_run_id": "42039422405",
+  "head_sha": "651b5776ad66817b688378376c9bc938bf874f48",
   "audit_exit_code": "1",
   "screen_widths_tested": [
     320,
@@ -366,11 +366,11 @@
   "print": {
     "pages": 7,
     "words": [
-      298,
-      258,
+      322,
+      226,
       248,
-      276,
-      311,
+      272,
+      307,
       357,
       94
     ],
@@ -378,12 +378,12 @@
     "page_previews": [
       {
         "number": 1,
-        "first": "Research / Classroom inquiry Classroom action research · 2026 · Unpublished manuscript Reconsidering assessment evidence After an AP Biology assessment, my students corrected their explanations using feedback. I could see what they changed, but I could not tell which causal relationships they would be able to explain without that support. I introduced structured reflection and, later, an independe",
-        "last": "ge. Unit 2 Unit 2 assessment and reflection The Unit 2 question asked students to explain a proposed pathway from chytrid-related disruption of sodium transport across amphibian skin to dehydration. After feedback, they revised their answers and reflected on one difficulty, a transferable idea, and a preparation plan. Unit 2 Assessment Feedback, correction and reflection → Before Unit 3 Preparation record Student self-report → Unit 3 Assessment Correction and independent reconstruction → Unit 4 Later assessment A different biological mechanism "
+        "first": "Research / Classroom inquiry Reconsidering assessment evidence After an AP Biology assessment, my students corrected their explanations using feedback. I could see what they changed, but I could not tell which causal relationships they would be able to explain without that support. I introduced structured reflection and, later, an independent reconstruction of a photosynthesis mechanism. Comparing",
+        "last": "hey revised their answers and reflected on one difficulty, a transferable idea, and a preparation plan. Before Unit 3 Preparation before Unit 3 Students reported what they actually did to prepare. These were self-reports, so they gave me an account of preparation without documenting every study activity independently. Unit 2 Assessment Feedback, correction and reflection → Before Unit 3 Preparation record Student self-report → Unit 3 Assessment Correction and independent reconstruction → Unit 4 Later assessment A different biological mechanism "
       },
       {
         "number": 2,
-        "first": "Before Unit 3 Preparation before Unit 3 Students reported what they actually did to prepare. These were self-reports, so they gave me an account of preparation without documenting every study activity independently. Unit 3 Unit 3 assessment and reconstruction The assessment asked how inhibition of photosynthetic electron transport by bentazon could lead to plant death. After correction, I added an",
+        "first": "Unit 3 Unit 3 assessment and reconstruction The assessment asked how inhibition of photosynthetic electron transport by bentazon could lead to plant death. After correction, I added an individual reconstruction of that same mechanism, completed without access to reference materials. Unit 4 Unit 4 assessment In Unit 4, students examined how altered phosphatase regulation could affect cell signallin",
         "last": "ctive tasks, rather than a measured gain in a common underlying ability. Reflection specificity and later explanations For the 21 students whose Unit 2 explanations did not meet the completeness criteria, I examined what they wrote about their earlier difficulty during feedback-assisted reflection. Twelve identified a particular difficulty in their reasoning; the other nine offered different kinds of reflections. The table shows how each group was classified on the subsequent Unit 3 assessment, which concerned a different biological mechanism. "
       },
       {
@@ -394,11 +394,11 @@
       {
         "number": 4,
         "first": "Predominant differences between the ten original Unit 3 explanations and later reconstructions Pattern Pairs What the comparison made visible Earlier pathway extended 5 Later reconstructions added missing causal connections or extended earlier pathways through to plant death. Earlier contradiction not repeated 2 A previously expressed contradiction about the proton gradient did not appear in the r",
-        "last": "nthetic pathway completely in Unit 3, while their Unit 4 response left the connection between sustained signalling and growth restraint incomplete. Examples from paired student records De-identified record · S01 A fuller pathway after correction S01's original answer concentrated on ATP. The later reconstruction also connected NADPH, carbon fixation, and sugar production, making the pathway more complete under that task's conditions. Question for later assessment · Which newly expressed connections could the student explain in another setting? "
+        "last": "2 reconstructed the photosynthetic pathway completely in Unit 3, while their Unit 4 response left the connection between sustained signalling and growth restraint incomplete. Examples from paired student records A fuller pathway after correction S01's original answer concentrated on ATP. The later reconstruction also connected NADPH, carbon fixation, and sugar production, making the pathway more complete under that task's conditions. Question for later assessment · Which newly expressed connections could the student explain in another setting? "
       },
       {
         "number": 5,
-        "first": "De-identified record · S20 Previously expressed relationships omitted S20's original answer included relationships involving the proton gradient, ATP, and reduced NADPH production, but the later reconstruction omitted them. The two answers made that omission visible while leaving uncertain whether those connections were unavailable to the student or simply unstated. Question for later assessment ·",
+        "first": "Previously expressed relationships omitted S20's original answer included relationships involving the proton gradient, ATP, and reduced NADPH production, but the later reconstruction omitted them. The two answers made that omission visible while leaving uncertain whether those connections were unavailable to the student or simply unstated. Question for later assessment · Can the student explain ag",
         "last": "not repeated Revisiting a previously contradictory claim Look at the conflicting claims about the proton gradient in your earlier answer. Which one is scientifically defensible, and why? The later reconstruction did not repeat the contradiction, so I could not tell how the student had evaluated those claims. S06 · The pathway remained undeveloped Identifying the next causal connection What process is affected immediately after photosynthetic electron transport is inhibited, and why? Neither response developed the required intermediate pathway. "
       },
       {
