@@ -3751,6 +3751,26 @@ test('Pungmul gallery trims four independent edges then resizes without changing
     expect(Math.abs(after.paintW-expectedPaintW),
       'background paint uses the real resized frame width').toBeLessThan(5);
     expect(Math.abs(after.paintH-after.paintW/after.ratio)).toBeLessThan(2);
+    // Now use the actual corner handle. The caption's natural height must
+    // not be included in the photograph's locked aspect-ratio calculation.
+    await image.evaluate(img=>img.scrollIntoView({block:'center'}));
+    const corner=frame.locator('#moon-v2-live-overlay .moon-v2-grip[data-direction="se"]');
+    await expect(corner).toBeVisible();
+    const handle=await corner.boundingBox();
+    const hx=handle.x+handle.width/2,hy=handle.y+handle.height/2;
+    await page.mouse.move(hx,hy);await page.mouse.down();
+    await page.mouse.move(hx+28,hy+28,{steps:8});await page.mouse.up();
+    const final=await image.evaluate(img=>{
+      const r=img.getBoundingClientRect(),s=getComputedStyle(img);
+      const [paintW,paintH]=s.backgroundSize.split(' ').map(parseFloat);
+      return {w:r.width,h:r.height,paintW,paintH};
+    });
+    expect(final.w,'pointer resize changes cropped image width').toBeGreaterThan(after.w+10);
+    expect(Math.abs(final.h-after.h*final.w/after.w),
+      'pointer resize keeps the cropped photo ratio, excluding its caption').toBeLessThan(5);
+    const finalPaintW=Math.max(final.w/fx,final.h*after.ratio/fy);
+    expect(Math.abs(final.paintW-finalPaintW)).toBeLessThan(5);
+    expect(Math.abs(final.paintH-final.paintW/after.ratio)).toBeLessThan(2);
     const key='moon-academic-editor-v2:source:pungmul.html';
     const saved=await page.evaluate(k=>JSON.parse(localStorage.getItem(k)),key);
     const crop=saved.find(x=>x.kind==='image'&&x.imageCrop?.desktop)?.imageCrop.desktop;
@@ -3763,9 +3783,9 @@ test('Pungmul gallery trims four independent edges then resizes without changing
       const r=img.getBoundingClientRect(),s=getComputedStyle(img);
       return {w:r.width,h:r.height,backgroundSize:s.backgroundSize};
     });
-    expect(Math.abs(previewMetrics.w-after.w)).toBeLessThan(5);
-    expect(Math.abs(previewMetrics.h-after.h)).toBeLessThan(5);
+    expect(Math.abs(previewMetrics.w-final.w)).toBeLessThan(5);
+    expect(Math.abs(previewMetrics.h-final.h)).toBeLessThan(5);
     expect(previewMetrics.backgroundSize).toBe(
-      after.paintW+'px '+after.paintH+'px');
+      final.paintW+'px '+final.paintH+'px');
     expect(writes).toEqual([]);
   });
