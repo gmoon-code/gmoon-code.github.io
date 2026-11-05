@@ -1,12 +1,12 @@
 {
-  "sourceHead": "97adcdf5bc664184e0c3d346e78f7a734ea8b08b",
+  "sourceHead": "3d7c08d88df806bc1ea7256b41ba62f3826b58ef",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-97adcdf5bc66",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-3d7c08d88df8",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -86,12 +86,10 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "42038342046",
-      "head_sha": "015da8b24e726bf4dc465cd0b5855ef2cb35406b",
+      "run": "42038510121",
+      "head_sha": "c65d0538c15fcc1b3f876d542336e91a6d815056",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "pungmul.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0,
         "axeViolations": 0
@@ -107,12 +105,6 @@
   "sourceDriftSinceAudits": [
     {
       "category": "engines",
-      "sourceModifiedSinceAudit": [
-        "pungmul.html"
-      ]
-    },
-    {
-      "category": "interactions",
       "sourceModifiedSinceAudit": [
         "pungmul.html"
       ]
@@ -144,18 +136,12 @@
           "sourceModifiedSinceAudit": [
             "pungmul.html"
           ]
-        },
-        {
-          "category": "interactions",
-          "sourceModifiedSinceAudit": [
-            "pungmul.html"
-          ]
         }
       ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42038706232",
-  "run_sha": "97adcdf5bc664184e0c3d346e78f7a734ea8b08b",
+  "workflow_run_id": "42038758366",
+  "run_sha": "3d7c08d88df806bc1ea7256b41ba62f3826b58ef",
   "exit_code": "1"
 }
