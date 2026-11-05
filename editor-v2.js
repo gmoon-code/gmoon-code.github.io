@@ -2872,6 +2872,26 @@ function livePatchNodeMatches(node,patch){
   return image&&(patch.kind==="image"||patch.kind==="delete")?
     equivalentSiteImageSource(original,patch.expected):original===patch.expected;
 }
+// Older saved paragraphs may have been revised on the public website after
+// their layout/formatting drafts were created. The first 96 non-whitespace
+// characters must still match ONE element of the same textual tag. A
+// position/style-only edit cannot replace that element's newer wording.
+// Previously published text edits may rematch only if their FULL replacement
+// markup is already exactly present. Other text conflicts stay blocked.
+function findSafePreviouslyEditedTextNode(doc,patch,tag){
+  if(!["layout","text"].includes(patch.kind)||
+     !/^(?:h[1-6]|p|li|blockquote|figcaption)$/.test(tag))return null;
+  const historical=String(patch.expected||"").replace(/\s+/g," ").trim();
+  if(historical.length<96)return null;
+  const opening=historical.slice(0,96);
+  const candidates=[...doc.querySelectorAll("main "+tag)].filter(node=>
+    (node.textContent||"").replace(/\s+/g," ").trim().startsWith(opening));
+  if(candidates.length!==1)return null;
+  const target=candidates[0];
+  if(patch.kind==="text"&&cleanRich(patch.html)!==cleanRich(target.innerHTML))
+    return null;
+  return target;
+}
 function resolveLivePatchTarget(doc,patch){
   const direct=doc.querySelector(patch.selector);
   if(direct&&livePatchNodeMatches(direct,patch))return direct;
@@ -2884,17 +2904,33 @@ function resolveLivePatchTarget(doc,patch){
   // with different historical selectors. Those edits refer to ONE image.
   const matches=[...doc.querySelectorAll("main "+tag)].filter(node=>
     livePatchNodeMatches(node,patch));
-  if(matches.length!==1){
-    const reason=matches.length?"Multiple matching elements":"No matching original element";
-    const images=patch.kind==="image"?
-      [...doc.querySelectorAll("main img[src]")].slice(0,8)
-        .map(img=>img.getAttribute("src")).join(", "):"";
-    throw Error(reason+" for saved edit \""+livePatchExcerpt(patch)+
-      "\" on "+currentPage+". "+(patch.kind==="image"?
-        "Images in this page: "+(images||"none")+". ":"")+
-      "The edits remain open in this editor session. Review the original-image mapping before publishing.");
+  if(matches.length===1)return matches[0];
+  if(matches.length===0){
+    const historical=findSafePreviouslyEditedTextNode(doc,patch,tag);
+    if(historical)return historical;
   }
-  return matches[0];
+  const reason=matches.length?"Multiple matching elements":"No matching original element";
+  if(patch.kind==="text"||patch.kind==="layout"&&
+     /^(?:h[1-6]|p|li|blockquote|figcaption)$/.test(tag)){
+    throw Error(reason+" for saved "+(patch.kind==="text"?"text":"position/style")+
+      " edit \""+livePatchExcerpt(patch)+"\" on "+currentPage+
+      ". The page's wording or structure changed since this draft was saved. "+
+      "Your draft is preserved and nothing has been published. "+
+      "Download the original-layout draft JSON backup. In Publish changes, "+
+      "review this edit under Draft edits and choose Remove edit only if it "+
+      "is obsolete; otherwise restore or recreate it against the current paragraph. "+
+      "This is a text-source conflict, not an image-mapping problem.");
+  }
+  const images=patch.kind==="image"?
+    [...doc.querySelectorAll("main img[src]")].slice(0,8)
+      .map(img=>img.getAttribute("src")).join(", "):"";
+  throw Error(reason+" for saved edit \""+livePatchExcerpt(patch)+
+    "\" on "+currentPage+". "+(patch.kind==="image"?
+      "Images in this page: "+(images||"none")+". ":"")+
+    "The edits remain open in this editor session. "+
+    (patch.kind==="image"?
+      "Review the original-image mapping before publishing.":
+      "Review the changed page structure before publishing. No edit was discarded."));
 }
 function mergeLiveTargetPatches(first,second,node){
   if(first.kind==="delete"||second.kind==="delete")
