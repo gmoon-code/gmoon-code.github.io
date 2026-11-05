@@ -4015,6 +4015,8 @@ test('Pungmul prose box resizes numerically and by grip despite high-specificity
         'moon-academic-editor-v2:source:pungmul.html')||'[]')
           .filter(p=>p.selector.endsWith(' > p:nth-of-type(1)'))
           .map(p=>p.layout?.desktop))};
+    expect(afterFill.value,'typing a new size must replace rather than append old digits')
+      .toBe(String(targetHeight));
     await heightInput.dispatchEvent('change');
     const tall=await position(paragraph);
     if(Math.abs(tall.h-targetHeight)>=4){
