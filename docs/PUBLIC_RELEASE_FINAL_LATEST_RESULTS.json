@@ -1,12 +1,12 @@
 {
-  "sourceHead": "f678debfe1d6458518905a9a00ffc560f09a1338",
+  "sourceHead": "2acf194a224c17787f08f2d5cbcbbcf458b57bed",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
-  "verifiedExactMatches": 24,
-  "httpErrors": 0,
+  "verifiedExactMatches": 22,
+  "httpErrors": 2,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-f678debfe1d6",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-2acf194a224c",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -17,7 +17,10 @@
       "run": "41990650280",
       "head_sha": "0d4c244ac166224bea83e4b02c8dea81f860c0a0",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "interests.html",
+        "pungmul.html"
+      ],
       "failureCounts": {
         "problems": 0
       }
@@ -27,7 +30,10 @@
       "run": "41990650332",
       "head_sha": "0d4c244ac166224bea83e4b02c8dea81f860c0a0",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "interests.html",
+        "pungmul.html"
+      ],
       "failureCounts": {
         "issues": 43
       },
@@ -56,7 +62,10 @@
       "run": "41990650483",
       "head_sha": "0d4c244ac166224bea83e4b02c8dea81f860c0a0",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "interests.html",
+        "pungmul.html"
+      ],
       "failureCounts": {
         "failures": 0
       }
@@ -66,7 +75,10 @@
       "run": "41990650559",
       "head_sha": "0d4c244ac166224bea83e4b02c8dea81f860c0a0",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "interests.html",
+        "pungmul.html"
+      ],
       "failureCounts": {
         "failures": 0
       }
@@ -76,7 +88,10 @@
       "run": "41990650403",
       "head_sha": "0d4c244ac166224bea83e4b02c8dea81f860c0a0",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "interests.html",
+        "pungmul.html"
+      ],
       "failureCounts": {
         "failures": 0,
         "combinedStressFailures": 0
@@ -87,7 +102,10 @@
       "run": "41990650259",
       "head_sha": "0d4c244ac166224bea83e4b02c8dea81f860c0a0",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "interests.html",
+        "pungmul.html"
+      ],
       "failureCounts": {
         "failures": 0,
         "axeViolations": 0
@@ -100,11 +118,133 @@
       "note": "U1 route audit documents successful run 40825886279; legacy utility machine report refers to an early missing-script failure. Do not treat it as latest successful evidence."
     }
   },
-  "sourceDriftSinceAudits": [],
-  "pass": true,
-  "errors": [],
+  "sourceDriftSinceAudits": [
+    {
+      "category": "links",
+      "sourceModifiedSinceAudit": [
+        "interests.html",
+        "pungmul.html"
+      ]
+    },
+    {
+      "category": "external",
+      "sourceModifiedSinceAudit": [
+        "interests.html",
+        "pungmul.html"
+      ]
+    },
+    {
+      "category": "reflow",
+      "sourceModifiedSinceAudit": [
+        "interests.html",
+        "pungmul.html"
+      ]
+    },
+    {
+      "category": "engines",
+      "sourceModifiedSinceAudit": [
+        "interests.html",
+        "pungmul.html"
+      ]
+    },
+    {
+      "category": "typography",
+      "sourceModifiedSinceAudit": [
+        "interests.html",
+        "pungmul.html"
+      ]
+    },
+    {
+      "category": "interactions",
+      "sourceModifiedSinceAudit": [
+        "interests.html",
+        "pungmul.html"
+      ]
+    }
+  ],
+  "pass": false,
+  "errors": [
+    {
+      "path": "interests.html",
+      "errors": [
+        "deployed bytes differ from checked-out production source"
+      ],
+      "firstDiff": [
+        "--- source\n",
+        "+++ deployed\n",
+        "@@ -11,3 +11,3 @@\n",
+        "   <link rel=\"stylesheet\" href=\"appearance.css?v=20261030-restored-photos\">",
+        "-  <link rel=\"stylesheet\" href=\"personal-photo-20261030.css?v=20261105-borderless-gallery-v2\">",
+        "+  <link rel=\"stylesheet\" href=\"personal-photo-20261030.css?v=20261105-borderless-gallery\">",
+        " <style id=\"interests-media-heading-levels\">"
+      ]
+    },
+    {
+      "path": "pungmul.html",
+      "errors": [
+        "deployed bytes differ from checked-out production source"
+      ],
+      "firstDiff": [
+        "--- source\n",
+        "+++ deployed\n",
+        "@@ -11,4 +11,4 @@\n",
+        "   <link rel=\"stylesheet\" href=\"appearance.css?v=20261028-visible-focus\">",
+        "-  <link rel=\"stylesheet\" href=\"pungmul.css?v=20261105-borderless-photos-v2\">",
+        "-  <link rel=\"stylesheet\" href=\"personal-photo-20261030.css?v=20261105-borderless-gallery-v2\">",
+        "+  <link rel=\"stylesheet\" href=\"pungmul.css?v=20261105-borderless-photos\">",
+        "+  <link rel=\"stylesheet\" href=\"personal-photo-20261030.css?v=20261105-borderless-gallery\">",
+        " <style id=\"moon-v2-live-layout\">@media (min-width:1025px){main > section:nth-of-type(1) > div:nth-of-type(1) > p:nth-of-type(2){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:538px!important;height:116px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}}"
+      ]
+    },
+    {
+      "sourceDrift": [
+        {
+          "category": "links",
+          "sourceModifiedSinceAudit": [
+            "interests.html",
+            "pungmul.html"
+          ]
+        },
+        {
+          "category": "external",
+          "sourceModifiedSinceAudit": [
+            "interests.html",
+            "pungmul.html"
+          ]
+        },
+        {
+          "category": "reflow",
+          "sourceModifiedSinceAudit": [
+            "interests.html",
+            "pungmul.html"
+          ]
+        },
+        {
+          "category": "engines",
+          "sourceModifiedSinceAudit": [
+            "interests.html",
+            "pungmul.html"
+          ]
+        },
+        {
+          "category": "typography",
+          "sourceModifiedSinceAudit": [
+            "interests.html",
+            "pungmul.html"
+          ]
+        },
+        {
+          "category": "interactions",
+          "sourceModifiedSinceAudit": [
+            "interests.html",
+            "pungmul.html"
+          ]
+        }
+      ]
+    }
+  ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41990869793",
-  "run_sha": "f678debfe1d6458518905a9a00ffc560f09a1338",
-  "exit_code": "0"
+  "workflow_run_id": "41994730108",
+  "run_sha": "2acf194a224c17787f08f2d5cbcbbcf458b57bed",
+  "exit_code": "1"
 }
