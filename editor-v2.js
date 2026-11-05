@@ -1501,6 +1501,18 @@ function editedSourceImageSelector(patch){
     ":root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) ":"")+
     patch.selector;
 }
+// The Pungmul page (and some other published pages) use #main selectors
+// with !important to preserve their natural visitor layout. Without a
+// deliberate specificity boost those existing rules silently cancel text
+// box and section width/height/translate changes made in Editor V2.
+// Apply priority only when a saved layout patch exists for this exact
+// element. No rule is added to unedited text, sections or siblings.
+function editedSourceLayoutSelector(patch){
+  const selector=editedSourceImageSelector(patch);
+  return selector===patch.selector?
+    ":root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) "+selector:
+    selector;
+}
 // A linked gallery picture has two clipping ancestors: the link and figure.
 // Its own image box can resize/move correctly while visitors still see only
 // the portion inside the old card. Only unclip wrappers for an *edited*
@@ -1648,7 +1660,7 @@ function liveLayoutRules(patches=[...livePatches.values()],doc=null){
         selectors.push(priority+linkedFrame.link+"{overflow:visible!important;}");
         selectors.push(editedSourceImageSelector(patch)+"{border-radius:14px!important;}");
       }
-      selectors.push(editedSourceImageSelector(patch)+"{translate:"+
+      selectors.push(editedSourceLayoutSelector(patch)+"{translate:"+
         (Math.round(((entry.ox||0)+entry.dx)*1000)/1000)+"px "+
         (Math.round(((entry.oy||0)+entry.dy)*1000)/1000)+"px!important;scale:"+
         (Math.round(((entry.osx||1)*entry.sx)*1000)/1000)+" "+
