@@ -1,12 +1,12 @@
 {
-  "sourceHead": "88a4981e7e2902a34145c883667bbfd36a5194f3",
+  "sourceHead": "3877cb8f3e9f2d6026bc34ad8303e1c8a3534dfb",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-88a4981e7e29",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-3877cb8f3e9f",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -24,12 +24,10 @@
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "42128135460",
-      "head_sha": "645fed29f4742d38344a267e4da65e695ffa2cfe",
+      "run": "42128190197",
+      "head_sha": "1d4523bd0b35e6bf4c1276500122909db69ce5d7",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "index.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "issues": 42
       },
@@ -112,12 +110,6 @@
   },
   "sourceDriftSinceAudits": [
     {
-      "category": "external",
-      "sourceModifiedSinceAudit": [
-        "index.html"
-      ]
-    },
-    {
       "category": "reflow",
       "sourceModifiedSinceAudit": [
         "index.html"
@@ -168,12 +160,6 @@
     {
       "sourceDrift": [
         {
-          "category": "external",
-          "sourceModifiedSinceAudit": [
-            "index.html"
-          ]
-        },
-        {
           "category": "reflow",
           "sourceModifiedSinceAudit": [
             "index.html"
@@ -201,7 +187,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42128264988",
-  "run_sha": "88a4981e7e2902a34145c883667bbfd36a5194f3",
+  "workflow_run_id": "42128291884",
+  "run_sha": "3877cb8f3e9f2d6026bc34ad8303e1c8a3534dfb",
   "exit_code": "1"
 }
