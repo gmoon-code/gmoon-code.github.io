@@ -1636,7 +1636,11 @@ function liveLayoutRules(patches=[...livePatches.values()],doc=null){
       }
       if(linkedFrame){
         const priority=":root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) ";
-        selectors.push(priority+linkedFrame.figure+"{overflow:visible!important;}");
+        // A legacy independent-image resize can extend beyond its linked
+        // figure. Keep that one edited figure above neighbouring cards so
+        // its revealed pixels remain visible without resizing the grid.
+        selectors.push(priority+linkedFrame.figure+
+          "{position:relative!important;z-index:2!important;overflow:visible!important;}");
         selectors.push(priority+linkedFrame.link+"{overflow:visible!important;}");
         selectors.push(editedSourceImageSelector(patch)+"{border-radius:14px!important;}");
       }
