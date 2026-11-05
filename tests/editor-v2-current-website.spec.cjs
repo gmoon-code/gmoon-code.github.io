@@ -3994,7 +3994,18 @@ test('Rapid pointer events finish the final crop and resize before mouse release
       return {x:r.left,y:r.top,w:r.width,h:r.height,src:el.getAttribute('src'),
         bg:s.backgroundImage};
     });
-    const initial=await rect(image),other=await rect(sibling);
+    // Compare untouched siblings in document coordinates. Undo reloads the
+    // iframe and may restore a different viewport scroll position in Firefox.
+    // Rectangles measured only relative to the viewport would report a false
+    // neighbour movement even when its document layout stayed unchanged.
+    const siblingMetrics=()=>sibling.evaluate(el=>{
+      const r=el.getBoundingClientRect(),css=getComputedStyle(el);
+      const view=el.ownerDocument.defaultView;
+      return {x:r.left+view.scrollX,y:r.top+view.scrollY,
+        w:r.width,h:r.height,src:el.getAttribute('src'),
+        bg:css.backgroundImage,objectFit:css.objectFit,clipPath:css.clipPath};
+    });
+    const initial=await rect(image),other=await siblingMetrics();
     await image.click();
     await expect(page.locator('#livePhotoCardMode')).toBeChecked();
     await page.locator('#cropImageTool').click();
@@ -4024,7 +4035,7 @@ test('Rapid pointer events finish the final crop and resize before mouse release
     const cropped=await rect(image);
     expect(cropped.w,'final crop event must not be dropped').toBeLessThan(initial.w-40);
     expect(cropped.x).toBeGreaterThan(initial.x+40);
-    expect(await rect(sibling)).toEqual(other);
+    expect(await siblingMetrics()).toEqual(other);
     const key='moon-academic-editor-v2:source:pungmul.html';
     const draft=await page.evaluate(k=>JSON.parse(localStorage.getItem(k)),key);
     expect(draft.filter(p=>p.kind==='image')).toHaveLength(1);
@@ -4044,10 +4055,10 @@ test('Rapid pointer events finish the final crop and resize before mouse release
     await rapidDrag('se',45,45);
     const resized=await rect(image);
     expect(resized.w,'final resize event must not be dropped').toBeGreaterThan(initial.w+25);
-    expect(await rect(sibling)).toEqual(other);
+    expect(await siblingMetrics()).toEqual(other);
     await page.locator('#undo').click();
     const reset=await rect(image);
     expect(Math.abs(reset.w-initial.w)).toBeLessThan(3);
-    expect(await rect(sibling)).toEqual(other);
+    expect(await siblingMetrics()).toEqual(other);
     expect(writes).toEqual([]);
   });
