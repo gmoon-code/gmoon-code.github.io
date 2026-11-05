@@ -3159,7 +3159,20 @@ test('A duplicated historical Interests section anchor never remaps an old conta
   expect(old).not.toBe(expected);
   const patch={selector:'main > section:nth-of-type(2)',kind:'layout',
     tag:'section',expected:old,layout:{desktop:{dx:25,dy:0,sx:1,sy:1}}};
-  const key='moon-academic-editor-v2:source:'+name,raw=JSON.stringify([patch]);
+  const photo=await page.frameLocator('#livePageFrame')
+    .locator('main section.section').first().locator('img').first().evaluate(img=>{
+      const parts=[];
+      for(let node=img;node&&node.tagName!=='MAIN';node=node.parentElement){
+        const siblings=[...node.parentElement.children].filter(el=>el.tagName===node.tagName);
+        parts.unshift(node.tagName.toLowerCase()+':nth-of-type('+
+          (siblings.indexOf(node)+1)+')');
+      }
+      return {selector:'main > '+parts.join(' > '),
+        src:img.getAttribute('src'),alt:img.alt};
+    });
+  const imagePatch={selector:photo.selector,kind:'image',tag:'img',
+    expected:photo.src,src:photo.src,alt:photo.alt};
+  const key='moon-academic-editor-v2:source:'+name,raw=JSON.stringify([patch,imagePatch]);
   await page.evaluate(([k,v])=>localStorage.setItem(k,v),[key,raw]);
   await page.reload({waitUntil:'domcontentloaded'});
   await expect(page.locator('#liveAssetStatus'))
@@ -3168,6 +3181,11 @@ test('A duplicated historical Interests section anchor never remaps an old conta
   await expect(page.locator('#previewDialog')).toBeHidden();
   await expect(page.locator('#status')).toContainText(
     'No matching original element for saved section/container positioning edit');
+  await page.locator('#publish').click();
+  await page.locator('#checkPublishEdits').click();
+  await expect(page.locator('#publishError')).toContainText(
+    'saved section/container positioning edit');
+  expect(await page.locator('#imageReconnectPanel').evaluate(el=>el.open)).toBe(false);
   expect(await page.evaluate(k=>localStorage.getItem(k),key)).toBe(raw);
   expect(writes).toEqual([]);
 });
