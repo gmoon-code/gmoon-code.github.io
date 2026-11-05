@@ -4008,8 +4008,14 @@ test('Pungmul prose box resizes numerically and by grip despite high-specificity
     expect(narrow.fontSize).toBe(initial.fontSize);
     expect(await paragraph.textContent()).toBe(originalText);
     const targetHeight=Math.round(Math.max(narrow.h,initial.h)+70);
-    await page.locator('#liveTextBoxHeight').fill(String(targetHeight));
-    await page.locator('#liveTextBoxHeight').dispatchEvent('change');
+    const heightInput=page.locator('#liveTextBoxHeight');
+    await heightInput.fill(String(targetHeight));
+    const afterFill={value:await heightInput.inputValue(),metrics:await position(paragraph),
+      draft:await page.evaluate(()=>JSON.parse(localStorage.getItem(
+        'moon-academic-editor-v2:source:pungmul.html')||'[]')
+          .filter(p=>p.selector.endsWith(' > p:nth-of-type(1)'))
+          .map(p=>p.layout?.desktop))};
+    await heightInput.dispatchEvent('change');
     const tall=await position(paragraph);
     if(Math.abs(tall.h-targetHeight)>=4){
       const field=await page.locator('#liveTextBoxHeight').inputValue();
@@ -4018,7 +4024,7 @@ test('Pungmul prose box resizes numerically and by grip despite high-specificity
           .filter(p=>p.selector.endsWith(' > p:nth-of-type(1)'))
           .map(p=>({selector:p.selector,layout:p.layout})));
       throw new Error('Pungmul text box height mismatch '+JSON.stringify({
-        initial,narrow,targetHeight,tall,field,draft}));
+        initial,narrow,targetHeight,afterFill,tall,field,draft}));
     }
     const grip=frame.locator('#moon-v2-live-overlay .moon-v2-grip[data-direction="e"]');
     await paragraph.evaluate(node=>node.scrollIntoView({block:'center'}));
