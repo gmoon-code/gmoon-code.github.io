@@ -2343,8 +2343,10 @@ for(const name of ['pungmul.html','contact.html']){
         .not.toBe(cropBefore);
       const stored=await page.evaluate(name=>
         JSON.parse(localStorage.getItem('moon-academic-editor-v2:source:'+name)||'[]'),name);
-      expect(stored.some(p=>p.kind==='image'&&p.layout?.desktop&&p.imageCrop?.desktop))
-        .toBe(true);
+      expect(stored.some(p=>
+        (p.kind==='image'&&p.layout?.desktop&&p.imageCrop?.desktop)||
+        (p.kind==='insert'&&p.objectType==='image'&&
+          p.geometry?.desktop&&p.imageCrop?.desktop))).toBe(true);
       await page.locator('#preview').click();
       await expect(page.locator('#previewDialog')).toBeVisible();
       await expect(page.frameLocator('#previewFrame').locator('main img:visible').first())
