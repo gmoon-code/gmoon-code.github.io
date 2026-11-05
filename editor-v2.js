@@ -3052,6 +3052,7 @@ function renderLiveInspector(){
     liveImageInputNode=null;liveImageInputDirty=false;
   }
   const selector=node&&liveSelector(node);
+  $("liveImageOriginNotice").hidden=!(tag==="IMG"&&LIVE_ADDED_ID.test(selector||""));
   $("revertLiveElement").disabled=!selector||!livePatches.has(selector);
   $("deleteLiveElement").disabled=!node||!selector||!!liveEditing;
   refreshUndo();
