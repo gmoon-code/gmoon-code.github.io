@@ -4022,12 +4022,16 @@ test('Pungmul prose box resizes numerically and by grip despite high-specificity
     const tall=await position(paragraph);
     expect(Math.abs(tall.h-targetHeight),'Pungmul prose height must be resizable')
       .toBeLessThan(4);
+    // Leaving the text height field can keep the outer editor focused in
+    // Firefox. Re-select the text on its own live page before dragging.
+    await paragraph.click();
     const grip=frame.locator('#moon-v2-live-overlay .moon-v2-grip[data-direction="e"]');
     await paragraph.evaluate(node=>node.scrollIntoView({block:'center'}));
     await expect(grip).toBeVisible();
     await grip.hover();
     const gripBox=await grip.boundingBox();
     const x=gripBox.x+gripBox.width/2,y=gripBox.y+gripBox.height/2;
+    await page.mouse.move(x,y);
     await page.mouse.down();
     await page.mouse.move(x+48,y,{steps:6});
     await page.mouse.up();
