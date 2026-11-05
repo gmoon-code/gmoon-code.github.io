@@ -479,7 +479,7 @@ function inlineViewStatus(){
     " · GitHub source plus local edits, NOT the actual public page. "+
     "Switch to Actual published page to compare at the same width.";
   $("inlineDraftView").textContent="Edit my draft"+(count?" ("+count+")":"");
-  $("freshSourceActionBar").hidden=actual||count===0;
+  $("startFreshLiveDraftTop").disabled=actual||count===0;
   $("downloadLastPublishedLiveDraft").hidden=!hasLastPublishedLiveBackup();
   $("workspacePill").textContent=actual?
     "Actual public URL · read only":
