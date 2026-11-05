@@ -3419,7 +3419,7 @@ for(const [pageName,gallery] of [
     const siblingBeforeMove=await sibling.getAttribute('class');
     const startingY=await figure.evaluate(x=>{
       const value=getComputedStyle(x).translate;
-      return value==='none'?0:(Number.parseFloat(value.split(/\\s+/)[1]||'0')||0);
+      return value==='none'?0:(Number.parseFloat(value.trim().split(' ').filter(Boolean)[1]||'0')||0);
     });
     await page.locator('#liveMoveY').fill('24');
     await page.locator('#liveMoveY').dispatchEvent('change');
@@ -3427,7 +3427,7 @@ for(const [pageName,gallery] of [
     // Moving it 24px retains that starting position rather than resetting it.
     await expect.poll(()=>figure.evaluate(x=>{
       const value=getComputedStyle(x).translate;
-      return value==='none'?0:(Number.parseFloat(value.split(/\\s+/)[1]||'0')||0);
+      return value==='none'?0:(Number.parseFloat(value.trim().split(' ').filter(Boolean)[1]||'0')||0);
     })).toBe(startingY+24);
     expect(await sibling.getAttribute('class')).toBe(siblingBeforeMove);
     expect(await photo.getAttribute('src')).toBe(source);
