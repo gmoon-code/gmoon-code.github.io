@@ -1,12 +1,12 @@
 {
-  "sourceHead": "71540616aa914e5c296de82d9d7d47e63d3d686a",
+  "sourceHead": "1603d4b5f65f293e5e0d2a6d0f18c462820d7631",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
-  "verifiedExactMatches": 23,
-  "httpErrors": 1,
+  "verifiedExactMatches": 24,
+  "httpErrors": 0,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-71540616aa91",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-1603d4b5f65f",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -65,12 +65,10 @@
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "41982717934",
-      "head_sha": "61c04acadae1e8a76d4f9c06f46778ab2ecd6323",
+      "run": "41982737658",
+      "head_sha": "258b2cf810f11e786b83f7f752cb99dd17f47fb0",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "interests.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0
       }
@@ -110,50 +108,14 @@
       "sourceModifiedSinceAudit": [
         "interests.html"
       ]
-    },
-    {
-      "category": "engines",
-      "sourceModifiedSinceAudit": [
-        "interests.html"
-      ]
     }
   ],
   "pass": false,
   "errors": [
     {
-      "path": "interests.html",
-      "errors": [
-        "deployed bytes differ from checked-out production source"
-      ],
-      "firstDiff": [
-        "--- source\n",
-        "+++ deployed\n",
-        "@@ -17,3 +17,3 @@\n",
-        "   </style>",
-        "-<style id=\"moon-v2-live-layout\"></style></head>",
-        "+</head>",
-        " <body class=\"theme-yellow\">",
-        "@@ -42,6 +42,6 @@\n",
-        "       <div class=\"pungmul-gallery\" aria-label=\"Pungmul performances and community\">",
-        "-        <figure><a href=\"assets/interests-pungmul-street.webp\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"View the full-size street performance photograph in a new tab\"><img src=\"assets/interests-pungmul-street.webp\" alt=\"Pungmul performers in colourful ribbons and traditional hats playing in a city street while spectators watch\" loading=\"eager\" decoding=\"async\" width=\"1400\" height=\"788\"></a></figure>",
-        "-        <figure><a href=\"assets/interests-pungmul-dancers.webp\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"View the full-size stage performance photograph in a new tab\"><img src=\"assets/interests-pungmul-dancers.webp\" alt=\"Two pungmul performers in white costumes with colourful hats and ribbons dancing while playing drums on stage\" loading=\"eager\" decoding=\"async\" width=\"1400\" height=\"1050\"></a></figure>",
-        "+        <figure><a href=\"assets/interests-pungmul-street.webp\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"View the full-size street performance photograph in a new tab\"><img src=\"assets/interests-pungmul-street.webp\" alt=\"Pungmul performers in colourful ribbons and traditional hats playing in a city street while spectators watch\" loading=\"eager\" decoding=\"async\" width=\"1400\" height=\"788\"></a><figcaption>Playing in the street</figcaption></figure>",
-        "+        <figure><a href=\"assets/interests-pungmul-dancers.webp\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"View the full-size stage performance photograph in a new tab\"><img src=\"assets/interests-pungmul-dancers.webp\" alt=\"Two pungmul performers in white costumes with colourful hats and ribbons dancing while playing drums on stage\" loading=\"eager\" decoding=\"async\" width=\"1400\" height=\"1050\"></a><figcaption>On stage together</figcaption></figure>",
-        "       </div>",
-        "-      ",
-        "+      <p class=\"media-cover-source\">Pungmul photographs from my personal collection.</p>"
-      ]
-    },
-    {
       "sourceDrift": [
         {
           "category": "external",
-          "sourceModifiedSinceAudit": [
-            "interests.html"
-          ]
-        },
-        {
-          "category": "engines",
           "sourceModifiedSinceAudit": [
             "interests.html"
           ]
@@ -162,7 +124,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "41982973151",
-  "run_sha": "71540616aa914e5c296de82d9d7d47e63d3d686a",
+  "workflow_run_id": "41983115850",
+  "run_sha": "1603d4b5f65f293e5e0d2a6d0f18c462820d7631",
   "exit_code": "1"
 }
