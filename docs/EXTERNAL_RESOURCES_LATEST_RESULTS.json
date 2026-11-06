@@ -1,18 +1,18 @@
 {
   "pages_scanned": 19,
-  "distinct_destinations": 122,
+  "distinct_destinations": 109,
   "counts": {
-    "reachable": 76,
-    "unverified": 46
+    "reachable": 69,
+    "unverified": 40
   },
   "by_category": {
     "external": {
-      "reachable": 52,
+      "reachable": 50,
       "unverified": 1
     },
     "scholarly-identifier": {
-      "unverified": 45,
-      "reachable": 21
+      "unverified": 39,
+      "reachable": 16
     },
     "separate-site-application": {
       "reachable": 3
@@ -419,25 +419,6 @@
       "warnings": []
     },
     {
-      "url": "https://doi.org/10.1080/07491409.2023.2193543",
-      "status": "unverified",
-      "category": "scholarly-identifier",
-      "pages": [
-        "research.html"
-      ],
-      "head": {
-        "code": 403,
-        "finalUrl": "https://www.tandfonline.com/doi/full/10.1080/07491409.2023.2193543",
-        "error": "Forbidden"
-      },
-      "get": {
-        "code": 403,
-        "finalUrl": "https://www.tandfonline.com/doi/full/10.1080/07491409.2023.2193543",
-        "error": "Forbidden"
-      },
-      "warnings": []
-    },
-    {
       "url": "https://doi.org/10.1080/09500690903386435",
       "status": "unverified",
       "category": "scholarly-identifier",
@@ -509,25 +490,6 @@
       "get": {
         "code": 403,
         "finalUrl": "https://www.tandfonline.com/doi/full/10.1080/10508400903452884",
-        "error": "Forbidden"
-      },
-      "warnings": []
-    },
-    {
-      "url": "https://doi.org/10.1080/14675986.2015.1109775",
-      "status": "unverified",
-      "category": "scholarly-identifier",
-      "pages": [
-        "research.html"
-      ],
-      "head": {
-        "code": 403,
-        "finalUrl": "https://www.tandfonline.com/doi/full/10.1080/14675986.2015.1109775",
-        "error": "Forbidden"
-      },
-      "get": {
-        "code": 403,
-        "finalUrl": "https://www.tandfonline.com/doi/full/10.1080/14675986.2015.1109775",
         "error": "Forbidden"
       },
       "warnings": []
@@ -610,25 +572,6 @@
       "warnings": []
     },
     {
-      "url": "https://doi.org/10.1093/applin/amab044",
-      "status": "unverified",
-      "category": "scholarly-identifier",
-      "pages": [
-        "research.html"
-      ],
-      "head": {
-        "code": 403,
-        "finalUrl": "https://academic.oup.com/applij/article/43/2/316/6375538",
-        "error": "Forbidden"
-      },
-      "get": {
-        "code": 403,
-        "finalUrl": "https://academic.oup.com/applij/article/43/2/316/6375538",
-        "error": "Forbidden"
-      },
-      "warnings": []
-    },
-    {
       "url": "https://doi.org/10.1093/biosci/biac013",
       "status": "unverified",
       "category": "scholarly-identifier",
@@ -705,25 +648,6 @@
       "warnings": []
     },
     {
-      "url": "https://doi.org/10.1177/01614681251401633",
-      "status": "unverified",
-      "category": "scholarly-identifier",
-      "pages": [
-        "research.html"
-      ],
-      "head": {
-        "code": 403,
-        "finalUrl": "https://journals.sagepub.com/doi/10.1177/01614681251401633",
-        "error": "Forbidden"
-      },
-      "get": {
-        "code": 403,
-        "finalUrl": "https://journals.sagepub.com/doi/10.1177/01614681251401633",
-        "error": "Forbidden"
-      },
-      "warnings": []
-    },
-    {
       "url": "https://doi.org/10.1187/cbe.23-08-0157",
       "status": "unverified",
       "category": "scholarly-identifier",
@@ -757,25 +681,6 @@
       "get": {
         "code": 403,
         "finalUrl": "https://www.tandfonline.com/doi/abs/10.1207/S1532690XCI2004_1",
-        "error": "Forbidden"
-      },
-      "warnings": []
-    },
-    {
-      "url": "https://doi.org/10.2304/ciec.2011.12.4.362",
-      "status": "unverified",
-      "category": "scholarly-identifier",
-      "pages": [
-        "research.html"
-      ],
-      "head": {
-        "code": 403,
-        "finalUrl": "https://journals.sagepub.com/doi/10.2304/ciec.2011.12.4.362",
-        "error": "Forbidden"
-      },
-      "get": {
-        "code": 403,
-        "finalUrl": "https://journals.sagepub.com/doi/10.2304/ciec.2011.12.4.362",
         "error": "Forbidden"
       },
       "warnings": []
@@ -839,25 +744,6 @@
       "warnings": []
     },
     {
-      "url": "https://doi.org/10.3138/cmlr-2021-0055",
-      "status": "unverified",
-      "category": "scholarly-identifier",
-      "pages": [
-        "research.html"
-      ],
-      "head": {
-        "code": 403,
-        "finalUrl": "https://utppublishing.com/doi/10.3138/cmlr-2021-0055",
-        "error": "Forbidden"
-      },
-      "get": {
-        "code": 403,
-        "finalUrl": "https://utppublishing.com/doi/10.3138/cmlr-2021-0055",
-        "error": "Forbidden"
-      },
-      "warnings": []
-    },
-    {
       "url": "https://doi.org/10.3390/plants10081501",
       "status": "unverified",
       "category": "scholarly-identifier",
@@ -915,13 +801,29 @@
   ],
   "limits": "HTTP availability is not content authenticity or DOI landing-page accuracy. 403, 429, DNS, SSL, and timeout results remain unverified.",
   "doi_registry": {
-    "checked": 45,
+    "checked": 39,
     "counts": {
-      "registered": 34,
-      "not-confirmed": 11
+      "not-confirmed": 10,
+      "registered": 29
     },
-    "secondary_index_matches": 11,
+    "secondary_index_matches": 10,
     "not_confirmed": [
+      {
+        "url": "https://doi.org/10.1002/sce.20264",
+        "doi": "10.1002/sce.20264",
+        "pages": [
+          "teaching-ap-biology.html"
+        ],
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.20264",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Recognizing mechanistic reasoning in student scientific inquiry: A framework for discourse analysis developed from philosophy of science",
+        "indexedYear": 2008
+      },
       {
         "url": "https://doi.org/10.1002/sce.21099",
         "doi": "10.1002/sce.21099",
@@ -939,83 +841,51 @@
         "indexedYear": 2014
       },
       {
-        "url": "https://doi.org/10.1002/sce.21112",
-        "doi": "10.1002/sce.21112",
+        "url": "https://doi.org/10.1002/sce.21622",
+        "doi": "10.1002/sce.21622",
         "pages": [
-          "research.html"
+          "research-scoping.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21112",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21622",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Examining Classroom Science Practice Communities: How Teachers and Students Negotiate Epistemic Agency and Learn Science‐as‐Practice",
-        "indexedYear": 2014
-      },
-      {
-        "url": "https://doi.org/10.1002/sce.21511",
-        "doi": "10.1002/sce.21511",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21511",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Opening up curricula to redistribute epistemic agency: A framework for supporting science teaching",
-        "indexedYear": 2019
-      },
-      {
-        "url": "https://doi.org/10.1002/tea.21714",
-        "doi": "10.1002/tea.21714",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21714",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Science engagement as insight into the science identity work nurtured in community‐based science clubs",
+        "indexedTitle": "Scientific modeling and translanguaging: A multilingual and multimodal approach to support science learning and engagement",
         "indexedYear": 2021
       },
       {
-        "url": "https://doi.org/10.1002/tea.21944",
-        "doi": "10.1002/tea.21944",
+        "url": "https://doi.org/10.1002/tea.20237",
+        "doi": "10.1002/tea.20237",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21944",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.20237",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Asset and deficit discourses of student ideas in science formative assessment co‐design",
-        "indexedYear": 2024
+        "indexedTitle": "Understanding the science experiences of successful women of color: Science identity as an analytic lens",
+        "indexedYear": 2007
       },
       {
-        "url": "https://doi.org/10.1080/07491409.2023.2193543",
-        "doi": "10.1080/07491409.2023.2193543",
+        "url": "https://doi.org/10.1080/03626784.2023.2200810",
+        "doi": "10.1080/03626784.2023.2200810",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/07491409.2023.2193543",
+        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/03626784.2023.2200810",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "TERF Logics Are Carceral Logics: Toward the Abolition of Gender-Critical Movements or Black Trans Life as Pedagogical Praxis",
+        "indexedTitle": "You don’t know me: Welcoming gender diversity in schools via an ethic of hospitality",
         "indexedYear": 2023
       },
       {
@@ -1035,36 +905,36 @@
         "indexedYear": 2010
       },
       {
-        "url": "https://doi.org/10.1111/j.1365-2729.1991.tb00230.x",
-        "doi": "10.1111/j.1365-2729.1991.tb00230.x",
-        "pages": [
-          "teaching-ap-chemistry.html"
-        ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1111/j.1365-2729.1991.tb00230.x",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Why is science difficult to learn? Things are seldom what they seem",
-        "indexedYear": 1991
-      },
-      {
-        "url": "https://doi.org/10.1177/01614681251401633",
-        "doi": "10.1177/01614681251401633",
+        "url": "https://doi.org/10.1080/09585176.2018.1481442",
+        "doi": "10.1080/09585176.2018.1481442",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://journals.sagepub.com/doi/10.1177/01614681251401633",
+        "publisherLanding": "https://bera-journals.onlinelibrary.wiley.com/doi/10.1080/09585176.2018.1481442",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Queer Joy as Pedagogy",
-        "indexedYear": 2025
+        "indexedTitle": "Supporting teacher responsiveness in assessment for learning through disciplined noticing",
+        "indexedYear": 2018
+      },
+      {
+        "url": "https://doi.org/10.1080/1046560X.2022.2155355",
+        "doi": "10.1080/1046560X.2022.2155355",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/1046560X.2022.2155355",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Teacher Noticing for Supporting Students’ Epistemic Agency in Science Sensemaking Discussions",
+        "indexedYear": 2023
       },
       {
         "url": "https://doi.org/10.3102/0034654314558490",
@@ -1102,7 +972,7 @@
     "unresolved": [],
     "limitation": "Crossref/DataCite registration is distinct from publisher access, correct article metadata or article availability. OpenAlex is independent secondary corroboration, not registration proof."
   },
-  "workflow_run_id": "42148888898",
-  "head_sha": "ee906c0a87f98e1e1c6ab07fe45fb44fb2d864af",
+  "workflow_run_id": "42149780279",
+  "head_sha": "e4e985146f7b5f9481c2e7fc4d99f8dd46459a9d",
   "audit_exit_code": "0"
 }
