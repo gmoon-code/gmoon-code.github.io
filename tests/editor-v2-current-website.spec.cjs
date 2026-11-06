@@ -643,7 +643,11 @@ for(const name of PAGES){
     await expect(page.locator('#liveAssetStatus'))
       .toContainText('GitHub main source verified',{timeout:35000});
     const live=page.frameLocator('#livePageFrame');
-    const paragraph=live.locator('main p:visible').first();
+    // The Home intro is independently tested for click and sizing below.
+    // Use a reachable source paragraph for this generic text-publishing test.
+    const paragraphSelector=name==='index.html'?
+      'main #teaching-research .home-path p:visible':'main p:visible';
+    const paragraph=live.locator(paragraphSelector).first();
     await expect(paragraph).toBeVisible();
     const original=await paragraph.textContent();
     expect(original?.trim().length).toBeGreaterThan(0);
@@ -662,7 +666,7 @@ for(const name of PAGES){
     expect(JSON.parse(draft).some(p=>p.kind==='text')).toBe(true);
     await page.locator('#preview').click();
     await expect(page.locator('#previewDialog')).toBeVisible({timeout:20000});
-    await expect(page.frameLocator('#previewFrame').locator('main p:visible').first())
+    await expect(page.frameLocator('#previewFrame').locator(paragraphSelector).first())
       .toHaveText(synthetic,{timeout:20000});
     const html=await page.locator('#previewFrame').getAttribute('srcdoc');
     expect(html).toContain(synthetic);
@@ -670,7 +674,7 @@ for(const name of PAGES){
     await page.reload({waitUntil:'domcontentloaded'});
     await expect(page.locator('#liveAssetStatus'))
       .toContainText('GitHub main source verified',{timeout:35000});
-    await expect(page.frameLocator('#livePageFrame').locator('main p:visible').first())
+    await expect(page.frameLocator('#livePageFrame').locator(paragraphSelector).first())
       .toHaveText(synthetic,{timeout:20000});
     expect(writes,name+' text editing must remain unpublished').toEqual([]);
     const published=[];
@@ -4259,3 +4263,91 @@ test('Rapid pointer events finish the final crop and resize before mouse release
     expect(await siblingMetrics()).toEqual(other);
     expect(writes).toEqual([]);
   });
+
+
+test('Home Hello introductory paragraph can shrink below site-authored size and 64px minimum',async({page})=>{
+  const writes=[];
+  await installVerifiedCurrentSource(page,writes);
+  await page.setViewportSize({width:1740,height:1050});
+  await page.goto(BASE+'/editor-v2.html?page=index.html',{waitUntil:'domcontentloaded'});
+  await expect(page.locator('#liveAssetStatus'))
+    .toContainText('GitHub main source verified',{timeout:35000});
+  const live=page.frameLocator('#livePageFrame');
+  const lead=live.locator('main.home-page .home-intro .hero-copy > p.home-lead');
+  const other=live.locator('#teaching-research .home-path p').first();
+  await expect(lead).toContainText('I teach secondary biology and chemistry');
+  const measure=el=>el.evaluate(node=>{
+    const r=node.getBoundingClientRect(),css=getComputedStyle(node);
+    return {w:r.width,h:r.height,font:css.fontSize,
+      text:node.textContent.replace(/\\s+/g,' ').trim()};
+  });
+  const before=await measure(lead),untouched=await measure(other);
+  expect(before.w).toBeGreaterThan(300);
+  expect(before.h).toBeGreaterThan(200);
+  // Real pointer input must select the visual paragraph even when the
+  // surrounding Home hero div receives the actual browser hit.
+  await lead.scrollIntoViewIfNeeded();
+  const hitBox=await lead.boundingBox();
+  expect(hitBox).toBeTruthy();
+  await page.mouse.click(hitBox.x+Math.min(18,hitBox.width/4),
+    hitBox.y+Math.min(18,hitBox.height/4));
+  await expect(page.locator('#liveSelectionLabel')).toContainText('Hello!');
+  await expect(page.locator('#liveTextReflowControls')).toBeVisible();
+  const width=page.locator('#liveTextBoxWidth'),
+    height=page.locator('#liveTextBoxHeight');
+  await expect(width).toHaveAttribute('min','16');
+  await expect(height).toHaveAttribute('min','16');
+  // First exercise the visual, mouse-driven controls, not only number fields.
+  const drag=async(dir,dx,dy)=>{
+    const grip=live.locator('#moon-v2-live-overlay .moon-v2-grip[data-direction="'+dir+'"]');
+    await expect(grip).toBeVisible();
+    await grip.hover();
+    const b=await grip.boundingBox();
+    expect(b).toBeTruthy();
+    const x=b.x+b.width/2,y=b.y+b.height/2;
+    await page.mouse.down();
+    await page.mouse.move(x+dx,y+dy,{steps:8});
+    await page.mouse.up();
+  };
+  await drag('e',-260,0);
+  const draggedWidth=await measure(lead);
+  expect(draggedWidth.w).toBeLessThan(before.w-130);
+  expect(draggedWidth.font).toBe(before.font);
+  await drag('s',0,-160);
+  const draggedHeight=await measure(lead);
+  expect(draggedHeight.h).toBeLessThan(before.h-80);
+  expect(draggedHeight.text).toBe(before.text);
+  await width.fill('42');
+  await width.dispatchEvent('change');
+  await height.fill('18');
+  await height.dispatchEvent('change');
+  const shrunk=await measure(lead);
+  expect(Math.abs(shrunk.w-42),'Home lead must respect the exact smaller width').toBeLessThan(3);
+  expect(Math.abs(shrunk.h-18),'Home lead must respect the exact smaller height').toBeLessThan(3);
+  expect(shrunk.font).toBe(before.font);
+  expect(shrunk.text).toBe(before.text);
+  const adjacent=await measure(other);
+  expect({font:adjacent.font,text:adjacent.text}).toEqual(
+    {font:untouched.font,text:untouched.text});
+  const draft=JSON.parse(await page.evaluate(()=>
+    localStorage.getItem('moon-academic-editor-v2:source:index.html')));
+  expect(draft).toHaveLength(1);
+  expect(draft[0].layout.desktop.wrapWidth).toBe(42);
+  expect(draft[0].layout.desktop.reserveHeight).toBe(18);
+  await page.locator('#preview').click();
+  await expect(page.locator('#previewDialog')).toBeVisible();
+  const preview=page.frameLocator('#previewFrame')
+    .locator('main.home-page .home-intro .hero-copy > p.home-lead');
+  const check=await measure(preview);
+  expect(Math.abs(check.w-42)).toBeLessThan(3);
+  expect(Math.abs(check.h-18)).toBeLessThan(3);
+  expect(check.text).toBe(before.text);
+  await page.locator('#closePreview').click();
+  await page.reload({waitUntil:'domcontentloaded'});
+  await expect(page.locator('#liveAssetStatus'))
+    .toContainText('GitHub main source verified',{timeout:35000});
+  const restored=await measure(live.locator('main.home-page .home-intro .hero-copy > p.home-lead'));
+  expect(Math.abs(restored.w-42)).toBeLessThan(3);
+  expect(Math.abs(restored.h-18)).toBeLessThan(3);
+  expect(writes).toEqual([]);
+});
