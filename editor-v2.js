@@ -1255,6 +1255,17 @@ const LIVE_CONTAINER_TAGS="section,article,aside,figure,div,nav,ul,ol";
 const LIVE_EDITABLE_TAGS="h1,h2,h3,h4,h5,h6,p,li,figcaption,blockquote,img";
 const LIVE_SELECTABLE_TAGS=LIVE_EDITABLE_TAGS+","+LIVE_CONTAINER_TAGS;
 function liveEventTarget(event){
+  // The Home lead is deliberately free-positioned inside its hero copy.
+  // Some desktop source styles put the parent div above its visual box, so
+  // the div receives pointerdown while the paragraph is visibly underneath.
+  // Select only this exact paragraph when the click is inside its box.
+  if(currentPage==="index.html"&&!liveSectionPickMode&&!event.altKey&&
+     event.target.matches?.("main.home-page .home-intro .hero-copy")){
+    const lead=event.target.querySelector(":scope > p.home-lead.moon-free-absolute");
+    const r=lead?.getBoundingClientRect();
+    if(r&&event.clientX>=r.left&&event.clientX<=r.right&&
+       event.clientY>=r.top&&event.clientY<=r.bottom)return lead;
+  }
   // Section mode chooses a whole section from any descendant, including
   // links, text, photos, cards and their nested divs.
   if(liveSectionPickMode){
