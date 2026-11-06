@@ -1,5 +1,5 @@
 {
-  "testedAt": "2026-11-06T03:47:38.646Z",
+  "testedAt": "2026-11-06T03:55:27.287Z",
   "results": [
     {
       "path": "index.html",
@@ -95,8 +95,8 @@
           "complete": true,
           "renderedWidth": 736,
           "renderedHeight": 527,
-          "left": 486,
-          "right": 1222,
+          "left": 484,
+          "right": 1220,
           "alt": "Figure comparing numbers of articles with linguistic and expansive views of language by focal science practice. Modelling: 2 and 8; constructing explanations: 6 and 3; argumentation: 9 and 2; communicating information: 1 and 0; all eight practices: 0 and 3. Asking questions, planning investigations, analysing data, and computational thinking each have zero in both groups.",
           "loading": "lazy",
           "source": "https://gmoon-code.github.io/assets/gonzalez-howard-2023-figure-1.webp"
