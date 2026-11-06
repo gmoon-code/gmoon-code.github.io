@@ -4259,3 +4259,68 @@ test('Rapid pointer events finish the final crop and resize before mouse release
     expect(await siblingMetrics()).toEqual(other);
     expect(writes).toEqual([]);
   });
+
+
+test('Home Hello introductory paragraph can shrink below site-authored size and 64px minimum',async({page})=>{
+  const writes=[];
+  await installVerifiedCurrentSource(page,writes);
+  await page.setViewportSize({width:1740,height:1050});
+  await page.goto(BASE+'/editor-v2.html?page=index.html',{waitUntil:'domcontentloaded'});
+  await expect(page.locator('#liveAssetStatus'))
+    .toContainText('GitHub main source verified',{timeout:35000});
+  const live=page.frameLocator('#livePageFrame');
+  const lead=live.locator('main.home-page .home-intro .hero-copy > p.home-lead');
+  const other=live.locator('#teaching-research .home-path p').first();
+  await expect(lead).toContainText('I teach secondary biology and chemistry');
+  const measure=el=>el.evaluate(node=>{
+    const r=node.getBoundingClientRect(),css=getComputedStyle(node);
+    return {w:r.width,h:r.height,font:css.fontSize,
+      text:node.textContent.replace(/\\s+/g,' ').trim()};
+  });
+  const before=await measure(lead),untouched=await measure(other);
+  expect(before.w).toBeGreaterThan(300);
+  expect(before.h).toBeGreaterThan(200);
+  // Layers can select this free-positioned source paragraph even when its
+  // pre-existing hero-copy stacking order intercepts direct mouse clicks.
+  await page.locator('#liveElementSearch').fill('Hello!');
+  await page.locator('#liveElementList button.layer')
+    .filter({hasText:'Hello!'}).first().click();
+  await expect(page.locator('#liveTextReflowControls')).toBeVisible();
+  const width=page.locator('#liveTextBoxWidth'),
+    height=page.locator('#liveTextBoxHeight');
+  await expect(width).toHaveAttribute('min','16');
+  await expect(height).toHaveAttribute('min','16');
+  await width.fill('42');
+  await width.dispatchEvent('change');
+  await height.fill('18');
+  await height.dispatchEvent('change');
+  const shrunk=await measure(lead);
+  expect(Math.abs(shrunk.w-42),'Home lead must respect the exact smaller width').toBeLessThan(3);
+  expect(Math.abs(shrunk.h-18),'Home lead must respect the exact smaller height').toBeLessThan(3);
+  expect(shrunk.font).toBe(before.font);
+  expect(shrunk.text).toBe(before.text);
+  const adjacent=await measure(other);
+  expect({font:adjacent.font,text:adjacent.text}).toEqual(
+    {font:untouched.font,text:untouched.text});
+  const draft=JSON.parse(await page.evaluate(()=>
+    localStorage.getItem('moon-academic-editor-v2:source:index.html')));
+  expect(draft).toHaveLength(1);
+  expect(draft[0].layout.desktop.wrapWidth).toBe(42);
+  expect(draft[0].layout.desktop.reserveHeight).toBe(18);
+  await page.locator('#preview').click();
+  await expect(page.locator('#previewDialog')).toBeVisible();
+  const preview=page.frameLocator('#previewFrame')
+    .locator('main.home-page .home-intro .hero-copy > p.home-lead');
+  const check=await measure(preview);
+  expect(Math.abs(check.w-42)).toBeLessThan(3);
+  expect(Math.abs(check.h-18)).toBeLessThan(3);
+  expect(check.text).toBe(before.text);
+  await page.locator('#closePreview').click();
+  await page.reload({waitUntil:'domcontentloaded'});
+  await expect(page.locator('#liveAssetStatus'))
+    .toContainText('GitHub main source verified',{timeout:35000});
+  const restored=await measure(live.locator('main.home-page .home-intro .hero-copy > p.home-lead'));
+  expect(Math.abs(restored.w-42)).toBeLessThan(3);
+  expect(Math.abs(restored.h-18)).toBeLessThan(3);
+  expect(writes).toEqual([]);
+});
