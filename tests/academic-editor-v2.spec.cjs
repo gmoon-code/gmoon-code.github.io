@@ -1127,7 +1127,7 @@ test('style-only changes preserve original paragraph spans, classes and hyperlin
   await expect(live.locator('main p.science span.technical-label')).toHaveText('biotic');
 });
 
-test('reflow text box grows reserved height and moves following text by the same amount',async({page})=>{
+test('manual text width preserves height and following flow until explicit Fit height',async({page})=>{
   const live=page.frameLocator('#livePageFrame');
   const heading=live.locator('main h2').first();
   const paragraph=live.locator('main p').first();
@@ -1150,16 +1150,27 @@ test('reflow text box grows reserved height and moves following text by the same
     headingHeight:node.getBoundingClientRect().height,
     nextY:node.nextElementSibling.getBoundingClientRect().y
   }));
-  // Width reflow legitimately makes the heading taller. The following
-  // paragraph must move by precisely that height, preserving normal flow.
-  const heightGrowth=afterFlow.headingHeight-beforeFlow.headingHeight;
-  const neighbourMovement=afterFlow.nextY-beforeFlow.nextY;
+  // A manual width change must not quietly enlarge its height or move
+  // following flow. Overflow is visible until the author requests Fit height.
+  expect(Math.abs(afterFlow.headingHeight-beforeFlow.headingHeight)).toBeLessThan(2);
+  expect(Math.abs(afterFlow.nextY-beforeFlow.nextY)).toBeLessThan(2);
+  await expect(page.locator('#liveReflowWarning')).toBeVisible();
+  await page.locator('#liveFitReflowHeight').click();
+  const fittedFlow=await heading.evaluate(node=>({
+    headingHeight:node.getBoundingClientRect().height,
+    nextY:node.nextElementSibling.getBoundingClientRect().y
+  }));
+  const heightGrowth=fittedFlow.headingHeight-afterFlow.headingHeight;
+  const neighbourMovement=fittedFlow.nextY-afterFlow.nextY;
   expect(heightGrowth).toBeGreaterThan(20);
   expect(Math.abs(neighbourMovement-heightGrowth)).toBeLessThan(2);
   const font=await heading.evaluate(node=>getComputedStyle(node).fontSize);
   expect(font).toBe('30px');
   await expect(page.locator('#liveResetTextDimensions')).toBeEnabled();
   await expect(page.locator('#undo')).toBeEnabled();
+  await page.locator('#undo').click();
+  await expect(live.locator('main h2')).toHaveCSS('width','150px');
+  await expect(page.locator('#liveReflowWarning')).toBeVisible();
   await page.locator('#undo').click();
   await expect(live.locator('main h2')).not.toHaveCSS('width','150px');
   await page.locator('#redo').click();
@@ -1268,16 +1279,17 @@ test('holding Alt disables live drag snapping and leaves guides hidden',async({p
   await expect(live.locator('#moon-v2-snap-x')).toHaveCount(0);
 });
 
-test('numeric text widths auto-fit height, while deliberately shortened heights warn and can be fitted',async({page})=>{
+test('numeric text widths preserve height, warn about overflow and fit on request',async({page})=>{
   const live=page.frameLocator('#livePageFrame');
   const heading=live.locator('main h2'),neighbour=live.locator('main p').first();
   await heading.click();
+  const originalHeight=Number(await page.locator('#liveTextBoxHeight').inputValue());
   await page.locator('#liveTextBoxWidth').fill('100');
   await page.locator('#liveTextBoxWidth').press('Tab');
   await expect(page.locator('#liveTextBoxWidth')).toHaveValue('100');
-  const autoHeight=Number(await page.locator('#liveTextBoxHeight').inputValue());
-  expect(autoHeight).toBeGreaterThan(24);
-  await expect(page.locator('#liveReflowWarning')).toBeHidden();
+  const unchangedHeight=Number(await page.locator('#liveTextBoxHeight').inputValue());
+  expect(unchangedHeight).toBe(originalHeight);
+  await expect(page.locator('#liveReflowWarning')).toBeVisible();
   // A manually shortened text frame is allowed, but visibly warns when
   // text would overflow. Fit height makes room, with a single Undo step.
   await page.locator('#liveTextBoxHeight').fill('24');

@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex,nofollow">
 <title>Academic Website Editor 2 | Ye Eun Moon</title>
 <link rel="stylesheet" href="editor-v2.css?v=20261105-image-deployment-check-v70">
-<script src="editor-v2.js?v=20261106-drag-frames-v83" defer></script>
+<script src="editor-v2.js?v=20261106-textbox-exact-v84" defer></script>
 </head>
 <body>
 <a class="skip" href="#workspace">Skip to editor canvas</a>
@@ -512,10 +512,10 @@
             </label>
             <p class="help">Text reflows automatically when you resize its box. Font size stays the same. For precise dimensions, enter a width or height below.</p>
             <div class="property-grid">
-              <label>Text box width (px) <input type="number" id="liveTextBoxWidth" min="64" max="4000" step="1"></label>
-              <label>Reserved height (px) <input type="number" id="liveTextBoxHeight" min="24" max="5000" step="1"></label>
+              <label>Text box width (px) <input type="number" id="liveTextBoxWidth" min="16" max="4000" step="1"></label>
+              <label>Reserved height (px) <input type="number" id="liveTextBoxHeight" min="16" max="5000" step="1"></label>
             </div>
-            <p class="help">The box reserves its chosen height in the page layout. If text needs more height, use Fit height to wrapped text to avoid overlap.</p>
+            <p class="help">The box keeps the width and height you choose, even when text extends beyond it. Use Fit height to wrapped text when you want to make room and avoid overlap.</p>
             <div class="inline-actions">
               <button id="liveResetTextDimensions" type="button" disabled>Restore natural text size</button>
               <button id="liveFitReflowHeight" type="button" disabled>Fit height to wrapped text</button>

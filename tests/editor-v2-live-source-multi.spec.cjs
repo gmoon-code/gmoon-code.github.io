@@ -481,14 +481,14 @@ test('locked member blocks whole group alignment but not selection',async({page}
   expect(Math.abs(after-before)).toBeLessThan(1);
 });
 
-test('north-west corner resize reflows original text without clipping or distorting glyphs',async({page})=>{
+test('north-west corner resize preserves chosen text height and fits only on request',async({page})=>{
   const live=page.frameLocator('#livePageFrame');
   const paragraph=live.locator('main p.second');
   await paragraph.click();
   const before=await paragraph.evaluate(node=>{
     const rect=node.getBoundingClientRect();
     return {right:rect.right,bottom:rect.bottom,font:getComputedStyle(node).fontSize,
-      width:rect.width};
+      width:rect.width,height:rect.height,text:node.textContent};
   });
   const grip=live.locator('#moon-v2-live-overlay [data-direction="nw"]');
   const rect=await grip.boundingBox();
@@ -500,13 +500,27 @@ test('north-west corner resize reflows original text without clipping or distort
   const after=await paragraph.evaluate(node=>{
     const rect=node.getBoundingClientRect();
     return {right:rect.right,bottom:rect.bottom,font:getComputedStyle(node).fontSize,
-      width:rect.width,scrollHeight:node.scrollHeight,clientHeight:node.clientHeight};
+      width:rect.width,height:rect.height,text:node.textContent,
+      scrollHeight:node.scrollHeight,clientHeight:node.clientHeight,
+      overflow:getComputedStyle(node).overflow};
   });
   expect(after.width).toBeLessThan(before.width-40);
+  expect(after.height).toBeLessThan(before.height-15);
   expect(after.font).toBe(before.font);
-  expect(after.scrollHeight).toBeLessThanOrEqual(after.clientHeight+3);
+  expect(after.text).toBe(before.text);
+  expect(after.scrollHeight).toBeGreaterThan(after.clientHeight+3);
+  expect(after.overflow).toBe('visible');
   expect(Math.abs(after.right-before.right)).toBeLessThan(4);
   expect(Math.abs(after.bottom-before.bottom)).toBeLessThan(4);
+  await expect(page.locator('#liveReflowWarning')).toBeVisible();
+  await page.locator('#liveFitReflowHeight').click();
+  const fitted=await paragraph.evaluate(node=>({
+    scrollHeight:node.scrollHeight,clientHeight:node.clientHeight,
+    font:getComputedStyle(node).fontSize,text:node.textContent
+  }));
+  expect(fitted.scrollHeight).toBeLessThanOrEqual(fitted.clientHeight+3);
+  expect(fitted.font).toBe(before.font);
+  expect(fitted.text).toBe(before.text);
 });
 
 test('multi-selection corner resize keeps wrapped source text readable',async({page})=>{
