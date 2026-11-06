@@ -1,12 +1,12 @@
 {
-  "sourceHead": "d68cdbe9e5d6a45ffda4e54817f300e238a02247",
+  "sourceHead": "95a4a3ae726ad45b4fade6acdd008e5c2bedc369",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
-  "verifiedExactMatches": 23,
-  "httpErrors": 1,
+  "verifiedExactMatches": 24,
+  "httpErrors": 0,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-d68cdbe9e5d6",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-95a4a3ae726a",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -63,14 +63,12 @@
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "42141858254",
-      "head_sha": "dff6681be1c65f33fff9217384fa10155fbc6472",
-      "exit": "",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ],
+      "run": "42145707398",
+      "head_sha": "3a0d04e16994e7f7a83ad98b4b580d0fefa2bf53",
+      "exit": "0",
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
-        "failures": null
+        "failures": 0
       }
     },
     "typography": {
@@ -106,12 +104,6 @@
   },
   "sourceDriftSinceAudits": [
     {
-      "category": "engines",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ]
-    },
-    {
       "category": "interactions",
       "sourceModifiedSinceAudit": [
         "research.html"
@@ -121,37 +113,7 @@
   "pass": false,
   "errors": [
     {
-      "path": "research.html",
-      "errors": [
-        "deployed bytes differ from checked-out production source"
-      ],
-      "firstDiff": [
-        "--- source\n",
-        "+++ deployed\n",
-        "@@ -88,3 +88,3 @@\n",
-        "       <p>Relationships within a learning setting also affect the authority students can exercise. A longitudinal study followed an early-career teacher negotiating an activist commitment alongside the demands of school practice (<a href=\"#reading-barrett\">Barrett, 2013</a>). In a different setting, students and mentors participating in a robotics competition negotiated authority as they developed scientific and technical knowledge together (<a href=\"#reading-puvirajah\">Puvirajah et al., 2012</a>). Productive disciplinary engagement offers an account of how student authority develops alongside responsibility to peers and access to disciplinary resources (<a href=\"#reading-engle\">Engle &amp; Conant, 2002</a>).</p>",
-        "-      <p id=\"student-directed-inquiry\">Students may have different opportunities to influence collective decisions within a shared inquiry. During a Grade 7 Science and Technology project, students selected Missing and Murdered Indigenous Women and Girls as their inquiry topic and created a public Red Dress exhibition. Alongside their sense of ownership, students described uncertainty about making decisions and occasions when peers overlooked their ideas (<a href=\"#reading-jao-2026\">Jao et al., 2026</a>). In a different Grade 7 biology inquiry, students and adults considered how to gather information about stress while attending to the experiences of survey respondents (<a href=\"#reading-krishnamoorthy\">Krishnamoorthy et al., 2026</a>). These accounts lead me to ask how teachers respond when students' concerns reshape the standards or direction of an investigation.</p>",
-        "+      <p id=\"student-directed-inquiry\">Shared responsibility does not guarantee that all contributions carry equal weight. In a Grade 7 Science and Technology project, students selected Missing and Murdered Indigenous Women and Girls as a topic of inquiry and created a public Red Dress exhibition. They described ownership and community alongside uncertainty about decisions and occasions when peers overlooked their ideas (<a href=\"#reading-jao-2026\">Jao et al., 2026</a>). In a separate Grade 7 biology inquiry, youth and adults negotiated care for potential respondents while designing a community survey, making ethical responsibility part of what counted as an appropriate investigation (<a href=\"#reading-krishnamoorthy\">Krishnamoorthy et al., 2026</a>). The studies use different records to examine participation, but both prompt questions about whose concerns inform the direction and standards of a collective inquiry.</p>",
-        "       <p>Teachers can also examine these decisions collaboratively. Over four years, a professional learning community of high school science teachers moved from a focus on correcting misconceptions towards supporting students' development of evidence-based models and explanations (<a href=\"#reading-shim-thompson\">Shim &amp; Thompson, 2022</a>). In an Ontario Grade 9 Applied Mathematics initiative, teachers reported that opportunities to develop materials and learn with colleagues supported further collaboration (<a href=\"#reading-jao-mcdougall\">Jao &amp; McDougall, 2015</a>). These projects involve different subjects and forms of evidence. They lead me to consider how teachers might review students' explanations together, examine their own assumptions, and use those discussions to inform subsequent lessons.</p>",
-        "@@ -93,3 +93,3 @@\n",
-        "     <aside class=\"research-essay-margin\">",
-        "-      <p>During a seventh-grade biology unit on stress, students questioned whether a proposed community survey might upset respondents. As students and adults considered how to proceed, care for respondents became part of what counted as a responsible way to gather information. Their discussions show how students could help establish criteria for the investigation through negotiations of classroom authority (<a href=\"#reading-krishnamoorthy\">Krishnamoorthy et al., 2026</a>).</p>",
-        "+      <p>In a classroom example examined by Cowie and colleagues, students identified an elephant as the odd one out among a bird, a cat, a fish, and an elephant. Their reasoning concerned which animals could be kept as pets, while the teacher expected an answer about habitat. The teacher initially dismissed their answer without asking how they reached it (<a href=\"#reading-cowie\">Cowie et al., 2018</a>). The episode shows why an unexpected response may be worth investigating before deciding what it reveals about students' reasoning.</p>",
-        "     </aside>",
-        "@@ -147,3 +147,2 @@\n",
-        "     <p>A learning progression for scientific modelling describes how students may come to treat models as tools for explaining and predicting, as well as representations that can change with new understanding (<a href=\"#reading-schwarz\">Schwarz et al., 2009</a>). The questions students are trying to resolve also shape how scientific practices and argumentation become meaningful (<a href=\"#reading-berland\">Berland et al., 2016</a>; <a href=\"#reading-manz\">Manz, 2015</a>).</p>",
-        "-    <p>A completed model can show scientific relationships while leaving much of its development unseen. In a Grade 7 investigation of stress, four students gave their models names and identities that took shape through their relationships with one another and with adults. Krishnamoorthy and colleagues traced how these interactions, alongside the materials students used, shaped the models they created (<a href=\"#reading-krishnamoorthy-models\">Krishnamoorthy et al., 2023</a>). Their study leads me to consider what an assessment centred on the finished representation might overlook about students' participation in modelling.</p>",
-        "   </div>"
-      ]
-    },
-    {
       "sourceDrift": [
-        {
-          "category": "engines",
-          "sourceModifiedSinceAudit": [
-            "research.html"
-          ]
-        },
         {
           "category": "interactions",
           "sourceModifiedSinceAudit": [
@@ -159,15 +121,10 @@
           ]
         }
       ]
-    },
-    {
-      "unresolvedAudits": [
-        "engines"
-      ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42145896496",
-  "run_sha": "d68cdbe9e5d6a45ffda4e54817f300e238a02247",
+  "workflow_run_id": "42145985632",
+  "run_sha": "95a4a3ae726ad45b4fade6acdd008e5c2bedc369",
   "exit_code": "1"
 }
