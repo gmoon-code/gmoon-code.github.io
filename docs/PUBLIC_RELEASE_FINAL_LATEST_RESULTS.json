@@ -1,12 +1,12 @@
 {
-  "sourceHead": "75a9ba0c18b387475e6be893524d62ad2157f3aa",
+  "sourceHead": "c4067d079aea8189f437997d2bf888c27001a64d",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
-  "verifiedExactMatches": 24,
-  "httpErrors": 0,
+  "verifiedExactMatches": 23,
+  "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-75a9ba0c18b3",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-c4067d079aea",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -17,7 +17,9 @@
       "run": "42145707512",
       "head_sha": "3a0d04e16994e7f7a83ad98b4b580d0fefa2bf53",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "problems": 0
       }
@@ -27,7 +29,9 @@
       "run": "42145707302",
       "head_sha": "3a0d04e16994e7f7a83ad98b4b580d0fefa2bf53",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "issues": 46
       },
@@ -41,7 +45,9 @@
       "run": "42145707266",
       "head_sha": "3a0d04e16994e7f7a83ad98b4b580d0fefa2bf53",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "unverified": 0
       },
@@ -56,7 +62,9 @@
       "run": "42145707325",
       "head_sha": "3a0d04e16994e7f7a83ad98b4b580d0fefa2bf53",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "failures": 0
       }
@@ -66,7 +74,9 @@
       "run": "42145707398",
       "head_sha": "3a0d04e16994e7f7a83ad98b4b580d0fefa2bf53",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "failures": 0
       }
@@ -76,7 +86,9 @@
       "run": "42145707350",
       "head_sha": "3a0d04e16994e7f7a83ad98b4b580d0fefa2bf53",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "failures": 0,
         "combinedStressFailures": 0
@@ -87,7 +99,9 @@
       "run": "42145707243",
       "head_sha": "3a0d04e16994e7f7a83ad98b4b580d0fefa2bf53",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "failures": 0,
         "axeViolations": 0
@@ -100,11 +114,125 @@
       "note": "U1 route audit documents successful run 40825886279; legacy utility machine report refers to an early missing-script failure. Do not treat it as latest successful evidence."
     }
   },
-  "sourceDriftSinceAudits": [],
-  "pass": true,
-  "errors": [],
+  "sourceDriftSinceAudits": [
+    {
+      "category": "links",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "external",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "metadata",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "reflow",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "engines",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "typography",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "interactions",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    }
+  ],
+  "pass": false,
+  "errors": [
+    {
+      "path": "research.html",
+      "errors": [
+        "deployed bytes differ from checked-out production source"
+      ],
+      "firstDiff": [
+        "--- source\n",
+        "+++ deployed\n",
+        "@@ -63,4 +63,4 @@\n",
+        "   <div class=\"reading research-essay-prose\">",
+        "-    <p>The record used to assess an explanation can change which scientific relationships are visible. In a <a href=\"research-scoping.html#case-study\">study included in the scoping review</a>, Luis's shorter English translation made an ecological distinction less explicit than his bilingual account. In my <a href=\"research-action.html#paired-evidence\">classroom inquiry</a>, S20's closed-resource reconstruction omitted photosynthetic relationships expressed in an earlier response. The tasks and language conditions differed, so these cases cannot establish a shared cause for the omissions. They do show why an absent relationship in one response should be interpreted alongside the evidence available from other records.</p>",
+        "-    <p>My projects examined the grounds for inferring scientific understanding from students' work. They did not establish how students could influence the judgments teachers made from that work. A teacher might identify an incomplete causal pathway and choose what students should revisit, yet the student could have reasons for questioning that interpretation. Studying the interaction would require attention to what each participant considered adequate evidence and to how their judgments shaped the next classroom activity.</p>",
+        "+    <p>A later response can leave important parts of an earlier explanation unseen. In a <a href=\"research-scoping.html#case-study\">study included in the scoping review</a>, Luis’s shorter English translation made an ecological distinction less explicit than his bilingual account. In my <a href=\"research-action.html#paired-evidence\">classroom inquiry</a>, S20’s reconstruction omitted photosynthetic relationships they had previously explained. The records arose under different task and language conditions, so the cases cannot be treated as equivalent. Each nonetheless complicates an interpretation based on the most recent answer alone.</p>",
+        "+    <p>Reading these records together raised a question my projects had not yet investigated. I could identify ways to assess students' reasoning while having little evidence about whether students could influence the judgments or classroom activities that followed.</p>",
+        "   </div>",
+        "@@ -73,3 +73,3 @@\n",
+        "   <div class=\"reading research-essay-prose research-interests-intro\">",
+        "-    <p>The questions emerging from my projects extend from the interpretation of a response to the decisions made after it. Research on teacher noticing examines how student reasoning becomes available for consideration. Work on epistemic agency and rightful presence asks who can influence the questions and standards guiding a classroom inquiry. I read these perspectives alongside scholarship on language and scientific modelling, where the evidence students can offer is shaped by the opportunities they have to participate.</p>",
+        "+    <p>I read studies of teacher decision-making and collaborative professional learning alongside research on language, cultural knowledge, and scientific modelling. These studies help me examine how students' contributions are interpreted, which judgments shape the direction of inquiry, and how teachers might revisit their interpretations of scientific reasoning.</p>",
+        "   </div>",
+        "@@ -84,8 +84,9 @@\n",
+        "     <div class=\"reading research-essay-prose\">"
+      ]
+    },
+    {
+      "sourceDrift": [
+        {
+          "category": "links",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "external",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "metadata",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "reflow",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "engines",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "typography",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "interactions",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        }
+      ]
+    }
+  ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42146269860",
-  "run_sha": "75a9ba0c18b387475e6be893524d62ad2157f3aa",
-  "exit_code": "0"
+  "workflow_run_id": "42147829521",
+  "run_sha": "c4067d079aea8189f437997d2bf888c27001a64d",
+  "exit_code": "1"
 }
