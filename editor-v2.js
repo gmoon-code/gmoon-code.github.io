@@ -1362,10 +1362,28 @@ function pruneLivePatch(patch,node){
   return patch.groupId===undefined&&!patch.layout&&!patch.appearance&&!patch.imageCrop&&!patch.pictureEffects&&
     (patch.kind==="layout"||unchangedText||unchangedImage);
 }
+function refreshSelectedLiveAppearance(node,patch){
+  const doc=node.ownerDocument;
+  if(patch.kind!=="insert"){refreshLiveLayoutRules(doc);return;}
+  if(liveEditing?.node!==node){refreshAddedObject(doc,patch);return;}
+  // Do not replace the contenteditable node's unsaved text while changing
+  // its formatting. Save text and Cancel text must retain their meaning.
+  const id=addedObjectId(patch);
+  let sheet=doc.querySelector('style[data-moon-v2-added-style="'+id+'"]');
+  if(!sheet){
+    sheet=doc.createElement("style");
+    sheet.setAttribute("data-moon-v2-added-style",id);
+    doc.head.append(sheet);
+  }
+  sheet.textContent=addedStyleCss(patch);
+}
 function setLiveAppearance(key,value){
   const selected=liveSelected?.node;
-  if(!selected||selected.tagName==="IMG"||liveEditing)return;
+  if(!selected||selected.tagName==="IMG"||
+     (liveEditing&&liveEditing.node!==selected))return;
   const patch=livePatchForSelected();if(!patch)return;
+  if(liveEditing?.node===selected&&patch.kind!=="insert")
+    patch.expected=liveEditing.expected;
   const current={...(patch.appearance||{})};
   if(key==="family"){
     if(value&&!LIVE_FONT_OPTIONS.has(value))return;
@@ -1395,8 +1413,7 @@ function setLiveAppearance(key,value){
   if(pruneLivePatch(patch,selected))livePatches.delete(patch.selector);
   else livePatches.set(patch.selector,patch);
   if(recordLiveHistory(before)){
-    if(patch.kind==="insert")refreshAddedObject(selected.ownerDocument,patch);
-    else refreshLiveLayoutRules();
+    refreshSelectedLiveAppearance(selected,patch);
     renderLiveInspector();syncLiveOverlay();
   }
 }
@@ -1433,8 +1450,7 @@ function resetLiveAppearance(){
   if(pruneLivePatch(patch,selected))livePatches.delete(patch.selector);
   else livePatches.set(patch.selector,patch);
   if(recordLiveHistory(before)){
-    if(patch.kind==="insert")refreshAddedObject(selected.ownerDocument,patch);
-    else refreshLiveLayoutRules();
+    refreshSelectedLiveAppearance(selected,patch);
     renderLiveInspector();syncLiveOverlay();
   }
 }
@@ -1613,7 +1629,10 @@ function liveLayoutRules(patches=[...livePatches.values()],doc=null){
     if(value.align)style.push("text-align:"+value.align+"!important");
     if(value.layer!==undefined)
       style.push("position:relative!important","z-index:"+value.layer+"!important");
-    if(style.length)result.push(editedSourceImageSelector(patch)+"{"+style.join(";")+";}");
+    // Published pages can set font-size with #main and !important.
+    // Geometry overrides already use this scoped higher-specificity selector.
+    // Reuse it for typography, without changing any sibling or global styles.
+    if(style.length)result.push(editedSourceLayoutSelector(patch)+"{"+style.join(";")+";}");
   }
   for(const [device,media] of Object.entries(LIVE_DEVICE_RULES)){
     const selectors=[];
