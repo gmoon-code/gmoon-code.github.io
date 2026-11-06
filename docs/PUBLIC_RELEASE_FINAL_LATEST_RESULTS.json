@@ -1,12 +1,12 @@
 {
-  "sourceHead": "a305531e23e23ba335d491d7dae87851a6c3fb4b",
+  "sourceHead": "e0d3990685e44b2afceeb3eea34dcc25eb78f3a1",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-a305531e23e2",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-e0d3990685e4",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -17,7 +17,9 @@
       "run": "42149780360",
       "head_sha": "e4e985146f7b5f9481c2e7fc4d99f8dd46459a9d",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "problems": 0
       }
@@ -27,7 +29,9 @@
       "run": "42149780279",
       "head_sha": "e4e985146f7b5f9481c2e7fc4d99f8dd46459a9d",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "issues": 40
       },
@@ -58,7 +62,9 @@
       "run": "42149780175",
       "head_sha": "e4e985146f7b5f9481c2e7fc4d99f8dd46459a9d",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "failures": 0
       }
@@ -80,7 +86,9 @@
       "run": "42149780201",
       "head_sha": "e4e985146f7b5f9481c2e7fc4d99f8dd46459a9d",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "failures": 0,
         "combinedStressFailures": 0
@@ -91,7 +99,9 @@
       "run": "42149780331",
       "head_sha": "e4e985146f7b5f9481c2e7fc4d99f8dd46459a9d",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "failures": 0,
         "axeViolations": 0
@@ -106,13 +116,43 @@
   },
   "sourceDriftSinceAudits": [
     {
+      "category": "links",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "external",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
       "category": "metadata",
       "sourceModifiedSinceAudit": [
         "research.html"
       ]
     },
     {
+      "category": "reflow",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
       "category": "engines",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "typography",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "interactions",
       "sourceModifiedSinceAudit": [
         "research.html"
       ]
@@ -128,26 +168,39 @@
       "firstDiff": [
         "--- source\n",
         "+++ deployed\n",
-        "@@ -63,4 +63,4 @@\n",
-        "   <div class=\"reading research-essay-prose\">",
-        "-    <p>The record used to assess an explanation can change which scientific relationships are visible. In a <a href=\"research-scoping.html#case-study\">study included in the scoping review</a>, Luis's shorter English translation made an ecological distinction less explicit than his bilingual account. In my <a href=\"research-action.html#paired-evidence\">classroom inquiry</a>, S20's closed-resource reconstruction omitted photosynthetic relationships expressed in an earlier response. The tasks and language conditions differed, so these cases cannot establish a shared cause for the omissions. They do show why an absent relationship in one response should be interpreted alongside the evidence available from other records.</p>",
-        "-    <p>My projects examined the grounds for inferring scientific understanding from students' work. They did not establish how students could influence the judgments teachers made from that work. A teacher might identify an incomplete causal pathway and choose what students should revisit, yet the student could have reasons for questioning that interpretation. Studying the interaction would require attention to what each participant considered adequate evidence and to how their judgments shaped the next classroom activity.</p>",
-        "+    <p>A later response can leave important parts of an earlier explanation unseen. In a <a href=\"research-scoping.html#case-study\">study included in the scoping review</a>, Luis’s shorter English translation made an ecological distinction less explicit than his bilingual account. In my <a href=\"research-action.html#paired-evidence\">classroom inquiry</a>, S20’s reconstruction omitted photosynthetic relationships they had previously explained. The records arose under different task and language conditions, so the cases cannot be treated as equivalent. Each nonetheless complicates an interpretation based on the most recent answer alone.</p>",
-        "+    <p>Reading these records together raised a question my projects had not yet investigated. I could identify ways to assess students' reasoning while having little evidence about whether students could influence the judgments or classroom activities that followed.</p>",
-        "   </div>",
-        "@@ -73,3 +73,3 @@\n",
-        "   <div class=\"reading research-essay-prose research-interests-intro\">",
-        "-    <p>The questions emerging from my projects extend from the interpretation of a response to the decisions made after it. Research on teacher noticing examines how student reasoning becomes available for consideration. Work on epistemic agency and rightful presence asks who can influence the questions and standards guiding a classroom inquiry. I read these perspectives alongside scholarship on language and scientific modelling, where the evidence students can offer is shaped by the opportunities they have to participate.</p>",
-        "+    <p>I read studies of teacher decision-making and collaborative professional learning alongside research on language, cultural knowledge, and scientific modelling. These studies help me examine how students' contributions are interpreted, which judgments shape the direction of inquiry, and how teachers might revisit their interpretations of scientific reasoning.</p>",
-        "   </div>",
-        "@@ -84,8 +84,9 @@\n",
-        "     <div class=\"reading research-essay-prose\">"
+        "@@ -106,3 +106,3 @@\n",
+        "     <p>A student's experience can inform a scientific explanation in ways a classroom task has not anticipated. Scholarship on cultural practices of ecological reasoning examines how knowledge develops through relationships with the natural world and how school science may privilege particular ways of describing those relationships (<a href=\"#reading-bang-medin\">Bang &amp; Medin, 2010</a>; <a href=\"#reading-bang\">Bang et al., 2012</a>). A teacher still has to consider whether the student's explanation accounts adequately for the phenomenon at hand. The difficulty lies in evaluating the scientific relationships expressed without assuming that the language or organization of a familiar school answer exhausts what the student can explain.</p>",
+        "-    <p>Recognition gained through scientific activity may not carry the same meaning across settings. Children attending community science clubs valued practical activities and relationships with others, yet some treated club science and school science as separate experiences (<a href=\"#reading-burke\">Burke &amp; Navas Iannini, 2021</a>). In an after-school conversation club, girls used relationships and shared interests to position themselves as knowledgeable about science. The recognition they gained held value within the group, while their accounts of school science remained more distant (<a href=\"#reading-gonsalves-rahm\">Gonsalves &amp; Rahm, 2023</a>). These accounts suggest that being heard as a knowledgeable participant in one setting does not establish how a student's contributions will be received in another. I would examine what happens when students bring questions or practices from outside school into a classroom investigation.</p>",
+        "+    <p>The setting can also change which forms of scientific participation feel available. Children attending community science clubs described valuing practical activities and relationships with others, yet some treated club science and school science as separate experiences (<a href=\"#reading-burke\">Burke &amp; Navas Iannini, 2021</a>). Their accounts do not tell us whether a particular school lesson restricted a student's reasoning. They do suggest a question worth examining in classrooms, whether students encounter opportunities to bring their existing questions and practices into the scientific work expected at school.</p>",
+        "     <p>Expectations of competence introduce another dimension of recognition. Doctoral physics students described how gendered expectations shaped their efforts to become recognized as physicists (<a href=\"#reading-gonsalves\">Gonsalves, 2014</a>). Across longer science-identity trajectories, recognition by others took different forms for women of colour pursuing scientific work (<a href=\"#reading-carlone\">Carlone &amp; Johnson, 2007</a>). The populations and settings differ from secondary biology. These studies nonetheless direct attention to recognition as a judgment enacted within particular relationships, a concern also developed in accounts of learning as a cultural process (<a href=\"#reading-cultural-process\">Nasir et al., 2014</a>). In a classroom study, I would need to examine how that judgment appears in responses to students' questions.</p>",
+        "@@ -192,3 +192,2 @@\n",
+        "     <li id=\"reading-gonsalves\">Gonsalves, A. J. (2014). “Physics and the girly girl—there is a contradiction somewhere”: Doctoral students’ positioning around discourses of gender and competence in physics. <em>Cultural Studies of Science Education, 9</em>(2), 503–521. <a href=\"https://doi.org/10.1007/s11422-012-9447-6\">https://doi.org/10.1007/s11422-012-9447-6</a></li>",
+        "-    <li id=\"reading-gonsalves-rahm\">Gonsalves, A. J., &amp; Rahm, J. (2023). “It was always about relationships and it was awesome”: Girls performing gender and identity in an out-of-school-time science conversation club. In H. T. Holmegaard &amp; L. Archer (Eds.), <em>Science identities: Theory, method and research</em> (pp. 47–66). Springer. <a href=\"https://doi.org/10.1007/978-3-031-17642-5_3\">https://doi.org/10.1007/978-3-031-17642-5_3</a></li>",
+        "     <li id=\"reading-gonzalez\">González-Howard, M., Andersen, S., Méndez Pérez, K., &amp; Suárez, E. (2023). Language views for scientific sensemaking matter: A synthesis of research on multilingual students’ experiences with science practices through a translanguaging lens. <em>Educational Researcher, 52</em>(9), 570–579. <a href=\"https://doi.org/10.3102/0013189X231206172\">https://doi.org/10.3102/0013189X231206172</a></li>"
       ]
     },
     {
       "sourceDrift": [
         {
+          "category": "links",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "external",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
           "category": "metadata",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "reflow",
           "sourceModifiedSinceAudit": [
             "research.html"
           ]
@@ -157,12 +210,24 @@
           "sourceModifiedSinceAudit": [
             "research.html"
           ]
+        },
+        {
+          "category": "typography",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "interactions",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
         }
       ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42150910363",
-  "run_sha": "a305531e23e23ba335d491d7dae87851a6c3fb4b",
+  "workflow_run_id": "42151419974",
+  "run_sha": "e0d3990685e44b2afceeb3eea34dcc25eb78f3a1",
   "exit_code": "1"
 }
