@@ -1,12 +1,12 @@
 {
-  "sourceHead": "3395ccee8405e5972cab8bf512a11258157a1a28",
+  "sourceHead": "695bbc0b44fc734b7f168c6340328fe5f48945f7",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 22,
   "httpErrors": 2,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-3395ccee8405",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-695bbc0b44fc",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -55,20 +55,18 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "42169988972",
-      "head_sha": "fb99981a1a7bae65085ea58d096d730948937f5a",
+      "run": "42170173557",
+      "head_sha": "7904bb413f42e9c30d1647c28cda0b1807e02533",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0
       }
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "42169891629",
-      "head_sha": "09efcb6c9953dcb95a583ec4fc5b938d2ec5fbbf",
+      "run": "42169988944",
+      "head_sha": "fb99981a1a7bae65085ea58d096d730948937f5a",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research.html"
@@ -79,12 +77,10 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "42169988957",
-      "head_sha": "fb99981a1a7bae65085ea58d096d730948937f5a",
+      "run": "42170173501",
+      "head_sha": "7904bb413f42e9c30d1647c28cda0b1807e02533",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0,
         "combinedStressFailures": 0
@@ -118,19 +114,7 @@
       ]
     },
     {
-      "category": "reflow",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ]
-    },
-    {
       "category": "engines",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ]
-    },
-    {
-      "category": "typography",
       "sourceModifiedSinceAudit": [
         "research.html"
       ]
@@ -185,19 +169,7 @@
           ]
         },
         {
-          "category": "reflow",
-          "sourceModifiedSinceAudit": [
-            "research.html"
-          ]
-        },
-        {
           "category": "engines",
-          "sourceModifiedSinceAudit": [
-            "research.html"
-          ]
-        },
-        {
-          "category": "typography",
           "sourceModifiedSinceAudit": [
             "research.html"
           ]
@@ -212,7 +184,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42170215750",
-  "run_sha": "3395ccee8405e5972cab8bf512a11258157a1a28",
+  "workflow_run_id": "42170302452",
+  "run_sha": "695bbc0b44fc734b7f168c6340328fe5f48945f7",
   "exit_code": "1"
 }
