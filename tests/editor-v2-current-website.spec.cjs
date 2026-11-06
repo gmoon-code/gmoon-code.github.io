@@ -4259,3 +4259,114 @@ test('Rapid pointer events finish the final crop and resize before mouse release
     expect(await siblingMetrics()).toEqual(other);
     expect(writes).toEqual([]);
   });
+
+test('Pungmul text boxes keep exact small manual dimensions without resizing unrelated paragraphs',async({page})=>{
+  const writes=[];
+  await installVerifiedCurrentSource(page,writes);
+  await page.setViewportSize({width:1740,height:1050});
+  await page.goto(BASE+'/editor-v2.html?page=pungmul.html',
+    {waitUntil:'domcontentloaded'});
+  await expect(page.locator('#liveAssetStatus'))
+    .toContainText('GitHub main source verified',{timeout:35000});
+  const frame=page.frameLocator('#livePageFrame');
+  const selected=frame.locator('#performances .pungmul-prose p').first();
+  const unrelated=frame.locator('#music .pungmul-prose p').first();
+  const measure=el=>el.evaluate(node=>{
+    const r=node.getBoundingClientRect(),css=getComputedStyle(node);
+    return {w:r.width,h:r.height,fontsize:css.fontSize,
+      text:node.textContent,inline:node.getAttribute('style')};
+  });
+  await selected.scrollIntoViewIfNeeded();
+  const before=await measure(selected),neighbour=await measure(unrelated);
+  await selected.click();
+  // Selecting a target by itself must not create an edit on another object.
+  expect(await measure(unrelated)).toEqual(neighbour);
+  const width=page.locator('#liveTextBoxWidth'),
+    height=page.locator('#liveTextBoxHeight');
+  await width.fill('42');
+  await width.dispatchEvent('change');
+  const narrow=await measure(selected);
+  expect(Math.abs(narrow.w-42),'manual text width must go below 64px').toBeLessThan(2);
+  expect(Math.abs(narrow.h-before.h),'changing width alone must not enlarge height')
+    .toBeLessThan(3);
+  await height.fill('18');
+  await height.dispatchEvent('change');
+  const small=await measure(selected);
+  expect(Math.abs(small.w-42)).toBeLessThan(2);
+  expect(Math.abs(small.h-18),'height is author-controlled despite wrapped text')
+    .toBeLessThan(2);
+  expect(small.fontsize).toBe(before.fontsize);
+  expect(small.text).toBe(before.text);
+  await expect(page.locator('#liveReflowWarning')).toBeVisible();
+  // No other paragraph's dimensions, styling or text may be replaced.
+  const afterNeighbour=await measure(unrelated);
+  expect(Math.abs(afterNeighbour.h-neighbour.h)).toBeLessThan(.05);
+  expect({...afterNeighbour,h:neighbour.h}).toEqual(neighbour);
+  const draft=await page.evaluate(()=>JSON.parse(localStorage.getItem(
+    'moon-academic-editor-v2:source:pungmul.html')||'[]'));
+  const layoutEdits=draft.filter(p=>p.layout?.desktop);
+  expect(layoutEdits).toHaveLength(1);
+  expect(layoutEdits[0].layout.desktop.wrapWidth).toBe(42);
+  expect(layoutEdits[0].layout.desktop.reserveHeight).toBe(18);
+  await page.locator('#preview').click();
+  await expect(page.locator('#previewDialog')).toBeVisible();
+  const preview=page.frameLocator('#previewFrame')
+    .locator('#performances .pungmul-prose p').first();
+  const publishedPreview=await measure(preview);
+  expect(Math.abs(publishedPreview.w-42)).toBeLessThan(3);
+  expect(Math.abs(publishedPreview.h-18)).toBeLessThan(3);
+  expect(publishedPreview.text).toBe(before.text);
+  expect(writes).toEqual([]);
+});
+
+test('Original Pungmul text box grip can shrink below 64px and Undo restores its own size',
+  async({page})=>{
+    const writes=[];
+    await installVerifiedCurrentSource(page,writes);
+    await page.setViewportSize({width:1740,height:1050});
+    await page.goto(BASE+'/editor-v2.html?page=pungmul.html',
+      {waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    const frame=page.frameLocator('#livePageFrame');
+    const target=frame.locator('#performances .pungmul-prose p').first();
+    const neighbour=frame.locator('#music .pungmul-prose p').first();
+    const dims=el=>el.evaluate(node=>{
+      const r=node.getBoundingClientRect(),c=getComputedStyle(node);
+      return {w:r.width,h:r.height,font:c.fontSize,text:node.textContent};
+    });
+    await target.scrollIntoViewIfNeeded();
+    const untouched=await dims(neighbour);
+    await target.click();
+    await page.locator('#liveTextBoxWidth').fill('110');
+    await page.locator('#liveTextBoxWidth').dispatchEvent('change');
+    await page.locator('#liveTextBoxHeight').fill('32');
+    await page.locator('#liveTextBoxHeight').dispatchEvent('change');
+    await target.click();
+    await target.evaluate(node=>node.scrollIntoView({block:'center'}));
+    const before=await dims(target);
+    expect(Math.abs(before.w-110)).toBeLessThan(2);
+    expect(Math.abs(before.h-32)).toBeLessThan(2);
+    const grip=frame.locator('#moon-v2-live-overlay .moon-v2-grip[data-direction="e"]');
+    await expect(grip).toBeVisible();
+    await grip.hover();
+    const box=await grip.boundingBox(),x=box.x+box.width/2,y=box.y+box.height/2;
+    await page.mouse.move(x,y);
+    await page.mouse.down();
+    await page.mouse.move(x-81,y,{steps:8});
+    await page.mouse.up();
+    const narrow=await dims(target);
+    expect(narrow.w,'east grip must reach below the former 64px floor').toBeLessThan(45);
+    expect(narrow.w).toBeGreaterThan(15);
+    expect(Math.abs(narrow.h-32),'grip must preserve reserved height').toBeLessThan(2);
+    const other=await dims(neighbour);
+    expect(Math.abs(other.h-untouched.h)).toBeLessThan(.05);
+    expect({...other,h:untouched.h}).toEqual(untouched);
+    await page.locator('#undo').click();
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    const undone=await dims(target);
+    expect(Math.abs(undone.w-before.w)).toBeLessThan(3);
+    expect(Math.abs(undone.h-before.h)).toBeLessThan(3);
+    expect(writes).toEqual([]);
+  });
