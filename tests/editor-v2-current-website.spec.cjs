@@ -4297,6 +4297,26 @@ test('Home Hello introductory paragraph can shrink below site-authored size and 
     height=page.locator('#liveTextBoxHeight');
   await expect(width).toHaveAttribute('min','16');
   await expect(height).toHaveAttribute('min','16');
+  // First exercise the visual, mouse-driven controls, not only number fields.
+  const drag=async(dir,dx,dy)=>{
+    const grip=live.locator('#moon-v2-live-overlay .moon-v2-grip[data-direction="'+dir+'"]');
+    await expect(grip).toBeVisible();
+    await grip.hover();
+    const b=await grip.boundingBox();
+    expect(b).toBeTruthy();
+    const x=b.x+b.width/2,y=b.y+b.height/2;
+    await page.mouse.down();
+    await page.mouse.move(x+dx,y+dy,{steps:8});
+    await page.mouse.up();
+  };
+  await drag('e',-260,0);
+  const draggedWidth=await measure(lead);
+  expect(draggedWidth.w).toBeLessThan(before.w-130);
+  expect(draggedWidth.font).toBe(before.font);
+  await drag('s',0,-160);
+  const draggedHeight=await measure(lead);
+  expect(draggedHeight.h).toBeLessThan(before.h-80);
+  expect(draggedHeight.text).toBe(before.text);
   await width.fill('42');
   await width.dispatchEvent('change');
   await height.fill('18');
