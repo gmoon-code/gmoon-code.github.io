@@ -4350,6 +4350,26 @@ test('Original Pungmul text box grip can shrink below 64px and Undo restores its
     // Hover places the pointer at the actual grip after scroll/overlay sync.
     // Moving it again to a previously measured box centre can cause Firefox
     // to retarget the down event at the paragraph while the overlay settles.
+    // Record the real Firefox pointer path if a drag does not reach the
+    // selected grip. No editor state is mutated by this instrumentation.
+    await grip.evaluate(el=>{
+      const doc=el.ownerDocument,win=doc.defaultView;
+      win.__moonNarrowGripTrace=[];
+      for(const type of ['pointerdown','pointermove','pointerup',
+        'pointercancel','lostpointercapture']){
+        doc.addEventListener(type,e=>{
+          if(win.__moonNarrowGripTrace.length>140)return;
+          win.__moonNarrowGripTrace.push({
+            type,x:Math.round(e.clientX),y:Math.round(e.clientY),
+            pointerId:e.pointerId,buttons:e.buttons,
+            grip:e.target?.dataset?.direction||null,
+            tag:e.target?.tagName||null,
+            captured:el.hasPointerCapture?.(e.pointerId)||false,
+            selected:e.target?.getAttribute?.('data-moon-v2-live-selected')!==null
+          });
+        },true);
+      }
+    });
     await grip.hover();
     await expect.poll(()=>grip.evaluate(el=>{
       const r=el.getBoundingClientRect(),doc=el.ownerDocument;
@@ -4369,7 +4389,19 @@ test('Original Pungmul text box grip can shrink below 64px and Undo restores its
     await page.mouse.move(x-81,y,{steps:8});
     await page.mouse.up();
     const narrow=await dims(target);
-    expect(narrow.w,'east grip must reach below the former 64px floor').toBeLessThan(45);
+    if(!(narrow.w<45)){
+      const events=await target.evaluate(node=>
+        node.ownerDocument.defaultView.__moonNarrowGripTrace?.slice(-100)||[]);
+      const actual=await grip.evaluate(el=>{
+        const r=el.getBoundingClientRect(),doc=el.ownerDocument,
+          h=doc.elementFromPoint(r.left+r.width/2,r.top+r.height/2);
+        return {overlay:el.parentElement?.dataset,
+          grip:{x:r.x,y:r.y,w:r.width,h:r.height},
+          hit:h?.dataset?.direction||h?.tagName||null};
+      });
+      throw new Error('east grip left small text width unchanged '+
+        JSON.stringify({before,narrow,events,actual}));
+    }
     expect(narrow.w).toBeGreaterThan(15);
     expect(Math.abs(narrow.h-32),'grip must preserve reserved height').toBeLessThan(2);
     const other=await dims(neighbour);
