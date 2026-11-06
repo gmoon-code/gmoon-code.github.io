@@ -4366,40 +4366,43 @@ test('CV date spans can be edited independently and preserved in preview and rel
   const first=dates.first(),second=dates.nth(1);
   const originalDates=await dates.allTextContents();
   const beforeTitle=await live.locator('.resume-entry-heading h3').first().textContent();
-  expect(originalDates[0]).toBe('Aug 2026');
-  expect(originalDates[1]).toBe('Nov 2020');
+  expect(originalDates[0]).toMatch(/20\\d{2}/);
+  expect(originalDates[1]).toMatch(/20\\d{2}/);
+  // Synthetic values make a real source change without assuming which
+  // graduation date currently appears in the author's live CV.
+  const changedFirst='Test 2099',changedSecond='Test 2098';
   // The date itself, not the surrounding heading/row, must be selectable.
   await first.click();
-  await expect(page.locator('#liveSelectionLabel')).toContainText('Aug 2026');
+  await expect(page.locator('#liveSelectionLabel')).toContainText(originalDates[0]);
   await expect(page.locator('#editLiveText')).toBeEnabled();
   await page.locator('#editLiveText').click();
   await expect(first).toHaveAttribute('contenteditable','true');
-  await first.fill('Sep 2026');
+  await first.fill(changedFirst);
   await page.locator('#saveLiveText').click();
-  await expect(first).toHaveText('Sep 2026');
-  await expect(second).toHaveText('Nov 2020');
+  await expect(first).toHaveText(changedFirst);
+  await expect(second).toHaveText(originalDates[1]);
   await expect(live.locator('.resume-entry-heading h3').first()).toHaveText(beforeTitle);
   await second.click();
   await page.locator('#editLiveText').click();
-  await second.fill('Dec 2020');
+  await second.fill(changedSecond);
   await page.locator('#saveLiveText').click();
   const values=await dates.allTextContents();
-  expect(values.slice(0,2)).toEqual(['Sep 2026','Dec 2020']);
+  expect(values.slice(0,2)).toEqual([changedFirst,changedSecond]);
   expect(values.slice(2)).toEqual(originalDates.slice(2));
   await expect(page.locator('#liveEditCount')).toContainText('2 draft');
   await page.locator('#preview').click();
   await expect(page.locator('#previewDialog')).toBeVisible();
   const preview=page.frameLocator('#previewFrame').locator('main.resume-page span.resume-date');
-  await expect(preview.first()).toHaveText('Sep 2026');
-  await expect(preview.nth(1)).toHaveText('Dec 2020');
+  await expect(preview.first()).toHaveText(changedFirst);
+  await expect(preview.nth(1)).toHaveText(changedSecond);
   await expect(page.frameLocator('#previewFrame').locator('.resume-entry-heading h3').first())
     .toHaveText(beforeTitle);
   await page.locator('#closePreview').click();
   await page.reload({waitUntil:'domcontentloaded'});
   await expect(page.locator('#liveAssetStatus'))
     .toContainText('GitHub main source verified',{timeout:35000});
-  await expect(live.locator('main.resume-page span.resume-date').first()).toHaveText('Sep 2026');
-  await expect(live.locator('main.resume-page span.resume-date').nth(1)).toHaveText('Dec 2020');
+  await expect(live.locator('main.resume-page span.resume-date').first()).toHaveText(changedFirst);
+  await expect(live.locator('main.resume-page span.resume-date').nth(1)).toHaveText(changedSecond);
   const draft=JSON.parse(await page.evaluate(()=>
     localStorage.getItem('moon-academic-editor-v2:source:cv.html')));
   expect(draft.filter(p=>p.kind==='text')).toHaveLength(2);
@@ -4425,11 +4428,11 @@ test('CV date spans can be edited independently and preserved in preview and rel
   expect(published[0].sha).toBe(blobSha(SOURCE.get('cv.html')));
   expect(published[0].branch).toBe('main');
   const result=Buffer.from(published[0].content,'base64').toString('utf8');
-  expect(result).toContain('class="resume-date">Sep 2026</span>');
-  expect(result).toContain('class="resume-date">Dec 2020</span>');
+  expect(result).toContain('class="resume-date">'+changedFirst+'</span>');
+  expect(result).toContain('class="resume-date">'+changedSecond+'</span>');
   expect(result).toContain(beforeTitle);
-  expect(result).not.toContain('class="resume-date">Aug 2026</span>');
-  expect(result).not.toContain('class="resume-date">Nov 2020</span>');
+  expect(result).not.toContain('class="resume-date">'+originalDates[0]+'</span>');
+  expect(result).not.toContain('class="resume-date">'+originalDates[1]+'</span>');
   expect(writes).toEqual([]);
 });
 
@@ -4532,7 +4535,7 @@ test('Font-size changes while text editing do not overwrite unsaved CV wording',
     await expect(sibling).toHaveText(neighbour);
     await date.click();
     await page.locator('#editLiveText').click();
-    await date.fill('Sep 2026');
+    await date.fill('Mock dated qualification');
     await page.locator('#saveLiveText').click();
     const patches=JSON.parse(await page.evaluate(()=>
       localStorage.getItem('moon-academic-editor-v2:source:cv.html')));
@@ -4543,7 +4546,7 @@ test('Font-size changes while text editing do not overwrite unsaved CV wording',
     await expect(page.locator('#previewDialog')).toBeVisible();
     const displayed=page.frameLocator('#previewFrame').locator(
       'main.resume-page span.resume-date').first();
-    await expect(displayed).toHaveText('Sep 2026');
+    await expect(displayed).toHaveText('Mock dated qualification');
     await expect.poll(async()=>displayed.evaluate(el=>getComputedStyle(el).fontSize))
       .toBe('34px');
     await page.locator('#closePreview').click();
