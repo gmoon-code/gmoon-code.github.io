@@ -1,12 +1,12 @@
 {
-  "sourceHead": "97716a11a139ab46e0df5fc344859c9bc47569f1",
+  "sourceHead": "5e480ad3e105482c86fd27fc06f8c70ddf6a1db7",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
-  "verifiedExactMatches": 23,
-  "httpErrors": 1,
+  "verifiedExactMatches": 22,
+  "httpErrors": 2,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-97716a11a139",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-5e480ad3e105",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -17,33 +17,33 @@
       "run": "42158508492",
       "head_sha": "e8b8a3b6d8f5aa4ef661917fee98c1a74d5dbcf3",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "projects.html"
+      ],
       "failureCounts": {
         "problems": 0
       }
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "42158508572",
-      "head_sha": "e8b8a3b6d8f5aa4ef661917fee98c1a74d5dbcf3",
+      "run": "42158899384",
+      "head_sha": "acb686eaaa8748994ef6ed151e7bf1f777ee1f2e",
       "exit": "0",
       "sourceModifiedSinceAudit": [],
       "failureCounts": {
-        "issues": 41
+        "issues": 42
       },
       "counts": {
-        "reachable": 69,
-        "unverified": 41
+        "reachable": 68,
+        "unverified": 42
       }
     },
     "metadata": {
       "report": "docs/RESEARCH_METADATA_LATEST_RESULTS.json",
-      "run": "42158355192",
-      "head_sha": "c28feec668dfd8646c2d0830fd680f2a2cbcfdc9",
+      "run": "42158508752",
+      "head_sha": "e8b8a3b6d8f5aa4ef661917fee98c1a74d5dbcf3",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "unverified": 0
       },
@@ -55,12 +55,10 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "42158355143",
-      "head_sha": "c28feec668dfd8646c2d0830fd680f2a2cbcfdc9",
+      "run": "42158899417",
+      "head_sha": "acb686eaaa8748994ef6ed151e7bf1f777ee1f2e",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0
       }
@@ -71,6 +69,7 @@
       "head_sha": "ddf7b12619a3fc98b826272f3e01bab052316424",
       "exit": "0",
       "sourceModifiedSinceAudit": [
+        "projects.html",
         "research.html"
       ],
       "failureCounts": {
@@ -83,6 +82,7 @@
       "head_sha": "a2cdc7b103bbea94517bf1cfcb716d1d32a88166",
       "exit": "0",
       "sourceModifiedSinceAudit": [
+        "projects.html",
         "research.html"
       ],
       "failureCounts": {
@@ -96,6 +96,7 @@
       "head_sha": "a2cdc7b103bbea94517bf1cfcb716d1d32a88166",
       "exit": "0",
       "sourceModifiedSinceAudit": [
+        "projects.html",
         "research.html"
       ],
       "failureCounts": {
@@ -112,32 +113,29 @@
   },
   "sourceDriftSinceAudits": [
     {
-      "category": "metadata",
+      "category": "links",
       "sourceModifiedSinceAudit": [
-        "research.html"
-      ]
-    },
-    {
-      "category": "reflow",
-      "sourceModifiedSinceAudit": [
-        "research.html"
+        "projects.html"
       ]
     },
     {
       "category": "engines",
       "sourceModifiedSinceAudit": [
+        "projects.html",
         "research.html"
       ]
     },
     {
       "category": "typography",
       "sourceModifiedSinceAudit": [
+        "projects.html",
         "research.html"
       ]
     },
     {
       "category": "interactions",
       "sourceModifiedSinceAudit": [
+        "projects.html",
         "research.html"
       ]
     }
@@ -163,34 +161,46 @@
       ]
     },
     {
+      "path": "projects.html",
+      "errors": [
+        "deployed bytes differ from checked-out production source"
+      ],
+      "firstDiff": [
+        "--- source\n",
+        "+++ deployed\n",
+        "@@ -11,3 +11,3 @@\n",
+        "   <link rel=\"stylesheet\" href=\"appearance.css?v=20261028-visible-focus\">",
+        "-<style id=\"moon-v2-live-layout\">@media (min-width:1025px){:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(1) > div:nth-of-type(1) > p:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:1085px!important;height:116px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}}</style></head>",
+        "+</head>",
+        " <body class=\"theme-blue\">"
+      ]
+    },
+    {
       "sourceDrift": [
         {
-          "category": "metadata",
+          "category": "links",
           "sourceModifiedSinceAudit": [
-            "research.html"
-          ]
-        },
-        {
-          "category": "reflow",
-          "sourceModifiedSinceAudit": [
-            "research.html"
+            "projects.html"
           ]
         },
         {
           "category": "engines",
           "sourceModifiedSinceAudit": [
+            "projects.html",
             "research.html"
           ]
         },
         {
           "category": "typography",
           "sourceModifiedSinceAudit": [
+            "projects.html",
             "research.html"
           ]
         },
         {
           "category": "interactions",
           "sourceModifiedSinceAudit": [
+            "projects.html",
             "research.html"
           ]
         }
@@ -198,7 +208,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42158865992",
-  "run_sha": "97716a11a139ab46e0df5fc344859c9bc47569f1",
+  "workflow_run_id": "42159002004",
+  "run_sha": "5e480ad3e105482c86fd27fc06f8c70ddf6a1db7",
   "exit_code": "1"
 }
