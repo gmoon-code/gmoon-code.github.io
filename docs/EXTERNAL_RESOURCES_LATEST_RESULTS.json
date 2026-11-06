@@ -917,58 +917,74 @@
   "doi_registry": {
     "checked": 45,
     "counts": {
-      "not-confirmed": 11,
-      "registered": 34
+      "registered": 34,
+      "not-confirmed": 11
     },
     "secondary_index_matches": 11,
     "not_confirmed": [
       {
-        "url": "https://doi.org/10.1002/sce.20264",
-        "doi": "10.1002/sce.20264",
-        "pages": [
-          "teaching-ap-biology.html"
-        ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.20264",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Recognizing mechanistic reasoning in student scientific inquiry: A framework for discourse analysis developed from philosophy of science",
-        "indexedYear": 2008
-      },
-      {
-        "url": "https://doi.org/10.1002/sce.21791",
-        "doi": "10.1002/sce.21791",
+        "url": "https://doi.org/10.1002/sce.21099",
+        "doi": "10.1002/sce.21099",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21791",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21099",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Science education with multilingual learners: Equity as access and equity as transformation",
-        "indexedYear": 2023
+        "indexedTitle": "An Integrative Framework for the Analysis of Multiple and Multimodal Representations for Meaning‐Making in Science Education",
+        "indexedYear": 2014
       },
       {
-        "url": "https://doi.org/10.1002/tea.21459",
-        "doi": "10.1002/tea.21459",
+        "url": "https://doi.org/10.1002/sce.21112",
+        "doi": "10.1002/sce.21112",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21459",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21112",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Addressing the epistemic elephant in the room: Epistemic agency and the next generation science standards",
-        "indexedYear": 2018
+        "indexedTitle": "Examining Classroom Science Practice Communities: How Teachers and Students Negotiate Epistemic Agency and Learn Science‐as‐Practice",
+        "indexedYear": 2014
+      },
+      {
+        "url": "https://doi.org/10.1002/sce.21511",
+        "doi": "10.1002/sce.21511",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21511",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Opening up curricula to redistribute epistemic agency: A framework for supporting science teaching",
+        "indexedYear": 2019
+      },
+      {
+        "url": "https://doi.org/10.1002/tea.21714",
+        "doi": "10.1002/tea.21714",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21714",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Science engagement as insight into the science identity work nurtured in community‐based science clubs",
+        "indexedYear": 2021
       },
       {
         "url": "https://doi.org/10.1002/tea.21944",
@@ -1003,37 +1019,20 @@
         "indexedYear": 2023
       },
       {
-        "url": "https://doi.org/10.1080/15265161.2012.680533",
-        "doi": "10.1080/15265161.2012.680533",
+        "url": "https://doi.org/10.1080/09500690903386435",
+        "doi": "10.1080/09500690903386435",
         "pages": [
-          "research.html"
+          "teaching-ap-chemistry.html"
         ],
-        "publisherLanding": "https://www.tandfonline.com/doi/abs/10.1080/15265161.2012.680533",
+        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/09500690903386435",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Out of Bounds? A Critique of the New Policies on Hyperandrogenism in Elite Female Athletes",
-        "indexedYear": 2012
-      },
-      {
-        "url": "https://doi.org/10.1086/430744",
-        "doi": "10.1086/430744",
-        "pages": [
-          "teaching-ap-evolution.html",
-          "writing-biological-classification.html"
-        ],
-        "publisherLanding": "https://academic.oup.com/jid/article-lookup/doi/10.1086/430744",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Sickle Cell Trait and the Risk ofPlasmodium falciparumMalaria and Other Childhood Diseases",
-        "indexedYear": 2005
+        "indexedTitle": "Macro, Submicro, and Symbolic: The many faces of the chemistry “triplet”",
+        "indexedYear": 2010
       },
       {
         "url": "https://doi.org/10.1111/j.1365-2729.1991.tb00230.x",
@@ -1052,36 +1051,36 @@
         "indexedYear": 1991
       },
       {
-        "url": "https://doi.org/10.1159/000345322",
-        "doi": "10.1159/000345322",
+        "url": "https://doi.org/10.1177/01614681251401633",
+        "doi": "10.1177/01614681251401633",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://karger.com/article/doi/10.1159/000345322",
+        "publisherLanding": "https://journals.sagepub.com/doi/10.1177/01614681251401633",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Desettling Expectations in Science Education",
-        "indexedYear": 2012
+        "indexedTitle": "Queer Joy as Pedagogy",
+        "indexedYear": 2025
       },
       {
-        "url": "https://doi.org/10.1187/cbe.23-08-0157",
-        "doi": "10.1187/cbe.23-08-0157",
+        "url": "https://doi.org/10.3102/0034654314558490",
+        "doi": "10.3102/0034654314558490",
         "pages": [
-          "teaching-ap-biology.html"
+          "research.html"
         ],
-        "publisherLanding": "https://www.lifescied.org/doi/10.1187/cbe.23-08-0157",
+        "publisherLanding": "https://journals.sagepub.com/doi/10.3102/0034654314558490",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Examining and Supporting Mechanistic Explanations Across Chemistry and Biology Courses",
-        "indexedYear": 2024
+        "indexedTitle": "Representing Student Argumentation as Functionally Emergent From Scientific Activity",
+        "indexedYear": 2014
       },
       {
         "url": "https://doi.org/10.3390/plants10081501",
@@ -1103,7 +1102,7 @@
     "unresolved": [],
     "limitation": "Crossref/DataCite registration is distinct from publisher access, correct article metadata or article availability. OpenAlex is independent secondary corroboration, not registration proof."
   },
-  "workflow_run_id": "42148249922",
-  "head_sha": "ef8c4ca7a4d704373020a537a685a4e8e6987b45",
+  "workflow_run_id": "42148888898",
+  "head_sha": "ee906c0a87f98e1e1c6ab07fe45fb44fb2d864af",
   "audit_exit_code": "0"
 }
