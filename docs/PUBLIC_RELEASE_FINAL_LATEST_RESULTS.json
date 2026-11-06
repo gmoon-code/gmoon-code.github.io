@@ -1,12 +1,12 @@
 {
-  "sourceHead": "088144a4a772d7330f260020f118c2fdde711531",
+  "sourceHead": "1faf04285e3ce4b034e27d9a378bf73d2e4e8e11",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
-  "verifiedExactMatches": 23,
-  "httpErrors": 1,
+  "verifiedExactMatches": 24,
+  "httpErrors": 0,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-088144a4a772",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-1faf04285e3c",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -77,12 +77,10 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "42152334619",
-      "head_sha": "8c0fb2f424dfbc691a36a8959740d3bf1ea27916",
+      "run": "42153358643",
+      "head_sha": "f72338d1e3676775721127e308a3be4624340504",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "index.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0,
         "combinedStressFailures": 0
@@ -122,12 +120,6 @@
       ]
     },
     {
-      "category": "typography",
-      "sourceModifiedSinceAudit": [
-        "index.html"
-      ]
-    },
-    {
       "category": "interactions",
       "sourceModifiedSinceAudit": [
         "index.html"
@@ -136,21 +128,6 @@
   ],
   "pass": false,
   "errors": [
-    {
-      "path": "index.html",
-      "errors": [
-        "deployed bytes differ from checked-out production source"
-      ],
-      "firstDiff": [
-        "--- source\n",
-        "+++ deployed\n",
-        "@@ -69,3 +69,3 @@\n",
-        "     <h1>Ye Eun Moon</h1>",
-        "-    <p class=\"home-lead studio-unrestricted-size moon-free-object moon-free-absolute\" data-site-resize-original=\"{&quot;all&quot;:{&quot;width&quot;:&quot;&quot;,&quot;height&quot;:&quot;&quot;,&quot;min-height&quot;:&quot;&quot;,&quot;max-width&quot;:&quot;&quot;,&quot;margin-left&quot;:&quot;&quot;,&quot;margin-top&quot;:&quot;&quot;,&quot;object-fit&quot;:&quot;&quot;,&quot;display&quot;:&quot;&quot;,&quot;border-top-width&quot;:&quot;&quot;,&quot;border-top-style&quot;:&quot;&quot;,&quot;border-right-width&quot;:&quot;&quot;,&quot;border-right-style&quot;:&quot;&quot;,&quot;border-bottom-width&quot;:&quot;&quot;,&quot;border-bottom-style&quot;:&quot;&quot;,&quot;border-left-width&quot;:&quot;&quot;,&quot;border-left-style&quot;:&quot;&quot;,&quot;--studio-size-desktop-width&quot;:&quot;&quot;,&quot;--studio-size-desktop-height&quot;:&quot;&quot;,&quot;--studio-size-tablet-width&quot;:&quot;&quot;,&quot;--studio-size-tablet-height&quot;:&quot;&quot;,&quot;--studio-size-phone-width&quot;:&quot;&quot;,&quot;--studio-size-phone-height&quot;:&quot;&quot;,&quot;__hadFreeSize&quot;:false}}\" style=\"margin-bottom: 0px; --studio-size-desktop-width: 640px !important; font-family: &quot;Times New Roman&quot;, Times, serif; font-size: 23px; font-weight: 400; line-height: 32.89px; text-align: start; translate: none; --moon-page-x: 0px; --moon-page-y: 188px; left: 0px; top: 188px; --moon-free-width: 651px; --moon-free-height: 362px; width: 651px; height: 362px; min-height: 362px; max-width: none; box-sizing: border-box;\" data-moon-free-footprint=\"%7B%22w%22%3A640%2C%22h%22%3A361.6%2C%22display%22%3A%22block%22%2C%22marginTop%22%3A%220px%22%2C%22marginRight%22%3A%220px%22%2C%22marginBottom%22%3A%220px%22%2C%22marginLeft%22%3A%220px%22%2C%22gridColumn%22%3A%22auto%22%2C%22gridRow%22%3A%22auto%22%2C%22gridArea%22%3A%22auto%22%2C%22flex%22%3A%220%201%20auto%22%2C%22order%22%3A%220%22%2C%22alignSelf%22%3A%22auto%22%2C%22justifySelf%22%3A%22auto%22%2C%22float%22%3A%22none%22%2C%22clear%22%3A%22none%22%2C%22verticalAlign%22%3A%22baseline%22%7D\" data-moon-free-slot=\"f1\">Hello!&nbsp;<br>I teach secondary biology and chemistry. Comparing students' explanations across assessments has made me more attentive to what their work reveals and what a teacher might overlook. I want to understand how teachers respond when students' questions challenge a lesson's direction and whose contributions shape what happens next. These concerns guide my growing interest in justice-oriented science education.</p>",
-        "+    <p class=\"home-lead studio-unrestricted-size moon-free-object moon-free-absolute\" data-site-resize-original=\"{&quot;all&quot;:{&quot;width&quot;:&quot;&quot;,&quot;height&quot;:&quot;&quot;,&quot;min-height&quot;:&quot;&quot;,&quot;max-width&quot;:&quot;&quot;,&quot;margin-left&quot;:&quot;&quot;,&quot;margin-top&quot;:&quot;&quot;,&quot;object-fit&quot;:&quot;&quot;,&quot;display&quot;:&quot;&quot;,&quot;border-top-width&quot;:&quot;&quot;,&quot;border-top-style&quot;:&quot;&quot;,&quot;border-right-width&quot;:&quot;&quot;,&quot;border-right-style&quot;:&quot;&quot;,&quot;border-bottom-width&quot;:&quot;&quot;,&quot;border-bottom-style&quot;:&quot;&quot;,&quot;border-left-width&quot;:&quot;&quot;,&quot;border-left-style&quot;:&quot;&quot;,&quot;--studio-size-desktop-width&quot;:&quot;&quot;,&quot;--studio-size-desktop-height&quot;:&quot;&quot;,&quot;--studio-size-tablet-width&quot;:&quot;&quot;,&quot;--studio-size-tablet-height&quot;:&quot;&quot;,&quot;--studio-size-phone-width&quot;:&quot;&quot;,&quot;--studio-size-phone-height&quot;:&quot;&quot;,&quot;__hadFreeSize&quot;:false}}\" style=\"margin-bottom: 0px; --studio-size-desktop-width: 640px !important; font-family: &quot;Times New Roman&quot;, Times, serif; font-size: 23px; font-weight: 400; line-height: 32.89px; text-align: start; translate: none; --moon-page-x: 0px; --moon-page-y: 188px; left: 0px; top: 188px; --moon-free-width: 651px; --moon-free-height: 362px; width: 651px; height: 362px; min-height: 362px; max-width: none; box-sizing: border-box;\" data-moon-free-footprint=\"%7B%22w%22%3A640%2C%22h%22%3A361.6%2C%22display%22%3A%22block%22%2C%22marginTop%22%3A%220px%22%2C%22marginRight%22%3A%220px%22%2C%22marginBottom%22%3A%220px%22%2C%22marginLeft%22%3A%220px%22%2C%22gridColumn%22%3A%22auto%22%2C%22gridRow%22%3A%22auto%22%2C%22gridArea%22%3A%22auto%22%2C%22flex%22%3A%220%201%20auto%22%2C%22order%22%3A%220%22%2C%22alignSelf%22%3A%22auto%22%2C%22justifySelf%22%3A%22auto%22%2C%22float%22%3A%22none%22%2C%22clear%22%3A%22none%22%2C%22verticalAlign%22%3A%22baseline%22%7D\" data-moon-free-slot=\"f1\">Hello!&nbsp;<br>I teach secondary biology and chemistry. My classroom research has led me to pay closer attention to how students develop scientific explanations and what their work allows a teacher to understand. These experiences have drawn me toward justice-oriented science education. I am interested in whose explanations receive attention and when students' questions can influence what a class investigates.</p>",
-        "     <!--moon-free-slot:f1--><div class=\"moon-free-placeholder\" data-moon-free-placeholder=\"f1\" aria-hidden=\"true\" style=\"display: block; box-sizing: border-box; width: 640px !important; height: 361.6px !important; min-width: 0px; min-height: 0px; max-width: none !important; max-height: none !important; margin: 0px; flex: 0 1 auto; order: 0; vertical-align: baseline; visibility: hidden; pointer-events: none;\"></div>"
-      ]
-    },
     {
       "sourceDrift": [
         {
@@ -166,12 +143,6 @@
           ]
         },
         {
-          "category": "typography",
-          "sourceModifiedSinceAudit": [
-            "index.html"
-          ]
-        },
-        {
           "category": "interactions",
           "sourceModifiedSinceAudit": [
             "index.html"
@@ -181,7 +152,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42153418495",
-  "run_sha": "088144a4a772d7330f260020f118c2fdde711531",
+  "workflow_run_id": "42153466663",
+  "run_sha": "1faf04285e3ce4b034e27d9a378bf73d2e4e8e11",
   "exit_code": "1"
 }
