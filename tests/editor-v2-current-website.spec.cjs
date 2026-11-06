@@ -4366,8 +4366,8 @@ test('CV date spans can be edited independently and preserved in preview and rel
   const first=dates.first(),second=dates.nth(1);
   const originalDates=await dates.allTextContents();
   const beforeTitle=await live.locator('.resume-entry-heading h3').first().textContent();
-  expect(originalDates[0]).toMatch(/20\\d{2}/);
-  expect(originalDates[1]).toMatch(/20\\d{2}/);
+  expect(originalDates[0]).toMatch(/20\d{2}/);
+  expect(originalDates[1]).toMatch(/20\d{2}/);
   // Synthetic values make a real source change without assuming which
   // graduation date currently appears in the author's live CV.
   const changedFirst='Test 2099',changedSecond='Test 2098';
