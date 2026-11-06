@@ -1,12 +1,12 @@
 {
-  "sourceHead": "4f102e26b597f775b75834d6dcbc56167d6c2637",
+  "sourceHead": "f797e8807a4fd23a110ba7335a3fb9d36e58702c",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
-  "verifiedExactMatches": 23,
-  "httpErrors": 1,
+  "verifiedExactMatches": 24,
+  "httpErrors": 0,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-4f102e26b597",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-f797e8807a4f",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -77,12 +77,10 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "42166451688",
-      "head_sha": "0d75943025caf0afc58ad78ff6e89aa378c5a5b4",
+      "run": "42169766521",
+      "head_sha": "d26824a0802d0c291db7f1306ab31fd8938a363b",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "cv.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0,
         "combinedStressFailures": 0
@@ -118,36 +116,10 @@
       "sourceModifiedSinceAudit": [
         "cv.html"
       ]
-    },
-    {
-      "category": "typography",
-      "sourceModifiedSinceAudit": [
-        "cv.html"
-      ]
     }
   ],
   "pass": false,
   "errors": [
-    {
-      "path": "cv.html",
-      "errors": [
-        "deployed bytes differ from checked-out production source"
-      ],
-      "firstDiff": [
-        "--- source\n",
-        "+++ deployed\n",
-        "@@ -106,3 +106,3 @@\n",
-        "   </style>",
-        "-<style id=\"moon-v2-live-layout\"></style></head>",
-        "+</head>",
-        " <body class=\"theme-blue\">",
-        "@@ -131,3 +131,3 @@\n",
-        "       <div class=\"resume-entry\">",
-        "-        <div class=\"resume-entry-heading\"><h3>Master of Education in Science Education</h3><span class=\"resume-date\">Sep 2026</span></div>",
-        "+        <div class=\"resume-entry-heading\"><h3>Master of Education in Science Education</h3><span class=\"resume-date\">Aug 2026</span></div>",
-        "         <p class=\"resume-institution\">American College of Education</p>"
-      ]
-    },
     {
       "sourceDrift": [
         {
@@ -161,18 +133,12 @@
           "sourceModifiedSinceAudit": [
             "cv.html"
           ]
-        },
-        {
-          "category": "typography",
-          "sourceModifiedSinceAudit": [
-            "cv.html"
-          ]
         }
       ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42169836154",
-  "run_sha": "4f102e26b597f775b75834d6dcbc56167d6c2637",
+  "workflow_run_id": "42169856143",
+  "run_sha": "f797e8807a4fd23a110ba7335a3fb9d36e58702c",
   "exit_code": "1"
 }
