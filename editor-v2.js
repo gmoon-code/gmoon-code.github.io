@@ -5381,6 +5381,33 @@ function bindLiveDocument(){
   doc.addEventListener("pointerdown",event=>{
     if(workspaceMode!=="live"||liveEditing||event.button!==0)return;
     if(event.target.closest?.("#moon-v2-live-overlay"))return;
+    // Firefox sometimes sends pointermove to a small resize grip but sends
+    // pointerdown at exactly the same coordinates to the image underneath.
+    // Before changing selection, honour the *visible* selected object's grip.
+    // Geometry is checked in this iframe's client coordinates; the fallback
+    // cannot select or edit unrelated source objects.
+    if(!liveGesture&&liveSelected?.node?.isConnected&&
+       liveOverlay?.isConnected&&event.pointerType!=="touch"&&
+       !event.ctrlKey&&!event.metaKey&&!event.shiftKey&&!event.altKey){
+      const grip=[...liveOverlay.querySelectorAll(".moon-v2-grip, .moon-v2-edge")]
+        .filter(button=>{
+          const r=button.getBoundingClientRect();
+          return r.width>0&&r.height>0&&
+            event.clientX>=r.left&&event.clientX<=r.right&&
+            event.clientY>=r.top&&event.clientY<=r.bottom;
+        }).sort((a,b)=>{
+          const distance=button=>{
+            const r=button.getBoundingClientRect();
+            return Math.hypot(event.clientX-(r.left+r.width/2),
+              event.clientY-(r.top+r.height/2));
+          };
+          return distance(a)-distance(b);
+        })[0];
+      if(grip){
+        startLiveGesture(event,grip.dataset.direction,grip);
+        if(liveGesture?.anchor===grip)return;
+      }
+    }
     if((event.ctrlKey||event.metaKey)&&!event.shiftKey){
       event.preventDefault();event.stopPropagation();
       liveSuppressClickUntil=performance.now()+300;
