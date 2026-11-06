@@ -3922,6 +3922,17 @@ function syncLiveOverlay(){
       "width:var(--moon-grip,28px)!important;height:var(--moon-grip,28px)!important;"+
       "border:2px solid #287dbb!important;border-radius:5px!important;padding:0!important;"+
       "z-index:2147483003!important;box-shadow:0 1px 6px #132e3866!important;}"+
+      // On a tiny text or image frame, the full-size corners otherwise sit
+      // over its midpoint edge grips. Move corners outside the frame until
+      // all eight handles can be clicked independently.
+      "#moon-v2-live-overlay[data-compact-height='true'] .moon-v2-grip[data-direction^='n']{"+
+      "top:calc(0px - var(--moon-grip,28px))!important;}"+
+      "#moon-v2-live-overlay[data-compact-height='true'] .moon-v2-grip[data-direction^='s']{"+
+      "top:calc(100% + var(--moon-grip,28px))!important;}"+
+      "#moon-v2-live-overlay[data-compact-width='true'] .moon-v2-grip[data-direction$='w']{"+
+      "left:calc(0px - var(--moon-grip,28px))!important;}"+
+      "#moon-v2-live-overlay[data-compact-width='true'] .moon-v2-grip[data-direction$='e']{"+
+      "left:calc(100% + var(--moon-grip,28px))!important;}"+
       "#moon-v2-live-overlay .moon-v2-edge{"+
       "border:0!important;border-radius:8px!important;"+
       "background:transparent!important;z-index:2147483002!important;"+
@@ -4038,6 +4049,11 @@ function syncLiveOverlay(){
     Math.round(clamp(22/scale,22,76))+"px");
   liveOverlay.style.setProperty("--moon-edge",
     Math.round(clamp(22/scale,22,72))+"px");
+  const gripSize=parseFloat(liveOverlay.style.getPropertyValue("--moon-grip"))||22;
+  // Two corners plus the centre edge need three non-overlapping hit areas.
+  // This flag only repositions controls; it never changes source geometry.
+  liveOverlay.dataset.compactHeight=String(rect.height<gripSize*1.6);
+  liveOverlay.dataset.compactWidth=String(rect.width<gripSize*1.6);
   syncLiveCropImageGuide(node,rect);
 }
 function removeLiveSnapGuides(){
