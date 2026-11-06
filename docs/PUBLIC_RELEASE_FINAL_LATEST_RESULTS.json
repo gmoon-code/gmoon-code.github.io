@@ -1,12 +1,12 @@
 {
-  "sourceHead": "0d6f80d352402779594e05c4304d9dc6cbd24230",
+  "sourceHead": "ef8c4ca7a4d704373020a537a685a4e8e6987b45",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-0d6f80d35240",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-ef8c4ca7a4d7",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -17,7 +17,9 @@
       "run": "42147829556",
       "head_sha": "c4067d079aea8189f437997d2bf888c27001a64d",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "problems": 0
       }
@@ -27,7 +29,9 @@
       "run": "42147829480",
       "head_sha": "c4067d079aea8189f437997d2bf888c27001a64d",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "issues": 47
       },
@@ -42,7 +46,9 @@
       "run": "42147829525",
       "head_sha": "c4067d079aea8189f437997d2bf888c27001a64d",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "unverified": 0
       },
@@ -57,7 +63,9 @@
       "run": "42147829420",
       "head_sha": "c4067d079aea8189f437997d2bf888c27001a64d",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "failures": 0
       }
@@ -67,7 +75,9 @@
       "run": "42147829636",
       "head_sha": "c4067d079aea8189f437997d2bf888c27001a64d",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "failures": 0
       }
@@ -77,7 +87,9 @@
       "run": "42147829540",
       "head_sha": "c4067d079aea8189f437997d2bf888c27001a64d",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "failures": 0,
         "combinedStressFailures": 0
@@ -88,7 +100,9 @@
       "run": "42147829508",
       "head_sha": "c4067d079aea8189f437997d2bf888c27001a64d",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "failures": 0,
         "axeViolations": 0
@@ -101,7 +115,50 @@
       "note": "U1 route audit documents successful run 40825886279; legacy utility machine report refers to an early missing-script failure. Do not treat it as latest successful evidence."
     }
   },
-  "sourceDriftSinceAudits": [],
+  "sourceDriftSinceAudits": [
+    {
+      "category": "links",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "external",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "metadata",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "reflow",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "engines",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "typography",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "interactions",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    }
+  ],
   "pass": false,
   "errors": [
     {
@@ -127,10 +184,56 @@
         "@@ -84,8 +84,9 @@\n",
         "     <div class=\"reading research-essay-prose\">"
       ]
+    },
+    {
+      "sourceDrift": [
+        {
+          "category": "links",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "external",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "metadata",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "reflow",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "engines",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "typography",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "interactions",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        }
+      ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42148123871",
-  "run_sha": "0d6f80d352402779594e05c4304d9dc6cbd24230",
+  "workflow_run_id": "42148250206",
+  "run_sha": "ef8c4ca7a4d704373020a537a685a4e8e6987b45",
   "exit_code": "1"
 }
