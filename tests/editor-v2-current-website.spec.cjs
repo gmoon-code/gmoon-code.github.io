@@ -4405,6 +4405,32 @@ test('CV date spans can be edited independently and preserved in preview and rel
   expect(draft.filter(p=>p.kind==='text')).toHaveLength(2);
   expect(draft.every(p=>p.selector.includes('span:nth-of-type('))).toBe(true);
   expect(writes,'editing dates must never send GitHub writes').toEqual([]);
+
+  // Publishing is intercepted and never writes to the real GitHub repository.
+  // Check that the generated page changes only these date spans.
+  const published=[];
+  await page.route('https://api.github.com/repos/gmoon-code/gmoon-code.github.io/contents/cv.html',
+    async route=>{
+      if(route.request().method()!=='PUT')return route.fallback();
+      published.push(JSON.parse(route.request().postData()));
+      await route.fulfill({status:200,contentType:'application/json',
+        headers:{'access-control-allow-origin':'*'},
+        body:JSON.stringify({commit:{sha:'mock-cv-date-publication'}})});
+    });
+  await page.locator('#publish').click();
+  await page.locator('#githubToken').fill('synthetic-cv-date-publication-token');
+  await page.locator('#acknowledgeLive').check();
+  await page.locator('#confirmPublish').click();
+  await expect.poll(()=>published.length,{timeout:20000}).toBe(1);
+  expect(published[0].sha).toBe(blobSha(SOURCE.get('cv.html')));
+  expect(published[0].branch).toBe('main');
+  const result=Buffer.from(published[0].content,'base64').toString('utf8');
+  expect(result).toContain('class="resume-date">Sep 2026</span>');
+  expect(result).toContain('class="resume-date">Dec 2020</span>');
+  expect(result).toContain(beforeTitle);
+  expect(result).not.toContain('class="resume-date">Aug 2026</span>');
+  expect(result).not.toContain('class="resume-date">Nov 2020</span>');
+  expect(writes).toEqual([]);
 });
 
 test('CV dates are individually discoverable in website elements and not as parent headings',async({page})=>{
