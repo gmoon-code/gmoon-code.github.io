@@ -1,12 +1,12 @@
 {
-  "sourceHead": "5f690514b0f060485cdb737f5216e1e3fbf39e60",
+  "sourceHead": "4ed2fb6faad01dccbc2b261ce662ecdc23f9d211",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
-  "verifiedExactMatches": 23,
-  "httpErrors": 1,
+  "verifiedExactMatches": 24,
+  "httpErrors": 0,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-5f690514b0f0",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-4ed2fb6faad0",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -75,12 +75,10 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "42149780201",
-      "head_sha": "e4e985146f7b5f9481c2e7fc4d99f8dd46459a9d",
+      "run": "42151419842",
+      "head_sha": "e0d3990685e44b2afceeb3eea34dcc25eb78f3a1",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0,
         "combinedStressFailures": 0
@@ -110,45 +108,14 @@
       "sourceModifiedSinceAudit": [
         "research.html"
       ]
-    },
-    {
-      "category": "typography",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ]
     }
   ],
   "pass": false,
   "errors": [
     {
-      "path": "research.html",
-      "errors": [
-        "deployed bytes differ from checked-out production source"
-      ],
-      "firstDiff": [
-        "--- source\n",
-        "+++ deployed\n",
-        "@@ -106,3 +106,3 @@\n",
-        "     <p>A student's experience can inform a scientific explanation in ways a classroom task has not anticipated. Scholarship on cultural practices of ecological reasoning examines how knowledge develops through relationships with the natural world and how school science may privilege particular ways of describing those relationships (<a href=\"#reading-bang-medin\">Bang &amp; Medin, 2010</a>; <a href=\"#reading-bang\">Bang et al., 2012</a>). A teacher still has to consider whether the student's explanation accounts adequately for the phenomenon at hand. The difficulty lies in evaluating the scientific relationships expressed without assuming that the language or organization of a familiar school answer exhausts what the student can explain.</p>",
-        "-    <p>Recognition gained through scientific activity may not carry the same meaning across settings. Children attending community science clubs valued practical activities and relationships with others, yet some treated club science and school science as separate experiences (<a href=\"#reading-burke\">Burke &amp; Navas Iannini, 2021</a>). In an after-school conversation club, girls used relationships and shared interests to position themselves as knowledgeable about science. The recognition they gained held value within the group, while their accounts of school science remained more distant (<a href=\"#reading-gonsalves-rahm\">Gonsalves &amp; Rahm, 2023</a>). These accounts suggest that being heard as a knowledgeable participant in one setting does not establish how a student's contributions will be received in another. I would examine what happens when students bring questions or practices from outside school into a classroom investigation.</p>",
-        "+    <p>The setting can also change which forms of scientific participation feel available. Children attending community science clubs described valuing practical activities and relationships with others, yet some treated club science and school science as separate experiences (<a href=\"#reading-burke\">Burke &amp; Navas Iannini, 2021</a>). Their accounts do not tell us whether a particular school lesson restricted a student's reasoning. They do suggest a question worth examining in classrooms, whether students encounter opportunities to bring their existing questions and practices into the scientific work expected at school.</p>",
-        "     <p>Expectations of competence introduce another dimension of recognition. Doctoral physics students described how gendered expectations shaped their efforts to become recognized as physicists (<a href=\"#reading-gonsalves\">Gonsalves, 2014</a>). Across longer science-identity trajectories, recognition by others took different forms for women of colour pursuing scientific work (<a href=\"#reading-carlone\">Carlone &amp; Johnson, 2007</a>). The populations and settings differ from secondary biology. These studies nonetheless direct attention to recognition as a judgment enacted within particular relationships, a concern also developed in accounts of learning as a cultural process (<a href=\"#reading-cultural-process\">Nasir et al., 2014</a>). In a classroom study, I would need to examine how that judgment appears in responses to students' questions.</p>",
-        "@@ -192,3 +192,2 @@\n",
-        "     <li id=\"reading-gonsalves\">Gonsalves, A. J. (2014). “Physics and the girly girl—there is a contradiction somewhere”: Doctoral students’ positioning around discourses of gender and competence in physics. <em>Cultural Studies of Science Education, 9</em>(2), 503–521. <a href=\"https://doi.org/10.1007/s11422-012-9447-6\">https://doi.org/10.1007/s11422-012-9447-6</a></li>",
-        "-    <li id=\"reading-gonsalves-rahm\">Gonsalves, A. J., &amp; Rahm, J. (2023). “It was always about relationships and it was awesome”: Girls performing gender and identity in an out-of-school-time science conversation club. In H. T. Holmegaard &amp; L. Archer (Eds.), <em>Science identities: Theory, method and research</em> (pp. 47–66). Springer. <a href=\"https://doi.org/10.1007/978-3-031-17642-5_3\">https://doi.org/10.1007/978-3-031-17642-5_3</a></li>",
-        "     <li id=\"reading-gonzalez\">González-Howard, M., Andersen, S., Méndez Pérez, K., &amp; Suárez, E. (2023). Language views for scientific sensemaking matter: A synthesis of research on multilingual students’ experiences with science practices through a translanguaging lens. <em>Educational Researcher, 52</em>(9), 570–579. <a href=\"https://doi.org/10.3102/0013189X231206172\">https://doi.org/10.3102/0013189X231206172</a></li>"
-      ]
-    },
-    {
       "sourceDrift": [
         {
           "category": "engines",
-          "sourceModifiedSinceAudit": [
-            "research.html"
-          ]
-        },
-        {
-          "category": "typography",
           "sourceModifiedSinceAudit": [
             "research.html"
           ]
@@ -157,7 +124,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42151619778",
-  "run_sha": "5f690514b0f060485cdb737f5216e1e3fbf39e60",
+  "workflow_run_id": "42151691052",
+  "run_sha": "4ed2fb6faad01dccbc2b261ce662ecdc23f9d211",
   "exit_code": "1"
 }
