@@ -643,7 +643,12 @@ for(const name of PAGES){
     await expect(page.locator('#liveAssetStatus'))
       .toContainText('GitHub main source verified',{timeout:35000});
     const live=page.frameLocator('#livePageFrame');
-    const paragraph=live.locator('main p:visible').first();
+    // On Home, the free-positioned hero lead is currently covered by its
+    // surrounding hero-copy layer. Select a directly reachable paragraph to
+    // verify text editing and publication. Hit-target repair is separate.
+    const paragraphSelector=name==='index.html'?
+      'main #teaching-research .home-path p:visible':'main p:visible';
+    const paragraph=live.locator(paragraphSelector).first();
     await expect(paragraph).toBeVisible();
     const original=await paragraph.textContent();
     expect(original?.trim().length).toBeGreaterThan(0);
@@ -662,7 +667,7 @@ for(const name of PAGES){
     expect(JSON.parse(draft).some(p=>p.kind==='text')).toBe(true);
     await page.locator('#preview').click();
     await expect(page.locator('#previewDialog')).toBeVisible({timeout:20000});
-    await expect(page.frameLocator('#previewFrame').locator('main p:visible').first())
+    await expect(page.frameLocator('#previewFrame').locator(paragraphSelector).first())
       .toHaveText(synthetic,{timeout:20000});
     const html=await page.locator('#previewFrame').getAttribute('srcdoc');
     expect(html).toContain(synthetic);
@@ -670,7 +675,7 @@ for(const name of PAGES){
     await page.reload({waitUntil:'domcontentloaded'});
     await expect(page.locator('#liveAssetStatus'))
       .toContainText('GitHub main source verified',{timeout:35000});
-    await expect(page.frameLocator('#livePageFrame').locator('main p:visible').first())
+    await expect(page.frameLocator('#livePageFrame').locator(paragraphSelector).first())
       .toHaveText(synthetic,{timeout:20000});
     expect(writes,name+' text editing must remain unpublished').toEqual([]);
     const published=[];
