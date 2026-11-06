@@ -1,12 +1,12 @@
 {
-  "sourceHead": "e7a14bc26e89927bc4d01f4b5e3172631b972773",
+  "sourceHead": "c2d03cf747c69e584a263a00e8aaefc8c547d628",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
-  "verifiedExactMatches": 23,
-  "httpErrors": 1,
+  "verifiedExactMatches": 22,
+  "httpErrors": 2,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-e7a14bc26e89",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-c2d03cf747c6",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -14,12 +14,10 @@
   "auditEvidence": {
     "links": {
       "report": "docs/PUBLIC_LINKGRAPH_LATEST_RESULTS.json",
-      "run": "42159153326",
-      "head_sha": "613e13721443affaf2c88b8cf9e4c3b9b933d643",
+      "run": "42159324179",
+      "head_sha": "4051098c74c89be2e823bbffdfc928a15df25668",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "teaching.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "problems": 0
       }
@@ -30,6 +28,7 @@
       "head_sha": "613e13721443affaf2c88b8cf9e4c3b9b933d643",
       "exit": "0",
       "sourceModifiedSinceAudit": [
+        "interests.html",
         "teaching.html"
       ],
       "failureCounts": {
@@ -42,8 +41,8 @@
     },
     "metadata": {
       "report": "docs/RESEARCH_METADATA_LATEST_RESULTS.json",
-      "run": "42158508752",
-      "head_sha": "e8b8a3b6d8f5aa4ef661917fee98c1a74d5dbcf3",
+      "run": "42159153526",
+      "head_sha": "613e13721443affaf2c88b8cf9e4c3b9b933d643",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "teaching.html"
@@ -59,10 +58,11 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "42158899417",
-      "head_sha": "acb686eaaa8748994ef6ed151e7bf1f777ee1f2e",
+      "run": "42159153405",
+      "head_sha": "613e13721443affaf2c88b8cf9e4c3b9b933d643",
       "exit": "0",
       "sourceModifiedSinceAudit": [
+        "interests.html",
         "teaching.html"
       ],
       "failureCounts": {
@@ -71,11 +71,11 @@
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "42158899375",
-      "head_sha": "acb686eaaa8748994ef6ed151e7bf1f777ee1f2e",
+      "run": "42159205245",
+      "head_sha": "9c25961e42d577044593c9b5e3226340e7f04282",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "teaching.html"
+        "interests.html"
       ],
       "failureCounts": {
         "failures": 0
@@ -87,6 +87,7 @@
       "head_sha": "ddf7b12619a3fc98b826272f3e01bab052316424",
       "exit": "0",
       "sourceModifiedSinceAudit": [
+        "interests.html",
         "projects.html",
         "research.html",
         "teaching.html"
@@ -102,6 +103,7 @@
       "head_sha": "ddf7b12619a3fc98b826272f3e01bab052316424",
       "exit": "0",
       "sourceModifiedSinceAudit": [
+        "interests.html",
         "projects.html",
         "research.html",
         "teaching.html"
@@ -120,14 +122,9 @@
   },
   "sourceDriftSinceAudits": [
     {
-      "category": "links",
-      "sourceModifiedSinceAudit": [
-        "teaching.html"
-      ]
-    },
-    {
       "category": "external",
       "sourceModifiedSinceAudit": [
+        "interests.html",
         "teaching.html"
       ]
     },
@@ -140,18 +137,20 @@
     {
       "category": "reflow",
       "sourceModifiedSinceAudit": [
+        "interests.html",
         "teaching.html"
       ]
     },
     {
       "category": "engines",
       "sourceModifiedSinceAudit": [
-        "teaching.html"
+        "interests.html"
       ]
     },
     {
       "category": "typography",
       "sourceModifiedSinceAudit": [
+        "interests.html",
         "projects.html",
         "research.html",
         "teaching.html"
@@ -160,6 +159,7 @@
     {
       "category": "interactions",
       "sourceModifiedSinceAudit": [
+        "interests.html",
         "projects.html",
         "research.html",
         "teaching.html"
@@ -185,16 +185,27 @@
       ]
     },
     {
+      "path": "interests.html",
+      "errors": [
+        "deployed bytes differ from checked-out production source"
+      ],
+      "firstDiff": [
+        "--- source\n",
+        "+++ deployed\n",
+        "@@ -20,4 +20,3 @@\n",
+        " @media (min-width:1025px){main > section:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:1089px!important;height:71px!important;min-height:0!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}main > section:nth-of-type(2){translate:0px -28px!important;scale:1 1!important;transform-origin:top left!important;}}",
+        "-@media (min-width:1025px){:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(2){width:233px!important;max-width:none!important;min-width:0!important;height:auto!important;box-sizing:border-box!important;overflow:hidden!important;translate:-399px -292px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(2) > a:nth-of-type(1){display:block!important;width:100%!important;overflow:hidden!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(2) > a:nth-of-type(1) > img:nth-of-type(1){display:block!important;width:100%!important;max-width:100%!important;height:172px!important;box-sizing:border-box!important;object-fit:cover!important;translate:0 0!important;scale:1 1!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(2) > div:nth-of-type(2) > p:nth-of-type(1){translate:267px 22px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(2) > div:nth-of-type(2) > p:nth-of-type(2){translate:2px 53px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(1){width:383px!important;max-width:none!important;min-width:0!important;height:auto!important;box-sizing:border-box!important;overflow:hidden!important;translate:655px -139px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(1) > a:nth-of-type(1){display:block!important;width:100%!important;overflow:hidden!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(1) > a:nth-of-type(1) > img:nth-of-type(1){display:block!important;width:100%!important;max-width:100%!important;height:214px!important;box-sizing:border-box!important;object-fit:cover!important;translate:0 0!important;scale:1 1!important;}}",
+        "-@media (min-width:1025px){:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(2) > div:nth-of-type(2) > p:nth-of-type(2){translate:17px 53px!important;scale:1 1!important;transform-origin:top left!important;width:633px!important;height:128px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(2) > div:nth-of-type(2) > p:nth-of-type(1){translate:267px 22px!important;scale:1 1!important;transform-origin:top left!important;width:778px!important;height:130px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(2){width:233px!important;max-width:none!important;min-width:0!important;height:auto!important;box-sizing:border-box!important;overflow:hidden!important;translate:-388px -287px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(2) > a:nth-of-type(1){display:block!important;width:100%!important;overflow:hidden!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(2) > a:nth-of-type(1) > img:nth-of-type(1){display:block!important;width:100%!important;max-width:100%!important;height:172px!important;box-sizing:border-box!important;object-fit:cover!important;translate:0 0!important;scale:1 1!important;}}</style></head>",
+        "+@media (min-width:1025px){:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(2){width:233px!important;max-width:none!important;min-width:0!important;height:auto!important;box-sizing:border-box!important;overflow:hidden!important;translate:-399px -292px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(2) > a:nth-of-type(1){display:block!important;width:100%!important;overflow:hidden!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(2) > a:nth-of-type(1) > img:nth-of-type(1){display:block!important;width:100%!important;max-width:100%!important;height:172px!important;box-sizing:border-box!important;object-fit:cover!important;translate:0 0!important;scale:1 1!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(2) > div:nth-of-type(2) > p:nth-of-type(1){translate:267px 22px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(2) > div:nth-of-type(2) > p:nth-of-type(2){translate:2px 53px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(1){width:383px!important;max-width:none!important;min-width:0!important;height:auto!important;box-sizing:border-box!important;overflow:hidden!important;translate:655px -139px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(1) > a:nth-of-type(1){display:block!important;width:100%!important;overflow:hidden!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(1) > a:nth-of-type(1) > img:nth-of-type(1){display:block!important;width:100%!important;max-width:100%!important;height:214px!important;box-sizing:border-box!important;object-fit:cover!important;translate:0 0!important;scale:1 1!important;}}</style></head>",
+        " <body class=\"theme-yellow\">"
+      ]
+    },
+    {
       "sourceDrift": [
-        {
-          "category": "links",
-          "sourceModifiedSinceAudit": [
-            "teaching.html"
-          ]
-        },
         {
           "category": "external",
           "sourceModifiedSinceAudit": [
+            "interests.html",
             "teaching.html"
           ]
         },
@@ -207,18 +218,20 @@
         {
           "category": "reflow",
           "sourceModifiedSinceAudit": [
+            "interests.html",
             "teaching.html"
           ]
         },
         {
           "category": "engines",
           "sourceModifiedSinceAudit": [
-            "teaching.html"
+            "interests.html"
           ]
         },
         {
           "category": "typography",
           "sourceModifiedSinceAudit": [
+            "interests.html",
             "projects.html",
             "research.html",
             "teaching.html"
@@ -227,6 +240,7 @@
         {
           "category": "interactions",
           "sourceModifiedSinceAudit": [
+            "interests.html",
             "projects.html",
             "research.html",
             "teaching.html"
@@ -236,7 +250,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42159262378",
-  "run_sha": "e7a14bc26e89927bc4d01f4b5e3172631b972773",
+  "workflow_run_id": "42159418992",
+  "run_sha": "c2d03cf747c69e584a263a00e8aaefc8c547d628",
   "exit_code": "1"
 }
