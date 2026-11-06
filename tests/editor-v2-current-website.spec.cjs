@@ -643,7 +643,11 @@ for(const name of PAGES){
     await expect(page.locator('#liveAssetStatus'))
       .toContainText('GitHub main source verified',{timeout:35000});
     const live=page.frameLocator('#livePageFrame');
-    const paragraph=live.locator('main p:visible').first();
+    // The Home intro is independently tested for click and sizing below.
+    // Use a reachable source paragraph for this generic text-publishing test.
+    const paragraphSelector=name==='index.html'?
+      'main #teaching-research .home-path p:visible':'main p:visible';
+    const paragraph=live.locator(paragraphSelector).first();
     await expect(paragraph).toBeVisible();
     const original=await paragraph.textContent();
     expect(original?.trim().length).toBeGreaterThan(0);
@@ -662,7 +666,7 @@ for(const name of PAGES){
     expect(JSON.parse(draft).some(p=>p.kind==='text')).toBe(true);
     await page.locator('#preview').click();
     await expect(page.locator('#previewDialog')).toBeVisible({timeout:20000});
-    await expect(page.frameLocator('#previewFrame').locator('main p:visible').first())
+    await expect(page.frameLocator('#previewFrame').locator(paragraphSelector).first())
       .toHaveText(synthetic,{timeout:20000});
     const html=await page.locator('#previewFrame').getAttribute('srcdoc');
     expect(html).toContain(synthetic);
@@ -670,7 +674,7 @@ for(const name of PAGES){
     await page.reload({waitUntil:'domcontentloaded'});
     await expect(page.locator('#liveAssetStatus'))
       .toContainText('GitHub main source verified',{timeout:35000});
-    await expect(page.frameLocator('#livePageFrame').locator('main p:visible').first())
+    await expect(page.frameLocator('#livePageFrame').locator(paragraphSelector).first())
       .toHaveText(synthetic,{timeout:20000});
     expect(writes,name+' text editing must remain unpublished').toEqual([]);
     const published=[];
@@ -4280,11 +4284,14 @@ test('Home Hello introductory paragraph can shrink below site-authored size and 
   const before=await measure(lead),untouched=await measure(other);
   expect(before.w).toBeGreaterThan(300);
   expect(before.h).toBeGreaterThan(200);
-  // Layers can select this free-positioned source paragraph even when its
-  // pre-existing hero-copy stacking order intercepts direct mouse clicks.
-  await page.locator('#liveElementSearch').fill('Hello!');
-  await page.locator('#liveElementList button.layer')
-    .filter({hasText:'Hello!'}).first().click();
+  // Real pointer input must select the visual paragraph even when the
+  // surrounding Home hero div receives the actual browser hit.
+  await lead.scrollIntoViewIfNeeded();
+  const hitBox=await lead.boundingBox();
+  expect(hitBox).toBeTruthy();
+  await page.mouse.click(hitBox.x+Math.min(18,hitBox.width/4),
+    hitBox.y+Math.min(18,hitBox.height/4));
+  await expect(page.locator('#liveSelectionLabel')).toContainText('Hello!');
   await expect(page.locator('#liveTextReflowControls')).toBeVisible();
   const width=page.locator('#liveTextBoxWidth'),
     height=page.locator('#liveTextBoxHeight');
