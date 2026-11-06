@@ -1,12 +1,12 @@
 {
-  "sourceHead": "5f9bab6bda7bef3266a745fdde5316f588b04630",
+  "sourceHead": "8dc32da34832a17d48de4e1d2b6486184f934acf",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 22,
   "httpErrors": 2,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-5f9bab6bda7b",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-8dc32da34832",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -14,30 +14,26 @@
   "auditEvidence": {
     "links": {
       "report": "docs/PUBLIC_LINKGRAPH_LATEST_RESULTS.json",
-      "run": "42164849285",
-      "head_sha": "4e2ea798829a0cb00dd80f0404d3909530798300",
+      "run": "42164940132",
+      "head_sha": "5f9bab6bda7bef3266a745fdde5316f588b04630",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "index.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "problems": 0
       }
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "42164849362",
-      "head_sha": "4e2ea798829a0cb00dd80f0404d3909530798300",
+      "run": "42164940060",
+      "head_sha": "5f9bab6bda7bef3266a745fdde5316f588b04630",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "index.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
-        "issues": 41
+        "issues": 40
       },
       "counts": {
-        "reachable": 69,
-        "unverified": 41
+        "reachable": 70,
+        "unverified": 40
       }
     },
     "metadata": {
@@ -59,24 +55,20 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "42164667996",
-      "head_sha": "ba3f190e34382c427f7c705a921142b87f8dfec5",
+      "run": "42164940361",
+      "head_sha": "5f9bab6bda7bef3266a745fdde5316f588b04630",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "contact.html",
-        "index.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0
       }
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "42164667991",
-      "head_sha": "ba3f190e34382c427f7c705a921142b87f8dfec5",
+      "run": "42164849258",
+      "head_sha": "4e2ea798829a0cb00dd80f0404d3909530798300",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "contact.html",
         "index.html"
       ],
       "failureCounts": {
@@ -85,12 +77,10 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "42164849250",
-      "head_sha": "4e2ea798829a0cb00dd80f0404d3909530798300",
+      "run": "42164940197",
+      "head_sha": "5f9bab6bda7bef3266a745fdde5316f588b04630",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "index.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0,
         "combinedStressFailures": 0
@@ -119,39 +109,13 @@
   },
   "sourceDriftSinceAudits": [
     {
-      "category": "links",
-      "sourceModifiedSinceAudit": [
-        "index.html"
-      ]
-    },
-    {
-      "category": "external",
-      "sourceModifiedSinceAudit": [
-        "index.html"
-      ]
-    },
-    {
       "category": "metadata",
       "sourceModifiedSinceAudit": [
         "teaching.html"
       ]
     },
     {
-      "category": "reflow",
-      "sourceModifiedSinceAudit": [
-        "contact.html",
-        "index.html"
-      ]
-    },
-    {
       "category": "engines",
-      "sourceModifiedSinceAudit": [
-        "contact.html",
-        "index.html"
-      ]
-    },
-    {
-      "category": "typography",
       "sourceModifiedSinceAudit": [
         "index.html"
       ]
@@ -214,39 +178,13 @@
     {
       "sourceDrift": [
         {
-          "category": "links",
-          "sourceModifiedSinceAudit": [
-            "index.html"
-          ]
-        },
-        {
-          "category": "external",
-          "sourceModifiedSinceAudit": [
-            "index.html"
-          ]
-        },
-        {
           "category": "metadata",
           "sourceModifiedSinceAudit": [
             "teaching.html"
           ]
         },
         {
-          "category": "reflow",
-          "sourceModifiedSinceAudit": [
-            "contact.html",
-            "index.html"
-          ]
-        },
-        {
           "category": "engines",
-          "sourceModifiedSinceAudit": [
-            "contact.html",
-            "index.html"
-          ]
-        },
-        {
-          "category": "typography",
           "sourceModifiedSinceAudit": [
             "index.html"
           ]
@@ -262,7 +200,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42164940164",
-  "run_sha": "5f9bab6bda7bef3266a745fdde5316f588b04630",
+  "workflow_run_id": "42165077459",
+  "run_sha": "8dc32da34832a17d48de4e1d2b6486184f934acf",
   "exit_code": "1"
 }
