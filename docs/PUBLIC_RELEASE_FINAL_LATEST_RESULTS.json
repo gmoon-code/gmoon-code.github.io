@@ -1,12 +1,12 @@
 {
-  "sourceHead": "7546687593b18046b3d60899280eefbbe2087353",
+  "sourceHead": "0d6f80d352402779594e05c4304d9dc6cbd24230",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-7546687593b1",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-0d6f80d35240",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -14,12 +14,10 @@
   "auditEvidence": {
     "links": {
       "report": "docs/PUBLIC_LINKGRAPH_LATEST_RESULTS.json",
-      "run": "42145707512",
-      "head_sha": "3a0d04e16994e7f7a83ad98b4b580d0fefa2bf53",
+      "run": "42147829556",
+      "head_sha": "c4067d079aea8189f437997d2bf888c27001a64d",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "problems": 0
       }
@@ -56,24 +54,20 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "42145707325",
-      "head_sha": "3a0d04e16994e7f7a83ad98b4b580d0fefa2bf53",
+      "run": "42147829420",
+      "head_sha": "c4067d079aea8189f437997d2bf888c27001a64d",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0
       }
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "42145707398",
-      "head_sha": "3a0d04e16994e7f7a83ad98b4b580d0fefa2bf53",
+      "run": "42147829636",
+      "head_sha": "c4067d079aea8189f437997d2bf888c27001a64d",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0
       }
@@ -107,26 +101,7 @@
       "note": "U1 route audit documents successful run 40825886279; legacy utility machine report refers to an early missing-script failure. Do not treat it as latest successful evidence."
     }
   },
-  "sourceDriftSinceAudits": [
-    {
-      "category": "links",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ]
-    },
-    {
-      "category": "reflow",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ]
-    },
-    {
-      "category": "engines",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ]
-    }
-  ],
+  "sourceDriftSinceAudits": [],
   "pass": false,
   "errors": [
     {
@@ -152,32 +127,10 @@
         "@@ -84,8 +84,9 @@\n",
         "     <div class=\"reading research-essay-prose\">"
       ]
-    },
-    {
-      "sourceDrift": [
-        {
-          "category": "links",
-          "sourceModifiedSinceAudit": [
-            "research.html"
-          ]
-        },
-        {
-          "category": "reflow",
-          "sourceModifiedSinceAudit": [
-            "research.html"
-          ]
-        },
-        {
-          "category": "engines",
-          "sourceModifiedSinceAudit": [
-            "research.html"
-          ]
-        }
-      ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42148014963",
-  "run_sha": "7546687593b18046b3d60899280eefbbe2087353",
+  "workflow_run_id": "42148123871",
+  "run_sha": "0d6f80d352402779594e05c4304d9dc6cbd24230",
   "exit_code": "1"
 }
