@@ -4450,3 +4450,134 @@ test('CV dates are individually discoverable in website elements and not as pare
   await expect(page.locator('#liveSelectionLabel')).toContainText('Jul 2024');
   expect(writes).toEqual([]);
 });
+
+for(const sample of [{"file":"index.html","selector":"main.home-page .home-intro .hero-copy > p.home-lead","other":"#teaching-research .home-path p","home":true},{"file":"pungmul.html","selector":"#performances .pungmul-prose p","other":"#music .pungmul-prose p"},{"file":"research.html","selector":"main p:visible","other":"main p:visible","siblingIndex":1},{"file":"cv.html","selector":"main.resume-page span.resume-date","other":"main.resume-page span.resume-date","siblingIndex":1}]){
+  test('Font-size inspector overrides public CSS and persists on '+sample.file,
+    async({page})=>{
+      const writes=[];
+      await installVerifiedCurrentSource(page,writes);
+      await page.setViewportSize({width:1740,height:1050});
+      await page.goto(BASE+'/editor-v2.html?page='+sample.file,
+        {waitUntil:'domcontentloaded'});
+      await expect(page.locator('#liveAssetStatus'))
+        .toContainText('GitHub main source verified',{timeout:35000});
+      const frame=page.frameLocator('#livePageFrame');
+      const node=frame.locator(sample.selector).first();
+      const other=frame.locator(sample.other).nth(sample.siblingIndex||0);
+      await expect(node).toBeVisible();
+      const measure=el=>el.evaluate(e=>({
+        font:getComputedStyle(e).fontSize,
+        text:e.textContent.trim()
+      }));
+      const initial=await measure(node),neighbour=await measure(other);
+      await node.scrollIntoViewIfNeeded();
+      if(sample.home){
+        const b=await node.boundingBox();
+        expect(b).toBeTruthy();
+        await page.mouse.click(b.x+Math.min(16,b.width/5),
+          b.y+Math.min(16,b.height/5));
+      }else await node.click();
+      await expect(page.locator('#liveAppearanceControls')).toBeVisible();
+      await page.locator('#liveFontSize').fill('29');
+      await page.locator('#liveFontSize').press('Tab');
+      await expect.poll(async()=> (await measure(node)).font)
+        .toBe('29px');
+      expect((await measure(node)).text).toBe(initial.text);
+      expect(await measure(other)).toEqual(neighbour);
+      const raw=await page.evaluate(name=>
+        localStorage.getItem('moon-academic-editor-v2:source:'+name),sample.file);
+      const patches=JSON.parse(raw);
+      expect(patches).toHaveLength(1);
+      expect(patches[0].appearance.fontSize).toBe(29);
+      await page.locator('#preview').click();
+      await expect(page.locator('#previewDialog')).toBeVisible();
+      const preview=page.frameLocator('#previewFrame').locator(sample.selector).first();
+      await expect.poll(async()=> (await measure(preview)).font).toBe('29px');
+      expect((await measure(preview)).text).toBe(initial.text);
+      await page.locator('#closePreview').click();
+      await page.reload({waitUntil:'domcontentloaded'});
+      await expect(page.locator('#liveAssetStatus'))
+        .toContainText('GitHub main source verified',{timeout:35000});
+      await expect.poll(async()=> (await measure(
+        page.frameLocator('#livePageFrame').locator(sample.selector).first())).font)
+        .toBe('29px');
+      expect(writes,'inspector must not perform a GitHub write').toEqual([]);
+    });
+}
+
+test('Font-size changes while text editing do not overwrite unsaved CV wording',
+  async({page})=>{
+    const writes=[];
+    await installVerifiedCurrentSource(page,writes);
+    await page.goto(BASE+'/editor-v2.html?page=cv.html',{waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    const frame=page.frameLocator('#livePageFrame');
+    const date=frame.locator('main.resume-page span.resume-date').first();
+    const sibling=frame.locator('main.resume-page span.resume-date').nth(1);
+    const original=await date.textContent(),neighbour=await sibling.textContent();
+    await date.click();
+    await page.locator('#editLiveText').click();
+    await date.fill('Temporary unsaved date');
+    await page.locator('#liveFontSize').fill('34');
+    await page.locator('#liveFontSize').press('Tab');
+    await expect.poll(async()=>date.evaluate(el=>getComputedStyle(el).fontSize))
+      .toBe('34px');
+    await expect(date).toHaveText('Temporary unsaved date');
+    await expect(date).toHaveAttribute('contenteditable','true');
+    await page.locator('#cancelLiveText').click();
+    await expect(date).toHaveText(original);
+    await expect.poll(async()=>date.evaluate(el=>getComputedStyle(el).fontSize))
+      .toBe('34px');
+    await expect(sibling).toHaveText(neighbour);
+    await date.click();
+    await page.locator('#editLiveText').click();
+    await date.fill('Sep 2026');
+    await page.locator('#saveLiveText').click();
+    const patches=JSON.parse(await page.evaluate(()=>
+      localStorage.getItem('moon-academic-editor-v2:source:cv.html')));
+    expect(patches).toHaveLength(1);
+    expect(patches[0].expected).toBe(original);
+    expect(patches[0].appearance.fontSize).toBe(34);
+    await page.locator('#preview').click();
+    await expect(page.locator('#previewDialog')).toBeVisible();
+    const displayed=page.frameLocator('#previewFrame').locator(
+      'main.resume-page span.resume-date').first();
+    await expect(displayed).toHaveText('Sep 2026');
+    await expect.poll(async()=>displayed.evaluate(el=>getComputedStyle(el).fontSize))
+      .toBe('34px');
+    await page.locator('#closePreview').click();
+    expect(writes).toEqual([]);
+  });
+
+test('Independent added text can change font size during unsaved text editing',
+  async({page})=>{
+    const writes=[];
+    await installVerifiedCurrentSource(page,writes);
+    await page.goto(BASE+'/editor-v2.html?page=contact.html',
+      {waitUntil:'domcontentloaded'});
+    await expect(page.locator('#liveAssetStatus'))
+      .toContainText('GitHub main source verified',{timeout:35000});
+    await page.locator('#addText').click();
+    const node=page.frameLocator('#livePageFrame')
+      .locator('[data-moon-v2-object-type="text"][data-moon-v2-added-id]').first();
+    await expect(node).toBeVisible();
+    const original=await node.textContent();
+    await page.locator('#editLiveText').click();
+    await node.fill('An unsaved independent textbox');
+    await page.locator('#liveFontSize').fill('32');
+    await page.locator('#liveFontSize').press('Tab');
+    await expect.poll(async()=>node.evaluate(el=>getComputedStyle(el).fontSize))
+      .toBe('32px');
+    await expect(node).toHaveText('An unsaved independent textbox');
+    await page.locator('#cancelLiveText').click();
+    await expect(node).toHaveText(original);
+    await expect.poll(async()=>node.evaluate(el=>getComputedStyle(el).fontSize))
+      .toBe('32px');
+    const patches=JSON.parse(await page.evaluate(()=>
+      localStorage.getItem('moon-academic-editor-v2:source:contact.html')));
+    expect(patches).toHaveLength(1);
+    expect(patches[0].appearance.fontSize).toBe(32);
+    expect(patches[0].html).toContain(original.trim());
+    expect(writes).toEqual([]);
+  });
