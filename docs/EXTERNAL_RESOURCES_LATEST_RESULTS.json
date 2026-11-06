@@ -803,10 +803,10 @@
   "doi_registry": {
     "checked": 39,
     "counts": {
-      "registered": 30,
-      "not-confirmed": 9
+      "registered": 28,
+      "not-confirmed": 11
     },
-    "secondary_index_matches": 9,
+    "secondary_index_matches": 11,
     "not_confirmed": [
       {
         "url": "https://doi.org/10.1002/sce.21112",
@@ -825,20 +825,20 @@
         "indexedYear": 2014
       },
       {
-        "url": "https://doi.org/10.1002/tea.20237",
-        "doi": "10.1002/tea.20237",
+        "url": "https://doi.org/10.1002/sce.21791",
+        "doi": "10.1002/sce.21791",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.20237",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21791",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Understanding the science experiences of successful women of color: Science identity as an analytic lens",
-        "indexedYear": 2007
+        "indexedTitle": "Science education with multilingual learners: Equity as access and equity as transformation",
+        "indexedYear": 2023
       },
       {
         "url": "https://doi.org/10.1002/tea.20311",
@@ -873,6 +873,54 @@
         "indexedYear": 2015
       },
       {
+        "url": "https://doi.org/10.1002/tea.21714",
+        "doi": "10.1002/tea.21714",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21714",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Science engagement as insight into the science identity work nurtured in community‐based science clubs",
+        "indexedYear": 2021
+      },
+      {
+        "url": "https://doi.org/10.1002/tea.21944",
+        "doi": "10.1002/tea.21944",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21944",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Asset and deficit discourses of student ideas in science formative assessment co‐design",
+        "indexedYear": 2024
+      },
+      {
+        "url": "https://doi.org/10.1080/03626784.2021.1947732",
+        "doi": "10.1080/03626784.2021.1947732",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/03626784.2021.1947732",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Getting dirty and coming clean: Sex education and the problem of expertise",
+        "indexedYear": 2021
+      },
+      {
         "url": "https://doi.org/10.1080/03626784.2023.2200810",
         "doi": "10.1080/03626784.2023.2200810",
         "pages": [
@@ -889,36 +937,20 @@
         "indexedYear": 2023
       },
       {
-        "url": "https://doi.org/10.1111/jedm.12000",
-        "doi": "10.1111/jedm.12000",
-        "pages": [
-          "research-scoping.html"
-        ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1111/jedm.12000",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Validating the Interpretations and Uses of Test Scores",
-        "indexedYear": 2013
-      },
-      {
-        "url": "https://doi.org/10.1207/S1532690XCI2004_1",
-        "doi": "10.1207/S1532690XCI2004_1",
+        "url": "https://doi.org/10.1080/14790718.2021.1898619",
+        "doi": "10.1080/14790718.2021.1898619",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://www.tandfonline.com/doi/abs/10.1207/S1532690XCI2004_1",
+        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/14790718.2021.1898619",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Guiding Principles for Fostering Productive Disciplinary Engagement: Explaining an Emergent Argument in a Community of Learners Classroom",
-        "indexedYear": 2002
+        "indexedTitle": "Translanguaging as an agentive pedagogy for multilingual learners: affordances and constraints",
+        "indexedYear": 2021
       },
       {
         "url": "https://doi.org/10.3102/0013189X20927363",
@@ -938,26 +970,26 @@
         "indexedYear": 2020
       },
       {
-        "url": "https://doi.org/10.3102/0034654314558490",
-        "doi": "10.3102/0034654314558490",
+        "url": "https://doi.org/10.3102/0013189X231206172",
+        "doi": "10.3102/0013189X231206172",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://journals.sagepub.com/doi/10.3102/0034654314558490",
+        "publisherLanding": "https://journals.sagepub.com/doi/10.3102/0013189X231206172",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Representing Student Argumentation as Functionally Emergent From Scientific Activity",
-        "indexedYear": 2014
+        "indexedTitle": "Language Views for Scientific Sensemaking Matter: A Synthesis of Research on Multilingual Students’ Experiences with Science Practices Through a Translanguaging Lens",
+        "indexedYear": 2023
       }
     ],
     "unresolved": [],
     "limitation": "Crossref/DataCite registration is distinct from publisher access, correct article metadata or article availability. OpenAlex is independent secondary corroboration, not registration proof."
   },
-  "workflow_run_id": "42166451594",
-  "head_sha": "0d75943025caf0afc58ad78ff6e89aa378c5a5b4",
+  "workflow_run_id": "42169766520",
+  "head_sha": "d26824a0802d0c291db7f1306ab31fd8938a363b",
   "audit_exit_code": "0"
 }
