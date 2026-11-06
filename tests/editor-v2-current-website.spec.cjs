@@ -3767,20 +3767,13 @@ test('Pungmul gallery trims four independent edges then resizes without changing
       if(!(value>0)){
         const events=await image.evaluate(img=>
           img.ownerDocument.defaultView.__moonCropPointerEvents?.slice(-45)||[]);
+        // Avoid evaluating editor lexical bindings from Playwright's page
+        // world. Those bindings are not window globals in Firefox.
         const editorState=await page.evaluate(()=>({
           activeElement:document.activeElement?.id||null,
-          selected:liveSelected?.node?.getAttribute?.('src')||null,
-          cropMode:liveCropMode,gesture:liveGesture?{
-            dir:liveGesture.dir,moved:liveGesture.moved,
-            startX:liveGesture.startX,startY:liveGesture.startY
-          }:null,
-          pending:liveDragPending?{
-            x:liveDragPending.clientX,y:liveDragPending.clientY
-          }:null,
-          patch:[...livePatches.values()].filter(p=>p.kind==='image').map(p=>({
-            frameMode:p.frameMode,imageCrop:p.imageCrop?.desktop,
-            width:p.layout?.desktop?.wrapWidth
-          }))
+          selectedLabel:document.querySelector('#liveElementPath')?.textContent||null,
+          cropLabel:document.querySelector('#liveCropStatus')?.textContent||null,
+          widthValue:document.querySelector('#liveOriginalWidth')?.value||null
         }));
         throw new Error('pointer trimming '+field+' did not apply: '+
           JSON.stringify({side,value,events,editorState}));
@@ -4363,6 +4356,14 @@ test('Original Pungmul text box grip can shrink below 64px and Undo restores its
       const hit=doc.elementFromPoint(r.left+r.width/2,r.top+r.height/2);
       return hit===el||el.contains(hit);
     })).toBe(true);
+    const compact=await grip.evaluate(el=>({
+      height:el.parentElement.getBoundingClientRect().height,
+      compactHeight:el.parentElement.dataset.compactHeight,
+      compactWidth:el.parentElement.dataset.compactWidth,
+      e:el.getBoundingClientRect().toJSON()
+    }));
+    expect(compact.compactHeight,'very short text must expose its midpoint grip')
+      .toBe('true');
     const box=await grip.boundingBox(),x=box.x+box.width/2,y=box.y+box.height/2;
     await page.mouse.down();
     await page.mouse.move(x-81,y,{steps:8});
