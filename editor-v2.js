@@ -1252,7 +1252,10 @@ function liveSelector(node){
   return steps.length?"main > "+steps.join(" > "):null;
 }
 const LIVE_CONTAINER_TAGS="section,article,aside,figure,div,nav,ul,ol";
-const LIVE_EDITABLE_TAGS="h1,h2,h3,h4,h5,h6,p,li,figcaption,blockquote,img";
+// CV dates are text-only spans. Edit each date itself, not the surrounding
+// flex-row heading, so job titles and adjacent dates remain independent.
+const LIVE_CV_DATE_TAG="main.resume-page span.resume-date";
+const LIVE_EDITABLE_TAGS="h1,h2,h3,h4,h5,h6,p,li,figcaption,blockquote,img,"+LIVE_CV_DATE_TAG;
 const LIVE_SELECTABLE_TAGS=LIVE_EDITABLE_TAGS+","+LIVE_CONTAINER_TAGS;
 function liveEventTarget(event){
   // The Home lead is deliberately free-positioned inside its hero copy.
@@ -2708,7 +2711,7 @@ function validLivePatch(p){
     (p.kind==="text"&&typeof p.html==="string"&&p.html.length<=70000||
      p.kind==="image"&&safeImageSource(p.src)&&typeof p.alt==="string"&&p.alt.length<=300||
      p.kind==="layout"||p.kind==="delete")&&
-    (p.tag===undefined||/^(?:h[1-6]|p|li|figcaption|blockquote|img|section|article|aside|figure|div|nav|ul|ol)$/.test(p.tag))&&
+    (p.tag===undefined||/^(?:h[1-6]|p|li|figcaption|blockquote|img|span|section|article|aside|figure|div|nav|ul|ol)$/.test(p.tag))&&
     (p.layout===undefined||validLiveLayout(p.layout))&&
     (p.appearance===undefined||validLiveAppearance(p.appearance))&&
     (p.imageCrop===undefined||
@@ -4658,7 +4661,7 @@ function finishLiveGesture(event){
   }
   renderLiveInspector();syncLiveOverlay();
 }
-const LIVE_PANE_TAGS="h1,h2,h3,h4,h5,h6,p,li,figcaption,blockquote,img,section,article,figure,aside,[data-moon-v2-added-id]";
+const LIVE_PANE_TAGS="h1,h2,h3,h4,h5,h6,p,li,figcaption,blockquote,img,section,article,figure,aside,[data-moon-v2-added-id],"+LIVE_CV_DATE_TAG;
 const LIVE_LAYOUT_PANE_TAGS="div,nav,ul,ol";
 function liveElementName(node){
   if(node.tagName==="IMG")return node.alt||node.getAttribute("src")||"Image";
