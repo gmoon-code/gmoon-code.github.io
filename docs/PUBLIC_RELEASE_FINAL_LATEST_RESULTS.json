@@ -1,12 +1,12 @@
 {
-  "sourceHead": "c3d8546466c869b3a71413373c56e66e52fa469f",
+  "sourceHead": "2337310022b1b4e9d5ff73ac5770c7506fe9fe7f",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
-  "verifiedExactMatches": 23,
-  "httpErrors": 1,
+  "verifiedExactMatches": 24,
+  "httpErrors": 0,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-c3d8546466c8",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-2337310022b1",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -53,12 +53,10 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "42139763281",
-      "head_sha": "17fa10c31983eac5e0ff9d3ac9bad4f78b783e32",
+      "run": "42141858114",
+      "head_sha": "dff6681be1c65f33fff9217384fa10155fbc6472",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0
       }
@@ -108,12 +106,6 @@
   },
   "sourceDriftSinceAudits": [
     {
-      "category": "reflow",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ]
-    },
-    {
       "category": "engines",
       "sourceModifiedSinceAudit": [
         "research.html"
@@ -129,37 +121,7 @@
   "pass": false,
   "errors": [
     {
-      "path": "research.html",
-      "errors": [
-        "deployed bytes differ from checked-out production source"
-      ],
-      "firstDiff": [
-        "--- source\n",
-        "+++ deployed\n",
-        "@@ -37,2 +37,3 @@\n",
-        "     <a class=\"research-rail-sub\" href=\"#curriculum-decisions\">Classroom authority</a>",
-        "+    <a class=\"research-rail-sub\" href=\"#student-directed-inquiry\">Student-directed inquiry</a>",
-        "     <a class=\"research-rail-sub\" href=\"#recognition-contexts\">Recognizing reasoning</a>",
-        "@@ -73,3 +74,3 @@\n",
-        "   <div class=\"reading research-essay-prose research-interests-intro\">",
-        "-    <p>I read studies of teacher decision-making and collaborative professional learning alongside research on language, cultural knowledge, and scientific modelling. These studies help me examine how students' contributions are interpreted, which judgments shape the direction of inquiry, and how teachers might revisit their interpretations of scientific reasoning.</p>",
-        "+    <p>I read studies of teacher decision-making alongside research on language, cultural knowledge, and scientific modelling. They offer different ways to examine how students' contributions are recognized during particular tasks and interactions, and whether students can influence the criteria by which scientific explanations are judged.</p>",
-        "   </div>",
-        "@@ -85,13 +86,22 @@\n",
-        "       <p>During a lesson on cell signalling, a student might ask what happens when a receptor remains active after the signal has disappeared. If the classroom diagram shows activation without explaining how signalling ends, the teacher could invite students to examine the processes it leaves out. They might then investigate receptor inactivation or changes further along the signalling pathway. Whether the class pursues that question depends partly on how the teacher interprets the student's observation.</p>",
-        "-      <p>Curricular planning can make room for students to influence the methods of investigation and the models through which a class develops an explanation (<a href=\"#reading-ko\">Ko &amp; Krist, 2019</a>). Once a lesson begins, those opportunities depend on what teachers notice in students' contributions and how they respond. Studies of classroom discourse examine how a contribution can become a question for collective inquiry or remain an answer for the teacher to evaluate (<a href=\"#reading-krist\">Krist et al., 2023</a>; <a href=\"#reading-stroupe\">Stroupe, 2014</a>). Research on assessment for learning similarly examines how teachers' attention and responses influence what students' reasoning becomes available for further consideration (<a href=\"#reading-cowie\">Cowie et al., 2018</a>). The teacher may acknowledge an idea while retaining authority over the questions the class pursues.</p>",
-        "-      <p>Students' investigations also require disciplinary guidance. Planning inquiry and project-based STEM activities involves considering worthwhile problems and the resources students will need (<a href=\"#reading-decoito\">DeCoito, 2024</a>). In a Grade 6 classroom investigating flight, students' work with physical materials challenged a knowledge-building design centred on writing and discussion (<a href=\"#reading-reeve\">Reeve, 2023</a>). The resources built into web-based inquiry environments likewise shape what students can investigate and explain (<a href=\"#reading-slotta\">Slotta &amp; Linn, 2009</a>). In a Grade 8 interdisciplinary mathematics project, students described how connections across subjects and an interdisciplinary teaching team contributed to their learning (<a href=\"#reading-kiyani\">Kiyani et al., 2025</a>). Although the latter study concerns mathematics, it raises a related question for science teaching about preparing disciplinary support while remaining responsive to students' emerging interests.</p>",
-        "-      <p>Relationships within a learning setting also affect the authority students can exercise. A longitudinal study followed an early-career teacher negotiating an activist commitment alongside the demands of school practice (<a href=\"#reading-barrett\">Barrett, 2013</a>). In a different setting, students and mentors participating in a robotics competition negotiated authority as they developed scientific and technical knowledge together (<a href=\"#reading-puvirajah\">Puvirajah et al., 2012</a>). Productive disciplinary engagement offers an account of how student authority develops alongside responsibility to peers and access to disciplinary resources (<a href=\"#reading-engle\">Engle &amp; Conant, 2002</a>).</p>"
-      ]
-    },
-    {
       "sourceDrift": [
-        {
-          "category": "reflow",
-          "sourceModifiedSinceAudit": [
-            "research.html"
-          ]
-        },
         {
           "category": "engines",
           "sourceModifiedSinceAudit": [
@@ -176,7 +138,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42141943090",
-  "run_sha": "c3d8546466c869b3a71413373c56e66e52fa469f",
+  "workflow_run_id": "42142128171",
+  "run_sha": "2337310022b1b4e9d5ff73ac5770c7506fe9fe7f",
   "exit_code": "1"
 }
