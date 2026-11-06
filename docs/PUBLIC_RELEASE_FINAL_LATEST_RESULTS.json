@@ -1,12 +1,12 @@
 {
-  "sourceHead": "0d02ba28ff84b007c1275ceacbb6bfd92b6bd11d",
+  "sourceHead": "dff6681be1c65f33fff9217384fa10155fbc6472",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-0d02ba28ff84",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-dff6681be1c6",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -17,7 +17,9 @@
       "run": "42139763241",
       "head_sha": "17fa10c31983eac5e0ff9d3ac9bad4f78b783e32",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "problems": 0
       }
@@ -43,7 +45,9 @@
       "run": "42139763066",
       "head_sha": "17fa10c31983eac5e0ff9d3ac9bad4f78b783e32",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "unverified": 0
       },
@@ -58,7 +62,9 @@
       "run": "42139763281",
       "head_sha": "17fa10c31983eac5e0ff9d3ac9bad4f78b783e32",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "failures": 0
       }
@@ -68,7 +74,9 @@
       "run": "42139763216",
       "head_sha": "17fa10c31983eac5e0ff9d3ac9bad4f78b783e32",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "failures": 0
       }
@@ -78,7 +86,9 @@
       "run": "42139763189",
       "head_sha": "17fa10c31983eac5e0ff9d3ac9bad4f78b783e32",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "failures": 0,
         "combinedStressFailures": 0
@@ -89,7 +99,9 @@
       "run": "42139763229",
       "head_sha": "17fa10c31983eac5e0ff9d3ac9bad4f78b783e32",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "failures": 0,
         "axeViolations": 0
@@ -104,7 +116,43 @@
   },
   "sourceDriftSinceAudits": [
     {
+      "category": "links",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
       "category": "external",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "metadata",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "reflow",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "engines",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "typography",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "interactions",
       "sourceModifiedSinceAudit": [
         "research.html"
       ]
@@ -120,26 +168,62 @@
       "firstDiff": [
         "--- source\n",
         "+++ deployed\n",
-        "@@ -37,3 +37,2 @@\n",
+        "@@ -37,2 +37,3 @@\n",
         "     <a class=\"research-rail-sub\" href=\"#curriculum-decisions\">Classroom authority</a>",
-        "-    <a class=\"research-rail-sub\" href=\"#student-directed-inquiry\">Student-directed inquiry</a>",
+        "+    <a class=\"research-rail-sub\" href=\"#student-directed-inquiry\">Student-directed inquiry</a>",
         "     <a class=\"research-rail-sub\" href=\"#recognition-contexts\">Recognizing reasoning</a>",
-        "@@ -96,12 +95,2 @@\n",
+        "@@ -73,3 +74,3 @@\n",
+        "   <div class=\"reading research-essay-prose research-interests-intro\">",
+        "-    <p>I read studies of teacher decision-making and collaborative professional learning alongside research on language, cultural knowledge, and scientific modelling. These studies help me examine how students' contributions are interpreted, which judgments shape the direction of inquiry, and how teachers might revisit their interpretations of scientific reasoning.</p>",
+        "+    <p>I read studies of teacher decision-making alongside research on language, cultural knowledge, and scientific modelling. They offer different ways to examine how students' contributions are recognized during particular tasks and interactions, and whether students can influence the criteria by which scientific explanations are judged.</p>",
         "   </div>",
-        "-",
-        "-<section id=\"student-directed-inquiry\" class=\"research-interest-subsection\">",
-        "-  <div class=\"section-head\"><h4>Student-directed inquiry and teacher learning</h4><p>How students' choices and teachers' collaborative judgments influence the direction of inquiry.</p></div>",
-        "-  <div class=\"reading research-essay-prose\">",
-        "-    <p>Students can help determine the questions a class investigates, although the experience of directing an inquiry may be uncertain and uneven. In a Grade 7 Science and Technology project, students chose to investigate Missing and Murdered Indigenous Women and Girls and developed a public Red Dress exhibition. Their written reflections and interviews described a sense of ownership alongside difficulties making decisions, managing time, and collaborating. Some students recalled occasions when their ideas were overlooked by peers (<a href=\"#reading-jao-2026\">Jao et al., 2026</a>). These accounts lead me to ask how teachers recognize uneven participation and support students' autonomy without deciding the direction of an inquiry on their behalf.</p>",
-        "-    <p>The disciplinary relationships that teachers prepare can also influence students' experiences. In a Grade 8 interdisciplinary mathematics project, students described how connections to other subjects and the work of a teaching team shaped their understanding of mathematics. Some also found the approach unfamiliar in comparison with their previous lessons (<a href=\"#reading-kiyani\">Kiyani et al., 2025</a>). I wonder how teachers can prepare useful disciplinary resources while leaving room for students to pursue connections that emerge during their work.</p>",
-        "-    <p>Teachers may be able to examine such decisions together. In a collaborative inquiry project involving educators from nine Ontario schools, participants developed and shared Grade 9 Applied Mathematics materials alongside professional learning activities. Interviews and reflections documented teachers' appreciation of the collaboration and their reports of further work together (<a href=\"#reading-jao-mcdougall\">Jao &amp; McDougall, 2015</a>). Jao's research team also describes ongoing projects examining cross-curricular competencies in student-directed STEAM inquiry and teacher-led professional development (<a href=\"#reading-jao-projects\">Jao Research Team, n.d.</a>). These project descriptions identify research aims rather than established findings.</p>",
-        "-    <p>My questions concern what teachers do with students' emerging ideas after an inquiry begins. I would like to examine how students and teachers negotiate the adequacy of scientific explanations, which contributions inform the next investigation, and how teachers might revisit those judgments through collaborative reflection.</p>"
+        "@@ -85,13 +86,22 @@\n",
+        "       <p>During a lesson on cell signalling, a student might ask what happens when a receptor remains active after the signal has disappeared. If the classroom diagram shows activation without explaining how signalling ends, the teacher could invite students to examine the processes it leaves out. They might then investigate receptor inactivation or changes further along the signalling pathway. Whether the class pursues that question depends partly on how the teacher interprets the student's observation.</p>",
+        "-      <p>Curricular planning can make room for students to influence the methods of investigation and the models through which a class develops an explanation (<a href=\"#reading-ko\">Ko &amp; Krist, 2019</a>). Once a lesson begins, those opportunities depend on what teachers notice in students' contributions and how they respond. Studies of classroom discourse examine how a contribution can become a question for collective inquiry or remain an answer for the teacher to evaluate (<a href=\"#reading-krist\">Krist et al., 2023</a>; <a href=\"#reading-stroupe\">Stroupe, 2014</a>). Research on assessment for learning similarly examines how teachers' attention and responses influence what students' reasoning becomes available for further consideration (<a href=\"#reading-cowie\">Cowie et al., 2018</a>). The teacher may acknowledge an idea while retaining authority over the questions the class pursues.</p>",
+        "-      <p>Students' investigations also require disciplinary guidance. Planning inquiry and project-based STEM activities involves considering worthwhile problems and the resources students will need (<a href=\"#reading-decoito\">DeCoito, 2024</a>). In a Grade 6 classroom investigating flight, students' work with physical materials challenged a knowledge-building design centred on writing and discussion (<a href=\"#reading-reeve\">Reeve, 2023</a>). The resources built into web-based inquiry environments likewise shape what students can investigate and explain (<a href=\"#reading-slotta\">Slotta &amp; Linn, 2009</a>). In a Grade 8 interdisciplinary mathematics project, students described how connections across subjects and an interdisciplinary teaching team contributed to their learning (<a href=\"#reading-kiyani\">Kiyani et al., 2025</a>). Although the latter study concerns mathematics, it raises a related question for science teaching about preparing disciplinary support while remaining responsive to students' emerging interests.</p>",
+        "-      <p>Relationships within a learning setting also affect the authority students can exercise. A longitudinal study followed an early-career teacher negotiating an activist commitment alongside the demands of school practice (<a href=\"#reading-barrett\">Barrett, 2013</a>). In a different setting, students and mentors participating in a robotics competition negotiated authority as they developed scientific and technical knowledge together (<a href=\"#reading-puvirajah\">Puvirajah et al., 2012</a>). Productive disciplinary engagement offers an account of how student authority develops alongside responsibility to peers and access to disciplinary resources (<a href=\"#reading-engle\">Engle &amp; Conant, 2002</a>).</p>"
       ]
     },
     {
       "sourceDrift": [
         {
+          "category": "links",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
           "category": "external",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "metadata",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "reflow",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "engines",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "typography",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "interactions",
           "sourceModifiedSinceAudit": [
             "research.html"
           ]
@@ -148,7 +232,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42139952348",
-  "run_sha": "0d02ba28ff84b007c1275ceacbb6bfd92b6bd11d",
+  "workflow_run_id": "42141857951",
+  "run_sha": "dff6681be1c65f33fff9217384fa10155fbc6472",
   "exit_code": "1"
 }
