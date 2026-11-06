@@ -1,12 +1,12 @@
 {
-  "sourceHead": "c2d03cf747c69e584a263a00e8aaefc8c547d628",
+  "sourceHead": "7b54aa1db4d6ff19ddaf7028deb5aad542baee63",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 22,
   "httpErrors": 2,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-c2d03cf747c6",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-7b54aa1db4d6",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -24,19 +24,16 @@
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "42159153451",
-      "head_sha": "613e13721443affaf2c88b8cf9e4c3b9b933d643",
+      "run": "42159324152",
+      "head_sha": "4051098c74c89be2e823bbffdfc928a15df25668",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "interests.html",
-        "teaching.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
-        "issues": 41
+        "issues": 42
       },
       "counts": {
-        "reachable": 69,
-        "unverified": 41
+        "reachable": 68,
+        "unverified": 42
       }
     },
     "metadata": {
@@ -83,15 +80,10 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "42158272411",
-      "head_sha": "ddf7b12619a3fc98b826272f3e01bab052316424",
+      "run": "42159324173",
+      "head_sha": "4051098c74c89be2e823bbffdfc928a15df25668",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "interests.html",
-        "projects.html",
-        "research.html",
-        "teaching.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0,
         "combinedStressFailures": 0
@@ -99,14 +91,11 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "42158272247",
-      "head_sha": "ddf7b12619a3fc98b826272f3e01bab052316424",
+      "run": "42159205184",
+      "head_sha": "9c25961e42d577044593c9b5e3226340e7f04282",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "interests.html",
-        "projects.html",
-        "research.html",
-        "teaching.html"
+        "interests.html"
       ],
       "failureCounts": {
         "failures": 0,
@@ -121,13 +110,6 @@
     }
   },
   "sourceDriftSinceAudits": [
-    {
-      "category": "external",
-      "sourceModifiedSinceAudit": [
-        "interests.html",
-        "teaching.html"
-      ]
-    },
     {
       "category": "metadata",
       "sourceModifiedSinceAudit": [
@@ -148,21 +130,9 @@
       ]
     },
     {
-      "category": "typography",
-      "sourceModifiedSinceAudit": [
-        "interests.html",
-        "projects.html",
-        "research.html",
-        "teaching.html"
-      ]
-    },
-    {
       "category": "interactions",
       "sourceModifiedSinceAudit": [
-        "interests.html",
-        "projects.html",
-        "research.html",
-        "teaching.html"
+        "interests.html"
       ]
     }
   ],
@@ -203,13 +173,6 @@
     {
       "sourceDrift": [
         {
-          "category": "external",
-          "sourceModifiedSinceAudit": [
-            "interests.html",
-            "teaching.html"
-          ]
-        },
-        {
           "category": "metadata",
           "sourceModifiedSinceAudit": [
             "teaching.html"
@@ -229,28 +192,16 @@
           ]
         },
         {
-          "category": "typography",
-          "sourceModifiedSinceAudit": [
-            "interests.html",
-            "projects.html",
-            "research.html",
-            "teaching.html"
-          ]
-        },
-        {
           "category": "interactions",
           "sourceModifiedSinceAudit": [
-            "interests.html",
-            "projects.html",
-            "research.html",
-            "teaching.html"
+            "interests.html"
           ]
         }
       ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42159418992",
-  "run_sha": "c2d03cf747c69e584a263a00e8aaefc8c547d628",
+  "workflow_run_id": "42159612785",
+  "run_sha": "7b54aa1db4d6ff19ddaf7028deb5aad542baee63",
   "exit_code": "1"
 }
