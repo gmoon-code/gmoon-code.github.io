@@ -1444,8 +1444,10 @@ function validLiveLayout(layout){
        !["min","fixed","auto"].includes(values.sectionHeightMode))return false;
     const width=values.wrapWidth,height=values.reserveHeight;
     if((width===undefined)!==(height===undefined))return false;
-    if(width!==undefined&&(!Number.isFinite(width)||width<64||width>4000||
-      !Number.isFinite(height)||height<24||height>5000))return false;
+    // Source text boxes can be smaller than one line of text. Image and
+    // section editing tools retain their separate minimum-size checks.
+    if(width!==undefined&&(!Number.isFinite(width)||width<16||width>4000||
+      !Number.isFinite(height)||height<16||height>5000))return false;
   }
   return true;
 }
@@ -1621,7 +1623,9 @@ function liveLayoutRules(patches=[...livePatches.values()],doc=null){
       const reflow=entry.wrapWidth!==undefined?
         "width:"+entry.wrapWidth+"px!important;"+
         (sectionLike?containerHeight:
-          "height:"+entry.reserveHeight+"px!important;")+
+          "height:"+entry.reserveHeight+"px!important;"+
+          (/^(?:h[1-6]|p|blockquote|figcaption)$/.test(tag)?
+            "min-height:0!important;":""))+
         "box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;"+
         "max-width:none!important;max-height:none!important;overflow:visible!important;"+
         (patch.kind==="image"||tag==="img"?
@@ -1923,10 +1927,14 @@ function normaliseElementBoxLayout(node,layout){
 }
 const LIVE_REFLOW_TEXT="h1,h2,h3,h4,h5,h6,p,blockquote,figcaption";
 function normaliseTextBoxLayout(node,layout){
-  // Preserve the rendered text-box dimensions when migrating an old
-  // scale-based edit to a real width/height edit. Clear CSS scale on both
-  // axes so glyphs are never stretched by future text resizing.
-  return normaliseElementBoxLayout(node,layout);
+  // Text boxes may intentionally be narrower or shorter than their content,
+  // as in a presentation editor. Keep font pixels unscaled and preserve the
+  // author's exact small dimensions on subsequent edits.
+  const normal=normaliseElementBoxLayout(node,layout);
+  const rect=node.getBoundingClientRect();
+  normal.wrapWidth=Math.round(clamp(layout.wrapWidth??rect.width,16,4000));
+  normal.reserveHeight=Math.round(clamp(layout.reserveHeight??rect.height,16,5000));
+  return normal;
 }
 function setLiveObjectDesign(key,value){
   if(workspaceMode!=="live"||liveEditing)return;
@@ -2566,8 +2574,8 @@ function setLiveReflow(enabled){
   const before=liveSnapshot(),device=liveDevice();
   const layout=normaliseTextBoxLayout(node,liveLayoutFor(patch.selector));
   if(enabled){
-    layout.wrapWidth=clamp(Math.round(node.getBoundingClientRect().width),64,4000);
-    layout.reserveHeight=clamp(Math.round(node.getBoundingClientRect().height),24,5000);
+    layout.wrapWidth=clamp(Math.round(node.getBoundingClientRect().width),16,4000);
+    layout.reserveHeight=clamp(Math.round(node.getBoundingClientRect().height),16,5000);
   }else{
     // The legacy switch is kept for imported drafts. Text reflow remains
     // enabled by default whenever a user resizes a text element.
@@ -2600,21 +2608,12 @@ function setLiveReflowDimension(key,value){
   const number=Number(value);
   if(!Number.isFinite(number))return;
   const before=liveSnapshot();
-  layout[key]=Math.round(clamp(number,key==="wrapWidth"?64:24,
-    key==="wrapWidth"?4000:5000));
+  layout[key]=Math.round(clamp(number,16,key==="wrapWidth"?4000:5000));
+  // Do not silently enlarge an explicitly sized text box when its width
+  // changes. Overflow remains visible and the separate Fit height command
+  // allows the author to choose how much page space the text should occupy.
   patch.layout={...patch.layout,[liveDevice()]:layout};
   livePatches.set(patch.selector,patch);
-  if(key==="wrapWidth"){
-    // Numeric inspector resizing should behave like the canvas grips:
-    // preserve glyph size, rewrap text, and reserve its actual height.
-    refreshLiveLayoutRules(node.ownerDocument);
-    const needed=Math.ceil(node.scrollHeight+2);
-    if(Number.isFinite(needed)&&needed>layout.reserveHeight&&needed<=5000){
-      layout.reserveHeight=needed;
-      patch.layout[liveDevice()]=layout;
-      livePatches.set(patch.selector,patch);
-    }
-  }
   if(recordLiveHistory(before)){
     refreshLiveLayoutRules();renderLiveInspector();syncLiveOverlay();
   }
@@ -4192,23 +4191,8 @@ function resizeLiveSourceGroup(g,dx,dy,lockRatio=false){
   }
   const doc=g.node.ownerDocument;
   refreshLiveLayoutRules(doc);
-  for(const info of desired){
-    if(info.item.node.matches(LIVE_REFLOW_TEXT)&&
-        (g.dir==="e"||g.dir==="w"||g.dir.length===2)){
-      const needed=Math.ceil(info.item.node.scrollHeight+2);
-      if(Number.isFinite(needed)&&needed>info.layout.reserveHeight&&needed<=5000){
-        const extra=needed-info.layout.reserveHeight;
-        info.layout.reserveHeight=needed;
-        // Keep each text box's opposite bottom edge anchored when the
-        // group's north corner is dragged inward.
-        info.target.h=needed;
-        if(g.dir.includes("n"))info.target.y-=extra;
-        info.patch.layout[device]=info.layout;
-        livePatches.set(info.item.selector,info.patch);
-      }
-    }
-  }
-  refreshLiveLayoutRules(doc);
+  // Group resizing likewise honours each requested frame size. Rewrapped
+  // text remains visible, without silently enlarging neighbouring boxes.
   // Resolve layout after every box has its new dimensions. Translations
   // never change document flow, so subsequent corrections stay independent.
   for(const info of desired){
@@ -4463,9 +4447,9 @@ function applyLiveGestureMove(event){
     const dir=g.dir;
     const originalWidth=g.rect.width,originalHeight=g.rect.height;
     const nextWidth=Math.round(clamp(originalWidth+
-      (dir.includes("e")?deltaX:0)-(dir.includes("w")?deltaX:0),64,4000));
+      (dir.includes("e")?deltaX:0)-(dir.includes("w")?deltaX:0),16,4000));
     const nextHeight=Math.round(clamp(originalHeight+
-      (dir.includes("s")?deltaY:0)-(dir.includes("n")?deltaY:0),24,5000));
+      (dir.includes("s")?deltaY:0)-(dir.includes("n")?deltaY:0),16,5000));
     const normal=normaliseTextBoxLayout(g.node,g.layout);
     Object.assign(next,normal);
     next.wrapWidth=nextWidth;
@@ -4511,22 +4495,8 @@ function applyLiveGestureMove(event){
       refreshLiveLayoutRules(g.node.ownerDocument);
     }
   }
-  // Corner drags also narrow text frames, so allow natural wrapping
-  // and reserve enough height to prevent overflow into nearby elements.
-  // A north corner keeps its original bottom edge while the text grows.
-  if(g.dir!=="move"&&g.node.matches(LIVE_REFLOW_TEXT)&&
-     (g.dir==="e"||g.dir==="w"||g.dir.length===2)){
-    const needed=Math.ceil(g.node.scrollHeight+2);
-    if(Number.isFinite(needed)&&needed>next.reserveHeight&&needed<=5000){
-      const addedHeight=needed-next.reserveHeight;
-      next.reserveHeight=needed;
-      if(g.dir.includes("n"))
-        next.dy=clamp(Math.round(next.dy-addedHeight),-4000,4000);
-      patch.layout[liveDevice()]=next;
-      livePatches.set(g.selector,patch);
-      refreshLiveLayoutRules(g.node.ownerDocument);
-    }
-  }
+  // An explicit text-box grip drag changes only its requested dimensions.
+  // Leave overflow visible and available for the separate Fit height action.
   syncLiveOverlay();
 }
 function cancelLiveGesture(){
