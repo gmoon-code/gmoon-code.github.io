@@ -1,12 +1,12 @@
 {
-  "sourceHead": "c38874c7c66c6e9f3befbb7f8d4db3cfe0ab306a",
+  "sourceHead": "2381c27327e019c67bbd4e586b48c1c316bea640",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-c38874c7c66c",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-2381c27327e0",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -90,12 +90,10 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "42133810165",
-      "head_sha": "0496a3fb38a6aa2d938639c22b44b25000bbf309",
+      "run": "42139763229",
+      "head_sha": "17fa10c31983eac5e0ff9d3ac9bad4f78b783e32",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0,
         "axeViolations": 0
@@ -123,12 +121,6 @@
     },
     {
       "category": "engines",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ]
-    },
-    {
-      "category": "interactions",
       "sourceModifiedSinceAudit": [
         "research.html"
       ]
@@ -179,18 +171,12 @@
           "sourceModifiedSinceAudit": [
             "research.html"
           ]
-        },
-        {
-          "category": "interactions",
-          "sourceModifiedSinceAudit": [
-            "research.html"
-          ]
         }
       ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42139879073",
-  "run_sha": "c38874c7c66c6e9f3befbb7f8d4db3cfe0ab306a",
+  "workflow_run_id": "42139899573",
+  "run_sha": "2381c27327e019c67bbd4e586b48c1c316bea640",
   "exit_code": "1"
 }
