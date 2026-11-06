@@ -4354,9 +4354,16 @@ test('Original Pungmul text box grip can shrink below 64px and Undo restores its
     expect(Math.abs(before.h-32)).toBeLessThan(2);
     const grip=frame.locator('#moon-v2-live-overlay .moon-v2-grip[data-direction="e"]');
     await expect(grip).toBeVisible();
+    // Hover places the pointer at the actual grip after scroll/overlay sync.
+    // Moving it again to a previously measured box centre can cause Firefox
+    // to retarget the down event at the paragraph while the overlay settles.
     await grip.hover();
+    await expect.poll(()=>grip.evaluate(el=>{
+      const r=el.getBoundingClientRect(),doc=el.ownerDocument;
+      const hit=doc.elementFromPoint(r.left+r.width/2,r.top+r.height/2);
+      return hit===el||el.contains(hit);
+    })).toBe(true);
     const box=await grip.boundingBox(),x=box.x+box.width/2,y=box.y+box.height/2;
-    await page.mouse.move(x,y);
     await page.mouse.down();
     await page.mouse.move(x-81,y,{steps:8});
     await page.mouse.up();
