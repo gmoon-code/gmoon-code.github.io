@@ -1,12 +1,12 @@
 {
-  "sourceHead": "c3fefa8804b82c55916f31041c2cc2762ce48eb0",
+  "sourceHead": "7d3c8704037cf6e19cb869a915bfa23961a891ce",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
-  "verifiedExactMatches": 23,
-  "httpErrors": 1,
+  "verifiedExactMatches": 24,
+  "httpErrors": 0,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-c3fefa8804b8",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-7d3c8704037c",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -63,12 +63,10 @@
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "42149234703",
-      "head_sha": "cafa27a6cecaa2be574968e43dcada80bf1ed015",
+      "run": "42152334702",
+      "head_sha": "8c0fb2f424dfbc691a36a8959740d3bf1ea27916",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0
       }
@@ -102,53 +100,11 @@
       "note": "U1 route audit documents successful run 40825886279; legacy utility machine report refers to an early missing-script failure. Do not treat it as latest successful evidence."
     }
   },
-  "sourceDriftSinceAudits": [
-    {
-      "category": "engines",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ]
-    }
-  ],
-  "pass": false,
-  "errors": [
-    {
-      "path": "research.html",
-      "errors": [
-        "deployed bytes differ from checked-out production source"
-      ],
-      "firstDiff": [
-        "--- source\n",
-        "+++ deployed\n",
-        "@@ -63,3 +63,3 @@\n",
-        "   <div class=\"reading research-essay-prose\">",
-        "-    <p>The record used to assess an explanation can change which scientific relationships are visible. In a <a href=\"research-scoping.html#case-study\">study included in the scoping review</a>, Luis's shorter English translation made an ecological distinction less explicit than his bilingual account. In my <a href=\"research-action.html#paired-evidence\">classroom inquiry</a>, S20's closed-resource reconstruction omitted photosynthetic relationships expressed in an earlier response. The cases arose under different task and language conditions. Read together, they caution against treating an absent relationship in one response as a complete account of a student's understanding.</p>",
-        "+    <p>The record used to assess an explanation can change which scientific relationships are visible. In a <a href=\"research-scoping.html#case-study\">study included in the scoping review</a>, Luis's shorter English translation made an ecological distinction less explicit than his bilingual account. In my <a href=\"research-action.html#paired-evidence\">classroom inquiry</a>, S20's closed-resource reconstruction omitted photosynthetic relationships expressed in an earlier response. The tasks and language conditions differed, so these cases cannot establish a shared cause for the omissions. They do show why an absent relationship in one response should be interpreted alongside the evidence available from other records.</p>",
-        "     <p>My projects examined the grounds for inferring scientific understanding from students' work. They did not establish how students could influence the judgments teachers made from that work. A teacher might identify an incomplete causal pathway and choose what students should revisit, yet the student could have reasons for questioning that interpretation. Studying the interaction would require attention to what each participant considered adequate evidence and to how their judgments shaped the next classroom activity.</p>",
-        "@@ -88,3 +88,3 @@\n",
-        "       <p>Authority is also shaped by what the classroom recognizes as legitimate knowledge and action. Productive disciplinary engagement connects student authority with responsibility to peers and access to resources for investigating a problem (<a href=\"#reading-engle\">Engle &amp; Conant, 2002</a>). Rightful presence brings a further concern into view, asking how historically unequal relations shape whose ways of knowing are recognized and whose challenges to classroom norms can have consequences (<a href=\"#reading-barton\">Calabrese Barton &amp; Tan, 2020</a>). Providing students with a choice of activities would not, on its own, show whether they could question the standards by which their explanations were assessed. An analysis of classroom interactions would need to attend to the authority exercised through those standards.</p>",
-        "-      <p>Teachers' interpretations may themselves become objects of inquiry when colleagues work together. In a four-year professional learning community, high school science teachers developed their attention to students' epistemic practices and evidence-based explanations (<a href=\"#reading-shim-thompson\">Shim &amp; Thompson, 2022</a>). A Grade 9 Applied Mathematics initiative offers a different view of collaboration, with teachers reporting learning from the joint development of classroom materials (<a href=\"#reading-jao-mcdougall\">Jao &amp; McDougall, 2015</a>). One study traces shifts in teachers' attention to students' epistemic practices, while the other draws on teachers' accounts of joint work. To examine how those changes reach students, I would follow discussions of student work into subsequent lessons.</p>",
-        "+      <p>Teachers' interpretations may themselves become objects of inquiry when colleagues work together. In a four-year professional learning community, high school science teachers developed their attention to students' epistemic practices and evidence-based explanations (<a href=\"#reading-shim-thompson\">Shim &amp; Thompson, 2022</a>). A Grade 9 Applied Mathematics initiative offers a different view of collaboration, with teachers reporting learning from the joint development of classroom materials (<a href=\"#reading-jao-mcdougall\">Jao &amp; McDougall, 2015</a>). One study follows changes in teachers' attention to students' epistemic practices, while the other documents educators' accounts of working with colleagues. Neither establishes how a particular student's contribution subsequently influenced a lesson. To examine that connection, I would need to trace how teachers discussed student work and how those discussions informed subsequent instructional decisions.</p>",
-        "       <p>I am interested in moments when students' explanations or questions challenge an anticipated lesson. Scientific guidance remains necessary as teachers assess the mechanisms students propose. I would examine how the grounds for a teacher's judgment become available for discussion and whether students can influence what happens after that judgment. The relationship between disciplinary evaluation and classroom authority is where I hope to develop the next phase of my research.</p>",
-        "@@ -104,7 +104,7 @@\n",
-        "   <div class=\"reading research-essay-prose\">",
-        "-    <p>What someone brings forward in an explanation depends partly on what the task invites them to consider. When Menominee and European American fish experts grouped familiar fish, Menominee participants more often referred to habitat. Asked explicitly to sort by habitat, the groups showed substantial agreement (<a href=\"#reading-cultural-mosaics\">Bang et al., 2007</a>). The distinction between a relationship offered spontaneously and one expressed under a particular prompt is important for interpreting classroom work. An unmentioned relationship may still be available to a learner.</p>",
-        "+    <p>What someone brings forward in an explanation depends partly on what the task invites them to consider. When Menominee and European American fish experts grouped familiar fish, Menominee participants more often referred to habitat. Asked explicitly to sort by habitat, the groups showed substantial agreement (<a href=\"#reading-cultural-mosaics\">Bang et al., 2007</a>). The distinction between a relationship offered spontaneously and one expressed under a particular prompt is important for interpreting classroom work. An unmentioned relationship may still be available to a learner, although the study's findings concern particular communities and forms of ecological expertise.</p>"
-      ]
-    },
-    {
-      "sourceDrift": [
-        {
-          "category": "engines",
-          "sourceModifiedSinceAudit": [
-            "research.html"
-          ]
-        }
-      ]
-    }
-  ],
+  "sourceDriftSinceAudits": [],
+  "pass": true,
+  "errors": [],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42152569316",
-  "run_sha": "c3fefa8804b82c55916f31041c2cc2762ce48eb0",
-  "exit_code": "1"
+  "workflow_run_id": "42153232274",
+  "run_sha": "7d3c8704037cf6e19cb869a915bfa23961a891ce",
+  "exit_code": "0"
 }
