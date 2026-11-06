@@ -1,12 +1,12 @@
 {
-  "sourceHead": "f797e8807a4fd23a110ba7335a3fb9d36e58702c",
+  "sourceHead": "09efcb6c9953dcb95a583ec4fc5b938d2ec5fbbf",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
-  "verifiedExactMatches": 24,
-  "httpErrors": 0,
+  "verifiedExactMatches": 23,
+  "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-f797e8807a4f",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-09efcb6c9953",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -17,7 +17,9 @@
       "run": "42169766492",
       "head_sha": "d26824a0802d0c291db7f1306ab31fd8938a363b",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "cv.html"
+      ],
       "failureCounts": {
         "problems": 0
       }
@@ -27,7 +29,9 @@
       "run": "42169766520",
       "head_sha": "d26824a0802d0c291db7f1306ab31fd8938a363b",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "cv.html"
+      ],
       "failureCounts": {
         "issues": 40
       },
@@ -41,7 +45,9 @@
       "run": "42169766558",
       "head_sha": "d26824a0802d0c291db7f1306ab31fd8938a363b",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "cv.html"
+      ],
       "failureCounts": {
         "unverified": 0
       },
@@ -80,7 +86,9 @@
       "run": "42169766521",
       "head_sha": "d26824a0802d0c291db7f1306ab31fd8938a363b",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "cv.html"
+      ],
       "failureCounts": {
         "failures": 0,
         "combinedStressFailures": 0
@@ -91,7 +99,9 @@
       "run": "42169766588",
       "head_sha": "d26824a0802d0c291db7f1306ab31fd8938a363b",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "cv.html"
+      ],
       "failureCounts": {
         "failures": 0,
         "axeViolations": 0
@@ -106,6 +116,24 @@
   },
   "sourceDriftSinceAudits": [
     {
+      "category": "links",
+      "sourceModifiedSinceAudit": [
+        "cv.html"
+      ]
+    },
+    {
+      "category": "external",
+      "sourceModifiedSinceAudit": [
+        "cv.html"
+      ]
+    },
+    {
+      "category": "metadata",
+      "sourceModifiedSinceAudit": [
+        "cv.html"
+      ]
+    },
+    {
       "category": "reflow",
       "sourceModifiedSinceAudit": [
         "cv.html"
@@ -116,12 +144,57 @@
       "sourceModifiedSinceAudit": [
         "cv.html"
       ]
+    },
+    {
+      "category": "typography",
+      "sourceModifiedSinceAudit": [
+        "cv.html"
+      ]
+    },
+    {
+      "category": "interactions",
+      "sourceModifiedSinceAudit": [
+        "cv.html"
+      ]
     }
   ],
   "pass": false,
   "errors": [
     {
+      "path": "cv.html",
+      "errors": [
+        "deployed bytes differ from checked-out production source"
+      ],
+      "firstDiff": [
+        "--- source\n",
+        "+++ deployed\n",
+        "@@ -106,3 +106,3 @@\n",
+        "   </style>",
+        "-<style id=\"moon-v2-live-layout\">@media (min-width:1025px){:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(2) > p:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:783px!important;height:66px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(8) > ul:nth-of-type(1) > li:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:908px!important;height:41px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(6) > div:nth-of-type(1) > ul:nth-of-type(1) > li:nth-of-type(4){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:870px!important;height:29px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(5) > div:nth-of-type(2) > ul:nth-of-type(1) > li:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:809px!important;height:54px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}}</style></head>",
+        "+<style id=\"moon-v2-live-layout\"></style></head>",
+        " <body class=\"theme-blue\">"
+      ]
+    },
+    {
       "sourceDrift": [
+        {
+          "category": "links",
+          "sourceModifiedSinceAudit": [
+            "cv.html"
+          ]
+        },
+        {
+          "category": "external",
+          "sourceModifiedSinceAudit": [
+            "cv.html"
+          ]
+        },
+        {
+          "category": "metadata",
+          "sourceModifiedSinceAudit": [
+            "cv.html"
+          ]
+        },
         {
           "category": "reflow",
           "sourceModifiedSinceAudit": [
@@ -133,12 +206,24 @@
           "sourceModifiedSinceAudit": [
             "cv.html"
           ]
+        },
+        {
+          "category": "typography",
+          "sourceModifiedSinceAudit": [
+            "cv.html"
+          ]
+        },
+        {
+          "category": "interactions",
+          "sourceModifiedSinceAudit": [
+            "cv.html"
+          ]
         }
       ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42169856143",
-  "run_sha": "f797e8807a4fd23a110ba7335a3fb9d36e58702c",
+  "workflow_run_id": "42169891618",
+  "run_sha": "09efcb6c9953dcb95a583ec4fc5b938d2ec5fbbf",
   "exit_code": "1"
 }
