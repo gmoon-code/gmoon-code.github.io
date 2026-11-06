@@ -1,12 +1,12 @@
 {
-  "sourceHead": "a2cdc7b103bbea94517bf1cfcb716d1d32a88166",
+  "sourceHead": "84ef8989c716772543330fd9cdbfe0292e8cea48",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-a2cdc7b103bb",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-84ef8989c716",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -14,12 +14,10 @@
   "auditEvidence": {
     "links": {
       "report": "docs/PUBLIC_LINKGRAPH_LATEST_RESULTS.json",
-      "run": "42157471954",
-      "head_sha": "2641f628d0e79b9eda8aa1027583a6221a6da58b",
+      "run": "42157827775",
+      "head_sha": "a2cdc7b103bbea94517bf1cfcb716d1d32a88166",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "problems": 0
       }
@@ -42,12 +40,10 @@
     },
     "metadata": {
       "report": "docs/RESEARCH_METADATA_LATEST_RESULTS.json",
-      "run": "42157472114",
-      "head_sha": "2641f628d0e79b9eda8aa1027583a6221a6da58b",
+      "run": "42157827776",
+      "head_sha": "a2cdc7b103bbea94517bf1cfcb716d1d32a88166",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "unverified": 0
       },
@@ -116,19 +112,7 @@
   },
   "sourceDriftSinceAudits": [
     {
-      "category": "links",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ]
-    },
-    {
       "category": "external",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ]
-    },
-    {
-      "category": "metadata",
       "sourceModifiedSinceAudit": [
         "research.html"
       ]
@@ -179,19 +163,7 @@
     {
       "sourceDrift": [
         {
-          "category": "links",
-          "sourceModifiedSinceAudit": [
-            "research.html"
-          ]
-        },
-        {
           "category": "external",
-          "sourceModifiedSinceAudit": [
-            "research.html"
-          ]
-        },
-        {
-          "category": "metadata",
           "sourceModifiedSinceAudit": [
             "research.html"
           ]
@@ -224,7 +196,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42157827884",
-  "run_sha": "a2cdc7b103bbea94517bf1cfcb716d1d32a88166",
+  "workflow_run_id": "42157852440",
+  "run_sha": "84ef8989c716772543330fd9cdbfe0292e8cea48",
   "exit_code": "1"
 }
