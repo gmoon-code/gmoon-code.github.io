@@ -4351,3 +4351,102 @@ test('Home Hello introductory paragraph can shrink below site-authored size and 
   expect(Math.abs(restored.h-18)).toBeLessThan(3);
   expect(writes).toEqual([]);
 });
+
+
+test('CV date spans can be edited independently and preserved in preview and reload',async({page})=>{
+  const writes=[];
+  await installVerifiedCurrentSource(page,writes);
+  await page.goto(BASE+'/editor-v2.html?page=cv.html',{waitUntil:'domcontentloaded'});
+  await expect(page.locator('#liveAssetStatus'))
+    .toContainText('GitHub main source verified',{timeout:35000});
+  const live=page.frameLocator('#livePageFrame');
+  const dates=live.locator('main.resume-page span.resume-date');
+  const count=await dates.count();
+  expect(count,'CV should expose multiple independent date spans').toBeGreaterThan(5);
+  const first=dates.first(),second=dates.nth(1);
+  const originalDates=await dates.allTextContents();
+  const beforeTitle=await live.locator('.resume-entry-heading h3').first().textContent();
+  expect(originalDates[0]).toBe('Aug 2026');
+  expect(originalDates[1]).toBe('Nov 2020');
+  // The date itself, not the surrounding heading/row, must be selectable.
+  await first.click();
+  await expect(page.locator('#liveSelectionLabel')).toContainText('Aug 2026');
+  await expect(page.locator('#editLiveText')).toBeEnabled();
+  await page.locator('#editLiveText').click();
+  await expect(first).toHaveAttribute('contenteditable','true');
+  await first.fill('Sep 2026');
+  await page.locator('#saveLiveText').click();
+  await expect(first).toHaveText('Sep 2026');
+  await expect(second).toHaveText('Nov 2020');
+  await expect(live.locator('.resume-entry-heading h3').first()).toHaveText(beforeTitle);
+  await second.click();
+  await page.locator('#editLiveText').click();
+  await second.fill('Dec 2020');
+  await page.locator('#saveLiveText').click();
+  const values=await dates.allTextContents();
+  expect(values.slice(0,2)).toEqual(['Sep 2026','Dec 2020']);
+  expect(values.slice(2)).toEqual(originalDates.slice(2));
+  await expect(page.locator('#liveEditCount')).toContainText('2 draft');
+  await page.locator('#preview').click();
+  await expect(page.locator('#previewDialog')).toBeVisible();
+  const preview=page.frameLocator('#previewFrame').locator('main.resume-page span.resume-date');
+  await expect(preview.first()).toHaveText('Sep 2026');
+  await expect(preview.nth(1)).toHaveText('Dec 2020');
+  await expect(page.frameLocator('#previewFrame').locator('.resume-entry-heading h3').first())
+    .toHaveText(beforeTitle);
+  await page.locator('#closePreview').click();
+  await page.reload({waitUntil:'domcontentloaded'});
+  await expect(page.locator('#liveAssetStatus'))
+    .toContainText('GitHub main source verified',{timeout:35000});
+  await expect(live.locator('main.resume-page span.resume-date').first()).toHaveText('Sep 2026');
+  await expect(live.locator('main.resume-page span.resume-date').nth(1)).toHaveText('Dec 2020');
+  const draft=JSON.parse(await page.evaluate(()=>
+    localStorage.getItem('moon-academic-editor-v2:source:cv.html')));
+  expect(draft.filter(p=>p.kind==='text')).toHaveLength(2);
+  expect(draft.every(p=>p.selector.includes('span:nth-of-type('))).toBe(true);
+  expect(writes,'editing dates must never send GitHub writes').toEqual([]);
+
+  // Publishing is intercepted and never writes to the real GitHub repository.
+  // Check that the generated page changes only these date spans.
+  const published=[];
+  await page.route('https://api.github.com/repos/gmoon-code/gmoon-code.github.io/contents/cv.html',
+    async route=>{
+      if(route.request().method()!=='PUT')return route.fallback();
+      published.push(JSON.parse(route.request().postData()));
+      await route.fulfill({status:200,contentType:'application/json',
+        headers:{'access-control-allow-origin':'*'},
+        body:JSON.stringify({commit:{sha:'mock-cv-date-publication'}})});
+    });
+  await page.locator('#publish').click();
+  await page.locator('#githubToken').fill('synthetic-cv-date-publication-token');
+  await page.locator('#acknowledgeLive').check();
+  await page.locator('#confirmPublish').click();
+  await expect.poll(()=>published.length,{timeout:20000}).toBe(1);
+  expect(published[0].sha).toBe(blobSha(SOURCE.get('cv.html')));
+  expect(published[0].branch).toBe('main');
+  const result=Buffer.from(published[0].content,'base64').toString('utf8');
+  expect(result).toContain('class="resume-date">Sep 2026</span>');
+  expect(result).toContain('class="resume-date">Dec 2020</span>');
+  expect(result).toContain(beforeTitle);
+  expect(result).not.toContain('class="resume-date">Aug 2026</span>');
+  expect(result).not.toContain('class="resume-date">Nov 2020</span>');
+  expect(writes).toEqual([]);
+});
+
+test('CV dates are individually discoverable in website elements and not as parent headings',async({page})=>{
+  const writes=[];
+  await installVerifiedCurrentSource(page,writes);
+  await page.goto(BASE+'/editor-v2.html?page=cv.html',{waitUntil:'domcontentloaded'});
+  await expect(page.locator('#liveAssetStatus'))
+    .toContainText('GitHub main source verified',{timeout:35000});
+  await page.locator('#liveElementSearch').fill('Jul 2024');
+  const items=page.locator('#liveElementList button.layer');
+  const dateItems=items.filter({hasText:'Jul 2024'});
+  expect(await dateItems.count()).toBeGreaterThanOrEqual(2);
+  const spanItems=dateItems.filter({has:page.locator('.layer-type', {hasText:'span'})});
+  expect(await spanItems.count()).toBeGreaterThanOrEqual(2);
+  await spanItems.first().click();
+  await expect(page.locator('#editLiveText')).toBeEnabled();
+  await expect(page.locator('#liveSelectionLabel')).toContainText('Jul 2024');
+  expect(writes).toEqual([]);
+});
