@@ -1,12 +1,12 @@
 {
-  "sourceHead": "dc92c165bf58dbd80d82d45ce109dd8a942d762b",
+  "sourceHead": "176adc54c2f0de57d74b6bf25ad4eab121df5b7b",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 21,
   "httpErrors": 3,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-dc92c165bf58",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-176adc54c2f0",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -60,8 +60,8 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "42562662303",
-      "head_sha": "34f4df9d678dfa69d85eee45e594eeb8bab2a71d",
+      "run": "42562789459",
+      "head_sha": "5c2ca30f508da0f4908b44ca7d2be280a5092d6c",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research-methods-studio.html"
@@ -72,13 +72,11 @@
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "42562390162",
-      "head_sha": "c27e3af067e7268bfb88f2e4cf8cbe47e3bd2db8",
+      "run": "42562662258",
+      "head_sha": "34f4df9d678dfa69d85eee45e594eeb8bab2a71d",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "research-methods-studio.html",
-        "teaching-ap-chemistry.html",
-        "teaching-ap-evolution.html"
+        "research-methods-studio.html"
       ],
       "failureCounts": {
         "failures": 0
@@ -86,12 +84,11 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "42562635531",
-      "head_sha": "1cfc139e594b4106d9aed144cc953fb9419c02e5",
+      "run": "42562662401",
+      "head_sha": "34f4df9d678dfa69d85eee45e594eeb8bab2a71d",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "research-methods-studio.html",
-        "teaching-ap-evolution.html"
+        "research-methods-studio.html"
       ],
       "failureCounts": {
         "failures": 0,
@@ -100,8 +97,8 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "42562662249",
-      "head_sha": "34f4df9d678dfa69d85eee45e594eeb8bab2a71d",
+      "run": "42562789525",
+      "head_sha": "5c2ca30f508da0f4908b44ca7d2be280a5092d6c",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "research-methods-studio.html"
@@ -143,16 +140,13 @@
     {
       "category": "engines",
       "sourceModifiedSinceAudit": [
-        "research-methods-studio.html",
-        "teaching-ap-chemistry.html",
-        "teaching-ap-evolution.html"
+        "research-methods-studio.html"
       ]
     },
     {
       "category": "typography",
       "sourceModifiedSinceAudit": [
-        "research-methods-studio.html",
-        "teaching-ap-evolution.html"
+        "research-methods-studio.html"
       ]
     },
     {
@@ -177,6 +171,11 @@
         "-<style id=\"moon-v2-live-layout\">@media (min-width:1025px){:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(1) > p:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:738px!important;height:28px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(2) > p:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:737px!important;height:30px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(3) > p:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:948px!important;height:29px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(4) > p:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:922px!important;height:28px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(5) > p:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:942px!important;height:54px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}}</style></head>",
         "+</head>",
         " <body class=\"theme-blue\">",
+        "@@ -81,3 +81,3 @@\n",
+        "     </div>",
+        "-    <figcaption id=\"rms-nesting-caption\"><strong>Figure 1. Experimental units in the synthetic radish study.</strong> Each dish is independently assigned a treatment, while its five seeds are subsamples. Germination proportion uses all five seeds; mean radicle length includes only germinated seeds. <span>Source: author's constructed teaching exemplar. No experiment or student outcome is reported.</span></figcaption>",
+        "+    <figcaption id=\"rms-nesting-caption\"><strong>Figure 1. Experimental units in the synthetic radish study.</strong> Each dish is independently assigned a treatment, while its five seeds are subsamples. Germination proportion uses all five seeds; mean radicle length includes only germinated seeds. <span class=\"figure-source\">Source: author's constructed teaching exemplar. No experiment or student outcome is reported.</span></figcaption>",
+        "   </figure>",
         "@@ -195,3 +195,2 @@\n",
         " ",
         "-",
@@ -249,16 +248,13 @@
         {
           "category": "engines",
           "sourceModifiedSinceAudit": [
-            "research-methods-studio.html",
-            "teaching-ap-chemistry.html",
-            "teaching-ap-evolution.html"
+            "research-methods-studio.html"
           ]
         },
         {
           "category": "typography",
           "sourceModifiedSinceAudit": [
-            "research-methods-studio.html",
-            "teaching-ap-evolution.html"
+            "research-methods-studio.html"
           ]
         },
         {
@@ -271,7 +267,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42562906129",
-  "run_sha": "dc92c165bf58dbd80d82d45ce109dd8a942d762b",
+  "workflow_run_id": "42563009742",
+  "run_sha": "176adc54c2f0de57d74b6bf25ad4eab121df5b7b",
   "exit_code": "1"
 }
