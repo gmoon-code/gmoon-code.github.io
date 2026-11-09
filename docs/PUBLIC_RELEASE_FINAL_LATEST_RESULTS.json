@@ -1,12 +1,12 @@
 {
-  "sourceHead": "9cde5e892da75bf3e1d4d622b3e4e537922bf735",
+  "sourceHead": "0bc257fd4e24bcb59ecd4c7e8f8f6984407c29d2",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-9cde5e892da7",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-0bc257fd4e24",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -53,12 +53,10 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "42563719955",
-      "head_sha": "565b2cf93fc31a93864087443e74855d9e57ad24",
+      "run": "42563793432",
+      "head_sha": "40403cc9b3ca741467ec62c60f94349c4d5ca5ac",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "story-method.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0
       }
@@ -77,12 +75,10 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "42563720086",
-      "head_sha": "565b2cf93fc31a93864087443e74855d9e57ad24",
+      "run": "42563793365",
+      "head_sha": "40403cc9b3ca741467ec62c60f94349c4d5ca5ac",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "story-method.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0,
         "combinedStressFailures": 0
@@ -108,19 +104,7 @@
   },
   "sourceDriftSinceAudits": [
     {
-      "category": "reflow",
-      "sourceModifiedSinceAudit": [
-        "story-method.html"
-      ]
-    },
-    {
       "category": "engines",
-      "sourceModifiedSinceAudit": [
-        "story-method.html"
-      ]
-    },
-    {
-      "category": "typography",
       "sourceModifiedSinceAudit": [
         "story-method.html"
       ]
@@ -155,19 +139,7 @@
     {
       "sourceDrift": [
         {
-          "category": "reflow",
-          "sourceModifiedSinceAudit": [
-            "story-method.html"
-          ]
-        },
-        {
           "category": "engines",
-          "sourceModifiedSinceAudit": [
-            "story-method.html"
-          ]
-        },
-        {
-          "category": "typography",
           "sourceModifiedSinceAudit": [
             "story-method.html"
           ]
@@ -176,7 +148,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42563907691",
-  "run_sha": "9cde5e892da75bf3e1d4d622b3e4e537922bf735",
+  "workflow_run_id": "42563936321",
+  "run_sha": "0bc257fd4e24bcb59ecd4c7e8f8f6984407c29d2",
   "exit_code": "1"
 }
