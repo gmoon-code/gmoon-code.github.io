@@ -1,12 +1,12 @@
 {
-  "sourceHead": "b560e91a0d32f2b2a54453cdc0e46a3b3e163311",
+  "sourceHead": "5d40f3f2aaae314aa1e6e483f99404d415291758",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 21,
   "httpErrors": 3,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-b560e91a0d32",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-5d40f3f2aaae",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -63,12 +63,10 @@
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "42539159330",
-      "head_sha": "028456e8b8b752703f6864b0c6e951946da1aa6b",
+      "run": "42539258475",
+      "head_sha": "a99b12d4f34d5920b002bd7c8314158801d56d47",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research-action.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0
       }
@@ -102,14 +100,7 @@
       "note": "U1 route audit documents successful run 40825886279; legacy utility machine report refers to an early missing-script failure. Do not treat it as latest successful evidence."
     }
   },
-  "sourceDriftSinceAudits": [
-    {
-      "category": "engines",
-      "sourceModifiedSinceAudit": [
-        "research-action.html"
-      ]
-    }
-  ],
+  "sourceDriftSinceAudits": [],
   "pass": false,
   "errors": [
     {
@@ -158,20 +149,10 @@
         "+@media (min-width:1025px){:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(2){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:1089px!important;height:420px!important;min-height:0!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(3){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:1089px!important;height:646px!important;min-height:0!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(4){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:1089px!important;height:566px!important;min-height:0!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(5){translate:0px -32px!important;scale:1 1!important;transform-origin:top left!important;width:1089px!important;height:401px!important;min-height:0!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(6){translate:0px -21px!important;scale:1 1!important;transform-origin:top left!important;}}</style></head>",
         " <body class=\"theme-magenta\">"
       ]
-    },
-    {
-      "sourceDrift": [
-        {
-          "category": "engines",
-          "sourceModifiedSinceAudit": [
-            "research-action.html"
-          ]
-        }
-      ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42539421270",
-  "run_sha": "b560e91a0d32f2b2a54453cdc0e46a3b3e163311",
+  "workflow_run_id": "42539584722",
+  "run_sha": "5d40f3f2aaae314aa1e6e483f99404d415291758",
   "exit_code": "1"
 }
