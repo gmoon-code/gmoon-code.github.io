@@ -1,12 +1,12 @@
 {
-  "sourceHead": "1cfc139e594b4106d9aed144cc953fb9419c02e5",
+  "sourceHead": "34f4df9d678dfa69d85eee45e594eeb8bab2a71d",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
-  "verifiedExactMatches": 23,
-  "httpErrors": 1,
+  "verifiedExactMatches": 22,
+  "httpErrors": 2,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-1cfc139e594b",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-34f4df9d678d",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -18,7 +18,8 @@
       "head_sha": "c27e3af067e7268bfb88f2e4cf8cbe47e3bd2db8",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-chemistry.html"
+        "teaching-ap-chemistry.html",
+        "teaching-ap-evolution.html"
       ],
       "failureCounts": {
         "problems": 0
@@ -30,7 +31,8 @@
       "head_sha": "c27e3af067e7268bfb88f2e4cf8cbe47e3bd2db8",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-chemistry.html"
+        "teaching-ap-chemistry.html",
+        "teaching-ap-evolution.html"
       ],
       "failureCounts": {
         "issues": 40
@@ -42,11 +44,11 @@
     },
     "metadata": {
       "report": "docs/RESEARCH_METADATA_LATEST_RESULTS.json",
-      "run": "42562390118",
-      "head_sha": "c27e3af067e7268bfb88f2e4cf8cbe47e3bd2db8",
+      "run": "42562635542",
+      "head_sha": "1cfc139e594b4106d9aed144cc953fb9419c02e5",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-chemistry.html"
+        "teaching-ap-evolution.html"
       ],
       "failureCounts": {
         "unverified": 0
@@ -63,7 +65,8 @@
       "head_sha": "c27e3af067e7268bfb88f2e4cf8cbe47e3bd2db8",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-chemistry.html"
+        "teaching-ap-chemistry.html",
+        "teaching-ap-evolution.html"
       ],
       "failureCounts": {
         "failures": 0
@@ -88,7 +91,8 @@
       "head_sha": "c27e3af067e7268bfb88f2e4cf8cbe47e3bd2db8",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-chemistry.html"
+        "teaching-ap-chemistry.html",
+        "teaching-ap-evolution.html"
       ],
       "failureCounts": {
         "failures": 0,
@@ -101,7 +105,8 @@
       "head_sha": "c27e3af067e7268bfb88f2e4cf8cbe47e3bd2db8",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-chemistry.html"
+        "teaching-ap-chemistry.html",
+        "teaching-ap-evolution.html"
       ],
       "failureCounts": {
         "failures": 0,
@@ -119,25 +124,28 @@
     {
       "category": "links",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-chemistry.html"
+        "teaching-ap-chemistry.html",
+        "teaching-ap-evolution.html"
       ]
     },
     {
       "category": "external",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-chemistry.html"
+        "teaching-ap-chemistry.html",
+        "teaching-ap-evolution.html"
       ]
     },
     {
       "category": "metadata",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-chemistry.html"
+        "teaching-ap-evolution.html"
       ]
     },
     {
       "category": "reflow",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-chemistry.html"
+        "teaching-ap-chemistry.html",
+        "teaching-ap-evolution.html"
       ]
     },
     {
@@ -150,13 +158,15 @@
     {
       "category": "typography",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-chemistry.html"
+        "teaching-ap-chemistry.html",
+        "teaching-ap-evolution.html"
       ]
     },
     {
       "category": "interactions",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-chemistry.html"
+        "teaching-ap-chemistry.html",
+        "teaching-ap-evolution.html"
       ]
     }
   ],
@@ -187,29 +197,48 @@
       ]
     },
     {
+      "path": "teaching-ap-evolution.html",
+      "errors": [
+        "deployed bytes differ from checked-out production source"
+      ],
+      "firstDiff": [
+        "--- source\n",
+        "+++ deployed\n",
+        "@@ -12,4 +12,3 @@\n",
+        " <style id=\"moon-v2-live-layout\">@media (min-width:1025px){:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(4){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:1089px!important;height:614px!important;min-height:0!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(4) > div:nth-of-type(3) > ol:nth-of-type(1) > li:nth-of-type(2){translate:0px -5px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(4) > div:nth-of-type(3) > ol:nth-of-type(1) > li:nth-of-type(3){translate:0px -5px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(4) > div:nth-of-type(3) > ol:nth-of-type(1) > li:nth-of-type(1){translate:0px -5px!important;scale:1 1!important;transform-origin:top left!important;}}",
+        "-@media (min-width:1025px){:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(1) > div:nth-of-type(1) > h1:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:1085px!important;height:64px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}}",
+        "-:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(1) > div:nth-of-type(1) > h1:nth-of-type(1){font-size:50px!important;}</style></head>",
+        "+@media (min-width:1025px){:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(1) > div:nth-of-type(1) > h1:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:1085px!important;height:64px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}}</style></head>",
+        " <body class=\"theme-magenta\">"
+      ]
+    },
+    {
       "sourceDrift": [
         {
           "category": "links",
           "sourceModifiedSinceAudit": [
-            "teaching-ap-chemistry.html"
+            "teaching-ap-chemistry.html",
+            "teaching-ap-evolution.html"
           ]
         },
         {
           "category": "external",
           "sourceModifiedSinceAudit": [
-            "teaching-ap-chemistry.html"
+            "teaching-ap-chemistry.html",
+            "teaching-ap-evolution.html"
           ]
         },
         {
           "category": "metadata",
           "sourceModifiedSinceAudit": [
-            "teaching-ap-chemistry.html"
+            "teaching-ap-evolution.html"
           ]
         },
         {
           "category": "reflow",
           "sourceModifiedSinceAudit": [
-            "teaching-ap-chemistry.html"
+            "teaching-ap-chemistry.html",
+            "teaching-ap-evolution.html"
           ]
         },
         {
@@ -222,20 +251,22 @@
         {
           "category": "typography",
           "sourceModifiedSinceAudit": [
-            "teaching-ap-chemistry.html"
+            "teaching-ap-chemistry.html",
+            "teaching-ap-evolution.html"
           ]
         },
         {
           "category": "interactions",
           "sourceModifiedSinceAudit": [
-            "teaching-ap-chemistry.html"
+            "teaching-ap-chemistry.html",
+            "teaching-ap-evolution.html"
           ]
         }
       ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42562635514",
-  "run_sha": "1cfc139e594b4106d9aed144cc953fb9419c02e5",
+  "workflow_run_id": "42562662338",
+  "run_sha": "34f4df9d678dfa69d85eee45e594eeb8bab2a71d",
   "exit_code": "1"
 }
