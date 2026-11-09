@@ -1,12 +1,12 @@
 {
-  "sourceHead": "95619018855cf37efafc0fb0a30901edcdda0138",
+  "sourceHead": "0853128871613db1904df8bc99e804819f5ff0e6",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-95619018855c",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-085312887161",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -24,18 +24,16 @@
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "42562925687",
-      "head_sha": "dca8019b4cd645580024fae7a50a39caed72d488",
+      "run": "42563720121",
+      "head_sha": "565b2cf93fc31a93864087443e74855d9e57ad24",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "story-method.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
-        "issues": 42
+        "issues": 40
       },
       "counts": {
-        "reachable": 68,
-        "unverified": 42
+        "reachable": 70,
+        "unverified": 40
       }
     },
     "metadata": {
@@ -112,12 +110,6 @@
   },
   "sourceDriftSinceAudits": [
     {
-      "category": "external",
-      "sourceModifiedSinceAudit": [
-        "story-method.html"
-      ]
-    },
-    {
       "category": "reflow",
       "sourceModifiedSinceAudit": [
         "story-method.html"
@@ -166,12 +158,6 @@
     {
       "sourceDrift": [
         {
-          "category": "external",
-          "sourceModifiedSinceAudit": [
-            "story-method.html"
-          ]
-        },
-        {
           "category": "reflow",
           "sourceModifiedSinceAudit": [
             "story-method.html"
@@ -199,7 +185,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42563741710",
-  "run_sha": "95619018855cf37efafc0fb0a30901edcdda0138",
+  "workflow_run_id": "42563760231",
+  "run_sha": "0853128871613db1904df8bc99e804819f5ff0e6",
   "exit_code": "1"
 }
