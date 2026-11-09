@@ -1,12 +1,12 @@
 {
-  "sourceHead": "2e13f5a2632cc7b0e19a5f463ab3214027372f23",
+  "sourceHead": "028456e8b8b752703f6864b0c6e951946da1aa6b",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
-  "verifiedExactMatches": 23,
-  "httpErrors": 1,
+  "verifiedExactMatches": 22,
+  "httpErrors": 2,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-2e13f5a2632c",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-028456e8b8b7",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -17,7 +17,9 @@
       "run": "42539037309",
       "head_sha": "e408b9b86c8b0194a63d1a9a6e3810209763ed74",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research-scoping.html"
+      ],
       "failureCounts": {
         "problems": 0
       }
@@ -27,7 +29,9 @@
       "run": "42539037219",
       "head_sha": "e408b9b86c8b0194a63d1a9a6e3810209763ed74",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research-scoping.html"
+      ],
       "failureCounts": {
         "issues": 42
       },
@@ -41,7 +45,9 @@
       "run": "42539037205",
       "head_sha": "e408b9b86c8b0194a63d1a9a6e3810209763ed74",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research-scoping.html"
+      ],
       "failureCounts": {
         "unverified": 0
       },
@@ -56,7 +62,9 @@
       "run": "42539037347",
       "head_sha": "e408b9b86c8b0194a63d1a9a6e3810209763ed74",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research-scoping.html"
+      ],
       "failureCounts": {
         "failures": 0
       }
@@ -67,6 +75,7 @@
       "head_sha": "29347a0fbc3b180ed7baafb34b2e04beb4a189fc",
       "exit": "",
       "sourceModifiedSinceAudit": [
+        "research-scoping.html",
         "teaching.html"
       ],
       "failureCounts": {
@@ -78,7 +87,9 @@
       "run": "42539037158",
       "head_sha": "e408b9b86c8b0194a63d1a9a6e3810209763ed74",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research-scoping.html"
+      ],
       "failureCounts": {
         "failures": 0,
         "combinedStressFailures": 0
@@ -89,7 +100,9 @@
       "run": "42539037437",
       "head_sha": "e408b9b86c8b0194a63d1a9a6e3810209763ed74",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research-scoping.html"
+      ],
       "failureCounts": {
         "failures": 0,
         "axeViolations": 0
@@ -104,14 +117,66 @@
   },
   "sourceDriftSinceAudits": [
     {
+      "category": "links",
+      "sourceModifiedSinceAudit": [
+        "research-scoping.html"
+      ]
+    },
+    {
+      "category": "external",
+      "sourceModifiedSinceAudit": [
+        "research-scoping.html"
+      ]
+    },
+    {
+      "category": "metadata",
+      "sourceModifiedSinceAudit": [
+        "research-scoping.html"
+      ]
+    },
+    {
+      "category": "reflow",
+      "sourceModifiedSinceAudit": [
+        "research-scoping.html"
+      ]
+    },
+    {
       "category": "engines",
       "sourceModifiedSinceAudit": [
+        "research-scoping.html",
         "teaching.html"
+      ]
+    },
+    {
+      "category": "typography",
+      "sourceModifiedSinceAudit": [
+        "research-scoping.html"
+      ]
+    },
+    {
+      "category": "interactions",
+      "sourceModifiedSinceAudit": [
+        "research-scoping.html"
       ]
     }
   ],
   "pass": false,
   "errors": [
+    {
+      "path": "research-scoping.html",
+      "errors": [
+        "deployed bytes differ from checked-out production source"
+      ],
+      "firstDiff": [
+        "--- source\n",
+        "+++ deployed\n",
+        "@@ -56,3 +56,3 @@\n",
+        "   </style>",
+        "-<style id=\"moon-v2-live-layout\">@media (min-width:1025px){:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(3) > p:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:1080px!important;height:52px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(5) > div:nth-of-type(2) > p:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:1076px!important;height:119px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(5) > p:nth-of-type(2){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:1076px!important;height:49px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(6) > p:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:1034px!important;height:51px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}}</style></head>",
+        "+<style id=\"moon-v2-live-layout\"></style></head>",
+        " <body class=\"theme-green\">"
+      ]
+    },
     {
       "path": "teaching.html",
       "errors": [
@@ -131,9 +196,46 @@
     {
       "sourceDrift": [
         {
+          "category": "links",
+          "sourceModifiedSinceAudit": [
+            "research-scoping.html"
+          ]
+        },
+        {
+          "category": "external",
+          "sourceModifiedSinceAudit": [
+            "research-scoping.html"
+          ]
+        },
+        {
+          "category": "metadata",
+          "sourceModifiedSinceAudit": [
+            "research-scoping.html"
+          ]
+        },
+        {
+          "category": "reflow",
+          "sourceModifiedSinceAudit": [
+            "research-scoping.html"
+          ]
+        },
+        {
           "category": "engines",
           "sourceModifiedSinceAudit": [
+            "research-scoping.html",
             "teaching.html"
+          ]
+        },
+        {
+          "category": "typography",
+          "sourceModifiedSinceAudit": [
+            "research-scoping.html"
+          ]
+        },
+        {
+          "category": "interactions",
+          "sourceModifiedSinceAudit": [
+            "research-scoping.html"
           ]
         }
       ]
@@ -145,7 +247,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42539135693",
-  "run_sha": "2e13f5a2632cc7b0e19a5f463ab3214027372f23",
+  "workflow_run_id": "42539159239",
+  "run_sha": "028456e8b8b752703f6864b0c6e951946da1aa6b",
   "exit_code": "1"
 }
