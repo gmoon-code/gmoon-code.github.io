@@ -1,12 +1,12 @@
 {
-  "sourceHead": "5c2ca30f508da0f4908b44ca7d2be280a5092d6c",
+  "sourceHead": "dc92c165bf58dbd80d82d45ce109dd8a942d762b",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 21,
   "httpErrors": 3,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-5c2ca30f508d",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-dc92c165bf58",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -60,12 +60,11 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "42562635589",
-      "head_sha": "1cfc139e594b4106d9aed144cc953fb9419c02e5",
+      "run": "42562662303",
+      "head_sha": "34f4df9d678dfa69d85eee45e594eeb8bab2a71d",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "research-methods-studio.html",
-        "teaching-ap-evolution.html"
+        "research-methods-studio.html"
       ],
       "failureCounts": {
         "failures": 0
@@ -101,12 +100,11 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "42562635606",
-      "head_sha": "1cfc139e594b4106d9aed144cc953fb9419c02e5",
+      "run": "42562662249",
+      "head_sha": "34f4df9d678dfa69d85eee45e594eeb8bab2a71d",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "research-methods-studio.html",
-        "teaching-ap-evolution.html"
+        "research-methods-studio.html"
       ],
       "failureCounts": {
         "failures": 0,
@@ -139,8 +137,7 @@
     {
       "category": "reflow",
       "sourceModifiedSinceAudit": [
-        "research-methods-studio.html",
-        "teaching-ap-evolution.html"
+        "research-methods-studio.html"
       ]
     },
     {
@@ -161,8 +158,7 @@
     {
       "category": "interactions",
       "sourceModifiedSinceAudit": [
-        "research-methods-studio.html",
-        "teaching-ap-evolution.html"
+        "research-methods-studio.html"
       ]
     }
   ],
@@ -247,8 +243,7 @@
         {
           "category": "reflow",
           "sourceModifiedSinceAudit": [
-            "research-methods-studio.html",
-            "teaching-ap-evolution.html"
+            "research-methods-studio.html"
           ]
         },
         {
@@ -269,15 +264,14 @@
         {
           "category": "interactions",
           "sourceModifiedSinceAudit": [
-            "research-methods-studio.html",
-            "teaching-ap-evolution.html"
+            "research-methods-studio.html"
           ]
         }
       ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42562789434",
-  "run_sha": "5c2ca30f508da0f4908b44ca7d2be280a5092d6c",
+  "workflow_run_id": "42562906129",
+  "run_sha": "dc92c165bf58dbd80d82d45ce109dd8a942d762b",
   "exit_code": "1"
 }
