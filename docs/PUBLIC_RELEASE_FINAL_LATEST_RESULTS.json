@@ -1,12 +1,12 @@
 {
-  "sourceHead": "c27e3af067e7268bfb88f2e4cf8cbe47e3bd2db8",
+  "sourceHead": "13455cc7f5089c30237b98345cb3bb7cbba9a5fd",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-c27e3af067e7",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-13455cc7f508",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -14,24 +14,20 @@
   "auditEvidence": {
     "links": {
       "report": "docs/PUBLIC_LINKGRAPH_LATEST_RESULTS.json",
-      "run": "42562343304",
-      "head_sha": "f5614482871ff4aebd2bdbdcc1570e53b4a19106",
+      "run": "42562390031",
+      "head_sha": "c27e3af067e7268bfb88f2e4cf8cbe47e3bd2db8",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "teaching-ap-evolution.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "problems": 0
       }
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "42562343158",
-      "head_sha": "f5614482871ff4aebd2bdbdcc1570e53b4a19106",
+      "run": "42562390233",
+      "head_sha": "c27e3af067e7268bfb88f2e4cf8cbe47e3bd2db8",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "teaching-ap-evolution.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "issues": 40
       },
@@ -42,12 +38,10 @@
     },
     "metadata": {
       "report": "docs/RESEARCH_METADATA_LATEST_RESULTS.json",
-      "run": "42562343230",
-      "head_sha": "f5614482871ff4aebd2bdbdcc1570e53b4a19106",
+      "run": "42562390118",
+      "head_sha": "c27e3af067e7268bfb88f2e4cf8cbe47e3bd2db8",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "teaching-ap-evolution.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "unverified": 0
       },
@@ -83,8 +77,8 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "42539258572",
-      "head_sha": "a99b12d4f34d5920b002bd7c8314158801d56d47",
+      "run": "42562343237",
+      "head_sha": "f5614482871ff4aebd2bdbdcc1570e53b4a19106",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "teaching-ap-evolution.html"
@@ -96,8 +90,8 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "42539258453",
-      "head_sha": "a99b12d4f34d5920b002bd7c8314158801d56d47",
+      "run": "42562343129",
+      "head_sha": "f5614482871ff4aebd2bdbdcc1570e53b4a19106",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "teaching-ap-evolution.html"
@@ -115,24 +109,6 @@
     }
   },
   "sourceDriftSinceAudits": [
-    {
-      "category": "links",
-      "sourceModifiedSinceAudit": [
-        "teaching-ap-evolution.html"
-      ]
-    },
-    {
-      "category": "external",
-      "sourceModifiedSinceAudit": [
-        "teaching-ap-evolution.html"
-      ]
-    },
-    {
-      "category": "metadata",
-      "sourceModifiedSinceAudit": [
-        "teaching-ap-evolution.html"
-      ]
-    },
     {
       "category": "reflow",
       "sourceModifiedSinceAudit": [
@@ -187,24 +163,6 @@
     {
       "sourceDrift": [
         {
-          "category": "links",
-          "sourceModifiedSinceAudit": [
-            "teaching-ap-evolution.html"
-          ]
-        },
-        {
-          "category": "external",
-          "sourceModifiedSinceAudit": [
-            "teaching-ap-evolution.html"
-          ]
-        },
-        {
-          "category": "metadata",
-          "sourceModifiedSinceAudit": [
-            "teaching-ap-evolution.html"
-          ]
-        },
-        {
           "category": "reflow",
           "sourceModifiedSinceAudit": [
             "teaching-ap-evolution.html"
@@ -232,7 +190,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42562390250",
-  "run_sha": "c27e3af067e7268bfb88f2e4cf8cbe47e3bd2db8",
+  "workflow_run_id": "42562422766",
+  "run_sha": "13455cc7f5089c30237b98345cb3bb7cbba9a5fd",
   "exit_code": "1"
 }
