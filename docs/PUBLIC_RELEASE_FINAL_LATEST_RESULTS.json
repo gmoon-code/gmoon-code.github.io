@@ -1,12 +1,12 @@
 {
-  "sourceHead": "55f4f6398b245b2f25bcc1910dbb5e46e90215b5",
+  "sourceHead": "b560e91a0d32f2b2a54453cdc0e46a3b3e163311",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 21,
   "httpErrors": 3,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-55f4f6398b24",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-b560e91a0d32",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -63,12 +63,11 @@
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "42539037170",
-      "head_sha": "e408b9b86c8b0194a63d1a9a6e3810209763ed74",
+      "run": "42539159330",
+      "head_sha": "028456e8b8b752703f6864b0c6e951946da1aa6b",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "research-action.html",
-        "research-scoping.html"
+        "research-action.html"
       ],
       "failureCounts": {
         "failures": 0
@@ -76,12 +75,10 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "42539160064",
-      "head_sha": "028456e8b8b752703f6864b0c6e951946da1aa6b",
+      "run": "42539258572",
+      "head_sha": "a99b12d4f34d5920b002bd7c8314158801d56d47",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research-action.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0,
         "combinedStressFailures": 0
@@ -108,13 +105,6 @@
   "sourceDriftSinceAudits": [
     {
       "category": "engines",
-      "sourceModifiedSinceAudit": [
-        "research-action.html",
-        "research-scoping.html"
-      ]
-    },
-    {
-      "category": "typography",
       "sourceModifiedSinceAudit": [
         "research-action.html"
       ]
@@ -174,13 +164,6 @@
         {
           "category": "engines",
           "sourceModifiedSinceAudit": [
-            "research-action.html",
-            "research-scoping.html"
-          ]
-        },
-        {
-          "category": "typography",
-          "sourceModifiedSinceAudit": [
             "research-action.html"
           ]
         }
@@ -188,7 +171,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42539397953",
-  "run_sha": "55f4f6398b245b2f25bcc1910dbb5e46e90215b5",
+  "workflow_run_id": "42539421270",
+  "run_sha": "b560e91a0d32f2b2a54453cdc0e46a3b3e163311",
   "exit_code": "1"
 }
