@@ -1,12 +1,12 @@
 {
-  "sourceHead": "5790dff00bf1ed254dc89c2a62275fe7f34a00e5",
+  "sourceHead": "1cfc139e594b4106d9aed144cc953fb9419c02e5",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-5790dff00bf1",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-1cfc139e594b",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -17,7 +17,9 @@
       "run": "42562390031",
       "head_sha": "c27e3af067e7268bfb88f2e4cf8cbe47e3bd2db8",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "teaching-ap-chemistry.html"
+      ],
       "failureCounts": {
         "problems": 0
       }
@@ -27,7 +29,9 @@
       "run": "42562390233",
       "head_sha": "c27e3af067e7268bfb88f2e4cf8cbe47e3bd2db8",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "teaching-ap-chemistry.html"
+      ],
       "failureCounts": {
         "issues": 40
       },
@@ -41,7 +45,9 @@
       "run": "42562390118",
       "head_sha": "c27e3af067e7268bfb88f2e4cf8cbe47e3bd2db8",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "teaching-ap-chemistry.html"
+      ],
       "failureCounts": {
         "unverified": 0
       },
@@ -56,7 +62,9 @@
       "run": "42562390133",
       "head_sha": "c27e3af067e7268bfb88f2e4cf8cbe47e3bd2db8",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "teaching-ap-chemistry.html"
+      ],
       "failureCounts": {
         "failures": 0
       }
@@ -67,6 +75,7 @@
       "head_sha": "f5614482871ff4aebd2bdbdcc1570e53b4a19106",
       "exit": "0",
       "sourceModifiedSinceAudit": [
+        "teaching-ap-chemistry.html",
         "teaching-ap-evolution.html"
       ],
       "failureCounts": {
@@ -78,7 +87,9 @@
       "run": "42562390079",
       "head_sha": "c27e3af067e7268bfb88f2e4cf8cbe47e3bd2db8",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "teaching-ap-chemistry.html"
+      ],
       "failureCounts": {
         "failures": 0,
         "combinedStressFailures": 0
@@ -89,7 +100,9 @@
       "run": "42562390034",
       "head_sha": "c27e3af067e7268bfb88f2e4cf8cbe47e3bd2db8",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "teaching-ap-chemistry.html"
+      ],
       "failureCounts": {
         "failures": 0,
         "axeViolations": 0
@@ -104,16 +117,53 @@
   },
   "sourceDriftSinceAudits": [
     {
+      "category": "links",
+      "sourceModifiedSinceAudit": [
+        "teaching-ap-chemistry.html"
+      ]
+    },
+    {
+      "category": "external",
+      "sourceModifiedSinceAudit": [
+        "teaching-ap-chemistry.html"
+      ]
+    },
+    {
+      "category": "metadata",
+      "sourceModifiedSinceAudit": [
+        "teaching-ap-chemistry.html"
+      ]
+    },
+    {
+      "category": "reflow",
+      "sourceModifiedSinceAudit": [
+        "teaching-ap-chemistry.html"
+      ]
+    },
+    {
       "category": "engines",
       "sourceModifiedSinceAudit": [
+        "teaching-ap-chemistry.html",
         "teaching-ap-evolution.html"
+      ]
+    },
+    {
+      "category": "typography",
+      "sourceModifiedSinceAudit": [
+        "teaching-ap-chemistry.html"
+      ]
+    },
+    {
+      "category": "interactions",
+      "sourceModifiedSinceAudit": [
+        "teaching-ap-chemistry.html"
       ]
     }
   ],
   "pass": false,
   "errors": [
     {
-      "path": "teaching-ap-evolution.html",
+      "path": "teaching-ap-chemistry.html",
       "errors": [
         "deployed bytes differ from checked-out production source"
       ],
@@ -122,33 +172,70 @@
         "+++ deployed\n",
         "@@ -11,4 +11,3 @@\n",
         "   <link rel=\"stylesheet\" href=\"appearance.css?v=20261028-visible-focus\">",
-        "-<style id=\"moon-v2-live-layout\">@media (min-width:1025px){:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(4){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:1089px!important;height:614px!important;min-height:0!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(4) > div:nth-of-type(3) > ol:nth-of-type(1) > li:nth-of-type(2){translate:0px -5px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(4) > div:nth-of-type(3) > ol:nth-of-type(1) > li:nth-of-type(3){translate:0px -5px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(4) > div:nth-of-type(3) > ol:nth-of-type(1) > li:nth-of-type(1){translate:0px -5px!important;scale:1 1!important;transform-origin:top left!important;}}",
-        "-@media (min-width:1025px){:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(1) > div:nth-of-type(1) > h1:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:1085px!important;height:64px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}}</style></head>",
+        "-<style id=\"moon-v2-live-layout\">:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(1) > div:nth-of-type(1) > h1:nth-of-type(1){font-size:49px!important;}",
+        "-@media (min-width:1025px){:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(1) > div:nth-of-type(1) > h1:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:1058px!important;height:55px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(3) > div:nth-of-type(4) > p:nth-of-type(4){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:957px!important;height:44px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(4) > div:nth-of-type(1) > p:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:1071px!important;height:34px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(6) > p:nth-of-type(2){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:1062px!important;height:48px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(3) > div:nth-of-type(4) > figure:nth-of-type(1) > figcaption:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:836px!important;height:95px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(2) > p:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:959px!important;height:24px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}}</style></head>",
         "+<style id=\"moon-v2-live-layout\"></style></head>",
         " <body class=\"theme-magenta\">",
-        "@@ -66,3 +65,3 @@\n",
-        " </div>",
-        "-<div class=\"teaching-original-prompt\">",
-        "+<div class=\"teaching-original-prompt\"><p class=\"meta\">Source-reading task · Published study</p>",
-        " <ol>",
-        "@@ -84,3 +83,3 @@\n",
-        " <section id=\"variation-assessment\" class=\"section teaching-case-section\"><div class=\"section-head\"><h2>Illustrative population-genetics task</h2><p>Newly written, illustrative assessment. No student responses or outcomes are claimed.</p></div>",
-        "-<div class=\"teaching-original-prompt\">"
+        "@@ -60,5 +59,5 @@\n",
+        "   <div class=\"teaching-three-representations\">",
+        "-    <article><h3>Macroscopic evidence</h3><p>What would a sensor, sample analysis, or pressure measurement show as composition changes? Measurements make a change observable, but the explanation requires an account of the underlying particles and processes.</p></article>",
+        "-    <article><h3>Particulate reasoning</h3><p>Forward and reverse reactions continue to occur. At equilibrium their rates are equal, even though nitrogen, hydrogen, and ammonia can remain present in different amounts. “Equilibrium” does not imply equal quantities of each gas.</p></article>",
+        "-    <article><h3>Symbolic reasoning</h3><p>Q<sub>p</sub> is constructed from the current partial pressures. K<sub>p</sub> applies at a specified temperature. Comparing them gives the net direction required to approach equilibrium under those conditions.</p></article>",
+        "+    <article><p class=\"meta\">Observable or measurable</p><h3>Macroscopic evidence</h3><p>What would a sensor, sample analysis, or pressure measurement show as composition changes? Measurements make a change observable, but the explanation requires an account of the underlying particles and processes.</p></article>",
+        "+    <article><p class=\"meta\">Molecules and interactions</p><h3>Particulate reasoning</h3><p>Forward and reverse reactions continue to occur. At equilibrium their rates are equal, even though nitrogen, hydrogen, and ammonia can remain present in different amounts. “Equilibrium” does not imply equal quantities of each gas.</p></article>",
+        "+    <article><p class=\"meta\">Equations and comparison</p><h3>Symbolic reasoning</h3><p>Q<sub>p</sub> is constructed from the current partial pressures. K<sub>p</sub> applies at a specified temperature. Comparing them gives the net direction required to approach equilibrium under those conditions.</p></article>"
       ]
     },
     {
       "sourceDrift": [
         {
+          "category": "links",
+          "sourceModifiedSinceAudit": [
+            "teaching-ap-chemistry.html"
+          ]
+        },
+        {
+          "category": "external",
+          "sourceModifiedSinceAudit": [
+            "teaching-ap-chemistry.html"
+          ]
+        },
+        {
+          "category": "metadata",
+          "sourceModifiedSinceAudit": [
+            "teaching-ap-chemistry.html"
+          ]
+        },
+        {
+          "category": "reflow",
+          "sourceModifiedSinceAudit": [
+            "teaching-ap-chemistry.html"
+          ]
+        },
+        {
           "category": "engines",
           "sourceModifiedSinceAudit": [
+            "teaching-ap-chemistry.html",
             "teaching-ap-evolution.html"
+          ]
+        },
+        {
+          "category": "typography",
+          "sourceModifiedSinceAudit": [
+            "teaching-ap-chemistry.html"
+          ]
+        },
+        {
+          "category": "interactions",
+          "sourceModifiedSinceAudit": [
+            "teaching-ap-chemistry.html"
           ]
         }
       ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42562554142",
-  "run_sha": "5790dff00bf1ed254dc89c2a62275fe7f34a00e5",
+  "workflow_run_id": "42562635514",
+  "run_sha": "1cfc139e594b4106d9aed144cc953fb9419c02e5",
   "exit_code": "1"
 }
