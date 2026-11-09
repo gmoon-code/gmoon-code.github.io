@@ -1,6 +1,171 @@
 {
-  "error": "No summary produced",
-  "workflow_run_id": "42178430878",
-  "head_sha": "29347a0fbc3b180ed7baafb34b2e04beb4a189fc",
-  "exit_code": ""
+  "engines": {
+    "chromium": {
+      "available": true
+    },
+    "firefox": {
+      "available": true
+    },
+    "webkit": {
+      "available": true
+    }
+  },
+  "publicPages": 18,
+  "regularCount": 108,
+  "forcedCount": 18,
+  "unsupportedForced": 0,
+  "zoomProbeCount": 9,
+  "zoomObservedCount": 0,
+  "zoomResults": [
+    {
+      "engine": "chromium",
+      "page": "index.html",
+      "before": {
+        "innerWidth": 1280,
+        "devicePixelRatio": 1,
+        "visualScale": 1
+      },
+      "after": {
+        "innerWidth": 1280,
+        "devicePixelRatio": 1,
+        "visualScale": 1
+      },
+      "observableChange": false,
+      "conclusion": "No observable zoom change from headless keyboard shortcut; actual page zoom not verified"
+    },
+    {
+      "engine": "chromium",
+      "page": "research.html",
+      "before": {
+        "innerWidth": 1280,
+        "devicePixelRatio": 1,
+        "visualScale": 1
+      },
+      "after": {
+        "innerWidth": 1280,
+        "devicePixelRatio": 1,
+        "visualScale": 1
+      },
+      "observableChange": false,
+      "conclusion": "No observable zoom change from headless keyboard shortcut; actual page zoom not verified"
+    },
+    {
+      "engine": "chromium",
+      "page": "cv.html",
+      "before": {
+        "innerWidth": 1280,
+        "devicePixelRatio": 1,
+        "visualScale": 1
+      },
+      "after": {
+        "innerWidth": 1280,
+        "devicePixelRatio": 1,
+        "visualScale": 1
+      },
+      "observableChange": false,
+      "conclusion": "No observable zoom change from headless keyboard shortcut; actual page zoom not verified"
+    },
+    {
+      "engine": "firefox",
+      "page": "index.html",
+      "before": {
+        "innerWidth": 1280,
+        "devicePixelRatio": 1,
+        "visualScale": 1
+      },
+      "after": {
+        "innerWidth": 1280,
+        "devicePixelRatio": 1,
+        "visualScale": 1
+      },
+      "observableChange": false,
+      "conclusion": "No observable zoom change from headless keyboard shortcut; actual page zoom not verified"
+    },
+    {
+      "engine": "firefox",
+      "page": "research.html",
+      "before": {
+        "innerWidth": 1280,
+        "devicePixelRatio": 1,
+        "visualScale": 1
+      },
+      "after": {
+        "innerWidth": 1280,
+        "devicePixelRatio": 1,
+        "visualScale": 1
+      },
+      "observableChange": false,
+      "conclusion": "No observable zoom change from headless keyboard shortcut; actual page zoom not verified"
+    },
+    {
+      "engine": "firefox",
+      "page": "cv.html",
+      "before": {
+        "innerWidth": 1280,
+        "devicePixelRatio": 1,
+        "visualScale": 1
+      },
+      "after": {
+        "innerWidth": 1280,
+        "devicePixelRatio": 1,
+        "visualScale": 1
+      },
+      "observableChange": false,
+      "conclusion": "No observable zoom change from headless keyboard shortcut; actual page zoom not verified"
+    },
+    {
+      "engine": "webkit",
+      "page": "index.html",
+      "before": {
+        "innerWidth": 1280,
+        "devicePixelRatio": 1,
+        "visualScale": 1
+      },
+      "after": {
+        "innerWidth": 1280,
+        "devicePixelRatio": 1,
+        "visualScale": 1
+      },
+      "observableChange": false,
+      "conclusion": "No observable zoom change from headless keyboard shortcut; actual page zoom not verified"
+    },
+    {
+      "engine": "webkit",
+      "page": "research.html",
+      "before": {
+        "innerWidth": 1280,
+        "devicePixelRatio": 1,
+        "visualScale": 1
+      },
+      "after": {
+        "innerWidth": 1280,
+        "devicePixelRatio": 1,
+        "visualScale": 1
+      },
+      "observableChange": false,
+      "conclusion": "No observable zoom change from headless keyboard shortcut; actual page zoom not verified"
+    },
+    {
+      "engine": "webkit",
+      "page": "cv.html",
+      "before": {
+        "innerWidth": 1280,
+        "devicePixelRatio": 1,
+        "visualScale": 1
+      },
+      "after": {
+        "innerWidth": 1280,
+        "devicePixelRatio": 1,
+        "visualScale": 1
+      },
+      "observableChange": false,
+      "conclusion": "No observable zoom change from headless keyboard shortcut; actual page zoom not verified"
+    }
+  ],
+  "failedCount": 0,
+  "failures": [],
+  "limitations": "Playwright Linux Chromium Firefox WebKit are not physical Safari/Firefox devices. Keyboard zoom shortcuts without a measured viewport/scale change do not verify real browser Ctrl-plus. Forced-colour emulation and automatic focus checks do not constitute WCAG certification or screen-reader testing.",
+  "workflow_run_id": "42539037170",
+  "head_sha": "e408b9b86c8b0194a63d1a9a6e3810209763ed74",
+  "exit_code": "0"
 }
