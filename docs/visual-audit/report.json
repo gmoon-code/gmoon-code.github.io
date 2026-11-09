@@ -1,5 +1,5 @@
 {
-  "createdAt": "2026-11-09T04:39:48.709Z",
+  "createdAt": "2026-11-09T04:48:00.811Z",
   "errors": [],
   "results": [
     {
@@ -700,7 +700,7 @@
         "viewport": 1440,
         "docWidth": 1440,
         "bodyWidth": 1440,
-        "pageHeight": 5812,
+        "pageHeight": 5719,
         "figures": [
           {
             "index": 1,
@@ -761,7 +761,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 1120,
-            "rectHeight": 5613,
+            "rectHeight": 5520,
             "hidden": false
           },
           {
@@ -770,7 +770,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 1440,
-            "rectHeight": 5812,
+            "rectHeight": 5719,
             "hidden": false
           },
           {
@@ -779,7 +779,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 1440,
-            "rectHeight": 5812,
+            "rectHeight": 5719,
             "hidden": false
           }
         ]
@@ -801,7 +801,7 @@
         "viewport": 768,
         "docWidth": 768,
         "bodyWidth": 768,
-        "pageHeight": 6590,
+        "pageHeight": 6587,
         "figures": [
           {
             "index": 1,
@@ -862,7 +862,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 712,
-            "rectHeight": 6358,
+            "rectHeight": 6355,
             "hidden": false
           },
           {
@@ -871,7 +871,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 768,
-            "rectHeight": 6590,
+            "rectHeight": 6587,
             "hidden": false
           },
           {
@@ -880,7 +880,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 768,
-            "rectHeight": 6590,
+            "rectHeight": 6587,
             "hidden": false
           }
         ]
@@ -900,7 +900,7 @@
         "viewport": 390,
         "docWidth": 390,
         "bodyWidth": 390,
-        "pageHeight": 9598,
+        "pageHeight": 9595,
         "figures": [
           {
             "index": 1,
@@ -961,7 +961,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 362,
-            "rectHeight": 9231,
+            "rectHeight": 9228,
             "hidden": false
           },
           {
@@ -970,7 +970,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 390,
-            "rectHeight": 9598,
+            "rectHeight": 9595,
             "hidden": false
           },
           {
@@ -979,7 +979,7 @@
             "display": "block",
             "visibility": "visible",
             "rectWidth": 390,
-            "rectHeight": 9598,
+            "rectHeight": 9595,
             "hidden": false
           }
         ]
