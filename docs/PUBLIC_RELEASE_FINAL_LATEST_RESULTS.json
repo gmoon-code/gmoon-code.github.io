@@ -1,12 +1,12 @@
 {
-  "sourceHead": "0853128871613db1904df8bc99e804819f5ff0e6",
+  "sourceHead": "40403cc9b3ca741467ec62c60f94349c4d5ca5ac",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-085312887161",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-40403cc9b3ca",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -17,7 +17,9 @@
       "run": "42563720083",
       "head_sha": "565b2cf93fc31a93864087443e74855d9e57ad24",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "story-method.html"
+      ],
       "failureCounts": {
         "problems": 0
       }
@@ -27,7 +29,9 @@
       "run": "42563720121",
       "head_sha": "565b2cf93fc31a93864087443e74855d9e57ad24",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "story-method.html"
+      ],
       "failureCounts": {
         "issues": 40
       },
@@ -90,8 +94,8 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "42562925707",
-      "head_sha": "dca8019b4cd645580024fae7a50a39caed72d488",
+      "run": "42563719962",
+      "head_sha": "565b2cf93fc31a93864087443e74855d9e57ad24",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "story-method.html"
@@ -109,6 +113,18 @@
     }
   },
   "sourceDriftSinceAudits": [
+    {
+      "category": "links",
+      "sourceModifiedSinceAudit": [
+        "story-method.html"
+      ]
+    },
+    {
+      "category": "external",
+      "sourceModifiedSinceAudit": [
+        "story-method.html"
+      ]
+    },
     {
       "category": "reflow",
       "sourceModifiedSinceAudit": [
@@ -144,19 +160,36 @@
       "firstDiff": [
         "--- source\n",
         "+++ deployed\n",
-        "@@ -12,3 +12,3 @@\n",
+        "@@ -12,4 +12,3 @@\n",
         "   <script src=\"site-previews.js?v=20261029-print-details\" defer=\"\"></script>",
-        "-<style id=\"moon-v2-live-layout\">@media (min-width:1025px){:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(2) > div:nth-of-type(4) > p:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:1045px!important;height:117px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}}</style></head>",
+        "-<style id=\"moon-v2-live-layout\">@media (min-width:1025px){:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(2) > div:nth-of-type(4) > p:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:1045px!important;height:117px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}}",
+        "-@media (min-width:1025px){:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(2) > figure:nth-of-type(1) > figcaption:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:1067px!important;height:47px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(6) > p:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:1029px!important;height:24px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}}</style></head>",
         "+</head>",
         " <body class=\"theme-blue\">",
-        "@@ -154,3 +154,2 @@\n",
+        "@@ -50,3 +49,3 @@\n",
+        "     <div class=\"story-scene-note\">",
+        "-      <p class=\"meta\">From Unit 1 Scientific Inquiry Lab Annex</p>",
+        "+      <p class=\"meta\">From Unit 1 · Scientific Inquiry Lab Annex</p>",
+        "       <h3>The Observation Window</h3>",
+        "@@ -155,3 +154,2 @@\n",
         " ",
-        "-",
-        " </body></html>"
+        "-"
       ]
     },
     {
       "sourceDrift": [
+        {
+          "category": "links",
+          "sourceModifiedSinceAudit": [
+            "story-method.html"
+          ]
+        },
+        {
+          "category": "external",
+          "sourceModifiedSinceAudit": [
+            "story-method.html"
+          ]
+        },
         {
           "category": "reflow",
           "sourceModifiedSinceAudit": [
@@ -185,7 +218,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42563760231",
-  "run_sha": "0853128871613db1904df8bc99e804819f5ff0e6",
+  "workflow_run_id": "42563793578",
+  "run_sha": "40403cc9b3ca741467ec62c60f94349c4d5ca5ac",
   "exit_code": "1"
 }
