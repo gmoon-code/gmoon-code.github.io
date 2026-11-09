@@ -2,17 +2,17 @@
   "pages_scanned": 19,
   "distinct_destinations": 110,
   "counts": {
-    "reachable": 70,
-    "unverified": 40
+    "reachable": 68,
+    "unverified": 42
   },
   "by_category": {
     "external": {
-      "reachable": 50,
-      "unverified": 1
+      "reachable": 49,
+      "unverified": 2
     },
     "scholarly-identifier": {
-      "unverified": 39,
-      "reachable": 17
+      "unverified": 40,
+      "reachable": 16
     },
     "separate-site-application": {
       "reachable": 3
@@ -686,6 +686,25 @@
       "warnings": []
     },
     {
+      "url": "https://doi.org/10.22318/icls2023.243024",
+      "status": "unverified",
+      "category": "scholarly-identifier",
+      "pages": [
+        "research.html"
+      ],
+      "head": {
+        "code": 500,
+        "finalUrl": "https://repository.isls.org/handle/1/9855",
+        "error": "Internal Server Error"
+      },
+      "get": {
+        "code": 500,
+        "finalUrl": "https://repository.isls.org/handle/1/9855",
+        "error": "Internal Server Error"
+      },
+      "warnings": []
+    },
+    {
       "url": "https://doi.org/10.3102/0013189X20927363",
       "status": "unverified",
       "category": "scholarly-identifier",
@@ -780,6 +799,25 @@
         "error": "Forbidden"
       },
       "warnings": []
+    },
+    {
+      "url": "https://repository.isls.org/handle/1/10256",
+      "status": "unverified",
+      "category": "external",
+      "pages": [
+        "research.html"
+      ],
+      "head": {
+        "code": 500,
+        "finalUrl": "https://repository.isls.org/handle/1/10256",
+        "error": "Internal Server Error"
+      },
+      "get": {
+        "code": 500,
+        "finalUrl": "https://repository.isls.org/handle/1/10256",
+        "error": "Internal Server Error"
+      },
+      "warnings": []
     }
   ],
   "important_apps": [
@@ -801,76 +839,44 @@
   ],
   "limits": "HTTP availability is not content authenticity or DOI landing-page accuracy. 403, 429, DNS, SSL, and timeout results remain unverified.",
   "doi_registry": {
-    "checked": 39,
+    "checked": 40,
     "counts": {
-      "registered": 30,
-      "not-confirmed": 9
+      "not-confirmed": 8,
+      "registered": 32
     },
-    "secondary_index_matches": 9,
+    "secondary_index_matches": 8,
     "not_confirmed": [
       {
-        "url": "https://doi.org/10.1002/sce.21112",
-        "doi": "10.1002/sce.21112",
+        "url": "https://doi.org/10.1002/sce.20264",
+        "doi": "10.1002/sce.20264",
+        "pages": [
+          "teaching-ap-biology.html"
+        ],
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.20264",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Recognizing mechanistic reasoning in student scientific inquiry: A framework for discourse analysis developed from philosophy of science",
+        "indexedYear": 2008
+      },
+      {
+        "url": "https://doi.org/10.1002/sce.20392",
+        "doi": "10.1002/sce.20392",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21112",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.20392",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Examining Classroom Science Practice Communities: How Teachers and Students Negotiate Epistemic Agency and Learn Science‐as‐Practice",
-        "indexedYear": 2014
-      },
-      {
-        "url": "https://doi.org/10.1002/sce.21622",
-        "doi": "10.1002/sce.21622",
-        "pages": [
-          "research-scoping.html"
-        ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21622",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Scientific modeling and translanguaging: A multilingual and multimodal approach to support science learning and engagement",
-        "indexedYear": 2021
-      },
-      {
-        "url": "https://doi.org/10.1002/tea.21714",
-        "doi": "10.1002/tea.21714",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21714",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Science engagement as insight into the science identity work nurtured in community‐based science clubs",
-        "indexedYear": 2021
-      },
-      {
-        "url": "https://doi.org/10.1002/tea.21944",
-        "doi": "10.1002/tea.21944",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21944",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Asset and deficit discourses of student ideas in science formative assessment co‐design",
-        "indexedYear": 2024
+        "indexedTitle": "Cultural processes in science education: Supporting the navigation of multiple epistemologies",
+        "indexedYear": 2010
       },
       {
         "url": "https://doi.org/10.1073/pnas.0706627104",
@@ -889,52 +895,52 @@
         "indexedYear": 2007
       },
       {
-        "url": "https://doi.org/10.1080/03626784.2021.1947732",
-        "doi": "10.1080/03626784.2021.1947732",
+        "url": "https://doi.org/10.1080/03626784.2023.2200810",
+        "doi": "10.1080/03626784.2023.2200810",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/03626784.2021.1947732",
+        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/03626784.2023.2200810",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Getting dirty and coming clean: Sex education and the problem of expertise",
-        "indexedYear": 2021
+        "indexedTitle": "You don’t know me: Welcoming gender diversity in schools via an ethic of hospitality",
+        "indexedYear": 2023
       },
       {
-        "url": "https://doi.org/10.1080/09585176.2018.1481442",
-        "doi": "10.1080/09585176.2018.1481442",
+        "url": "https://doi.org/10.1207/S1532690XCI2004_1",
+        "doi": "10.1207/S1532690XCI2004_1",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://bera-journals.onlinelibrary.wiley.com/doi/10.1080/09585176.2018.1481442",
+        "publisherLanding": "https://www.tandfonline.com/doi/abs/10.1207/S1532690XCI2004_1",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Supporting teacher responsiveness in assessment for learning through disciplined noticing",
-        "indexedYear": 2018
+        "indexedTitle": "Guiding Principles for Fostering Productive Disciplinary Engagement: Explaining an Emergent Argument in a Community of Learners Classroom",
+        "indexedYear": 2002
       },
       {
-        "url": "https://doi.org/10.1187/cbe.23-08-0157",
-        "doi": "10.1187/cbe.23-08-0157",
+        "url": "https://doi.org/10.22318/icls2023.243024",
+        "doi": "10.22318/icls2023.243024",
         "pages": [
-          "teaching-ap-biology.html"
+          "research.html"
         ],
-        "publisherLanding": "https://www.lifescied.org/doi/10.1187/cbe.23-08-0157",
-        "publisherResult": 403,
+        "publisherLanding": "https://repository.isls.org/handle/1/9855",
+        "publisherResult": 500,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Examining and Supporting Mechanistic Explanations Across Chemistry and Biology Courses",
-        "indexedYear": 2024
+        "indexedTitle": "Supporting Students’ Epistemic Agency to Revise a Class Criteria List for Scientific Models",
+        "indexedYear": 2023
       },
       {
         "url": "https://doi.org/10.3102/0013189X231206172",
@@ -951,12 +957,28 @@
         "secondaryIndex": "OpenAlex",
         "indexedTitle": "Language Views for Scientific Sensemaking Matter: A Synthesis of Research on Multilingual Students’ Experiences with Science Practices Through a Translanguaging Lens",
         "indexedYear": 2023
+      },
+      {
+        "url": "https://doi.org/10.3102/0034654314558490",
+        "doi": "10.3102/0034654314558490",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://journals.sagepub.com/doi/10.3102/0034654314558490",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Representing Student Argumentation as Functionally Emergent From Scientific Activity",
+        "indexedYear": 2014
       }
     ],
     "unresolved": [],
     "limitation": "Crossref/DataCite registration is distinct from publisher access, correct article metadata or article availability. OpenAlex is independent secondary corroboration, not registration proof."
   },
-  "workflow_run_id": "42563720121",
-  "head_sha": "565b2cf93fc31a93864087443e74855d9e57ad24",
+  "workflow_run_id": "42563793422",
+  "head_sha": "40403cc9b3ca741467ec62c60f94349c4d5ca5ac",
   "audit_exit_code": "0"
 }
