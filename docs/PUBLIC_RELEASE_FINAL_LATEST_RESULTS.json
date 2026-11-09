@@ -1,12 +1,12 @@
 {
-  "sourceHead": "176adc54c2f0de57d74b6bf25ad4eab121df5b7b",
+  "sourceHead": "94bca90c0a48de0fe7881418900e22529e438723",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 21,
   "httpErrors": 3,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-176adc54c2f0",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-94bca90c0a48",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -14,13 +14,11 @@
   "auditEvidence": {
     "links": {
       "report": "docs/PUBLIC_LINKGRAPH_LATEST_RESULTS.json",
-      "run": "42562390031",
-      "head_sha": "c27e3af067e7268bfb88f2e4cf8cbe47e3bd2db8",
+      "run": "42562789563",
+      "head_sha": "5c2ca30f508da0f4908b44ca7d2be280a5092d6c",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "research-methods-studio.html",
-        "teaching-ap-chemistry.html",
-        "teaching-ap-evolution.html"
+        "research-methods-studio.html"
       ],
       "failureCounts": {
         "problems": 0
@@ -28,13 +26,10 @@
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "42562635492",
-      "head_sha": "1cfc139e594b4106d9aed144cc953fb9419c02e5",
+      "run": "42562925687",
+      "head_sha": "dca8019b4cd645580024fae7a50a39caed72d488",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research-methods-studio.html",
-        "teaching-ap-evolution.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "issues": 42
       },
@@ -119,16 +114,7 @@
     {
       "category": "links",
       "sourceModifiedSinceAudit": [
-        "research-methods-studio.html",
-        "teaching-ap-chemistry.html",
-        "teaching-ap-evolution.html"
-      ]
-    },
-    {
-      "category": "external",
-      "sourceModifiedSinceAudit": [
-        "research-methods-studio.html",
-        "teaching-ap-evolution.html"
+        "research-methods-studio.html"
       ]
     },
     {
@@ -227,16 +213,7 @@
         {
           "category": "links",
           "sourceModifiedSinceAudit": [
-            "research-methods-studio.html",
-            "teaching-ap-chemistry.html",
-            "teaching-ap-evolution.html"
-          ]
-        },
-        {
-          "category": "external",
-          "sourceModifiedSinceAudit": [
-            "research-methods-studio.html",
-            "teaching-ap-evolution.html"
+            "research-methods-studio.html"
           ]
         },
         {
@@ -267,7 +244,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42563009742",
-  "run_sha": "176adc54c2f0de57d74b6bf25ad4eab121df5b7b",
+  "workflow_run_id": "42563057162",
+  "run_sha": "94bca90c0a48de0fe7881418900e22529e438723",
   "exit_code": "1"
 }
