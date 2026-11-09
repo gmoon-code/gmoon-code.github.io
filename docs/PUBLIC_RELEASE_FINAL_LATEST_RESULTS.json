@@ -1,12 +1,12 @@
 {
-  "sourceHead": "0bc257fd4e24bcb59ecd4c7e8f8f6984407c29d2",
+  "sourceHead": "8f42bfb8c0ae28069a2d173432a715cbc427b74c",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
-  "verifiedExactMatches": 23,
-  "httpErrors": 1,
+  "verifiedExactMatches": 24,
+  "httpErrors": 0,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-0bc257fd4e24",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-8f42bfb8c0ae",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -63,12 +63,10 @@
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "42563720055",
-      "head_sha": "565b2cf93fc31a93864087443e74855d9e57ad24",
+      "run": "42563793580",
+      "head_sha": "40403cc9b3ca741467ec62c60f94349c4d5ca5ac",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "story-method.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0
       }
@@ -102,53 +100,11 @@
       "note": "U1 route audit documents successful run 40825886279; legacy utility machine report refers to an early missing-script failure. Do not treat it as latest successful evidence."
     }
   },
-  "sourceDriftSinceAudits": [
-    {
-      "category": "engines",
-      "sourceModifiedSinceAudit": [
-        "story-method.html"
-      ]
-    }
-  ],
-  "pass": false,
-  "errors": [
-    {
-      "path": "story-method.html",
-      "errors": [
-        "deployed bytes differ from checked-out production source"
-      ],
-      "firstDiff": [
-        "--- source\n",
-        "+++ deployed\n",
-        "@@ -12,4 +12,3 @@\n",
-        "   <script src=\"site-previews.js?v=20261029-print-details\" defer=\"\"></script>",
-        "-<style id=\"moon-v2-live-layout\">@media (min-width:1025px){:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(2) > div:nth-of-type(4) > p:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:1045px!important;height:117px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}}",
-        "-@media (min-width:1025px){:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(2) > figure:nth-of-type(1) > figcaption:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:1067px!important;height:47px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(6) > p:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:1029px!important;height:24px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}}</style></head>",
-        "+</head>",
-        " <body class=\"theme-blue\">",
-        "@@ -50,3 +49,3 @@\n",
-        "     <div class=\"story-scene-note\">",
-        "-      <p class=\"meta\">From Unit 1 Scientific Inquiry Lab Annex</p>",
-        "+      <p class=\"meta\">From Unit 1 · Scientific Inquiry Lab Annex</p>",
-        "       <h3>The Observation Window</h3>",
-        "@@ -155,3 +154,2 @@\n",
-        " ",
-        "-"
-      ]
-    },
-    {
-      "sourceDrift": [
-        {
-          "category": "engines",
-          "sourceModifiedSinceAudit": [
-            "story-method.html"
-          ]
-        }
-      ]
-    }
-  ],
+  "sourceDriftSinceAudits": [],
+  "pass": true,
+  "errors": [],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42563936321",
-  "run_sha": "0bc257fd4e24bcb59ecd4c7e8f8f6984407c29d2",
-  "exit_code": "1"
+  "workflow_run_id": "42564074144",
+  "run_sha": "8f42bfb8c0ae28069a2d173432a715cbc427b74c",
+  "exit_code": "0"
 }
