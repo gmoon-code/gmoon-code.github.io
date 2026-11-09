@@ -1,12 +1,12 @@
 {
-  "sourceHead": "40403cc9b3ca741467ec62c60f94349c4d5ca5ac",
+  "sourceHead": "2265a0d2f14cbbd0b170f98a4c1990cc1c26c1f2",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-40403cc9b3ca",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-2265a0d2f14c",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -14,12 +14,10 @@
   "auditEvidence": {
     "links": {
       "report": "docs/PUBLIC_LINKGRAPH_LATEST_RESULTS.json",
-      "run": "42563720083",
-      "head_sha": "565b2cf93fc31a93864087443e74855d9e57ad24",
+      "run": "42563793376",
+      "head_sha": "40403cc9b3ca741467ec62c60f94349c4d5ca5ac",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "story-method.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "problems": 0
       }
@@ -114,12 +112,6 @@
   },
   "sourceDriftSinceAudits": [
     {
-      "category": "links",
-      "sourceModifiedSinceAudit": [
-        "story-method.html"
-      ]
-    },
-    {
       "category": "external",
       "sourceModifiedSinceAudit": [
         "story-method.html"
@@ -179,12 +171,6 @@
     {
       "sourceDrift": [
         {
-          "category": "links",
-          "sourceModifiedSinceAudit": [
-            "story-method.html"
-          ]
-        },
-        {
           "category": "external",
           "sourceModifiedSinceAudit": [
             "story-method.html"
@@ -218,7 +204,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42563793578",
-  "run_sha": "40403cc9b3ca741467ec62c60f94349c4d5ca5ac",
+  "workflow_run_id": "42563813671",
+  "run_sha": "2265a0d2f14cbbd0b170f98a4c1990cc1c26c1f2",
   "exit_code": "1"
 }
