@@ -1,12 +1,12 @@
 {
-  "sourceHead": "93b7bf44ebc06c2324c075374e085803c3bf9487",
+  "sourceHead": "9461c3975b4adbcbef65f154634341a4639a503a",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-93b7bf44ebc0",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-9461c3975b4a",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -24,18 +24,16 @@
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "42178430896",
-      "head_sha": "29347a0fbc3b180ed7baafb34b2e04beb4a189fc",
+      "run": "42539037219",
+      "head_sha": "e408b9b86c8b0194a63d1a9a6e3810209763ed74",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "teaching.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
-        "issues": 40
+        "issues": 42
       },
       "counts": {
-        "reachable": 70,
-        "unverified": 40
+        "reachable": 68,
+        "unverified": 42
       }
     },
     "metadata": {
@@ -112,12 +110,6 @@
   },
   "sourceDriftSinceAudits": [
     {
-      "category": "external",
-      "sourceModifiedSinceAudit": [
-        "teaching.html"
-      ]
-    },
-    {
       "category": "reflow",
       "sourceModifiedSinceAudit": [
         "teaching.html"
@@ -163,12 +155,6 @@
     {
       "sourceDrift": [
         {
-          "category": "external",
-          "sourceModifiedSinceAudit": [
-            "teaching.html"
-          ]
-        },
-        {
           "category": "reflow",
           "sourceModifiedSinceAudit": [
             "teaching.html"
@@ -201,7 +187,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42539062836",
-  "run_sha": "93b7bf44ebc06c2324c075374e085803c3bf9487",
+  "workflow_run_id": "42539102498",
+  "run_sha": "9461c3975b4adbcbef65f154634341a4639a503a",
   "exit_code": "1"
 }
