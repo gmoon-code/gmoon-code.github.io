@@ -841,112 +841,193 @@
   "doi_registry": {
     "checked": 40,
     "counts": {
-      "not-confirmed": 6,
-      "registered": 34
+      "registered": 29,
+      "not-confirmed": 11
     },
-    "secondary_index_matches": 6,
+    "secondary_index_matches": 11,
     "not_confirmed": [
       {
-        "url": "https://doi.org/10.1002/sce.20264",
-        "doi": "10.1002/sce.20264",
-        "pages": [
-          "teaching-ap-biology.html"
-        ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.20264",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Recognizing mechanistic reasoning in student scientific inquiry: A framework for discourse analysis developed from philosophy of science",
-        "indexedYear": 2008
-      },
-      {
-        "url": "https://doi.org/10.1002/sce.21791",
-        "doi": "10.1002/sce.21791",
+        "url": "https://doi.org/10.1002/sce.21099",
+        "doi": "10.1002/sce.21099",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21791",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21099",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Science education with multilingual learners: Equity as access and equity as transformation",
+        "indexedTitle": "An Integrative Framework for the Analysis of Multiple and Multimodal Representations for Meaning‐Making in Science Education",
+        "indexedYear": 2014
+      },
+      {
+        "url": "https://doi.org/10.1002/sce.21704",
+        "doi": "10.1002/sce.21704",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21704",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Four years of collaboration in a professional learning community: Shifting toward supporting students' epistemic practices",
+        "indexedYear": 2022
+      },
+      {
+        "url": "https://doi.org/10.1002/tea.21257",
+        "doi": "10.1002/tea.21257",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21257",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Epistemologies in practice: Making scientific practices meaningful for students",
+        "indexedYear": 2015
+      },
+      {
+        "url": "https://doi.org/10.1002/tea.21944",
+        "doi": "10.1002/tea.21944",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21944",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Asset and deficit discourses of student ideas in science formative assessment co‐design",
+        "indexedYear": 2024
+      },
+      {
+        "url": "https://doi.org/10.1002/tea.70072",
+        "doi": "10.1002/tea.70072",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.70072",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Students' Construction, Evaluation, and Revision of Scientific Models Through Multimodal Representations",
+        "indexedYear": 2026
+      },
+      {
+        "url": "https://doi.org/10.1080/03626784.2023.2200810",
+        "doi": "10.1080/03626784.2023.2200810",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/03626784.2023.2200810",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "You don’t know me: Welcoming gender diversity in schools via an ethic of hospitality",
         "indexedYear": 2023
       },
       {
-        "url": "https://doi.org/10.1002/sce.21938",
-        "doi": "10.1002/sce.21938",
+        "url": "https://doi.org/10.1080/10508400903452884",
+        "doi": "10.1080/10508400903452884",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21938",
+        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/10508400903452884",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "“That's Just Gonna Make Them Upset”: Youth Authoring Emerging Epistemic Ideals Through Rightful Presence",
-        "indexedYear": 2025
+        "indexedTitle": "Conducting Video Research in the Learning Sciences: Guidance on Selection, Analysis, Technology, and Ethics",
+        "indexedYear": 2010
       },
       {
-        "url": "https://doi.org/10.1002/tea.20237",
-        "doi": "10.1002/tea.20237",
+        "url": "https://doi.org/10.1080/15265161.2012.680533",
+        "doi": "10.1080/15265161.2012.680533",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.20237",
+        "publisherLanding": "https://www.tandfonline.com/doi/abs/10.1080/15265161.2012.680533",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Understanding the science experiences of successful women of color: Science identity as an analytic lens",
-        "indexedYear": 2007
-      },
-      {
-        "url": "https://doi.org/10.1111/j.1365-2729.1991.tb00230.x",
-        "doi": "10.1111/j.1365-2729.1991.tb00230.x",
-        "pages": [
-          "teaching-ap-chemistry.html"
-        ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1111/j.1365-2729.1991.tb00230.x",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Why is science difficult to learn? Things are seldom what they seem",
-        "indexedYear": 1991
-      },
-      {
-        "url": "https://doi.org/10.1159/000345322",
-        "doi": "10.1159/000345322",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://karger.com/article/doi/10.1159/000345322",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Desettling Expectations in Science Education",
+        "indexedTitle": "Out of Bounds? A Critique of the New Policies on Hyperandrogenism in Elite Female Athletes",
         "indexedYear": 2012
+      },
+      {
+        "url": "https://doi.org/10.1080/20004508.2026.2641841",
+        "doi": "10.1080/20004508.2026.2641841",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/20004508.2026.2641841",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Autonomy, collaboration, and community: middle school students’ first experiences with student-directed inquiry",
+        "indexedYear": 2026
+      },
+      {
+        "url": "https://doi.org/10.3102/0013189X20927363",
+        "doi": "10.3102/0013189X20927363",
+        "pages": [
+          "research.html",
+          "writing-biological-classification.html"
+        ],
+        "publisherLanding": "https://journals.sagepub.com/doi/10.3102/0013189X20927363",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Beyond Equity as Inclusion: A Framework of “Rightful Presence” for Guiding Justice-Oriented Studies in Teaching and Learning",
+        "indexedYear": 2020
+      },
+      {
+        "url": "https://doi.org/10.3102/0013189X231206172",
+        "doi": "10.3102/0013189X231206172",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://journals.sagepub.com/doi/10.3102/0013189X231206172",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Language Views for Scientific Sensemaking Matter: A Synthesis of Research on Multilingual Students’ Experiences with Science Practices Through a Translanguaging Lens",
+        "indexedYear": 2023
       }
     ],
     "unresolved": [],
     "limitation": "Crossref/DataCite registration is distinct from publisher access, correct article metadata or article availability. OpenAlex is independent secondary corroboration, not registration proof."
   },
-  "workflow_run_id": "42562635492",
-  "head_sha": "1cfc139e594b4106d9aed144cc953fb9419c02e5",
+  "workflow_run_id": "42562925687",
+  "head_sha": "dca8019b4cd645580024fae7a50a39caed72d488",
   "audit_exit_code": "0"
 }
