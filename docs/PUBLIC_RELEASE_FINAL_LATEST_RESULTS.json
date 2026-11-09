@@ -1,12 +1,12 @@
 {
-  "sourceHead": "73b67256ed8a7a9bab414cd58bf9ecded942407d",
+  "sourceHead": "5c2ca30f508da0f4908b44ca7d2be280a5092d6c",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
-  "verifiedExactMatches": 22,
-  "httpErrors": 2,
+  "verifiedExactMatches": 21,
+  "httpErrors": 3,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-73b67256ed8a",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-5c2ca30f508d",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -18,6 +18,7 @@
       "head_sha": "c27e3af067e7268bfb88f2e4cf8cbe47e3bd2db8",
       "exit": "0",
       "sourceModifiedSinceAudit": [
+        "research-methods-studio.html",
         "teaching-ap-chemistry.html",
         "teaching-ap-evolution.html"
       ],
@@ -31,6 +32,7 @@
       "head_sha": "1cfc139e594b4106d9aed144cc953fb9419c02e5",
       "exit": "0",
       "sourceModifiedSinceAudit": [
+        "research-methods-studio.html",
         "teaching-ap-evolution.html"
       ],
       "failureCounts": {
@@ -43,12 +45,10 @@
     },
     "metadata": {
       "report": "docs/RESEARCH_METADATA_LATEST_RESULTS.json",
-      "run": "42562635542",
-      "head_sha": "1cfc139e594b4106d9aed144cc953fb9419c02e5",
+      "run": "42562662228",
+      "head_sha": "34f4df9d678dfa69d85eee45e594eeb8bab2a71d",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "teaching-ap-evolution.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "unverified": 0
       },
@@ -60,11 +60,11 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "42562390133",
-      "head_sha": "c27e3af067e7268bfb88f2e4cf8cbe47e3bd2db8",
+      "run": "42562635589",
+      "head_sha": "1cfc139e594b4106d9aed144cc953fb9419c02e5",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-chemistry.html",
+        "research-methods-studio.html",
         "teaching-ap-evolution.html"
       ],
       "failureCounts": {
@@ -77,6 +77,7 @@
       "head_sha": "c27e3af067e7268bfb88f2e4cf8cbe47e3bd2db8",
       "exit": "0",
       "sourceModifiedSinceAudit": [
+        "research-methods-studio.html",
         "teaching-ap-chemistry.html",
         "teaching-ap-evolution.html"
       ],
@@ -86,11 +87,11 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "42562390079",
-      "head_sha": "c27e3af067e7268bfb88f2e4cf8cbe47e3bd2db8",
+      "run": "42562635531",
+      "head_sha": "1cfc139e594b4106d9aed144cc953fb9419c02e5",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-chemistry.html",
+        "research-methods-studio.html",
         "teaching-ap-evolution.html"
       ],
       "failureCounts": {
@@ -100,11 +101,11 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "42562390034",
-      "head_sha": "c27e3af067e7268bfb88f2e4cf8cbe47e3bd2db8",
+      "run": "42562635606",
+      "head_sha": "1cfc139e594b4106d9aed144cc953fb9419c02e5",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-chemistry.html",
+        "research-methods-studio.html",
         "teaching-ap-evolution.html"
       ],
       "failureCounts": {
@@ -123,6 +124,7 @@
     {
       "category": "links",
       "sourceModifiedSinceAudit": [
+        "research-methods-studio.html",
         "teaching-ap-chemistry.html",
         "teaching-ap-evolution.html"
       ]
@@ -130,25 +132,21 @@
     {
       "category": "external",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-evolution.html"
-      ]
-    },
-    {
-      "category": "metadata",
-      "sourceModifiedSinceAudit": [
+        "research-methods-studio.html",
         "teaching-ap-evolution.html"
       ]
     },
     {
       "category": "reflow",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-chemistry.html",
+        "research-methods-studio.html",
         "teaching-ap-evolution.html"
       ]
     },
     {
       "category": "engines",
       "sourceModifiedSinceAudit": [
+        "research-methods-studio.html",
         "teaching-ap-chemistry.html",
         "teaching-ap-evolution.html"
       ]
@@ -156,20 +154,39 @@
     {
       "category": "typography",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-chemistry.html",
+        "research-methods-studio.html",
         "teaching-ap-evolution.html"
       ]
     },
     {
       "category": "interactions",
       "sourceModifiedSinceAudit": [
-        "teaching-ap-chemistry.html",
+        "research-methods-studio.html",
         "teaching-ap-evolution.html"
       ]
     }
   ],
   "pass": false,
   "errors": [
+    {
+      "path": "research-methods-studio.html",
+      "errors": [
+        "deployed bytes differ from checked-out production source"
+      ],
+      "firstDiff": [
+        "--- source\n",
+        "+++ deployed\n",
+        "@@ -12,3 +12,3 @@\n",
+        "   <script src=\"site-previews.js?v=20261029-print-details\" defer=\"\"></script>",
+        "-<style id=\"moon-v2-live-layout\">@media (min-width:1025px){:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(1) > p:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:738px!important;height:28px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(2) > p:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:737px!important;height:30px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(3) > p:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:948px!important;height:29px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(4) > p:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:922px!important;height:28px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(5) > p:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:942px!important;height:54px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}}</style></head>",
+        "+</head>",
+        " <body class=\"theme-blue\">",
+        "@@ -195,3 +195,2 @@\n",
+        " ",
+        "-",
+        " </body></html>"
+      ]
+    },
     {
       "path": "teaching-ap-chemistry.html",
       "errors": [
@@ -215,6 +232,7 @@
         {
           "category": "links",
           "sourceModifiedSinceAudit": [
+            "research-methods-studio.html",
             "teaching-ap-chemistry.html",
             "teaching-ap-evolution.html"
           ]
@@ -222,25 +240,21 @@
         {
           "category": "external",
           "sourceModifiedSinceAudit": [
-            "teaching-ap-evolution.html"
-          ]
-        },
-        {
-          "category": "metadata",
-          "sourceModifiedSinceAudit": [
+            "research-methods-studio.html",
             "teaching-ap-evolution.html"
           ]
         },
         {
           "category": "reflow",
           "sourceModifiedSinceAudit": [
-            "teaching-ap-chemistry.html",
+            "research-methods-studio.html",
             "teaching-ap-evolution.html"
           ]
         },
         {
           "category": "engines",
           "sourceModifiedSinceAudit": [
+            "research-methods-studio.html",
             "teaching-ap-chemistry.html",
             "teaching-ap-evolution.html"
           ]
@@ -248,14 +262,14 @@
         {
           "category": "typography",
           "sourceModifiedSinceAudit": [
-            "teaching-ap-chemistry.html",
+            "research-methods-studio.html",
             "teaching-ap-evolution.html"
           ]
         },
         {
           "category": "interactions",
           "sourceModifiedSinceAudit": [
-            "teaching-ap-chemistry.html",
+            "research-methods-studio.html",
             "teaching-ap-evolution.html"
           ]
         }
@@ -263,7 +277,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42562706436",
-  "run_sha": "73b67256ed8a7a9bab414cd58bf9ecded942407d",
+  "workflow_run_id": "42562789434",
+  "run_sha": "5c2ca30f508da0f4908b44ca7d2be280a5092d6c",
   "exit_code": "1"
 }
