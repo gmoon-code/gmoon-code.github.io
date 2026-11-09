@@ -2,17 +2,17 @@
   "pages_scanned": 19,
   "distinct_destinations": 110,
   "counts": {
-    "reachable": 70,
-    "unverified": 40
+    "reachable": 68,
+    "unverified": 42
   },
   "by_category": {
     "external": {
-      "reachable": 50,
-      "unverified": 1
+      "reachable": 49,
+      "unverified": 2
     },
     "scholarly-identifier": {
-      "unverified": 39,
-      "reachable": 17
+      "unverified": 40,
+      "reachable": 16
     },
     "separate-site-application": {
       "reachable": 3
@@ -686,6 +686,25 @@
       "warnings": []
     },
     {
+      "url": "https://doi.org/10.22318/icls2023.243024",
+      "status": "unverified",
+      "category": "scholarly-identifier",
+      "pages": [
+        "research.html"
+      ],
+      "head": {
+        "code": 500,
+        "finalUrl": "https://repository.isls.org/handle/1/9855",
+        "error": "Internal Server Error"
+      },
+      "get": {
+        "code": 500,
+        "finalUrl": "https://repository.isls.org/handle/1/9855",
+        "error": "Internal Server Error"
+      },
+      "warnings": []
+    },
+    {
       "url": "https://doi.org/10.3102/0013189X20927363",
       "status": "unverified",
       "category": "scholarly-identifier",
@@ -780,6 +799,25 @@
         "error": "Forbidden"
       },
       "warnings": []
+    },
+    {
+      "url": "https://repository.isls.org/handle/1/10256",
+      "status": "unverified",
+      "category": "external",
+      "pages": [
+        "research.html"
+      ],
+      "head": {
+        "code": 500,
+        "finalUrl": "https://repository.isls.org/handle/1/10256",
+        "error": "Internal Server Error"
+      },
+      "get": {
+        "code": 500,
+        "finalUrl": "https://repository.isls.org/handle/1/10256",
+        "error": "Internal Server Error"
+      },
+      "warnings": []
     }
   ],
   "important_apps": [
@@ -801,210 +839,82 @@
   ],
   "limits": "HTTP availability is not content authenticity or DOI landing-page accuracy. 403, 429, DNS, SSL, and timeout results remain unverified.",
   "doi_registry": {
-    "checked": 39,
+    "checked": 40,
     "counts": {
-      "registered": 27,
-      "not-confirmed": 12
+      "registered": 36,
+      "not-confirmed": 4
     },
-    "secondary_index_matches": 12,
+    "secondary_index_matches": 4,
     "not_confirmed": [
       {
-        "url": "https://doi.org/10.1002/sce.20392",
-        "doi": "10.1002/sce.20392",
+        "url": "https://doi.org/10.1002/sce.21791",
+        "doi": "10.1002/sce.21791",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.20392",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21791",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
-        "dataciteStatus": 404,
+        "dataciteStatus": null,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Cultural processes in science education: Supporting the navigation of multiple epistemologies",
-        "indexedYear": 2010
-      },
-      {
-        "url": "https://doi.org/10.1002/sce.21099",
-        "doi": "10.1002/sce.21099",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21099",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "An Integrative Framework for the Analysis of Multiple and Multimodal Representations for Meaning‐Making in Science Education",
-        "indexedYear": 2014
-      },
-      {
-        "url": "https://doi.org/10.1002/sce.21622",
-        "doi": "10.1002/sce.21622",
-        "pages": [
-          "research-scoping.html"
-        ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21622",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Scientific modeling and translanguaging: A multilingual and multimodal approach to support science learning and engagement",
-        "indexedYear": 2021
-      },
-      {
-        "url": "https://doi.org/10.1002/sce.21938",
-        "doi": "10.1002/sce.21938",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21938",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "“That's Just Gonna Make Them Upset”: Youth Authoring Emerging Epistemic Ideals Through Rightful Presence",
-        "indexedYear": 2025
-      },
-      {
-        "url": "https://doi.org/10.1002/tea.21714",
-        "doi": "10.1002/tea.21714",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21714",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Science engagement as insight into the science identity work nurtured in community‐based science clubs",
-        "indexedYear": 2021
-      },
-      {
-        "url": "https://doi.org/10.1002/tea.21944",
-        "doi": "10.1002/tea.21944",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21944",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Asset and deficit discourses of student ideas in science formative assessment co‐design",
-        "indexedYear": 2024
-      },
-      {
-        "url": "https://doi.org/10.1073/pnas.0706627104",
-        "doi": "10.1073/pnas.0706627104",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://pnas.org/doi/full/10.1073/pnas.0706627104",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Cultural mosaics and mental models of nature",
-        "indexedYear": 2007
-      },
-      {
-        "url": "https://doi.org/10.1080/09585176.2018.1481442",
-        "doi": "10.1080/09585176.2018.1481442",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://bera-journals.onlinelibrary.wiley.com/doi/10.1080/09585176.2018.1481442",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Supporting teacher responsiveness in assessment for learning through disciplined noticing",
-        "indexedYear": 2018
-      },
-      {
-        "url": "https://doi.org/10.1080/1046560X.2022.2155355",
-        "doi": "10.1080/1046560X.2022.2155355",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/1046560X.2022.2155355",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Teacher Noticing for Supporting Students’ Epistemic Agency in Science Sensemaking Discussions",
+        "indexedTitle": "Science education with multilingual learners: Equity as access and equity as transformation",
         "indexedYear": 2023
       },
       {
-        "url": "https://doi.org/10.1080/10508400903452884",
-        "doi": "10.1080/10508400903452884",
+        "url": "https://doi.org/10.1002/tea.20237",
+        "doi": "10.1002/tea.20237",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/10508400903452884",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.20237",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
-        "dataciteStatus": 404,
+        "dataciteStatus": 503,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Conducting Video Research in the Learning Sciences: Guidance on Selection, Analysis, Technology, and Ethics",
-        "indexedYear": 2010
+        "indexedTitle": "Understanding the science experiences of successful women of color: Science identity as an analytic lens",
+        "indexedYear": 2007
       },
       {
-        "url": "https://doi.org/10.1080/14790718.2021.1898619",
-        "doi": "10.1080/14790718.2021.1898619",
+        "url": "https://doi.org/10.1002/tea.21257",
+        "doi": "10.1002/tea.21257",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/14790718.2021.1898619",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21257",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
-        "dataciteStatus": 404,
+        "dataciteStatus": null,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Translanguaging as an agentive pedagogy for multilingual learners: affordances and constraints",
-        "indexedYear": 2021
+        "indexedTitle": "Epistemologies in practice: Making scientific practices meaningful for students",
+        "indexedYear": 2015
       },
       {
-        "url": "https://doi.org/10.1187/cbe.23-08-0157",
-        "doi": "10.1187/cbe.23-08-0157",
+        "url": "https://doi.org/10.3390/plants10081501",
+        "doi": "10.3390/plants10081501",
         "pages": [
           "teaching-ap-biology.html"
         ],
-        "publisherLanding": "https://www.lifescied.org/doi/10.1187/cbe.23-08-0157",
+        "publisherLanding": "https://www.mdpi.com/2223-7747/10/8/1501",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
-        "dataciteStatus": 404,
+        "dataciteStatus": null,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Examining and Supporting Mechanistic Explanations Across Chemistry and Biology Courses",
-        "indexedYear": 2024
+        "indexedTitle": "Binding Properties of Photosynthetic Herbicides with the QB Site of the D1 Protein in Plant Photosystem II: A Combined Functional and Molecular Docking Study",
+        "indexedYear": 2021
       }
     ],
     "unresolved": [],
     "limitation": "Crossref/DataCite registration is distinct from publisher access, correct article metadata or article availability. OpenAlex is independent secondary corroboration, not registration proof."
   },
-  "workflow_run_id": "42178430896",
-  "head_sha": "29347a0fbc3b180ed7baafb34b2e04beb4a189fc",
+  "workflow_run_id": "42539037219",
+  "head_sha": "e408b9b86c8b0194a63d1a9a6e3810209763ed74",
   "audit_exit_code": "0"
 }
