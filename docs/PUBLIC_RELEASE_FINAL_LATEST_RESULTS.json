@@ -1,12 +1,12 @@
 {
-  "sourceHead": "fb278dc99fa4c4c58eb1798dcc647e03646453db",
+  "sourceHead": "44ec8c9d08d678485956072d7650b321f0c8aba5",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-fb278dc99fa4",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-44ec8c9d08d6",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -65,8 +65,8 @@
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "42539258475",
-      "head_sha": "a99b12d4f34d5920b002bd7c8314158801d56d47",
+      "run": "42562343165",
+      "head_sha": "f5614482871ff4aebd2bdbdcc1570e53b4a19106",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "teaching-ap-evolution.html"
@@ -90,12 +90,10 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "42562343129",
-      "head_sha": "f5614482871ff4aebd2bdbdcc1570e53b4a19106",
+      "run": "42562390034",
+      "head_sha": "c27e3af067e7268bfb88f2e4cf8cbe47e3bd2db8",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "teaching-ap-evolution.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0,
         "axeViolations": 0
@@ -123,12 +121,6 @@
     },
     {
       "category": "typography",
-      "sourceModifiedSinceAudit": [
-        "teaching-ap-evolution.html"
-      ]
-    },
-    {
-      "category": "interactions",
       "sourceModifiedSinceAudit": [
         "teaching-ap-evolution.html"
       ]
@@ -179,18 +171,12 @@
           "sourceModifiedSinceAudit": [
             "teaching-ap-evolution.html"
           ]
-        },
-        {
-          "category": "interactions",
-          "sourceModifiedSinceAudit": [
-            "teaching-ap-evolution.html"
-          ]
         }
       ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42562475663",
-  "run_sha": "fb278dc99fa4c4c58eb1798dcc647e03646453db",
+  "workflow_run_id": "42562497574",
+  "run_sha": "44ec8c9d08d678485956072d7650b321f0c8aba5",
   "exit_code": "1"
 }
