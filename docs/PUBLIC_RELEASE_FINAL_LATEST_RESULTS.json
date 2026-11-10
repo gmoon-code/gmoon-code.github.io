@@ -1,12 +1,12 @@
 {
-  "sourceHead": "52975a43360d5a73f1259a1e4275ec36b7c4b240",
+  "sourceHead": "d7e3600a0338d4af8a60b7b5f764326f62d92edf",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-52975a43360d",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-d7e3600a0338",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -92,12 +92,10 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "42744933543",
-      "head_sha": "abc134a1c6c49e741da0b655273bb8bf807a1b55",
+      "run": "42746199387",
+      "head_sha": "a6b17afbb17ff27122951ba38f4f7e3a46fbbcd5",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0,
         "axeViolations": 0
@@ -131,12 +129,6 @@
     },
     {
       "category": "typography",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ]
-    },
-    {
-      "category": "interactions",
       "sourceModifiedSinceAudit": [
         "research.html"
       ]
@@ -191,18 +183,12 @@
           "sourceModifiedSinceAudit": [
             "research.html"
           ]
-        },
-        {
-          "category": "interactions",
-          "sourceModifiedSinceAudit": [
-            "research.html"
-          ]
         }
       ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42746246740",
-  "run_sha": "52975a43360d5a73f1259a1e4275ec36b7c4b240",
+  "workflow_run_id": "42746293924",
+  "run_sha": "d7e3600a0338d4af8a60b7b5f764326f62d92edf",
   "exit_code": "1"
 }
