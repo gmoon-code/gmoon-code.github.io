@@ -1,12 +1,12 @@
 {
-  "sourceHead": "327c00a26b0334d976a1a336a13694c3c59c9074",
+  "sourceHead": "714a00b0f3fbe4f8a2125f4dd5ba4228eaa63095",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 22,
   "httpErrors": 2,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-327c00a26b03",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-714a00b0f3fb",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -14,12 +14,10 @@
   "auditEvidence": {
     "links": {
       "report": "docs/PUBLIC_LINKGRAPH_LATEST_RESULTS.json",
-      "run": "42752263887",
-      "head_sha": "9822e2e5983ce398897dad6958c147dca98bbef3",
+      "run": "42752434724",
+      "head_sha": "32353e9d01b31a7ec067205bb042958a7748fadd",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research-action.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "problems": 0
       }
@@ -113,12 +111,6 @@
   },
   "sourceDriftSinceAudits": [
     {
-      "category": "links",
-      "sourceModifiedSinceAudit": [
-        "research-action.html"
-      ]
-    },
-    {
       "category": "engines",
       "sourceModifiedSinceAudit": [
         "research-action.html",
@@ -184,12 +176,6 @@
     {
       "sourceDrift": [
         {
-          "category": "links",
-          "sourceModifiedSinceAudit": [
-            "research-action.html"
-          ]
-        },
-        {
           "category": "engines",
           "sourceModifiedSinceAudit": [
             "research-action.html",
@@ -214,7 +200,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42752557613",
-  "run_sha": "327c00a26b0334d976a1a336a13694c3c59c9074",
+  "workflow_run_id": "42752592269",
+  "run_sha": "714a00b0f3fbe4f8a2125f4dd5ba4228eaa63095",
   "exit_code": "1"
 }
