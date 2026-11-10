@@ -1,12 +1,12 @@
 {
-  "sourceHead": "9822e2e5983ce398897dad6958c147dca98bbef3",
+  "sourceHead": "265bd9912a980abad013de504d0430c5fa04e19f",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-9822e2e5983c",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-265bd9912a98",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -14,42 +14,34 @@
   "auditEvidence": {
     "links": {
       "report": "docs/PUBLIC_LINKGRAPH_LATEST_RESULTS.json",
-      "run": "42751311462",
-      "head_sha": "7869bf738b928de25cf5ad91b5037a666f8ea47a",
+      "run": "42752263887",
+      "head_sha": "9822e2e5983ce398897dad6958c147dca98bbef3",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research-scoping.html",
-        "research.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "problems": 0
       }
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "42751311432",
-      "head_sha": "7869bf738b928de25cf5ad91b5037a666f8ea47a",
+      "run": "42752264142",
+      "head_sha": "9822e2e5983ce398897dad6958c147dca98bbef3",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research-scoping.html",
-        "research.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
-        "issues": 42
+        "issues": 44
       },
       "counts": {
-        "reachable": 69,
-        "unverified": 42
+        "reachable": 67,
+        "unverified": 44
       }
     },
     "metadata": {
       "report": "docs/RESEARCH_METADATA_LATEST_RESULTS.json",
-      "run": "42751938658",
-      "head_sha": "5facc92324b63e7985da6444952715b90ca2c4ee",
+      "run": "42752263951",
+      "head_sha": "9822e2e5983ce398897dad6958c147dca98bbef3",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research-scoping.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "unverified": 0
       },
@@ -99,12 +91,10 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "42751938544",
-      "head_sha": "5facc92324b63e7985da6444952715b90ca2c4ee",
+      "run": "42752263959",
+      "head_sha": "9822e2e5983ce398897dad6958c147dca98bbef3",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research-scoping.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0,
         "axeViolations": 0
@@ -118,26 +108,6 @@
     }
   },
   "sourceDriftSinceAudits": [
-    {
-      "category": "links",
-      "sourceModifiedSinceAudit": [
-        "research-scoping.html",
-        "research.html"
-      ]
-    },
-    {
-      "category": "external",
-      "sourceModifiedSinceAudit": [
-        "research-scoping.html",
-        "research.html"
-      ]
-    },
-    {
-      "category": "metadata",
-      "sourceModifiedSinceAudit": [
-        "research-scoping.html"
-      ]
-    },
     {
       "category": "reflow",
       "sourceModifiedSinceAudit": [
@@ -153,12 +123,6 @@
     },
     {
       "category": "typography",
-      "sourceModifiedSinceAudit": [
-        "research-scoping.html"
-      ]
-    },
-    {
-      "category": "interactions",
       "sourceModifiedSinceAudit": [
         "research-scoping.html"
       ]
@@ -184,26 +148,6 @@
     {
       "sourceDrift": [
         {
-          "category": "links",
-          "sourceModifiedSinceAudit": [
-            "research-scoping.html",
-            "research.html"
-          ]
-        },
-        {
-          "category": "external",
-          "sourceModifiedSinceAudit": [
-            "research-scoping.html",
-            "research.html"
-          ]
-        },
-        {
-          "category": "metadata",
-          "sourceModifiedSinceAudit": [
-            "research-scoping.html"
-          ]
-        },
-        {
           "category": "reflow",
           "sourceModifiedSinceAudit": [
             "research-scoping.html"
@@ -221,18 +165,12 @@
           "sourceModifiedSinceAudit": [
             "research-scoping.html"
           ]
-        },
-        {
-          "category": "interactions",
-          "sourceModifiedSinceAudit": [
-            "research-scoping.html"
-          ]
         }
       ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42752263960",
-  "run_sha": "9822e2e5983ce398897dad6958c147dca98bbef3",
+  "workflow_run_id": "42752367829",
+  "run_sha": "265bd9912a980abad013de504d0430c5fa04e19f",
   "exit_code": "1"
 }
