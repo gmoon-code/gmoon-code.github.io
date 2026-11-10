@@ -2,17 +2,17 @@
   "pages_scanned": 19,
   "distinct_destinations": 111,
   "counts": {
-    "reachable": 69,
-    "unverified": 42
+    "reachable": 71,
+    "unverified": 40
   },
   "by_category": {
     "external": {
-      "reachable": 49,
-      "unverified": 2
+      "reachable": 50,
+      "unverified": 1
     },
     "scholarly-identifier": {
-      "unverified": 40,
-      "reachable": 17
+      "unverified": 39,
+      "reachable": 18
     },
     "separate-site-application": {
       "reachable": 3
@@ -686,25 +686,6 @@
       "warnings": []
     },
     {
-      "url": "https://doi.org/10.22318/icls2023.243024",
-      "status": "unverified",
-      "category": "scholarly-identifier",
-      "pages": [
-        "research.html"
-      ],
-      "head": {
-        "code": 500,
-        "finalUrl": "https://repository.isls.org/handle/1/9855",
-        "error": "Internal Server Error"
-      },
-      "get": {
-        "code": 500,
-        "finalUrl": "https://repository.isls.org/handle/1/9855",
-        "error": "Internal Server Error"
-      },
-      "warnings": []
-    },
-    {
       "url": "https://doi.org/10.3102/0013189X20927363",
       "status": "unverified",
       "category": "scholarly-identifier",
@@ -799,25 +780,6 @@
         "error": "Forbidden"
       },
       "warnings": []
-    },
-    {
-      "url": "https://repository.isls.org/handle/1/10256",
-      "status": "unverified",
-      "category": "external",
-      "pages": [
-        "research.html"
-      ],
-      "head": {
-        "code": 500,
-        "finalUrl": "https://repository.isls.org/handle/1/10256",
-        "error": "Internal Server Error"
-      },
-      "get": {
-        "code": 500,
-        "finalUrl": "https://repository.isls.org/handle/1/10256",
-        "error": "Internal Server Error"
-      },
-      "warnings": []
     }
   ],
   "important_apps": [
@@ -839,44 +801,44 @@
   ],
   "limits": "HTTP availability is not content authenticity or DOI landing-page accuracy. 403, 429, DNS, SSL, and timeout results remain unverified.",
   "doi_registry": {
-    "checked": 40,
+    "checked": 39,
     "counts": {
-      "registered": 20,
-      "not-confirmed": 20
+      "registered": 22,
+      "not-confirmed": 17
     },
-    "secondary_index_matches": 20,
+    "secondary_index_matches": 17,
     "not_confirmed": [
       {
-        "url": "https://doi.org/10.1002/sce.21112",
-        "doi": "10.1002/sce.21112",
+        "url": "https://doi.org/10.1002/sce.20392",
+        "doi": "10.1002/sce.20392",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21112",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.20392",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Examining Classroom Science Practice Communities: How Teachers and Students Negotiate Epistemic Agency and Learn Science‐as‐Practice",
-        "indexedYear": 2014
+        "indexedTitle": "Cultural processes in science education: Supporting the navigation of multiple epistemologies",
+        "indexedYear": 2010
       },
       {
-        "url": "https://doi.org/10.1002/sce.21588",
-        "doi": "10.1002/sce.21588",
+        "url": "https://doi.org/10.1002/sce.21622",
+        "doi": "10.1002/sce.21622",
         "pages": [
-          "research.html"
+          "research-scoping.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21588",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21622",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "“Estoy Explorando Science”: Emergent bilingual students problematizing electrical phenomena through translanguaging",
-        "indexedYear": 2020
+        "indexedTitle": "Scientific modeling and translanguaging: A multilingual and multimodal approach to support science learning and engagement",
+        "indexedYear": 2021
       },
       {
         "url": "https://doi.org/10.1002/tea.21257",
@@ -893,22 +855,6 @@
         "secondaryIndex": "OpenAlex",
         "indexedTitle": "Epistemologies in practice: Making scientific practices meaningful for students",
         "indexedYear": 2015
-      },
-      {
-        "url": "https://doi.org/10.1002/tea.21459",
-        "doi": "10.1002/tea.21459",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21459",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Addressing the epistemic elephant in the room: Epistemic agency and the next generation science standards",
-        "indexedYear": 2018
       },
       {
         "url": "https://doi.org/10.1002/tea.21714",
@@ -975,20 +921,20 @@
         "indexedYear": 2007
       },
       {
-        "url": "https://doi.org/10.1080/03626784.2023.2200810",
-        "doi": "10.1080/03626784.2023.2200810",
+        "url": "https://doi.org/10.1080/03626784.2021.1947732",
+        "doi": "10.1080/03626784.2021.1947732",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/03626784.2023.2200810",
+        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/03626784.2021.1947732",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "You don’t know me: Welcoming gender diversity in schools via an ethic of hospitality",
-        "indexedYear": 2023
+        "indexedTitle": "Getting dirty and coming clean: Sex education and the problem of expertise",
+        "indexedYear": 2021
       },
       {
         "url": "https://doi.org/10.1080/09500690903386435",
@@ -1007,20 +953,20 @@
         "indexedYear": 2010
       },
       {
-        "url": "https://doi.org/10.1080/1046560X.2022.2155355",
-        "doi": "10.1080/1046560X.2022.2155355",
+        "url": "https://doi.org/10.1080/09585176.2018.1481442",
+        "doi": "10.1080/09585176.2018.1481442",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/1046560X.2022.2155355",
+        "publisherLanding": "https://bera-journals.onlinelibrary.wiley.com/doi/10.1080/09585176.2018.1481442",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Teacher Noticing for Supporting Students’ Epistemic Agency in Science Sensemaking Discussions",
-        "indexedYear": 2023
+        "indexedTitle": "Supporting teacher responsiveness in assessment for learning through disciplined noticing",
+        "indexedYear": 2018
       },
       {
         "url": "https://doi.org/10.1080/14790718.2021.1898619",
@@ -1039,20 +985,20 @@
         "indexedYear": 2021
       },
       {
-        "url": "https://doi.org/10.1080/15265161.2012.680533",
-        "doi": "10.1080/15265161.2012.680533",
+        "url": "https://doi.org/10.1080/20004508.2026.2641841",
+        "doi": "10.1080/20004508.2026.2641841",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://www.tandfonline.com/doi/abs/10.1080/15265161.2012.680533",
+        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/20004508.2026.2641841",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Out of Bounds? A Critique of the New Policies on Hyperandrogenism in Elite Female Athletes",
-        "indexedYear": 2012
+        "indexedTitle": "Autonomy, collaboration, and community: middle school students’ first experiences with student-directed inquiry",
+        "indexedYear": 2026
       },
       {
         "url": "https://doi.org/10.1086/430744",
@@ -1072,68 +1018,37 @@
         "indexedYear": 2005
       },
       {
-        "url": "https://doi.org/10.1111/j.1365-2729.1991.tb00230.x",
-        "doi": "10.1111/j.1365-2729.1991.tb00230.x",
+        "url": "https://doi.org/10.1111/jedm.12000",
+        "doi": "10.1111/jedm.12000",
         "pages": [
-          "teaching-ap-chemistry.html"
+          "research-scoping.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1111/j.1365-2729.1991.tb00230.x",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1111/jedm.12000",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Why is science difficult to learn? Things are seldom what they seem",
-        "indexedYear": 1991
+        "indexedTitle": "Validating the Interpretations and Uses of Test Scores",
+        "indexedYear": 2013
       },
       {
-        "url": "https://doi.org/10.1159/000345322",
-        "doi": "10.1159/000345322",
+        "url": "https://doi.org/10.3102/0013189X20927363",
+        "doi": "10.3102/0013189X20927363",
         "pages": [
-          "research.html"
+          "research.html",
+          "writing-biological-classification.html"
         ],
-        "publisherLanding": "https://karger.com/article/doi/10.1159/000345322",
+        "publisherLanding": "https://journals.sagepub.com/doi/10.3102/0013189X20927363",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Desettling Expectations in Science Education",
-        "indexedYear": 2012
-      },
-      {
-        "url": "https://doi.org/10.1207/S1532690XCI2004_1",
-        "doi": "10.1207/S1532690XCI2004_1",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://www.tandfonline.com/doi/abs/10.1207/S1532690XCI2004_1",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Guiding Principles for Fostering Productive Disciplinary Engagement: Explaining an Emergent Argument in a Community of Learners Classroom",
-        "indexedYear": 2002
-      },
-      {
-        "url": "https://doi.org/10.22318/icls2023.243024",
-        "doi": "10.22318/icls2023.243024",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://repository.isls.org/handle/1/9855",
-        "publisherResult": 500,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Supporting Students’ Epistemic Agency to Revise a Class Criteria List for Scientific Models",
-        "indexedYear": 2023
+        "indexedTitle": "Beyond Equity as Inclusion: A Framework of “Rightful Presence” for Guiding Justice-Oriented Studies in Teaching and Learning",
+        "indexedYear": 2020
       },
       {
         "url": "https://doi.org/10.3102/0013189X231206172",
@@ -1171,7 +1086,7 @@
     "unresolved": [],
     "limitation": "Crossref/DataCite registration is distinct from publisher access, correct article metadata or article availability. OpenAlex is independent secondary corroboration, not registration proof."
   },
-  "workflow_run_id": "42775035558",
-  "head_sha": "dad85d513b32e36fbb8bf326642e8c94fee899c6",
+  "workflow_run_id": "42775242940",
+  "head_sha": "f61352944a07c0ba7ddeaa5f8f589c2c36579406",
   "audit_exit_code": "0"
 }
