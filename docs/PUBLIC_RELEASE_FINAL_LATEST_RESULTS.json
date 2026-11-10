@@ -1,12 +1,12 @@
 {
-  "sourceHead": "5f9028a1494929122d9677b980b2e447f1db793e",
+  "sourceHead": "05d7e4e406556377763c2782f76f2c7887e8e553",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-5f9028a14949",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-05d7e4e40655",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -77,12 +77,10 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "42743753270",
-      "head_sha": "cc92276b91cd3a9bd7bcb38195c5d91442c3a03e",
+      "run": "42744933798",
+      "head_sha": "abc134a1c6c49e741da0b655273bb8bf807a1b55",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0,
         "combinedStressFailures": 0
@@ -115,12 +113,6 @@
     },
     {
       "category": "engines",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ]
-    },
-    {
-      "category": "typography",
       "sourceModifiedSinceAudit": [
         "research.html"
       ]
@@ -165,18 +157,12 @@
           "sourceModifiedSinceAudit": [
             "research.html"
           ]
-        },
-        {
-          "category": "typography",
-          "sourceModifiedSinceAudit": [
-            "research.html"
-          ]
         }
       ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42745079437",
-  "run_sha": "5f9028a1494929122d9677b980b2e447f1db793e",
+  "workflow_run_id": "42745112342",
+  "run_sha": "05d7e4e406556377763c2782f76f2c7887e8e553",
   "exit_code": "1"
 }
