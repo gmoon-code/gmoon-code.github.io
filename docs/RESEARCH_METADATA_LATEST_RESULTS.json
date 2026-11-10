@@ -1,6 +1,6 @@
 {
-  "workflow_run_id": "42562662228",
-  "head_sha": "34f4df9d678dfa69d85eee45e594eeb8bab2a71d",
+  "workflow_run_id": "42740508765",
+  "head_sha": "b84750c6761f848c996b4886ec9f83cb73137093",
   "exit_code": "0",
   "preprint": {
     "doi": "10.35542/osf.io/kznvj_v1",
@@ -59,11 +59,11 @@
     }
   ],
   "preprint_review": false,
-  "unique_dois": 54,
-  "citation_occurrences": 62,
+  "unique_dois": 56,
+  "citation_occurrences": 64,
   "counts": {
     "inline-or-narrative": 2,
-    "consistent": 60
+    "consistent": 62
   },
   "manual_review": [],
   "unverified": [],
