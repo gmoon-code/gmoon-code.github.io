@@ -1,12 +1,12 @@
 {
-  "sourceHead": "9ba6c95759518719926fd60c0d2cb66ec1509ed1",
+  "sourceHead": "a6b17afbb17ff27122951ba38f4f7e3a46fbbcd5",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-9ba6c9575951",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-a6b17afbb17f",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -17,7 +17,9 @@
       "run": "42744933995",
       "head_sha": "abc134a1c6c49e741da0b655273bb8bf807a1b55",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "problems": 0
       }
@@ -27,7 +29,9 @@
       "run": "42744933500",
       "head_sha": "abc134a1c6c49e741da0b655273bb8bf807a1b55",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "issues": 41
       },
@@ -41,7 +45,9 @@
       "run": "42744933646",
       "head_sha": "abc134a1c6c49e741da0b655273bb8bf807a1b55",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "unverified": 0
       },
@@ -56,7 +62,9 @@
       "run": "42744933574",
       "head_sha": "abc134a1c6c49e741da0b655273bb8bf807a1b55",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "failures": 0
       }
@@ -78,7 +86,9 @@
       "run": "42744933798",
       "head_sha": "abc134a1c6c49e741da0b655273bb8bf807a1b55",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "failures": 0,
         "combinedStressFailures": 0
@@ -89,7 +99,9 @@
       "run": "42744933543",
       "head_sha": "abc134a1c6c49e741da0b655273bb8bf807a1b55",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "failures": 0,
         "axeViolations": 0
@@ -104,7 +116,43 @@
   },
   "sourceDriftSinceAudits": [
     {
+      "category": "links",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "external",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "metadata",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "reflow",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
       "category": "engines",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "typography",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "interactions",
       "sourceModifiedSinceAudit": [
         "research.html"
       ]
@@ -120,26 +168,60 @@
       "firstDiff": [
         "--- source\n",
         "+++ deployed\n",
-        "@@ -65,3 +65,3 @@\n",
-        "       <h3>Reconsidering assessment evidence in biology</h3>",
-        "-      <p>In classroom action research with 28 AP Biology students, I studied students’ explanations across assessments and two adjustments to the feedback routine. For ten students whose Unit 3 explanations did not meet the study's completeness criteria, I compared the original responses with later closed-resource reconstructions of the same photosynthesis mechanism. Some reconstructions developed fuller causal pathways, while others omitted relationships previously expressed. The comparisons suggested different questions for subsequent assessment, which were not administered during the inquiry.</p>",
-        "+      <p>In classroom action research with 28 AP Biology students, I studied students’ explanations across assessments and two adjustments to the feedback routine. For ten students whose Unit 3 explanations did not meet the study's completeness criteria, I compared the original responses with later closed-resource reconstructions of the same photosynthesis mechanism. Some reconstructions developed fuller causal pathways, while others omitted relationships previously expressed. Comparing these records changed the questions I would ask in subsequent assessment, although those follow-up questions were not administered in the reported inquiry.</p>",
-        "       <a class=\"inline-link\" href=\"research-action.html\">Read the classroom action research account&nbsp;→</a>",
-        "@@ -71,3 +71,3 @@\n",
-        "     <p>The record used to assess an explanation can change which scientific relationships are visible. In a <a href=\"research-scoping.html#case-study\">study included in the scoping review</a>, Luis's shorter English translation made an ecological distinction less explicit than his bilingual account. In my <a href=\"research-action.html#paired-evidence\">classroom inquiry</a>, S20's closed-resource reconstruction omitted photosynthetic relationships expressed in an earlier response. The cases arose under different task and language conditions. Read together, they caution against treating an absent relationship in one response as a complete account of a student's understanding.</p>",
-        "-    <p>My projects examined the grounds for inferring scientific understanding from students' work. A teacher may judge an explanation incomplete on scientific grounds and still encounter a student who questions that interpretation. What remains less visible in an assessment record is how such a judgment is explained and whether the student can influence what happens next.</p>",
-        "+    <p>My projects examined the grounds for inferring scientific understanding from students' work. They did not establish how students could influence the judgments teachers made from that work. A teacher might identify an incomplete causal pathway and choose what students should revisit, yet the student could have reasons for questioning that interpretation. Studying the interaction would require attention to what each participant considered adequate evidence and to how their judgments shaped the next classroom activity.</p>",
-        "   </div>",
-        "@@ -80,3 +80,3 @@\n",
-        "   <div class=\"reading research-essay-prose research-interests-intro\">",
-        "-    <p>The judgment made about a student's response can shape what the class investigates next. Teacher noticing offers a way to examine how reasoning becomes available for consideration; epistemic agency and rightful presence raise further questions about who can influence the direction and standards of inquiry. The linguistic and representational forms of students' contributions shape both the evidence available and the judgments made from it.</p>",
-        "+    <p>The questions emerging from my projects extend from the interpretation of a response to the decisions made after it. Research on teacher noticing examines how student reasoning becomes available for consideration. Work on epistemic agency and rightful presence asks who can influence the questions and standards guiding a classroom inquiry. I read these perspectives alongside scholarship on language and scientific modelling, where the evidence students can offer is shaped by the opportunities they have to participate.</p>"
+        "@@ -94,4 +94,4 @@\n",
+        "       <p id=\"student-directed-inquiry\">Students' influence may also differ across the decisions within an inquiry. In a Grade 7 Science and Technology project, students chose to investigate Missing and Murdered Indigenous Women and Girls and developed a public Red Dress exhibition. Their sense of ownership coexisted with accounts of peers overlooking some ideas during collaboration (<a href=\"#reading-jao-2026\">Jao et al., 2026</a>). In another Grade 7 classroom, concerns about how a community survey might affect respondents became part of the criteria students and adults used to judge a responsible investigation (<a href=\"#reading-krishnamoorthy\">Krishnamoorthy et al., 2026</a>). Choosing an inquiry topic offers one form of influence. As the work develops, the authority to determine what counts as a responsible investigation may be negotiated again. The two cases bring those later decisions into view, including whether students' concerns can change the criteria guiding the work.</p>",
+        "-      <p>Authority is also shaped by what the classroom recognizes as legitimate knowledge and action. Productive disciplinary engagement connects student authority with responsibility to peers and access to resources for investigating a problem (<a href=\"#reading-engle\">Engle &amp; Conant, 2002</a>). Rightful presence brings a further concern into view, asking how historically unequal relations shape whose ways of knowing are recognized and whose challenges to classroom norms can have consequences (<a href=\"#reading-barton\">Calabrese Barton &amp; Tan, 2020</a>). The authority exercised through disciplinary standards can be less visible than the choices students make among activities. Participation also depends on whether students can question the criteria by which their explanations are judged.</p>",
+        "-      <p>Collaborative professional learning can develop teachers' attention to students' epistemic practices (<a href=\"#reading-shim-thompson\">Shim &amp; Thompson, 2022</a>) and create opportunities to design instructional materials together (<a href=\"#reading-jao-mcdougall\">Jao &amp; McDougall, 2015</a>). The focus of that work also shapes what becomes available for reconsideration. In rehearsals of mathematical defining, prospective teachers and teacher educators concentrated on pedagogical issues, with few opportunities to discuss students' reasoning about definitions (<a href=\"#reading-kobiela-rehearsals\">Kobiela et al., 2023</a>). This emphasis shows how opportunities to examine students' disciplinary thinking can remain limited even in activities designed to support teachers' learning.</p>",
+        "+      <p>Authority is also shaped by what the classroom recognizes as legitimate knowledge and action. Productive disciplinary engagement connects student authority with responsibility to peers and access to resources for investigating a problem (<a href=\"#reading-engle\">Engle &amp; Conant, 2002</a>). In a sixth-grade geometry classroom, students' concepts developed alongside their participation in proposing and revising mathematical definitions, with the teacher supporting their growing agency in this disciplinary work (<a href=\"#reading-kobiela-lehrer\">Kobiela &amp; Lehrer, 2015</a>). Rightful presence brings a further concern into view, asking how historically unequal relations shape whose ways of knowing are recognized and whose challenges to classroom norms can have consequences (<a href=\"#reading-barton\">Calabrese Barton &amp; Tan, 2020</a>). The authority exercised through disciplinary standards can be less visible than the choices students make among activities. Participation also depends on whether students can question the criteria by which their explanations are judged.</p>",
+        "+      <p>Teachers' interpretations may themselves become objects of inquiry when colleagues work together. In a four-year professional learning community, high school science teachers developed their attention to students' epistemic practices and evidence-based explanations (<a href=\"#reading-shim-thompson\">Shim &amp; Thompson, 2022</a>). A Grade 9 Applied Mathematics initiative offers a different view of collaboration, with teachers reporting learning from the joint development of classroom materials (<a href=\"#reading-jao-mcdougall\">Jao &amp; McDougall, 2015</a>). The focus of collaboration shapes what becomes available for reconsideration, from the design of instructional materials to the interpretation of students' explanations. The connection to classroom authority lies in how those judgments influence the work students can pursue.</p>",
+        "       <p>An unexpected student question can bring disciplinary evaluation and classroom authority into the same interaction. The teacher considers the scientific explanation involved while deciding how the lesson might proceed. The grounds offered for that decision, and students' opportunities to respond, shape whether the question becomes part of the class's inquiry.</p>",
+        "@@ -209,3 +209,3 @@\n",
+        "     <li id=\"reading-ko\">Ko, M.-L. M., &amp; Krist, C. (2019). Opening up curricula to redistribute epistemic agency: A framework for supporting science teaching. <em>Science Education, 103</em>(4), 979–1010. <a href=\"https://doi.org/10.1002/sce.21511\">https://doi.org/10.1002/sce.21511</a></li>",
+        "-    <li id=\"reading-kobiela-rehearsals\">Kobiela, M., Iacono, H., Cho, S., &amp; Chandrasekhar, V. (2023). Examining the potential of rehearsal interjections to support the teaching of mathematical practice: The case of mathematical defining. <em>Journal of Mathematics Teacher Education, 26</em>(6), 759–784. <a href=\"https://doi.org/10.1007/s10857-022-09545-4\">https://doi.org/10.1007/s10857-022-09545-4</a></li>",
+        "+    <li id=\"reading-kobiela-lehrer\">Kobiela, M., &amp; Lehrer, R. (2015). The codevelopment of mathematical concepts and the practice of defining. <em>Journal for Research in Mathematics Education, 46</em>(4), 423–454. <a href=\"https://doi.org/10.5951/jresematheduc.46.4.0423\">https://doi.org/10.5951/jresematheduc.46.4.0423</a></li>",
+        "     <li id=\"reading-krishnamoorthy\">Krishnamoorthy, R., Duncan, R. G., &amp; Tan, E. (2026). “That's just gonna make them upset”: Youth authoring emerging epistemic ideals through rightful presence. <em>Science Education, 110</em>(1), 33–52. <a href=\"https://doi.org/10.1002/sce.21938\">https://doi.org/10.1002/sce.21938</a></li>"
       ]
     },
     {
       "sourceDrift": [
         {
+          "category": "links",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "external",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "metadata",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "reflow",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
           "category": "engines",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "typography",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "interactions",
           "sourceModifiedSinceAudit": [
             "research.html"
           ]
@@ -148,7 +230,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42746142945",
-  "run_sha": "9ba6c95759518719926fd60c0d2cb66ec1509ed1",
+  "workflow_run_id": "42746199482",
+  "run_sha": "a6b17afbb17ff27122951ba38f4f7e3a46fbbcd5",
   "exit_code": "1"
 }
