@@ -841,10 +841,10 @@
   "doi_registry": {
     "checked": 40,
     "counts": {
-      "registered": 24,
-      "not-confirmed": 16
+      "registered": 35,
+      "not-confirmed": 5
     },
-    "secondary_index_matches": 16,
+    "secondary_index_matches": 5,
     "not_confirmed": [
       {
         "url": "https://doi.org/10.1002/sce.21112",
@@ -863,36 +863,36 @@
         "indexedYear": 2014
       },
       {
-        "url": "https://doi.org/10.1002/sce.21511",
-        "doi": "10.1002/sce.21511",
+        "url": "https://doi.org/10.1002/tea.20237",
+        "doi": "10.1002/tea.20237",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21511",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.20237",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Opening up curricula to redistribute epistemic agency: A framework for supporting science teaching",
-        "indexedYear": 2019
+        "indexedTitle": "Understanding the science experiences of successful women of color: Science identity as an analytic lens",
+        "indexedYear": 2007
       },
       {
-        "url": "https://doi.org/10.1002/sce.21938",
-        "doi": "10.1002/sce.21938",
+        "url": "https://doi.org/10.1002/tea.21257",
+        "doi": "10.1002/tea.21257",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21938",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21257",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "“That's Just Gonna Make Them Upset”: Youth Authoring Emerging Epistemic Ideals Through Rightful Presence",
-        "indexedYear": 2025
+        "indexedTitle": "Epistemologies in practice: Making scientific practices meaningful for students",
+        "indexedYear": 2015
       },
       {
         "url": "https://doi.org/10.1002/tea.21459",
@@ -911,203 +911,26 @@
         "indexedYear": 2018
       },
       {
-        "url": "https://doi.org/10.1002/tea.21714",
-        "doi": "10.1002/tea.21714",
+        "url": "https://doi.org/10.22318/icls2023.243024",
+        "doi": "10.22318/icls2023.243024",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21714",
-        "publisherResult": 403,
+        "publisherLanding": "https://repository.isls.org/handle/1/9855",
+        "publisherResult": 500,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Science engagement as insight into the science identity work nurtured in community‐based science clubs",
-        "indexedYear": 2021
-      },
-      {
-        "url": "https://doi.org/10.1002/tea.21944",
-        "doi": "10.1002/tea.21944",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21944",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Asset and deficit discourses of student ideas in science formative assessment co‐design",
-        "indexedYear": 2024
-      },
-      {
-        "url": "https://doi.org/10.1002/tea.70072",
-        "doi": "10.1002/tea.70072",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.70072",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Students' Construction, Evaluation, and Revision of Scientific Models Through Multimodal Representations",
-        "indexedYear": 2026
-      },
-      {
-        "url": "https://doi.org/10.1080/09585176.2018.1481442",
-        "doi": "10.1080/09585176.2018.1481442",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://bera-journals.onlinelibrary.wiley.com/doi/10.1080/09585176.2018.1481442",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Supporting teacher responsiveness in assessment for learning through disciplined noticing",
-        "indexedYear": 2018
-      },
-      {
-        "url": "https://doi.org/10.1080/1046560X.2022.2155355",
-        "doi": "10.1080/1046560X.2022.2155355",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/1046560X.2022.2155355",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Teacher Noticing for Supporting Students’ Epistemic Agency in Science Sensemaking Discussions",
+        "indexedTitle": "Supporting Students’ Epistemic Agency to Revise a Class Criteria List for Scientific Models",
         "indexedYear": 2023
-      },
-      {
-        "url": "https://doi.org/10.1080/10508400903452884",
-        "doi": "10.1080/10508400903452884",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/10508400903452884",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Conducting Video Research in the Learning Sciences: Guidance on Selection, Analysis, Technology, and Ethics",
-        "indexedYear": 2010
-      },
-      {
-        "url": "https://doi.org/10.1086/430744",
-        "doi": "10.1086/430744",
-        "pages": [
-          "teaching-ap-evolution.html",
-          "writing-biological-classification.html"
-        ],
-        "publisherLanding": "https://academic.oup.com/jid/article-lookup/doi/10.1086/430744",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Sickle Cell Trait and the Risk ofPlasmodium falciparumMalaria and Other Childhood Diseases",
-        "indexedYear": 2005
-      },
-      {
-        "url": "https://doi.org/10.1093/biosci/biac013",
-        "doi": "10.1093/biosci/biac013",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://academic.oup.com/bioscience/article/72/5/481/6547662",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Six Principles for Embracing Gender and Sexual Diversity in Postsecondary Biology Classrooms",
-        "indexedYear": 2022
-      },
-      {
-        "url": "https://doi.org/10.1111/j.1365-2729.1991.tb00230.x",
-        "doi": "10.1111/j.1365-2729.1991.tb00230.x",
-        "pages": [
-          "teaching-ap-chemistry.html"
-        ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1111/j.1365-2729.1991.tb00230.x",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Why is science difficult to learn? Things are seldom what they seem",
-        "indexedYear": 1991
-      },
-      {
-        "url": "https://doi.org/10.1159/000345322",
-        "doi": "10.1159/000345322",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://karger.com/article/doi/10.1159/000345322",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Desettling Expectations in Science Education",
-        "indexedYear": 2012
-      },
-      {
-        "url": "https://doi.org/10.3102/0034654314558490",
-        "doi": "10.3102/0034654314558490",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://journals.sagepub.com/doi/10.3102/0034654314558490",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Representing Student Argumentation as Functionally Emergent From Scientific Activity",
-        "indexedYear": 2014
-      },
-      {
-        "url": "https://doi.org/10.3390/plants10081501",
-        "doi": "10.3390/plants10081501",
-        "pages": [
-          "teaching-ap-biology.html"
-        ],
-        "publisherLanding": "https://www.mdpi.com/2223-7747/10/8/1501",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Binding Properties of Photosynthetic Herbicides with the QB Site of the D1 Protein in Plant Photosystem II: A Combined Functional and Molecular Docking Study",
-        "indexedYear": 2021
       }
     ],
     "unresolved": [],
     "limitation": "Crossref/DataCite registration is distinct from publisher access, correct article metadata or article availability. OpenAlex is independent secondary corroboration, not registration proof."
   },
-  "workflow_run_id": "42750873159",
-  "head_sha": "bee155538cebde1c98af88a33d792a9ec62fed12",
+  "workflow_run_id": "42750996878",
+  "head_sha": "97c267b9f1eb5a80d0ffe3fa22b216c33ed1f2c4",
   "audit_exit_code": "0"
 }
