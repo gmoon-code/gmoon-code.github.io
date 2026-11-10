@@ -2,17 +2,17 @@
   "pages_scanned": 19,
   "distinct_destinations": 111,
   "counts": {
-    "reachable": 69,
-    "unverified": 42
+    "reachable": 71,
+    "unverified": 40
   },
   "by_category": {
     "external": {
-      "reachable": 49,
-      "unverified": 2
+      "reachable": 50,
+      "unverified": 1
     },
     "scholarly-identifier": {
-      "unverified": 40,
-      "reachable": 17
+      "unverified": 39,
+      "reachable": 18
     },
     "separate-site-application": {
       "reachable": 3
@@ -686,25 +686,6 @@
       "warnings": []
     },
     {
-      "url": "https://doi.org/10.22318/icls2023.243024",
-      "status": "unverified",
-      "category": "scholarly-identifier",
-      "pages": [
-        "research.html"
-      ],
-      "head": {
-        "code": 500,
-        "finalUrl": "https://repository.isls.org/handle/1/9855",
-        "error": "Internal Server Error"
-      },
-      "get": {
-        "code": 500,
-        "finalUrl": "https://repository.isls.org/handle/1/9855",
-        "error": "Internal Server Error"
-      },
-      "warnings": []
-    },
-    {
       "url": "https://doi.org/10.3102/0013189X20927363",
       "status": "unverified",
       "category": "scholarly-identifier",
@@ -799,25 +780,6 @@
         "error": "Forbidden"
       },
       "warnings": []
-    },
-    {
-      "url": "https://repository.isls.org/handle/1/10256",
-      "status": "unverified",
-      "category": "external",
-      "pages": [
-        "research.html"
-      ],
-      "head": {
-        "code": 500,
-        "finalUrl": "https://repository.isls.org/handle/1/10256",
-        "error": "Internal Server Error"
-      },
-      "get": {
-        "code": 500,
-        "finalUrl": "https://repository.isls.org/handle/1/10256",
-        "error": "Internal Server Error"
-      },
-      "warnings": []
     }
   ],
   "important_apps": [
@@ -839,12 +801,12 @@
   ],
   "limits": "HTTP availability is not content authenticity or DOI landing-page accuracy. 403, 429, DNS, SSL, and timeout results remain unverified.",
   "doi_registry": {
-    "checked": 40,
+    "checked": 39,
     "counts": {
-      "not-confirmed": 8,
+      "not-confirmed": 7,
       "registered": 32
     },
-    "secondary_index_matches": 8,
+    "secondary_index_matches": 7,
     "not_confirmed": [
       {
         "url": "https://doi.org/10.1002/sce.20264",
@@ -863,20 +825,36 @@
         "indexedYear": 2008
       },
       {
-        "url": "https://doi.org/10.1002/sce.21112",
-        "doi": "10.1002/sce.21112",
+        "url": "https://doi.org/10.1002/tea.20237",
+        "doi": "10.1002/tea.20237",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21112",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.20237",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Examining Classroom Science Practice Communities: How Teachers and Students Negotiate Epistemic Agency and Learn Science‐as‐Practice",
-        "indexedYear": 2014
+        "indexedTitle": "Understanding the science experiences of successful women of color: Science identity as an analytic lens",
+        "indexedYear": 2007
+      },
+      {
+        "url": "https://doi.org/10.1002/tea.21257",
+        "doi": "10.1002/tea.21257",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21257",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Epistemologies in practice: Making scientific practices meaningful for students",
+        "indexedYear": 2015
       },
       {
         "url": "https://doi.org/10.1002/tea.21459",
@@ -895,52 +873,36 @@
         "indexedYear": 2018
       },
       {
-        "url": "https://doi.org/10.1073/pnas.0706627104",
-        "doi": "10.1073/pnas.0706627104",
+        "url": "https://doi.org/10.1080/14790718.2021.1898619",
+        "doi": "10.1080/14790718.2021.1898619",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://pnas.org/doi/full/10.1073/pnas.0706627104",
+        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/14790718.2021.1898619",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Cultural mosaics and mental models of nature",
-        "indexedYear": 2007
-      },
-      {
-        "url": "https://doi.org/10.1080/03626784.2021.1947732",
-        "doi": "10.1080/03626784.2021.1947732",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/03626784.2021.1947732",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Getting dirty and coming clean: Sex education and the problem of expertise",
+        "indexedTitle": "Translanguaging as an agentive pedagogy for multilingual learners: affordances and constraints",
         "indexedYear": 2021
       },
       {
-        "url": "https://doi.org/10.1080/03626784.2023.2200810",
-        "doi": "10.1080/03626784.2023.2200810",
+        "url": "https://doi.org/10.1080/15265161.2012.680533",
+        "doi": "10.1080/15265161.2012.680533",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/03626784.2023.2200810",
+        "publisherLanding": "https://www.tandfonline.com/doi/abs/10.1080/15265161.2012.680533",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "You don’t know me: Welcoming gender diversity in schools via an ethic of hospitality",
-        "indexedYear": 2023
+        "indexedTitle": "Out of Bounds? A Critique of the New Policies on Hyperandrogenism in Elite Female Athletes",
+        "indexedYear": 2012
       },
       {
         "url": "https://doi.org/10.3102/0013189X20927363",
@@ -958,28 +920,12 @@
         "secondaryIndex": "OpenAlex",
         "indexedTitle": "Beyond Equity as Inclusion: A Framework of “Rightful Presence” for Guiding Justice-Oriented Studies in Teaching and Learning",
         "indexedYear": 2020
-      },
-      {
-        "url": "https://doi.org/10.3102/0034654314558490",
-        "doi": "10.3102/0034654314558490",
-        "pages": [
-          "research.html"
-        ],
-        "publisherLanding": "https://journals.sagepub.com/doi/10.3102/0034654314558490",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Representing Student Argumentation as Functionally Emergent From Scientific Activity",
-        "indexedYear": 2014
       }
     ],
     "unresolved": [],
     "limitation": "Crossref/DataCite registration is distinct from publisher access, correct article metadata or article availability. OpenAlex is independent secondary corroboration, not registration proof."
   },
-  "workflow_run_id": "42773711154",
-  "head_sha": "3014b8932478341506770e465b57b5320a011dba",
+  "workflow_run_id": "42774461123",
+  "head_sha": "3aa410428137f6ff0ac9a020c9676ca5beb52406",
   "audit_exit_code": "0"
 }
