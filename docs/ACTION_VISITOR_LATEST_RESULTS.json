@@ -1,6 +1,6 @@
 {
-  "workflow_run_id": "42539258452",
-  "head_sha": "a99b12d4f34d5920b002bd7c8314158801d56d47",
+  "workflow_run_id": "42752434522",
+  "head_sha": "32353e9d01b31a7ec067205bb042958a7748fadd",
   "audit_exit_code": "1",
   "screen_widths_tested": [
     320,
@@ -215,8 +215,8 @@
         },
         {
           "tabIndex": 0,
-          "client": 1120,
-          "scroll": 1120,
+          "client": 1089,
+          "scroll": 1089,
           "headers": [
             "col",
             "col",
@@ -370,9 +370,9 @@
       226,
       248,
       272,
-      307,
-      357,
-      94
+      274,
+      373,
+      51
     ],
     "missing": [],
     "page_previews": [
@@ -403,13 +403,13 @@
       },
       {
         "number": 6,
-        "first": "These questions arose after grading, during retrospective analysis. They were not administered as part of the reported inquiry, and their use or effects have not been evaluated. How my practitioner judgment developed I examined four practitioner reflection records alongside the student work. Notes A and B were written during the classroom inquiry. The first distinguished students’ reports of prepa",
-        "last": "ed frogs documented electrolyte depletion and cardiac dysfunction, and one found hydration measures unchanged (Voyles et al., 2007 ; Voyles et al., 2009 ). Its completeness classification therefore concerns students' explanations under that particular assessment premise. Further instruction, intervening practice, feedback, and the revised reconstruction prompt all complicate causal interpretations. The written records reveal what students expressed under each set of conditions, without independently establishing changes in their understanding. "
+        "first": "How my practitioner judgment developed I examined four practitioner reflection records alongside the student work. Notes A and B were written during the classroom inquiry. The first distinguished students’ reports of preparation from the explanations they could produce without feedback. The second documented my decision to retain original Unit 3 responses for later comparison, together with a conc",
+        "last": "evised reconstruction prompt all complicate causal interpretations. The written records reveal what students expressed under each set of conditions, without independently establishing changes in their understanding. What the inquiry contributes The first adjustment made students’ reflections and reported preparation available for comparison with later explanations. The second provided another account of the same bentazon mechanism. Returning to the original responses revealed differences obscured by the later completeness classifications. Some "
       },
       {
         "number": 7,
-        "first": "What the inquiry contributes The first adjustment made students’ reflections and reported preparation available for comparison with later explanations. The second provided another account of the same bentazon mechanism. Returning to the original responses revealed differences obscured by the later completeness classifications. Some reconstructions omitted connections students had previously expres",
-        "last": " bentazon mechanism. Returning to the original responses revealed differences obscured by the later completeness classifications. Some reconstructions omitted connections students had previously expressed, while others no longer repeated earlier contradictions. Evaluating the adjustment therefore involved two judgments. The paired records helped me decide which causal relationships and competing accounts required further assessment. They did not establish why students’ responses differed, or whether the adjustment improved their understanding. "
+        "first": "reconstructions omitted connections students had previously expressed, while others no longer repeated earlier contradictions. Evaluating the adjustment therefore involved two judgments. The paired records helped me decide which causal relationships and competing accounts required further assessment. They did not establish why students’ responses differed, or whether the adjustment improved their ",
+        "last": "reconstructions omitted connections students had previously expressed, while others no longer repeated earlier contradictions. Evaluating the adjustment therefore involved two judgments. The paired records helped me decide which causal relationships and competing accounts required further assessment. They did not establish why students’ responses differed, or whether the adjustment improved their understanding. "
       }
     ],
     "offPageWords": [
@@ -422,5 +422,5 @@
       0
     ]
   },
-  "log_tail": "ction, so I could not tell how the student had evaluated those claims. S06 \\u00b7 The pathway remained undeveloped Identifying the next causal connection What process is affected immediately after photosynthetic electron transport is inhibited, and why? Neither response developed the required intermediate pathway. \"\n      },\n      {\n        \"number\": 6,\n        \"first\": \"These questions arose after grading, during retrospective analysis. They were not administered as part of the reported inquiry, and their use or effects have not been evaluated. How my practitioner judgment developed I examined four practitioner reflection records alongside the student work. Notes A and B were written during the classroom inquiry. The first distinguished students\\u2019 reports of prepa\",\n        \"last\": \"ed frogs documented electrolyte depletion and cardiac dysfunction, and one found hydration measures unchanged (Voyles et al., 2007 ; Voyles et al., 2009 ). Its completeness classification therefore concerns students' explanations under that particular assessment premise. Further instruction, intervening practice, feedback, and the revised reconstruction prompt all complicate causal interpretations. The written records reveal what students expressed under each set of conditions, without independently establishing changes in their understanding. \"\n      },\n      {\n        \"number\": 7,\n        \"first\": \"What the inquiry contributes The first adjustment made students\\u2019 reflections and reported preparation available for comparison with later explanations. The second provided another account of the same bentazon mechanism. Returning to the original responses revealed differences obscured by the later completeness classifications. Some reconstructions omitted connections students had previously expres\",\n        \"last\": \" bentazon mechanism. Returning to the original responses revealed differences obscured by the later completeness classifications. Some reconstructions omitted connections students had previously expressed, while others no longer repeated earlier contradictions. Evaluating the adjustment therefore involved two judgments. The paired records helped me decide which causal relationships and competing accounts required further assessment. They did not establish why students\\u2019 responses differed, or whether the adjustment improved their understanding. \"\n      }\n    ],\n    \"offPageWords\": [\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0\n    ]\n  }\n}\n"
+  "log_tail": "ient in your earlier answer. Which one is scientifically defensible, and why? The later reconstruction did not repeat the contradiction, so I could not tell how the student had evaluated those claims. S06 \\u00b7 The pathway remained undeveloped Identifying the next causal connection What process is affected immediately after photosynthetic electron transport is inhibited, and why? Neither response developed the required intermediate pathway. \"\n      },\n      {\n        \"number\": 6,\n        \"first\": \"How my practitioner judgment developed I examined four practitioner reflection records alongside the student work. Notes A and B were written during the classroom inquiry. The first distinguished students\\u2019 reports of preparation from the explanations they could produce without feedback. The second documented my decision to retain original Unit 3 responses for later comparison, together with a conc\",\n        \"last\": \"evised reconstruction prompt all complicate causal interpretations. The written records reveal what students expressed under each set of conditions, without independently establishing changes in their understanding. What the inquiry contributes The first adjustment made students\\u2019 reflections and reported preparation available for comparison with later explanations. The second provided another account of the same bentazon mechanism. Returning to the original responses revealed differences obscured by the later completeness classifications. Some \"\n      },\n      {\n        \"number\": 7,\n        \"first\": \"reconstructions omitted connections students had previously expressed, while others no longer repeated earlier contradictions. Evaluating the adjustment therefore involved two judgments. The paired records helped me decide which causal relationships and competing accounts required further assessment. They did not establish why students\\u2019 responses differed, or whether the adjustment improved their \",\n        \"last\": \"reconstructions omitted connections students had previously expressed, while others no longer repeated earlier contradictions. Evaluating the adjustment therefore involved two judgments. The paired records helped me decide which causal relationships and competing accounts required further assessment. They did not establish why students\\u2019 responses differed, or whether the adjustment improved their understanding. \"\n      }\n    ],\n    \"offPageWords\": [\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0\n    ]\n  }\n}\n"
 }
