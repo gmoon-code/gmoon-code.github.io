@@ -1,12 +1,12 @@
 {
-  "workflow_run_id": "42743294289",
-  "head_sha": "43e612c974ad0b106777b790ede11819d2624a51",
+  "workflow_run_id": "42744933995",
+  "head_sha": "abc134a1c6c49e741da0b655273bb8bf807a1b55",
   "exit_code": "0",
   "page_count": 19,
-  "link_count": 553,
+  "link_count": 551,
   "asset_references": 93,
-  "internal_links": 391,
-  "external_or_special": 162,
+  "internal_links": 390,
+  "external_or_special": 161,
   "problems": [],
   "advisory": [],
   "pages": [
@@ -68,7 +68,7 @@
     {
       "name": "research.html",
       "h1": "Research",
-      "link_count": 132
+      "link_count": 130
     },
     {
       "name": "story-method.html",
