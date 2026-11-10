@@ -1,12 +1,12 @@
 {
-  "sourceHead": "31c6edc9ec9142b172000d786bd1b8cf694be176",
+  "sourceHead": "7869bf738b928de25cf5ad91b5037a666f8ea47a",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-31c6edc9ec91",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-7869bf738b92",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -17,7 +17,9 @@
       "run": "42750997072",
       "head_sha": "97c267b9f1eb5a80d0ffe3fa22b216c33ed1f2c4",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "problems": 0
       }
@@ -27,7 +29,9 @@
       "run": "42750996878",
       "head_sha": "97c267b9f1eb5a80d0ffe3fa22b216c33ed1f2c4",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "issues": 42
       },
@@ -41,7 +45,9 @@
       "run": "42750996762",
       "head_sha": "97c267b9f1eb5a80d0ffe3fa22b216c33ed1f2c4",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "unverified": 0
       },
@@ -80,7 +86,9 @@
       "run": "42750996783",
       "head_sha": "97c267b9f1eb5a80d0ffe3fa22b216c33ed1f2c4",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "failures": 0,
         "combinedStressFailures": 0
@@ -91,7 +99,9 @@
       "run": "42750997030",
       "head_sha": "97c267b9f1eb5a80d0ffe3fa22b216c33ed1f2c4",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "failures": 0,
         "axeViolations": 0
@@ -106,6 +116,24 @@
   },
   "sourceDriftSinceAudits": [
     {
+      "category": "links",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "external",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "metadata",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
       "category": "reflow",
       "sourceModifiedSinceAudit": [
         "research.html"
@@ -113,6 +141,18 @@
     },
     {
       "category": "engines",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "typography",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "interactions",
       "sourceModifiedSinceAudit": [
         "research.html"
       ]
@@ -128,17 +168,42 @@
       "firstDiff": [
         "--- source\n",
         "+++ deployed\n",
-        "@@ -19,5 +19,3 @@\n",
-        " @media (min-width:1025px){:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > nav:nth-of-type(1){translate:0px -487px!important;scale:1 1!important;transform-origin:top left!important;}}",
-        "-@media (min-width:1025px){:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > nav:nth-of-type(1){translate:0px -3px!important;scale:1 1!important;transform-origin:top left!important;}}",
-        "-@media (min-width:1025px){:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:760px!important;height:933px!important;min-height:0!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > p:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:453px!important;height:321px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > p:nth-of-type(2){translate:2px 0px!important;scale:1 1!important;transform-origin:top left!important;width:753px!important;height:199px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > p:nth-of-type(3){translate:2px -4px!important;scale:1 1!important;transform-origin:top left!important;width:749px!important;height:230px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > p:nth-of-type(4){translate:2px -10px!important;scale:1 1!important;transform-origin:top left!important;width:760px!important;height:199px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > p:nth-of-type(6){translate:2px 2px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(1){translate:-1px -48px!important;scale:1 1!important;transform-origin:top left!important;width:760px!important;height:1542px!important;min-height:0!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(2) > section:nth-of-type(1) > div:nth-of-type(2) > p:nth-of-type(1){translate:0px -11px!important;scale:1 1!important;transform-origin:top left!important;width:719px!important;height:274px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(2) > section:nth-of-type(1) > div:nth-of-type(2) > p:nth-of-type(2){translate:0px -17px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(2) > section:nth-of-type(1) > div:nth-of-type(2) > p:nth-of-type(3){translate:-2px -15px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(2) > section:nth-of-type(1) > div:nth-of-type(2) > p:nth-of-type(4){translate:-2px -13px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(2) > section:nth-of-type(2) > div:nth-of-type(2) > p:nth-of-type(2){translate:-2px -13px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(2) > section:nth-of-type(2) > div:nth-of-type(2) > p:nth-of-type(3){translate:-2px -20px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(2) > section:nth-of-type(2) > div:nth-of-type(2) > p:nth-of-type(4){translate:-2px 36px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(2) > section:nth-of-type(2) > div:nth-of-type(2) > p:nth-of-type(5){translate:-2px 124px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(2) > section:nth-of-type(2) > figure:nth-of-type(1) > figcaption:nth-of-type(1){translate:0px 51px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(2) > section:nth-of-type(2) > figure:nth-of-type(1) > div:nth-of-type(1){translate:-2px 82px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(2){translate:0px -38px!important;scale:1 1!important;transform-origin:top left!important;width:760px!important;height:3291px!important;min-height:0!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(3) > section:nth-of-type(1) > div:nth-of-type(2) > p:nth-of-type(2){translate:0px -30px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(3) > section:nth-of-type(1) > div:nth-of-type(2) > p:nth-of-type(3){translate:0px -33px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(3) > section:nth-of-type(1) > div:nth-of-type(2) > p:nth-of-type(4){translate:0px -32px!important;scale:1 1!important;transform-origin:top left!important;}}",
-        "-@media (min-width:1025px){:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(3) > section:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:760px!important;height:982px!important;min-height:0!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(3) > section:nth-of-type(2) > div:nth-of-type(2) > p:nth-of-type(3){translate:0px 31px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(3) > section:nth-of-type(2) > div:nth-of-type(2) > p:nth-of-type(5){translate:-2px 30px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(3) > section:nth-of-type(2){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:760px!important;height:1269px!important;min-height:0!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}}</style></head>",
-        "+@media (min-width:1025px){:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > nav:nth-of-type(1){translate:0px -3px!important;scale:1 1!important;transform-origin:top left!important;}}</style></head>",
-        " <body class=\"theme-green\">"
+        "@@ -21,4 +21,3 @@\n",
+        " @media (min-width:1025px){:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:760px!important;height:933px!important;min-height:0!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > p:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:453px!important;height:321px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > p:nth-of-type(2){translate:2px 0px!important;scale:1 1!important;transform-origin:top left!important;width:753px!important;height:199px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > p:nth-of-type(3){translate:2px -4px!important;scale:1 1!important;transform-origin:top left!important;width:749px!important;height:230px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > p:nth-of-type(4){translate:2px -10px!important;scale:1 1!important;transform-origin:top left!important;width:760px!important;height:199px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > p:nth-of-type(6){translate:2px 2px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(1){translate:-1px -48px!important;scale:1 1!important;transform-origin:top left!important;width:760px!important;height:1542px!important;min-height:0!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(2) > section:nth-of-type(1) > div:nth-of-type(2) > p:nth-of-type(1){translate:0px -11px!important;scale:1 1!important;transform-origin:top left!important;width:719px!important;height:274px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(2) > section:nth-of-type(1) > div:nth-of-type(2) > p:nth-of-type(2){translate:0px -17px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(2) > section:nth-of-type(1) > div:nth-of-type(2) > p:nth-of-type(3){translate:-2px -15px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(2) > section:nth-of-type(1) > div:nth-of-type(2) > p:nth-of-type(4){translate:-2px -13px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(2) > section:nth-of-type(2) > div:nth-of-type(2) > p:nth-of-type(2){translate:-2px -13px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(2) > section:nth-of-type(2) > div:nth-of-type(2) > p:nth-of-type(3){translate:-2px -20px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(2) > section:nth-of-type(2) > div:nth-of-type(2) > p:nth-of-type(4){translate:-2px 36px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(2) > section:nth-of-type(2) > div:nth-of-type(2) > p:nth-of-type(5){translate:-2px 124px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(2) > section:nth-of-type(2) > figure:nth-of-type(1) > figcaption:nth-of-type(1){translate:0px 51px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(2) > section:nth-of-type(2) > figure:nth-of-type(1) > div:nth-of-type(1){translate:-2px 82px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(2){translate:0px -38px!important;scale:1 1!important;transform-origin:top left!important;width:760px!important;height:3291px!important;min-height:0!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(3) > section:nth-of-type(1) > div:nth-of-type(2) > p:nth-of-type(2){translate:0px -30px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(3) > section:nth-of-type(1) > div:nth-of-type(2) > p:nth-of-type(3){translate:0px -33px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(3) > section:nth-of-type(1) > div:nth-of-type(2) > p:nth-of-type(4){translate:0px -32px!important;scale:1 1!important;transform-origin:top left!important;}}",
+        "-@media (min-width:1025px){:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(3) > section:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:760px!important;height:982px!important;min-height:0!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(3) > section:nth-of-type(2) > div:nth-of-type(2) > p:nth-of-type(3){translate:0px 31px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(3) > section:nth-of-type(2) > div:nth-of-type(2) > p:nth-of-type(5){translate:-2px 30px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(3) > section:nth-of-type(2){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:760px!important;height:1269px!important;min-height:0!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}}",
+        "-@media (min-width:1025px){:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > p:nth-of-type(5){translate:2px -15px!important;scale:1 1!important;transform-origin:top left!important;width:758px!important;height:234px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > p:nth-of-type(6){translate:1px -20px!important;scale:1 1!important;transform-origin:top left!important;width:751px!important;height:117px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}}</style></head>",
+        "+@media (min-width:1025px){:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(3) > section:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:760px!important;height:982px!important;min-height:0!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(3) > section:nth-of-type(2) > div:nth-of-type(2) > p:nth-of-type(3){translate:0px 31px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(3) > section:nth-of-type(2) > div:nth-of-type(2) > p:nth-of-type(5){translate:-2px 30px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(3) > section:nth-of-type(2){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:760px!important;height:1269px!important;min-height:0!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}}</style></head>",
+        " <body class=\"theme-green\">",
+        "@@ -98,3 +97,3 @@\n",
+        "       <p>The criteria themselves are a form of classroom authority. Productive disciplinary engagement links students' authority to their responsibilities within a shared problem and the resources available to investigate it (<a href=\"#reading-engle\">Engle &amp; Conant, 2002</a>). Rightful presence raises questions about the historically unequal conditions under which particular contributions, relationships, and challenges to established practices can be recognized (<a href=\"#reading-barton\">Calabrese Barton &amp; Tan, 2020</a>). These perspectives extend the distinction emerging from the classroom cases. Participation concerns the intellectual work students can undertake, including whether the grounds for judging that work are themselves open to discussion.</p>",
+        "-      <p>What teachers attend to together also shapes the judgments they bring back to classrooms. Sustained professional learning has supported science teachers' attention to students' epistemic practices, while collaborative development of instructional materials offers another setting for examining practice (<a href=\"#reading-shim-thompson\">Shim &amp; Thompson, 2022</a>; <a href=\"#reading-jao-mcdougall\">Jao &amp; McDougall, 2015</a>). However, collaboration does not make every aspect of teaching equally available for scrutiny. In rehearsals of mathematical defining, discussion concentrated on pedagogical approaches, with relatively few opportunities to consider students' reasoning about definitions (<a href=\"#reading-kobiela-rehearsals\">Kobiela et al., 2023</a>). The focus of professional dialogue matters when considering how teachers learn to interpret students' ideas and how those interpretations enter subsequent decisions.</p>",
+        "+      <p>What teachers attend to together also shapes the judgments they bring back to classrooms. Sustained professional learning has supported science teachers' attention to students' epistemic practices, while collaborative development of instructional materials offers another setting for examining practice (<a href=\"#reading-shim-thompson\">Shim &amp; Thompson, 2022</a>; <a href=\"#reading-jao-mcdougall\">Jao &amp; McDougall, 2015</a>). Yet collaboration does not make every aspect of teaching equally available for scrutiny. In rehearsals of mathematical defining, discussion concentrated on pedagogical approaches, with relatively few opportunities to consider students' reasoning about definitions (<a href=\"#reading-kobiela-rehearsals\">Kobiela et al., 2023</a>). The focus of professional dialogue matters when considering how teachers learn to interpret students' ideas and how those interpretations enter subsequent decisions.</p>",
+        "       <p>An unexpected student question brings these concerns into a single classroom moment. The teacher must consider the explanation's disciplinary adequacy and decide what the class will investigate next. How that judgment is articulated, and whether the student can question its grounds, reveals the authority exercised through ordinary decisions about inquiry.</p>",
+        "@@ -115,3 +114,3 @@\n",
+        "     <p>The scientific relationships made visible in an explanation depend partly on the task that elicits them. Research on cultural practices of ecological reasoning shows how understandings of the natural world develop through particular relationships and activities, some of which are less readily recognized in school science (<a href=\"#reading-bang-medin\">Bang &amp; Medin, 2010</a>; <a href=\"#reading-bang\">Bang et al., 2012</a>). The distinction becomes concrete in a comparison of Menominee and European American fish experts. Menominee participants more often invoked habitat when grouping fish spontaneously, whereas an explicit request to sort by habitat produced substantial agreement across groups (<a href=\"#reading-cultural-mosaics\">Bang et al., 2007</a>). A relationship absent from an initial answer may thus reflect what the question invited participants to express. Evaluating that answer still requires attention to the scientific account it offers.</p>",
+        "-    <p>Whether a contribution becomes valued also depends on the setting in which it is offered. Studies of community science activities describe relationships and practical engagement that participants found meaningful, alongside persistent distinctions between experiences of science outside school and school science (<a href=\"#reading-burke\">Burke &amp; Navas Iannini, 2021</a>; <a href=\"#reading-gonsalves-rahm\">Gonsalves &amp; Rahm, 2023</a>). In the conversation club studied by Gonsalves and Rahm, girls drew on shared interests to position themselves as knowledgeable about science, but that recognition remained closely tied to the club. Participation may therefore carry different possibilities for being seen as knowledgeable across settings, even when the activities involve science.</p>"
       ]
     },
     {
       "sourceDrift": [
+        {
+          "category": "links",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "external",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "metadata",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
         {
           "category": "reflow",
           "sourceModifiedSinceAudit": [
@@ -150,12 +215,24 @@
           "sourceModifiedSinceAudit": [
             "research.html"
           ]
+        },
+        {
+          "category": "typography",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "interactions",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
         }
       ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42751164295",
-  "run_sha": "31c6edc9ec9142b172000d786bd1b8cf694be176",
+  "workflow_run_id": "42751311627",
+  "run_sha": "7869bf738b928de25cf5ad91b5037a666f8ea47a",
   "exit_code": "1"
 }
