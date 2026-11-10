@@ -1,5 +1,5 @@
 {
-  "testedAt": "2026-11-10T03:50:38.419Z",
+  "testedAt": "2026-11-10T07:19:56.945Z",
   "results": [
     {
       "path": "index.html",
@@ -83,7 +83,7 @@
             "width": 736,
             "left": 486,
             "right": 1222,
-            "contentChars": 556
+            "contentChars": 564
           }
         ]
       },
@@ -673,7 +673,7 @@
             "width": 326,
             "left": 40,
             "right": 366,
-            "contentChars": 556
+            "contentChars": 564
           }
         ]
       },
