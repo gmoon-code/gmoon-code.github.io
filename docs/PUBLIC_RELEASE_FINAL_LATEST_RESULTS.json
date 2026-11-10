@@ -1,12 +1,12 @@
 {
-  "sourceHead": "714a00b0f3fbe4f8a2125f4dd5ba4228eaa63095",
+  "sourceHead": "ce957e375f3da65a40456d948478c1b124cc9cf9",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 22,
   "httpErrors": 2,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-714a00b0f3fb",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-ce957e375f3d",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -77,12 +77,11 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "42751938473",
-      "head_sha": "5facc92324b63e7985da6444952715b90ca2c4ee",
+      "run": "42752264100",
+      "head_sha": "9822e2e5983ce398897dad6958c147dca98bbef3",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "research-action.html",
-        "research-scoping.html"
+        "research-action.html"
       ],
       "failureCounts": {
         "failures": 0,
@@ -121,8 +120,7 @@
     {
       "category": "typography",
       "sourceModifiedSinceAudit": [
-        "research-action.html",
-        "research-scoping.html"
+        "research-action.html"
       ]
     },
     {
@@ -186,8 +184,7 @@
         {
           "category": "typography",
           "sourceModifiedSinceAudit": [
-            "research-action.html",
-            "research-scoping.html"
+            "research-action.html"
           ]
         },
         {
@@ -200,7 +197,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42752592269",
-  "run_sha": "714a00b0f3fbe4f8a2125f4dd5ba4228eaa63095",
+  "workflow_run_id": "42752610186",
+  "run_sha": "ce957e375f3da65a40456d948478c1b124cc9cf9",
   "exit_code": "1"
 }
