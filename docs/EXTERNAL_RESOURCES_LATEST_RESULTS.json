@@ -2,17 +2,17 @@
   "pages_scanned": 19,
   "distinct_destinations": 111,
   "counts": {
-    "reachable": 71,
-    "unverified": 40
+    "reachable": 69,
+    "unverified": 42
   },
   "by_category": {
     "external": {
-      "reachable": 50,
-      "unverified": 1
+      "reachable": 49,
+      "unverified": 2
     },
     "scholarly-identifier": {
-      "unverified": 39,
-      "reachable": 18
+      "unverified": 40,
+      "reachable": 17
     },
     "separate-site-application": {
       "reachable": 3
@@ -686,6 +686,25 @@
       "warnings": []
     },
     {
+      "url": "https://doi.org/10.22318/icls2023.243024",
+      "status": "unverified",
+      "category": "scholarly-identifier",
+      "pages": [
+        "research.html"
+      ],
+      "head": {
+        "code": 500,
+        "finalUrl": "https://repository.isls.org/handle/1/9855",
+        "error": "Internal Server Error"
+      },
+      "get": {
+        "code": 500,
+        "finalUrl": "https://repository.isls.org/handle/1/9855",
+        "error": "Internal Server Error"
+      },
+      "warnings": []
+    },
+    {
       "url": "https://doi.org/10.3102/0013189X20927363",
       "status": "unverified",
       "category": "scholarly-identifier",
@@ -780,6 +799,25 @@
         "error": "Forbidden"
       },
       "warnings": []
+    },
+    {
+      "url": "https://repository.isls.org/handle/1/10256",
+      "status": "unverified",
+      "category": "external",
+      "pages": [
+        "research.html"
+      ],
+      "head": {
+        "code": 500,
+        "finalUrl": "https://repository.isls.org/handle/1/10256",
+        "error": "Internal Server Error"
+      },
+      "get": {
+        "code": 500,
+        "finalUrl": "https://repository.isls.org/handle/1/10256",
+        "error": "Internal Server Error"
+      },
+      "warnings": []
     }
   ],
   "important_apps": [
@@ -801,29 +839,13 @@
   ],
   "limits": "HTTP availability is not content authenticity or DOI landing-page accuracy. 403, 429, DNS, SSL, and timeout results remain unverified.",
   "doi_registry": {
-    "checked": 39,
+    "checked": 40,
     "counts": {
-      "not-confirmed": 5,
-      "registered": 34
+      "registered": 29,
+      "not-confirmed": 11
     },
-    "secondary_index_matches": 5,
+    "secondary_index_matches": 11,
     "not_confirmed": [
-      {
-        "url": "https://doi.org/10.1002/sce.20264",
-        "doi": "10.1002/sce.20264",
-        "pages": [
-          "teaching-ap-biology.html"
-        ],
-        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.20264",
-        "publisherResult": 403,
-        "registry": "not-confirmed",
-        "crossrefStatus": 429,
-        "dataciteStatus": 404,
-        "openalexStatus": 200,
-        "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Recognizing mechanistic reasoning in student scientific inquiry: A framework for discourse analysis developed from philosophy of science",
-        "indexedYear": 2008
-      },
       {
         "url": "https://doi.org/10.1002/sce.21112",
         "doi": "10.1002/sce.21112",
@@ -841,36 +863,132 @@
         "indexedYear": 2014
       },
       {
-        "url": "https://doi.org/10.1080/03626784.2023.2200810",
-        "doi": "10.1080/03626784.2023.2200810",
+        "url": "https://doi.org/10.1002/sce.21588",
+        "doi": "10.1002/sce.21588",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/03626784.2023.2200810",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/sce.21588",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "You don’t know me: Welcoming gender diversity in schools via an ethic of hospitality",
-        "indexedYear": 2023
+        "indexedTitle": "“Estoy Explorando Science”: Emergent bilingual students problematizing electrical phenomena through translanguaging",
+        "indexedYear": 2020
       },
       {
-        "url": "https://doi.org/10.1093/biosci/biac013",
-        "doi": "10.1093/biosci/biac013",
+        "url": "https://doi.org/10.1002/tea.21459",
+        "doi": "10.1002/tea.21459",
         "pages": [
           "research.html"
         ],
-        "publisherLanding": "https://academic.oup.com/bioscience/article/72/5/481/6547662",
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21459",
         "publisherResult": 403,
         "registry": "not-confirmed",
         "crossrefStatus": 429,
         "dataciteStatus": 404,
         "openalexStatus": 200,
         "secondaryIndex": "OpenAlex",
-        "indexedTitle": "Six Principles for Embracing Gender and Sexual Diversity in Postsecondary Biology Classrooms",
-        "indexedYear": 2022
+        "indexedTitle": "Addressing the epistemic elephant in the room: Epistemic agency and the next generation science standards",
+        "indexedYear": 2018
+      },
+      {
+        "url": "https://doi.org/10.1002/tea.21944",
+        "doi": "10.1002/tea.21944",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://onlinelibrary.wiley.com/doi/10.1002/tea.21944",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Asset and deficit discourses of student ideas in science formative assessment co‐design",
+        "indexedYear": 2024
+      },
+      {
+        "url": "https://doi.org/10.1073/pnas.0706627104",
+        "doi": "10.1073/pnas.0706627104",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://pnas.org/doi/full/10.1073/pnas.0706627104",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Cultural mosaics and mental models of nature",
+        "indexedYear": 2007
+      },
+      {
+        "url": "https://doi.org/10.1080/03626784.2021.1947732",
+        "doi": "10.1080/03626784.2021.1947732",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/03626784.2021.1947732",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Getting dirty and coming clean: Sex education and the problem of expertise",
+        "indexedYear": 2021
+      },
+      {
+        "url": "https://doi.org/10.1080/10508400903452884",
+        "doi": "10.1080/10508400903452884",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://www.tandfonline.com/doi/full/10.1080/10508400903452884",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Conducting Video Research in the Learning Sciences: Guidance on Selection, Analysis, Technology, and Ethics",
+        "indexedYear": 2010
+      },
+      {
+        "url": "https://doi.org/10.1207/S1532690XCI2004_1",
+        "doi": "10.1207/S1532690XCI2004_1",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://www.tandfonline.com/doi/abs/10.1207/S1532690XCI2004_1",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Guiding Principles for Fostering Productive Disciplinary Engagement: Explaining an Emergent Argument in a Community of Learners Classroom",
+        "indexedYear": 2002
+      },
+      {
+        "url": "https://doi.org/10.22318/icls2023.243024",
+        "doi": "10.22318/icls2023.243024",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://repository.isls.org/handle/1/9855",
+        "publisherResult": 500,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Supporting Students’ Epistemic Agency to Revise a Class Criteria List for Scientific Models",
+        "indexedYear": 2023
       },
       {
         "url": "https://doi.org/10.3102/0013189X231206172",
@@ -887,12 +1005,28 @@
         "secondaryIndex": "OpenAlex",
         "indexedTitle": "Language Views for Scientific Sensemaking Matter: A Synthesis of Research on Multilingual Students’ Experiences with Science Practices Through a Translanguaging Lens",
         "indexedYear": 2023
+      },
+      {
+        "url": "https://doi.org/10.3102/0034654314558490",
+        "doi": "10.3102/0034654314558490",
+        "pages": [
+          "research.html"
+        ],
+        "publisherLanding": "https://journals.sagepub.com/doi/10.3102/0034654314558490",
+        "publisherResult": 403,
+        "registry": "not-confirmed",
+        "crossrefStatus": 429,
+        "dataciteStatus": 404,
+        "openalexStatus": 200,
+        "secondaryIndex": "OpenAlex",
+        "indexedTitle": "Representing Student Argumentation as Functionally Emergent From Scientific Activity",
+        "indexedYear": 2014
       }
     ],
     "unresolved": [],
     "limitation": "Crossref/DataCite registration is distinct from publisher access, correct article metadata or article availability. OpenAlex is independent secondary corroboration, not registration proof."
   },
-  "workflow_run_id": "42752434570",
-  "head_sha": "32353e9d01b31a7ec067205bb042958a7748fadd",
+  "workflow_run_id": "42757260187",
+  "head_sha": "f63107498f5ef54fcd90d91f5e69f45eba6d4ee3",
   "audit_exit_code": "0"
 }
