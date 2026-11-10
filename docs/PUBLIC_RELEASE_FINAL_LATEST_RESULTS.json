@@ -1,12 +1,12 @@
 {
-  "sourceHead": "6dcee6571f8d6cd9cec474dd6a2d013bbad4fbf7",
+  "sourceHead": "2d21d42919d4737c1c597e7b423657af4295bec2",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-6dcee6571f8d",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-2d21d42919d4",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -77,12 +77,10 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "42563793365",
-      "head_sha": "40403cc9b3ca741467ec62c60f94349c4d5ca5ac",
+      "run": "42740508669",
+      "head_sha": "b84750c6761f848c996b4886ec9f83cb73137093",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0,
         "combinedStressFailures": 0
@@ -117,12 +115,6 @@
     },
     {
       "category": "engines",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ]
-    },
-    {
-      "category": "typography",
       "sourceModifiedSinceAudit": [
         "research.html"
       ]
@@ -173,12 +165,6 @@
           ]
         },
         {
-          "category": "typography",
-          "sourceModifiedSinceAudit": [
-            "research.html"
-          ]
-        },
-        {
           "category": "interactions",
           "sourceModifiedSinceAudit": [
             "research.html"
@@ -188,7 +174,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42740556366",
-  "run_sha": "6dcee6571f8d6cd9cec474dd6a2d013bbad4fbf7",
+  "workflow_run_id": "42740665381",
+  "run_sha": "2d21d42919d4737c1c597e7b423657af4295bec2",
   "exit_code": "1"
 }
