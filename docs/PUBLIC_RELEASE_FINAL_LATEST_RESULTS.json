@@ -1,12 +1,12 @@
 {
-  "sourceHead": "8f42bfb8c0ae28069a2d173432a715cbc427b74c",
+  "sourceHead": "b84750c6761f848c996b4886ec9f83cb73137093",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
-  "verifiedExactMatches": 24,
-  "httpErrors": 0,
+  "verifiedExactMatches": 23,
+  "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-8f42bfb8c0ae",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-b84750c6761f",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -17,7 +17,9 @@
       "run": "42563793376",
       "head_sha": "40403cc9b3ca741467ec62c60f94349c4d5ca5ac",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "problems": 0
       }
@@ -27,7 +29,9 @@
       "run": "42563793422",
       "head_sha": "40403cc9b3ca741467ec62c60f94349c4d5ca5ac",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "issues": 42
       },
@@ -41,7 +45,9 @@
       "run": "42562662228",
       "head_sha": "34f4df9d678dfa69d85eee45e594eeb8bab2a71d",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "unverified": 0
       },
@@ -56,7 +62,9 @@
       "run": "42563793432",
       "head_sha": "40403cc9b3ca741467ec62c60f94349c4d5ca5ac",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "failures": 0
       }
@@ -66,7 +74,9 @@
       "run": "42563793580",
       "head_sha": "40403cc9b3ca741467ec62c60f94349c4d5ca5ac",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "failures": 0
       }
@@ -76,7 +86,9 @@
       "run": "42563793365",
       "head_sha": "40403cc9b3ca741467ec62c60f94349c4d5ca5ac",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "failures": 0,
         "combinedStressFailures": 0
@@ -87,7 +99,9 @@
       "run": "42563793515",
       "head_sha": "40403cc9b3ca741467ec62c60f94349c4d5ca5ac",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "failures": 0,
         "axeViolations": 0
@@ -100,11 +114,123 @@
       "note": "U1 route audit documents successful run 40825886279; legacy utility machine report refers to an early missing-script failure. Do not treat it as latest successful evidence."
     }
   },
-  "sourceDriftSinceAudits": [],
-  "pass": true,
-  "errors": [],
+  "sourceDriftSinceAudits": [
+    {
+      "category": "links",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "external",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "metadata",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "reflow",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "engines",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "typography",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "interactions",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    }
+  ],
+  "pass": false,
+  "errors": [
+    {
+      "path": "research.html",
+      "errors": [
+        "deployed bytes differ from checked-out production source"
+      ],
+      "firstDiff": [
+        "--- source\n",
+        "+++ deployed\n",
+        "@@ -94,4 +94,4 @@\n",
+        "       <p id=\"student-directed-inquiry\">Students' influence may also differ across the decisions within an inquiry. In a Grade 7 Science and Technology project, students chose to investigate Missing and Murdered Indigenous Women and Girls and developed a public Red Dress exhibition. Their sense of ownership coexisted with accounts of peers overlooking some ideas during collaboration (<a href=\"#reading-jao-2026\">Jao et al., 2026</a>). In another Grade 7 classroom, concerns about how a community survey might affect respondents became part of the criteria students and adults used to judge a responsible investigation (<a href=\"#reading-krishnamoorthy\">Krishnamoorthy et al., 2026</a>). Having a say in the topic of an investigation does not ensure that a student is heard as the work unfolds. The survey case raises another issue about whose concerns influence the criteria used to judge the inquiry. I would examine the moments when those judgments change what the group does next.</p>",
+        "-      <p>Authority is also shaped by what the classroom recognizes as legitimate knowledge and action. Productive disciplinary engagement connects student authority with responsibility to peers and access to resources for investigating a problem (<a href=\"#reading-engle\">Engle &amp; Conant, 2002</a>). In a sixth-grade geometry classroom, students' concepts developed alongside their participation in proposing and revising mathematical definitions, with the teacher supporting their growing agency in this disciplinary work (<a href=\"#reading-kobiela-lehrer\">Kobiela &amp; Lehrer, 2015</a>). Rightful presence brings a further concern into view, asking how historically unequal relations shape whose ways of knowing are recognized and whose challenges to classroom norms can have consequences (<a href=\"#reading-barton\">Calabrese Barton &amp; Tan, 2020</a>). Providing students with a choice of activities would not, on its own, show whether they could question the standards by which their explanations were assessed. An analysis of classroom interactions would need to attend to the authority exercised through those standards.</p>",
+        "-      <p>Teachers' interpretations may themselves become objects of inquiry when colleagues work together. In a four-year professional learning community, high school science teachers developed their attention to students' epistemic practices and evidence-based explanations (<a href=\"#reading-shim-thompson\">Shim &amp; Thompson, 2022</a>). A Grade 9 Applied Mathematics initiative offers a different view of collaboration, with teachers reporting learning from the joint development of classroom materials (<a href=\"#reading-jao-mcdougall\">Jao &amp; McDougall, 2015</a>). Rehearsals with prospective mathematics teachers reveal another issue for professional learning. Discussion centred on teaching approaches, with relatively few opportunities to consider students' mathematical thinking about definitions (<a href=\"#reading-kobiela-rehearsals\">Kobiela et al., 2023</a>). I would examine which aspects of student work teachers attend to together and how those interpretations inform subsequent lessons.</p>",
+        "+      <p>Authority is also shaped by what the classroom recognizes as legitimate knowledge and action. Productive disciplinary engagement connects student authority with responsibility to peers and access to resources for investigating a problem (<a href=\"#reading-engle\">Engle &amp; Conant, 2002</a>). Rightful presence brings a further concern into view, asking how historically unequal relations shape whose ways of knowing are recognized and whose challenges to classroom norms can have consequences (<a href=\"#reading-barton\">Calabrese Barton &amp; Tan, 2020</a>). Providing students with a choice of activities would not, on its own, show whether they could question the standards by which their explanations were assessed. An analysis of classroom interactions would need to attend to the authority exercised through those standards.</p>",
+        "+      <p>Teachers' interpretations may themselves become objects of inquiry when colleagues work together. In a four-year professional learning community, high school science teachers developed their attention to students' epistemic practices and evidence-based explanations (<a href=\"#reading-shim-thompson\">Shim &amp; Thompson, 2022</a>). A Grade 9 Applied Mathematics initiative offers a different view of collaboration, with teachers reporting learning from the joint development of classroom materials (<a href=\"#reading-jao-mcdougall\">Jao &amp; McDougall, 2015</a>). One study traces shifts in teachers' attention to students' epistemic practices, while the other draws on teachers' accounts of joint work. To examine how those changes reach students, I would follow discussions of student work into subsequent lessons.</p>",
+        "       <p>I am interested in moments when students' explanations or questions challenge an anticipated lesson. Scientific guidance remains necessary as teachers assess the mechanisms students propose. I would examine how the grounds for a teacher's judgment become available for discussion and whether students can influence what happens after that judgment. The relationship between disciplinary evaluation and classroom authority is where I hope to develop the next phase of my research.</p>",
+        "@@ -209,4 +209,2 @@\n",
+        "     <li id=\"reading-ko\">Ko, M.-L. M., &amp; Krist, C. (2019). Opening up curricula to redistribute epistemic agency: A framework for supporting science teaching. <em>Science Education, 103</em>(4), 979–1010. <a href=\"https://doi.org/10.1002/sce.21511\">https://doi.org/10.1002/sce.21511</a></li>",
+        "-    <li id=\"reading-kobiela-rehearsals\">Kobiela, M., Iacono, H., Cho, S., &amp; Chandrasekhar, V. (2023). Examining the potential of rehearsal interjections to support the teaching of mathematical practice: The case of mathematical defining. <em>Journal of Mathematics Teacher Education, 26</em>(6), 759–784. <a href=\"https://doi.org/10.1007/s10857-022-09545-4\">https://doi.org/10.1007/s10857-022-09545-4</a></li>",
+        "-    <li id=\"reading-kobiela-lehrer\">Kobiela, M., &amp; Lehrer, R. (2015). The codevelopment of mathematical concepts and the practice of defining. <em>Journal for Research in Mathematics Education, 46</em>(4), 423–454. <a href=\"https://doi.org/10.5951/jresematheduc.46.4.0423\">https://doi.org/10.5951/jresematheduc.46.4.0423</a></li>",
+        "     <li id=\"reading-krishnamoorthy\">Krishnamoorthy, R., Duncan, R. G., &amp; Tan, E. (2026). “That's just gonna make them upset”: Youth authoring emerging epistemic ideals through rightful presence. <em>Science Education, 110</em>(1), 33–52. <a href=\"https://doi.org/10.1002/sce.21938\">https://doi.org/10.1002/sce.21938</a></li>"
+      ]
+    },
+    {
+      "sourceDrift": [
+        {
+          "category": "links",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "external",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "metadata",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "reflow",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "engines",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "typography",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "interactions",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        }
+      ]
+    }
+  ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42564074144",
-  "run_sha": "8f42bfb8c0ae28069a2d173432a715cbc427b74c",
-  "exit_code": "0"
+  "workflow_run_id": "42740509309",
+  "run_sha": "b84750c6761f848c996b4886ec9f83cb73137093",
+  "exit_code": "1"
 }
