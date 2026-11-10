@@ -1,12 +1,12 @@
 {
-  "sourceHead": "0f9298485a24ac6d5e3e86f00e47c36a250d9ee5",
+  "sourceHead": "5facc92324b63e7985da6444952715b90ca2c4ee",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
-  "verifiedExactMatches": 24,
-  "httpErrors": 0,
+  "verifiedExactMatches": 23,
+  "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-0f9298485a24",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-5facc92324b6",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -17,7 +17,9 @@
       "run": "42751311462",
       "head_sha": "7869bf738b928de25cf5ad91b5037a666f8ea47a",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "problems": 0
       }
@@ -27,7 +29,9 @@
       "run": "42751311432",
       "head_sha": "7869bf738b928de25cf5ad91b5037a666f8ea47a",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "issues": 42
       },
@@ -41,7 +45,9 @@
       "run": "42751311500",
       "head_sha": "7869bf738b928de25cf5ad91b5037a666f8ea47a",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "unverified": 0
       },
@@ -56,7 +62,9 @@
       "run": "42751311750",
       "head_sha": "7869bf738b928de25cf5ad91b5037a666f8ea47a",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "failures": 0
       }
@@ -78,7 +86,9 @@
       "run": "42751311769",
       "head_sha": "7869bf738b928de25cf5ad91b5037a666f8ea47a",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "failures": 0,
         "combinedStressFailures": 0
@@ -89,7 +99,9 @@
       "run": "42751311502",
       "head_sha": "7869bf738b928de25cf5ad91b5037a666f8ea47a",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "failures": 0,
         "axeViolations": 0
@@ -104,7 +116,43 @@
   },
   "sourceDriftSinceAudits": [
     {
+      "category": "links",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "external",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "metadata",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "reflow",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
       "category": "engines",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "typography",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "interactions",
       "sourceModifiedSinceAudit": [
         "research.html"
       ]
@@ -113,9 +161,65 @@
   "pass": false,
   "errors": [
     {
+      "path": "research.html",
+      "errors": [
+        "deployed bytes differ from checked-out production source"
+      ],
+      "firstDiff": [
+        "--- source\n",
+        "+++ deployed\n",
+        "@@ -124,3 +124,3 @@\n",
+        "     <p>A student's written explanation preserves relationships expressed under the conditions of a particular task. Its interpretation becomes more complex when other records make additional reasoning visible. In my <a href=\"research-scoping.html\">scoping review</a>, researchers inferred science understanding from written responses, classroom interaction, and students' work with representations. Each route made different aspects of reasoning available, with different grounds for the claims researchers could draw. A relationship omitted from a final response may have appeared in an earlier conversation or representation, especially when the language permitted during discussion differs from that required in the submitted work.</p>",
+        "-    <p>What researchers recognize as evidence also depends on how language is conceptualized. A synthesis of science education studies found that linguistic and more expansive views of language were associated with attention to different scientific practices (<a href=\"#reading-gonzalez\">González-Howard et al., 2023</a>). The figure below records that distribution of research attention rather than differences in students' understanding. Scholarship on language and disciplinary practice raises a connected challenge, considering students' access to established ways of participating in school science alongside the linguistic resources schools recognize (<a href=\"#reading-grapin\">Grapin et al., 2023</a>). Therefore, the conceptual framing of an assessment affects both the contributions it invites and the grounds on which scientific understanding is inferred.</p>",
+        "+    <p>What researchers recognize as evidence also depends on how language is conceptualized. A synthesis of science education studies found that linguistic and more expansive views of language were associated with attention to different scientific practices (<a href=\"#reading-gonzalez\">González-Howard et al., 2023</a>). The figure below records that distribution of research attention rather than differences in students' understanding. Scholarship on language and disciplinary practice raises a connected challenge, considering students' access to established ways of participating in school science alongside the linguistic resources schools recognize (<a href=\"#reading-grapin\">Grapin et al., 2023</a>). The conceptual framing of an assessment therefore affects both the contributions it invites and the grounds on which scientific understanding is inferred.</p>",
+        "     <p>Classroom interactions show how those opportunities are negotiated in practice. Students working under an English-only policy in a Malaysian Grade 5 English-language classroom used translanguaging with peers, while classroom expectations and responses also constrained its use (<a href=\"#reading-rajendram\">Rajendram, 2023</a>). Access to linguistic resources is one condition of participation; another concerns what happens when ideas are questioned. Research on critique in middle-school science discussions examines how students' challenges and requests for justification can support epistemic agency (<a href=\"#reading-gonzalez-critique\">González-Howard &amp; McNeill, 2020</a>). Taken together, these concerns direct attention to the interaction itself, where the resources available for expression and the responses to a contribution shape what becomes possible to explain.</p>",
+        "@@ -159,3 +159,3 @@\n",
+        "   <div class=\"reading research-essay-prose\">",
+        "-    <p>The explanatory value of a biological classification depends on the processes it represents and the claims it is asked to support. A diagram linking chromosomes directly to reproductive anatomy may introduce a general pathway while leaving the mechanisms of gonadal determination, hormone production, and tissue response largely invisible. Clinical accounts of variation in sex development show why chromosomal information alone does not determine the full developmental account (<a href=\"#reading-arboleda\">Arboleda et al., 2014</a>; <a href=\"#reading-witchel\">Witchel, 2018</a>). Therefore, a student's question about an omitted pathway can become an inquiry into the model's scope and which additional relationships a scientifically adequate explanation would require.</p>",
+        "+    <p>The explanatory value of a biological classification depends on the processes it represents and the claims it is asked to support. A diagram linking chromosomes directly to reproductive anatomy may introduce a general pathway while leaving the mechanisms of gonadal determination, hormone production, and tissue response largely invisible. Clinical accounts of variation in sex development show why chromosomal information alone does not determine the full developmental account (<a href=\"#reading-arboleda\">Arboleda et al., 2014</a>; <a href=\"#reading-witchel\">Witchel, 2018</a>). A student's question about an omitted pathway can therefore become an inquiry into the model's scope and which additional relationships a scientifically adequate explanation would require.</p>",
+        "     <p>Problems arise when a biological observation is treated as evidence for claims that extend beyond its demonstrated relationships. Historical interpretations of the XYY chromosome pattern associated it with aggression through assumptions about masculinity (<a href=\"#reading-richardson\">Richardson, 2013</a>). A later systematic review found no statistical evidence that an additional Y chromosome, by itself, established a predisposition to aggression or criminal behaviour (<a href=\"#reading-xyy-review\">Re &amp; Birkhoff, 2015</a>). The contrast shows how a category can acquire an explanatory force that its evidence does not support. It also offers a concrete way to examine the additional observations and causal reasoning needed before extending a biological classification into a claim about behaviour.</p>"
+      ]
+    },
+    {
       "sourceDrift": [
         {
+          "category": "links",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "external",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "metadata",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "reflow",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
           "category": "engines",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "typography",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "interactions",
           "sourceModifiedSinceAudit": [
             "research.html"
           ]
@@ -124,7 +228,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42751675845",
-  "run_sha": "0f9298485a24ac6d5e3e86f00e47c36a250d9ee5",
+  "workflow_run_id": "42751938362",
+  "run_sha": "5facc92324b63e7985da6444952715b90ca2c4ee",
   "exit_code": "1"
 }
