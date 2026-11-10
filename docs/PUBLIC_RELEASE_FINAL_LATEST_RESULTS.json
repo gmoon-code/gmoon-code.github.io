@@ -1,12 +1,12 @@
 {
-  "sourceHead": "ce957e375f3da65a40456d948478c1b124cc9cf9",
+  "sourceHead": "19e75bb543b9830f85fe216e3dbd3c84ec29e871",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
-  "verifiedExactMatches": 22,
-  "httpErrors": 2,
+  "verifiedExactMatches": 24,
+  "httpErrors": 0,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-ce957e375f3d",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-19e75bb543b9",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -90,12 +90,10 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "42752263959",
-      "head_sha": "9822e2e5983ce398897dad6958c147dca98bbef3",
+      "run": "42752434554",
+      "head_sha": "32353e9d01b31a7ec067205bb042958a7748fadd",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research-action.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0,
         "axeViolations": 0
@@ -122,55 +120,10 @@
       "sourceModifiedSinceAudit": [
         "research-action.html"
       ]
-    },
-    {
-      "category": "interactions",
-      "sourceModifiedSinceAudit": [
-        "research-action.html"
-      ]
     }
   ],
   "pass": false,
   "errors": [
-    {
-      "path": "research-action.html",
-      "errors": [
-        "deployed bytes differ from checked-out production source"
-      ],
-      "firstDiff": [
-        "--- source\n",
-        "+++ deployed\n",
-        "@@ -12,4 +12,3 @@\n",
-        " <style id=\"moon-v2-live-layout\">@media (min-width:1025px){:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(5) > p:nth-of-type(2){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:954px!important;height:51px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}}",
-        "-@media (min-width:1025px){:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) :not(*){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:1059px!important;height:24px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}}",
-        "-@media (min-width:1025px){:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(5){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:1089px!important;height:943px!important;min-height:0!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(5) > div:nth-of-type(4) > p:nth-of-type(1){translate:0px 32px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(5) > div:nth-of-type(4) > h3:nth-of-type(1){translate:0px 23px!important;scale:1 1!important;transform-origin:top left!important;}}</style></head>",
-        "+@media (min-width:1025px){:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(7) > p:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:1059px!important;height:24px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}}</style></head>",
-        " <body class=\"theme-green\">",
-        "@@ -139,3 +138,3 @@\n",
-        "   </div>",
-        "-  ",
-        "+  <p class=\"research-table-note\">These descriptions paraphrase the de-identified records retained for analysis and are not verbatim excerpts. They illustrate two of the recorded comparison patterns; the counts for all ten pairs appear in the table above.</p>",
-        " </section>",
-        "@@ -164,3 +163,3 @@\n",
-        "   </div>",
-        "-  "
-      ]
-    },
-    {
-      "path": "research-scoping.html",
-      "errors": [
-        "deployed bytes differ from checked-out production source"
-      ],
-      "firstDiff": [
-        "--- source\n",
-        "+++ deployed\n",
-        "@@ -125,3 +125,3 @@\n",
-        "   <div class=\"research-example\">",
-        "-    ",
-        "+    <p class=\"meta\">Included study · Pierson, Clark, and Brady (2021)</p>",
-        "     <h3>Ecological modelling and language use</h3>"
-      ]
-    },
     {
       "sourceDrift": [
         {
@@ -186,18 +139,12 @@
           "sourceModifiedSinceAudit": [
             "research-action.html"
           ]
-        },
-        {
-          "category": "interactions",
-          "sourceModifiedSinceAudit": [
-            "research-action.html"
-          ]
         }
       ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42752610186",
-  "run_sha": "ce957e375f3da65a40456d948478c1b124cc9cf9",
+  "workflow_run_id": "42752764685",
+  "run_sha": "19e75bb543b9830f85fe216e3dbd3c84ec29e871",
   "exit_code": "1"
 }
