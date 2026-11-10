@@ -1,12 +1,12 @@
 {
-  "sourceHead": "506a726aa4543a98d1542b05e2edda144bd404c4",
+  "sourceHead": "abc134a1c6c49e741da0b655273bb8bf807a1b55",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-506a726aa454",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-abc134a1c6c4",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -29,7 +29,9 @@
       "run": "42743753325",
       "head_sha": "cc92276b91cd3a9bd7bcb38195c5d91442c3a03e",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "issues": 42
       },
@@ -43,7 +45,9 @@
       "run": "42743753642",
       "head_sha": "cc92276b91cd3a9bd7bcb38195c5d91442c3a03e",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "unverified": 0
       },
@@ -58,7 +62,9 @@
       "run": "42743753864",
       "head_sha": "cc92276b91cd3a9bd7bcb38195c5d91442c3a03e",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "failures": 0
       }
@@ -80,7 +86,9 @@
       "run": "42743753270",
       "head_sha": "cc92276b91cd3a9bd7bcb38195c5d91442c3a03e",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "failures": 0,
         "combinedStressFailures": 0
@@ -91,7 +99,9 @@
       "run": "42743753392",
       "head_sha": "cc92276b91cd3a9bd7bcb38195c5d91442c3a03e",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "failures": 0,
         "axeViolations": 0
@@ -112,7 +122,37 @@
       ]
     },
     {
+      "category": "external",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "metadata",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "reflow",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
       "category": "engines",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "typography",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "interactions",
       "sourceModifiedSinceAudit": [
         "research.html"
       ]
@@ -153,7 +193,37 @@
           ]
         },
         {
+          "category": "external",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "metadata",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "reflow",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
           "category": "engines",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "typography",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "interactions",
           "sourceModifiedSinceAudit": [
             "research.html"
           ]
@@ -162,7 +232,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42744846930",
-  "run_sha": "506a726aa4543a98d1542b05e2edda144bd404c4",
+  "workflow_run_id": "42744933567",
+  "run_sha": "abc134a1c6c49e741da0b655273bb8bf807a1b55",
   "exit_code": "1"
 }
