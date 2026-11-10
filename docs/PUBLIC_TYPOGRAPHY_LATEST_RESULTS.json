@@ -1,6 +1,32 @@
 {
-  "error": "Missing results",
-  "workflow_run_id": "42757260365",
-  "head_sha": "f63107498f5ef54fcd90d91f5e69f45eba6d4ee3",
-  "exit_code": ""
+  "modes": [
+    "injected WCAG 1.4.12 paragraph/line/letter/word spacing",
+    "user-style computed-font-size ×2 simulation",
+    "supplemental combined-stress across narrow and breakpoint widths"
+  ],
+  "publicPages": 18,
+  "cases": 111,
+  "individualRequirementCases": 92,
+  "combinedStressCases": 19,
+  "failedCount": 0,
+  "failures": [],
+  "combinedStressFailedCount": 0,
+  "combinedStressFailures": [],
+  "advisories": [],
+  "byEngine": {
+    "chromium": {
+      "cases": 81,
+      "individualFailures": 0,
+      "combinedStressFailures": 0
+    },
+    "firefox": {
+      "cases": 30,
+      "individualFailures": 0,
+      "combinedStressFailures": 0
+    }
+  },
+  "caveats": "The two reading preference tests apply independently. Combined maximum-spacing plus 200% text at 320 CSS pixels is explicitly a supplementary stress case, and any such overflow remains open even when the independent-test exit code is zero. Inline spacing overrides model the priority of a user-origin accessibility stylesheet over author-important declarations, but are not an actual browser user-stylesheet installation. Computed font-size doubling is not native browser text-only zoom. Automated results do not certify WCAG.",
+  "workflow_run_id": "42757409210",
+  "head_sha": "90f1189c6dc3d9e738b8b7484f582cd0854c2fb6",
+  "exit_code": "0"
 }
