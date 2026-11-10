@@ -1,12 +1,12 @@
 {
-  "sourceHead": "9c863567cece9dc32b1571f672754ab98e1a1252",
+  "sourceHead": "b2e9b74459f835a9bfa6735bcad7b3cd0dca4111",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-9c863567cece",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-b2e9b74459f8",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -75,12 +75,10 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "42744933798",
-      "head_sha": "abc134a1c6c49e741da0b655273bb8bf807a1b55",
+      "run": "42746199470",
+      "head_sha": "a6b17afbb17ff27122951ba38f4f7e3a46fbbcd5",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 0,
         "combinedStressFailures": 0
@@ -107,12 +105,6 @@
   "sourceDriftSinceAudits": [
     {
       "category": "engines",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ]
-    },
-    {
-      "category": "typography",
       "sourceModifiedSinceAudit": [
         "research.html"
       ]
@@ -149,18 +141,12 @@
           "sourceModifiedSinceAudit": [
             "research.html"
           ]
-        },
-        {
-          "category": "typography",
-          "sourceModifiedSinceAudit": [
-            "research.html"
-          ]
         }
       ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "42746327308",
-  "run_sha": "9c863567cece9dc32b1571f672754ab98e1a1252",
+  "workflow_run_id": "42746358312",
+  "run_sha": "b2e9b74459f835a9bfa6735bcad7b3cd0dca4111",
   "exit_code": "1"
 }
