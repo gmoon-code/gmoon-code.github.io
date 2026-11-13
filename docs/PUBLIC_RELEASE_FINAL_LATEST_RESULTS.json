@@ -1,12 +1,12 @@
 {
-  "sourceHead": "5e7d5e1e9772edff2f4ef482b89099edb297ebeb",
+  "sourceHead": "52c10ca65d6dea72dcda13ea2143b213ed47ecf0",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-5e7d5e1e9772",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-52c10ca65d6d",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -24,18 +24,16 @@
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "42775824999",
-      "head_sha": "381d6bafdcc98e8cb8629c3f8bc665ea3673a92d",
+      "run": "43347755845",
+      "head_sha": "d85d4b2a5cb6c8089477d57f9df83ccedb3e5bc2",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "pungmul.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
-        "issues": 42
+        "issues": 40
       },
       "counts": {
-        "reachable": 69,
-        "unverified": 42
+        "reachable": 71,
+        "unverified": 40
       }
     },
     "metadata": {
@@ -112,12 +110,6 @@
   },
   "sourceDriftSinceAudits": [
     {
-      "category": "external",
-      "sourceModifiedSinceAudit": [
-        "pungmul.html"
-      ]
-    },
-    {
       "category": "reflow",
       "sourceModifiedSinceAudit": [
         "pungmul.html"
@@ -167,12 +159,6 @@
     {
       "sourceDrift": [
         {
-          "category": "external",
-          "sourceModifiedSinceAudit": [
-            "pungmul.html"
-          ]
-        },
-        {
           "category": "reflow",
           "sourceModifiedSinceAudit": [
             "pungmul.html"
@@ -200,7 +186,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "43347783828",
-  "run_sha": "5e7d5e1e9772edff2f4ef482b89099edb297ebeb",
+  "workflow_run_id": "43347794511",
+  "run_sha": "52c10ca65d6dea72dcda13ea2143b213ed47ecf0",
   "exit_code": "1"
 }
