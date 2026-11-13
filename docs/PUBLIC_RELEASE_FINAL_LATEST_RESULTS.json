@@ -1,12 +1,12 @@
 {
-  "sourceHead": "52c10ca65d6dea72dcda13ea2143b213ed47ecf0",
+  "sourceHead": "9141bded22aeb9ccc52caa160a87b8be9850a5a4",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-52c10ca65d6d",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-9141bded22ae",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -17,7 +17,9 @@
       "run": "43347755754",
       "head_sha": "d85d4b2a5cb6c8089477d57f9df83ccedb3e5bc2",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "pungmul.html"
+      ],
       "failureCounts": {
         "problems": 0
       }
@@ -27,7 +29,9 @@
       "run": "43347755845",
       "head_sha": "d85d4b2a5cb6c8089477d57f9df83ccedb3e5bc2",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "pungmul.html"
+      ],
       "failureCounts": {
         "issues": 40
       },
@@ -110,6 +114,18 @@
   },
   "sourceDriftSinceAudits": [
     {
+      "category": "links",
+      "sourceModifiedSinceAudit": [
+        "pungmul.html"
+      ]
+    },
+    {
+      "category": "external",
+      "sourceModifiedSinceAudit": [
+        "pungmul.html"
+      ]
+    },
+    {
       "category": "reflow",
       "sourceModifiedSinceAudit": [
         "pungmul.html"
@@ -144,12 +160,15 @@
       "firstDiff": [
         "--- source\n",
         "+++ deployed\n",
-        "@@ -20,3 +20,3 @@\n",
+        "@@ -20,5 +20,4 @@\n",
         " @media (min-width:1025px){:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(1) > div:nth-of-type(1) > p:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:535px!important;height:116px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(2){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:1089px!important;height:444px!important;min-height:0!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}}",
         "-@media (min-width:1025px){:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(1) > div:nth-of-type(1) > p:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:557px!important;height:118px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) :not(*){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:805px!important;height:56px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}}",
+        "-@media (min-width:1025px){:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(3) > div:nth-of-type(2) > p:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:983px!important;height:101px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(3) > div:nth-of-type(2) > p:nth-of-type(2){translate:0px -54px!important;scale:1 1!important;transform-origin:top left!important;width:991px!important;height:126px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(3){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:1089px!important;height:250px!important;min-height:0!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(4) > div:nth-of-type(2) > p:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:989px!important;height:83px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(4) > div:nth-of-type(2) > p:nth-of-type(2){translate:0px -4px!important;scale:1 1!important;transform-origin:top left!important;width:989px!important;height:103px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(5) > div:nth-of-type(2) > p:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:991px!important;height:81px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}}",
+        "-@media (min-width:1025px){:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(2){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:1089px!important;height:350px!important;min-height:0!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(4){position:relative!important;z-index:2!important;overflow:visible!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(4) > a:nth-of-type(1){overflow:visible!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(4) > a:nth-of-type(1) > img:nth-of-type(1){border-radius:14px!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(4) > a:nth-of-type(1) > img:nth-of-type(1){translate:0px 3px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(1){position:relative!important;z-index:2!important;overflow:visible!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(1) > a:nth-of-type(1){overflow:visible!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(1) > a:nth-of-type(1) > img:nth-of-type(1){border-radius:14px!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(1) > a:nth-of-type(1) > img:nth-of-type(1){translate:-8px 3px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(3){position:relative!important;z-index:2!important;overflow:visible!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(3) > a:nth-of-type(1){overflow:visible!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(3) > a:nth-of-type(1) > img:nth-of-type(1){border-radius:14px!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(3) > a:nth-of-type(1) > img:nth-of-type(1){translate:-8px 3px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(2){position:relative!important;z-index:2!important;overflow:visible!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(2) > a:nth-of-type(1){overflow:visible!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(2) > a:nth-of-type(1) > img:nth-of-type(1){border-radius:14px!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(2) > a:nth-of-type(1) > img:nth-of-type(1){translate:-8px 3px!important;scale:1 1!important;transform-origin:top left!important;}}</style></head>",
         "+@media (min-width:1025px){:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(1) > div:nth-of-type(1) > p:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:557px!important;height:118px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(2) > div:nth-of-type(2) > p:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:805px!important;height:56px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}}",
-        " @media (min-width:1025px){:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(3) > div:nth-of-type(2) > p:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:983px!important;height:101px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(3) > div:nth-of-type(2) > p:nth-of-type(2){translate:0px -54px!important;scale:1 1!important;transform-origin:top left!important;width:991px!important;height:126px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(3){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:1089px!important;height:250px!important;min-height:0!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(4) > div:nth-of-type(2) > p:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:989px!important;height:83px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(4) > div:nth-of-type(2) > p:nth-of-type(2){translate:0px -4px!important;scale:1 1!important;transform-origin:top left!important;width:989px!important;height:103px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(5) > div:nth-of-type(2) > p:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:991px!important;height:81px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}}</style></head>",
-        "@@ -56,3 +56,3 @@\n",
+        "+@media (min-width:1025px){:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(3) > div:nth-of-type(2) > p:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:983px!important;height:101px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(3) > div:nth-of-type(2) > p:nth-of-type(2){translate:0px -54px!important;scale:1 1!important;transform-origin:top left!important;width:991px!important;height:126px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(3){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:1089px!important;height:250px!important;min-height:0!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(4) > div:nth-of-type(2) > p:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:989px!important;height:83px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(4) > div:nth-of-type(2) > p:nth-of-type(2){translate:0px -4px!important;scale:1 1!important;transform-origin:top left!important;width:989px!important;height:103px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(5) > div:nth-of-type(2) > p:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:991px!important;height:81px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}}</style></head>",
+        " <body class=\"theme-yellow\">",
+        "@@ -57,3 +56,3 @@\n",
         "       <div class=\"reading pungmul-prose\">",
         "-        ",
         "+        <p>Our ensemble gave a formal concert in 2024 and has performed at Seoul Pride and smaller events supporting queer rights. The photographs show moments from rehearsal, a stage performance, and outdoor gatherings.</p>",
@@ -158,6 +177,18 @@
     },
     {
       "sourceDrift": [
+        {
+          "category": "links",
+          "sourceModifiedSinceAudit": [
+            "pungmul.html"
+          ]
+        },
+        {
+          "category": "external",
+          "sourceModifiedSinceAudit": [
+            "pungmul.html"
+          ]
+        },
         {
           "category": "reflow",
           "sourceModifiedSinceAudit": [
@@ -186,7 +217,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "43347794511",
-  "run_sha": "52c10ca65d6dea72dcda13ea2143b213ed47ecf0",
+  "workflow_run_id": "43347856783",
+  "run_sha": "9141bded22aeb9ccc52caa160a87b8be9850a5a4",
   "exit_code": "1"
 }
