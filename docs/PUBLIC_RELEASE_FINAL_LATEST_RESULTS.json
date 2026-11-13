@@ -1,12 +1,12 @@
 {
-  "sourceHead": "90f0ed0074982418c250146bf3ecae6dd881675d",
+  "sourceHead": "b81dad8aab86e448e4c010e3397960379e4b0c0d",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-90f0ed007498",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-b81dad8aab86",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -26,8 +26,8 @@
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "43347855950",
-      "head_sha": "9141bded22aeb9ccc52caa160a87b8be9850a5a4",
+      "run": "43347928413",
+      "head_sha": "d9c9380325e82166671621d205021414755eecb3",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "pungmul.html"
@@ -57,8 +57,8 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "43347856021",
-      "head_sha": "9141bded22aeb9ccc52caa160a87b8be9850a5a4",
+      "run": "43347928257",
+      "head_sha": "d9c9380325e82166671621d205021414755eecb3",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "pungmul.html"
@@ -94,8 +94,8 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "43347855882",
-      "head_sha": "9141bded22aeb9ccc52caa160a87b8be9850a5a4",
+      "run": "43347928542",
+      "head_sha": "d9c9380325e82166671621d205021414755eecb3",
       "exit": "0",
       "sourceModifiedSinceAudit": [
         "pungmul.html"
@@ -218,7 +218,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "43348073005",
-  "run_sha": "90f0ed0074982418c250146bf3ecae6dd881675d",
+  "workflow_run_id": "43348121351",
+  "run_sha": "b81dad8aab86e448e4c010e3397960379e4b0c0d",
   "exit_code": "1"
 }
