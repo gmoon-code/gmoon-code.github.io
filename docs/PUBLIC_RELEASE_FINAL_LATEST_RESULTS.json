@@ -1,12 +1,12 @@
 {
-  "sourceHead": "b81dad8aab86e448e4c010e3397960379e4b0c0d",
+  "sourceHead": "4d1c0ad9bcbed66bb4ec0b96e0ea1743abb72152",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
-  "verifiedExactMatches": 23,
-  "httpErrors": 1,
+  "verifiedExactMatches": 22,
+  "httpErrors": 2,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-b81dad8aab86",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-4d1c0ad9bcbe",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -14,11 +14,11 @@
   "auditEvidence": {
     "links": {
       "report": "docs/PUBLIC_LINKGRAPH_LATEST_RESULTS.json",
-      "run": "43347928382",
-      "head_sha": "d9c9380325e82166671621d205021414755eecb3",
+      "run": "43348072847",
+      "head_sha": "90f0ed0074982418c250146bf3ecae6dd881675d",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "pungmul.html"
+        "interests.html"
       ],
       "failureCounts": {
         "problems": 0
@@ -30,6 +30,7 @@
       "head_sha": "d9c9380325e82166671621d205021414755eecb3",
       "exit": "0",
       "sourceModifiedSinceAudit": [
+        "interests.html",
         "pungmul.html"
       ],
       "failureCounts": {
@@ -57,11 +58,11 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "43347928257",
-      "head_sha": "d9c9380325e82166671621d205021414755eecb3",
+      "run": "43348072870",
+      "head_sha": "90f0ed0074982418c250146bf3ecae6dd881675d",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "pungmul.html"
+        "interests.html"
       ],
       "failureCounts": {
         "failures": 0
@@ -69,10 +70,11 @@
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "43347755637",
-      "head_sha": "d85d4b2a5cb6c8089477d57f9df83ccedb3e5bc2",
+      "run": "43347928472",
+      "head_sha": "d9c9380325e82166671621d205021414755eecb3",
       "exit": "0",
       "sourceModifiedSinceAudit": [
+        "interests.html",
         "pungmul.html"
       ],
       "failureCounts": {
@@ -81,11 +83,11 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "43347855887",
-      "head_sha": "9141bded22aeb9ccc52caa160a87b8be9850a5a4",
+      "run": "43348073152",
+      "head_sha": "90f0ed0074982418c250146bf3ecae6dd881675d",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "pungmul.html"
+        "interests.html"
       ],
       "failureCounts": {
         "failures": 0,
@@ -94,11 +96,11 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "43347928542",
-      "head_sha": "d9c9380325e82166671621d205021414755eecb3",
+      "run": "43348073034",
+      "head_sha": "90f0ed0074982418c250146bf3ecae6dd881675d",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "pungmul.html"
+        "interests.html"
       ],
       "failureCounts": {
         "failures": 0,
@@ -116,42 +118,60 @@
     {
       "category": "links",
       "sourceModifiedSinceAudit": [
-        "pungmul.html"
+        "interests.html"
       ]
     },
     {
       "category": "external",
       "sourceModifiedSinceAudit": [
+        "interests.html",
         "pungmul.html"
       ]
     },
     {
       "category": "reflow",
       "sourceModifiedSinceAudit": [
-        "pungmul.html"
+        "interests.html"
       ]
     },
     {
       "category": "engines",
       "sourceModifiedSinceAudit": [
+        "interests.html",
         "pungmul.html"
       ]
     },
     {
       "category": "typography",
       "sourceModifiedSinceAudit": [
-        "pungmul.html"
+        "interests.html"
       ]
     },
     {
       "category": "interactions",
       "sourceModifiedSinceAudit": [
-        "pungmul.html"
+        "interests.html"
       ]
     }
   ],
   "pass": false,
   "errors": [
+    {
+      "path": "interests.html",
+      "errors": [
+        "deployed bytes differ from checked-out production source"
+      ],
+      "firstDiff": [
+        "--- source\n",
+        "+++ deployed\n",
+        "@@ -21,4 +21,3 @@\n",
+        " @media (min-width:1025px){:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(2){width:233px!important;max-width:none!important;min-width:0!important;height:auto!important;box-sizing:border-box!important;overflow:hidden!important;translate:-399px -292px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(2) > a:nth-of-type(1){display:block!important;width:100%!important;overflow:hidden!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(2) > a:nth-of-type(1) > img:nth-of-type(1){display:block!important;width:100%!important;max-width:100%!important;height:172px!important;box-sizing:border-box!important;object-fit:cover!important;translate:0 0!important;scale:1 1!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(2) > div:nth-of-type(2) > p:nth-of-type(1){translate:267px 22px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(2) > div:nth-of-type(2) > p:nth-of-type(2){translate:2px 53px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(1){width:383px!important;max-width:none!important;min-width:0!important;height:auto!important;box-sizing:border-box!important;overflow:hidden!important;translate:655px -139px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(1) > a:nth-of-type(1){display:block!important;width:100%!important;overflow:hidden!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(1) > a:nth-of-type(1) > img:nth-of-type(1){display:block!important;width:100%!important;max-width:100%!important;height:214px!important;box-sizing:border-box!important;object-fit:cover!important;translate:0 0!important;scale:1 1!important;}}",
+        "-@media (min-width:1025px){:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(2) > div:nth-of-type(2) > p:nth-of-type(2){translate:17px 53px!important;scale:1 1!important;transform-origin:top left!important;width:633px!important;height:128px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(2) > div:nth-of-type(2) > p:nth-of-type(1){translate:267px 22px!important;scale:1 1!important;transform-origin:top left!important;width:778px!important;height:130px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(2){width:233px!important;max-width:none!important;min-width:0!important;height:auto!important;box-sizing:border-box!important;overflow:hidden!important;translate:-388px -287px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(2) > a:nth-of-type(1){display:block!important;width:100%!important;overflow:hidden!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(2) > a:nth-of-type(1) > img:nth-of-type(1){display:block!important;width:100%!important;max-width:100%!important;height:172px!important;box-sizing:border-box!important;object-fit:cover!important;translate:0 0!important;scale:1 1!important;}}",
+        "-@media (min-width:1025px){:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(3) > div:nth-of-type(2) > article:nth-of-type(1) > div:nth-of-type(1) > p:nth-of-type(2){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(2) > div:nth-of-type(2) > p:nth-of-type(2){translate:10px 61px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(2) > div:nth-of-type(2) > p:nth-of-type(1){translate:269px 28px!important;scale:1 1!important;transform-origin:top left!important;}}</style></head>",
+        "+@media (min-width:1025px){:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(2) > div:nth-of-type(2) > p:nth-of-type(2){translate:17px 53px!important;scale:1 1!important;transform-origin:top left!important;width:633px!important;height:128px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(2) > div:nth-of-type(2) > p:nth-of-type(1){translate:267px 22px!important;scale:1 1!important;transform-origin:top left!important;width:778px!important;height:130px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(2){width:233px!important;max-width:none!important;min-width:0!important;height:auto!important;box-sizing:border-box!important;overflow:hidden!important;translate:-388px -287px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(2) > a:nth-of-type(1){display:block!important;width:100%!important;overflow:hidden!important;}:root:not(#__moon_v2_image_priority):not(#__moon_v2_image_priority) main > section:nth-of-type(2) > div:nth-of-type(3) > figure:nth-of-type(2) > a:nth-of-type(1) > img:nth-of-type(1){display:block!important;width:100%!important;max-width:100%!important;height:172px!important;box-sizing:border-box!important;object-fit:cover!important;translate:0 0!important;scale:1 1!important;}}</style></head>",
+        " <body class=\"theme-yellow\">"
+      ]
+    },
     {
       "path": "pungmul.html",
       "errors": [
@@ -181,44 +201,46 @@
         {
           "category": "links",
           "sourceModifiedSinceAudit": [
-            "pungmul.html"
+            "interests.html"
           ]
         },
         {
           "category": "external",
           "sourceModifiedSinceAudit": [
+            "interests.html",
             "pungmul.html"
           ]
         },
         {
           "category": "reflow",
           "sourceModifiedSinceAudit": [
-            "pungmul.html"
+            "interests.html"
           ]
         },
         {
           "category": "engines",
           "sourceModifiedSinceAudit": [
+            "interests.html",
             "pungmul.html"
           ]
         },
         {
           "category": "typography",
           "sourceModifiedSinceAudit": [
-            "pungmul.html"
+            "interests.html"
           ]
         },
         {
           "category": "interactions",
           "sourceModifiedSinceAudit": [
-            "pungmul.html"
+            "interests.html"
           ]
         }
       ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "43348121351",
-  "run_sha": "b81dad8aab86e448e4c010e3397960379e4b0c0d",
+  "workflow_run_id": "43348365817",
+  "run_sha": "4d1c0ad9bcbed66bb4ec0b96e0ea1743abb72152",
   "exit_code": "1"
 }
