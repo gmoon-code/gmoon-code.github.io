@@ -1,12 +1,12 @@
 {
-  "sourceHead": "66b67178a9491fa27c97fe9459ec7ba2eae83114",
+  "sourceHead": "57acb425613acbdcd70cf3253c9f2e4706145a6b",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-66b67178a949",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-57acb425613a",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -14,24 +14,20 @@
   "auditEvidence": {
     "links": {
       "report": "docs/PUBLIC_LINKGRAPH_LATEST_RESULTS.json",
-      "run": "44213563811",
-      "head_sha": "7a052a6b7d5db0da206ba05d470fe286bbf0f5fb",
+      "run": "44215597070",
+      "head_sha": "66b67178a9491fa27c97fe9459ec7ba2eae83114",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "problems": 0
       }
     },
     "external": {
       "report": "docs/EXTERNAL_RESOURCES_LATEST_RESULTS.json",
-      "run": "44213563934",
-      "head_sha": "7a052a6b7d5db0da206ba05d470fe286bbf0f5fb",
+      "run": "44215596831",
+      "head_sha": "66b67178a9491fa27c97fe9459ec7ba2eae83114",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "issues": 40
       },
@@ -42,12 +38,10 @@
     },
     "metadata": {
       "report": "docs/RESEARCH_METADATA_LATEST_RESULTS.json",
-      "run": "44213563817",
-      "head_sha": "7a052a6b7d5db0da206ba05d470fe286bbf0f5fb",
+      "run": "44215596675",
+      "head_sha": "66b67178a9491fa27c97fe9459ec7ba2eae83114",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "unverified": 0
       },
@@ -59,36 +53,30 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "44213564019",
-      "head_sha": "7a052a6b7d5db0da206ba05d470fe286bbf0f5fb",
+      "run": "44215596977",
+      "head_sha": "66b67178a9491fa27c97fe9459ec7ba2eae83114",
       "exit": "",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": 1
       }
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "44213564046",
-      "head_sha": "7a052a6b7d5db0da206ba05d470fe286bbf0f5fb",
+      "run": "44215597004",
+      "head_sha": "66b67178a9491fa27c97fe9459ec7ba2eae83114",
       "exit": "",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": null
       }
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "44213564004",
-      "head_sha": "7a052a6b7d5db0da206ba05d470fe286bbf0f5fb",
+      "run": "44215596876",
+      "head_sha": "66b67178a9491fa27c97fe9459ec7ba2eae83114",
       "exit": "",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": null,
         "combinedStressFailures": null
@@ -96,12 +84,10 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "44213563820",
-      "head_sha": "7a052a6b7d5db0da206ba05d470fe286bbf0f5fb",
+      "run": "44215597118",
+      "head_sha": "66b67178a9491fa27c97fe9459ec7ba2eae83114",
       "exit": "",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": null,
         "axeViolations": null
@@ -114,50 +100,7 @@
       "note": "U1 route audit documents successful run 40825886279; legacy utility machine report refers to an early missing-script failure. Do not treat it as latest successful evidence."
     }
   },
-  "sourceDriftSinceAudits": [
-    {
-      "category": "links",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ]
-    },
-    {
-      "category": "external",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ]
-    },
-    {
-      "category": "metadata",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ]
-    },
-    {
-      "category": "reflow",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ]
-    },
-    {
-      "category": "engines",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ]
-    },
-    {
-      "category": "typography",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ]
-    },
-    {
-      "category": "interactions",
-      "sourceModifiedSinceAudit": [
-        "research.html"
-      ]
-    }
-  ],
+  "sourceDriftSinceAudits": [],
   "pass": false,
   "errors": [
     {
@@ -177,52 +120,6 @@
       ]
     },
     {
-      "sourceDrift": [
-        {
-          "category": "links",
-          "sourceModifiedSinceAudit": [
-            "research.html"
-          ]
-        },
-        {
-          "category": "external",
-          "sourceModifiedSinceAudit": [
-            "research.html"
-          ]
-        },
-        {
-          "category": "metadata",
-          "sourceModifiedSinceAudit": [
-            "research.html"
-          ]
-        },
-        {
-          "category": "reflow",
-          "sourceModifiedSinceAudit": [
-            "research.html"
-          ]
-        },
-        {
-          "category": "engines",
-          "sourceModifiedSinceAudit": [
-            "research.html"
-          ]
-        },
-        {
-          "category": "typography",
-          "sourceModifiedSinceAudit": [
-            "research.html"
-          ]
-        },
-        {
-          "category": "interactions",
-          "sourceModifiedSinceAudit": [
-            "research.html"
-          ]
-        }
-      ]
-    },
-    {
       "unresolvedAudits": [
         "reflow",
         "engines",
@@ -232,7 +129,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "44215597031",
-  "run_sha": "66b67178a9491fa27c97fe9459ec7ba2eae83114",
+  "workflow_run_id": "44215667677",
+  "run_sha": "57acb425613acbdcd70cf3253c9f2e4706145a6b",
   "exit_code": "1"
 }
