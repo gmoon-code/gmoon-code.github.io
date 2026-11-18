@@ -1,12 +1,12 @@
 {
-  "sourceHead": "ece8cd2acbd67ae8005c3771e2adb2c8de2640ff",
+  "sourceHead": "7a052a6b7d5db0da206ba05d470fe286bbf0f5fb",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
-  "verifiedExactMatches": 24,
-  "httpErrors": 0,
+  "verifiedExactMatches": 23,
+  "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-ece8cd2acbd6",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-7a052a6b7d5d",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -18,7 +18,8 @@
       "head_sha": "90f0ed0074982418c250146bf3ecae6dd881675d",
       "exit": "0",
       "sourceModifiedSinceAudit": [
-        "interests.html"
+        "interests.html",
+        "research.html"
       ],
       "failureCounts": {
         "problems": 0
@@ -29,7 +30,9 @@
       "run": "43348232451",
       "head_sha": "a5f142ecbb0fef5683c419d99cb15d81fc2013f8",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "issues": 40
       },
@@ -43,7 +46,9 @@
       "run": "42775824941",
       "head_sha": "381d6bafdcc98e8cb8629c3f8bc665ea3673a92d",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "unverified": 0
       },
@@ -58,7 +63,9 @@
       "run": "43348232972",
       "head_sha": "a5f142ecbb0fef5683c419d99cb15d81fc2013f8",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "failures": 0
       }
@@ -68,7 +75,9 @@
       "run": "43348232402",
       "head_sha": "a5f142ecbb0fef5683c419d99cb15d81fc2013f8",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "failures": 0
       }
@@ -78,7 +87,9 @@
       "run": "43348232650",
       "head_sha": "a5f142ecbb0fef5683c419d99cb15d81fc2013f8",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "failures": 0,
         "combinedStressFailures": 0
@@ -89,7 +100,9 @@
       "run": "43348232524",
       "head_sha": "a5f142ecbb0fef5683c419d99cb15d81fc2013f8",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ],
       "failureCounts": {
         "failures": 0,
         "axeViolations": 0
@@ -106,25 +119,118 @@
     {
       "category": "links",
       "sourceModifiedSinceAudit": [
-        "interests.html"
+        "interests.html",
+        "research.html"
+      ]
+    },
+    {
+      "category": "external",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "metadata",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "reflow",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "engines",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "typography",
+      "sourceModifiedSinceAudit": [
+        "research.html"
+      ]
+    },
+    {
+      "category": "interactions",
+      "sourceModifiedSinceAudit": [
+        "research.html"
       ]
     }
   ],
   "pass": false,
   "errors": [
     {
+      "path": "research.html",
+      "errors": [
+        "deployed bytes differ from checked-out production source"
+      ],
+      "firstDiff": [
+        "--- source\n",
+        "+++ deployed\n",
+        "@@ -121,3 +121,3 @@\n",
+        "     <p>The setting in which scientific knowledge is expressed introduces a related problem. Community science activities can support meaningful relationships and practical engagement, although participants' experiences outside school may remain separated from the forms of science recognized within it (<a href=\"#reading-burke\">Burke &amp; Navas Iannini, 2021</a>; <a href=\"#reading-gonsalves-rahm\">Gonsalves &amp; Rahm, 2023</a>). In the conversation club examined by Gonsalves and Rahm, girls drew on shared interests and relationships to position themselves as knowledgeable about science. The recognition available through those interactions remained closely associated with the club. Their experiences invite examination of how opportunities to be recognized as knowledgeable travel across settings. Familiarity with scientific ideas may support participation in one community without producing comparable opportunities to contribute in another.</p>",
+        "-    <p>Even within a setting, the interpretation of a contribution can be shaped by expectations concerning the person offering it. Gendered judgments of scientific competence affected how doctoral physics students navigated recognition (<a href=\"#reading-gonsalves\">Gonsalves, 2014</a>). Accounts of women of colour pursuing science likewise show how recognition develops through different experiences and social relationships (<a href=\"#reading-carlone\">Carlone &amp; Johnson, 2007</a>). Learning, understood as participation in cultural practices, involves the relationships through which particular ways of knowing become meaningful and recognizable (<a href=\"#reading-cultural-process\">Nasir et al., 2014</a>). These perspectives complicate the apparent simplicity of assessing whether an explanation is scientifically credible. Even when the immediate task concerns a particular scientific claim, deficit assumptions about students and unexamined expectations of neutrality in school science can shape whose contributions are regarded as credible (<a href=\"#reading-burke-intersectionality\">Burke, 2022</a>).</p>",
+        "+    <p>Even within a setting, the interpretation of a contribution can be shaped by expectations concerning the person offering it. Gendered judgments of scientific competence affected how doctoral physics students navigated recognition (<a href=\"#reading-gonsalves\">Gonsalves, 2014</a>). Accounts of women of colour pursuing science likewise show how recognition develops through different experiences and social relationships (<a href=\"#reading-carlone\">Carlone &amp; Johnson, 2007</a>). Learning, understood as participation in cultural practices, involves the relationships through which particular ways of knowing become meaningful and recognizable (<a href=\"#reading-cultural-process\">Nasir et al., 2014</a>). These perspectives complicate the apparent simplicity of assessing whether an explanation is scientifically credible. An evaluator's judgment may involve assumptions about whose knowledge is credible, even when the immediate task concerns a particular scientific claim.</p>",
+        "     <p>Researchers encounter a comparable responsibility when deciding which contributions will count as evidence of learning. Choices about recording, selecting, and analysing classroom interactions shape what remains available for interpretation (<a href=\"#reading-derry\">Derry et al., 2010</a>). Haraway's account of situated knowledge further directs attention to the researcher's position within the production and interpretation of evidence (<a href=\"#reading-haraway\">Haraway, 1988</a>). A student's reference to familiar experience, for instance, may express a scientific relationship that becomes less visible when the contribution is classified under a broad category such as everyday knowledge. Understanding what the student has expressed requires examining the question that elicited the response and the surrounding interaction. It also requires making the researcher's interpretive decisions open to scrutiny.</p>",
+        "@@ -192,3 +192,2 @@\n",
+        "     <li id=\"reading-berland\">Berland, L. K., Schwarz, C. V., Krist, C., Kenyon, L., Lo, A. S., &amp; Reiser, B. J. (2016). Epistemologies in practice: Making scientific practices meaningful for students. <em>Journal of Research in Science Teaching, 53</em>(7), 1082–1112. <a href=\"https://doi.org/10.1002/tea.21257\">https://doi.org/10.1002/tea.21257</a></li>",
+        "-    <li id=\"reading-burke-intersectionality\">Burke, L. E. C.-A. (2022). Foregrounding intersectionality in considerations of diversity: Confronting discrimination in science teacher education. <em>Research in Science Education, 52</em>, 1157–1170. <a href=\"https://doi.org/10.1007/s11165-021-10001-1\">https://doi.org/10.1007/s11165-021-10001-1</a></li>",
+        "     <li id=\"reading-burke\">Burke, L.-A., &amp; Navas Iannini, A. M. (2021). Science engagement as insight into the science identity work nurtured in community-based science clubs. <em>Journal of Research in Science Teaching, 58</em>(9), 1425–1454. <a href=\"https://doi.org/10.1002/tea.21714\">https://doi.org/10.1002/tea.21714</a></li>"
+      ]
+    },
+    {
       "sourceDrift": [
         {
           "category": "links",
           "sourceModifiedSinceAudit": [
-            "interests.html"
+            "interests.html",
+            "research.html"
+          ]
+        },
+        {
+          "category": "external",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "metadata",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "reflow",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "engines",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "typography",
+          "sourceModifiedSinceAudit": [
+            "research.html"
+          ]
+        },
+        {
+          "category": "interactions",
+          "sourceModifiedSinceAudit": [
+            "research.html"
           ]
         }
       ]
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "43348762335",
-  "run_sha": "ece8cd2acbd67ae8005c3771e2adb2c8de2640ff",
+  "workflow_run_id": "44213563828",
+  "run_sha": "7a052a6b7d5db0da206ba05d470fe286bbf0f5fb",
   "exit_code": "1"
 }
