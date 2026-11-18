@@ -1,12 +1,12 @@
 {
-  "sourceHead": "6e66de13134bd1920aab8ce5faf8ad26d9fbf520",
+  "sourceHead": "001af9b84220fc8108f57acba54649bd78e47836",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
-  "verifiedExactMatches": 22,
-  "httpErrors": 2,
+  "verifiedExactMatches": 23,
+  "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-6e66de13134b",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-001af9b84220",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -17,7 +17,9 @@
       "run": "44215717065",
       "head_sha": "cf596f5225355cdc928c3262eddd8a4815838296",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "writing-biological-classification.html"
+      ],
       "failureCounts": {
         "problems": 0
       }
@@ -43,7 +45,9 @@
       "run": "44215717016",
       "head_sha": "cf596f5225355cdc928c3262eddd8a4815838296",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "writing-biological-classification.html"
+      ],
       "failureCounts": {
         "unverified": 0
       },
@@ -55,8 +59,8 @@
     },
     "reflow": {
       "report": "docs/ACCESSIBILITY_REFLOW_LATEST_RESULTS.json",
-      "run": "44215596977",
-      "head_sha": "66b67178a9491fa27c97fe9459ec7ba2eae83114",
+      "run": "44215717057",
+      "head_sha": "cf596f5225355cdc928c3262eddd8a4815838296",
       "exit": "",
       "sourceModifiedSinceAudit": [
         "writing-biological-classification.html"
@@ -67,8 +71,8 @@
     },
     "engines": {
       "report": "docs/PUBLIC_BROWSER_ENGINES_LATEST_RESULTS.json",
-      "run": "44215597004",
-      "head_sha": "66b67178a9491fa27c97fe9459ec7ba2eae83114",
+      "run": "44215717028",
+      "head_sha": "cf596f5225355cdc928c3262eddd8a4815838296",
       "exit": "",
       "sourceModifiedSinceAudit": [
         "writing-biological-classification.html"
@@ -82,7 +86,9 @@
       "run": "44215717027",
       "head_sha": "cf596f5225355cdc928c3262eddd8a4815838296",
       "exit": "",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "writing-biological-classification.html"
+      ],
       "failureCounts": {
         "failures": null,
         "combinedStressFailures": null
@@ -90,8 +96,8 @@
     },
     "interactions": {
       "report": "docs/PUBLIC_INTERACTIONS_LATEST_RESULTS.json",
-      "run": "44215597118",
-      "head_sha": "66b67178a9491fa27c97fe9459ec7ba2eae83114",
+      "run": "44215717105",
+      "head_sha": "cf596f5225355cdc928c3262eddd8a4815838296",
       "exit": "",
       "sourceModifiedSinceAudit": [
         "writing-biological-classification.html"
@@ -110,7 +116,19 @@
   },
   "sourceDriftSinceAudits": [
     {
+      "category": "links",
+      "sourceModifiedSinceAudit": [
+        "writing-biological-classification.html"
+      ]
+    },
+    {
       "category": "external",
+      "sourceModifiedSinceAudit": [
+        "writing-biological-classification.html"
+      ]
+    },
+    {
+      "category": "metadata",
       "sourceModifiedSinceAudit": [
         "writing-biological-classification.html"
       ]
@@ -128,6 +146,12 @@
       ]
     },
     {
+      "category": "typography",
+      "sourceModifiedSinceAudit": [
+        "writing-biological-classification.html"
+      ]
+    },
+    {
       "category": "interactions",
       "sourceModifiedSinceAudit": [
         "writing-biological-classification.html"
@@ -137,22 +161,6 @@
   "pass": false,
   "errors": [
     {
-      "path": "research.html",
-      "errors": [
-        "deployed bytes differ from checked-out production source"
-      ],
-      "firstDiff": [
-        "--- source\n",
-        "+++ deployed\n",
-        "@@ -27,4 +27,3 @@\n",
-        " @media (min-width:1025px){:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > p:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:453px!important;height:355px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > p:nth-of-type(2){translate:0px -2px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > p:nth-of-type(3){translate:0px -3px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > p:nth-of-type(4){translate:0px -6px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > p:nth-of-type(5){translate:1px -13px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > p:nth-of-type(6){translate:0px -25px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(1){translate:-1px -48px!important;scale:1 1!important;transform-origin:top left!important;width:760px!important;height:1798px!important;min-height:0!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}}",
-        "-@media (min-width:1025px){:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(2) > section:nth-of-type(2){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:760px!important;height:1591px!important;min-height:0!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}}",
-        "-@media (min-width:1025px){:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(2) > section:nth-of-type(1) > div:nth-of-type(2) > p:nth-of-type(4){translate:-2px 104px!important;scale:1 1!important;transform-origin:top left!important;}:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(2) > section:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:760px!important;height:1263px!important;min-height:0!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}}</style></head>",
-        "+@media (min-width:1025px){:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > div:nth-of-type(1) > div:nth-of-type(1) > section:nth-of-type(2) > section:nth-of-type(2) > section:nth-of-type(2){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:760px!important;height:1591px!important;min-height:0!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}}</style></head>",
-        " <body class=\"theme-green\">"
-      ]
-    },
-    {
       "path": "writing-biological-classification.html",
       "errors": [
         "deployed bytes differ from checked-out production source"
@@ -160,18 +168,29 @@
       "firstDiff": [
         "--- source\n",
         "+++ deployed\n",
-        "@@ -37,4 +37,3 @@\n",
-        "   </style>",
-        "-<style id=\"moon-v2-live-layout\">:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(1) > div:nth-of-type(1) > h1:nth-of-type(1){font-size:55px!important;}",
-        "-@media (min-width:1025px){:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(1) > div:nth-of-type(1) > h1:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:1061px!important;height:68px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}}</style></head>",
-        "+<style id=\"moon-v2-live-layout\"></style></head>",
-        " <body class=\"theme-green\">"
+        "@@ -48,3 +48,3 @@\n",
+        "   <main id=\"main\" tabindex=\"-1\" class=\"site-shell page research-overview research-hub research-essay classification-essay\">",
+        "-    <nav class=\"breadcrumb\" aria-label=\"Breadcrumb\"><a href=\"research.html\">Research</a> / Related writing</nav>",
+        "+    <nav class=\"breadcrumb\" aria-label=\"Breadcrumb\"><a href=\"research.html\">Research</a> / Scholarly writing</nav>",
+        "     "
       ]
     },
     {
       "sourceDrift": [
         {
+          "category": "links",
+          "sourceModifiedSinceAudit": [
+            "writing-biological-classification.html"
+          ]
+        },
+        {
           "category": "external",
+          "sourceModifiedSinceAudit": [
+            "writing-biological-classification.html"
+          ]
+        },
+        {
+          "category": "metadata",
           "sourceModifiedSinceAudit": [
             "writing-biological-classification.html"
           ]
@@ -184,6 +203,12 @@
         },
         {
           "category": "engines",
+          "sourceModifiedSinceAudit": [
+            "writing-biological-classification.html"
+          ]
+        },
+        {
+          "category": "typography",
           "sourceModifiedSinceAudit": [
             "writing-biological-classification.html"
           ]
@@ -206,7 +231,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "44215756526",
-  "run_sha": "6e66de13134bd1920aab8ce5faf8ad26d9fbf520",
+  "workflow_run_id": "44216102815",
+  "run_sha": "001af9b84220fc8108f57acba54649bd78e47836",
   "exit_code": "1"
 }
