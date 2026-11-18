@@ -1,18 +1,10 @@
 {
-  "scope": "18 public pages (About redirect separately completed under U1)",
-  "cases": 54,
-  "widths": [
-    320,
-    640,
-    1280
+  "failures": [
+    {
+      "error": "script failed to produce summary"
+    }
   ],
-  "axeScanCount": 36,
-  "darkAxeCount": 5,
-  "failedCases": 0,
-  "failures": [],
-  "rules": {},
-  "caveats": "CSS viewport equivalence to 200/400% reflow, not physical browser zoom. Automated axe findings do not certify WCAG. Exemptions apply only to intentional horizontal scroll containers.",
-  "workflow_run_id": "43348232972",
-  "head_sha": "a5f142ecbb0fef5683c419d99cb15d81fc2013f8",
-  "exit_code": "0"
+  "workflow_run_id": "44213564019",
+  "head_sha": "7a052a6b7d5db0da206ba05d470fe286bbf0f5fb",
+  "exit_code": ""
 }
