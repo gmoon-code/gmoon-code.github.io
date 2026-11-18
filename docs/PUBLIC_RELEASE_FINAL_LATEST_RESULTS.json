@@ -1,12 +1,12 @@
 {
-  "sourceHead": "57acb425613acbdcd70cf3253c9f2e4706145a6b",
+  "sourceHead": "cf596f5225355cdc928c3262eddd8a4815838296",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
-  "verifiedExactMatches": 23,
-  "httpErrors": 1,
+  "verifiedExactMatches": 22,
+  "httpErrors": 2,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-57acb425613a",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-cf596f522535",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -17,7 +17,9 @@
       "run": "44215597070",
       "head_sha": "66b67178a9491fa27c97fe9459ec7ba2eae83114",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "writing-biological-classification.html"
+      ],
       "failureCounts": {
         "problems": 0
       }
@@ -27,7 +29,9 @@
       "run": "44215596831",
       "head_sha": "66b67178a9491fa27c97fe9459ec7ba2eae83114",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "writing-biological-classification.html"
+      ],
       "failureCounts": {
         "issues": 40
       },
@@ -41,7 +45,9 @@
       "run": "44215596675",
       "head_sha": "66b67178a9491fa27c97fe9459ec7ba2eae83114",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "writing-biological-classification.html"
+      ],
       "failureCounts": {
         "unverified": 0
       },
@@ -56,7 +62,9 @@
       "run": "44215596977",
       "head_sha": "66b67178a9491fa27c97fe9459ec7ba2eae83114",
       "exit": "",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "writing-biological-classification.html"
+      ],
       "failureCounts": {
         "failures": 1
       }
@@ -66,7 +74,9 @@
       "run": "44215597004",
       "head_sha": "66b67178a9491fa27c97fe9459ec7ba2eae83114",
       "exit": "",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "writing-biological-classification.html"
+      ],
       "failureCounts": {
         "failures": null
       }
@@ -76,7 +86,9 @@
       "run": "44215596876",
       "head_sha": "66b67178a9491fa27c97fe9459ec7ba2eae83114",
       "exit": "",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "writing-biological-classification.html"
+      ],
       "failureCounts": {
         "failures": null,
         "combinedStressFailures": null
@@ -87,7 +99,9 @@
       "run": "44215597118",
       "head_sha": "66b67178a9491fa27c97fe9459ec7ba2eae83114",
       "exit": "",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "writing-biological-classification.html"
+      ],
       "failureCounts": {
         "failures": null,
         "axeViolations": null
@@ -100,7 +114,50 @@
       "note": "U1 route audit documents successful run 40825886279; legacy utility machine report refers to an early missing-script failure. Do not treat it as latest successful evidence."
     }
   },
-  "sourceDriftSinceAudits": [],
+  "sourceDriftSinceAudits": [
+    {
+      "category": "links",
+      "sourceModifiedSinceAudit": [
+        "writing-biological-classification.html"
+      ]
+    },
+    {
+      "category": "external",
+      "sourceModifiedSinceAudit": [
+        "writing-biological-classification.html"
+      ]
+    },
+    {
+      "category": "metadata",
+      "sourceModifiedSinceAudit": [
+        "writing-biological-classification.html"
+      ]
+    },
+    {
+      "category": "reflow",
+      "sourceModifiedSinceAudit": [
+        "writing-biological-classification.html"
+      ]
+    },
+    {
+      "category": "engines",
+      "sourceModifiedSinceAudit": [
+        "writing-biological-classification.html"
+      ]
+    },
+    {
+      "category": "typography",
+      "sourceModifiedSinceAudit": [
+        "writing-biological-classification.html"
+      ]
+    },
+    {
+      "category": "interactions",
+      "sourceModifiedSinceAudit": [
+        "writing-biological-classification.html"
+      ]
+    }
+  ],
   "pass": false,
   "errors": [
     {
@@ -120,6 +177,68 @@
       ]
     },
     {
+      "path": "writing-biological-classification.html",
+      "errors": [
+        "deployed bytes differ from checked-out production source"
+      ],
+      "firstDiff": [
+        "--- source\n",
+        "+++ deployed\n",
+        "@@ -37,4 +37,3 @@\n",
+        "   </style>",
+        "-<style id=\"moon-v2-live-layout\">:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(1) > div:nth-of-type(1) > h1:nth-of-type(1){font-size:55px!important;}",
+        "-@media (min-width:1025px){:root:not(#__moon_v2_box_priority):not(#__moon_v2_box_priority) main > section:nth-of-type(1) > div:nth-of-type(1) > h1:nth-of-type(1){translate:0px 0px!important;scale:1 1!important;transform-origin:top left!important;width:1061px!important;height:68px!important;box-sizing:border-box!important;min-width:0!important;flex-shrink:0!important;max-width:none!important;max-height:none!important;overflow:visible!important;}}</style></head>",
+        "+<style id=\"moon-v2-live-layout\"></style></head>",
+        " <body class=\"theme-green\">"
+      ]
+    },
+    {
+      "sourceDrift": [
+        {
+          "category": "links",
+          "sourceModifiedSinceAudit": [
+            "writing-biological-classification.html"
+          ]
+        },
+        {
+          "category": "external",
+          "sourceModifiedSinceAudit": [
+            "writing-biological-classification.html"
+          ]
+        },
+        {
+          "category": "metadata",
+          "sourceModifiedSinceAudit": [
+            "writing-biological-classification.html"
+          ]
+        },
+        {
+          "category": "reflow",
+          "sourceModifiedSinceAudit": [
+            "writing-biological-classification.html"
+          ]
+        },
+        {
+          "category": "engines",
+          "sourceModifiedSinceAudit": [
+            "writing-biological-classification.html"
+          ]
+        },
+        {
+          "category": "typography",
+          "sourceModifiedSinceAudit": [
+            "writing-biological-classification.html"
+          ]
+        },
+        {
+          "category": "interactions",
+          "sourceModifiedSinceAudit": [
+            "writing-biological-classification.html"
+          ]
+        }
+      ]
+    },
+    {
       "unresolvedAudits": [
         "reflow",
         "engines",
@@ -129,7 +248,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "44215667677",
-  "run_sha": "57acb425613acbdcd70cf3253c9f2e4706145a6b",
+  "workflow_run_id": "44215716967",
+  "run_sha": "cf596f5225355cdc928c3262eddd8a4815838296",
   "exit_code": "1"
 }
