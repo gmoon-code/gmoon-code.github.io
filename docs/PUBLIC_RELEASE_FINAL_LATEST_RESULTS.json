@@ -1,12 +1,12 @@
 {
-  "sourceHead": "cf596f5225355cdc928c3262eddd8a4815838296",
+  "sourceHead": "6e66de13134bd1920aab8ce5faf8ad26d9fbf520",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 22,
   "httpErrors": 2,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-cf596f522535",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-6e66de13134b",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -14,12 +14,10 @@
   "auditEvidence": {
     "links": {
       "report": "docs/PUBLIC_LINKGRAPH_LATEST_RESULTS.json",
-      "run": "44215597070",
-      "head_sha": "66b67178a9491fa27c97fe9459ec7ba2eae83114",
+      "run": "44215717065",
+      "head_sha": "cf596f5225355cdc928c3262eddd8a4815838296",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "writing-biological-classification.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "problems": 0
       }
@@ -42,12 +40,10 @@
     },
     "metadata": {
       "report": "docs/RESEARCH_METADATA_LATEST_RESULTS.json",
-      "run": "44215596675",
-      "head_sha": "66b67178a9491fa27c97fe9459ec7ba2eae83114",
+      "run": "44215717016",
+      "head_sha": "cf596f5225355cdc928c3262eddd8a4815838296",
       "exit": "0",
-      "sourceModifiedSinceAudit": [
-        "writing-biological-classification.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "unverified": 0
       },
@@ -83,12 +79,10 @@
     },
     "typography": {
       "report": "docs/PUBLIC_TYPOGRAPHY_LATEST_RESULTS.json",
-      "run": "44215596876",
-      "head_sha": "66b67178a9491fa27c97fe9459ec7ba2eae83114",
+      "run": "44215717027",
+      "head_sha": "cf596f5225355cdc928c3262eddd8a4815838296",
       "exit": "",
-      "sourceModifiedSinceAudit": [
-        "writing-biological-classification.html"
-      ],
+      "sourceModifiedSinceAudit": [],
       "failureCounts": {
         "failures": null,
         "combinedStressFailures": null
@@ -116,19 +110,7 @@
   },
   "sourceDriftSinceAudits": [
     {
-      "category": "links",
-      "sourceModifiedSinceAudit": [
-        "writing-biological-classification.html"
-      ]
-    },
-    {
       "category": "external",
-      "sourceModifiedSinceAudit": [
-        "writing-biological-classification.html"
-      ]
-    },
-    {
-      "category": "metadata",
       "sourceModifiedSinceAudit": [
         "writing-biological-classification.html"
       ]
@@ -141,12 +123,6 @@
     },
     {
       "category": "engines",
-      "sourceModifiedSinceAudit": [
-        "writing-biological-classification.html"
-      ]
-    },
-    {
-      "category": "typography",
       "sourceModifiedSinceAudit": [
         "writing-biological-classification.html"
       ]
@@ -195,19 +171,7 @@
     {
       "sourceDrift": [
         {
-          "category": "links",
-          "sourceModifiedSinceAudit": [
-            "writing-biological-classification.html"
-          ]
-        },
-        {
           "category": "external",
-          "sourceModifiedSinceAudit": [
-            "writing-biological-classification.html"
-          ]
-        },
-        {
-          "category": "metadata",
           "sourceModifiedSinceAudit": [
             "writing-biological-classification.html"
           ]
@@ -220,12 +184,6 @@
         },
         {
           "category": "engines",
-          "sourceModifiedSinceAudit": [
-            "writing-biological-classification.html"
-          ]
-        },
-        {
-          "category": "typography",
           "sourceModifiedSinceAudit": [
             "writing-biological-classification.html"
           ]
@@ -248,7 +206,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "44215716967",
-  "run_sha": "cf596f5225355cdc928c3262eddd8a4815838296",
+  "workflow_run_id": "44215756526",
+  "run_sha": "6e66de13134bd1920aab8ce5faf8ad26d9fbf520",
   "exit_code": "1"
 }
