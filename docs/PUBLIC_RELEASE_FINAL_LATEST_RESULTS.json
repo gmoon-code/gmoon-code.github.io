@@ -1,12 +1,12 @@
 {
-  "sourceHead": "066dfddcbb58345b76c598db23f9d3bd82565aa5",
+  "sourceHead": "ac72e56b0cf0dae5cc86e8f380f6c1163442d8f7",
   "htmlRoutes": 19,
   "sharedAssets": 5,
   "deployedChecks": 24,
   "verifiedExactMatches": 23,
   "httpErrors": 1,
   "customNested404": {
-    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-066dfddcbb58",
+    "url": "https://gmoon-code.github.io/missing/s8-release-reconciliation-ac72e56b0cf0",
     "status": 404,
     "custom404": true,
     "errors": []
@@ -17,7 +17,9 @@
       "run": "44216102868",
       "head_sha": "001af9b84220fc8108f57acba54649bd78e47836",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "interests.html"
+      ],
       "failureCounts": {
         "problems": 0
       }
@@ -27,7 +29,9 @@
       "run": "44216102996",
       "head_sha": "001af9b84220fc8108f57acba54649bd78e47836",
       "exit": "0",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "interests.html"
+      ],
       "failureCounts": {
         "issues": 40
       },
@@ -56,7 +60,9 @@
       "run": "44216102739",
       "head_sha": "001af9b84220fc8108f57acba54649bd78e47836",
       "exit": "",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "interests.html"
+      ],
       "failureCounts": {
         "failures": 1
       }
@@ -66,7 +72,9 @@
       "run": "44216103162",
       "head_sha": "001af9b84220fc8108f57acba54649bd78e47836",
       "exit": "",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "interests.html"
+      ],
       "failureCounts": {
         "failures": null
       }
@@ -76,7 +84,9 @@
       "run": "44216102719",
       "head_sha": "001af9b84220fc8108f57acba54649bd78e47836",
       "exit": "",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "interests.html"
+      ],
       "failureCounts": {
         "failures": null,
         "combinedStressFailures": null
@@ -87,7 +97,9 @@
       "run": "44216102920",
       "head_sha": "001af9b84220fc8108f57acba54649bd78e47836",
       "exit": "",
-      "sourceModifiedSinceAudit": [],
+      "sourceModifiedSinceAudit": [
+        "interests.html"
+      ],
       "failureCounts": {
         "failures": null,
         "axeViolations": null
@@ -100,22 +112,99 @@
       "note": "U1 route audit documents successful run 40825886279; legacy utility machine report refers to an early missing-script failure. Do not treat it as latest successful evidence."
     }
   },
-  "sourceDriftSinceAudits": [],
+  "sourceDriftSinceAudits": [
+    {
+      "category": "links",
+      "sourceModifiedSinceAudit": [
+        "interests.html"
+      ]
+    },
+    {
+      "category": "external",
+      "sourceModifiedSinceAudit": [
+        "interests.html"
+      ]
+    },
+    {
+      "category": "reflow",
+      "sourceModifiedSinceAudit": [
+        "interests.html"
+      ]
+    },
+    {
+      "category": "engines",
+      "sourceModifiedSinceAudit": [
+        "interests.html"
+      ]
+    },
+    {
+      "category": "typography",
+      "sourceModifiedSinceAudit": [
+        "interests.html"
+      ]
+    },
+    {
+      "category": "interactions",
+      "sourceModifiedSinceAudit": [
+        "interests.html"
+      ]
+    }
+  ],
   "pass": false,
   "errors": [
     {
-      "path": "writing-biological-classification.html",
+      "path": "interests.html",
       "errors": [
         "deployed bytes differ from checked-out production source"
       ],
       "firstDiff": [
         "--- source\n",
         "+++ deployed\n",
-        "@@ -48,3 +48,3 @@\n",
-        "   <main id=\"main\" tabindex=\"-1\" class=\"site-shell page research-overview research-hub research-essay classification-essay\">",
-        "-    <nav class=\"breadcrumb\" aria-label=\"Breadcrumb\"><a href=\"research.html\">Research</a> / Related writing</nav>",
-        "+    <nav class=\"breadcrumb\" aria-label=\"Breadcrumb\"><a href=\"research.html\">Research</a> / Scholarly writing</nav>",
-        "     "
+        "@@ -44,3 +44,3 @@\n",
+        "         <p>I joined a queer pungmul (풍물) ensemble because I wanted to learn traditional Korean music and find people with whom I could play it. I love the force of the drums and gongs and the way a performance develops as everyone listens and responds to one another. Learning more about the music has also introduced me to histories beyond our group, from communal gatherings to performances associated with South Korea's democracy movement. I am grateful to have a small place in this living tradition.</p>",
+        "-        <p>Our ensemble gave a formal concert in 2024, and we participate in the Seoul Pride parade every year. We also busk seasonally and perform at smaller events supporting queer rights. Through these performances, I have found a way to share a Korean cultural tradition with people among whom I feel at home. In a country where 2SLGBTQ+ rights remain contested, playing in public carries a significance beyond the music. I am glad that we can be heard there, together.</p>",
+        "+        <p>Our ensemble gave a formal concert in 2024, and we participate in the Seoul Pride parade every year. We also busk seasonally and perform at smaller events supporting queer rights. Through these performances, I have found a way to share a Korean cultural tradition with people among whom I feel at home. In a country where LGBTQ rights remain contested, playing in public carries a significance beyond the music. I am glad that we can be heard there, together.</p>",
+        "       </div>"
+      ]
+    },
+    {
+      "sourceDrift": [
+        {
+          "category": "links",
+          "sourceModifiedSinceAudit": [
+            "interests.html"
+          ]
+        },
+        {
+          "category": "external",
+          "sourceModifiedSinceAudit": [
+            "interests.html"
+          ]
+        },
+        {
+          "category": "reflow",
+          "sourceModifiedSinceAudit": [
+            "interests.html"
+          ]
+        },
+        {
+          "category": "engines",
+          "sourceModifiedSinceAudit": [
+            "interests.html"
+          ]
+        },
+        {
+          "category": "typography",
+          "sourceModifiedSinceAudit": [
+            "interests.html"
+          ]
+        },
+        {
+          "category": "interactions",
+          "sourceModifiedSinceAudit": [
+            "interests.html"
+          ]
+        }
       ]
     },
     {
@@ -128,7 +217,7 @@
     }
   ],
   "limitations": "Checks public HTTP bytes at one point in time; future CDN updates are not guaranteed. External blocked sites are inconclusive. This does not replace physical mobile, native zoom, screen-reader speech or independent hosted-app audits.",
-  "workflow_run_id": "44216192305",
-  "run_sha": "066dfddcbb58345b76c598db23f9d3bd82565aa5",
+  "workflow_run_id": "44679045556",
+  "run_sha": "ac72e56b0cf0dae5cc86e8f380f6c1163442d8f7",
   "exit_code": "1"
 }
